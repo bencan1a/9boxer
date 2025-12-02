@@ -22,7 +22,7 @@ class ApiClient {
 
   constructor() {
     this.client = axios.create({
-      baseURL: "http://localhost:8000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json",
       },
@@ -59,7 +59,7 @@ class ApiClient {
   // ==================== Auth Methods ====================
 
   async login(username: string, password: string): Promise<TokenResponse> {
-    const response = await this.client.post<TokenResponse>("/auth/login", {
+    const response = await this.client.post<TokenResponse>("/api/auth/login", {
       username,
       password,
     } as LoginRequest);
@@ -68,13 +68,13 @@ class ApiClient {
 
   async logout(): Promise<{ success: boolean }> {
     const response = await this.client.post<{ success: boolean }>(
-      "/auth/logout"
+      "/api/auth/logout"
     );
     return response.data;
   }
 
   async me(): Promise<UserResponse> {
-    const response = await this.client.get<UserResponse>("/auth/me");
+    const response = await this.client.get<UserResponse>("/api/auth/me");
     return response.data;
   }
 
@@ -85,7 +85,7 @@ class ApiClient {
     formData.append("file", file);
 
     const response = await this.client.post<UploadResponse>(
-      "/session/upload",
+      "/api/session/upload",
       formData,
       {
         headers: {
@@ -98,20 +98,20 @@ class ApiClient {
 
   async getSessionStatus(): Promise<SessionStatusResponse> {
     const response = await this.client.get<SessionStatusResponse>(
-      "/session/status"
+      "/api/session/status"
     );
     return response.data;
   }
 
   async clearSession(): Promise<{ success: boolean }> {
     const response = await this.client.delete<{ success: boolean }>(
-      "/session/clear"
+      "/api/session/clear"
     );
     return response.data;
   }
 
   async exportSession(): Promise<Blob> {
-    const response = await this.client.post("/session/export", null, {
+    const response = await this.client.post("/api/session/export", null, {
       responseType: "blob",
     });
     return response.data;
@@ -152,14 +152,14 @@ class ApiClient {
       params.append("potential", filters.potential.join(","));
     }
 
-    const response = await this.client.get<EmployeesResponse>("/employees", {
+    const response = await this.client.get<EmployeesResponse>("/api/employees", {
       params,
     });
     return response.data;
   }
 
   async getEmployeeById(id: number): Promise<Employee> {
-    const response = await this.client.get<Employee>(`/employees/${id}`);
+    const response = await this.client.get<Employee>(`/api/employees/${id}`);
     return response.data;
   }
 
@@ -169,7 +169,7 @@ class ApiClient {
     potential: string
   ): Promise<MoveResponse> {
     const response = await this.client.patch<MoveResponse>(
-      `/employees/${employeeId}/move`,
+      `/api/employees/${employeeId}/move`,
       {
         performance,
         potential,
@@ -180,7 +180,7 @@ class ApiClient {
 
   async getFilterOptions(): Promise<FilterOptionsResponse> {
     const response = await this.client.get<FilterOptionsResponse>(
-      "/employees/filter-options"
+      "/api/employees/filter-options"
     );
     return response.data;
   }
@@ -188,7 +188,7 @@ class ApiClient {
   // ==================== Statistics Methods ====================
 
   async getStatistics(): Promise<StatisticsResponse> {
-    const response = await this.client.get<StatisticsResponse>("/statistics");
+    const response = await this.client.get<StatisticsResponse>("/api/statistics");
     return response.data;
   }
 }
