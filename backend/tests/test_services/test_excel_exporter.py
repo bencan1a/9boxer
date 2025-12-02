@@ -1,0 +1,295 @@
+"""Tests for Excel exporter service."""
+
+from datetime import datetime
+from pathlib import Path
+
+import openpyxl
+import pytest
+
+from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.services.excel_exporter import ExcelExporter
+
+
+@pytest.fixture
+def excel_exporter() -> ExcelExporter:
+    """Create exporter instance."""
+    return ExcelExporter()
+
+
+def test_export_when_valid_file_then_creates_excel(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test exporting creates a valid Excel file."""
+    output_path = tmp_path / "output.xlsx"
+
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    assert output_path.exists()
+
+    # Verify it's a valid Excel file
+    workbook = openpyxl.load_workbook(output_path)
+    assert len(workbook.worksheets) >= 2
+
+
+def test_export_when_called_then_adds_modified_column(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that 'Modified in Session' column is added."""
+    output_path = tmp_path / "output.xlsx"
+
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find "Modified in Session" column
+    modified_col_found = False
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Modified in Session" in str(cell_value):
+            modified_col_found = True
+            break
+
+    assert modified_col_found
+
+
+def test_export_when_called_then_adds_modification_date_column(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that modification date column is added."""
+    output_path = tmp_path / "output.xlsx"
+
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find "Modification Date" column
+    date_col_found = False
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Modification Date" in str(cell_value):
+            date_col_found = True
+            break
+
+    assert date_col_found
+
+
+def test_export_when_employee_modified_then_writes_modified_values(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that modified employee values are written."""
+    # Mark first employee as modified
+    sample_employees[0].modified_in_session = True
+    sample_employees[0].last_modified = datetime.utcnow()
+    sample_employees[0].performance = PerformanceLevel.MEDIUM
+    sample_employees[0].potential = PerformanceLevel.LOW
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find modified column
+    modified_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        if sheet.cell(1, col_idx).value and "Modified in Session" in str(
+            sheet.cell(1, col_idx).value
+        ):
+            modified_col = col_idx
+            break
+
+    assert modified_col is not None
+
+    # Check first employee row (row 2)
+    assert sheet.cell(2, modified_col).value == "Yes"
+
+
+def test_export_when_employee_not_modified_then_marks_as_no(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that unmodified employees are marked as 'No'."""
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find modified column
+    modified_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        if sheet.cell(1, col_idx).value and "Modified in Session" in str(
+            sheet.cell(1, col_idx).value
+        ):
+            modified_col = col_idx
+            break
+
+    # All unmodified employees should be "No"
+    for row_idx in range(2, sheet.max_row + 1):
+        assert sheet.cell(row_idx, modified_col).value == "No"
+
+
+def test_export_when_multiple_employees_modified_then_updates_all(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that multiple modified employees are updated correctly."""
+    # Mark multiple employees as modified
+    sample_employees[0].modified_in_session = True
+    sample_employees[0].last_modified = datetime.utcnow()
+    sample_employees[2].modified_in_session = True
+    sample_employees[2].last_modified = datetime.utcnow()
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find modified column
+    modified_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        if sheet.cell(1, col_idx).value and "Modified in Session" in str(
+            sheet.cell(1, col_idx).value
+        ):
+            modified_col = col_idx
+            break
+
+    # Check employees 1 and 3 are marked modified
+    assert sheet.cell(2, modified_col).value == "Yes"  # Employee 1
+    assert sheet.cell(3, modified_col).value == "No"  # Employee 2
+    assert sheet.cell(4, modified_col).value == "Yes"  # Employee 3
+
+
+def test_export_when_file_has_less_than_two_sheets_then_raises_error(
+    excel_exporter: ExcelExporter, sample_employees: list[Employee], tmp_path: Path
+) -> None:
+    """Test error when file has less than 2 sheets."""
+    # Create file with only one sheet
+    single_sheet_file = tmp_path / "single_sheet.xlsx"
+    workbook = openpyxl.Workbook()
+    workbook.save(single_sheet_file)
+
+    output_path = tmp_path / "output.xlsx"
+
+    with pytest.raises(ValueError, match="Excel file must have at least 2 sheets"):
+        excel_exporter.export(single_sheet_file, sample_employees, output_path)
+
+
+def test_export_when_performance_updated_then_writes_new_value(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that updated performance values are written."""
+    # Update performance
+    sample_employees[0].performance = PerformanceLevel.LOW
+    sample_employees[0].potential = PotentialLevel.LOW
+    sample_employees[0].grid_position = 1
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find performance column
+    perf_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Aug 2025 Talent Assessment Performance" in str(cell_value):
+            perf_col = col_idx
+            break
+
+    if perf_col:
+        assert sheet.cell(2, perf_col).value == "Low"
+
+
+def test_export_when_modification_date_set_then_writes_date(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that modification date is written."""
+    modification_time = datetime.utcnow()
+    sample_employees[0].modified_in_session = True
+    sample_employees[0].last_modified = modification_time
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find modification date column (should be right after modified column)
+    modified_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        if sheet.cell(1, col_idx).value and "Modified in Session" in str(
+            sheet.cell(1, col_idx).value
+        ):
+            modified_col = col_idx
+            break
+
+    date_col = modified_col + 1
+    date_value = sheet.cell(2, date_col).value
+
+    # Should have written the ISO format timestamp
+    assert date_value is not None
+    assert modification_time.isoformat() in str(date_value)
+
+
+def test_find_column_when_column_exists_then_returns_index(
+    excel_exporter: ExcelExporter, sample_excel_file: Path
+) -> None:
+    """Test finding column by name."""
+    workbook = openpyxl.load_workbook(sample_excel_file)
+    sheet = workbook.worksheets[1]
+
+    col_idx = excel_exporter._find_column(sheet, "Employee ID")
+
+    assert col_idx == 1
+
+
+def test_find_column_when_column_not_exists_and_create_false_then_returns_none(
+    excel_exporter: ExcelExporter, sample_excel_file: Path
+) -> None:
+    """Test finding non-existent column without create flag."""
+    workbook = openpyxl.load_workbook(sample_excel_file)
+    sheet = workbook.worksheets[1]
+
+    col_idx = excel_exporter._find_column(sheet, "NonExistentColumn", create=False)
+
+    assert col_idx is None
+
+
+def test_find_column_when_column_not_exists_and_create_true_then_returns_next_index(
+    excel_exporter: ExcelExporter, sample_excel_file: Path
+) -> None:
+    """Test finding non-existent column with create flag."""
+    workbook = openpyxl.load_workbook(sample_excel_file)
+    sheet = workbook.worksheets[1]
+
+    original_max_col = sheet.max_column
+    col_idx = excel_exporter._find_column(sheet, "NewColumn", create=True)
+
+    assert col_idx == original_max_col + 1

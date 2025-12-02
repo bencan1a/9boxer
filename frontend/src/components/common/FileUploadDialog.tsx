@@ -1,0 +1,166 @@
+/**
+ * File upload dialog component
+ */
+
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useSessionStore } from "../../store/sessionStore";
+import { useSnackbar } from "../../contexts/SnackbarContext";
+
+interface FileUploadDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
+  open,
+  onClose,
+}) => {
+  const { uploadFile, isLoading } = useSessionStore();
+  const { showSuccess, showError } = useSnackbar();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file size (< 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setError("File size must be less than 10MB");
+        setSelectedFile(null);
+        return;
+      }
+
+      // Validate file type
+      if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
+        setError("Please select an Excel file (.xlsx or .xls)");
+        setSelectedFile(null);
+        return;
+      }
+      setSelectedFile(file);
+      setError(null);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setError("Please select a file first");
+      return;
+    }
+
+    setError(null);
+    setSuccess(false);
+
+    try {
+      await uploadFile(selectedFile);
+      setSuccess(true);
+      showSuccess(`Successfully uploaded ${selectedFile.name}`);
+      setTimeout(() => {
+        onClose();
+        setSelectedFile(null);
+        setSuccess(false);
+      }, 1500);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || "Failed to upload file";
+      setError(errorMessage);
+      showError(errorMessage);
+    }
+  };
+
+  const handleClose = () => {
+    if (!isLoading) {
+      onClose();
+      setSelectedFile(null);
+      setError(null);
+      setSuccess(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Upload Excel File</DialogTitle>
+      <DialogContent>
+        <Box sx={{ py: 2 }}>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Upload a 9-Box talent mapping Excel file (.xlsx or .xls)
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          {success && (
+            <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
+              File uploaded successfully!
+            </Alert>
+          )}
+
+          <Box
+            sx={{
+              mt: 3,
+              p: 3,
+              border: "2px dashed",
+              borderColor: "primary.main",
+              borderRadius: 2,
+              textAlign: "center",
+              backgroundColor: "background.default",
+            }}
+          >
+            <input
+              accept=".xlsx,.xls"
+              style={{ display: "none" }}
+              id="file-upload-input"
+              type="file"
+              onChange={handleFileSelect}
+              disabled={isLoading}
+            />
+            <label htmlFor="file-upload-input">
+              <Button
+                component="span"
+                variant="outlined"
+                startIcon={<CloudUploadIcon />}
+                disabled={isLoading}
+              >
+                Select File
+              </Button>
+            </label>
+
+            {selectedFile && (
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                Selected: <strong>{selectedFile.name}</strong>
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} disabled={isLoading}>
+          Cancel
+        </Button>
+        <Button
+          onClick={handleUpload}
+          variant="contained"
+          disabled={!selectedFile || isLoading}
+          startIcon={isLoading ? <CircularProgress size={16} /> : null}
+        >
+          {isLoading ? "Uploading..." : "Upload"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};

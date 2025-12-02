@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9-Box Performance Review - Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #212121;
+        }
+
+        /* Login Page */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 48px 40px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1976d2;
+        }
+
+        .login-card p {
+            color: #757575;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #616161;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1565c0;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .dashboard.active {
+            display: flex;
+        }
+
+        /* App Bar */
+        .app-bar {
+            background: #1976d2;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .app-bar h1 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .app-bar-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .icon-btn .material-icons {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Filter Drawer */
+        .filter-drawer {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 24px;
+            overflow-y: auto;
+            transition: margin-left 0.3s;
+        }
+
+        .filter-drawer.collapsed {
+            margin-left: -280px;
+        }
+
+        .filter-drawer h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #616161;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #757575;
+            margin-bottom: 8px;
+        }
+
+        .filter-section select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            font-size: 14px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        /* Grid and Panel Container */
+        .grid-panel-container {
+            display: flex;
+            flex: 1;
+            gap: 24px;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        /* 9-Box Grid */
+        .grid-container {
+            flex: 0 0 65%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .grid-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .grid-info {
+            font-size: 14px;
+            color: #757575;
+        }
+
+        .ninebox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Axis Labels */
+        .axis-label-y {
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 12px;
+            font-weight: 500;
+            color: #616161;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .axis-label-x {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 500;
+            color: #616161;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grid-box {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 150px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            overflow-y: auto;
+        }
+
+        .grid-box.drag-over {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .grid-box-header {
+            font-size: 11px;
+            font-weight: 500;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .grid-box-count {
+            float: right;
+            background: #e0e0e0;
+            color: #616161;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        /* Employee Tiles */
+        .employee-tile {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .employee-tile:hover {
+            background: #eeeeee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .employee-tile.dragging {
+            opacity: 0.5;
+        }
+
+        .employee-tile.modified {
+            border-left: 3px solid #ff9800;
+            background: #fff3e0;
+        }
+
+        .employee-tile.selected {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+
+        .employee-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .employee-title {
+            font-size: 12px;
+            color: #757575;
+            margin-bottom: 2px;
+        }
+
+        .employee-level {
+            font-size: 11px;
+            color: #9e9e9e;
+        }
+
+        .modified-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            flex: 0 0 35%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #757575;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .panel-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+        }
+
+        .panel-tab:hover {
+            background: #f5f5f5;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Employee Details */
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-section h4 {
+            font-size: 12px;
+            font-weight: 500;
+            color: #616161;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: #757575;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #212121;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin-top: 16px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: #e0e0e0;
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.current {
+            background: #4caf50;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-year {
+            font-size: 14px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .timeline-rating {
+            font-size: 13px;
+            color: #757575;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 500;
+            color: #1976d2;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .distribution-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .distribution-table th,
+        .distribution-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .distribution-table th {
+            font-size: 11px;
+            font-weight: 500;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .distribution-table td {
+            font-size: 13px;
+        }
+
+        .percentage-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .percentage-fill {
+            height: 100%;
+            background: #1976d2;
+            transition: width 0.3s;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #9e9e9e;
+        }
+
+        .empty-state .material-icons {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        /* Snackbar */
+        .snackbar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #323232;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 4px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .snackbar.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .snackbar .material-icons {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-card">
+            <h1>9-Box Performance Review</h1>
+            <p>Sign in to continue</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" value="bencan" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" value="password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- App Bar -->
+        <div class="app-bar">
+            <h1>9-Box Performance Review</h1>
+            <div class="app-bar-actions">
+                <button class="icon-btn" onclick="handleUpload()">
+                    <span class="material-icons">upload_file</span>
+                    Upload
+                </button>
+                <button class="icon-btn" onclick="toggleFilters()">
+                    <span class="material-icons">filter_list</span>
+                    Filters
+                </button>
+                <button class="icon-btn" onclick="handleApply()">
+                    <span class="material-icons">save</span>
+                    Apply
+                </button>
+                <button class="icon-btn" onclick="handleLogout()">
+                    <span class="material-icons">logout</span>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Filter Drawer -->
+            <div id="filterDrawer" class="filter-drawer">
+                <h3>Filters</h3>
+
+                <div class="filter-section">
+                    <label>Job Level</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="level-mt1" value="MT1" onchange="applyFilters()" checked>
+                            <label for="level-mt1">MT1 - Team Lead</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="level-mt2" value="MT2" onchange="applyFilters()" checked>
+                            <label for="level-mt2">MT2 - Manager</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="level-mt4" value="MT4" onchange="applyFilters()" checked>
+                            <label for="level-mt4">MT4 - Group Manager</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="level-mt5" value="MT5" onchange="applyFilters()" checked>
+                            <label for="level-mt5">MT5 - Director</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="level-mt6" value="MT6" onchange="applyFilters()" checked>
+                            <label for="level-mt6">MT6 - Sr. Director</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label>Manager</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="mgr-benker" value="Elizabeth Benker" onchange="applyFilters()" checked>
+                            <label for="mgr-benker">Elizabeth Benker</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="mgr-howard" value="Erin Howard" onchange="applyFilters()" checked>
+                            <label for="mgr-howard">Erin Howard</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="mgr-argilla" value="Laura Williams Argilla" onchange="applyFilters()" checked>
+                            <label for="mgr-argilla">Laura Williams Argilla</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label>Management Chain Level</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="chain-04" value="04" onchange="applyFilters()" checked>
+                            <label for="chain-04">Level 04</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="chain-05" value="05" onchange="applyFilters()" checked>
+                            <label for="chain-05">Level 05</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label>Exclude Employees</label>
+                    <select id="excludeSelect" multiple size="5" onchange="applyFilters()">
+                        <!-- Will be populated with employee names -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid and Panel -->
+            <div class="grid-panel-container">
+                <!-- 9-Box Grid -->
+                <div class="grid-container">
+                    <div class="grid-header">
+                        <h2>Talent Assessment Grid</h2>
+                        <div class="grid-info">
+                            <span id="employeeCount">18</span> employees
+                        </div>
+                    </div>
+
+                    <div class="ninebox-grid" style="position: relative; margin-left: 60px; margin-bottom: 60px;">
+                        <span class="axis-label-y">Performance (Low → High)</span>
+                        <span class="axis-label-x">Potential (Low → High)</span>
+
+                        <!-- Row 1 (High Performance) -->
+                        <div class="grid-box" data-position="7" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">High / Low <span class="grid-box-count" id="count-7">0</span></div>
+                            <div id="box-7" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="8" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">High / Med <span class="grid-box-count" id="count-8">0</span></div>
+                            <div id="box-8" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="9" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Top Talent [H,H] <span class="grid-box-count" id="count-9">0</span></div>
+                            <div id="box-9" class="box-content"></div>
+                        </div>
+
+                        <!-- Row 2 (Medium Performance) -->
+                        <div class="grid-box" data-position="4" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Med / Low <span class="grid-box-count" id="count-4">0</span></div>
+                            <div id="box-4" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="5" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Core Talent [M,M] <span class="grid-box-count" id="count-5">0</span></div>
+                            <div id="box-5" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="6" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">High Impact [M,H] <span class="grid-box-count" id="count-6">0</span></div>
+                            <div id="box-6" class="box-content"></div>
+                        </div>
+
+                        <!-- Row 3 (Low Performance) -->
+                        <div class="grid-box" data-position="1" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Low / Low <span class="grid-box-count" id="count-1">0</span></div>
+                            <div id="box-1" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="2" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Inconsistent [L,M] <span class="grid-box-count" id="count-2">0</span></div>
+                            <div id="box-2" class="box-content"></div>
+                        </div>
+                        <div class="grid-box" data-position="3" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <div class="grid-box-header">Growth Talent [L,H] <span class="grid-box-count" id="count-3">0</span></div>
+                            <div id="box-3" class="box-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="right-panel">
+                    <div class="panel-tabs">
+                        <div class="panel-tab active" onclick="switchTab('details')">Details</div>
+                        <div class="panel-tab" onclick="switchTab('statistics')">Statistics</div>
+                    </div>
+
+                    <div class="panel-content">
+                        <!-- Details Tab -->
+                        <div id="detailsTab" class="tab-pane active">
+                            <div id="employeeDetails">
+                                <div class="empty-state">
+                                    <span class="material-icons">person_outline</span>
+                                    <p>Select an employee to view details</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Tab -->
+                        <div id="statisticsTab" class="tab-pane">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="statTotal">18</div>
+                                    <div class="stat-label">Total</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value" id="statModified">0</div>
+                                    <div class="stat-label">Modified</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value" id="statHighPerf">0</div>
+                                    <div class="stat-label">High Perf</div>
+                                </div>
+                            </div>
+
+                            <h4 style="font-size: 14px; margin-bottom: 16px; color: #616161;">Distribution</h4>
+                            <table class="distribution-table">
+                                <thead>
+                                    <tr>
+                                        <th>Box</th>
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="distributionTableBody">
+                                    <!-- Will be populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar -->
+    <div id="snackbar" class="snackbar">
+        <span class="material-icons">check_circle</span>
+        <span id="snackbarMessage">Action completed</span>
+    </div>
+
+    <script>
+        // Sample data from the Excel file
+        const sampleEmployees = [
+            {
+                id: 102671,
+                name: "Carolyn Blanco Losada",
+                title: "Manager, Product Delivery Program Management",
+                level: "MT2 - Manager",
+                manager: "Erin Howard",
+                chain04: "Elizabeth Benker",
+                chain05: "Erin Howard",
+                performance: "Low",
+                potential: "Medium",
+                position: 2,
+                label: "Inconsistent Talent [L,M]",
+                history: [
+                    { year: 2024, rating: "Strong" },
+                    { year: 2023, rating: "Strong" }
+                ],
+                modified: false
+            },
+            {
+                id: 102674,
+                name: "Elizabeth Cardinal",
+                title: "Team Lead, UI/UX Design",
+                level: "MT1 - Team Lead",
+                manager: "Elizabeth Benker",
+                chain04: "Elizabeth Benker",
+                chain05: null,
+                performance: "Medium",
+                potential: "Medium",
+                position: 5,
+                label: "Core Talent [M,M]",
+                history: [
+                    { year: 2024, rating: "Strong" },
+                    { year: 2023, rating: "Strong" }
+                ],
+                modified: false
+            },
+            {
+                id: 106408,
+                name: "Erin Howard",
+                title: "Sr. Director, Customer Signals",
+                level: "MT6 - Sr. Director",
+                manager: "Elizabeth Benker",
+                chain04: "Elizabeth Benker",
+                chain05: null,
+                performance: "Medium",
+                potential: "Medium",
+                position: 5,
+                label: "Core Talent [M,M]",
+                history: [],
+                modified: false
+            },
+            {
+                id: 106368,
+                name: "Francois Planet",
+                title: "Director, Product Management",
+                level: "MT5 - Director",
+                manager: "Laura Williams Argilla",
+                chain04: "Laura Williams Argilla",
+                chain05: null,
+                performance: "Medium",
+                potential: "Medium",
+                position: 5,
+                label: "Core Talent [M,M]",
+                history: [],
+                modified: false
+            },
+            {
+                id: 103216,
+                name: "Hitesh Bakutra",
+                title: "Group Mgr, Product Management",
+                level: "MT4 - Group Manager",
+                manager: "Erin Howard",
+                chain04: "Elizabeth Benker",
+                chain05: "Erin Howard",
+                performance: "Medium",
+                potential: "Medium",
+                position: 5,
+                label: "Core Talent [M,M]",
+                history: [
+                    { year: 2024, rating: "Strong" },
+                    { year: 2023, rating: "Strong" }
+                ],
+                modified: false
+            },
+            {
+                id: 103217,
+                name: "Jane Smith",
+                title: "Sr. Product Manager",
+                level: "MT2 - Manager",
+                manager: "Elizabeth Benker",
+                chain04: "Elizabeth Benker",
+                chain05: null,
+                performance: "High",
+                potential: "High",
+                position: 9,
+                label: "Top Talent [H,H]",
+                history: [
+                    { year: 2024, rating: "Leading" },
+                    { year: 2023, rating: "Strong" }
+                ],
+                modified: false
+            },
+            {
+                id: 103218,
+                name: "John Doe",
+                title: "Engineering Manager",
+                level: "MT2 - Manager",
+                manager: "Erin Howard",
+                chain04: "Elizabeth Benker",
+                chain05: "Erin Howard",
+                performance: "High",
+                potential: "Medium",
+                position: 8,
+                label: "High Impact Talent [H,M]",
+                history: [
+                    { year: 2024, rating: "Leading" },
+                    { year: 2023, rating: "Leading" }
+                ],
+                modified: false
+            },
+            {
+                id: 103219,
+                name: "Sarah Johnson",
+                title: "Group Manager, Design",
+                level: "MT4 - Group Manager",
+                manager: "Elizabeth Benker",
+                chain04: "Elizabeth Benker",
+                chain05: null,
+                performance: "Medium",
+                potential: "High",
+                position: 6,
+                label: "High Impact Talent [M,H]",
+                history: [
+                    { year: 2024, rating: "Strong" },
+                    { year: 2023, rating: "Solid" }
+                ],
+                modified: false
+            }
+        ];
+
+        let employees = JSON.parse(JSON.stringify(sampleEmployees)); // Deep copy
+        let filteredEmployees = [];
+        let selectedEmployee = null;
+
+        // Login handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'bencan' && password === 'password') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                initializeDashboard();
+                showSnackbar('Login successful');
+            } else {
+                alert('Invalid credentials. Try: bencan / password');
+            }
+        }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            populateExcludeSelect();
+            applyFilters();
+            renderGrid();
+            updateStatistics();
+        }
+
+        // Populate exclude select
+        function populateExcludeSelect() {
+            const select = document.getElementById('excludeSelect');
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = `${emp.name} (${emp.level})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const selectedLevels = Array.from(document.querySelectorAll('input[id^="level-"]:checked'))
+                .map(cb => cb.value);
+            const selectedManagers = Array.from(document.querySelectorAll('input[id^="mgr-"]:checked'))
+                .map(cb => cb.value);
+            const selectedChains = Array.from(document.querySelectorAll('input[id^="chain-"]:checked'))
+                .map(cb => cb.value);
+            const excludedIds = Array.from(document.getElementById('excludeSelect').selectedOptions)
+                .map(opt => parseInt(opt.value));
+
+            filteredEmployees = employees.filter(emp => {
+                // Check level
+                const levelCode = emp.level.split(' ')[0];
+                if (!selectedLevels.includes(levelCode)) return false;
+
+                // Check manager
+                if (!selectedManagers.includes(emp.manager)) return false;
+
+                // Check chain (at least one should match)
+                let chainMatch = selectedChains.length === 0; // If no chains selected, don't filter
+                if (selectedChains.includes('04') && emp.chain04) chainMatch = true;
+                if (selectedChains.includes('05') && emp.chain05) chainMatch = true;
+                if (!chainMatch && selectedChains.length > 0) return false;
+
+                // Check excluded
+                if (excludedIds.includes(emp.id)) return false;
+
+                return true;
+            });
+
+            renderGrid();
+            updateStatistics();
+            document.getElementById('employeeCount').textContent = filteredEmployees.length;
+        }
+
+        // Render grid
+        function renderGrid() {
+            // Clear all boxes
+            for (let i = 1; i <= 9; i++) {
+                const box = document.getElementById(`box-${i}`);
+                if (box) box.innerHTML = '';
+                const count = document.getElementById(`count-${i}`);
+                if (count) count.textContent = '0';
+            }
+
+            // Place employees
+            filteredEmployees.forEach(emp => {
+                const tile = createEmployeeTile(emp);
+                const box = document.getElementById(`box-${emp.position}`);
+                if (box) box.appendChild(tile);
+            });
+
+            // Update counts
+            for (let i = 1; i <= 9; i++) {
+                const box = document.getElementById(`box-${i}`);
+                if (box) {
+                    const count = box.querySelectorAll('.employee-tile').length;
+                    const countBadge = document.getElementById(`count-${i}`);
+                    if (countBadge) countBadge.textContent = count;
+                }
+            }
+        }
+
+        // Create employee tile
+        function createEmployeeTile(emp) {
+            const tile = document.createElement('div');
+            tile.className = 'employee-tile' + (emp.modified ? ' modified' : '');
+            tile.draggable = true;
+            tile.dataset.employeeId = emp.id;
+            tile.ondragstart = drag;
+            tile.onclick = () => selectEmployee(emp);
+
+            tile.innerHTML = `
+                <div class="employee-name">
+                    ${emp.name}
+                    ${emp.modified ? '<span class="modified-badge">MODIFIED</span>' : ''}
+                </div>
+                <div class="employee-title">${emp.title}</div>
+                <div class="employee-level">${emp.level}</div>
+            `;
+
+            return tile;
+        }
+
+        // Drag and drop handlers
+        function drag(event) {
+            event.dataTransfer.setData('employeeId', event.target.dataset.employeeId);
+            event.target.classList.add('dragging');
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+
+            const employeeId = parseInt(event.dataTransfer.getData('employeeId'));
+            const newPosition = parseInt(event.currentTarget.dataset.position);
+
+            // Find employee
+            const emp = employees.find(e => e.id === employeeId);
+            if (emp && emp.position !== newPosition) {
+                emp.position = newPosition;
+                emp.modified = true;
+
+                // Update performance/potential based on position
+                const mapping = {
+                    1: { perf: 'Low', pot: 'Low' },
+                    2: { perf: 'Low', pot: 'Medium' },
+                    3: { perf: 'Low', pot: 'High' },
+                    4: { perf: 'Medium', pot: 'Low' },
+                    5: { perf: 'Medium', pot: 'Medium' },
+                    6: { perf: 'Medium', pot: 'High' },
+                    7: { perf: 'High', pot: 'Low' },
+                    8: { perf: 'High', pot: 'Medium' },
+                    9: { perf: 'High', pot: 'High' }
+                };
+                emp.performance = mapping[newPosition].perf;
+                emp.potential = mapping[newPosition].pot;
+
+                renderGrid();
+                updateStatistics();
+                showSnackbar(`Moved ${emp.name} to ${emp.performance}/${emp.potential}`);
+
+                // Update details if this employee is selected
+                if (selectedEmployee && selectedEmployee.id === employeeId) {
+                    selectEmployee(emp);
+                }
+            }
+
+            // Remove dragging class
+            document.querySelectorAll('.employee-tile.dragging').forEach(el => {
+                el.classList.remove('dragging');
+            });
+        }
+
+        // Select employee
+        function selectEmployee(emp) {
+            selectedEmployee = emp;
+
+            // Remove previous selection
+            document.querySelectorAll('.employee-tile.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selection to current tile
+            const tile = document.querySelector(`[data-employee-id="${emp.id}"]`);
+            if (tile) tile.classList.add('selected');
+
+            // Render details
+            const detailsContainer = document.getElementById('employeeDetails');
+            detailsContainer.innerHTML = `
+                <div class="detail-section">
+                    <h4>Employee Information</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">${emp.name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Title</span>
+                        <span class="detail-value">${emp.title}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Level</span>
+                        <span class="detail-value">${emp.level}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Manager</span>
+                        <span class="detail-value">${emp.manager}</span>
+                    </div>
+                    ${emp.chain04 ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Chain Level 04</span>
+                        <span class="detail-value">${emp.chain04}</span>
+                    </div>
+                    ` : ''}
+                    ${emp.chain05 ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Chain Level 05</span>
+                        <span class="detail-value">${emp.chain05}</span>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="detail-section">
+                    <h4>Current Assessment</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Performance</span>
+                        <span class="detail-value">${emp.performance}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Potential</span>
+                        <span class="detail-value">${emp.potential}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Position</span>
+                        <span class="detail-value">${emp.label}</span>
+                    </div>
+                    ${emp.modified ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value" style="color: #ff9800;">Modified</span>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="detail-section">
+                    <h4>Ratings History</h4>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot current">2025</div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2025 (Current)</div>
+                                <div class="timeline-rating">Performance: ${emp.performance} | Potential: ${emp.potential}</div>
+                            </div>
+                        </div>
+                        ${emp.history.map(h => `
+                        <div class="timeline-item">
+                            <div class="timeline-dot">${h.year}</div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">${h.year}</div>
+                                <div class="timeline-rating">Rating: ${h.rating}</div>
+                            </div>
+                        </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const total = filteredEmployees.length;
+            const modified = filteredEmployees.filter(e => e.modified).length;
+            const highPerf = filteredEmployees.filter(e => e.performance === 'High').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statModified').textContent = modified;
+            document.getElementById('statHighPerf').textContent = highPerf;
+
+            // Distribution table
+            const distribution = {};
+            for (let i = 1; i <= 9; i++) {
+                distribution[i] = { count: 0, label: getBoxLabel(i) };
+            }
+
+            filteredEmployees.forEach(emp => {
+                distribution[emp.position].count++;
+            });
+
+            const tbody = document.getElementById('distributionTableBody');
+            tbody.innerHTML = '';
+
+            for (let i = 9; i >= 1; i--) {
+                const dist = distribution[i];
+                const percentage = total > 0 ? (dist.count / total * 100).toFixed(1) : 0;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${dist.label}</td>
+                    <td>${dist.count}</td>
+                    <td>
+                        ${percentage}%
+                        <div class="percentage-bar">
+                            <div class="percentage-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        // Get box label
+        function getBoxLabel(position) {
+            const labels = {
+                9: 'Top Talent [H,H]',
+                8: 'High Impact [H,M]',
+                7: 'High/Low [H,L]',
+                6: 'Growth Talent [M,H]',
+                5: 'Core Talent [M,M]',
+                4: 'Med/Low [M,L]',
+                3: 'Emerging [L,H]',
+                2: 'Inconsistent [L,M]',
+                1: 'Low/Low [L,L]'
+            };
+            return labels[position] || '';
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab panes
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            if (tab === 'details') {
+                document.getElementById('detailsTab').classList.add('active');
+            } else {
+                document.getElementById('statisticsTab').classList.add('active');
+            }
+        }
+
+        // Toggle filters
+        function toggleFilters() {
+            const drawer = document.getElementById('filterDrawer');
+            drawer.classList.toggle('collapsed');
+        }
+
+        // Show snackbar
+        function showSnackbar(message) {
+            const snackbar = document.getElementById('snackbar');
+            const messageEl = document.getElementById('snackbarMessage');
+            messageEl.textContent = message;
+            snackbar.classList.add('show');
+
+            setTimeout(() => {
+                snackbar.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle upload
+        function handleUpload() {
+            showSnackbar('Upload functionality will open file picker in full app');
+        }
+
+        // Handle apply
+        function handleApply() {
+            const modifiedCount = employees.filter(e => e.modified).length;
+            if (modifiedCount > 0) {
+                showSnackbar(`Exporting ${modifiedCount} modified employee(s) to Excel`);
+            } else {
+                showSnackbar('No changes to export');
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('loginPage').style.display = 'flex';
+                showSnackbar('Logged out successfully');
+            }
+        }
+    </script>
+</body>
+</html>
