@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-02T17:27:19.904367+00:00
-**Source SHA**: c4fd938aaa15e0994b095ce8a7f14813f6d828f0
+**Generated**: 2025-12-02T20:51:55.387402+00:00
+**Source SHA**: 229c7a9a5e93e3123f74190ee8b021d79255bebf
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -60,47 +60,90 @@ API documentation is available in `docs/_generated/api/`:
 
 See the main README.md for project overview and quick start:
 ```
-# Python Template 🐍
+# 9-Box Performance Review System
 
-A comprehensive Python project template optimized for GitHub Copilot and modern development practices.
+A modern web application for visualizing and managing employee performance using the 9-box talent grid methodology.
 
-[![CI](https://github.com/bencan1a/python-template/workflows/CI/badge.svg)](https://github.com/bencan1a/python-template/actions)
-[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue)](http://mypy-lang.org/)
-[![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+## Features
 
-## ✨ Features
+### Core Functionality
+- **Interactive 9-Box Grid**: Drag-and-drop interface for positioning employees
+- **Excel Integration**: Upload and export Excel files with employee data
+- **Real-time Updates**: Instant visual feedback for all changes
+- **Change Tracking**: Complete history of all employee movements
+- **Advanced Filtering**: Filter by level, manager, job profile, and more
+- **Employee Exclusion**: Temporarily hide employees from view
+- **Statistics Dashboard**: Visual analytics and distribution charts
+- **Secure Authentication**: JWT-based authentication system
 
-This template includes everything you need to start a professional Python project:
+### Technical Stack
+- **Backend**: FastAPI (Python 3.10+)
+- **Frontend**: React 18 + TypeScript + Vite
+- **UI Framework**: Material-UI (MUI)
+- **State Management**: Zustand
+- **Database**: SQLite
+- **Excel Processing**: openpyxl
+- **Containerization**: Docker & Docker Compose
 
-- 🏗️ **Modern Project Structure**: Standard `src/` layout following Python best practices
-- 🛠️ **Development Container**: Pre-configured devcontainer with all necessary tools
-- 🔍 **Code Quality Tools**: Ruff, Black, mypy, and Bandit pre-installed and configured
-- 🧪 **Testing Setup**: pytest with coverage reporting and example tests
-- 🤖 **GitHub Actions**: CI/CD workflows for validation, PR checks, and nightly regression
-- 📝 **Documentation Ready**: Structured for easy documentation generation
-- 🎯 **Custom Agent Profiles**: Specialized GitHub Copilot agent configurations
-- ⚙️ **Editor Configuration**: .editorconfig and .gitattributes for consistency
-- 📋 **Pull Request Template**: Comprehensive PR template for quality reviews
-
-## 🚀 Quick Start
-
-> **⚠️ Important:** This project uses a Python virtual environment for dependency isolation. See [AGENTS.md](AGENTS.md) for complete development workflow guidance.
+## Quick Start
 
 ### Prerequisites
+- Docker and Docker Compose (recommended)
+- OR: Python 3.10+, Node.js 18+
 
-- Python 3.10 or higher
-- pip or uv package manager
-- Git
+### Option 1: Docker (Recommended)
 
-### Installation
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd 9boxer
+```
 
-1. **Use this template**: Click "Use this template" button on GitHub
+2. Create environment file:
+```bash
+cp .env.example .env
+# Edit .env and change SECRET_KEY in production!
+```
 
-2. **Clone your new repository**:
-   ```bash
-   git clone https://github.com/yourusername/your-project-name.git
-   cd your-proj
+3. Build and run:
+```bash
+docker-compose up --build
+```
+
+4. Access the application:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+
+5. Login with default credentials:
+- Username: `bencan`
+- Password: `password`
+
+### Option 2: Local Development
+
+#### Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python3 -m venv venv
+. venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install --upgrade pip
+pip install -e '.[dev]'
+
+# Run backend
+cd src
+python -m ninebox.main
+```
+
+Backend will run on http://localhost:8000
+
+#### Frontend Setup
+
+```bash
+cd
 ...[truncated]
 ```
