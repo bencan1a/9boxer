@@ -1,0 +1,27 @@
+{
+  "include": ["src", "tests", "tools"],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "venv"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Linux",
+  "executionEnvironments": [
+    {
+      "root": "src"
+    },
+    {
+      "root": "tests",
+      "reportMissingTypeStubs": false,
+      "reportUnknownParameterType": false,
+      "reportUnknownArgumentType": false,
+      "reportUnknownMemberType": false,
+      "reportUnknownVariableType": false
+    }
+  ]
+}

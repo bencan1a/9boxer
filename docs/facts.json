@@ -1,0 +1,40 @@
+{
+  "project_name": "python-template",
+  "description": "A well-configured Python project template optimized for GitHub Copilot",
+  "python_version": ">=3.10",
+  "primary_tools": {
+    "package_manager": "pip",
+    "testing": "pytest",
+    "linting": "ruff",
+    "formatting": "ruff + black",
+    "type_checking": "mypy",
+    "security": "bandit",
+    "documentation": "sphinx + pdoc3"
+  },
+  "folder_structure": {
+    "src/": "Source code",
+    "tests/": "Test files",
+    "docs/": "Permanent documentation",
+    "docs/_generated/": "Auto-generated documentation",
+    "agent-tmp/": "Temporary agent workspace (gitignored)",
+    "agent-plans/": "Ephemeral plan documents",
+    "agent-projects/": "Active agent project folders",
+    "tools/": "Build and automation scripts",
+    ".github/": "GitHub configuration and workflows"
+  },
+  "quality_standards": {
+    "test_coverage": ">80%",
+    "type_coverage": "100% (all functions must have type annotations)",
+    "formatting": "ruff format compliant",
+    "linting": "ruff check compliant",
+    "security": "bandit compliant"
+  },
+  "documentation_strategy": {
+    "source_of_truth": "docs/",
+    "generated_docs": "docs/_generated/",
+    "temporary_workspace": "agent-tmp/",
+    "ephemeral_plans": "agent-plans/",
+    "main_context": "docs/CONTEXT.md",
+    "automation": "GitHub Actions + tools/build_context.py"
+  }
+}

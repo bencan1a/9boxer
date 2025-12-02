@@ -1,0 +1,265 @@
+name: Nightly Regression
+
+on:
+  schedule:
+    # Run at 2 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      python-version:
+        description: 'Python version to test (leave empty for all)'
+        required: false
+        default: ''
+      os:
+        description: 'Operating system to test (leave empty for all)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+  security-events: write
+
+jobs:
+  regression-tests:
+    name: Regression Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]') }}
+        python-version: ${{ github.event.inputs.python-version && fromJSON(format('["{0}"]', github.event.inputs.python-version)) || fromJSON('["3.10", "3.11", "3.12"]') }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+      
+      - name: Run full test suite and enforce coverage threshold
+        run: pytest --cov=src --cov-fail-under=70 --cov-report=xml --cov-report=term --cov-report=html -v
+      
+      - name: Run security scan
+        run: make security-report
+      
+      - name: Run type checking
+        run: make type-check
+      
+      - name: Upload security report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: bandit-report.json
+          retention-days: 30
+      
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+            .coverage
+          retention-days: 30
+  
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+      
+      - name: Run performance tests
+        run: |
+          # Add performance testing commands here
+          pytest tests/ -v --durations=10
+      
+      - name: Upload performance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: .pytest_cache/
+          retention-days: 30
+  
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: |
+          uv pip install --system -e '.[dev]'
+          uv pip install --system pip-audit safety
+      
+      - name: Audit dependencies with pip-audit
+        continue-on-error: true
+        run: |
+          pip-audit --format json --output pip-audit-report.json || true
+          pip-audit
+      
+      - name: Check dependencies with safety
+        continue-on-error: true
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check
+      
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-reports
+          path: |
+            pip-audit-report.json
+            safety-report.json
+          retention-days: 30
+  
+  # New job: SBOM generation
+  sbom-generation:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: |
+          uv pip install --system -e '.[dev]'
+          uv pip install --system cyclonedx-bom
+      
+      - name: Generate SBOM
+        run: |
+          cyclonedx-py -o sbom.json
+      
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+          retention-days: 90
+  
+  notify:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [regression-tests, performance-tests, dependency-audit, sbom-generation]
+    if: failure()
+    steps:
+      - name: Create issue on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Check if an open nightly regression issue already exists
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'regression,automated',
+              per_page: 100
+            });
+            
+            const nightlyIssue = existingIssues.data.find(issue => 
+              issue.title.includes('🚨 Nightly Regression Tests Failed')
+            );
+            
+            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            const timestamp = new Date().toISOString();
+            
+            const commentBody = `### Failed Run Details (${timestamp})
+            - Workflow: ${{ github.workflow }}
+            - Run ID: ${{ github.run_id }}
+            - Run URL: ${runUrl}
+            - Triggered by: ${{ github.event_name }}
+            
+            **Jobs Status:**
+            - Regression Tests: ${{ needs.regression-tests.result }}
+            - Performance Tests: ${{ needs.performance-tests.result }}
+            - Dependency Audit: ${{ needs.dependency-audit.result }}
+            - SBOM Generation: ${{ needs.sbom-generation.result }}
+            `;
+            
+            if (nightlyIssue) {
+              // Add comment to existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: nightlyIssue.number,
+                body: commentBody
+              });
+            } else {
+              // Create new issue
+              const title = '🚨 Nightly Regression Tests Failed';
+              const body = `The nightly regression tests have failed.
+              
+              ${commentBody}
+              
+              Please investigate and fix the issues.`;
+              
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['bug', 'regression', 'automated']
+              });
+            }
+      
+      - name: Generate failure summary
+        if: always()
+        run: |
+          echo "## Nightly Regression Failure Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Regression Tests | ${{ needs.regression-tests.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance Tests | ${{ needs.performance-tests.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Audit | ${{ needs.dependency-audit.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SBOM Generation | ${{ needs.sbom-generation.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
