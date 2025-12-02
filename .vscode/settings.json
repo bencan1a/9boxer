@@ -1,0 +1,27 @@
+{
+  "python.pythonPath": "./venv/bin/python",
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "bandit.interpreter": [
+    "./venv/bin/python"
+  ],
+  "bandit.importStrategy": "fromEnvironment",
+  "python.terminal.activateEnvironment": true,
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.analysis.exclude": [
+    "**/venv/**",
+    "**/.*/**",
+    "**/__pycache__/**",
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/build/**",
+    "**/dist/**"
+  ],
+  "python.analysis.ignore": [
+    "**/venv/**"
+  ],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/venv": true
+  }
+}

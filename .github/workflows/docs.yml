@@ -1,0 +1,138 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'docs/**'
+      - 'agent-plans/**'
+      - 'agent-projects/**'
+      - 'tools/build_context.py'
+      - '.github/workflows/docs.yml'
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force-rebuild:
+        description: 'Force rebuild all documentation'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  CONTEXT_MAX_CHARS: "150000"
+  PLANS_MAX_AGE_DAYS: "21"
+  CLEAN_TMP_AGE_DAYS: "7"
+
+permissions:
+  contents: write
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git SHA
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Cache documentation build
+        uses: actions/cache@v4
+        with:
+          path: |
+            docs/_generated/
+            docs/_build/
+          key: docs-${{ runner.os }}-${{ hashFiles('src/**/*.py', 'docs/**/*.md', 'tools/build_context.py') }}
+          restore-keys: |
+            docs-${{ runner.os }}-
+      
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv pip install --system pdoc3 sphinx sphinx-rtd-theme
+          # Install project dependencies if needed for API doc generation
+          if [ -f pyproject.toml ]; then
+            uv pip install --system -e .
+          fi
+      
+      - name: Build documentation
+        run: |
+          python tools/build_context.py
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet docs/ || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Validate generated files
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          # Check if critical files were generated
+          if [ ! -f docs/CONTEXT.md ]; then
+            echo "Error: CONTEXT.md not generated"
+            exit 1
+          fi
+          
+          # Check file size isn't too large
+          CONTEXT_SIZE=$(wc -c < docs/CONTEXT.md)
+          if [ "$CONTEXT_SIZE" -gt "$CONTEXT_MAX_CHARS" ]; then
+            echo "Warning: CONTEXT.md is larger than ${CONTEXT_MAX_CHARS} characters (${CONTEXT_SIZE})"
+          fi
+      
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git commit -m "chore: auto-update documentation [skip ci]"
+          git push
+      
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: |
+            docs/
+            !docs/.git
+          retention-days: 30
+      
+      - name: Summary
+        run: |
+          echo "### Documentation Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.check_changes.outputs.changed }}" = "true" ]; then
+            echo "📝 Documentation updated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Documentation up to date" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f docs/CONTEXT.md ]; then
+            CONTEXT_SIZE=$(wc -c < docs/CONTEXT.md)
+            echo "✅ CONTEXT.md generated (${CONTEXT_SIZE} bytes)" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f docs/_generated/plans_index.md ]; then
+            PLAN_COUNT=$(grep -c "^## " docs/_generated/plans_index.md || echo "0")
+            echo "📋 Active plans: ${PLAN_COUNT}" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -d docs/_generated/api ]; then
+            API_COUNT=$(find docs/_generated/api -name "*.html" -o -name "*.md" | wc -l)
+            echo "📚 API docs generated: ${API_COUNT} files" >> $GITHUB_STEP_SUMMARY
+          fi
