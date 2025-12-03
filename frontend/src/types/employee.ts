@@ -29,9 +29,14 @@ export interface Employee {
   job_title: string;
   job_profile: string;
   job_level: string; // MT1, MT2, MT4, MT5, MT6
+  job_function: string; // Extracted from job_profile
+  location: string; // Last 3 characters of job_profile (country code)
 
   // Management
   manager: string;
+  management_chain_01: string | null;
+  management_chain_02: string | null;
+  management_chain_03: string | null;
   management_chain_04: string | null;
   management_chain_05: string | null;
   management_chain_06: string | null;
@@ -56,6 +61,7 @@ export interface Employee {
   development_action: string | null;
   notes: string | null;
   promotion_status: string | null;
+  promotion_readiness: boolean | null;
 
   // Metadata
   modified_in_session: boolean;

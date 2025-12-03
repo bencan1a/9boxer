@@ -60,16 +60,16 @@ def test_parse_when_valid_file_then_calculates_grid_positions_correctly(sample_e
     parser = ExcelParser()
     employees = parser.parse(sample_excel_file)
 
-    # H,H = 9
+    # H,H = High Performance (3), High Potential (6) = 9
     assert employees[0].grid_position == 9
-    # M,M = 5
+    # M,M = Medium Performance (2), Medium Potential (3) = 5
     assert employees[1].grid_position == 5
-    # L,H = 3
-    assert employees[2].grid_position == 3
-    # H,M = 8
-    assert employees[3].grid_position == 8
-    # M,H = 6
-    assert employees[4].grid_position == 6
+    # L,H = Low Performance (1), High Potential (6) = 7
+    assert employees[2].grid_position == 7
+    # H,M = High Performance (3), Medium Potential (3) = 6
+    assert employees[3].grid_position == 6
+    # M,H = Medium Performance (2), High Potential (6) = 8
+    assert employees[4].grid_position == 8
 
 
 def test_parse_when_valid_file_then_handles_optional_fields_gracefully(tmp_path: Path) -> None:
@@ -153,18 +153,27 @@ def test_parse_when_no_valid_employees_then_raises_error(tmp_path: Path) -> None
 
 
 def test_calculate_position_when_all_combinations_then_returns_correct_positions() -> None:
-    """Test all 9 position calculations."""
+    """Test all 9 position calculations.
+
+    Standard 9-box grid layout:
+        Performance (columns): Low=1, Medium=2, High=3
+        Potential (rows): Low=1-3, Medium=4-6, High=7-9
+    """
     parser = ExcelParser()
 
-    # Test all 9 combinations
+    # Low performance (column 1)
     assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 2
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 3
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 4
+    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
+    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
+
+    # Medium performance (column 2)
+    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
     assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 6
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 7
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 8
+    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
+
+    # High performance (column 3)
+    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
+    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
     assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
 
 

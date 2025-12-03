@@ -7,8 +7,9 @@ import { create } from "zustand";
 interface FilterState {
   // Filter selections
   selectedLevels: string[];
+  selectedJobFunctions: string[];
+  selectedLocations: string[];
   selectedManagers: string[];
-  selectedChainLevels: string[];
   excludedEmployeeIds: number[];
 
   // UI state
@@ -16,8 +17,9 @@ interface FilterState {
 
   // Actions
   toggleLevel: (level: string) => void;
+  toggleJobFunction: (jobFunction: string) => void;
+  toggleLocation: (location: string) => void;
   toggleManager: (manager: string) => void;
-  toggleChainLevel: (level: string) => void;
   setExcludedIds: (ids: number[]) => void;
   clearAllFilters: () => void;
   toggleDrawer: () => void;
@@ -29,8 +31,9 @@ interface FilterState {
 export const useFilterStore = create<FilterState>((set, get) => ({
   // Initial state
   selectedLevels: [],
+  selectedJobFunctions: [],
+  selectedLocations: [],
   selectedManagers: [],
-  selectedChainLevels: [],
   excludedEmployeeIds: [],
   isDrawerOpen: false,
 
@@ -46,6 +49,28 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     });
   },
 
+  toggleJobFunction: (jobFunction: string) => {
+    set((state) => {
+      const isSelected = state.selectedJobFunctions.includes(jobFunction);
+      return {
+        selectedJobFunctions: isSelected
+          ? state.selectedJobFunctions.filter((jf) => jf !== jobFunction)
+          : [...state.selectedJobFunctions, jobFunction],
+      };
+    });
+  },
+
+  toggleLocation: (location: string) => {
+    set((state) => {
+      const isSelected = state.selectedLocations.includes(location);
+      return {
+        selectedLocations: isSelected
+          ? state.selectedLocations.filter((l) => l !== location)
+          : [...state.selectedLocations, location],
+      };
+    });
+  },
+
   toggleManager: (manager: string) => {
     set((state) => {
       const isSelected = state.selectedManagers.includes(manager);
@@ -57,17 +82,6 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     });
   },
 
-  toggleChainLevel: (level: string) => {
-    set((state) => {
-      const isSelected = state.selectedChainLevels.includes(level);
-      return {
-        selectedChainLevels: isSelected
-          ? state.selectedChainLevels.filter((l) => l !== level)
-          : [...state.selectedChainLevels, level],
-      };
-    });
-  },
-
   setExcludedIds: (ids: number[]) => {
     set({ excludedEmployeeIds: ids });
   },
@@ -75,8 +89,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   clearAllFilters: () => {
     set({
       selectedLevels: [],
+      selectedJobFunctions: [],
+      selectedLocations: [],
       selectedManagers: [],
-      selectedChainLevels: [],
       excludedEmployeeIds: [],
     });
   },
@@ -90,8 +105,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     const state = get();
     return (
       state.selectedLevels.length > 0 ||
+      state.selectedJobFunctions.length > 0 ||
+      state.selectedLocations.length > 0 ||
       state.selectedManagers.length > 0 ||
-      state.selectedChainLevels.length > 0 ||
       state.excludedEmployeeIds.length > 0
     );
   },

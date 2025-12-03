@@ -14,9 +14,13 @@ import {
   Divider,
   Chip,
   IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useFilters } from "../../hooks/useFilters";
 import { useSession } from "../../hooks/useSession";
 import { ExclusionDialog } from "./ExclusionDialog";
@@ -27,13 +31,15 @@ export const FilterDrawer: React.FC = () => {
   const { employees } = useSession();
   const {
     selectedLevels,
+    selectedJobFunctions,
+    selectedLocations,
     selectedManagers,
-    selectedChainLevels,
     excludedEmployeeIds,
     isDrawerOpen,
     toggleLevel,
+    toggleJobFunction,
+    toggleLocation,
     toggleManager,
-    toggleChainLevel,
     clearAllFilters,
     toggleDrawer,
     getAvailableOptions,
@@ -42,14 +48,27 @@ export const FilterDrawer: React.FC = () => {
   const [exclusionDialogOpen, setExclusionDialogOpen] = useState(false);
 
   // Get available filter options from current employee data
+  console.log('🎨 FilterDrawer rendering...');
+  console.log('  - employees:', employees);
+  console.log('  - employees count:', employees?.length ?? 0);
+  console.log('  - employees is array?', Array.isArray(employees));
+
   const filterOptions = getAvailableOptions(employees);
+
+  // Debug logging
+  console.log('🎨 FilterDrawer - filterOptions received:');
+  console.log('  - jobFunctions:', filterOptions.jobFunctions);
+  console.log('  - locations:', filterOptions.locations);
+  console.log('  - levels:', filterOptions.levels);
+  console.log('  - managers:', filterOptions.managers.length, 'managers');
 
   return (
     <>
       <Drawer
-        variant="persistent"
+        variant="temporary"
         anchor="left"
         open={isDrawerOpen}
+        onClose={toggleDrawer}
         sx={{
           width: DRAWER_WIDTH,
           flexShrink: 0,
@@ -78,101 +97,158 @@ export const FilterDrawer: React.FC = () => {
           {/* Scrollable content */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
             {/* Job Levels Section */}
-            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-              Job Levels
-            </Typography>
-            <FormGroup sx={{ mb: 3 }}>
-              {filterOptions.levels.map((level) => (
-                <FormControlLabel
-                  key={level}
-                  control={
-                    <Checkbox
-                      checked={selectedLevels.includes(level)}
-                      onChange={() => toggleLevel(level)}
-                      size="small"
-                    />
-                  }
-                  label={level}
-                />
-              ))}
-            </FormGroup>
-
-            <Divider sx={{ mb: 2 }} />
-
-            {/* Managers Section */}
-            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-              Managers
-            </Typography>
-            <FormGroup sx={{ mb: 3 }}>
-              {filterOptions.managers.map((manager) => (
-                <FormControlLabel
-                  key={manager}
-                  control={
-                    <Checkbox
-                      checked={selectedManagers.includes(manager)}
-                      onChange={() => toggleManager(manager)}
-                      size="small"
-                    />
-                  }
-                  label={
-                    <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                      {manager}
-                    </Typography>
-                  }
-                />
-              ))}
-            </FormGroup>
-
-            <Divider sx={{ mb: 2 }} />
-
-            {/* Management Chain Section */}
-            {filterOptions.chainLevels.length > 0 && (
-              <>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                  Management Chain
+            <Accordion defaultExpanded disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Job Levels
+                  {selectedLevels.length > 0 && (
+                    <Chip label={selectedLevels.length} size="small" sx={{ ml: 1 }} />
+                  )}
                 </Typography>
-                <FormGroup sx={{ mb: 3 }}>
-                  {filterOptions.chainLevels.map((level) => (
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormGroup>
+                  {filterOptions.levels.map((level) => (
                     <FormControlLabel
                       key={level}
                       control={
                         <Checkbox
-                          checked={selectedChainLevels.includes(level)}
-                          onChange={() => toggleChainLevel(level)}
+                          checked={selectedLevels.includes(level)}
+                          onChange={() => toggleLevel(level)}
                           size="small"
                         />
                       }
-                      label={`Level ${level}`}
+                      label={level}
                     />
                   ))}
                 </FormGroup>
+              </AccordionDetails>
+            </Accordion>
 
-                <Divider sx={{ mb: 2 }} />
-              </>
-            )}
+            {/* Job Functions Section */}
+            <Accordion defaultExpanded disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Job Functions
+                  {selectedJobFunctions.length > 0 && (
+                    <Chip label={selectedJobFunctions.length} size="small" sx={{ ml: 1 }} />
+                  )}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormGroup>
+                  {filterOptions.jobFunctions.map((jobFunction) => (
+                    <FormControlLabel
+                      key={jobFunction}
+                      control={
+                        <Checkbox
+                          checked={selectedJobFunctions.includes(jobFunction)}
+                          onChange={() => toggleJobFunction(jobFunction)}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                          {jobFunction}
+                        </Typography>
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Locations Section */}
+            <Accordion defaultExpanded disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Locations
+                  {selectedLocations.length > 0 && (
+                    <Chip label={selectedLocations.length} size="small" sx={{ ml: 1 }} />
+                  )}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormGroup>
+                  {filterOptions.locations.map((location) => (
+                    <FormControlLabel
+                      key={location}
+                      control={
+                        <Checkbox
+                          checked={selectedLocations.includes(location)}
+                          onChange={() => toggleLocation(location)}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                          {location}
+                        </Typography>
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Managers Section */}
+            <Accordion disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Managers
+                  {selectedManagers.length > 0 && (
+                    <Chip label={selectedManagers.length} size="small" sx={{ ml: 1 }} />
+                  )}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormGroup>
+                  {filterOptions.managers.map((manager) => (
+                    <FormControlLabel
+                      key={manager}
+                      control={
+                        <Checkbox
+                          checked={selectedManagers.includes(manager)}
+                          onChange={() => toggleManager(manager)}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                          {manager}
+                        </Typography>
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+
+            <Divider sx={{ my: 2 }} />
 
             {/* Exclusions Section */}
-            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-              Exclusions
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                fullWidth
-                onClick={() => setExclusionDialogOpen(true)}
-              >
-                Exclude Employees
-              </Button>
-            </Box>
-            {excludedEmployeeIds.length > 0 && (
-              <Chip
-                label={`${excludedEmployeeIds.length} excluded`}
-                color="warning"
-                size="small"
-                sx={{ mb: 2 }}
-              />
-            )}
+            <Accordion disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Exclusions
+                  {excludedEmployeeIds.length > 0 && (
+                    <Chip label={excludedEmployeeIds.length} size="small" color="warning" sx={{ ml: 1 }} />
+                  )}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onClick={() => setExclusionDialogOpen(true)}
+                  >
+                    Exclude Employees
+                  </Button>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           </Box>
 
           {/* Footer - Clear All Button */}

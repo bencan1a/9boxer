@@ -18,7 +18,6 @@ async def get_statistics(
     levels: Optional[str] = Query(None),
     job_profiles: Optional[str] = Query(None),
     managers: Optional[str] = Query(None),
-    chain_levels: Optional[str] = Query(None),
     exclude_ids: Optional[str] = Query(None),
     performance: Optional[str] = Query(None),
     potential: Optional[str] = Query(None),
@@ -36,7 +35,6 @@ async def get_statistics(
     levels_list = levels.split(",") if levels else None
     job_profiles_list = job_profiles.split(",") if job_profiles else None
     managers_list = managers.split(",") if managers else None
-    chain_levels_list = chain_levels.split(",") if chain_levels else None
     exclude_ids_list = [int(id.strip()) for id in exclude_ids.split(",")] if exclude_ids else None
     performance_list = performance.split(",") if performance else None
     potential_list = potential.split(",") if potential else None
@@ -47,7 +45,6 @@ async def get_statistics(
         levels=levels_list,
         job_profiles=job_profiles_list,
         managers=managers_list,
-        chain_levels=chain_levels_list,
         exclude_ids=exclude_ids_list,
         performance=performance_list,
         potential=potential_list,

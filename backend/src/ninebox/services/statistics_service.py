@@ -9,20 +9,31 @@ class StatisticsService:
     def calculate_distribution(self, employees: list[Employee]) -> dict:
         """Calculate 9-box distribution."""
         # Initialize counts
-        distribution = {}
+        distribution_dict = {}
         for i in range(1, 10):
-            distribution[str(i)] = {"count": 0, "percentage": 0.0, "label": self._get_box_label(i)}
+            distribution_dict[str(i)] = {"count": 0, "percentage": 0.0, "label": self._get_box_label(i)}
 
         # Count employees in each box
         for emp in employees:
             pos = str(emp.grid_position)
-            if pos in distribution:
-                distribution[pos]["count"] += 1
+            if pos in distribution_dict:
+                distribution_dict[pos]["count"] += 1
 
         # Calculate percentages
         total = len(employees)
-        for box in distribution.values():
+        for box in distribution_dict.values():
             box["percentage"] = round((box["count"] / total * 100), 1) if total > 0 else 0
+
+        # Convert distribution dict to array format for frontend
+        distribution = [
+            {
+                "grid_position": int(pos),
+                "position_label": data["label"],
+                "count": data["count"],
+                "percentage": data["percentage"],
+            }
+            for pos, data in distribution_dict.items()
+        ]
 
         # Aggregate by performance/potential
         by_performance = {
@@ -40,9 +51,13 @@ class StatisticsService:
         # Count modified employees
         modified_count = sum(1 for e in employees if e.modified_in_session)
 
+        # Count high performers (positions 7, 8, 9 = High performance)
+        high_performers = sum(1 for e in employees if e.performance == PerformanceLevel.HIGH)
+
         return {
-            "total_count": total,
-            "modified_count": modified_count,
+            "total_employees": total,
+            "modified_employees": modified_count,
+            "high_performers": high_performers,
             "distribution": distribution,
             "by_performance": by_performance,
             "by_potential": by_potential,

@@ -10,10 +10,26 @@ from ninebox.core.security import get_password_hash
 
 def get_db_path() -> Path:
     """Get absolute path to database file."""
-    # Get the path relative to this file
-    current_file = Path(__file__).resolve()
-    backend_dir = current_file.parent.parent.parent.parent
-    db_path = backend_dir / "data" / "ninebox.db"
+    # Use DATABASE_URL from settings if available
+    db_url = settings.database_url
+
+    # Extract path from sqlite:/// URL
+    if db_url.startswith("sqlite:///"):
+        db_path_str = db_url.replace("sqlite:///", "")
+        # Handle absolute vs relative paths
+        if db_path_str.startswith("/"):
+            db_path = Path(db_path_str)
+        else:
+            # Relative path - resolve from backend directory
+            current_file = Path(__file__).resolve()
+            backend_dir = current_file.parent.parent.parent.parent
+            db_path = backend_dir / db_path_str
+    else:
+        # Fallback to default path calculation
+        current_file = Path(__file__).resolve()
+        backend_dir = current_file.parent.parent.parent.parent
+        db_path = backend_dir / "data" / "ninebox.db"
+
     db_path.parent.mkdir(parents=True, exist_ok=True)
     return db_path
 

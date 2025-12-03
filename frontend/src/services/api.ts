@@ -14,8 +14,10 @@ import {
   MoveResponse,
   FilterOptionsResponse,
   StatisticsResponse,
+  IntelligenceData,
 } from "../types/api";
 import { Employee } from "../types/employee";
+import { useAuthStore } from "../store/authStore";
 
 class ApiClient {
   private client: AxiosInstance;
@@ -42,13 +44,22 @@ class ApiClient {
       }
     );
 
-    // Response interceptor for error handling
+    // Response interceptor for error handling and activity tracking
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Record activity on successful API call to extend session
+        const { recordActivity, isAuthenticated } = useAuthStore.getState();
+        if (isAuthenticated) {
+          recordActivity();
+        }
+        return response;
+      },
       (error: AxiosError) => {
         if (error.response?.status === 401) {
-          // Unauthorized - clear token and redirect to login
+          // Unauthorized - clear token, expiration, and activity, then redirect to login
           localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_expires_at");
+          localStorage.removeItem("auth_last_activity");
           window.location.href = "/login";
         }
         return Promise.reject(error);
@@ -178,6 +189,17 @@ class ApiClient {
     return response.data;
   }
 
+  async updateEmployee(
+    employeeId: number,
+    updates: Partial<Employee>
+  ): Promise<{ employee: Employee }> {
+    const response = await this.client.patch<{ employee: Employee }>(
+      `/api/employees/${employeeId}`,
+      updates
+    );
+    return response.data;
+  }
+
   async getFilterOptions(): Promise<FilterOptionsResponse> {
     const response = await this.client.get<FilterOptionsResponse>(
       "/api/employees/filter-options"
@@ -189,6 +211,13 @@ class ApiClient {
 
   async getStatistics(): Promise<StatisticsResponse> {
     const response = await this.client.get<StatisticsResponse>("/api/statistics");
+    return response.data;
+  }
+
+  // ==================== Intelligence Methods ====================
+
+  async getIntelligence(): Promise<IntelligenceData> {
+    const response = await this.client.get<IntelligenceData>("/api/intelligence");
     return response.data;
   }
 }

@@ -163,7 +163,6 @@ def test_get_filter_options_when_session_exists_then_returns_options(
     assert "levels" in data
     assert "job_profiles" in data
     assert "managers" in data
-    assert "chain_levels" in data
     assert "employees" in data
 
     assert len(data["levels"]) > 0

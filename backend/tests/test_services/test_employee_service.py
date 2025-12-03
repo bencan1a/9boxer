@@ -42,17 +42,6 @@ def test_filter_employees_when_by_manager_then_filters_correctly(
     assert all(emp.manager == "Bob Manager" for emp in filtered)
 
 
-def test_filter_employees_when_by_management_chain_level_then_filters_correctly(
-    employee_service: EmployeeService, sample_employees: list[Employee]
-) -> None:
-    """Test filtering by management chain levels."""
-    filtered = employee_service.filter_employees(sample_employees, chain_levels=["04"])
-
-    # Should include all employees with management_chain_04 set
-    assert len(filtered) == 5
-    assert all(emp.management_chain_04 is not None for emp in filtered)
-
-
 def test_filter_employees_when_exclude_ids_then_excludes_correctly(
     employee_service: EmployeeService, sample_employees: list[Employee]
 ) -> None:
@@ -134,22 +123,22 @@ def test_get_filter_options_when_called_then_returns_correct_options(
 
     assert "levels" in options
     assert "job_profiles" in options
+    assert "job_functions" in options
+    assert "locations" in options
     assert "managers" in options
-    assert "chain_levels" in options
     assert "employees" in options
 
     # Check levels
     assert set(options["levels"]) == {"MT1", "MT2", "MT4", "MT5"}
 
-    # Check job profiles
-    assert set(options["job_profiles"]) == {"Engineering", "Product"}
+    # Check job functions (categorized)
+    assert set(options["job_functions"]) == {"Other", "Product Management"}
+
+    # Check locations (mapped to display names)
+    assert set(options["locations"]) == {"Canada", "Europe", "USA"}
 
     # Check managers
     assert set(options["managers"]) == {"Bob Manager", "Dave Lead", "Eve VP", "Frank Director"}
-
-    # Check chain levels
-    assert "04" in options["chain_levels"]
-    assert "05" in options["chain_levels"]
 
 
 def test_get_filter_options_when_called_then_returns_employee_list(
@@ -171,11 +160,28 @@ def test_get_filter_options_when_called_then_returns_employee_list(
 def test_filter_employees_when_by_job_profile_then_filters_correctly(
     employee_service: EmployeeService, sample_employees: list[Employee]
 ) -> None:
-    """Test filtering by job profile."""
-    filtered = employee_service.filter_employees(sample_employees, job_profiles=["Engineering"])
+    """Test filtering by job function."""
+    filtered = employee_service.filter_employees(sample_employees, job_functions=["Other"])
 
     assert len(filtered) == 4
-    assert all(emp.job_profile == "Engineering" for emp in filtered)
+    assert all(emp.job_function == "Other" for emp in filtered)
+
+
+def test_filter_employees_when_by_location_then_filters_by_display_name(
+    employee_service: EmployeeService, sample_employees: list[Employee]
+) -> None:
+    """Test filtering by location using display names (e.g., 'Europe' groups GBR)."""
+    # Filter by Europe (should include GBR)
+    filtered = employee_service.filter_employees(sample_employees, locations=["Europe"])
+
+    assert len(filtered) == 1
+    assert filtered[0].location == "GBR"
+
+    # Filter by USA
+    filtered = employee_service.filter_employees(sample_employees, locations=["USA"])
+
+    assert len(filtered) == 3
+    assert all(emp.location == "USA" for emp in filtered)
 
 
 def test_filter_employees_when_no_matches_then_returns_empty(

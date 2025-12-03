@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Box, Tabs, Tab, Paper } from "@mui/material";
 import { DetailsTab } from "./DetailsTab";
 import { StatisticsTab } from "./StatisticsTab";
+import { IntelligenceTab } from "./IntelligenceTab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -20,9 +21,11 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
       hidden={value !== index}
       id={`panel-tabpanel-${index}`}
       aria-labelledby={`panel-tab-${index}`}
-      style={{ height: "100%", overflow: "auto" }}
+      style={{ height: "100%" }}
     >
-      {value === index && <Box sx={{ p: 2, height: "100%" }}>{children}</Box>}
+      {value === index && (
+        <Box sx={{ p: 2, height: "100%", overflow: "auto" }}>{children}</Box>
+      )}
     </div>
   );
 };
@@ -53,6 +56,7 @@ export const RightPanel: React.FC = () => {
         >
           <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" />
           <Tab label="Statistics" id="panel-tab-1" aria-controls="panel-tabpanel-1" />
+          <Tab label="Intelligence" id="panel-tab-2" aria-controls="panel-tabpanel-2" />
         </Tabs>
       </Box>
 
@@ -63,6 +67,10 @@ export const RightPanel: React.FC = () => {
 
         <TabPanel value={activeTab} index={1}>
           <StatisticsTab />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={2}>
+          <IntelligenceTab />
         </TabPanel>
       </Box>
     </Paper>

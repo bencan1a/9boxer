@@ -22,8 +22,8 @@ def test_calculate_distribution_when_called_then_returns_all_9_boxes(
     assert len(stats["distribution"]) == 9
 
     # Check all boxes 1-9 are present
-    for i in range(1, 10):
-        assert str(i) in stats["distribution"]
+    positions = {item["grid_position"] for item in stats["distribution"]}
+    assert positions == set(range(1, 10))
 
 
 def test_calculate_distribution_when_called_then_counts_correctly(
@@ -32,26 +32,26 @@ def test_calculate_distribution_when_called_then_counts_correctly(
     """Test that employee counts are correct."""
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    dist = stats["distribution"]
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
 
     # Based on sample data:
-    # Position 9 (H,H): 1 employee
-    # Position 8 (H,M): 1 employee
-    # Position 6 (M,H): 1 employee
-    # Position 5 (M,M): 1 employee
-    # Position 3 (L,H): 1 employee
+    # Position 9 (H,H): 1 employee - Alice
+    # Position 8 (M,H): 1 employee - Eve
+    # Position 7 (L,H): 1 employee - Carol
+    # Position 6 (H,M): 1 employee - David
+    # Position 5 (M,M): 1 employee - Bob
 
-    assert dist["9"]["count"] == 1
-    assert dist["8"]["count"] == 1
-    assert dist["6"]["count"] == 1
-    assert dist["5"]["count"] == 1
-    assert dist["3"]["count"] == 1
+    assert dist[9]["count"] == 1
+    assert dist[8]["count"] == 1
+    assert dist[7]["count"] == 1
+    assert dist[6]["count"] == 1
+    assert dist[5]["count"] == 1
 
     # Empty boxes
-    assert dist["1"]["count"] == 0
-    assert dist["2"]["count"] == 0
-    assert dist["4"]["count"] == 0
-    assert dist["7"]["count"] == 0
+    assert dist[1]["count"] == 0
+    assert dist[2]["count"] == 0
+    assert dist[3]["count"] == 0
+    assert dist[4]["count"] == 0
 
 
 def test_calculate_distribution_when_called_then_percentages_sum_to_100(
@@ -60,7 +60,7 @@ def test_calculate_distribution_when_called_then_percentages_sum_to_100(
     """Test that percentages sum to 100%."""
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    total_percentage = sum(box["percentage"] for box in stats["distribution"].values())
+    total_percentage = sum(item["percentage"] for item in stats["distribution"])
 
     # Allow for small rounding errors
     assert abs(total_percentage - 100.0) < 0.1
@@ -104,7 +104,17 @@ def test_calculate_distribution_when_called_then_tracks_modified_count(
 
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    assert stats["modified_count"] == 2
+    assert stats["modified_employees"] == 2
+
+
+def test_calculate_distribution_when_called_then_tracks_high_performers(
+    statistics_service: StatisticsService, sample_employees: list[Employee]
+) -> None:
+    """Test that high performers count is tracked."""
+    stats = statistics_service.calculate_distribution(sample_employees)
+
+    # Count from sample data (employees with High performance)
+    assert stats["high_performers"] == 2  # Alice, David
 
 
 def test_calculate_distribution_when_empty_list_then_returns_zero_stats(
@@ -113,13 +123,14 @@ def test_calculate_distribution_when_empty_list_then_returns_zero_stats(
     """Test statistics with empty employee list."""
     stats = statistics_service.calculate_distribution([])
 
-    assert stats["total_count"] == 0
-    assert stats["modified_count"] == 0
+    assert stats["total_employees"] == 0
+    assert stats["modified_employees"] == 0
 
     # All boxes should have 0 count and 0%
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
     for i in range(1, 10):
-        assert stats["distribution"][str(i)]["count"] == 0
-        assert stats["distribution"][str(i)]["percentage"] == 0
+        assert dist[i]["count"] == 0
+        assert dist[i]["percentage"] == 0
 
 
 def test_calculate_distribution_when_single_employee_then_returns_100_percent(
@@ -130,9 +141,10 @@ def test_calculate_distribution_when_single_employee_then_returns_100_percent(
 
     stats = statistics_service.calculate_distribution(single_emp)
 
-    assert stats["total_count"] == 1
-    assert stats["distribution"]["9"]["count"] == 1
-    assert stats["distribution"]["9"]["percentage"] == 100.0
+    assert stats["total_employees"] == 1
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
+    assert dist[9]["count"] == 1
+    assert dist[9]["percentage"] == 100.0
 
 
 def test_calculate_distribution_when_called_then_includes_box_labels(
@@ -141,17 +153,17 @@ def test_calculate_distribution_when_called_then_includes_box_labels(
     """Test that box labels are included."""
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    dist = stats["distribution"]
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
 
-    assert dist["9"]["label"] == "Top Talent [H,H]"
-    assert dist["8"]["label"] == "High Impact Talent [H,M]"
-    assert dist["7"]["label"] == "High/Low [H,L]"
-    assert dist["6"]["label"] == "Growth Talent [M,H]"
-    assert dist["5"]["label"] == "Core Talent [M,M]"
-    assert dist["4"]["label"] == "Med/Low [M,L]"
-    assert dist["3"]["label"] == "Emerging Talent [L,H]"
-    assert dist["2"]["label"] == "Inconsistent Talent [L,M]"
-    assert dist["1"]["label"] == "Low/Low [L,L]"
+    assert dist[9]["position_label"] == "Top Talent [H,H]"
+    assert dist[8]["position_label"] == "High Impact Talent [H,M]"
+    assert dist[7]["position_label"] == "High/Low [H,L]"
+    assert dist[6]["position_label"] == "Growth Talent [M,H]"
+    assert dist[5]["position_label"] == "Core Talent [M,M]"
+    assert dist[4]["position_label"] == "Med/Low [M,L]"
+    assert dist[3]["position_label"] == "Emerging Talent [L,H]"
+    assert dist[2]["position_label"] == "Inconsistent Talent [L,M]"
+    assert dist[1]["position_label"] == "Low/Low [L,L]"
 
 
 def test_calculate_distribution_when_called_then_includes_total_count(
@@ -160,7 +172,7 @@ def test_calculate_distribution_when_called_then_includes_total_count(
     """Test that total count is included."""
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    assert stats["total_count"] == 5
+    assert stats["total_employees"] == 5
 
 
 def test_get_box_label_when_all_positions_then_returns_correct_labels(
@@ -191,8 +203,10 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
             name=f"Employee {i}",
             business_title="Title",
             job_title="Title",
-            job_profile="Profile",
+            job_profile="ProfileUSA",
             job_level="MT1",
+            job_function="Other",
+            location="USA",
             manager="Manager",
             hire_date=date.today(),
             tenure_category="1-3 years",
@@ -209,4 +223,5 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
     stats = statistics_service.calculate_distribution(employees)
 
     # 3 employees in position 9 should be 100%
-    assert stats["distribution"]["9"]["percentage"] == 100.0
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
+    assert dist[9]["percentage"] == 100.0

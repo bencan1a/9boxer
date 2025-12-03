@@ -5,6 +5,7 @@
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Employee } from "../../types/employee";
 
 interface EmployeeTileProps {
@@ -16,37 +17,59 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
 }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
       id: `employee-${employee.employee_id}`,
       data: { employee },
     });
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        opacity: isDragging ? 0.5 : 1,
-        cursor: "grab",
-      }
-    : { cursor: "grab" };
+  const handleCardClick = () => {
+    console.log('Card clicked - selecting employee:', employee.employee_id, employee.name);
+    onSelect(employee.employee_id);
+  };
 
   return (
     <Card
       ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      onClick={() => onSelect(employee.employee_id)}
+      onClick={handleCardClick}
       sx={{
         mb: 1,
         borderLeft: employee.modified_in_session ? 4 : 0,
         borderColor: "secondary.main",
+        cursor: "pointer",
+        display: "flex",
+        opacity: isDragging ? 0.5 : 1,
+        userSelect: "none",
         "&:hover": {
           boxShadow: 3,
         },
       }}
     >
-      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+      {/* Drag Handle */}
+      <Box
+        ref={setActivatorNodeRef}
+        {...listeners}
+        {...attributes}
+        sx={{
+          width: 24,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "grab",
+          borderRight: 1,
+          borderColor: "divider",
+          backgroundColor: "action.hover",
+          "&:active": {
+            cursor: "grabbing",
+          },
+        }}
+        onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to card
+      >
+        <DragIndicatorIcon sx={{ fontSize: 16, color: "action.active" }} />
+      </Box>
+
+      {/* Card Content */}
+      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1 }}>
         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
           {employee.name}
         </Typography>

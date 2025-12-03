@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ninebox.api import auth, employees, session, statistics
+from ninebox.api import auth, employees, intelligence, session, statistics
 from ninebox.core.config import settings
 from ninebox.core.database import init_db
 
@@ -31,6 +31,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(session.router, prefix="/api")
 app.include_router(employees.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
+app.include_router(intelligence.router, prefix="/api")
 
 
 @app.get("/")

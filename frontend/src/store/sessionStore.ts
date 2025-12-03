@@ -26,8 +26,10 @@ interface SessionState {
     performance: string,
     potential: string
   ) => Promise<void>;
+  updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
   clearError: () => void;
+  restoreSession: () => Promise<boolean>;
 }
 
 export const useSessionStore = create<SessionState>((set, get) => ({
@@ -47,6 +49,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
       // Load employees after upload
       const employeesResponse = await apiClient.getEmployees();
+
+      // Persist session ID to localStorage
+      localStorage.setItem("session_id", response.session_id);
 
       set({
         sessionId: response.session_id,
@@ -72,6 +77,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       await apiClient.clearSession();
+
+      // Clear session ID from localStorage
+      localStorage.removeItem("session_id");
+
       set({
         sessionId: null,
         employees: [],
@@ -152,11 +161,76 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }
   },
 
+  updateEmployee: async (employeeId: number, updates: Partial<Employee>) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.updateEmployee(employeeId, updates);
+
+      // Update employee in list
+      const employees = get().employees;
+      const updatedEmployees = employees.map((emp) =>
+        emp.employee_id === employeeId ? response.employee : emp
+      );
+
+      set({
+        employees: updatedEmployees,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail || "Failed to update employee";
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
+    }
+  },
+
   selectEmployee: (employeeId: number | null) => {
     set({ selectedEmployeeId: employeeId });
   },
 
   clearError: () => {
     set({ error: null });
+  },
+
+  restoreSession: async () => {
+    const cachedSessionId = localStorage.getItem("session_id");
+
+    if (!cachedSessionId) {
+      return false;
+    }
+
+    set({ isLoading: true, error: null });
+    try {
+      // Check if session still exists on backend
+      const sessionStatus = await apiClient.getSessionStatus();
+
+      // Load employees from session
+      const employeesResponse = await apiClient.getEmployees();
+
+      set({
+        sessionId: sessionStatus.session_id,
+        filename: sessionStatus.uploaded_filename,
+        employees: employeesResponse.employees,
+        originalEmployees: employeesResponse.employees,
+        changes: [],
+        isLoading: false,
+        error: null,
+      });
+
+      return true;
+    } catch (error: any) {
+      // Session no longer exists on backend, clear localStorage
+      localStorage.removeItem("session_id");
+      set({
+        sessionId: null,
+        isLoading: false,
+        error: null,
+      });
+      return false;
+    }
   },
 }));

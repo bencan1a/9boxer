@@ -20,13 +20,21 @@ class MoveRequest(BaseModel):
     potential: str  # "Low", "Medium", "High"
 
 
+class UpdateEmployeeRequest(BaseModel):
+    """Request to update employee fields."""
+
+    promotion_readiness: Optional[bool] = None
+    development_focus: Optional[str] = None
+    development_action: Optional[str] = None
+    notes: Optional[str] = None
+
+
 @router.get("", response_model=dict)
 async def get_employees(
     user_id: str = Depends(get_current_user_id),
     levels: Optional[str] = Query(None, description="Comma-separated levels (e.g., 'MT2,MT4')"),
     job_profiles: Optional[str] = Query(None),
     managers: Optional[str] = Query(None),
-    chain_levels: Optional[str] = Query(None, description="Comma-separated chain levels (e.g., '04,05')"),
     exclude_ids: Optional[str] = Query(None, description="Comma-separated employee IDs"),
     performance: Optional[str] = Query(None),
     potential: Optional[str] = Query(None),
@@ -44,7 +52,6 @@ async def get_employees(
     levels_list = levels.split(",") if levels else None
     job_profiles_list = job_profiles.split(",") if job_profiles else None
     managers_list = managers.split(",") if managers else None
-    chain_levels_list = chain_levels.split(",") if chain_levels else None
     exclude_ids_list = [int(id.strip()) for id in exclude_ids.split(",")] if exclude_ids else None
     performance_list = performance.split(",") if performance else None
     potential_list = potential.split(",") if potential else None
@@ -55,7 +62,6 @@ async def get_employees(
         levels=levels_list,
         job_profiles=job_profiles_list,
         managers=managers_list,
-        chain_levels=chain_levels_list,
         exclude_ids=exclude_ids_list,
         performance=performance_list,
         potential=potential_list,
@@ -106,6 +112,46 @@ async def get_employee(
         )
 
     return employee
+
+
+@router.patch("/{employee_id}")
+async def update_employee(
+    employee_id: int,
+    updates: UpdateEmployeeRequest,
+    user_id: str = Depends(get_current_user_id),
+) -> dict:
+    """Update employee fields."""
+    session = session_manager.get_session(user_id)
+
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No active session",
+        )
+
+    # Find employee
+    employee = next(
+        (e for e in session.current_employees if e.employee_id == employee_id), None
+    )
+
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Employee {employee_id} not found",
+        )
+
+    # Update fields
+    update_data = updates.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(employee, field, value)
+
+    # Mark as modified
+    employee.modified_in_session = True
+
+    return {
+        "employee": employee.model_dump(),
+        "success": True,
+    }
 
 
 @router.patch("/{employee_id}/move")
