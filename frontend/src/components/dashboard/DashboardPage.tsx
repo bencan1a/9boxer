@@ -2,20 +2,24 @@
  * Main dashboard page
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { AppBar } from "./AppBar";
 import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { useSession } from "../../hooks/useSession";
-import { useFilters } from "../../hooks/useFilters";
-
-const DRAWER_WIDTH = 280;
+import { useSessionStore } from "../../store/sessionStore";
 
 export const DashboardPage: React.FC = () => {
   const { sessionId } = useSession();
-  const { isDrawerOpen } = useFilters();
+  const restoreSession = useSessionStore((state) => state.restoreSession);
+
+  // Restore session from localStorage on mount
+  useEffect(() => {
+    restoreSession();
+  }, [restoreSession]);
 
   return (
     <Box
@@ -42,8 +46,6 @@ export const DashboardPage: React.FC = () => {
           sx={{
             flex: 1,
             overflow: "auto",
-            marginLeft: isDrawerOpen ? `${DRAWER_WIDTH}px` : 0,
-            transition: "margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
           }}
         >
           {!sessionId ? (
@@ -60,20 +62,48 @@ export const DashboardPage: React.FC = () => {
               </Typography>
             </Box>
           ) : (
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                height: "100%",
-                p: 2,
-              }}
-            >
-              <Box sx={{ flex: "0 0 65%", overflow: "auto" }}>
-                <NineBoxGrid />
-              </Box>
-              <Box sx={{ flex: "0 0 35%", overflow: "hidden" }}>
-                <RightPanel />
-              </Box>
+            <Box sx={{ height: "100%", width: "100%", p: 2 }}>
+              <PanelGroup direction="horizontal">
+                <Panel defaultSize={65} minSize={30}>
+                  <Box sx={{ height: "100%", width: "100%", overflow: "auto", pr: 1 }}>
+                    <NineBoxGrid />
+                  </Box>
+                </Panel>
+                <PanelResizeHandle>
+                  <Box
+                    sx={{
+                      width: "8px",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "col-resize",
+                      backgroundColor: "divider",
+                      transition: "background-color 0.2s",
+                      "&:hover": {
+                        backgroundColor: "primary.main",
+                      },
+                      "&:active": {
+                        backgroundColor: "primary.dark",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "2px",
+                        height: "40px",
+                        backgroundColor: "background.paper",
+                        borderRadius: "1px",
+                      }}
+                    />
+                  </Box>
+                </PanelResizeHandle>
+                <Panel defaultSize={35} minSize={20}>
+                  <Box sx={{ height: "100%", overflow: "hidden", pl: 1 }}>
+                    <RightPanel />
+                  </Box>
+                </Panel>
+              </PanelGroup>
             </Box>
           )}
         </Box>

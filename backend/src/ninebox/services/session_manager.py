@@ -71,6 +71,11 @@ class SessionManager:
         if not employee:
             raise ValueError(f"Employee {employee_id} not found")
 
+        # Find original employee to check if position matches original
+        original_employee = next(
+            (e for e in session.original_employees if e.employee_id == employee_id), None
+        )
+
         # Track change
         change = EmployeeMove(
             employee_id=employee_id,
@@ -89,25 +94,46 @@ class SessionManager:
         employee.potential = new_potential
         employee.grid_position = change.new_position
         employee.position_label = self._get_position_label(new_performance, new_potential)
-        employee.modified_in_session = True
+
+        # Check if employee is back to original position
+        if (
+            original_employee
+            and employee.performance == original_employee.performance
+            and employee.potential == original_employee.potential
+        ):
+            employee.modified_in_session = False
+        else:
+            employee.modified_in_session = True
+
         employee.last_modified = change.timestamp
 
         session.changes.append(change)
         return change
 
     def _calculate_position(self, perf: PerformanceLevel, pot: PotentialLevel) -> int:
-        """Calculate 1-9 grid position from performance/potential."""
+        """Calculate 1-9 grid position from performance/potential.
+
+        Grid layout (standard 9-box):
+            Performance (columns): Low=1, Medium=2, High=3
+            Potential (rows): Low=1-3, Medium=4-6, High=7-9
+
+            Position = (potential_row * 3) + performance_column
+
+            Example: High Performance (3), Low Potential (0*3) = position 3
+        """
+        # Performance determines column (1-3)
         perf_map = {
-            PerformanceLevel.LOW: 0,
-            PerformanceLevel.MEDIUM: 3,
-            PerformanceLevel.HIGH: 6,
+            PerformanceLevel.LOW: 1,
+            PerformanceLevel.MEDIUM: 2,
+            PerformanceLevel.HIGH: 3,
         }
+        # Potential determines row (0, 3, 6)
         pot_map = {
-            PotentialLevel.LOW: 1,
-            PotentialLevel.MEDIUM: 2,
-            PotentialLevel.HIGH: 3,
+            PotentialLevel.LOW: 0,
+            PotentialLevel.MEDIUM: 3,
+            PotentialLevel.HIGH: 6,
         }
-        return perf_map[perf] + pot_map[pot]
+        return pot_map[pot] + perf_map[perf]
 
     def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
         """Get position label from performance/potential."""

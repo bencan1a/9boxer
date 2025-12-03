@@ -35,6 +35,7 @@ class ExcelExporter:
         pot_col = self._find_column(sheet, "Aug 2025  Talent Assessment Potential")
         box_col = self._find_column(sheet, "Aug 2025 Talent Assessment 9-Box Label")
         label_col = self._find_column(sheet, "Talent Mapping Position")
+        promotion_readiness_col = self._find_column(sheet, "Promotion Readiness")
 
         # Add "Modified" columns if they don't exist
         max_col = sheet.max_column
@@ -69,6 +70,10 @@ class ExcelExporter:
                     sheet.cell(row_idx, box_col, emp.grid_position)
                 if label_col:
                     sheet.cell(row_idx, label_col, emp.position_label)
+
+                # Update promotion readiness
+                if promotion_readiness_col and emp.promotion_readiness is not None:
+                    sheet.cell(row_idx, promotion_readiness_col, "Yes" if emp.promotion_readiness else "No")
 
                 # Mark as modified
                 sheet.cell(row_idx, modified_col, "Yes" if emp.modified_in_session else "No")

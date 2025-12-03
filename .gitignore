@@ -221,3 +221,4 @@ marimo/_lsp/
 __marimo__/
 
 /**/node_modules/
+backend/data/temp/

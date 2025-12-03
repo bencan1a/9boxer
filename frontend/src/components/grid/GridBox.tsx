@@ -57,6 +57,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
         overflowY: "auto",
         backgroundColor: isOver ? "primary.light" : getBackgroundColor(position),
         transition: "all 0.2s ease",
+        userSelect: "none",
       }}
     >
       {/* Header */}

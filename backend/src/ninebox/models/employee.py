@@ -42,9 +42,14 @@ class Employee(BaseModel):
     job_title: str
     job_profile: str
     job_level: str  # MT1, MT2, MT4, MT5, MT6
+    job_function: str  # Extracted from job_profile
+    location: str  # Last 3 characters of job_profile (country code)
 
     # Management
     manager: str
+    management_chain_01: Optional[str] = None
+    management_chain_02: Optional[str] = None
+    management_chain_03: Optional[str] = None
     management_chain_04: Optional[str] = None
     management_chain_05: Optional[str] = None
     management_chain_06: Optional[str] = None
@@ -69,6 +74,7 @@ class Employee(BaseModel):
     development_action: Optional[str] = None
     notes: Optional[str] = None
     promotion_status: Optional[str] = None
+    promotion_readiness: Optional[bool] = None
 
     # Metadata
     modified_in_session: bool = False

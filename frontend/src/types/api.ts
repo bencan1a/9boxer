@@ -82,3 +82,37 @@ export interface StatisticsResponse {
   high_performers: number;
   distribution: PositionDistribution[];
 }
+
+// Intelligence types
+export interface AnomalyDeviation {
+  category: string;
+  observed_high_pct: number;
+  expected_high_pct: number;
+  z_score: number;
+  sample_size: number;
+  is_significant: boolean;
+}
+
+export interface DimensionAnalysis {
+  chi_square: number;
+  p_value: number;
+  effect_size: number;
+  degrees_of_freedom: number;
+  sample_size: number;
+  status: "green" | "yellow" | "red";
+  deviations: AnomalyDeviation[];
+  interpretation: string;
+}
+
+export interface IntelligenceData {
+  quality_score: number;
+  anomaly_count: {
+    green: number;
+    yellow: number;
+    red: number;
+  };
+  location_analysis: DimensionAnalysis;
+  function_analysis: DimensionAnalysis;
+  level_analysis: DimensionAnalysis;
+  tenure_analysis: DimensionAnalysis;
+}

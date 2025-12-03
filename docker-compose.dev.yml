@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    volumes:
+      # Mount backend source code for hot reloading
+      - ./backend/src:/app/backend/src:cached
+      - ./backend/tests:/app/backend/tests:cached
+    command: uvicorn ninebox.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/backend/src
+    environment:
+      - PYTHONPATH=/app/backend/src
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend.dev
+    ports:
+      - "3001:3000"  # Vite dev server port (using 3001 to avoid WSL port conflict)
+    volumes:
+      # Mount source code for hot reloading
+      - ./frontend/src:/app/src:cached
+      - ./frontend/public:/app/public:cached
+      - ./frontend/index.html:/app/index.html:cached
+      - ./frontend/vite.config.ts:/app/vite.config.ts:cached
+      - ./frontend/tsconfig.json:/app/tsconfig.json:cached
+      - ./frontend/tsconfig.node.json:/app/tsconfig.node.json:cached
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    command: npm run dev -- --host 0.0.0.0
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s

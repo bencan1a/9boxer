@@ -83,6 +83,22 @@ export const AppBar: React.FC = () => {
             9-Box Performance Review
           </Typography>
 
+          {/* VERSION INDICATOR - HOT RELOAD TEST */}
+          <Box
+            sx={{
+              backgroundColor: "green",
+              color: "white",
+              px: 2,
+              py: 0.5,
+              mr: 2,
+              borderRadius: 1,
+              fontWeight: "bold",
+              fontSize: "0.875rem",
+            }}
+          >
+            v2.0.0-DEV - HOT RELOAD ✨
+          </Box>
+
           {/* Session Info */}
           {sessionId && (
             <Box sx={{ display: "flex", alignItems: "center", mr: 2, gap: 1 }}>

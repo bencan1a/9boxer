@@ -3,11 +3,12 @@
  */
 
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Card, CardContent } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useSessionStore } from "../../store/sessionStore";
 import { EmployeeDetails } from "./EmployeeDetails";
 import { RatingsTimeline } from "./RatingsTimeline";
+import { ManagementChain } from "./ManagementChain";
 
 export const DetailsTab: React.FC = () => {
   const selectedEmployeeId = useSessionStore((state) => state.selectedEmployeeId);
@@ -43,12 +44,22 @@ export const DetailsTab: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         gap: 3,
-        height: "100%",
-        overflow: "auto",
       }}
     >
       <EmployeeDetails employee={selectedEmployee} />
       <RatingsTimeline employee={selectedEmployee} />
+
+      {/* Management Chain */}
+      <Card variant="outlined">
+        <CardContent>
+          <Typography variant="subtitle2" color="primary" gutterBottom>
+            Reporting Chain
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            <ManagementChain employee={selectedEmployee} />
+          </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

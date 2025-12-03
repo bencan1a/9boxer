@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test lint format type-check security clean coverage
+.PHONY: help install install-dev test lint format type-check security clean coverage docker-dev docker-prod docker-rebuild docker-logs docker-down
 
 help:  ## Show this help message
 	@echo 'Usage: make [target]'
@@ -88,3 +88,50 @@ publish-test:  ## Publish to TestPyPI
 
 publish:  ## Publish to PyPI
 	python -m twine upload dist/*
+
+# ============================================================================
+# Docker Commands
+# ============================================================================
+
+docker-dev:  ## Start services in development mode with hot reloading
+	@echo "Starting development environment with hot reloading..."
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+	@echo "\n✅ Development server running at http://localhost:5173"
+	@echo "   Frontend changes will hot-reload automatically!"
+	@echo "   Backend API at http://localhost:8000"
+	@echo "   (Production build still at http://localhost:3000)"
+
+docker-prod:  ## Start services in production mode
+	@echo "Starting production environment..."
+	docker compose up -d
+	@echo "\n✅ Production server running at http://localhost:3000"
+	@echo "   Backend API at http://localhost:8000"
+
+docker-rebuild:  ## Rebuild and restart containers (use after dependency changes)
+	@echo "Rebuilding containers..."
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+	@echo "\n✅ Containers rebuilt and restarted"
+
+docker-rebuild-prod:  ## Rebuild production containers
+	@echo "Rebuilding production containers..."
+	docker compose build
+	docker compose up -d
+	@echo "\n✅ Production containers rebuilt and restarted"
+
+docker-logs:  ## Show container logs
+	docker compose logs -f
+
+docker-logs-frontend:  ## Show frontend container logs
+	docker compose logs -f frontend
+
+docker-logs-backend:  ## Show backend container logs
+	docker compose logs -f backend
+
+docker-down:  ## Stop all containers
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+	@echo "✅ All containers stopped"
+
+docker-clean:  ## Stop containers and remove volumes
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+	@echo "✅ Containers stopped and volumes removed"

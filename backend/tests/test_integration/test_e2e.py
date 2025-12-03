@@ -65,7 +65,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     stats_response = test_client.get("/api/statistics", headers=headers)
     assert stats_response.status_code == 200
     stats = stats_response.json()
-    assert stats["modified_count"] == 1
+    assert stats["modified_employees"] == 1
     assert stats["by_performance"]["Low"] > 0
     assert stats["by_potential"]["Medium"] > 0
 
@@ -155,7 +155,7 @@ def test_filtering_workflow_when_applied_then_filters_correctly(
     stats_response = test_client.get("/api/statistics?exclude_ids=1,2", headers=auth_headers)
     assert stats_response.status_code == 200
     stats = stats_response.json()
-    assert stats["total_count"] == excluded["filtered"]
+    assert stats["total_employees"] == excluded["filtered"]
 
 
 def test_multiple_moves_when_performed_then_all_tracked(
@@ -198,7 +198,7 @@ def test_multiple_moves_when_performed_then_all_tracked(
     stats_response = test_client.get("/api/statistics", headers=auth_headers)
     assert stats_response.status_code == 200
     stats = stats_response.json()
-    assert stats["modified_count"] == 3
+    assert stats["modified_employees"] == 3
 
     # 5. Export and verify all changes in file
     export_response = test_client.post("/api/session/export", headers=auth_headers)
@@ -286,8 +286,8 @@ def test_session_isolation_when_multiple_users_then_sessions_separate(
     stats1 = test_client.get("/api/statistics", headers=headers1)
     stats2 = test_client.get("/api/statistics", headers=headers2)
 
-    assert stats1.json()["modified_count"] == 1
-    assert stats2.json()["modified_count"] == 0
+    assert stats1.json()["modified_employees"] == 1
+    assert stats2.json()["modified_employees"] == 0
 
 
 def test_error_recovery_when_invalid_operations_then_session_intact(

@@ -3,25 +3,23 @@
  */
 
 import React from "react";
-import { Box, Typography, Card, CardContent, Divider, Grid, Chip } from "@mui/material";
-import { Employee, PerformanceLevel, PotentialLevel } from "../../types/employee";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Chip,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
+import { Employee, PotentialLevel } from "../../types/employee";
+import { useSessionStore } from "../../store/sessionStore";
 
 interface EmployeeDetailsProps {
   employee: Employee;
 }
-
-const getPerformanceColor = (level: PerformanceLevel): string => {
-  switch (level) {
-    case PerformanceLevel.HIGH:
-      return "success";
-    case PerformanceLevel.MEDIUM:
-      return "warning";
-    case PerformanceLevel.LOW:
-      return "error";
-    default:
-      return "default";
-  }
-};
 
 const getPotentialColor = (level: PotentialLevel): string => {
   switch (level) {
@@ -59,6 +57,14 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, value }) => {
 };
 
 export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) => {
+  const updateEmployee = useSessionStore((state) => state.updateEmployee);
+
+  const handlePromotionReadinessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateEmployee(employee.employee_id, {
+      promotion_readiness: event.target.checked,
+    });
+  };
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -80,33 +86,39 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
             Employee Information
           </Typography>
           <Grid container spacing={1} sx={{ mt: 1 }}>
+            <InfoRow label="Job Function" value={employee.job_function} />
+            <InfoRow label="Location" value={employee.location} />
             <InfoRow label="Job Level" value={employee.job_level} />
-            <InfoRow label="Manager" value={employee.manager} />
-            <InfoRow label="Chain Level 04" value={employee.management_chain_04} />
-            <InfoRow label="Chain Level 05" value={employee.management_chain_05} />
-            <InfoRow label="Chain Level 06" value={employee.management_chain_06} />
+            <InfoRow label="Tenure" value={employee.tenure_category} />
+            <InfoRow label="Time in Level" value={employee.time_in_job_profile} />
           </Grid>
+          <Box sx={{ mt: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={employee.promotion_readiness ?? false}
+                  onChange={handlePromotionReadinessChange}
+                  size="small"
+                />
+              }
+              label={
+                <Typography variant="body2" color="text.secondary">
+                  Promotion Ready
+                </Typography>
+              }
+            />
+          </Box>
         </Box>
 
         <Divider sx={{ my: 2 }} />
 
         {/* Current Assessment */}
-        <Box>
+        <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" color="primary" gutterBottom>
             Current Assessment
           </Typography>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Performance:
-                </Typography>
-                <Chip
-                  label={employee.performance}
-                  color={getPerformanceColor(employee.performance) as any}
-                  size="small"
-                />
-              </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
                   Potential:

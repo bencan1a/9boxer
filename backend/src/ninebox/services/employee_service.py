@@ -4,6 +4,27 @@ from typing import Optional
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 
+# European country codes (ISO 3166-1 alpha-3)
+EUROPEAN_COUNTRIES = {
+    "GBR", "FRA", "DEU", "ITA", "ESP", "NLD", "BEL", "SWE", "NOR", "DNK",
+    "FIN", "POL", "AUT", "CHE", "IRL", "PRT", "GRC", "CZE", "HUN", "ROU",
+    "BGR", "HRV", "SVK", "SVN", "LTU", "LVA", "EST", "LUX", "MLT", "CYP"
+}
+
+LOCATION_MAP = {
+    "AUS": "Australia",
+    "IND": "India",
+    "USA": "USA",
+    "CAN": "Canada",
+}
+
+
+def map_location_to_display(location_code: str) -> str:
+    """Map location code to display name."""
+    if location_code in EUROPEAN_COUNTRIES:
+        return "Europe"
+    return LOCATION_MAP.get(location_code, location_code)
+
 
 class EmployeeService:
     """Filter and query employees."""
@@ -13,8 +34,9 @@ class EmployeeService:
         employees: list[Employee],
         levels: Optional[list[str]] = None,
         job_profiles: Optional[list[str]] = None,
+        job_functions: Optional[list[str]] = None,
+        locations: Optional[list[str]] = None,
         managers: Optional[list[str]] = None,
-        chain_levels: Optional[list[str]] = None,
         exclude_ids: Optional[list[int]] = None,
         performance: Optional[list[str]] = None,
         potential: Optional[list[str]] = None,
@@ -26,26 +48,21 @@ class EmployeeService:
         if levels:
             filtered = [e for e in filtered if any(level in e.job_level for level in levels)]
 
-        # Filter by job profile
+        # Filter by job profile (legacy - kept for backward compatibility)
         if job_profiles:
             filtered = [e for e in filtered if e.job_profile in job_profiles]
+
+        # Filter by job function
+        if job_functions:
+            filtered = [e for e in filtered if e.job_function in job_functions]
+
+        # Filter by location (map to display names for comparison)
+        if locations:
+            filtered = [e for e in filtered if map_location_to_display(e.location) in locations]
 
         # Filter by manager
         if managers:
             filtered = [e for e in filtered if e.manager in managers]
-
-        # Filter by management chain
-        if chain_levels:
-            def has_chain_level(emp: Employee) -> bool:
-                if "04" in chain_levels and emp.management_chain_04:
-                    return True
-                if "05" in chain_levels and emp.management_chain_05:
-                    return True
-                if "06" in chain_levels and emp.management_chain_06:
-                    return True
-                return False
-
-            filtered = [e for e in filtered if has_chain_level(e)]
 
         # Exclude specific employees (e.g., managers in the room)
         if exclude_ids:
@@ -68,20 +85,19 @@ class EmployeeService:
         # Extract unique job levels
         levels = sorted(set(e.job_level for e in employees))
 
-        # Extract unique job profiles
+        # Extract unique job profiles (legacy - kept for backward compatibility)
         job_profiles = sorted(set(e.job_profile for e in employees if e.job_profile))
+
+        # Extract unique job functions
+        job_functions = sorted(set(e.job_function for e in employees if e.job_function))
+
+        # Extract unique locations and map to display names
+        locations = sorted(set(
+            map_location_to_display(e.location) for e in employees if e.location
+        ))
 
         # Extract unique managers
         managers = sorted(set(e.manager for e in employees if e.manager))
-
-        # Check which chain levels are present
-        chain_levels = []
-        if any(e.management_chain_04 for e in employees):
-            chain_levels.append("04")
-        if any(e.management_chain_05 for e in employees):
-            chain_levels.append("05")
-        if any(e.management_chain_06 for e in employees):
-            chain_levels.append("06")
 
         # List all employees for exclusion selector
         employee_list = [
@@ -92,8 +108,9 @@ class EmployeeService:
         return {
             "levels": levels,
             "job_profiles": job_profiles,
+            "job_functions": job_functions,
+            "locations": locations,
             "managers": managers,
-            "chain_levels": chain_levels,
             "employees": employee_list,
         }
 

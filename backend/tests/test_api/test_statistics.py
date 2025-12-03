@@ -26,14 +26,16 @@ def test_get_statistics_when_session_exists_then_returns_distribution(
     assert response.status_code == 200
     data = response.json()
 
-    assert "total_count" in data
-    assert "modified_count" in data
+    assert "total_employees" in data
+    assert "modified_employees" in data
+    assert "high_performers" in data
     assert "distribution" in data
     assert "by_performance" in data
     assert "by_potential" in data
 
-    assert data["total_count"] == 5
+    assert data["total_employees"] == 5
     assert len(data["distribution"]) == 9
+    assert isinstance(data["distribution"], list)
 
 
 def test_get_statistics_when_called_then_distribution_has_all_boxes(
@@ -46,11 +48,15 @@ def test_get_statistics_when_called_then_distribution_has_all_boxes(
     data = response.json()
 
     # Check all boxes 1-9 present
-    for i in range(1, 10):
-        assert str(i) in data["distribution"]
-        assert "count" in data["distribution"][str(i)]
-        assert "percentage" in data["distribution"][str(i)]
-        assert "label" in data["distribution"][str(i)]
+    positions = {item["grid_position"] for item in data["distribution"]}
+    assert positions == set(range(1, 10))
+
+    # Check each item has required fields
+    for item in data["distribution"]:
+        assert "grid_position" in item
+        assert "position_label" in item
+        assert "count" in item
+        assert "percentage" in item
 
 
 def test_get_statistics_when_with_filters_then_applies_filters(
@@ -63,7 +69,7 @@ def test_get_statistics_when_with_filters_then_applies_filters(
     data = response.json()
 
     # Should only count MT4 employees (2 in sample data)
-    assert data["total_count"] == 2
+    assert data["total_employees"] == 2
 
 
 def test_get_statistics_when_counts_then_matches_employee_data(
@@ -79,17 +85,18 @@ def test_get_statistics_when_counts_then_matches_employee_data(
     stats = stats_response.json()
 
     # Total count should match
-    assert stats["total_count"] == len(employees)
+    assert stats["total_employees"] == len(employees)
 
     # Count employees by grid position manually
     position_counts = {}
     for emp in employees:
-        pos = str(emp["grid_position"])
+        pos = emp["grid_position"]
         position_counts[pos] = position_counts.get(pos, 0) + 1
 
-    # Compare with statistics
+    # Compare with statistics (convert array to dict for easier comparison)
+    dist = {item["grid_position"]: item for item in stats["distribution"]}
     for pos, count in position_counts.items():
-        assert stats["distribution"][pos]["count"] == count
+        assert dist[pos]["count"] == count
 
 
 def test_get_statistics_when_no_session_then_returns_404(
@@ -156,7 +163,7 @@ def test_get_statistics_when_employees_modified_then_tracks_count(
     assert response.status_code == 200
     data = response.json()
 
-    assert data["modified_count"] == 1
+    assert data["modified_employees"] == 1
 
 
 def test_get_statistics_when_multiple_filters_then_applies_all(
@@ -171,7 +178,7 @@ def test_get_statistics_when_multiple_filters_then_applies_all(
     data = response.json()
 
     # Should count only MT4/MT5 with High performance (2 employees)
-    assert data["total_count"] == 2
+    assert data["total_employees"] == 2
 
 
 def test_get_statistics_when_exclude_ids_then_excludes_from_count(
@@ -184,7 +191,7 @@ def test_get_statistics_when_exclude_ids_then_excludes_from_count(
     data = response.json()
 
     # Should exclude 2 employees
-    assert data["total_count"] == 3
+    assert data["total_employees"] == 3
 
 
 def test_get_statistics_when_percentages_then_sum_to_100(
@@ -196,7 +203,7 @@ def test_get_statistics_when_percentages_then_sum_to_100(
     assert response.status_code == 200
     data = response.json()
 
-    total_percentage = sum(box["percentage"] for box in data["distribution"].values())
+    total_percentage = sum(item["percentage"] for item in data["distribution"])
 
     # Allow for small rounding errors
     assert abs(total_percentage - 100.0) < 0.1
