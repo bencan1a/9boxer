@@ -23,6 +23,12 @@ interface ElectronAPI {
   version: string;
   openFileDialog: () => Promise<string | null>;
   saveFileDialog: (defaultName: string) => Promise<string | null>;
+  readFile: (filePath: string) => Promise<{
+    buffer?: number[];
+    fileName?: string;
+    success: boolean;
+    error?: string;
+  }>;
 }
 
 // Expose protected methods that allow the renderer process to use
@@ -36,6 +42,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
   saveFileDialog: (defaultName: string) =>
     ipcRenderer.invoke('dialog:saveFile', defaultName),
+
+  // File system APIs for auto-reload functionality
+  readFile: (filePath: string) => ipcRenderer.invoke('file:readFile', filePath),
 
   // For future expansion:
   // - System notifications

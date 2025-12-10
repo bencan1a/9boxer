@@ -66,17 +66,28 @@ async def get_intelligence(
     session = session_manager.get_session(user_id)
 
     if not session:
+        # Log diagnostic information
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Intelligence: No session found for user_id={user_id}")
+        logger.error(f"Active sessions: {list(session_manager.sessions.keys())}")
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session",
+            detail=f"No active session found. Please upload an Excel file first. (User: {user_id[:8]}...)",
         )
 
     # Import intelligence service (will be created by Agent A)
     try:
         from ninebox.services.intelligence_service import calculate_overall_intelligence  # noqa: PLC0415, I001
-    except ImportError:
+    except ImportError as e:
         # Mock response if service not yet available
         # This allows the API endpoint to be tested independently
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Intelligence: Failed to import intelligence_service: {e}")
+        logger.exception("Full traceback:")
+
         return IntelligenceResponse(
             quality_score=0,
             anomaly_count=AnomalyCount(green=0, yellow=0, red=0),
@@ -123,10 +134,30 @@ async def get_intelligence(
         )
 
     try:
+        # Log diagnostic information
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Intelligence: Processing for user_id={user_id}, employees={len(session.current_employees)}")
+
+        # Check if employees list is empty
+        if not session.current_employees:
+            logger.error(f"Intelligence: Session exists but current_employees is EMPTY for user_id={user_id}")
+            logger.error(f"Session details: session_id={session.session_id}, original_count={len(session.original_employees)}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Session exists but contains no employee data. Please reload your Excel file.",
+            )
+
         # Calculate intelligence using full dataset (current_employees)
         intelligence = calculate_overall_intelligence(session.current_employees)
         return IntelligenceResponse(**intelligence)  # type: ignore[typeddict-item, no-any-return]
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.exception(f"Intelligence calculation failed for user_id={user_id}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to calculate intelligence: {e!s}",

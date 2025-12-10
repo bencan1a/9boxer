@@ -13,12 +13,13 @@ interface SessionState {
   originalEmployees: Employee[];
   changes: EmployeeMove[];
   filename: string | null;
+  filePath: string | null;
   isLoading: boolean;
   error: string | null;
   selectedEmployeeId: number | null;
 
   // Actions
-  uploadFile: (file: File) => Promise<void>;
+  uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
   loadEmployees: () => Promise<void>;
   moveEmployee: (
@@ -38,11 +39,12 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   originalEmployees: [],
   changes: [],
   filename: null,
+  filePath: null,
   isLoading: false,
   error: null,
   selectedEmployeeId: null,
 
-  uploadFile: async (file: File) => {
+  uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.upload(file);
@@ -50,12 +52,16 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       // Load employees after upload
       const employeesResponse = await apiClient.getEmployees();
 
-      // Persist session ID to localStorage
+      // Persist session ID and file path to localStorage
       localStorage.setItem("session_id", response.session_id);
+      if (filePath) {
+        localStorage.setItem("last_file_path", filePath);
+      }
 
       set({
         sessionId: response.session_id,
         filename: response.filename,
+        filePath: filePath || null,
         employees: employeesResponse.employees,
         originalEmployees: employeesResponse.employees,
         changes: [],
@@ -78,8 +84,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     try {
       await apiClient.clearSession();
 
-      // Clear session ID from localStorage
+      // Clear session ID and file path from localStorage
       localStorage.removeItem("session_id");
+      localStorage.removeItem("last_file_path");
 
       set({
         sessionId: null,
@@ -87,6 +94,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         originalEmployees: [],
         changes: [],
         filename: null,
+        filePath: null,
         isLoading: false,
         error: null,
         selectedEmployeeId: null,
@@ -198,33 +206,73 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   restoreSession: async () => {
     const cachedSessionId = localStorage.getItem("session_id");
+    const cachedFilePath = localStorage.getItem("last_file_path");
 
-    if (!cachedSessionId) {
+    if (!cachedSessionId && !cachedFilePath) {
       return false;
     }
 
     set({ isLoading: true, error: null });
     try {
-      // Check if session still exists on backend
-      const sessionStatus = await apiClient.getSessionStatus();
+      // Try to restore from existing backend session first
+      if (cachedSessionId) {
+        try {
+          const sessionStatus = await apiClient.getSessionStatus();
+          const employeesResponse = await apiClient.getEmployees();
 
-      // Load employees from session
-      const employeesResponse = await apiClient.getEmployees();
+          set({
+            sessionId: sessionStatus.session_id,
+            filename: sessionStatus.uploaded_filename,
+            filePath: cachedFilePath,
+            employees: employeesResponse.employees,
+            originalEmployees: employeesResponse.employees,
+            changes: [],
+            isLoading: false,
+            error: null,
+          });
+
+          return true;
+        } catch (error) {
+          // Session no longer exists, fall through to auto-reload
+          console.log("Session expired, attempting to reload file from disk");
+          localStorage.removeItem("session_id");
+        }
+      }
+
+      // If session doesn't exist but we have a file path, try to auto-reload
+      if (cachedFilePath && window.electronAPI?.readFile) {
+        console.log("Auto-reloading file from:", cachedFilePath);
+        const fileResult = await window.electronAPI.readFile(cachedFilePath);
+
+        if (fileResult.success && fileResult.buffer && fileResult.fileName) {
+          // Convert buffer array back to Uint8Array and create a File object
+          const uint8Array = new Uint8Array(fileResult.buffer);
+          const blob = new Blob([uint8Array], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const file = new File([blob], fileResult.fileName, {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
+          // Re-upload the file
+          await get().uploadFile(file, cachedFilePath);
+          console.log("File auto-reloaded successfully");
+          return true;
+        } else {
+          console.error("Failed to read file:", fileResult.error);
+          // File no longer exists or can't be read, clear the path
+          localStorage.removeItem("last_file_path");
+        }
+      }
 
       set({
-        sessionId: sessionStatus.session_id,
-        filename: sessionStatus.uploaded_filename,
-        employees: employeesResponse.employees,
-        originalEmployees: employeesResponse.employees,
-        changes: [],
+        sessionId: null,
         isLoading: false,
         error: null,
       });
-
-      return true;
+      return false;
     } catch (error: any) {
-      // Session no longer exists on backend, clear localStorage
-      localStorage.removeItem("session_id");
+      console.error("Failed to restore session:", error);
       set({
         sessionId: null,
         isLoading: false,

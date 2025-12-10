@@ -148,9 +148,23 @@ async function startBackend(): Promise<void> {
       APP_DATA_DIR: appDataPath,
       PORT: BACKEND_PORT.toString(),
     },
-    stdio: isDev ? 'inherit' : 'ignore', // Show logs in dev, hide in production
+    stdio: isDev ? 'inherit' : ['ignore', 'pipe', 'pipe'], // Pipe output in production
     windowsHide: true, // Hide console window on Windows
   });
+
+  // Create log file for backend output (production mode only)
+  if (!isDev && backendProcess.stdout && backendProcess.stderr) {
+    const fs = require('fs');
+    const logPath = path.join(appDataPath, 'backend.log');
+    const logStream = fs.createWriteStream(logPath, { flags: 'a' });
+
+    console.log(`📝 Backend logs will be written to: ${logPath}`);
+    logStream.write(`\n\n=== Backend started at ${new Date().toISOString()} ===\n`);
+
+    // Pipe stdout and stderr to log file
+    backendProcess.stdout.pipe(logStream);
+    backendProcess.stderr.pipe(logStream);
+  }
 
   backendProcess.on('error', (error) => {
     console.error('❌ Backend process error:', error);
@@ -250,6 +264,42 @@ function setupIpcHandlers(): void {
     }
 
     return result.filePath;
+  });
+
+  // Handle opening logs folder
+  ipcMain.handle('app:openLogsFolder', async () => {
+    const { shell } = require('electron');
+    const appDataPath = app.getPath('userData');
+    await shell.openPath(appDataPath);
+  });
+
+  // Handle getting app paths for debugging
+  ipcMain.handle('app:getPaths', async () => {
+    return {
+      userData: app.getPath('userData'),
+      logs: path.join(app.getPath('userData'), 'backend.log'),
+      database: path.join(app.getPath('userData'), 'ninebox.db'),
+    };
+  });
+
+  // Handle reading a file from disk (for auto-reload functionality)
+  ipcMain.handle('file:readFile', async (event, filePath: string) => {
+    try {
+      const fs = require('fs').promises;
+      const buffer = await fs.readFile(filePath);
+      const fileName = path.basename(filePath);
+      return {
+        buffer: Array.from(buffer), // Convert buffer to array for IPC transfer
+        fileName,
+        success: true,
+      };
+    } catch (error) {
+      console.error('Failed to read file:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
   });
 }
 

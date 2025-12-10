@@ -8,6 +8,7 @@ for the FastAPI backend application.
 
 import sys
 from pathlib import Path
+from PyInstaller.utils.hooks import collect_all
 
 block_cipher = None
 
@@ -18,14 +19,17 @@ backend_dir = spec_dir.parent
 src_dir = backend_dir / 'src'
 main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 
+# Collect scipy and numpy with all their binaries and data files
+scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
+numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
+
 # Analysis: Collect all Python modules and dependencies
 a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
-    binaries=[],
-    datas=[
-        # Include any data files needed at runtime
-        # Example: ('data/*.json', 'data'),
+    binaries=scipy_binaries + numpy_binaries,
+    datas=scipy_datas + numpy_datas + [
+        # Include any additional data files needed at runtime
     ],
     hiddenimports=[
         # FastAPI and dependencies
@@ -84,7 +88,7 @@ a = Analysis(
         'ninebox.services.statistics_service',
         'ninebox.utils',
         'ninebox.utils.paths',
-    ],
+    ] + scipy_hiddenimports + numpy_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -96,7 +100,7 @@ a = Analysis(
         'jupyter',
         'notebook',
         'pytest',
-        'unittest',
+        # Note: unittest is needed by numpy.testing (used by scipy), so don't exclude it
     ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
