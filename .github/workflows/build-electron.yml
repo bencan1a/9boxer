@@ -1,0 +1,118 @@
+name: Build Electron App
+
+on:
+  push:
+    branches:
+      - main
+      - standalone_app
+  pull_request:
+    branches:
+      - main
+      - standalone_app
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            artifact: "*.AppImage"
+          - os: windows-latest
+            platform: windows
+            artifact: "*.exe"
+          - os: macos-latest
+            platform: macos
+            artifact: "*.dmg"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      # Backend build
+      - name: Install Python dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -e .
+
+      - name: Build backend executable (Linux/macOS)
+        if: matrix.platform != 'windows'
+        working-directory: backend
+        run: |
+          pyinstaller build_config/ninebox.spec
+          ls -lh dist/ninebox/
+
+      - name: Build backend executable (Windows)
+        if: matrix.platform == 'windows'
+        working-directory: backend
+        shell: pwsh
+        run: |
+          pyinstaller build_config/ninebox.spec
+          Get-ChildItem dist/ninebox/
+
+      # Frontend build
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Electron app (Linux)
+        if: matrix.platform == 'linux'
+        working-directory: frontend
+        run: |
+          npm run build
+          npx tsc -p electron/tsconfig.json
+          npx electron-builder --linux --x64
+
+      - name: Build Electron app (Windows)
+        if: matrix.platform == 'windows'
+        working-directory: frontend
+        run: |
+          npm run build
+          npx tsc -p electron/tsconfig.json
+          npx electron-builder --win --x64
+
+      - name: Build Electron app (macOS)
+        if: matrix.platform == 'macos'
+        working-directory: frontend
+        run: |
+          npm run build
+          npx tsc -p electron/tsconfig.json
+          npx electron-builder --mac --x64 --arm64
+
+      # Upload artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: 9boxer-${{ matrix.platform }}-${{ github.sha }}
+          path: |
+            frontend/release/**/*.AppImage
+            frontend/release/**/*.exe
+            frontend/release/**/*.dmg
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: List build outputs (debug)
+        working-directory: frontend/release
+        shell: bash
+        run: |
+          echo "Build outputs:"
+          find . -type f \( -name "*.AppImage" -o -name "*.exe" -o -name "*.dmg" \) -ls
