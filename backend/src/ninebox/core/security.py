@@ -1,7 +1,6 @@
 """Security utilities for authentication and authorization."""
 
 from datetime import datetime, timedelta
-from typing import Optional
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -21,7 +20,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     """Create JWT access token."""
     to_encode = data.copy()
 

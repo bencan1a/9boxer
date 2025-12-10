@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test lint format type-check security clean coverage docker-dev docker-prod docker-rebuild docker-logs docker-down
+.PHONY: help install install-dev test lint format type-check security clean coverage build-backend build-frontend build-all build-electron docker-dev docker-prod docker-rebuild docker-logs docker-down
 
 help:  ## Show this help message
 	@echo 'Usage: make [target]'
@@ -20,7 +20,7 @@ test-verbose:  ## Run tests with verbose output
 	pytest -v
 
 coverage:  ## Run tests with coverage report
-	pytest --cov=src --cov-report=html --cov-report=term
+	pytest --cov=backend/src --cov-report=html --cov-report=term
 
 lint:  ## Run linting checks
 	ruff check .
@@ -32,14 +32,14 @@ format-check:  ## Check code formatting without making changes
 	ruff format --check .
 
 type-check:  ## Run type checking
-	mypy src/ .github/scripts/
+	mypy backend/src/ .github/scripts/
 
 security:  ## Run security checks
-	bandit -r src/ .github/scripts/ -s B404,B603,B607
+	bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
 
 security-report:  ## Run security checks and generate JSON report
-	bandit -r src/ .github/scripts/ -f json -o bandit-report.json -s B404,B603,B607 || true
-	bandit -r src/ .github/scripts/ -s B404,B603,B607
+	bandit -r backend/src/ .github/scripts/ -f json -o bandit-report.json -s B404,B603,B607 || true
+	bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
 	@echo "Security report generated: bandit-report.json"
 
 check-yaml:  ## Check YAML file syntax
@@ -51,9 +51,9 @@ check-all:  ## Run all checks (format, lint, type, security, test)
 	@echo "\nRunning lint check..."
 	@ruff check .
 	@echo "\nRunning type check..."
-	@mypy src/ .github/scripts/
+	@mypy backend/src/ .github/scripts/
 	@echo "\nRunning security check..."
-	@bandit -r src/ .github/scripts/ -s B404,B603,B607
+	@bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
 	@echo "\nRunning tests..."
 	@pytest
 
@@ -72,6 +72,8 @@ clean:  ## Clean up generated files
 	find . -type d -name 'htmlcov' -exec rm -rf {} +
 	find . -type f -name '.coverage' -delete
 	find . -type f -name 'coverage.xml' -delete
+	rm -rf backend/build backend/dist
+	rm -rf frontend/dist frontend/dist-electron frontend/release
 
 dev:  ## Set up development environment
 	@echo "Setting up development environment..."
@@ -80,7 +82,46 @@ dev:  ## Set up development environment
 	pre-commit install
 	@echo "\nDevelopment environment ready!"
 
-build:  ## Build distribution packages
+# ============================================================================
+# Electron App Build Commands
+# ============================================================================
+
+build-backend:  ## Build backend executable with PyInstaller
+	@echo "Building backend executable..."
+	cd backend && ./scripts/build_executable.sh
+	@echo "✅ Backend executable built: backend/dist/ninebox/ninebox"
+
+build-frontend:  ## Build frontend (Vite + Electron compilation)
+	@echo "Building frontend..."
+	cd frontend && npm run build
+	cd frontend && npx tsc -p electron/tsconfig.json
+	@echo "✅ Frontend built: frontend/dist/ and frontend/dist-electron/"
+
+build-electron:  ## Build complete Electron installer (requires backend built first)
+	@echo "Building Electron installer..."
+	@if [ ! -f "backend/dist/ninebox/ninebox" ] && [ ! -f "backend/dist/ninebox/ninebox.exe" ]; then \
+		echo "❌ Backend not built! Run 'make build-backend' first."; \
+		exit 1; \
+	fi
+	cd frontend && npm run build
+	cd frontend && npx tsc -p electron/tsconfig.json
+	cd frontend && npx electron-builder --linux --x64
+	@echo "✅ Electron installer built: frontend/release/"
+
+build-all:  ## Build everything (backend + frontend + installer)
+	@echo "Building complete application..."
+	$(MAKE) build-backend
+	$(MAKE) build-electron
+	@echo ""
+	@echo "✅ Build complete!"
+	@echo "   Backend: backend/dist/ninebox/"
+	@echo "   Installer: frontend/release/"
+
+build:  ## Alias for build-all
+	$(MAKE) build-all
+
+# Legacy Python package build commands
+build-python:  ## Build Python distribution packages
 	python -m build
 
 publish-test:  ## Publish to TestPyPI

@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 from scipy.stats import chi2_contingency, fisher_exact
 
-from ninebox.models.employee import Employee, PerformanceLevel
+from ninebox.models.employee import Employee
 
 
 def _chi_square_test(contingency_table: np.ndarray) -> tuple[float, float, int, np.ndarray]:

@@ -3,15 +3,14 @@
 import os
 import sqlite3
 import tempfile
+from collections.abc import Generator
 from datetime import date, datetime
 from pathlib import Path
-from typing import Generator
 
 import openpyxl
 import pytest
 from fastapi.testclient import TestClient
 
-from ninebox.core.database import init_db
 from ninebox.core.security import get_password_hash
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
 
@@ -317,10 +316,9 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
 def test_client(test_db_path: str) -> TestClient:
     """Create a FastAPI test client."""
     # Import app after database path is set
-    from ninebox.main import app
-
     # Patch database path for testing
     import ninebox.core.database as db_module
+    from ninebox.main import app
 
     original_get_db_path = db_module.get_db_path
 

@@ -3,7 +3,6 @@
 from datetime import date
 
 import numpy as np
-import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.intelligence_service import (
@@ -17,7 +16,6 @@ from ninebox.services.intelligence_service import (
     calculate_overall_intelligence,
     calculate_tenure_analysis,
 )
-
 
 # Test helper functions
 

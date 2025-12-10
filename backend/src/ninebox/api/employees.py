@@ -1,6 +1,5 @@
 """Employee management API endpoints."""
 
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
@@ -23,21 +22,21 @@ class MoveRequest(BaseModel):
 class UpdateEmployeeRequest(BaseModel):
     """Request to update employee fields."""
 
-    promotion_readiness: Optional[bool] = None
-    development_focus: Optional[str] = None
-    development_action: Optional[str] = None
-    notes: Optional[str] = None
+    promotion_readiness: bool | None = None
+    development_focus: str | None = None
+    development_action: str | None = None
+    notes: str | None = None
 
 
 @router.get("", response_model=dict)
 async def get_employees(
     user_id: str = Depends(get_current_user_id),
-    levels: Optional[str] = Query(None, description="Comma-separated levels (e.g., 'MT2,MT4')"),
-    job_profiles: Optional[str] = Query(None),
-    managers: Optional[str] = Query(None),
-    exclude_ids: Optional[str] = Query(None, description="Comma-separated employee IDs"),
-    performance: Optional[str] = Query(None),
-    potential: Optional[str] = Query(None),
+    levels: str | None = Query(None, description="Comma-separated levels (e.g., 'MT2,MT4')"),
+    job_profiles: str | None = Query(None),
+    managers: str | None = Query(None),
+    exclude_ids: str | None = Query(None, description="Comma-separated employee IDs"),
+    performance: str | None = Query(None),
+    potential: str | None = Query(None),
 ) -> dict:
     """Get filtered list of employees."""
     session = session_manager.get_session(user_id)

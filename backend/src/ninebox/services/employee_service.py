@@ -1,6 +1,5 @@
 """Employee filtering and query service."""
 
-from typing import Optional
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 
@@ -32,14 +31,14 @@ class EmployeeService:
     def filter_employees(
         self,
         employees: list[Employee],
-        levels: Optional[list[str]] = None,
-        job_profiles: Optional[list[str]] = None,
-        job_functions: Optional[list[str]] = None,
-        locations: Optional[list[str]] = None,
-        managers: Optional[list[str]] = None,
-        exclude_ids: Optional[list[int]] = None,
-        performance: Optional[list[str]] = None,
-        potential: Optional[list[str]] = None,
+        levels: list[str] | None = None,
+        job_profiles: list[str] | None = None,
+        job_functions: list[str] | None = None,
+        locations: list[str] | None = None,
+        managers: list[str] | None = None,
+        exclude_ids: list[int] | None = None,
+        performance: list[str] | None = None,
+        potential: list[str] | None = None,
     ) -> list[Employee]:
         """Apply filters to employee list."""
         filtered = employees

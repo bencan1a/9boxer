@@ -3,9 +3,8 @@
 Anonymize the talent mapping Excel file by replacing names and locations consistently.
 """
 
+
 import pandas as pd
-import re
-from pathlib import Path
 
 # Fake names pool (first and last names)
 FIRST_NAMES = [

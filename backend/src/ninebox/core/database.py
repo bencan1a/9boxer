@@ -2,7 +2,6 @@
 
 import sqlite3
 from pathlib import Path
-from typing import Optional
 
 from ninebox.core.security import get_password_hash
 from ninebox.utils.paths import get_user_data_dir
@@ -101,7 +100,7 @@ def create_user(username: str, password: str) -> str:
         conn.close()
 
 
-def get_user_by_username(username: str) -> Optional[dict]:
+def get_user_by_username(username: str) -> dict | None:
     """Get user by username."""
     conn = get_connection()
     cursor = conn.cursor()
@@ -120,7 +119,7 @@ def get_user_by_username(username: str) -> Optional[dict]:
     return None
 
 
-def get_user_by_id(user_id: str) -> Optional[dict]:
+def get_user_by_id(user_id: str) -> dict | None:
     """Get user by ID."""
     conn = get_connection()
     cursor = conn.cursor()
