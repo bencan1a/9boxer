@@ -20,6 +20,10 @@
       "from": "dist",
       "to": "app/dist",
       "filter": ["**/*"]
+    },
+    {
+      "from": "build/icon.png",
+      "to": "icon.png"
     }
   ],
   "win": {
