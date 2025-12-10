@@ -1,0 +1,57 @@
+{
+  "appId": "com.yourcompany.ninebox",
+  "productName": "9-Box Performance Review",
+  "copyright": "Copyright © 2025 Your Company",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "../backend/dist/ninebox",
+      "to": "backend",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "dist",
+      "to": "app/dist",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
+  },
+  "mac": {
+    "target": ["dmg"],
+    "category": "public.app-category.business",
+    "artifactName": "${productName}-${version}-macOS-${arch}.${ext}"
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "category": "Office",
+    "artifactName": "${productName}-${version}-Linux-${arch}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "9-Box Performance Review",
+    "uninstallDisplayName": "9-Box Performance Review"
+  },
+  "dmg": {
+    "title": "${productName} ${version}"
+  },
+  "publish": null
+}

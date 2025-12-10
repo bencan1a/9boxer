@@ -16,15 +16,11 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
-    # Database
-    database_url: str = "sqlite:///../../data/ninebox.db"
-
     # CORS
     cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173"]
 
     # File Upload
     max_upload_size: int = 10 * 1024 * 1024  # 10MB
-    temp_dir: str = "../../data/temp"
 
     class Config:
         """Pydantic config."""
