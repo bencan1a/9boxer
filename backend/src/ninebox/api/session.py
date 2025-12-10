@@ -2,7 +2,6 @@
 
 import shutil
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse

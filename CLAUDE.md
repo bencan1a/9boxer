@@ -4,52 +4,85 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Critical: Virtual Environment
 
-**ALWAYS activate the virtual environment before running Python commands:**
+**This is a monorepo with backend (Python) and frontend (Node.js).**
+
+**For Python/Backend work, ALWAYS activate the root virtual environment:**
 ```bash
-. venv/bin/activate
+# From project root
+. .venv/bin/activate   # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
 ```
 
 If you see "module not found" errors, the venv is not activated. This is the #1 cause of issues.
+
+## Project Structure
+
+This is a consolidated monorepo:
+
+```
+9boxer/
+  .venv/              ← Single Python venv (backend deps + quality tools)
+  pyproject.toml      ← Backend dependencies + comprehensive quality config
+  backend/            ← FastAPI backend
+    src/ninebox/      ← Backend source code
+    tests/            ← Backend tests
+    build_config/     ← PyInstaller configuration
+    scripts/          ← Build scripts
+  frontend/           ← React + Electron frontend
+    node_modules/     ← Frontend deps (separate from Python)
+    src/              ← React components
+    electron/         ← Electron main/preload/renderer
+```
 
 ## Common Commands
 
 ### Development Setup
 ```bash
-# First time setup
-python3 -m venv venv
-. venv/bin/activate
+# First time setup (from project root)
+python3 -m venv .venv
+. .venv/bin/activate
 pip install --upgrade pip
 pip install -e '.[dev]'
 pre-commit install
 ```
 
-### Testing
+### Testing (Backend)
 ```bash
-# Always activate venv first: . venv/bin/activate
+# Always activate venv first: . .venv/bin/activate
 
-pytest                              # Run all tests
-pytest tests/test_calculator.py     # Run specific test file
-pytest -k "test_add"                # Run tests matching pattern
-pytest -v                           # Verbose output
-pytest --cov=src                    # Run with coverage
+pytest                                  # Run all backend tests
+pytest backend/tests/test_auth.py       # Run specific test file
+pytest -k "test_login"                  # Run tests matching pattern
+pytest -v                               # Verbose output
+pytest --cov=backend/src                # Run with coverage
 ```
 
-### Code Quality
+### Code Quality (Backend)
 ```bash
 # Run all quality checks at once
 make check-all
 
 # Individual checks
-ruff format .           # Format code
-ruff format --check .   # Check formatting
-ruff check .            # Lint code
-ruff check --fix .      # Auto-fix linting issues
-mypy src/               # Type check with mypy
-pyright                 # Type check with pyright
-bandit -r src/          # Security scan
+ruff format .                  # Format code
+ruff format --check .          # Check formatting
+ruff check .                   # Lint code
+ruff check --fix .             # Auto-fix linting issues
+mypy backend/src/              # Type check with mypy
+pyright                        # Type check with pyright
+bandit -r backend/src/         # Security scan
 
 # Quick fix
-make fix                # Auto-fix formatting and linting
+make fix                       # Auto-fix formatting and linting
+```
+
+### Frontend Commands
+```bash
+cd frontend
+npm install                    # Install dependencies
+npm run dev                    # Vite dev server
+npm run electron:dev           # Run Electron in dev mode
+npm run electron:build         # Build production installer
 ```
 
 ### Makefile Targets
@@ -62,16 +95,25 @@ make fix                # Auto-fix formatting and linting
 
 ## Architecture Overview
 
-### Package Structure
-This project uses the standard Python `src/` layout:
-- **`src/python_template/`** - Main package source code
-  - Type aliases defined inline (e.g., `Number = int | float`)
+### Backend Package Structure
+The backend uses the standard Python `src/` layout:
+- **`backend/src/ninebox/`** - FastAPI backend application
   - All functions require type annotations
   - Comprehensive docstrings with examples
-- **`tests/`** - Test files following pytest conventions
+  - API routes in `routers/`
+  - Business logic in `services/`
+  - Data models in `models/`
+- **`backend/tests/`** - Test files following pytest conventions
   - Named `test_*.py`
   - Test functions named `test_function_when_condition_then_expected`
   - No conditional assertions in test bodies
+
+### Frontend Structure
+- **`frontend/src/`** - React application (TypeScript)
+- **`frontend/electron/`** - Electron wrapper
+  - `main/` - Main process
+  - `preload/` - Preload scripts
+  - `renderer/` - Renderer utilities
 
 ### File Organization Conventions
 The project has strict conventions for where files belong (see [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)):

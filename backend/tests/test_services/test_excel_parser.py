@@ -1,6 +1,5 @@
 """Tests for Excel parser service."""
 
-from datetime import date
 from pathlib import Path
 
 import openpyxl

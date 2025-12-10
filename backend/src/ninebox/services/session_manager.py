@@ -2,7 +2,6 @@
 
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.session import EmployeeMove, SessionState
@@ -41,7 +40,7 @@ class SessionManager:
         self.sessions[user_id] = session
         return session_id
 
-    def get_session(self, user_id: str) -> Optional[SessionState]:
+    def get_session(self, user_id: str) -> SessionState | None:
         """Retrieve session by user ID."""
         return self.sessions.get(user_id)
 

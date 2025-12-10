@@ -5,7 +5,12 @@
   "description": "9-Box Performance Review - Desktop Application",
   "author": "Your Company",
   "main": "dist-electron/index.js",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
+    "preinstall": "node -e \"const v=process.version.slice(1).split('.')[0];if(v<20){console.error('\\x1b[31mError: Node.js 20+ required. Current:',process.version,'\\x1b[0m');process.exit(1)}\"",
     "dev": "vite",
     "build": "vite build",
     "prebuild": "node scripts/ensure-backend.cjs",
@@ -53,7 +58,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8",
+    "vite": "^7.2.7",
     "wait-on": "^9.0.3"
   }
 }

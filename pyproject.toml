@@ -3,16 +3,16 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "python-template"
+name = "ninebox"
 version = "0.1.0"
-description = "A well-configured Python project template optimized for GitHub Copilot"
+description = "9-Box Performance Review Application - Backend API"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Your Company", email = "your.email@example.com"}
 ]
-keywords = ["template", "python", "copilot"]
+keywords = ["performance-review", "9-box", "talent-management"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -21,11 +21,21 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+# Backend runtime dependencies
 dependencies = [
-    "typing-extensions>=4.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=3.2.0,<4.0.0",
+    "pandas>=2.1.0",
+    "openpyxl>=3.1.0",
+    "pydantic>=2.4.0",
+    "pydantic-settings>=2.0.0",
+    "scipy>=1.11.0",
 ]
 
 [project.optional-dependencies]
@@ -35,23 +45,21 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
+    "httpx>=0.25.0",
     "hypothesis>=6.98.0",
     "factory-boy>=3.3.0",
     "faker>=22.0.0",
-    
+
     # Code quality
     "ruff>=0.1.0",
     "black>=24.0.0",
     "mypy>=1.8.0",
     "bandit>=1.7.0",
-    
+    "pyright>=1.1.0",
+
     # Type stubs
     "types-requests",
-    
-    # Documentation
-    "sphinx>=7.2.0",
-    "sphinx-rtd-theme>=2.0.0",
-    
+
     # Development tools
     "ipython>=8.20.0",
     "ipdb>=0.13.13",
@@ -59,23 +67,23 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/bencan1a/python-template"
-Documentation = "https://github.com/bencan1a/python-template/blob/main/README.md"
-Repository = "https://github.com/bencan1a/python-template"
-Issues = "https://github.com/bencan1a/python-template/issues"
+Homepage = "https://github.com/yourorg/9boxer"
+Documentation = "https://github.com/yourorg/9boxer/blob/main/README.md"
+Repository = "https://github.com/yourorg/9boxer"
+Issues = "https://github.com/yourorg/9boxer/issues"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["backend/src"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["backend/tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=src",
+    "--cov=backend/src",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
@@ -87,11 +95,12 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src"]
+source = ["backend/src"]
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
     "*/.venv/*",
+    "*/venv/*",
 ]
 
 [tool.coverage.report]
@@ -117,6 +126,7 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
 strict_equality = true
+mypy_path = "backend/src"
 
 [[tool.mypy.overrides]]
 module = "tests.*"
@@ -126,7 +136,7 @@ disallow_incomplete_defs = false
 [tool.ruff]
 target-version = "py310"
 line-length = 100
-src = ["src", "tests", ".github/scripts"]
+src = ["backend/src", "backend/tests", ".github/scripts"]
 
 [tool.ruff.lint]
 select = [
@@ -149,16 +159,17 @@ ignore = [
     "E501",   # line too long, handled by formatter
     "PLR0913", # too many arguments
     "PLR2004", # magic value used in comparison
-    "PLR0915", # too many statements - acceptable for main/build functions
+    "PLR0915", # too many statements
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*" = ["PLR2004", "S101", "ARG", "SIM102"]
+"backend/tests/**/*" = ["PLR2004", "S101", "ARG", "SIM102"]
 "__init__.py" = ["F401"]
 "tools/**/*" = ["SIM102"]
+".github/scripts/**/*" = ["SIM102"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["python_template"]
+known-first-party = ["ninebox"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -172,5 +183,5 @@ target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 
 [tool.bandit]
-exclude_dirs = ["tests", "venv", ".venv"]
-skips = ["B101", "B404", "B603", "B607"]  # assert_used, subprocess imports and calls - we use them safely in scripts
+exclude_dirs = ["backend/tests", "venv", ".venv"]
+skips = ["B101", "B404", "B603", "B607"]

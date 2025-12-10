@@ -1,6 +1,5 @@
 """Statistics API endpoints."""
 
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -15,12 +14,12 @@ router = APIRouter(prefix="/statistics", tags=["statistics"])
 @router.get("")
 async def get_statistics(
     user_id: str = Depends(get_current_user_id),
-    levels: Optional[str] = Query(None),
-    job_profiles: Optional[str] = Query(None),
-    managers: Optional[str] = Query(None),
-    exclude_ids: Optional[str] = Query(None),
-    performance: Optional[str] = Query(None),
-    potential: Optional[str] = Query(None),
+    levels: str | None = Query(None),
+    job_profiles: str | None = Query(None),
+    managers: str | None = Query(None),
+    exclude_ids: str | None = Query(None),
+    performance: str | None = Query(None),
+    potential: str | None = Query(None),
 ) -> dict:
     """Get statistics for filtered employees."""
     session = session_manager.get_session(user_id)

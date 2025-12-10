@@ -28,12 +28,16 @@ console.log(`   Expected: ${backendPath}`);
 if (!fs.existsSync(backendPath)) {
   console.error('\n❌ Backend executable not found!');
   console.error('\n⚠️  You must build the backend first:\n');
-  console.error('   cd backend');
-  console.error('   make build-exe');
-  console.error('\n   Or manually:');
-  console.error('   cd backend');
-  console.error('   . venv/bin/activate');
-  console.error('   ./scripts/build_executable.sh\n');
+
+  if (platform === 'win32') {
+    console.error('   Windows:');
+    console.error('   cd backend');
+    console.error('   scripts\\build_executable.bat\n');
+  } else {
+    console.error('   Linux/macOS:');
+    console.error('   cd backend');
+    console.error('   ./scripts/build_executable.sh\n');
+  }
   process.exit(1);
 }
 
