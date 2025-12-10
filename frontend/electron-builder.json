@@ -29,7 +29,8 @@
         "arch": ["x64"]
       }
     ],
-    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
+    "signAndEditExecutable": false
   },
   "mac": {
     "target": ["dmg"],
