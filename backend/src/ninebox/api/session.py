@@ -17,7 +17,8 @@ router = APIRouter(prefix="/session", tags=["session"])
 
 @router.post("/upload")
 async def upload_file(
-    file: UploadFile = File(...), user_id: str = Depends(get_current_user_id)
+    file: UploadFile = File(...),  # noqa: B008
+    user_id: str = Depends(get_current_user_id),
 ) -> dict:
     """Upload Excel file and create session."""
     # Validate file type
@@ -39,8 +40,8 @@ async def upload_file(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to save file: {str(e)}",
-        )
+            detail=f"Failed to save file: {e!s}",
+        ) from e
 
     # Parse Excel file
     parser = ExcelParser()
@@ -51,8 +52,8 @@ async def upload_file(
         temp_file_path.unlink(missing_ok=True)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to parse Excel file: {str(e)}",
-        )
+            detail=f"Failed to parse Excel file: {e!s}",
+        ) from e
 
     # Create session
     session_id = session_manager.create_session(
@@ -62,13 +63,12 @@ async def upload_file(
         file_path=str(temp_file_path),
     )
 
+    session = session_manager.get_session(user_id)
     return {
         "session_id": session_id,
         "employee_count": len(employees),
         "filename": file.filename,
-        "uploaded_at": session_manager.get_session(user_id).created_at.isoformat()
-        if session_manager.get_session(user_id)
-        else None,
+        "uploaded_at": session.created_at.isoformat() if session else None,
     }
 
 
@@ -138,8 +138,8 @@ async def export_session(user_id: str = Depends(get_current_user_id)) -> FileRes
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to export Excel file: {str(e)}",
-        )
+            detail=f"Failed to export Excel file: {e!s}",
+        ) from e
 
     # Return file
     return FileResponse(

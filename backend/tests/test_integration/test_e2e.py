@@ -33,8 +33,14 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     headers = {"Authorization": f"Bearer {token}"}
 
     # 2. Upload Excel file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         upload_response = test_client.post("/api/session/upload", files=files, headers=headers)
     assert upload_response.status_code == 200
     assert upload_response.json()["employee_count"] == 5
@@ -47,8 +53,6 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
 
     # Find first employee
     first_employee = employees[0]
-    original_performance = first_employee["performance"]
-    original_potential = first_employee["potential"]
 
     # 4. Move employee
     move_data = {"performance": "Low", "potential": "Medium"}
@@ -120,8 +124,14 @@ def test_filtering_workflow_when_applied_then_filters_correctly(
     6. Verify statistics match filtered employees
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Get filter options
@@ -171,8 +181,14 @@ def test_multiple_moves_when_performed_then_all_tracked(
     5. Export and verify all changes in file
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Move multiple employees
@@ -236,9 +252,9 @@ def test_session_isolation_when_multiple_users_then_sessions_separate(
     4. Verify each user sees only their own data
     """
     # 1. Create second test user
-    import sqlite3
+    import sqlite3  # noqa: PLC0415
 
-    from ninebox.core.security import get_password_hash
+    from ninebox.core.security import get_password_hash  # noqa: PLC0415
 
     conn = sqlite3.connect(test_db_path)
     cursor = conn.cursor()
@@ -256,8 +272,14 @@ def test_session_isolation_when_multiple_users_then_sessions_separate(
     )
     headers1 = {"Authorization": f"Bearer {login1.json()['access_token']}"}
 
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test1.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test1.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=headers1)
 
     # 3. Login as second user, upload file
@@ -266,8 +288,14 @@ def test_session_isolation_when_multiple_users_then_sessions_separate(
     )
     headers2 = {"Authorization": f"Bearer {login2.json()['access_token']}"}
 
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test2.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test2.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=headers2)
 
     # 4. Verify each user sees only their own data
@@ -303,8 +331,14 @@ def test_error_recovery_when_invalid_operations_then_session_intact(
     5. Verify everything works
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Attempt invalid move
@@ -348,8 +382,14 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
     5. Verify changes reflected
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Make some changes

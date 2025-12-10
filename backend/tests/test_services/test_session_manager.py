@@ -41,7 +41,10 @@ def test_get_session_when_exists_then_retrieves_session(
 ) -> None:
     """Test retrieving an existing session."""
     session_id = session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     session = session_manager.get_session("user1")
@@ -63,7 +66,10 @@ def test_move_employee_when_valid_then_updates_employee_position(
 ) -> None:
     """Test moving an employee to a new position."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     # Move first employee from H,H to M,M
@@ -97,7 +103,10 @@ def test_move_employee_when_valid_then_tracks_changes(
 ) -> None:
     """Test that employee moves are tracked in session."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     # Make multiple moves
@@ -125,7 +134,10 @@ def test_move_employee_when_moved_back_to_original_position_then_modified_status
 ) -> None:
     """Test that moving an employee back to original position removes modified status."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     session = session_manager.get_session("user1")
@@ -177,7 +189,10 @@ def test_move_employee_when_invalid_employee_id_then_raises_error(
 ) -> None:
     """Test moving non-existent employee."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     with pytest.raises(ValueError, match="Employee 999 not found"):
@@ -194,7 +209,10 @@ def test_delete_session_when_exists_then_removes_session(
 ) -> None:
     """Test deleting a session."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     result = session_manager.delete_session("user1")
@@ -260,7 +278,10 @@ def test_create_session_when_called_then_deep_copies_employees(
 ) -> None:
     """Test that session creates deep copies of employee data."""
     session_manager.create_session(
-        user_id="user1", employees=sample_employees, filename="test.xlsx", file_path="/tmp/test.xlsx"
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
     )
 
     session = session_manager.get_session("user1")

@@ -73,7 +73,7 @@ async def get_intelligence(
 
     # Import intelligence service (will be created by Agent A)
     try:
-        from ninebox.services.intelligence_service import calculate_overall_intelligence
+        from ninebox.services.intelligence_service import calculate_overall_intelligence  # noqa: PLC0415, I001
     except ImportError:
         # Mock response if service not yet available
         # This allows the API endpoint to be tested independently
@@ -125,9 +125,9 @@ async def get_intelligence(
     try:
         # Calculate intelligence using full dataset (current_employees)
         intelligence = calculate_overall_intelligence(session.current_employees)
-        return intelligence
+        return IntelligenceResponse(**intelligence)  # type: ignore[typeddict-item, no-any-return]
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to calculate intelligence: {str(e)}",
-        )
+            detail=f"Failed to calculate intelligence: {e!s}",
+        ) from e

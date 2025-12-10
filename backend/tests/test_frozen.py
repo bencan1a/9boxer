@@ -49,7 +49,9 @@ def frozen_backend() -> Generator[subprocess.Popen, None, None]:
     """
     # Ensure executable exists
     if not FROZEN_EXE_PATH.exists():
-        pytest.skip(f"Frozen executable not found at {FROZEN_EXE_PATH}. Run ./scripts/build_executable.sh first.")
+        pytest.skip(
+            f"Frozen executable not found at {FROZEN_EXE_PATH}. Run ./scripts/build_executable.sh first."
+        )
 
     # Start the executable
     proc = subprocess.Popen(
@@ -215,18 +217,84 @@ def sample_excel_file(tmp_path: Path) -> Path:
 
     # Sample data rows
     employees_data = [
-        [1, "Alice Smith", "Senior Engineer", "Software Engineer", "Software EngineeringUSA",
-         "MT4", "Bob Manager", "Bob Manager", "Carol Director", None, "2020-01-15",
-         "3-5 years", "2 years", "High", "High", 9, "Top Talent [H,H]", "High Potential",
-         "Strong", "Leading", "Leadership skills", "Executive coaching", "Top performer", "Ready now"],
-        [2, "Bob Jones", "Engineer", "Software Engineer", "Software EngineeringCAN",
-         "MT2", "Bob Manager", "Bob Manager", "Carol Director", None, "2021-06-01",
-         "1-3 years", "1 year", "Medium", "Medium", 5, "Core Talent [M,M]", "Solid Contributor",
-         None, "Solid", None, None, None, None],
-        [3, "Carol Williams", "Junior Engineer", "Software Engineer", "Software EngineeringGBR",
-         "MT1", "Dave Lead", "Dave Lead", "Carol Director", None, "2023-01-10",
-         "0-1 year", "6 months", "Low", "High", 7, "Emerging Talent [L,H]", "Emerging",
-         None, None, "Technical skills", "Mentorship program", "New hire", None],
+        [
+            1,
+            "Alice Smith",
+            "Senior Engineer",
+            "Software Engineer",
+            "Software EngineeringUSA",
+            "MT4",
+            "Bob Manager",
+            "Bob Manager",
+            "Carol Director",
+            None,
+            "2020-01-15",
+            "3-5 years",
+            "2 years",
+            "High",
+            "High",
+            9,
+            "Top Talent [H,H]",
+            "High Potential",
+            "Strong",
+            "Leading",
+            "Leadership skills",
+            "Executive coaching",
+            "Top performer",
+            "Ready now",
+        ],
+        [
+            2,
+            "Bob Jones",
+            "Engineer",
+            "Software Engineer",
+            "Software EngineeringCAN",
+            "MT2",
+            "Bob Manager",
+            "Bob Manager",
+            "Carol Director",
+            None,
+            "2021-06-01",
+            "1-3 years",
+            "1 year",
+            "Medium",
+            "Medium",
+            5,
+            "Core Talent [M,M]",
+            "Solid Contributor",
+            None,
+            "Solid",
+            None,
+            None,
+            None,
+            None,
+        ],
+        [
+            3,
+            "Carol Williams",
+            "Junior Engineer",
+            "Software Engineer",
+            "Software EngineeringGBR",
+            "MT1",
+            "Dave Lead",
+            "Dave Lead",
+            "Carol Director",
+            None,
+            "2023-01-10",
+            "0-1 year",
+            "6 months",
+            "Low",
+            "High",
+            7,
+            "Emerging Talent [L,H]",
+            "Emerging",
+            None,
+            None,
+            "Technical skills",
+            "Mentorship program",
+            "New hire",
+            None,
+        ],
     ]
 
     for row_idx, row_data in enumerate(employees_data, start=2):
@@ -240,6 +308,7 @@ def sample_excel_file(tmp_path: Path) -> Path:
 # ============================================================================
 # BASIC FUNCTIONALITY TESTS
 # ============================================================================
+
 
 def test_frozen_executable_exists() -> None:
     """Test that frozen executable was built and is executable."""
@@ -274,6 +343,7 @@ def test_frozen_swagger_ui_accessible(frozen_backend: subprocess.Popen) -> None:
 # AUTHENTICATION TESTS
 # ============================================================================
 
+
 def test_frozen_authentication_login(frozen_backend: subprocess.Popen) -> None:
     """Test JWT authentication login with frozen executable."""
     # Test login with default credentials
@@ -304,7 +374,9 @@ def test_frozen_authentication_invalid_credentials(frozen_backend: subprocess.Po
     assert response.status_code == 401
 
 
-def test_frozen_authentication_protected_endpoint(frozen_backend: subprocess.Popen, auth_headers: dict[str, str]) -> None:
+def test_frozen_authentication_protected_endpoint(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str]
+) -> None:
     """Test that JWT token works for authenticated endpoints."""
     # Test accessing protected endpoint - expect 404 if no session active yet
     response = requests.get(f"{BASE_URL}/api/session/status", headers=auth_headers, timeout=5)
@@ -323,11 +395,20 @@ def test_frozen_authentication_without_token(frozen_backend: subprocess.Popen) -
 # EXCEL IMPORT TESTS
 # ============================================================================
 
-def test_frozen_excel_import(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+
+def test_frozen_excel_import(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test Excel import with frozen executable."""
     # Upload Excel file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         response = requests.post(
             f"{BASE_URL}/api/session/upload",
             files=files,
@@ -346,12 +427,22 @@ def test_frozen_excel_import(frozen_backend: subprocess.Popen, auth_headers: dic
     assert "filename" in data
 
 
-def test_frozen_excel_import_get_employees(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+def test_frozen_excel_import_get_employees(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test retrieving employees after Excel import."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Get employees
     response = requests.get(f"{BASE_URL}/api/employees", headers=auth_headers, timeout=5)
@@ -374,12 +465,23 @@ def test_frozen_excel_import_get_employees(frozen_backend: subprocess.Popen, aut
 # EMPLOYEE MANAGEMENT TESTS
 # ============================================================================
 
-def test_frozen_employee_move(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+
+def test_frozen_employee_move(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test moving an employee in the 9-box grid."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Move employee
     response = requests.patch(
@@ -398,12 +500,22 @@ def test_frozen_employee_move(frozen_backend: subprocess.Popen, auth_headers: di
     assert data["employee"]["modified_in_session"] is True
 
 
-def test_frozen_employee_statistics(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+def test_frozen_employee_statistics(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test statistics calculation with scipy in frozen executable."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Get statistics
     response = requests.get(f"{BASE_URL}/api/statistics", headers=auth_headers, timeout=5)
@@ -422,12 +534,23 @@ def test_frozen_employee_statistics(frozen_backend: subprocess.Popen, auth_heade
 # EXCEL EXPORT TESTS
 # ============================================================================
 
-def test_frozen_excel_export(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+
+def test_frozen_excel_export(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test Excel export with frozen executable."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Move an employee
     requests.patch(
@@ -459,12 +582,22 @@ def test_frozen_excel_export(frozen_backend: subprocess.Popen, auth_headers: dic
     assert data_sheet.max_row >= 4  # Header + 3 employees
 
 
-def test_frozen_excel_export_contains_changes(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+def test_frozen_excel_export_contains_changes(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test that exported Excel file contains modifications."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Move an employee
     requests.patch(
@@ -506,6 +639,7 @@ def test_frozen_excel_export_contains_changes(frozen_backend: subprocess.Popen, 
 # ============================================================================
 # PERFORMANCE TESTS
 # ============================================================================
+
 
 def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
     """Measure startup time of frozen executable."""
@@ -554,7 +688,9 @@ def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
             test_db.unlink()
 
 
-def test_frozen_performance_response_time(frozen_backend: subprocess.Popen, auth_headers: dict[str, str]) -> None:
+def test_frozen_performance_response_time(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str]
+) -> None:
     """Measure response time of health check endpoint."""
     # Warm up
     requests.get(f"{BASE_URL}/health", timeout=5)
@@ -575,12 +711,14 @@ def test_frozen_performance_response_time(frozen_backend: subprocess.Popen, auth
     print(f"\n✓ Average response time: {avg_response_time:.2f}ms")
     print(f"✓ Max response time: {max_response_time:.2f}ms")
 
-    assert avg_response_time < 100, f"Average response time {avg_response_time:.2f}ms exceeds 100ms target"
+    assert avg_response_time < 100, (
+        f"Average response time {avg_response_time:.2f}ms exceeds 100ms target"
+    )
 
 
 def test_frozen_performance_memory_usage(frozen_backend: subprocess.Popen) -> None:
     """Measure memory usage of frozen executable."""
-    import psutil
+    import psutil  # noqa: PLC0415
 
     # Get process
     proc = psutil.Process(frozen_backend.pid)
@@ -599,15 +737,24 @@ def test_frozen_performance_memory_usage(frozen_backend: subprocess.Popen) -> No
 # ERROR HANDLING TESTS
 # ============================================================================
 
-def test_frozen_error_handling_invalid_excel(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], tmp_path: Path) -> None:
+
+def test_frozen_error_handling_invalid_excel(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], tmp_path: Path
+) -> None:
     """Test error handling for invalid Excel file."""
     # Create invalid file
     invalid_file = tmp_path / "invalid.xlsx"
     invalid_file.write_text("This is not an Excel file")
 
     # Try to upload
-    with open(invalid_file, "rb") as f:
-        files = {"file": ("invalid.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(invalid_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "invalid.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         response = requests.post(
             f"{BASE_URL}/api/session/upload",
             files=files,
@@ -619,7 +766,9 @@ def test_frozen_error_handling_invalid_excel(frozen_backend: subprocess.Popen, a
     assert response.status_code >= 400
 
 
-def test_frozen_error_handling_session_not_active(frozen_backend: subprocess.Popen, auth_headers: dict[str, str]) -> None:
+def test_frozen_error_handling_session_not_active(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str]
+) -> None:
     """Test error handling when session is not active."""
     # Try to get employees without uploading file
     response = requests.get(f"{BASE_URL}/api/employees", headers=auth_headers, timeout=5)
@@ -628,12 +777,22 @@ def test_frozen_error_handling_session_not_active(frozen_backend: subprocess.Pop
     assert response.status_code in [200, 400, 404]
 
 
-def test_frozen_error_handling_invalid_employee_id(frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path) -> None:
+def test_frozen_error_handling_invalid_employee_id(
+    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
     """Test error handling for invalid employee ID."""
     # Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        requests.post(f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10)
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        requests.post(
+            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+        )
 
     # Try to move non-existent employee
     response = requests.patch(
@@ -651,7 +810,10 @@ def test_frozen_error_handling_invalid_employee_id(frozen_backend: subprocess.Po
 # END-TO-END WORKFLOW TEST
 # ============================================================================
 
-def test_frozen_complete_workflow(frozen_backend: subprocess.Popen, sample_excel_file: Path) -> None:
+
+def test_frozen_complete_workflow(
+    frozen_backend: subprocess.Popen, sample_excel_file: Path
+) -> None:
     """Test complete workflow from login to export with frozen executable."""
     # 1. Login
     login_response = requests.post(
@@ -664,8 +826,14 @@ def test_frozen_complete_workflow(frozen_backend: subprocess.Popen, sample_excel
     headers = {"Authorization": f"Bearer {token}"}
 
     # 2. Upload Excel file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         upload_response = requests.post(
             f"{BASE_URL}/api/session/upload",
             files=files,

@@ -38,8 +38,9 @@ class ExcelExporter:
         promotion_readiness_col = self._find_column(sheet, "Promotion Readiness")
 
         # Add "Modified" columns if they don't exist
-        max_col = sheet.max_column
+        max_col = sheet.max_column or 1
         modified_col = self._find_column(sheet, "Modified in Session", create=True)
+        assert modified_col is not None, "modified_col should not be None when create=True"  # nosec B101  # Type narrowing
         if modified_col > max_col:
             sheet.cell(1, modified_col, "Modified in Session")
             sheet.cell(1, modified_col + 1, "Modification Date")
@@ -73,7 +74,9 @@ class ExcelExporter:
 
                 # Update promotion readiness
                 if promotion_readiness_col and emp.promotion_readiness is not None:
-                    sheet.cell(row_idx, promotion_readiness_col, "Yes" if emp.promotion_readiness else "No")
+                    sheet.cell(
+                        row_idx, promotion_readiness_col, "Yes" if emp.promotion_readiness else "No"
+                    )
 
                 # Mark as modified
                 sheet.cell(row_idx, modified_col, "Yes" if emp.modified_in_session else "No")
@@ -94,6 +97,6 @@ class ExcelExporter:
 
         # If not found and create=True, return next available column
         if create:
-            return sheet.max_column + 1
+            return (sheet.max_column or 0) + 1
 
         return None

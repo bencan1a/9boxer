@@ -1,6 +1,7 @@
 """Session data models."""
 
 from datetime import datetime
+from typing import ClassVar
 
 from pydantic import BaseModel
 
@@ -42,6 +43,6 @@ class SessionState(BaseModel):
     class Config:
         """Pydantic config."""
 
-        json_encoders = {
+        json_encoders: ClassVar = {
             datetime: lambda v: v.isoformat(),
         }

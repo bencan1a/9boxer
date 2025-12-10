@@ -1,6 +1,16 @@
 """Statistics calculation service."""
 
+from typing import TypedDict
+
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+
+
+class BoxStats(TypedDict):
+    """Statistics for a single 9-box position."""
+
+    count: int
+    percentage: float
+    label: str
 
 
 class StatisticsService:
@@ -9,9 +19,13 @@ class StatisticsService:
     def calculate_distribution(self, employees: list[Employee]) -> dict:
         """Calculate 9-box distribution."""
         # Initialize counts
-        distribution_dict = {}
+        distribution_dict: dict[str, BoxStats] = {}
         for i in range(1, 10):
-            distribution_dict[str(i)] = {"count": 0, "percentage": 0.0, "label": self._get_box_label(i)}
+            distribution_dict[str(i)] = {
+                "count": 0,
+                "percentage": 0.0,
+                "label": self._get_box_label(i),
+            }
 
         # Count employees in each box
         for emp in employees:

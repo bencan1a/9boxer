@@ -194,7 +194,7 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
     statistics_service: StatisticsService,
 ) -> None:
     """Test that percentage calculations round correctly."""
-    from datetime import date
+    from datetime import date  # noqa: PLC0415
 
     # Create 3 employees for non-round percentages
     employees = [

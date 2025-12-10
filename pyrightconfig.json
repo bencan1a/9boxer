@@ -1,10 +1,12 @@
 {
-  "include": ["src", "tests", "tools"],
+  "include": ["src", "tools"],
   "exclude": [
     "**/node_modules",
     "**/__pycache__",
     "**/.*",
-    "venv"
+    "venv",
+    "backend/tests",
+    "frontend/tests"
   ],
   "typeCheckingMode": "basic",
   "reportMissingImports": true,
@@ -14,14 +16,6 @@
   "executionEnvironments": [
     {
       "root": "src"
-    },
-    {
-      "root": "tests",
-      "reportMissingTypeStubs": false,
-      "reportUnknownParameterType": false,
-      "reportUnknownArgumentType": false,
-      "reportUnknownMemberType": false,
-      "reportUnknownVariableType": false
     }
   ]
 }

@@ -93,7 +93,7 @@ def create_employee(
     tenure: str,
     performance: PerformanceLevel,
     potential: PotentialLevel = PotentialLevel.MEDIUM,
-    grid_position: int = 5
+    grid_position: int = 5,
 ) -> Employee:
     """Create a test employee with specified attributes."""
     return Employee(
@@ -113,21 +113,21 @@ def create_employee(
         potential=potential,
         grid_position=grid_position,
         position_label="Test Label",
-        talent_indicator="Test Indicator"
+        talent_indicator="Test Indicator",
     )
 
 
 def test_location_analysis_with_uniform_distribution() -> None:
     """Test location analysis with perfectly uniform distribution."""
-    # Create 60 employees: 3 locations × 20 each, evenly distributed performance
+    # Create 60 employees: 3 locations x 20 each, evenly distributed performance
     employees = []
     emp_id = 1
     for loc in ["USA", "UK", "IN"]:
         for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
             for _ in range(7):  # 7 of each performance level per location
-                employees.append(create_employee(
-                    emp_id, loc, "Engineering", "MT5", "2-5 years", perf
-                ))
+                employees.append(
+                    create_employee(emp_id, loc, "Engineering", "MT5", "2-5 years", perf)
+                )
                 emp_id += 1
 
     result = calculate_location_analysis(employees)
@@ -135,7 +135,7 @@ def test_location_analysis_with_uniform_distribution() -> None:
     # With perfect uniformity, p-value should be very high (close to 1)
     assert result["p_value"] > 0.5
     assert result["status"] == "green"
-    assert result["sample_size"] == 63  # 3 locations × 21 employees
+    assert result["sample_size"] == 63  # 3 locations x 21 employees
 
 
 def test_location_analysis_with_bias() -> None:
@@ -146,35 +146,33 @@ def test_location_analysis_with_bias() -> None:
 
     # USA: 25 high, 2 medium, 3 low
     for _ in range(25):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
     for _ in range(3):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW)
+        )
         emp_id += 1
 
     # UK: 10 high, 10 medium, 10 low (balanced)
     for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
         for _ in range(10):
-            employees.append(create_employee(
-                emp_id, "UK", "Engineering", "MT5", "2-5 years", perf
-            ))
+            employees.append(create_employee(emp_id, "UK", "Engineering", "MT5", "2-5 years", perf))
             emp_id += 1
 
     # IN: 10 high, 10 medium, 10 low (balanced)
     for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
         for _ in range(10):
-            employees.append(create_employee(
-                emp_id, "IN", "Engineering", "MT5", "2-5 years", perf
-            ))
+            employees.append(create_employee(emp_id, "IN", "Engineering", "MT5", "2-5 years", perf))
             emp_id += 1
 
     result = calculate_location_analysis(employees)
@@ -197,21 +195,21 @@ def test_location_analysis_with_small_sample() -> None:
     # Need variety in performance levels to avoid "empty categories" error
     employees = []
     for i in range(7):
-        employees.append(create_employee(
-            i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
     for i in range(7, 10):
-        employees.append(create_employee(
-            i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM)
+        )
     for i in range(10, 17):
-        employees.append(create_employee(
-            i, "UK", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(i, "UK", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
     for i in range(17, 20):
-        employees.append(create_employee(
-            i, "UK", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(i, "UK", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW)
+        )
 
     result = calculate_location_analysis(employees)
 
@@ -226,9 +224,9 @@ def test_location_analysis_with_single_location() -> None:
     """Test location analysis with only one location."""
     employees = []
     for i in range(50):
-        employees.append(create_employee(
-            i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(i, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
 
     result = calculate_location_analysis(employees)
 
@@ -238,17 +236,24 @@ def test_location_analysis_with_single_location() -> None:
 
 def test_function_analysis_with_uniform_distribution() -> None:
     """Test function analysis with uniform distribution."""
-    # Create 90 employees: 3 functions × 30 each, evenly distributed
+    # Create 90 employees: 3 functions x 30 each, evenly distributed
     employees = []
     emp_id = 1
     for func in ["Engineering", "Sales", "Marketing"]:
         for pos in range(1, 10):  # Grid positions 1-9
             for _ in range(3):  # 3 employees per position
-                perf = PerformanceLevel.HIGH if pos >= 7 else \
-                       PerformanceLevel.MEDIUM if pos >= 4 else PerformanceLevel.LOW
-                employees.append(create_employee(
-                    emp_id, "USA", func, "MT5", "2-5 years", perf, grid_position=pos
-                ))
+                perf = (
+                    PerformanceLevel.HIGH
+                    if pos >= 7
+                    else PerformanceLevel.MEDIUM
+                    if pos >= 4
+                    else PerformanceLevel.LOW
+                )
+                employees.append(
+                    create_employee(
+                        emp_id, "USA", func, "MT5", "2-5 years", perf, grid_position=pos
+                    )
+                )
                 emp_id += 1
 
     result = calculate_function_analysis(employees)
@@ -260,49 +265,70 @@ def test_function_analysis_with_uniform_distribution() -> None:
 
 def test_function_analysis_with_bias() -> None:
     """Test function analysis with skewed distribution."""
-    # Engineering: mostly high performers
-    # Sales: mostly medium performers
-    # Marketing: balanced
+    # Test setup: Engineering has mostly high performers, Sales has mostly medium performers,
+    # and Marketing has a balanced distribution across performance levels
     employees = []
     emp_id = 1
 
     # Engineering: 25 in positions 7-9, 5 in others
     for _ in range(25):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years",
-            PerformanceLevel.HIGH, grid_position=9
-        ))
+        employees.append(
+            create_employee(
+                emp_id,
+                "USA",
+                "Engineering",
+                "MT5",
+                "2-5 years",
+                PerformanceLevel.HIGH,
+                grid_position=9,
+            )
+        )
         emp_id += 1
     for _ in range(5):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years",
-            PerformanceLevel.LOW, grid_position=1
-        ))
+        employees.append(
+            create_employee(
+                emp_id,
+                "USA",
+                "Engineering",
+                "MT5",
+                "2-5 years",
+                PerformanceLevel.LOW,
+                grid_position=1,
+            )
+        )
         emp_id += 1
 
     # Sales: 25 in positions 4-6, 5 in high positions
     for _ in range(25):
-        employees.append(create_employee(
-            emp_id, "USA", "Sales", "MT5", "2-5 years",
-            PerformanceLevel.MEDIUM, grid_position=5
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Sales", "MT5", "2-5 years", PerformanceLevel.MEDIUM, grid_position=5
+            )
+        )
         emp_id += 1
     for _ in range(5):
-        employees.append(create_employee(
-            emp_id, "USA", "Sales", "MT5", "2-5 years",
-            PerformanceLevel.HIGH, grid_position=9
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Sales", "MT5", "2-5 years", PerformanceLevel.HIGH, grid_position=9
+            )
+        )
         emp_id += 1
 
-    # Marketing: balanced
+    # Marketing department: Create employees with balanced distribution across all positions
     for pos in range(1, 10):
         for _ in range(3):
-            perf = PerformanceLevel.HIGH if pos >= 7 else \
-                   PerformanceLevel.MEDIUM if pos >= 4 else PerformanceLevel.LOW
-            employees.append(create_employee(
-                emp_id, "USA", "Marketing", "MT5", "2-5 years",
-                perf, grid_position=pos
-            ))
+            perf = (
+                PerformanceLevel.HIGH
+                if pos >= 7
+                else PerformanceLevel.MEDIUM
+                if pos >= 4
+                else PerformanceLevel.LOW
+            )
+            employees.append(
+                create_employee(
+                    emp_id, "USA", "Marketing", "MT5", "2-5 years", perf, grid_position=pos
+                )
+            )
             emp_id += 1
 
     result = calculate_function_analysis(employees)
@@ -322,19 +348,25 @@ def test_level_analysis_uniformity_is_good() -> None:
     for level in ["MT4", "MT5", "MT6"]:
         # Each level: 7 high, 7 medium, 6 low
         for _ in range(7):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.HIGH
-            ))
+            employees.append(
+                create_employee(
+                    emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.HIGH
+                )
+            )
             emp_id += 1
         for _ in range(7):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.MEDIUM
-            ))
+            employees.append(
+                create_employee(
+                    emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.MEDIUM
+                )
+            )
             emp_id += 1
         for _ in range(6):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.LOW
-            ))
+            employees.append(
+                create_employee(
+                    emp_id, "USA", "Engineering", level, "2-5 years", PerformanceLevel.LOW
+                )
+            )
             emp_id += 1
 
     result = calculate_level_analysis(employees)
@@ -355,48 +387,54 @@ def test_level_analysis_calibration_issue() -> None:
 
     # MT6: 18 high, 2 medium, 0 low (leniency bias)
     for _ in range(18):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT6", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT6", "2-5 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT6", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT6", "2-5 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
 
     # MT4: 2 high, 2 medium, 16 low (severity bias)
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
     for _ in range(16):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT4", "2-5 years", PerformanceLevel.LOW)
+        )
         emp_id += 1
 
-    # MT5: balanced (7, 7, 6)
+    # MT5 level: Create balanced distribution with 7 high, 7 medium, 6 low performers
     for _ in range(7):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(7):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
     for _ in range(6):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW)
+        )
         emp_id += 1
 
     result = calculate_level_analysis(employees)
@@ -404,7 +442,9 @@ def test_level_analysis_calibration_issue() -> None:
     # Low p-value is BAD for level analysis (calibration issue)
     assert result["p_value"] < 0.05
     assert result["status"] in ["yellow", "red"]
-    assert "warning" in result["interpretation"].lower() or "issue" in result["interpretation"].lower()
+    assert (
+        "warning" in result["interpretation"].lower() or "issue" in result["interpretation"].lower()
+    )
 
 
 def test_tenure_analysis_with_uniform_distribution() -> None:
@@ -414,19 +454,21 @@ def test_tenure_analysis_with_uniform_distribution() -> None:
 
     for tenure in ["0-1 years", "2-5 years", "6-10 years"]:
         for _ in range(7):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.HIGH
-            ))
+            employees.append(
+                create_employee(emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.HIGH)
+            )
             emp_id += 1
         for _ in range(7):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.MEDIUM
-            ))
+            employees.append(
+                create_employee(
+                    emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.MEDIUM
+                )
+            )
             emp_id += 1
         for _ in range(6):
-            employees.append(create_employee(
-                emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.LOW
-            ))
+            employees.append(
+                create_employee(emp_id, "USA", "Engineering", "MT5", tenure, PerformanceLevel.LOW)
+            )
             emp_id += 1
 
     result = calculate_tenure_analysis(employees)
@@ -444,48 +486,56 @@ def test_tenure_analysis_with_bias() -> None:
 
     # 0-1 years: 18 high, 2 medium, 0 low
     for _ in range(18):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "0-1 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "0-1 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "0-1 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "0-1 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
 
     # 6-10 years: 2 high, 2 medium, 16 low
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.HIGH
+            )
+        )
         emp_id += 1
     for _ in range(2):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
     for _ in range(16):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "6-10 years", PerformanceLevel.LOW)
+        )
         emp_id += 1
 
     # 2-5 years: balanced
     for _ in range(7):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.HIGH)
+        )
         emp_id += 1
     for _ in range(7):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
-        ))
+        employees.append(
+            create_employee(
+                emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.MEDIUM
+            )
+        )
         emp_id += 1
     for _ in range(6):
-        employees.append(create_employee(
-            emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW
-        ))
+        employees.append(
+            create_employee(emp_id, "USA", "Engineering", "MT5", "2-5 years", PerformanceLevel.LOW)
+        )
         emp_id += 1
 
     result = calculate_tenure_analysis(employees)
@@ -501,7 +551,6 @@ def test_overall_intelligence_aggregation() -> None:
     emp_id = 1
 
     # Create diverse but biased dataset (USA has more high performers)
-    locations = ["USA", "UK", "IN"]
     functions = ["Engineering", "Sales", "Marketing"]
     levels = ["MT4", "MT5", "MT6"]
     tenures = ["0-1 years", "2-5 years", "6-10 years"]
@@ -510,9 +559,11 @@ def test_overall_intelligence_aggregation() -> None:
     for func in functions:
         for level in levels:
             for tenure in tenures:
-                employees.append(create_employee(
-                    emp_id, "USA", func, level, tenure, PerformanceLevel.HIGH, grid_position=9
-                ))
+                employees.append(
+                    create_employee(
+                        emp_id, "USA", func, level, tenure, PerformanceLevel.HIGH, grid_position=9
+                    )
+                )
                 emp_id += 1
 
     # UK balanced
@@ -520,10 +571,18 @@ def test_overall_intelligence_aggregation() -> None:
         for level in levels:
             for tenure in tenures:
                 for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
-                    grid_pos = 9 if perf == PerformanceLevel.HIGH else 5 if perf == PerformanceLevel.MEDIUM else 1
-                    employees.append(create_employee(
-                        emp_id, "UK", func, level, tenure, perf, grid_position=grid_pos
-                    ))
+                    grid_pos = (
+                        9
+                        if perf == PerformanceLevel.HIGH
+                        else 5
+                        if perf == PerformanceLevel.MEDIUM
+                        else 1
+                    )
+                    employees.append(
+                        create_employee(
+                            emp_id, "UK", func, level, tenure, perf, grid_position=grid_pos
+                        )
+                    )
                     emp_id += 1
 
     # IN balanced
@@ -531,10 +590,18 @@ def test_overall_intelligence_aggregation() -> None:
         for level in levels:
             for tenure in tenures:
                 for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
-                    grid_pos = 9 if perf == PerformanceLevel.HIGH else 5 if perf == PerformanceLevel.MEDIUM else 1
-                    employees.append(create_employee(
-                        emp_id, "IN", func, level, tenure, perf, grid_position=grid_pos
-                    ))
+                    grid_pos = (
+                        9
+                        if perf == PerformanceLevel.HIGH
+                        else 5
+                        if perf == PerformanceLevel.MEDIUM
+                        else 1
+                    )
+                    employees.append(
+                        create_employee(
+                            emp_id, "IN", func, level, tenure, perf, grid_position=grid_pos
+                        )
+                    )
                     emp_id += 1
 
     result = calculate_overall_intelligence(employees)
@@ -551,9 +618,11 @@ def test_overall_intelligence_aggregation() -> None:
     assert 0 <= result["quality_score"] <= 100
 
     # Anomaly counts should sum to 4 (one per dimension)
-    total_analyses = (result["anomaly_count"]["green"] +
-                      result["anomaly_count"]["yellow"] +
-                      result["anomaly_count"]["red"])
+    total_analyses = (
+        result["anomaly_count"]["green"]
+        + result["anomaly_count"]["yellow"]
+        + result["anomaly_count"]["red"]
+    )
     assert total_analyses == 4
 
 
@@ -569,12 +638,24 @@ def test_quality_score_calculation() -> None:
             for func in ["Engineering", "Sales"]:
                 for level in ["MT4", "MT5"]:
                     for tenure in ["0-1 years", "2-5 years"]:
-                        for perf in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM, PerformanceLevel.LOW]:
+                        for perf in [
+                            PerformanceLevel.HIGH,
+                            PerformanceLevel.MEDIUM,
+                            PerformanceLevel.LOW,
+                        ]:
                             # Assign appropriate grid position based on performance
-                            grid_pos = 9 if perf == PerformanceLevel.HIGH else 5 if perf == PerformanceLevel.MEDIUM else 1
-                            employees.append(create_employee(
-                                emp_id, loc, func, level, tenure, perf, grid_position=grid_pos
-                            ))
+                            grid_pos = (
+                                9
+                                if perf == PerformanceLevel.HIGH
+                                else 5
+                                if perf == PerformanceLevel.MEDIUM
+                                else 1
+                            )
+                            employees.append(
+                                create_employee(
+                                    emp_id, loc, func, level, tenure, perf, grid_position=grid_pos
+                                )
+                            )
                             emp_id += 1
 
     result = calculate_overall_intelligence(employees)

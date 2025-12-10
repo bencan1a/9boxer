@@ -11,8 +11,14 @@ def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> dict[str, str]:
     """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
     return auth_headers
 

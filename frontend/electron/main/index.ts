@@ -2,7 +2,6 @@ import { app, BrowserWindow, dialog, Menu, ipcMain } from 'electron';
 import { spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import axios from 'axios';
-import { createMenu } from './menu';
 
 // Global references
 let mainWindow: BrowserWindow | null = null;
@@ -137,6 +136,11 @@ async function startBackend(): Promise<void> {
 
   console.log(`🚀 Starting backend from: ${backendPath}`);
   console.log(`📁 App data: ${appDataPath}`);
+  console.log(`🔍 Backend executable exists: ${require('fs').existsSync(backendPath)}`);
+
+  if (!require('fs').existsSync(backendPath)) {
+    throw new Error(`Backend executable not found at: ${backendPath}`);
+  }
 
   backendProcess = spawn(backendPath, [], {
     env: {
@@ -144,7 +148,8 @@ async function startBackend(): Promise<void> {
       APP_DATA_DIR: appDataPath,
       PORT: BACKEND_PORT.toString(),
     },
-    stdio: 'inherit', // Show backend logs in console
+    stdio: isDev ? 'inherit' : 'ignore', // Show logs in dev, hide in production
+    windowsHide: true, // Hide console window on Windows
   });
 
   backendProcess.on('error', (error) => {
@@ -278,10 +283,19 @@ function createWindow(): void {
     mainWindow.loadFile(url);
   }
 
-  // Open DevTools in development mode
+  // Open DevTools in development mode only
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
+
+  // Handle window ready to show
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('✅ Main window finished loading');
+  });
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('❌ Main window failed to load:', errorCode, errorDescription);
+  });
 
   // Handle window closed event
   mainWindow.on('closed', () => {
@@ -308,16 +322,17 @@ app.on('ready', async () => {
     createWindow();
     setupIpcHandlers();
 
-    // Set application menu after window is created
-    if (mainWindow) {
-      const menu = createMenu(mainWindow);
-      Menu.setApplicationMenu(menu);
-    }
+    // Remove the application menu for a cleaner interface
+    Menu.setApplicationMenu(null);
 
     // Close splash when main window is ready to show
     mainWindow?.once('ready-to-show', () => {
+      console.log('🎉 Main window ready to show');
       closeSplashScreen();
       mainWindow?.show();
+      mainWindow?.focus();
+      mainWindow?.moveTop();
+      console.log('✅ Main window shown and focused');
     });
   } catch (error) {
     console.error('❌ Failed to start app:', error);

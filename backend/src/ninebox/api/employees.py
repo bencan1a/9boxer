@@ -1,6 +1,5 @@
 """Employee management API endpoints."""
 
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 
@@ -88,9 +87,7 @@ async def get_filter_options(user_id: str = Depends(get_current_user_id)) -> dic
 
 
 @router.get("/{employee_id}", response_model=Employee)
-async def get_employee(
-    employee_id: int, user_id: str = Depends(get_current_user_id)
-) -> Employee:
+async def get_employee(employee_id: int, user_id: str = Depends(get_current_user_id)) -> Employee:
     """Get single employee by ID."""
     session = session_manager.get_session(user_id)
 
@@ -100,9 +97,7 @@ async def get_employee(
             detail="No active session",
         )
 
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
     if not employee:
         raise HTTPException(
@@ -129,9 +124,7 @@ async def update_employee(
         )
 
     # Find employee
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
     if not employee:
         raise HTTPException(
@@ -165,8 +158,8 @@ async def move_employee(
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid performance or potential value: {str(e)}",
-        )
+            detail=f"Invalid performance or potential value: {e!s}",
+        ) from e
 
     try:
         change = session_manager.move_employee(
@@ -179,13 +172,16 @@ async def move_employee(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e),
-        )
+        ) from e
 
     # Get updated employee
     session = session_manager.get_session(user_id)
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found",
+        )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
     return {
         "employee": employee.model_dump() if employee else None,

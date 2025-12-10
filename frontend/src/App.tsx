@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { theme } from "./theme/theme";
@@ -24,7 +24,7 @@ const App: React.FC = () => {
       <ThemeProvider theme={theme}>
         <SnackbarProvider>
           <CssBaseline />
-          <BrowserRouter>
+          <HashRouter>
             <SessionExpiryWarning warningMinutes={5} />
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -38,7 +38,7 @@ const App: React.FC = () => {
                 }
               />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </SnackbarProvider>
       </ThemeProvider>
     </ErrorBoundary>

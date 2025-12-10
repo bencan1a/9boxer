@@ -11,8 +11,14 @@ def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> dict[str, str]:
     """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
     return auth_headers
 
@@ -68,7 +74,12 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
     data = response.json()
 
     # Check each dimension
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         analysis = data[dimension]
 
         assert "chi_square" in analysis
@@ -117,7 +128,12 @@ def test_get_intelligence_when_called_then_p_values_in_valid_range(
     assert response.status_code == 200
     data = response.json()
 
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         p_value = data[dimension]["p_value"]
         assert 0 <= p_value <= 1, f"{dimension} p-value {p_value} out of range"
 
@@ -131,7 +147,12 @@ def test_get_intelligence_when_called_then_effect_sizes_non_negative(
     assert response.status_code == 200
     data = response.json()
 
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         effect_size = data[dimension]["effect_size"]
         assert effect_size >= 0, f"{dimension} effect_size {effect_size} is negative"
 
@@ -149,7 +170,12 @@ def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
 
     # Count actual status levels from dimensions
     actual_counts = {"green": 0, "yellow": 0, "red": 0}
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         status = data[dimension]["status"]
         actual_counts[status] += 1
 
@@ -189,11 +215,16 @@ def test_get_intelligence_when_analyzes_full_dataset_then_uses_all_employees(
     # Get total employees from unfiltered stats
     stats_response = test_client.get("/api/statistics", headers=session_with_data)
     assert stats_response.status_code == 200
-    total_employees = stats_response.json()["total_employees"]
+    stats_response.json()["total_employees"]
 
     # Intelligence should analyze all employees
     # Check that sample sizes reflect full dataset
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         sample_size = intelligence_data[dimension]["sample_size"]
         # Sample size should be related to total employees (may be 0 if service not implemented)
         assert sample_size >= 0
@@ -209,13 +240,20 @@ def test_get_intelligence_when_severity_green_then_p_value_high(
     data = response.json()
 
     # For any dimension with green status, p-value should be > 0.05
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         analysis = data[dimension]
         if analysis["status"] == "green":
             # Green means no significant issue (p > 0.05)
             # Skip check if p_value is exactly 1.0 (mock data)
             if analysis["p_value"] < 1.0:
-                assert analysis["p_value"] > 0.05, f"{dimension} has green but p={analysis['p_value']}"
+                assert analysis["p_value"] > 0.05, (
+                    f"{dimension} has green but p={analysis['p_value']}"
+                )
 
 
 def test_get_intelligence_when_sample_insufficient_then_flags_appropriately(
@@ -228,7 +266,12 @@ def test_get_intelligence_when_sample_insufficient_then_flags_appropriately(
     data = response.json()
 
     # Check that interpretation field exists for all dimensions
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         analysis = data[dimension]
         # Interpretation should provide context
         assert isinstance(analysis["interpretation"], str)
@@ -244,7 +287,12 @@ def test_get_intelligence_when_called_then_deviations_are_lists(
     assert response.status_code == 200
     data = response.json()
 
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         deviations = data[dimension]["deviations"]
         assert isinstance(deviations, list)
 
@@ -297,5 +345,10 @@ def test_get_intelligence_when_response_then_matches_typeddict_structure(
         "deviations",
         "interpretation",
     }
-    for dimension in ["location_analysis", "function_analysis", "level_analysis", "tenure_analysis"]:
+    for dimension in [
+        "location_analysis",
+        "function_analysis",
+        "level_analysis",
+        "tenure_analysis",
+    ]:
         assert set(data[dimension].keys()) == dimension_keys

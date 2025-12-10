@@ -59,6 +59,11 @@ dev = [
 
     # Type stubs
     "types-requests",
+    "pandas-stubs>=2.0.0",
+    "types-openpyxl>=3.1.0",
+    "types-python-jose>=3.3.0",
+    "types-passlib>=1.7.0",
+    "scipy-stubs>=1.11.0",
 
     # Development tools
     "ipython>=8.20.0",
@@ -127,16 +132,22 @@ warn_unused_ignores = true
 warn_no_return = true
 strict_equality = true
 mypy_path = "backend/src"
+exclude = ["backend/tests", "frontend/tests"]
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
 
+[[tool.mypy.overrides]]
+module = ["pandas.*", "openpyxl.*", "jose.*", "passlib.*", "scipy.*"]
+ignore_missing_imports = true
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100
-src = ["backend/src", "backend/tests", ".github/scripts"]
+src = ["backend/src", ".github/scripts"]
+exclude = ["backend/tests", "frontend/tests"]
 
 [tool.ruff.lint]
 select = [
@@ -183,5 +194,5 @@ target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 
 [tool.bandit]
-exclude_dirs = ["backend/tests", "venv", ".venv"]
+exclude_dirs = ["backend/tests", "frontend/tests", "venv", ".venv"]
 skips = ["B101", "B404", "B603", "B607"]

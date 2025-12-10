@@ -1,6 +1,7 @@
 """Database connection and initialization."""
 
 import sqlite3
+import uuid
 from pathlib import Path
 
 from ninebox.core.security import get_password_hash
@@ -60,11 +61,9 @@ def init_db() -> None:
 
         # Create default admin user if database is empty
         if user_count == 0:
-            import uuid
-
             default_user_id = str(uuid.uuid4())
             default_username = "bencan"
-            default_password = "password"
+            default_password = "password"  # nosec B105  # Default dev password, should be changed
             hashed_password = get_password_hash(default_password)
 
             cursor.execute(
@@ -79,8 +78,6 @@ def init_db() -> None:
 
 def create_user(username: str, password: str) -> str:
     """Create a new user."""
-    import uuid
-
     user_id = str(uuid.uuid4())
     hashed_password = get_password_hash(password)
 
@@ -94,8 +91,8 @@ def create_user(username: str, password: str) -> str:
         )
         conn.commit()
         return user_id
-    except sqlite3.IntegrityError:
-        raise ValueError(f"User '{username}' already exists")
+    except sqlite3.IntegrityError as e:
+        raise ValueError(f"User '{username}' already exists") from e
     finally:
         conn.close()
 
