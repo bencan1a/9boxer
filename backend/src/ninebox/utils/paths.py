@@ -39,10 +39,7 @@ def get_user_data_dir() -> Path:
         Path to user data directory
     """
     app_data_dir = os.getenv("APP_DATA_DIR")
-    if app_data_dir:
-        data_dir = Path(app_data_dir)
-    else:
-        data_dir = Path.home() / ".ninebox"
+    data_dir = Path(app_data_dir) if app_data_dir else Path.home() / ".ninebox"
 
     data_dir.mkdir(parents=True, exist_ok=True)
     return data_dir

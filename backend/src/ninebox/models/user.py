@@ -1,6 +1,5 @@
 """User authentication models."""
 
-
 from pydantic import BaseModel
 
 

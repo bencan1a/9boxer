@@ -40,13 +40,15 @@ async def login(credentials: UserLogin) -> TokenResponse:
 
     return TokenResponse(
         access_token=access_token,
-        token_type="bearer",
+        token_type="bearer",  # nosec B106  # Standard OAuth2 token type
         expires_in=settings.access_token_expire_minutes * 60,
     )
 
 
 @router.post("/logout")
-async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+async def logout(
+    _credentials: HTTPAuthorizationCredentials = Depends(security),  # noqa: B008
+) -> dict:
     """Logout endpoint."""
     # In a stateless JWT system, logout is handled client-side by discarding the token
     # For session-based systems, we would invalidate the session here
@@ -54,21 +56,23 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)) 
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> UserResponse:
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),  # noqa: B008
+) -> UserResponse:
     """Get current user info."""
     try:
         payload = decode_access_token(credentials.credentials)
-        user_id: str = payload.get("sub")
-        if user_id is None:
+        user_id = payload.get("sub")
+        if not isinstance(user_id, str):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication",
             )
-    except ValueError:
+    except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication",
-        )
+        ) from e
 
     user = get_user_by_id(user_id)
     if not user:
@@ -80,19 +84,21 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return UserResponse(user_id=user["user_id"], username=user["username"])
 
 
-async def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
+async def get_current_user_id(
+    credentials: HTTPAuthorizationCredentials = Depends(security),  # noqa: B008
+) -> str:
     """Dependency to get current user ID from token."""
     try:
         payload = decode_access_token(credentials.credentials)
-        user_id: str = payload.get("sub")
-        if user_id is None:
+        user_id = payload.get("sub")
+        if not isinstance(user_id, str):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication",
             )
         return user_id
-    except ValueError:
+    except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication",
-        )
+        ) from e

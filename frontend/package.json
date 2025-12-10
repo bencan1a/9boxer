@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "9-Box Performance Review - Desktop Application",
   "author": "Your Company",
-  "main": "dist-electron/index.js",
+  "main": "dist-electron/main/index.js",
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"

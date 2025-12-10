@@ -1,5 +1,6 @@
 """Session management service."""
 
+import copy
 import uuid
 from datetime import datetime
 
@@ -21,8 +22,6 @@ class SessionManager:
         session_id = str(uuid.uuid4())
 
         # Deep copy employees for original state
-        import copy
-
         original_employees = copy.deepcopy(employees)
         current_employees = copy.deepcopy(employees)
 

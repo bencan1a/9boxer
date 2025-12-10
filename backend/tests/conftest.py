@@ -28,8 +28,8 @@ def test_db_path() -> Generator[str, None, None]:
     yield db_path
 
     # Cleanup
-    if os.path.exists(db_path):
-        os.unlink(db_path)
+    if os.path.exists(db_path):  # noqa: PTH110
+        os.unlink(db_path)  # noqa: PTH108
 
 
 @pytest.fixture(autouse=True)
@@ -69,7 +69,8 @@ def setup_test_db(test_db_path: str) -> Generator[None, None, None]:
     conn.close()
 
     # Clear all sessions from session manager
-    from ninebox.services.session_manager import session_manager
+    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+
     session_manager.sessions.clear()
 
 
@@ -317,8 +318,8 @@ def test_client(test_db_path: str) -> TestClient:
     """Create a FastAPI test client."""
     # Import app after database path is set
     # Patch database path for testing
-    import ninebox.core.database as db_module
-    from ninebox.main import app
+    import ninebox.core.database as db_module  # noqa: PLC0415
+    from ninebox.main import app  # noqa: PLC0415
 
     original_get_db_path = db_module.get_db_path
 

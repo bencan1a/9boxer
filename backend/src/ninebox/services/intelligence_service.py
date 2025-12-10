@@ -4,7 +4,7 @@ This module provides statistical analysis functions to detect anomalous patterns
 in employee rating distributions across various dimensions (location, function, level, tenure).
 """
 
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 from scipy.stats import chi2_contingency, fisher_exact
@@ -38,10 +38,10 @@ def _calculate_z_scores(observed: np.ndarray, expected: np.ndarray) -> np.ndarra
         Array of z-scores (standardized residuals)
     """
     # Avoid division by zero
-    with np.errstate(divide='ignore', invalid='ignore'):
+    with np.errstate(divide="ignore", invalid="ignore"):
         z_scores = (observed - expected) / np.sqrt(expected)
         z_scores = np.nan_to_num(z_scores, nan=0.0, posinf=0.0, neginf=0.0)
-    return z_scores
+    return cast("np.ndarray[Any, Any]", z_scores)
 
 
 def _cramers_v(chi2: float, n: int, rows: int, cols: int) -> float:
@@ -93,14 +93,13 @@ def _get_status(p_value: float, is_uniformity_test: bool = False) -> str:
             return "yellow"
         else:
             return "red"
+    # For other analyses, deviation is flagged
+    elif p_value > 0.05:
+        return "green"
+    elif p_value > 0.01:
+        return "yellow"
     else:
-        # For other analyses, deviation is flagged
-        if p_value > 0.05:
-            return "green"
-        elif p_value > 0.01:
-            return "yellow"
-        else:
-            return "red"
+        return "red"
 
 
 def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
@@ -141,8 +140,9 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=locations, cols=performance levels
     location_names = sorted(locations.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array([[locations[loc][perf] for perf in perf_levels]
-                            for loc in location_names])
+    contingency = np.array(
+        [[locations[loc][perf] for perf in perf_levels] for loc in location_names]
+    )
 
     # Check sample size FIRST (more important than checking for empty categories)
     n = len(employees)
@@ -155,10 +155,10 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
         z_scores = _calculate_z_scores(contingency, expected)
     except ValueError as e:
         # Chi-square test failed (likely due to zero expected frequencies)
-        return _empty_analysis(f"Statistical test failed: {str(e)}")
+        return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Check if chi-square test is valid
-    if not _safe_sample_size_check(expected):
+    if not _safe_sample_size_check(expected):  # noqa: SIM102
         # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
             _, p_value = fisher_exact(contingency)
@@ -178,17 +178,19 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
         observed_high_pct = (observed_high / total_in_loc * 100) if total_in_loc > 0 else 0
         expected_high_pct = (expected_high / total_in_loc * 100) if total_in_loc > 0 else 0
 
-        deviations.append({
-            "category": loc,
-            "observed_high_pct": round(observed_high_pct, 1),
-            "expected_high_pct": round(expected_high_pct, 1),
-            "z_score": round(float(z_score), 2),
-            "sample_size": int(total_in_loc),
-            "is_significant": bool(abs(z_score) > 2.0)
-        })
+        deviations.append(
+            {
+                "category": loc,
+                "observed_high_pct": round(observed_high_pct, 1),
+                "expected_high_pct": round(expected_high_pct, 1),
+                "z_score": round(float(z_score), 2),
+                "sample_size": int(total_in_loc),
+                "is_significant": bool(abs(z_score) > 2.0),
+            }
+        )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(x["z_score"]), reverse=True)
+    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
     # Generate interpretation
     status = _get_status(p_value, is_uniformity_test=False)
@@ -202,7 +204,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
         "sample_size": n,
         "status": status,
         "deviations": deviations,
-        "interpretation": interpretation
+        "interpretation": interpretation,
     }
 
 
@@ -226,7 +228,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         func = emp.job_function
         pos = emp.grid_position
         if func not in functions:
-            functions[func] = {i: 0 for i in range(1, 10)}
+            functions[func] = dict.fromkeys(range(1, 10), 0)
         functions[func][pos] += 1
 
     if len(functions) < 2:
@@ -235,8 +237,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=functions, cols=grid positions (1-9)
     function_names = sorted(functions.keys())
     positions = list(range(1, 10))
-    contingency = np.array([[functions[func][pos] for pos in positions]
-                            for func in function_names])
+    contingency = np.array([[functions[func][pos] for pos in positions] for func in function_names])
 
     # Check sample size
     n = len(employees)
@@ -255,7 +256,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         z_scores = _calculate_z_scores(contingency, expected)
     except ValueError as e:
         # Chi-square test failed (likely due to zero expected frequencies)
-        return _empty_analysis(f"Statistical test failed: {str(e)}")
+        return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Calculate effect size
     effect_size = _cramers_v(chi2, n, len(function_names), len(positions))
@@ -271,17 +272,19 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         observed_high_pct = (observed_high / total_in_func * 100) if total_in_func > 0 else 0
         expected_high_pct = (expected_high / total_in_func * 100) if total_in_func > 0 else 0
 
-        deviations.append({
-            "category": func,
-            "observed_high_pct": round(observed_high_pct, 1),
-            "expected_high_pct": round(expected_high_pct, 1),
-            "z_score": round(float(z_score_high), 2),
-            "sample_size": int(total_in_func),
-            "is_significant": bool(abs(z_score_high) > 2.0)
-        })
+        deviations.append(
+            {
+                "category": func,
+                "observed_high_pct": round(observed_high_pct, 1),
+                "expected_high_pct": round(expected_high_pct, 1),
+                "z_score": round(float(z_score_high), 2),
+                "sample_size": int(total_in_func),
+                "is_significant": bool(abs(z_score_high) > 2.0),
+            }
+        )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(x["z_score"]), reverse=True)
+    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
     # Generate interpretation
     status = _get_status(p_value, is_uniformity_test=False)
@@ -295,7 +298,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         "sample_size": n,
         "status": status,
         "deviations": deviations,
-        "interpretation": interpretation
+        "interpretation": interpretation,
     }
 
 
@@ -329,8 +332,7 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=levels, cols=performance
     level_names = sorted(levels.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array([[levels[lvl][perf] for perf in perf_levels]
-                            for lvl in level_names])
+    contingency = np.array([[levels[lvl][perf] for perf in perf_levels] for lvl in level_names])
 
     # Check sample size
     n = len(employees)
@@ -349,7 +351,7 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
         z_scores = _calculate_z_scores(contingency, expected)
     except ValueError as e:
         # Chi-square test failed (likely due to zero expected frequencies)
-        return _empty_analysis(f"Statistical test failed: {str(e)}")
+        return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Calculate effect size
     effect_size = _cramers_v(chi2, n, len(level_names), len(perf_levels))
@@ -365,17 +367,19 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
         observed_high_pct = (observed_high / total_in_level * 100) if total_in_level > 0 else 0
         expected_high_pct = (expected_high / total_in_level * 100) if total_in_level > 0 else 0
 
-        deviations.append({
-            "category": lvl,
-            "observed_high_pct": round(observed_high_pct, 1),
-            "expected_high_pct": round(expected_high_pct, 1),
-            "z_score": round(float(z_score), 2),
-            "sample_size": int(total_in_level),
-            "is_significant": bool(abs(z_score) > 2.0)
-        })
+        deviations.append(
+            {
+                "category": lvl,
+                "observed_high_pct": round(observed_high_pct, 1),
+                "expected_high_pct": round(expected_high_pct, 1),
+                "z_score": round(float(z_score), 2),
+                "sample_size": int(total_in_level),
+                "is_significant": bool(abs(z_score) > 2.0),
+            }
+        )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(x["z_score"]), reverse=True)
+    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
     # Generate interpretation (UNIFORMITY TEST - p > 0.05 is GOOD)
     status = _get_status(p_value, is_uniformity_test=True)
@@ -389,7 +393,7 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
         "sample_size": n,
         "status": status,
         "deviations": deviations,
-        "interpretation": interpretation
+        "interpretation": interpretation,
     }
 
 
@@ -422,8 +426,7 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=tenure categories, cols=performance
     tenure_names = sorted(tenures.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array([[tenures[ten][perf] for perf in perf_levels]
-                            for ten in tenure_names])
+    contingency = np.array([[tenures[ten][perf] for perf in perf_levels] for ten in tenure_names])
 
     # Check sample size
     n = len(employees)
@@ -442,7 +445,7 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
         z_scores = _calculate_z_scores(contingency, expected)
     except ValueError as e:
         # Chi-square test failed (likely due to zero expected frequencies)
-        return _empty_analysis(f"Statistical test failed: {str(e)}")
+        return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Calculate effect size
     effect_size = _cramers_v(chi2, n, len(tenure_names), len(perf_levels))
@@ -458,17 +461,19 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
         observed_high_pct = (observed_high / total_in_tenure * 100) if total_in_tenure > 0 else 0
         expected_high_pct = (expected_high / total_in_tenure * 100) if total_in_tenure > 0 else 0
 
-        deviations.append({
-            "category": ten,
-            "observed_high_pct": round(observed_high_pct, 1),
-            "expected_high_pct": round(expected_high_pct, 1),
-            "z_score": round(float(z_score), 2),
-            "sample_size": int(total_in_tenure),
-            "is_significant": bool(abs(z_score) > 2.0)
-        })
+        deviations.append(
+            {
+                "category": ten,
+                "observed_high_pct": round(observed_high_pct, 1),
+                "expected_high_pct": round(expected_high_pct, 1),
+                "z_score": round(float(z_score), 2),
+                "sample_size": int(total_in_tenure),
+                "is_significant": bool(abs(z_score) > 2.0),
+            }
+        )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(x["z_score"]), reverse=True)
+    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
     # Generate interpretation
     status = _get_status(p_value, is_uniformity_test=False)
@@ -482,7 +487,7 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
         "sample_size": n,
         "status": status,
         "deviations": deviations,
-        "interpretation": interpretation
+        "interpretation": interpretation,
     }
 
 
@@ -514,7 +519,7 @@ def calculate_overall_intelligence(employees: list[Employee]) -> dict[str, Any]:
     anomaly_count = {
         "green": sum(1 for a in analyses if a.get("status") == "green"),
         "yellow": sum(1 for a in analyses if a.get("status") == "yellow"),
-        "red": sum(1 for a in analyses if a.get("status") == "red")
+        "red": sum(1 for a in analyses if a.get("status") == "red"),
     }
 
     # Calculate quality score (0-100)
@@ -528,7 +533,7 @@ def calculate_overall_intelligence(employees: list[Employee]) -> dict[str, Any]:
         "location_analysis": location,
         "function_analysis": function,
         "level_analysis": level,
-        "tenure_analysis": tenure
+        "tenure_analysis": tenure,
     }
 
 
@@ -549,7 +554,7 @@ def _empty_analysis(reason: str) -> dict[str, Any]:
         "sample_size": 0,
         "status": "green",
         "deviations": [],
-        "interpretation": reason
+        "interpretation": reason,
     }
 
 
@@ -571,9 +576,11 @@ def _generate_location_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
-        return (f"Significant location bias detected (p={p_value:.4f}, {effect_desc} effect). "
-                f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
-                f"(z={z_score:.2f}, {direction} than baseline).")
+        return (
+            f"Significant location bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline)."
+        )
 
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 
@@ -595,9 +602,11 @@ def _generate_function_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
-        return (f"Significant function bias detected (p={p_value:.4f}, {effect_desc} effect). "
-                f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
-                f"(z={z_score:.2f}, {direction} than baseline).")
+        return (
+            f"Significant function bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline)."
+        )
 
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 
@@ -607,8 +616,10 @@ def _generate_level_interpretation(
 ) -> str:
     """Generate human-readable interpretation for level analysis (UNIFORMITY TEST)."""
     if status == "green":
-        return (f"Level calibration looks good (p={p_value:.4f}). "
-                "Performance ratings are properly calibrated across job levels.")
+        return (
+            f"Level calibration looks good (p={p_value:.4f}). "
+            "Performance ratings are properly calibrated across job levels."
+        )
 
     if deviations:
         top_dev = deviations[0]
@@ -620,9 +631,11 @@ def _generate_level_interpretation(
         direction = "leniency" if obs_pct > exp_pct else "severity"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
-        return (f"Warning: Level calibration issue detected (p={p_value:.4f}, {effect_desc} effect). "
-                f"{category}: {obs_pct:.1f}% rated High vs {exp_pct:.1f}% baseline - "
-                f"possible {direction} bias (z={z_score:.2f}).")
+        return (
+            f"Warning: Level calibration issue detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% rated High vs {exp_pct:.1f}% baseline - "
+            f"possible {direction} bias (z={z_score:.2f})."
+        )
 
     return f"Warning: Calibration issue detected (p={p_value:.4f})."
 
@@ -644,9 +657,11 @@ def _generate_tenure_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
-        return (f"Significant tenure bias detected (p={p_value:.4f}, {effect_desc} effect). "
-                f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
-                f"(z={z_score:.2f}, {direction} than baseline).")
+        return (
+            f"Significant tenure bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline)."
+        )
 
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 

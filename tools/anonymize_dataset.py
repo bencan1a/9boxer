@@ -3,38 +3,203 @@
 Anonymize the talent mapping Excel file by replacing names and locations consistently.
 """
 
-
 import pandas as pd
 
 # Fake names pool (first and last names)
 FIRST_NAMES = [
-    "Alice", "Bob", "Charlie", "Diana", "Edward", "Fiona", "George", "Hannah",
-    "Isaac", "Julia", "Kevin", "Laura", "Michael", "Natalie", "Oliver", "Patricia",
-    "Quinn", "Rachel", "Samuel", "Teresa", "Ulysses", "Victoria", "William", "Xavier",
-    "Yolanda", "Zachary", "Amanda", "Brian", "Catherine", "David", "Emma", "Frank",
-    "Grace", "Henry", "Isabel", "James", "Karen", "Leonard", "Monica", "Nathan",
-    "Olivia", "Peter", "Quentin", "Rebecca", "Steven", "Tina", "Uma", "Vincent",
-    "Wendy", "Xander", "Yvonne", "Zane", "Anthony", "Bella", "Carlos", "Danielle",
-    "Eric", "Felicia", "Gary", "Heather", "Ivan", "Jessica", "Keith", "Lindsay",
-    "Marcus", "Nicole", "Oscar", "Pamela", "Raymond", "Sophia", "Thomas", "Ursula",
-    "Victor", "Whitney", "York", "Zelda", "Aaron", "Brenda", "Colin", "Donna",
-    "Ethan", "Frances", "Gilbert", "Helen", "Ian", "Jane", "Kyle", "Lisa",
-    "Martin", "Nancy", "Owen", "Paula", "Richard", "Sarah", "Timothy", "Valerie"
+    "Alice",
+    "Bob",
+    "Charlie",
+    "Diana",
+    "Edward",
+    "Fiona",
+    "George",
+    "Hannah",
+    "Isaac",
+    "Julia",
+    "Kevin",
+    "Laura",
+    "Michael",
+    "Natalie",
+    "Oliver",
+    "Patricia",
+    "Quinn",
+    "Rachel",
+    "Samuel",
+    "Teresa",
+    "Ulysses",
+    "Victoria",
+    "William",
+    "Xavier",
+    "Yolanda",
+    "Zachary",
+    "Amanda",
+    "Brian",
+    "Catherine",
+    "David",
+    "Emma",
+    "Frank",
+    "Grace",
+    "Henry",
+    "Isabel",
+    "James",
+    "Karen",
+    "Leonard",
+    "Monica",
+    "Nathan",
+    "Olivia",
+    "Peter",
+    "Quentin",
+    "Rebecca",
+    "Steven",
+    "Tina",
+    "Uma",
+    "Vincent",
+    "Wendy",
+    "Xander",
+    "Yvonne",
+    "Zane",
+    "Anthony",
+    "Bella",
+    "Carlos",
+    "Danielle",
+    "Eric",
+    "Felicia",
+    "Gary",
+    "Heather",
+    "Ivan",
+    "Jessica",
+    "Keith",
+    "Lindsay",
+    "Marcus",
+    "Nicole",
+    "Oscar",
+    "Pamela",
+    "Raymond",
+    "Sophia",
+    "Thomas",
+    "Ursula",
+    "Victor",
+    "Whitney",
+    "York",
+    "Zelda",
+    "Aaron",
+    "Brenda",
+    "Colin",
+    "Donna",
+    "Ethan",
+    "Frances",
+    "Gilbert",
+    "Helen",
+    "Ian",
+    "Jane",
+    "Kyle",
+    "Lisa",
+    "Martin",
+    "Nancy",
+    "Owen",
+    "Paula",
+    "Richard",
+    "Sarah",
+    "Timothy",
+    "Valerie",
 ]
 
 LAST_NAMES = [
-    "Anderson", "Baker", "Carter", "Davis", "Evans", "Foster", "Garcia", "Harris",
-    "Jackson", "King", "Lee", "Martinez", "Nelson", "O'Brien", "Parker", "Quinn",
-    "Roberts", "Smith", "Taylor", "Underwood", "Valdez", "Wilson", "Young", "Zhang",
-    "Adams", "Brown", "Clark", "Douglas", "Edwards", "Fisher", "Green", "Hall",
-    "Irving", "Johnson", "Kelly", "Lewis", "Moore", "Newman", "Ortiz", "Peterson",
-    "Ramirez", "Scott", "Thompson", "Upton", "Vargas", "White", "Xu", "Yang",
-    "Allen", "Bell", "Cooper", "Dixon", "Ellis", "Flynn", "Gray", "Hughes",
-    "Ives", "Jones", "Knight", "Lopez", "Miller", "Nguyen", "Oliver", "Powell",
-    "Reed", "Sullivan", "Turner", "Vaughn", "Walker", "Xavier", "Zimmerman",
-    "Armstrong", "Bennett", "Collins", "Dean", "Ferguson", "Graham", "Henderson",
-    "Ingram", "Jenkins", "Kennedy", "Long", "Morgan", "Nash", "Owens", "Patterson",
-    "Reynolds", "Stone", "Torres", "Vincent", "Ward", "Yates", "Abbott", "Black"
+    "Anderson",
+    "Baker",
+    "Carter",
+    "Davis",
+    "Evans",
+    "Foster",
+    "Garcia",
+    "Harris",
+    "Jackson",
+    "King",
+    "Lee",
+    "Martinez",
+    "Nelson",
+    "O'Brien",
+    "Parker",
+    "Quinn",
+    "Roberts",
+    "Smith",
+    "Taylor",
+    "Underwood",
+    "Valdez",
+    "Wilson",
+    "Young",
+    "Zhang",
+    "Adams",
+    "Brown",
+    "Clark",
+    "Douglas",
+    "Edwards",
+    "Fisher",
+    "Green",
+    "Hall",
+    "Irving",
+    "Johnson",
+    "Kelly",
+    "Lewis",
+    "Moore",
+    "Newman",
+    "Ortiz",
+    "Peterson",
+    "Ramirez",
+    "Scott",
+    "Thompson",
+    "Upton",
+    "Vargas",
+    "White",
+    "Xu",
+    "Yang",
+    "Allen",
+    "Bell",
+    "Cooper",
+    "Dixon",
+    "Ellis",
+    "Flynn",
+    "Gray",
+    "Hughes",
+    "Ives",
+    "Jones",
+    "Knight",
+    "Lopez",
+    "Miller",
+    "Nguyen",
+    "Oliver",
+    "Powell",
+    "Reed",
+    "Sullivan",
+    "Turner",
+    "Vaughn",
+    "Walker",
+    "Xavier",
+    "Zimmerman",
+    "Armstrong",
+    "Bennett",
+    "Collins",
+    "Dean",
+    "Ferguson",
+    "Graham",
+    "Henderson",
+    "Ingram",
+    "Jenkins",
+    "Kennedy",
+    "Long",
+    "Morgan",
+    "Nash",
+    "Owens",
+    "Patterson",
+    "Reynolds",
+    "Stone",
+    "Torres",
+    "Vincent",
+    "Ward",
+    "Yates",
+    "Abbott",
+    "Black",
 ]
 
 # Location mappings (country codes in job titles/profiles)
@@ -92,7 +257,7 @@ def anonymize_dataframe(df: pd.DataFrame, name_mapping: dict, location_map: dict
         "Worker's Manager",
         "Management Chain - Level 04",
         "Management Chain - Level 05",
-        "Management Chain - Level 06"
+        "Management Chain - Level 06",
     ]
 
     for col in name_columns:
@@ -100,11 +265,7 @@ def anonymize_dataframe(df: pd.DataFrame, name_mapping: dict, location_map: dict
             df_anon[col] = df_anon[col].map(lambda x: name_mapping.get(x, x) if pd.notna(x) else x)
 
     # Replace locations in text columns
-    location_columns = [
-        "Job Title",
-        "Job Profile",
-        "Business Title"
-    ]
+    location_columns = ["Job Title", "Job Profile", "Business Title"]
 
     for col in location_columns:
         if col in df_anon.columns:
@@ -135,7 +296,7 @@ def main():
         "Worker's Manager",
         "Management Chain - Level 04",
         "Management Chain - Level 05",
-        "Management Chain - Level 06"
+        "Management Chain - Level 06",
     ]
 
     for col in name_columns:
@@ -151,7 +312,7 @@ def main():
 
     # Show a few examples
     print("\nExample name mappings:")
-    for i, (real, fake) in enumerate(list(name_mapping.items())[:5]):
+    for _i, (real, fake) in enumerate(list(name_mapping.items())[:5]):
         print(f"  {real} -> {fake}")
 
     print("\nLocation mappings:")
@@ -159,7 +320,7 @@ def main():
         print(f"  {old_loc} -> {new_loc}")
 
     # Anonymize all sheets
-    with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+    with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
         for sheet_name in xl_file.sheet_names:
             print(f"\nProcessing sheet: {sheet_name}")
             df = pd.read_excel(input_file, sheet_name=sheet_name)
@@ -172,7 +333,7 @@ def main():
                 df_anon = df
                 print(f"  Kept {len(df_anon)} rows as-is (instruction sheet)")
 
-            df_anon.to_excel(writer, sheet_name=sheet_name, index=False)
+            df_anon.to_excel(writer, sheet_name=str(sheet_name), index=False)
 
     print(f"\n✓ Anonymized data saved to: {output_file}")
     print(f"  Total names replaced: {len(name_mapping)}")

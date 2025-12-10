@@ -13,7 +13,7 @@ class ExcelParser:
     """Parse Excel file into Employee objects."""
 
     @staticmethod
-    def _categorize_job_function(job_function: str) -> str:
+    def _categorize_job_function(job_function: str) -> str:  # noqa: PLR0911, PLR0912
         """
         Extract meaningful job function from job profile string.
 
@@ -35,10 +35,18 @@ class ExcelParser:
                 return "Product"
 
         # Engineering roles
-        elif "engineer" in job_function_lower or "software" in job_function_lower or "developer" in job_function_lower:
+        elif (
+            "engineer" in job_function_lower
+            or "software" in job_function_lower
+            or "developer" in job_function_lower
+        ):
             if "data" in job_function_lower:
                 return "Data Engineering"
-            elif "machine learning" in job_function_lower or "ml " in job_function_lower or "ai " in job_function_lower:
+            elif (
+                "machine learning" in job_function_lower
+                or "ml " in job_function_lower
+                or "ai " in job_function_lower
+            ):
                 return "ML/AI Engineering"
             else:
                 return "Engineering"
@@ -71,13 +79,20 @@ class ExcelParser:
                 return "Data"
 
         # Writing/Documentation roles
-        elif ("tech" in job_function_lower and "writ" in job_function_lower) or "technical writ" in job_function_lower:
+        elif (
+            "tech" in job_function_lower and "writ" in job_function_lower
+        ) or "technical writ" in job_function_lower:
             return "Technical Writing"
         elif "content" in job_function_lower:
             return "Content"
 
         # Management roles
-        elif "manager" in job_function_lower or "director" in job_function_lower or "vp " in job_function_lower or "head of" in job_function_lower:
+        elif (
+            "manager" in job_function_lower
+            or "director" in job_function_lower
+            or "vp " in job_function_lower
+            or "head of" in job_function_lower
+        ):
             return "Management"
 
         # Sales/Marketing roles
@@ -91,7 +106,11 @@ class ExcelParser:
             return "Customer Success"
 
         # HR/People roles
-        elif "hr " in job_function_lower or "people" in job_function_lower or "talent" in job_function_lower:
+        elif (
+            "hr " in job_function_lower
+            or "people" in job_function_lower
+            or "talent" in job_function_lower
+        ):
             return "People/HR"
 
         # Finance/Operations
@@ -106,7 +125,7 @@ class ExcelParser:
             words = job_function.split()
             if words:
                 # Take first 1-2 words as the function name
-                return " ".join(words[:min(2, len(words))]).title()
+                return " ".join(words[: min(2, len(words))]).title()
             return "Other"
 
     def parse(self, file_path: str | Path) -> list[Employee]:
@@ -119,7 +138,7 @@ class ExcelParser:
         try:
             df = pd.read_excel(file_path, sheet_name=1)
         except Exception as e:
-            raise ValueError(f"Failed to read Excel file: {e}")
+            raise ValueError(f"Failed to read Excel file: {e}") from e
 
         # Validate required columns exist
         required_columns = [
@@ -153,15 +172,11 @@ class ExcelParser:
         history = []
         if pd.notna(row.get("2023 Completed Performance Rating")):
             history.append(
-                HistoricalRating(
-                    year=2023, rating=str(row["2023 Completed Performance Rating"])
-                )
+                HistoricalRating(year=2023, rating=str(row["2023 Completed Performance Rating"]))
             )
         if pd.notna(row.get("2024 Completed Performance Rating")):
             history.append(
-                HistoricalRating(
-                    year=2024, rating=str(row["2024 Completed Performance Rating"])
-                )
+                HistoricalRating(year=2024, rating=str(row["2024 Completed Performance Rating"]))
             )
 
         # Get performance and potential (handle different possible column names)
@@ -200,7 +215,9 @@ class ExcelParser:
                 "9-Box Position",
             ],
         )
-        position_label = str(row.get(position_label_col, self._get_position_label(performance, potential)))
+        position_label = str(
+            row.get(position_label_col, self._get_position_label(performance, potential))
+        )
 
         # Parse hire date
         hire_date_val = row.get("Hire Date")
@@ -233,26 +250,52 @@ class ExcelParser:
             job_level=str(row["Job Level - Primary Position"]),
             job_function=job_function,
             location=location,
-            manager=str(row.get("Worker's Manager", "")) if pd.notna(row.get("Worker's Manager")) else "",
-            management_chain_01=str(row.get("Management Chain - Level 01")) if pd.notna(row.get("Management Chain - Level 01")) else None,
-            management_chain_02=str(row.get("Management Chain - Level 02")) if pd.notna(row.get("Management Chain - Level 02")) else None,
-            management_chain_03=str(row.get("Management Chain - Level 03")) if pd.notna(row.get("Management Chain - Level 03")) else None,
-            management_chain_04=str(row.get("Management Chain - Level 04")) if pd.notna(row.get("Management Chain - Level 04")) else None,
-            management_chain_05=str(row.get("Management Chain - Level 05")) if pd.notna(row.get("Management Chain - Level 05")) else None,
-            management_chain_06=str(row.get("Management Chain - Level 06")) if pd.notna(row.get("Management Chain - Level 06")) else None,
+            manager=str(row.get("Worker's Manager", ""))
+            if pd.notna(row.get("Worker's Manager"))
+            else "",
+            management_chain_01=str(row.get("Management Chain - Level 01"))
+            if pd.notna(row.get("Management Chain - Level 01"))
+            else None,
+            management_chain_02=str(row.get("Management Chain - Level 02"))
+            if pd.notna(row.get("Management Chain - Level 02"))
+            else None,
+            management_chain_03=str(row.get("Management Chain - Level 03"))
+            if pd.notna(row.get("Management Chain - Level 03"))
+            else None,
+            management_chain_04=str(row.get("Management Chain - Level 04"))
+            if pd.notna(row.get("Management Chain - Level 04"))
+            else None,
+            management_chain_05=str(row.get("Management Chain - Level 05"))
+            if pd.notna(row.get("Management Chain - Level 05"))
+            else None,
+            management_chain_06=str(row.get("Management Chain - Level 06"))
+            if pd.notna(row.get("Management Chain - Level 06"))
+            else None,
             hire_date=hire_date,
-            tenure_category=str(row.get("Tenure Category (Months)", "")) if pd.notna(row.get("Tenure Category (Months)")) else "",
-            time_in_job_profile=str(row.get("Time in Job Profile", "")) if pd.notna(row.get("Time in Job Profile")) else "",
+            tenure_category=str(row.get("Tenure Category (Months)", ""))
+            if pd.notna(row.get("Tenure Category (Months)"))
+            else "",
+            time_in_job_profile=str(row.get("Time in Job Profile", ""))
+            if pd.notna(row.get("Time in Job Profile"))
+            else "",
             performance=performance,
             potential=potential,
             grid_position=grid_position,
             position_label=position_label,
-            talent_indicator=str(row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))) if pd.notna(row.get("FY25 Talent Indicator")) else "",
+            talent_indicator=str(row.get("FY25 Talent Indicator", row.get("Talent Indicator", "")))
+            if pd.notna(row.get("FY25 Talent Indicator"))
+            else "",
             ratings_history=history,
-            development_focus=str(row.get("Development Focus", "")) if pd.notna(row.get("Development Focus")) else None,
-            development_action=str(row.get("Development Action", "")) if pd.notna(row.get("Development Action")) else None,
+            development_focus=str(row.get("Development Focus", ""))
+            if pd.notna(row.get("Development Focus"))
+            else None,
+            development_action=str(row.get("Development Action", ""))
+            if pd.notna(row.get("Development Action"))
+            else None,
             notes=str(row.get("Notes", "")) if pd.notna(row.get("Notes")) else None,
-            promotion_status=str(row.get("Promotion (In-Line,", row.get("Promotion", ""))) if pd.notna(row.get("Promotion (In-Line,")) else None,
+            promotion_status=str(row.get("Promotion (In-Line,", row.get("Promotion", "")))
+            if pd.notna(row.get("Promotion (In-Line,"))
+            else None,
             promotion_readiness=self._parse_promotion_readiness(row.get("Promotion Readiness")),
             modified_in_session=False,
         )

@@ -2,6 +2,7 @@
 
 from datetime import date, datetime
 from enum import Enum
+from typing import ClassVar
 
 from pydantic import BaseModel
 
@@ -82,7 +83,7 @@ class Employee(BaseModel):
     class Config:
         """Pydantic config."""
 
-        json_encoders = {
+        json_encoders: ClassVar = {
             date: lambda v: v.isoformat(),
             datetime: lambda v: v.isoformat() if v else None,
         }

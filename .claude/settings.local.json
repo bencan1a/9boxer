@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(../.venv/Scripts/python.exe -m PyInstaller:*)",
+      "Bash(./make.bat check-all)",
+      "Bash(npm run build:*)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(findstr:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
