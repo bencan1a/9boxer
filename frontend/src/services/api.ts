@@ -18,13 +18,14 @@ import {
 } from "../types/api";
 import { Employee } from "../types/employee";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      baseURL: "",
+      baseURL: API_BASE_URL,
       headers: {
         "Content-Type": "application/json",
       },

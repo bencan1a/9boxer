@@ -4,33 +4,16 @@ import sqlite3
 from pathlib import Path
 from typing import Optional
 
-from ninebox.core.config import settings
 from ninebox.core.security import get_password_hash
+from ninebox.utils.paths import get_user_data_dir
 
 
 def get_db_path() -> Path:
     """Get absolute path to database file."""
-    # Use DATABASE_URL from settings if available
-    db_url = settings.database_url
-
-    # Extract path from sqlite:/// URL
-    if db_url.startswith("sqlite:///"):
-        db_path_str = db_url.replace("sqlite:///", "")
-        # Handle absolute vs relative paths
-        if db_path_str.startswith("/"):
-            db_path = Path(db_path_str)
-        else:
-            # Relative path - resolve from backend directory
-            current_file = Path(__file__).resolve()
-            backend_dir = current_file.parent.parent.parent.parent
-            db_path = backend_dir / db_path_str
-    else:
-        # Fallback to default path calculation
-        current_file = Path(__file__).resolve()
-        backend_dir = current_file.parent.parent.parent.parent
-        db_path = backend_dir / "data" / "ninebox.db"
-
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # Use user data directory for database storage
+    # This ensures the database is stored in a user-writable location
+    # and works correctly in both dev and PyInstaller bundle mode
+    db_path = get_user_data_dir() / "ninebox.db"
     return db_path
 
 
@@ -43,22 +26,56 @@ def get_connection() -> sqlite3.Connection:
 
 
 def init_db() -> None:
-    """Initialize database with schema."""
+    """Initialize database with schema and default data.
+
+    Creates database file if it doesn't exist, creates all necessary tables,
+    and inserts default admin user if database is empty. This function is
+    idempotent and safe to call multiple times.
+
+    Default Admin User:
+        - username: bencan
+        - password: password (bcrypt hashed)
+    """
+    # Ensure data directory exists
+    data_dir = get_user_data_dir()
+    data_dir.mkdir(parents=True, exist_ok=True)
+
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Create users table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            user_id TEXT PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            hashed_password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+    try:
+        # Create users table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                user_id TEXT PRIMARY KEY,
+                username TEXT UNIQUE NOT NULL,
+                hashed_password TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
-    conn.commit()
-    conn.close()
+        # Check if users table is empty
+        cursor.execute("SELECT COUNT(*) as count FROM users")
+        row = cursor.fetchone()
+        user_count = row["count"] if row else 0
+
+        # Create default admin user if database is empty
+        if user_count == 0:
+            import uuid
+
+            default_user_id = str(uuid.uuid4())
+            default_username = "bencan"
+            default_password = "password"
+            hashed_password = get_password_hash(default_password)
+
+            cursor.execute(
+                "INSERT INTO users (user_id, username, hashed_password) VALUES (?, ?, ?)",
+                (default_user_id, default_username, hashed_password),
+            )
+
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def create_user(username: str, password: str) -> str:

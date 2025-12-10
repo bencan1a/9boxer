@@ -222,3 +222,12 @@ __marimo__/
 
 /**/node_modules/
 backend/data/temp/
+
+# Electron build artifacts
+frontend/dist-electron/
+frontend/release/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm

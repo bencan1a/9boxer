@@ -1,13 +1,24 @@
 {
-  "name": "ninebox-frontend",
+  "name": "9boxer-electron",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "9-Box Performance Review - Desktop Application",
+  "author": "Your Company",
+  "main": "dist-electron/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "prebuild": "node scripts/ensure-backend.cjs",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
+    "electron:build": "npm run build && tsc -p electron/tsconfig.json && electron-builder",
+    "electron:build:win": "npm run build && tsc -p electron/tsconfig.json && electron-builder --win",
+    "electron:build:mac": "npm run build && tsc -p electron/tsconfig.json && electron-builder --mac",
+    "electron:build:linux": "npm run build && tsc -p electron/tsconfig.json && electron-builder --linux"
+  },
+  "build": {
+    "extends": "electron-builder.json"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -18,7 +29,7 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.14.20",
-    "axios": "^1.6.2",
+    "axios": "^1.13.2",
     "date-fns": "^2.30.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,15 +39,21 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/node": "^24.10.2",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.6",
+    "electron-builder": "^26.0.12",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "wait-on": "^9.0.3"
   }
 }

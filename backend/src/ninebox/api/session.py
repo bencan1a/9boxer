@@ -11,6 +11,7 @@ from ninebox.api.auth import get_current_user_id
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
 from ninebox.services.session_manager import session_manager
+from ninebox.utils.paths import get_user_data_dir
 
 router = APIRouter(prefix="/session", tags=["session"])
 
@@ -28,7 +29,7 @@ async def upload_file(
         )
 
     # Save uploaded file temporarily
-    temp_dir = Path("data/temp")
+    temp_dir = get_user_data_dir() / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
 
     temp_file_path = temp_dir / f"{user_id}_{file.filename}"
@@ -121,7 +122,7 @@ async def export_session(user_id: str = Depends(get_current_user_id)) -> FileRes
         )
 
     # Create output path
-    output_dir = Path("data/temp")
+    output_dir = get_user_data_dir() / "temp"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_filename = f"modified_{session.original_filename}"
