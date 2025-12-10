@@ -308,12 +308,18 @@ function setupIpcHandlers(): void {
  * Loads the frontend via file:// protocol (production) or Vite dev server (development).
  */
 function createWindow(): void {
+  // Get icon path based on environment
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'icon.png')
+    : path.join(__dirname, '../../build/icon.png');
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 1024,
     minHeight: 768,
     title: '9-Box Performance Review',
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

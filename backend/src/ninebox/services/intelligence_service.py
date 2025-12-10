@@ -234,10 +234,37 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
     if len(functions) < 2:
         return _empty_analysis("Insufficient functions for comparison (need >= 2)")
 
+    # Group rare functions (< 10 employees) into "Other" to avoid sparse contingency table
+    MIN_FUNCTION_SIZE = 10
+    grouped_functions = {}
+    other_function = dict.fromkeys(range(1, 10), 0)
+    other_count = 0
+
+    for func, positions_dict in functions.items():
+        total = sum(positions_dict.values())
+        if total >= MIN_FUNCTION_SIZE:
+            grouped_functions[func] = positions_dict
+        else:
+            # Add to "Other" group
+            other_count += total
+            for pos, count in positions_dict.items():
+                other_function[pos] += count
+
+    # Add "Other" group if it has employees
+    if other_count > 0:
+        grouped_functions["Other"] = other_function
+
+    # Check if we still have enough functions after grouping
+    if len(grouped_functions) < 2:
+        return _empty_analysis(
+            f"Insufficient functions after grouping rare functions (need >= 2, have {len(grouped_functions)}). "
+            f"Consider adding more employees or ensuring more diverse job functions."
+        )
+
     # Build contingency table: rows=functions, cols=grid positions (1-9)
-    function_names = sorted(functions.keys())
+    function_names = sorted(grouped_functions.keys())
     positions = list(range(1, 10))
-    contingency = np.array([[functions[func][pos] for pos in positions] for func in function_names])
+    contingency = np.array([[grouped_functions[func][pos] for pos in positions] for func in function_names])
 
     # Check sample size
     n = len(employees)
