@@ -35,6 +35,19 @@ export interface ElectronAPI {
    */
   saveFileDialog: (defaultName: string) => Promise<string | null>;
 
+  /**
+   * Read a file from the file system.
+   * Used for auto-reload functionality to read previously loaded files.
+   * @param filePath - Absolute path to the file to read
+   * Returns file buffer and metadata if successful, error otherwise.
+   */
+  readFile: (filePath: string) => Promise<{
+    buffer?: number[];
+    fileName?: string;
+    success: boolean;
+    error?: string;
+  }>;
+
   // Future APIs that could be added:
   // showNotification(title: string, options?: NotificationOptions): void;
   // getClipboardText(): Promise<string>;

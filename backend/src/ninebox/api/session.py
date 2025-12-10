@@ -56,6 +56,10 @@ async def upload_file(
         ) from e
 
     # Create session
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"Creating session for user_id={user_id}, employees={len(employees)}, filename={file.filename}")
+
     session_id = session_manager.create_session(
         user_id=user_id,
         employees=employees,
@@ -64,6 +68,8 @@ async def upload_file(
     )
 
     session = session_manager.get_session(user_id)
+    logger.info(f"Session created successfully: session_id={session_id}, active_sessions={list(session_manager.sessions.keys())}")
+
     return {
         "session_id": session_id,
         "employee_count": len(employees),

@@ -29,16 +29,19 @@
         "arch": ["x64"]
       }
     ],
+    "icon": "build/icon.ico",
     "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
     "signAndEditExecutable": false
   },
   "mac": {
     "target": ["dmg"],
+    "icon": "build/icon.icns",
     "category": "public.app-category.business",
     "artifactName": "${productName}-${version}-macOS-${arch}.${ext}"
   },
   "linux": {
     "target": ["AppImage"],
+    "icon": "build/icon.png",
     "category": "Office",
     "artifactName": "${productName}-${version}-Linux-${arch}.${ext}"
   },

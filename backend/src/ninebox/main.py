@@ -51,6 +51,28 @@ async def health_check() -> dict:
     return {"status": "healthy"}
 
 
+@app.get("/debug/sessions")
+async def debug_sessions() -> dict:
+    """Debug endpoint to check active sessions (for development only)."""
+    from ninebox.services.session_manager import session_manager
+
+    sessions_info = {}
+    for user_id, session in session_manager.sessions.items():
+        sessions_info[user_id] = {
+            "session_id": session.session_id,
+            "employee_count": len(session.current_employees),
+            "original_employee_count": len(session.original_employees),
+            "changes_count": len(session.changes),
+            "filename": session.original_filename,
+            "created_at": session.created_at.isoformat(),
+        }
+
+    return {
+        "total_sessions": len(session_manager.sessions),
+        "sessions": sessions_info,
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
