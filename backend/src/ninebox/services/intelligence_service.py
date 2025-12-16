@@ -263,19 +263,34 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
 
     # Build contingency table: rows=functions, cols=grid positions (1-9)
     function_names = sorted(grouped_functions.keys())
-    positions = list(range(1, 10))
-    contingency = np.array([[grouped_functions[func][pos] for pos in positions] for func in function_names])
+    all_positions = list(range(1, 10))
+
+    # Filter out positions that have zero employees across all functions
+    positions_with_data = []
+    for pos in all_positions:
+        if any(grouped_functions[func][pos] > 0 for func in function_names):
+            positions_with_data.append(pos)
+
+    # Check if we have enough positions after filtering
+    if len(positions_with_data) < 2:
+        return _empty_analysis(
+            f"Insufficient grid positions with data (need >= 2, have {len(positions_with_data)})"
+        )
+
+    # Build contingency table with only positions that have data
+    contingency = np.array(
+        [[grouped_functions[func][pos] for pos in positions_with_data] for func in function_names]
+    )
 
     # Check sample size
     n = len(employees)
     if n < 30:
         return _empty_analysis(f"Sample size too small (N={n}, need >= 30)")
 
-    # Check if contingency table has any zero rows or columns (which would cause chi-square to fail)
+    # Check if contingency table has any zero rows (all functions should have employees)
     row_sums = contingency.sum(axis=1)
-    col_sums = contingency.sum(axis=0)
-    if np.any(row_sums == 0) or np.any(col_sums == 0):
-        return _empty_analysis("Contingency table has empty categories")
+    if np.any(row_sums == 0):
+        return _empty_analysis("Contingency table has empty function categories")
 
     # Perform chi-square test
     try:
@@ -286,15 +301,29 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Calculate effect size
-    effect_size = _cramers_v(chi2, n, len(function_names), len(positions))
+    effect_size = _cramers_v(chi2, n, len(function_names), len(positions_with_data))
 
     # Calculate deviations (focus on high performers: positions 7-9)
+    # Find which column indices correspond to positions 7, 8, 9
+    high_performer_indices = [
+        idx for idx, pos in enumerate(positions_with_data) if pos in [7, 8, 9]
+    ]
+
     deviations = []
     for i, func in enumerate(function_names):
         total_in_func = sum(contingency[i])
-        observed_high = sum(contingency[i][6:9])  # Positions 7, 8, 9
-        expected_high = sum(expected[i][6:9])
-        z_score_high = np.mean(z_scores[i][6:9])
+
+        # Calculate high performer stats if we have those positions
+        if high_performer_indices:
+            observed_high = sum(contingency[i][idx] for idx in high_performer_indices)
+            expected_high = sum(expected[i][idx] for idx in high_performer_indices)
+            z_scores_high = [z_scores[i][idx] for idx in high_performer_indices]
+            z_score_high = np.mean(z_scores_high) if z_scores_high else 0.0
+        else:
+            # No high performer positions in data, use all positions
+            observed_high = total_in_func
+            expected_high = sum(expected[i])
+            z_score_high = np.mean(z_scores[i])
 
         observed_high_pct = (observed_high / total_in_func * 100) if total_in_func > 0 else 0
         expected_high_pct = (expected_high / total_in_func * 100) if total_in_func > 0 else 0
