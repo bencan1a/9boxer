@@ -258,6 +258,7 @@ export const FilterDrawer: React.FC = () => {
               color="secondary"
               fullWidth
               onClick={clearAllFilters}
+              data-testid="clear-filter-button"
             >
               Clear All Filters
             </Button>

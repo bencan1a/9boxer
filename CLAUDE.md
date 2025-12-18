@@ -169,6 +169,99 @@ All code must have type annotations:
 
 See `.github/agents/test.md` for comprehensive testing guidance.
 
+### Frontend Testing
+
+**Test Frameworks:** Vitest + React Testing Library (component tests), Cypress (E2E tests)
+
+**Running Tests:**
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Component tests (watch mode)
+npm test
+
+# Component tests (run once)
+npm run test:run
+
+# Component tests with coverage
+npm run test:coverage
+
+# Component tests with UI
+npm run test:ui
+
+# E2E tests - open Cypress UI
+npm run cy:open
+
+# E2E tests - run headless
+npm run cy:run
+```
+
+**Writing Component Tests:**
+- Test framework: React Testing Library with Vitest
+- Location: `frontend/src/components/__tests__/` or colocated `ComponentName.test.tsx`
+- Follow user-visible behavior, not implementation details
+- Use `data-testid` attributes for reliable element selection
+- Use `render` from `@/test/utils` (includes test providers)
+- Mock user events with `fireEvent` or `userEvent`
+- Test async behavior with `waitFor`
+
+Example pattern:
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@/test/utils';
+import Button from '@/components/Button';
+
+describe('Button', () => {
+  it('displays label when rendered', () => {
+    render(<Button label="Click me" />);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('calls onClick handler when clicked', () => {
+    const handleClick = vi.fn();
+    render(<Button label="Click" onClick={handleClick} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalled();
+  });
+});
+```
+
+**Writing E2E Tests:**
+- Test framework: Cypress
+- Location: `frontend/cypress/e2e/` with naming pattern `feature-flow.cy.ts`
+- Test complete user workflows end-to-end
+- Use `cy.visit()` to start at URL, `cy.uploadExcelFile()` for custom commands
+- Use `data-testid` attributes to find elements reliably
+- Verify both UI updates and data consistency
+- Use `beforeEach()` for setup common to multiple tests
+
+Example pattern:
+```typescript
+describe('Employee Upload Flow', () => {
+  beforeEach(() => {
+    cy.visit('/');
+  });
+
+  it('allows user to upload Excel file and view employees', () => {
+    // Upload file using custom command
+    cy.uploadExcelFile('sample-employees.xlsx');
+
+    // Verify grid displays with employees
+    cy.get('[data-testid="nine-box-grid"]').should('be.visible');
+    cy.get('[data-testid="employee-card"]').should('have.length.greaterThan', 0);
+  });
+});
+```
+
+**Test Data & Fixtures:**
+- Fixture data located in `frontend/src/test/mockData.ts`
+- E2E fixtures located in `frontend/cypress/fixtures/`
+- Use factory functions for variations on test data
+- Keep test data realistic and representative
+
+See `agent-projects/test-automation-investment/test-principles.md` for comprehensive testing principles and best practices.
+
 ### CI/CD Pipeline
 GitHub Actions workflows in `.github/workflows/`:
 - **`ci.yml`** - Main CI pipeline:

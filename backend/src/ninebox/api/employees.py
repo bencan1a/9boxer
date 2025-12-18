@@ -51,7 +51,18 @@ async def get_employees(
     levels_list = levels.split(",") if levels else None
     job_profiles_list = job_profiles.split(",") if job_profiles else None
     managers_list = managers.split(",") if managers else None
-    exclude_ids_list = [int(id.strip()) for id in exclude_ids.split(",")] if exclude_ids else None
+
+    # Parse exclude_ids with validation
+    exclude_ids_list = None
+    if exclude_ids:
+        try:
+            exclude_ids_list = [int(id.strip()) for id in exclude_ids.split(",")]
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid employee ID in exclude_ids: {e!s}",
+            ) from e
+
     performance_list = performance.split(",") if performance else None
     potential_list = potential.split(",") if potential else None
 

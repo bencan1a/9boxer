@@ -20,7 +20,14 @@
     "electron:build": "npm run build && tsc -p electron/tsconfig.json && electron-builder",
     "electron:build:win": "npm run build && tsc -p electron/tsconfig.json && electron-builder --win",
     "electron:build:mac": "npm run build && tsc -p electron/tsconfig.json && electron-builder --mac",
-    "electron:build:linux": "npm run build && tsc -p electron/tsconfig.json && electron-builder --linux"
+    "electron:build:linux": "npm run build && tsc -p electron/tsconfig.json && electron-builder --linux",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "e2e": "cypress run --spec 'cypress/e2e/**/*.cy.ts'",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "build": {
     "extends": "electron-builder.json"
@@ -44,21 +51,31 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^10.1.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.2",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
+    "cypress": "^15.0.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
+    "esbuild": "^0.27.2",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "jsdom": "^27.3.0",
     "typescript": "^5.2.2",
     "vite": "^7.2.7",
+    "vitest": "^4.0.16",
     "wait-on": "^9.0.3"
   }
 }

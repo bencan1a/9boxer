@@ -98,6 +98,7 @@ export const AppBar: React.FC = () => {
             startIcon={<UploadFileIcon />}
             onClick={() => setUploadDialogOpen(true)}
             sx={{ mr: 1 }}
+            data-testid="upload-button"
           >
             Upload
           </Button>
@@ -118,6 +119,7 @@ export const AppBar: React.FC = () => {
               disabled={!sessionId}
               onClick={toggleDrawer}
               sx={{ mr: 1 }}
+              data-testid="filter-button"
             >
               Filters
             </Button>
@@ -137,6 +139,7 @@ export const AppBar: React.FC = () => {
               startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
               disabled={!sessionId || !hasModifications || isExporting}
               onClick={handleExport}
+              data-testid="export-button"
             >
               {isExporting ? "Exporting..." : "Apply"}
             </Button>

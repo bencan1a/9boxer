@@ -150,7 +150,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth data-testid="file-upload-dialog">
       <DialogTitle>Upload Excel File</DialogTitle>
       <DialogContent>
         <Box sx={{ py: 2 }}>
@@ -232,6 +232,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           variant="contained"
           disabled={!selectedFile || isLoading}
           startIcon={isLoading ? <CircularProgress size={16} /> : null}
+          data-testid="upload-submit-button"
         >
           {isLoading ? "Uploading..." : "Upload"}
         </Button>
