@@ -45,9 +45,28 @@ async def upload_file(
         ) from e
 
     # Parse Excel file
+    import logging
+    logger = logging.getLogger(__name__)
+
     parser = ExcelParser()
     try:
-        employees = parser.parse(str(temp_file_path))
+        result = parser.parse(str(temp_file_path))
+        employees = result.employees
+
+        # Log parsing metadata
+        logger.info(
+            f"Parsed Excel file '{file.filename}': "
+            f"sheet='{result.metadata.sheet_name}' (index {result.metadata.sheet_index}), "
+            f"parsed={result.metadata.parsed_rows}/{result.metadata.total_rows}, "
+            f"failed={result.metadata.failed_rows}"
+        )
+
+        if result.metadata.defaulted_fields:
+            logger.info(f"Defaulted fields: {result.metadata.defaulted_fields}")
+
+        if result.metadata.warnings:
+            logger.warning(f"Parsing warnings ({len(result.metadata.warnings)}): {result.metadata.warnings[:3]}...")
+
     except Exception as e:
         # Clean up temp file on error
         temp_file_path.unlink(missing_ok=True)
@@ -57,8 +76,6 @@ async def upload_file(
         ) from e
 
     # Create session
-    import logging
-    logger = logging.getLogger(__name__)
     logger.info(f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}")
 
     session_id = session_manager.create_session(
@@ -66,6 +83,8 @@ async def upload_file(
         employees=employees,
         filename=file.filename,
         file_path=str(temp_file_path),
+        sheet_name=result.metadata.sheet_name,
+        sheet_index=result.metadata.sheet_index,
     )
 
     session = session_manager.get_session(LOCAL_USER_ID)
@@ -141,6 +160,7 @@ async def export_session() -> FileResponse:
             original_file=session.original_file_path,
             employees=session.current_employees,
             output_path=str(output_path),
+            sheet_index=session.sheet_index,
         )
     except Exception as e:
         raise HTTPException(

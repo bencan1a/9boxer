@@ -33,7 +33,7 @@ class TestMergedCells:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "merged_cells.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse both employees despite merged cells
         assert len(employees) == 2
@@ -51,7 +51,7 @@ class TestUnicodeCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "unicode_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Find the Chinese employee
         chinese_emp = employees[0]
@@ -63,7 +63,7 @@ class TestUnicodeCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "unicode_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Find the Arabic employee
         arabic_emp = employees[1]
@@ -74,7 +74,7 @@ class TestUnicodeCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "unicode_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Find employees with accented names
         has_accents = any("é" in emp.name or "ü" in emp.name or "ø" in emp.name for emp in employees)
@@ -85,7 +85,7 @@ class TestUnicodeCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "unicode_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should successfully parse despite emojis
         assert len(employees) == 6
@@ -102,7 +102,7 @@ class TestLargeFiles:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "large_file.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse all 1000 employees
         assert len(employees) == 1000
@@ -117,7 +117,7 @@ class TestLargeFiles:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "large_file.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # All should have valid IDs
         assert all(emp.employee_id > 0 for emp in employees)
@@ -138,7 +138,7 @@ class TestFormulas:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "formulas.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse employees using calculated values
         assert len(employees) == 3
@@ -176,7 +176,7 @@ class TestMultipleSheets:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "multiple_sheets.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should use the "Employee Data" sheet (second sheet)
         assert len(employees) == 1
@@ -190,7 +190,7 @@ class TestMultipleSheets:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "multiple_sheets.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Only data from the second sheet should be present
         assert len(employees) == 1
@@ -206,7 +206,7 @@ class TestExtraColumns:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "extra_columns.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse successfully
         assert len(employees) == 1
@@ -223,7 +223,7 @@ class TestMissingOptionalColumns:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "missing_optional.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse successfully
         assert len(employees) == 2
@@ -236,7 +236,7 @@ class TestMissingOptionalColumns:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "missing_optional.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         emp = employees[0]
         # Optional fields should be None or have default values
@@ -256,7 +256,7 @@ class TestLongStrings:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "long_strings.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         assert len(employees) == 1
         emp = employees[0]
@@ -269,7 +269,7 @@ class TestLongStrings:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "long_strings.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         emp = employees[0]
         # Notes can be very long
@@ -285,7 +285,7 @@ class TestSpecialCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "special_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Find O'Brien
         obrien = [emp for emp in employees if "O'Brien" in emp.name or "Brien" in emp.name]
@@ -296,7 +296,7 @@ class TestSpecialCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "special_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Find hyphenated name
         hyphenated = [emp for emp in employees if "-" in emp.name]
@@ -307,7 +307,7 @@ class TestSpecialCharacters:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "special_characters.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Should parse all employees with special characters
         assert len(employees) == 6
@@ -325,7 +325,7 @@ class TestWhitespace:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "leading_trailing_spaces.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Names should be trimmed
         assert all(not emp.name.startswith(" ") for emp in employees)
@@ -336,7 +336,7 @@ class TestWhitespace:
         parser = ExcelParser()
         file_path = FIXTURES_DIR / "leading_trailing_spaces.xlsx"
 
-        employees = parser.parse(file_path)
+        employees = parser.parse(file_path).employees
 
         # Names and titles should be trimmed
         assert all(not emp.name.endswith(" ") for emp in employees)

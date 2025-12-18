@@ -12,11 +12,15 @@ from ninebox.services.excel_parser import ExcelParser
 def test_parse_when_valid_file_then_returns_employees(sample_excel_file: Path) -> None:
     """Test parsing a valid Excel file."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
 
-    assert len(employees) == 5
-    assert all(emp.employee_id > 0 for emp in employees)
-    assert all(emp.name for emp in employees)
+    assert len(result.employees) == 5
+    assert all(emp.employee_id > 0 for emp in result.employees)
+    assert all(emp.name for emp in result.employees)
+    # Verify metadata is populated
+    assert result.metadata.sheet_name is not None
+    assert result.metadata.parsed_rows == 5
+    assert result.metadata.total_rows >= 5
 
 
 def test_parse_when_valid_file_then_extracts_employee_data_correctly(
@@ -24,10 +28,10 @@ def test_parse_when_valid_file_then_extracts_employee_data_correctly(
 ) -> None:
     """Test that employee data is extracted correctly."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
 
     # Check first employee
-    emp = employees[0]
+    emp = result.employees[0]
     assert emp.employee_id == 1
     assert emp.name == "Alice Smith"
     assert emp.business_title == "Senior Engineer"
@@ -40,7 +44,8 @@ def test_parse_when_valid_file_then_extracts_employee_data_correctly(
 def test_parse_when_valid_file_then_handles_historical_ratings(sample_excel_file: Path) -> None:
     """Test that historical ratings are parsed correctly."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
+    employees = result.employees
 
     # First employee has 2 ratings
     emp = employees[0]
@@ -61,7 +66,8 @@ def test_parse_when_valid_file_then_calculates_grid_positions_correctly(
 ) -> None:
     """Test grid position calculation."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
+    employees = result.employees
 
     # H,H = High Performance (3), High Potential (6) = 9
     assert employees[0].grid_position == 9
@@ -96,14 +102,17 @@ def test_parse_when_valid_file_then_handles_optional_fields_gracefully(tmp_path:
     workbook.save(file_path)
 
     parser = ExcelParser()
-    employees = parser.parse(file_path)
+    result = parser.parse(file_path)
 
-    assert len(employees) == 1
-    emp = employees[0]
+    assert len(result.employees) == 1
+    emp = result.employees[0]
     assert emp.employee_id == 1
     assert emp.name == "Test User"
     assert emp.development_focus is None
     assert emp.notes is None
+    # Verify defaulted fields tracking
+    assert result.metadata.defaulted_fields.get("Performance", 0) == 1
+    assert result.metadata.defaulted_fields.get("Potential", 0) == 1
 
 
 def test_parse_when_invalid_file_format_then_raises_error(tmp_path: Path) -> None:
