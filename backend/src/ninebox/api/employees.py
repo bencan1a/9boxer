@@ -1,14 +1,16 @@
 """Employee management API endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel
 
-from ninebox.api.auth import get_current_user_id
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.employee_service import employee_service
 from ninebox.services.session_manager import session_manager
 
 router = APIRouter(prefix="/employees", tags=["employees"])
+
+# Constant user ID for local-only app (no authentication)
+LOCAL_USER_ID = "local-user"
 
 
 class MoveRequest(BaseModel):
@@ -29,7 +31,6 @@ class UpdateEmployeeRequest(BaseModel):
 
 @router.get("", response_model=dict)
 async def get_employees(
-    user_id: str = Depends(get_current_user_id),
     levels: str | None = Query(None, description="Comma-separated levels (e.g., 'MT2,MT4')"),
     job_profiles: str | None = Query(None),
     managers: str | None = Query(None),
@@ -38,7 +39,7 @@ async def get_employees(
     potential: str | None = Query(None),
 ) -> dict:
     """Get filtered list of employees."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -73,9 +74,9 @@ async def get_employees(
 
 
 @router.get("/filter-options")
-async def get_filter_options(user_id: str = Depends(get_current_user_id)) -> dict:
+async def get_filter_options() -> dict:
     """Get available filter options from current session."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -87,9 +88,9 @@ async def get_filter_options(user_id: str = Depends(get_current_user_id)) -> dic
 
 
 @router.get("/{employee_id}", response_model=Employee)
-async def get_employee(employee_id: int, user_id: str = Depends(get_current_user_id)) -> Employee:
+async def get_employee(employee_id: int) -> Employee:
     """Get single employee by ID."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -112,10 +113,9 @@ async def get_employee(employee_id: int, user_id: str = Depends(get_current_user
 async def update_employee(
     employee_id: int,
     updates: UpdateEmployeeRequest,
-    user_id: str = Depends(get_current_user_id),
 ) -> dict:
     """Update employee fields."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -148,7 +148,7 @@ async def update_employee(
 
 @router.patch("/{employee_id}/move")
 async def move_employee(
-    employee_id: int, move: MoveRequest, user_id: str = Depends(get_current_user_id)
+    employee_id: int, move: MoveRequest
 ) -> dict:
     """Move employee to new position."""
     try:
@@ -163,7 +163,7 @@ async def move_employee(
 
     try:
         change = session_manager.move_employee(
-            user_id=user_id,
+            user_id=LOCAL_USER_ID,
             employee_id=employee_id,
             new_performance=performance,
             new_potential=potential,
@@ -175,7 +175,7 @@ async def move_employee(
         ) from e
 
     # Get updated employee
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
     if not session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

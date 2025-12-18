@@ -2,11 +2,8 @@
  * API client service using Axios
  */
 
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axios, { AxiosInstance } from "axios";
 import {
-  LoginRequest,
-  TokenResponse,
-  UserResponse,
   UploadResponse,
   SessionStatusResponse,
   EmployeesResponse,
@@ -17,7 +14,6 @@ import {
   IntelligenceData,
 } from "../types/api";
 import { Employee } from "../types/employee";
-import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
 class ApiClient {
@@ -30,64 +26,6 @@ class ApiClient {
         "Content-Type": "application/json",
       },
     });
-
-    // Request interceptor to add Authorization header
-    this.client.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem("auth_token");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-
-    // Response interceptor for error handling and activity tracking
-    this.client.interceptors.response.use(
-      (response) => {
-        // Record activity on successful API call to extend session
-        const { recordActivity, isAuthenticated } = useAuthStore.getState();
-        if (isAuthenticated) {
-          recordActivity();
-        }
-        return response;
-      },
-      (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Unauthorized - clear token, expiration, and activity, then redirect to login
-          localStorage.removeItem("auth_token");
-          localStorage.removeItem("auth_expires_at");
-          localStorage.removeItem("auth_last_activity");
-          window.location.href = "/login";
-        }
-        return Promise.reject(error);
-      }
-    );
-  }
-
-  // ==================== Auth Methods ====================
-
-  async login(username: string, password: string): Promise<TokenResponse> {
-    const response = await this.client.post<TokenResponse>("/api/auth/login", {
-      username,
-      password,
-    } as LoginRequest);
-    return response.data;
-  }
-
-  async logout(): Promise<{ success: boolean }> {
-    const response = await this.client.post<{ success: boolean }>(
-      "/api/auth/logout"
-    );
-    return response.data;
-  }
-
-  async me(): Promise<UserResponse> {
-    const response = await this.client.get<UserResponse>("/api/auth/me");
-    return response.data;
   }
 
   // ==================== Session Methods ====================

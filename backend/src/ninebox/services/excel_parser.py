@@ -187,8 +187,12 @@ class ExcelParser:
             row, ["Aug 2025  Talent Assessment Potential", "Potential", "Current Potential"]
         )
 
-        performance_str = str(row.get(performance_col, "Medium")).strip()
-        potential_str = str(row.get(potential_col, "Medium")).strip()
+        # Handle NaN values properly - check before converting to string
+        performance_val = row.get(performance_col)
+        performance_str = str(performance_val).strip() if pd.notna(performance_val) else "Medium"
+
+        potential_val = row.get(potential_col)
+        potential_str = str(potential_val).strip() if pd.notna(potential_val) else "Medium"
 
         # Map to enum values
         try:
