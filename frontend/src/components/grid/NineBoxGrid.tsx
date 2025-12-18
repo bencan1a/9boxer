@@ -165,7 +165,7 @@ export const NineBoxGrid: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <Box sx={{ p: 3, height: "100%", width: "100%", userSelect: "none" }}>
+      <Box sx={{ p: 3, height: "100%", width: "100%", userSelect: "none" }} data-testid="nine-box-grid">
         {/* Axis Labels */}
         <Box sx={{ display: "flex", mb: 2, width: "100%" }}>
           <Box sx={{ width: 80 }} /> {/* Spacer for left label */}

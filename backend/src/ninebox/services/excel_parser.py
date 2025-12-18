@@ -247,57 +247,57 @@ class ExcelParser:
 
         employee = Employee(
             employee_id=int(row["Employee ID"]),
-            name=str(row["Worker"]),
-            business_title=str(row.get("Business Title", "")),
-            job_title=str(row.get("Job Title", row.get("Business Title", ""))),
-            job_profile=job_profile_str,
-            job_level=str(row["Job Level - Primary Position"]),
+            name=str(row["Worker"]).strip(),
+            business_title=str(row.get("Business Title", "")).strip(),
+            job_title=str(row.get("Job Title", row.get("Business Title", ""))).strip(),
+            job_profile=job_profile_str.strip(),
+            job_level=str(row["Job Level - Primary Position"]).strip(),
             job_function=job_function,
             location=location,
-            manager=str(row.get("Worker's Manager", ""))
+            manager=str(row.get("Worker's Manager", "")).strip()
             if pd.notna(row.get("Worker's Manager"))
             else "",
-            management_chain_01=str(row.get("Management Chain - Level 01"))
+            management_chain_01=str(row.get("Management Chain - Level 01")).strip()
             if pd.notna(row.get("Management Chain - Level 01"))
             else None,
-            management_chain_02=str(row.get("Management Chain - Level 02"))
+            management_chain_02=str(row.get("Management Chain - Level 02")).strip()
             if pd.notna(row.get("Management Chain - Level 02"))
             else None,
-            management_chain_03=str(row.get("Management Chain - Level 03"))
+            management_chain_03=str(row.get("Management Chain - Level 03")).strip()
             if pd.notna(row.get("Management Chain - Level 03"))
             else None,
-            management_chain_04=str(row.get("Management Chain - Level 04"))
+            management_chain_04=str(row.get("Management Chain - Level 04")).strip()
             if pd.notna(row.get("Management Chain - Level 04"))
             else None,
-            management_chain_05=str(row.get("Management Chain - Level 05"))
+            management_chain_05=str(row.get("Management Chain - Level 05")).strip()
             if pd.notna(row.get("Management Chain - Level 05"))
             else None,
-            management_chain_06=str(row.get("Management Chain - Level 06"))
+            management_chain_06=str(row.get("Management Chain - Level 06")).strip()
             if pd.notna(row.get("Management Chain - Level 06"))
             else None,
             hire_date=hire_date,
-            tenure_category=str(row.get("Tenure Category (Months)", ""))
+            tenure_category=str(row.get("Tenure Category (Months)", "")).strip()
             if pd.notna(row.get("Tenure Category (Months)"))
             else "",
-            time_in_job_profile=str(row.get("Time in Job Profile", ""))
+            time_in_job_profile=str(row.get("Time in Job Profile", "")).strip()
             if pd.notna(row.get("Time in Job Profile"))
             else "",
             performance=performance,
             potential=potential,
             grid_position=grid_position,
             position_label=position_label,
-            talent_indicator=str(row.get("FY25 Talent Indicator", row.get("Talent Indicator", "")))
+            talent_indicator=str(row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))).strip()
             if pd.notna(row.get("FY25 Talent Indicator"))
             else "",
             ratings_history=history,
-            development_focus=str(row.get("Development Focus", ""))
+            development_focus=str(row.get("Development Focus", "")).strip()
             if pd.notna(row.get("Development Focus"))
             else None,
-            development_action=str(row.get("Development Action", ""))
+            development_action=str(row.get("Development Action", "")).strip()
             if pd.notna(row.get("Development Action"))
             else None,
-            notes=str(row.get("Notes", "")) if pd.notna(row.get("Notes")) else None,
-            promotion_status=str(row.get("Promotion (In-Line,", row.get("Promotion", "")))
+            notes=str(row.get("Notes", "")).strip() if pd.notna(row.get("Notes")) else None,
+            promotion_status=str(row.get("Promotion (In-Line,", row.get("Promotion", ""))).strip()
             if pd.notna(row.get("Promotion (In-Line,"))
             else None,
             promotion_readiness=self._parse_promotion_readiness(row.get("Promotion Readiness")),

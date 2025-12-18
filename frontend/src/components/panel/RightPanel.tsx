@@ -54,9 +54,9 @@ export const RightPanel: React.FC = () => {
           aria-label="panel tabs"
           variant="fullWidth"
         >
-          <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" />
-          <Tab label="Statistics" id="panel-tab-1" aria-controls="panel-tabpanel-1" />
-          <Tab label="Intelligence" id="panel-tab-2" aria-controls="panel-tabpanel-2" />
+          <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
+          <Tab label="Statistics" id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="statistics-tab" />
+          <Tab label="Intelligence" id="panel-tab-2" aria-controls="panel-tabpanel-2" data-testid="intelligence-tab" />
         </Tabs>
       </Box>
 

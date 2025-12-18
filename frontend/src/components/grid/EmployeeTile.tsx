@@ -44,6 +44,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           boxShadow: 3,
         },
       }}
+      data-testid={`employee-card-${employee.employee_id}`}
     >
       {/* Drag Handle */}
       <Box
@@ -84,6 +85,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               size="small"
               color="secondary"
               sx={{ height: 18 }}
+              data-testid="modified-indicator"
             />
           )}
         </Box>

@@ -129,7 +129,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   };
 
   return (
-    <Box ref={setNodeRef} sx={getBoxStyling()} aria-expanded={isExpanded}>
+    <Box ref={setNodeRef} sx={getBoxStyling()} aria-expanded={isExpanded} data-testid={`grid-box-${position}`}>
       {/* Header */}
       <Box
         sx={{
@@ -155,6 +155,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
               badgeContent={employees.length}
               color="primary"
               sx={{ "& .MuiBadge-badge": { fontSize: "0.65rem", height: 16 } }}
+              data-testid={`grid-box-${position}-count`}
             />
           )}
         </Box>
