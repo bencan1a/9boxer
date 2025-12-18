@@ -2,22 +2,43 @@
  * Main App component with routing
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { theme } from "./theme/theme";
-import { LoginPage } from "./components/auth/LoginPage";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import { SessionExpiryWarning } from "./components/auth/SessionExpiryWarning";
 import { DashboardPage } from "./components/dashboard/DashboardPage";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
-import { useActivityTracker } from "./hooks/useActivityTracker";
 
 const App: React.FC = () => {
-  // Track user activity to extend session on interaction
-  useActivityTracker();
+
+  // Global error handlers to catch errors outside React component tree
+  useEffect(() => {
+    // Handle uncaught errors (e.g., in setTimeout, setInterval callbacks)
+    const handleError = (event: ErrorEvent) => {
+      console.error("Uncaught error:", event.error);
+      console.error("Error stack:", event.error?.stack);
+      // Prevent the default browser error handling
+      event.preventDefault();
+    };
+
+    // Handle unhandled promise rejections (e.g., in async code, API calls)
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      console.error("Unhandled promise rejection:", event.reason);
+      console.error("Rejection stack:", event.reason?.stack);
+      // Prevent the default browser rejection handling
+      event.preventDefault();
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleRejection);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleRejection);
+    };
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -25,18 +46,9 @@ const App: React.FC = () => {
         <SnackbarProvider>
           <CssBaseline />
           <HashRouter>
-            <SessionExpiryWarning warningMinutes={5} />
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/dashboard" element={<DashboardPage />} />
             </Routes>
           </HashRouter>
         </SnackbarProvider>

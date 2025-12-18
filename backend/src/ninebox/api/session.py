@@ -3,10 +3,9 @@
 import shutil
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 
-from ninebox.api.auth import get_current_user_id
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
 from ninebox.services.session_manager import session_manager
@@ -14,11 +13,13 @@ from ninebox.utils.paths import get_user_data_dir
 
 router = APIRouter(prefix="/session", tags=["session"])
 
+# Constant user ID for local-only app (no authentication)
+LOCAL_USER_ID = "local-user"
+
 
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),  # noqa: B008
-    user_id: str = Depends(get_current_user_id),
 ) -> dict:
     """Upload Excel file and create session."""
     # Validate file type
@@ -32,7 +33,7 @@ async def upload_file(
     temp_dir = get_user_data_dir() / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
 
-    temp_file_path = temp_dir / f"{user_id}_{file.filename}"
+    temp_file_path = temp_dir / f"{LOCAL_USER_ID}_{file.filename}"
 
     try:
         with temp_file_path.open("wb") as buffer:
@@ -58,16 +59,16 @@ async def upload_file(
     # Create session
     import logging
     logger = logging.getLogger(__name__)
-    logger.info(f"Creating session for user_id={user_id}, employees={len(employees)}, filename={file.filename}")
+    logger.info(f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}")
 
     session_id = session_manager.create_session(
-        user_id=user_id,
+        user_id=LOCAL_USER_ID,
         employees=employees,
         filename=file.filename,
         file_path=str(temp_file_path),
     )
 
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
     logger.info(f"Session created successfully: session_id={session_id}, active_sessions={list(session_manager.sessions.keys())}")
 
     return {
@@ -79,9 +80,9 @@ async def upload_file(
 
 
 @router.get("/status")
-async def get_session_status(user_id: str = Depends(get_current_user_id)) -> dict:
+async def get_session_status() -> dict:
     """Get current session status."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -100,9 +101,9 @@ async def get_session_status(user_id: str = Depends(get_current_user_id)) -> dic
 
 
 @router.delete("/clear")
-async def clear_session(user_id: str = Depends(get_current_user_id)) -> dict:
+async def clear_session() -> dict:
     """Clear current session."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if session:
         # Clean up temp file
@@ -110,15 +111,15 @@ async def clear_session(user_id: str = Depends(get_current_user_id)) -> dict:
         temp_file.unlink(missing_ok=True)
 
         # Delete session
-        session_manager.delete_session(user_id)
+        session_manager.delete_session(LOCAL_USER_ID)
 
     return {"success": True}
 
 
 @router.post("/export")
-async def export_session(user_id: str = Depends(get_current_user_id)) -> FileResponse:
+async def export_session() -> FileResponse:
     """Export current session data to Excel."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(

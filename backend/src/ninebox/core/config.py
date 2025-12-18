@@ -11,11 +11,6 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     debug: bool = False
 
-    # Security
-    secret_key: str = "your-secret-key-change-in-production"
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 60
-
     # CORS
     cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173"]
 

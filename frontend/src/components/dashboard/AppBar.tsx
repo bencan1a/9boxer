@@ -3,7 +3,6 @@
  */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   AppBar as MuiAppBar,
   Toolbar,
@@ -16,9 +15,7 @@ import {
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import LogoutIcon from "@mui/icons-material/Logout";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useAuthStore } from "../../store/authStore";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
@@ -26,18 +23,11 @@ import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
 
 export const AppBar: React.FC = () => {
-  const navigate = useNavigate();
-  const { logout } = useAuthStore();
   const { sessionId, employees, filename, changes } = useSessionStore();
   const { toggleDrawer, hasActiveFilters, applyFilters } = useFilters();
   const { showSuccess, showError } = useSnackbar();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   const handleExport = async () => {
     if (!sessionId) return;
@@ -147,19 +137,10 @@ export const AppBar: React.FC = () => {
               startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
               disabled={!sessionId || !hasModifications || isExporting}
               onClick={handleExport}
-              sx={{ mr: 2 }}
             >
               {isExporting ? "Exporting..." : "Apply"}
             </Button>
           </Badge>
-
-          <Button
-            color="inherit"
-            startIcon={<LogoutIcon />}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
         </Toolbar>
       </MuiAppBar>
 

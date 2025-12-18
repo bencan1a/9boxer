@@ -3,12 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ninebox.api import auth, employees, intelligence, session, statistics
+from ninebox.api import employees, intelligence, session, statistics
 from ninebox.core.config import settings
-from ninebox.core.database import init_db
-
-# Initialize database
-init_db()
 
 # Create FastAPI app
 app = FastAPI(
@@ -28,7 +24,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/api")
 app.include_router(session.router, prefix="/api")
 app.include_router(employees.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
@@ -57,14 +52,14 @@ async def debug_sessions() -> dict:
     from ninebox.services.session_manager import session_manager
 
     sessions_info = {}
-    for user_id, session in session_manager.sessions.items():
-        sessions_info[user_id] = {
-            "session_id": session.session_id,
-            "employee_count": len(session.current_employees),
-            "original_employee_count": len(session.original_employees),
-            "changes_count": len(session.changes),
-            "filename": session.original_filename,
-            "created_at": session.created_at.isoformat(),
+    for session_key, sess in session_manager.sessions.items():
+        sessions_info[session_key] = {
+            "session_id": sess.session_id,
+            "employee_count": len(sess.current_employees),
+            "original_employee_count": len(sess.original_employees),
+            "changes_count": len(sess.changes),
+            "filename": sess.original_filename,
+            "created_at": sess.created_at.isoformat(),
         }
 
     return {

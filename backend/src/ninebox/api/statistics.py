@@ -1,18 +1,19 @@
 """Statistics API endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 
-from ninebox.api.auth import get_current_user_id
 from ninebox.services.employee_service import employee_service
 from ninebox.services.session_manager import session_manager
 from ninebox.services.statistics_service import statistics_service
 
 router = APIRouter(prefix="/statistics", tags=["statistics"])
 
+# Constant user ID for local-only app (no authentication)
+LOCAL_USER_ID = "local-user"
+
 
 @router.get("")
 async def get_statistics(
-    user_id: str = Depends(get_current_user_id),
     levels: str | None = Query(None),
     job_profiles: str | None = Query(None),
     managers: str | None = Query(None),
@@ -21,7 +22,7 @@ async def get_statistics(
     potential: str | None = Query(None),
 ) -> dict:
     """Get statistics for filtered employees."""
-    session = session_manager.get_session(user_id)
+    session = session_manager.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
