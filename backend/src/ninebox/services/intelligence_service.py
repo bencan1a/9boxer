@@ -75,31 +75,65 @@ def _safe_sample_size_check(counts: np.ndarray) -> bool:
     return bool(np.all(counts >= 5))
 
 
-def _get_status(p_value: float, is_uniformity_test: bool = False) -> str:
-    """Determine traffic light status based on p-value.
+def _get_status(
+    p_value: float,
+    effect_size: float,
+    deviations: list[dict[str, Any]],
+    is_uniformity_test: bool = False,  # noqa: ARG001
+) -> str:
+    """Determine traffic light status based on p-value, effect size, and individual deviations.
+
+    CRITICAL: This function now considers BOTH overall statistics AND individual deviations.
+    A category can be flagged even if the overall p-value is not significant, if:
+    - Individual z-scores are significant (|z| > 2.0)
+    - Effect size is medium or large (Cramér's V > 0.3)
 
     Args:
         p_value: Statistical significance level
-        is_uniformity_test: If True, we WANT p > 0.05 (uniformity is good)
+        effect_size: Cramér's V effect size (0-1 scale)
+        deviations: List of deviation dicts with 'is_significant' and 'z_score' keys
+        is_uniformity_test: Kept for API compatibility; the threshold logic is the same for both
+            uniformity tests (level analysis) and deviation tests (location/function/tenure)
 
     Returns:
         Status string: "green", "yellow", or "red"
     """
-    if is_uniformity_test:
-        # For level analysis, uniformity is desired
-        if p_value > 0.05:
-            return "green"
-        elif p_value > 0.01:
-            return "yellow"
-        else:
+    # Check for significant individual deviations FIRST
+    # This catches cases where overall p-value is not significant but individual cells are
+    significant_devs = [d for d in deviations if d.get("is_significant", False)]
+
+    # DEBUG: Log to verify new code is running
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"[NEW CODE] _get_status called: p={p_value:.4f}, effect={effect_size:.3f}, "
+                f"significant_devs={len(significant_devs)}/{len(deviations)}")
+
+    if significant_devs:
+        # We have at least one category with significant deviation (|z| > 2)
+        max_z = max(abs(float(d["z_score"])) for d in significant_devs)
+
+        # Combine z-score magnitude with effect size for severity
+        if max_z > 3.0 or (max_z > 2.5 and effect_size > 0.4):
+            # Very strong deviation or strong deviation with large effect
             return "red"
-    # For other analyses, deviation is flagged
-    elif p_value > 0.05:
+        # Strong deviation or moderate deviation with medium effect
+        return "yellow"
+
+    # No significant individual deviations (all z < 2.0)
+    # BUT: Check effect size - medium/large effect should still be flagged
+    # This catches cases where sample sizes are too small for significant z-scores
+    # but the overall pattern shows a meaningful difference
+    if effect_size >= 0.5:  # Large effect
+        return "yellow"
+    elif effect_size >= 0.3:  # Medium effect
+        return "yellow"
+
+    # No significant deviations and small effect size - check p-value
+    if p_value > 0.05:
         return "green"
     elif p_value > 0.01:
         return "yellow"
-    else:
-        return "red"
+    return "red"
 
 
 def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
@@ -185,15 +219,15 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
                 "expected_high_pct": round(expected_high_pct, 1),
                 "z_score": round(float(z_score), 2),
                 "sample_size": int(total_in_loc),
-                "is_significant": bool(abs(z_score) > 2.0),
+                "is_significant": bool(abs(z_score) >= 2.0),
             }
         )
 
     # Sort by absolute z-score
     deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
-    # Generate interpretation
-    status = _get_status(p_value, is_uniformity_test=False)
+    # Generate status (considers p-value, effect size, AND individual deviations)
+    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_location_interpretation(status, p_value, effect_size, deviations)
 
     return {
@@ -208,7 +242,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     }
 
 
-def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
+def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:  # noqa: PLR0911, PLR0912
     """Analyze grid position distribution across job functions.
 
     Tests whether the 9-box distribution differs significantly across job functions.
@@ -218,6 +252,10 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
 
     Returns:
         Dictionary with statistical analysis results (same structure as location_analysis)
+
+    Note:
+        Complexity warnings suppressed - multiple return statements and branches are needed
+        for proper validation and error handling of various edge cases.
     """
     if not employees:
         return _empty_analysis("No employees to analyze")
@@ -335,15 +373,15 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
                 "expected_high_pct": round(expected_high_pct, 1),
                 "z_score": round(float(z_score_high), 2),
                 "sample_size": int(total_in_func),
-                "is_significant": bool(abs(z_score_high) > 2.0),
+                "is_significant": bool(abs(z_score_high) >= 2.0),
             }
         )
 
     # Sort by absolute z-score
     deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
-    # Generate interpretation
-    status = _get_status(p_value, is_uniformity_test=False)
+    # Generate status (considers p-value, effect size, AND individual deviations)
+    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_function_interpretation(status, p_value, effect_size, deviations)
 
     return {
@@ -430,15 +468,15 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
                 "expected_high_pct": round(expected_high_pct, 1),
                 "z_score": round(float(z_score), 2),
                 "sample_size": int(total_in_level),
-                "is_significant": bool(abs(z_score) > 2.0),
+                "is_significant": bool(abs(z_score) >= 2.0),
             }
         )
 
     # Sort by absolute z-score
     deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
-    # Generate interpretation (UNIFORMITY TEST - p > 0.05 is GOOD)
-    status = _get_status(p_value, is_uniformity_test=True)
+    # Generate status (UNIFORMITY TEST - p > 0.05 is GOOD, but still check individual deviations)
+    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=True)
     interpretation = _generate_level_interpretation(status, p_value, effect_size, deviations)
 
     return {
@@ -524,15 +562,15 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
                 "expected_high_pct": round(expected_high_pct, 1),
                 "z_score": round(float(z_score), 2),
                 "sample_size": int(total_in_tenure),
-                "is_significant": bool(abs(z_score) > 2.0),
+                "is_significant": bool(abs(z_score) >= 2.0),
             }
         )
 
     # Sort by absolute z-score
     deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
 
-    # Generate interpretation
-    status = _get_status(p_value, is_uniformity_test=False)
+    # Generate status (considers p-value, effect size, AND individual deviations)
+    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_tenure_interpretation(status, p_value, effect_size, deviations)
 
     return {
@@ -617,13 +655,16 @@ def _empty_analysis(reason: str) -> dict[str, Any]:
 def _generate_location_interpretation(
     status: str, p_value: float, effect_size: float, deviations: list[dict[str, Any]]
 ) -> str:
-    """Generate human-readable interpretation for location analysis."""
-    if status == "green":
-        return "Performance ratings are evenly distributed across locations. No significant anomalies detected."
+    """Generate human-readable interpretation for location analysis.
 
-    # Find most significant deviation
-    if deviations:
-        top_dev = deviations[0]
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    """
+    # Check for significant individual deviations FIRST
+    significant_devs = [d for d in deviations if d.get("is_significant", False)]
+
+    if significant_devs:
+        # Report the most significant deviation
+        top_dev = significant_devs[0]
         category = top_dev["category"]
         obs_pct = top_dev["observed_high_pct"]
         exp_pct = top_dev["expected_high_pct"]
@@ -632,24 +673,56 @@ def _generate_location_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
+        # Include count of significant deviations if multiple
+        count_msg = ""
+        if len(significant_devs) > 1:
+            count_msg = f" ({len(significant_devs)} locations with significant deviations)"
+
         return (
-            f"Significant location bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"[FIXED CODE v2.0] Significant location bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline)."
         )
 
+    # No significant individual deviations (all z < 2.0)
+    # BUT: If effect size is medium/large, report the largest deviation anyway
+    if effect_size >= 0.3 and deviations:
+        top_dev = deviations[0]  # Already sorted by |z-score|
+        category = top_dev["category"]
+        obs_pct = top_dev["observed_high_pct"]
+        exp_pct = top_dev["expected_high_pct"]
+        z_score = top_dev["z_score"]
+
+        direction = "higher" if obs_pct > exp_pct else "lower"
+        effect_desc = "medium" if effect_size < 0.5 else "large"
+
+        return (
+            f"[FIXED CODE v2.0] Notable location pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline). Small sample sizes limit statistical significance."
+        )
+
+    # No significant deviations and small effect size
+    if status == "green":
+        return "[FIXED CODE v2.0] Performance ratings are evenly distributed across locations. No significant anomalies detected."
+
+    # Rare edge case
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 
 
 def _generate_function_interpretation(
     status: str, p_value: float, effect_size: float, deviations: list[dict[str, Any]]
 ) -> str:
-    """Generate human-readable interpretation for function analysis."""
-    if status == "green":
-        return "Performance ratings are evenly distributed across functions. No significant anomalies detected."
+    """Generate human-readable interpretation for function analysis.
 
-    if deviations:
-        top_dev = deviations[0]
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    """
+    # Check for significant individual deviations FIRST
+    significant_devs = [d for d in deviations if d.get("is_significant", False)]
+
+    if significant_devs:
+        # Report the most significant deviation
+        top_dev = significant_devs[0]
         category = top_dev["category"]
         obs_pct = top_dev["observed_high_pct"]
         exp_pct = top_dev["expected_high_pct"]
@@ -658,27 +731,56 @@ def _generate_function_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
+        # Include count of significant deviations if multiple
+        count_msg = ""
+        if len(significant_devs) > 1:
+            count_msg = f" ({len(significant_devs)} functions with significant deviations)"
+
         return (
-            f"Significant function bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"Significant function bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline)."
         )
 
+    # No significant individual deviations (all z < 2.0)
+    # BUT: If effect size is medium/large, report the largest deviation anyway
+    if effect_size >= 0.3 and deviations:
+        top_dev = deviations[0]  # Already sorted by |z-score|
+        category = top_dev["category"]
+        obs_pct = top_dev["observed_high_pct"]
+        exp_pct = top_dev["expected_high_pct"]
+        z_score = top_dev["z_score"]
+
+        direction = "higher" if obs_pct > exp_pct else "lower"
+        effect_desc = "medium" if effect_size < 0.5 else "large"
+
+        return (
+            f"Notable function pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline). Small sample sizes limit statistical significance."
+        )
+
+    # No significant deviations and small effect size
+    if status == "green":
+        return "Performance ratings are evenly distributed across functions. No significant anomalies detected."
+
+    # Rare edge case
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 
 
 def _generate_level_interpretation(
     status: str, p_value: float, effect_size: float, deviations: list[dict[str, Any]]
 ) -> str:
-    """Generate human-readable interpretation for level analysis (UNIFORMITY TEST)."""
-    if status == "green":
-        return (
-            f"Level calibration looks good (p={p_value:.4f}). "
-            "Performance ratings are properly calibrated across job levels."
-        )
+    """Generate human-readable interpretation for level analysis (UNIFORMITY TEST).
 
-    if deviations:
-        top_dev = deviations[0]
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    """
+    # Check for significant individual deviations FIRST
+    significant_devs = [d for d in deviations if d.get("is_significant", False)]
+
+    if significant_devs:
+        # Report the most significant deviation
+        top_dev = significant_devs[0]
         category = top_dev["category"]
         obs_pct = top_dev["observed_high_pct"]
         exp_pct = top_dev["expected_high_pct"]
@@ -687,24 +789,59 @@ def _generate_level_interpretation(
         direction = "leniency" if obs_pct > exp_pct else "severity"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
+        # Include count of significant deviations if multiple
+        count_msg = ""
+        if len(significant_devs) > 1:
+            count_msg = f" ({len(significant_devs)} levels with significant deviations)"
+
         return (
-            f"Warning: Level calibration issue detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"Warning: Level calibration issue detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% rated High vs {exp_pct:.1f}% baseline - "
             f"possible {direction} bias (z={z_score:.2f})."
         )
 
+    # No significant individual deviations (all z < 2.0)
+    # BUT: If effect size is medium/large, report the pattern anyway
+    if effect_size >= 0.3 and deviations:
+        top_dev = deviations[0]  # Already sorted by |z-score|
+        category = top_dev["category"]
+        obs_pct = top_dev["observed_high_pct"]
+        exp_pct = top_dev["expected_high_pct"]
+        z_score = top_dev["z_score"]
+
+        direction = "leniency" if obs_pct > exp_pct else "severity"
+        effect_desc = "medium" if effect_size < 0.5 else "large"
+
+        return (
+            f"Notable level calibration pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% rated High vs {exp_pct:.1f}% baseline - "
+            f"possible {direction} bias (z={z_score:.2f}). Small sample sizes limit statistical significance."
+        )
+
+    # No significant deviations and small effect size
+    if status == "green":
+        return (
+            f"Level calibration looks good (p={p_value:.4f}). "
+            "Performance ratings are properly calibrated across job levels."
+        )
+
+    # Rare edge case
     return f"Warning: Calibration issue detected (p={p_value:.4f})."
 
 
 def _generate_tenure_interpretation(
     status: str, p_value: float, effect_size: float, deviations: list[dict[str, Any]]
 ) -> str:
-    """Generate human-readable interpretation for tenure analysis."""
-    if status == "green":
-        return "Performance ratings are evenly distributed across tenure groups. No significant anomalies detected."
+    """Generate human-readable interpretation for tenure analysis.
 
-    if deviations:
-        top_dev = deviations[0]
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    """
+    # Check for significant individual deviations FIRST
+    significant_devs = [d for d in deviations if d.get("is_significant", False)]
+
+    if significant_devs:
+        # Report the most significant deviation
+        top_dev = significant_devs[0]
         category = top_dev["category"]
         obs_pct = top_dev["observed_high_pct"]
         exp_pct = top_dev["expected_high_pct"]
@@ -713,12 +850,40 @@ def _generate_tenure_interpretation(
         direction = "higher" if obs_pct > exp_pct else "lower"
         effect_desc = "small" if effect_size < 0.3 else "medium" if effect_size < 0.5 else "large"
 
+        # Include count of significant deviations if multiple
+        count_msg = ""
+        if len(significant_devs) > 1:
+            count_msg = f" ({len(significant_devs)} tenure groups with significant deviations)"
+
         return (
-            f"Significant tenure bias detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"[FIXED CODE v2.0] Significant tenure bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline)."
         )
 
+    # No significant individual deviations (all z < 2.0)
+    # BUT: If effect size is medium/large, report the largest deviation anyway
+    if effect_size >= 0.3 and deviations:
+        top_dev = deviations[0]  # Already sorted by |z-score|
+        category = top_dev["category"]
+        obs_pct = top_dev["observed_high_pct"]
+        exp_pct = top_dev["expected_high_pct"]
+        z_score = top_dev["z_score"]
+
+        direction = "higher" if obs_pct > exp_pct else "lower"
+        effect_desc = "medium" if effect_size < 0.5 else "large"
+
+        return (
+            f"[FIXED CODE v2.0] Notable tenure pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
+            f"(z={z_score:.2f}, {direction} than baseline). Small sample sizes limit statistical significance."
+        )
+
+    # No significant deviations and small effect size
+    if status == "green":
+        return "[FIXED CODE v2.0] Performance ratings are evenly distributed across tenure groups. No significant anomalies detected."
+
+    # Rare edge case
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
 
 

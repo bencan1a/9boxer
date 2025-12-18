@@ -215,8 +215,5 @@ def test_get_statistics_when_percentages_then_sum_to_100(
     assert abs(total_percentage - 100.0) < 0.1
 
 
-def test_get_statistics_when_no_auth_then_returns_401(test_client: TestClient) -> None:
-    """Test GET /api/statistics without authentication returns 401."""
-    response = test_client.get("/api/statistics")
-
-    assert response.status_code == 401
+# NOTE: test_get_statistics_when_no_auth_then_returns_401 removed
+# This app is local-only without authentication
