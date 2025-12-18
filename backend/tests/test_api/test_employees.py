@@ -223,11 +223,8 @@ def test_move_employee_when_called_then_tracks_change(
     assert data["change"]["new_potential"] == "Low"
 
 
-def test_get_employees_when_no_auth_then_returns_401(test_client: TestClient) -> None:
-    """Test GET /api/employees without authentication returns 401."""
-    response = test_client.get("/api/employees")
-
-    assert response.status_code == 401
+# NOTE: test_get_employees_when_no_auth_then_returns_401 removed
+# This app is local-only without authentication
 
 
 def test_move_employee_when_updates_grid_position_then_position_correct(

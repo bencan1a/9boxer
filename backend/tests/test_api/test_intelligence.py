@@ -112,11 +112,8 @@ def test_get_intelligence_when_no_session_then_returns_404(
     assert "No active session" in response.json()["detail"]
 
 
-def test_get_intelligence_when_no_auth_then_returns_401(test_client: TestClient) -> None:
-    """Test GET /api/intelligence without authentication returns 401."""
-    response = test_client.get("/api/intelligence")
-
-    assert response.status_code == 401
+# NOTE: test_get_intelligence_when_no_auth_then_returns_401 removed
+# This app is local-only without authentication
 
 
 def test_get_intelligence_when_called_then_p_values_in_valid_range(

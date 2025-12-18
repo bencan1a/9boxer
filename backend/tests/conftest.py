@@ -1,7 +1,6 @@
 """Root conftest for all tests."""
 
 import os
-import sqlite3
 import tempfile
 from collections.abc import Generator
 from datetime import date, datetime
@@ -11,7 +10,6 @@ import openpyxl
 import pytest
 from fastapi.testclient import TestClient
 
-from ninebox.core.security import get_password_hash
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
 
 
@@ -33,40 +31,12 @@ def test_db_path() -> Generator[str, None, None]:
 
 
 @pytest.fixture(autouse=True)
-def setup_test_db(test_db_path: str) -> Generator[None, None, None]:
+def setup_test_db() -> Generator[None, None, None]:
     """Initialize test database before each test."""
-    # Initialize database schema
-    conn = sqlite3.connect(test_db_path)
-    cursor = conn.cursor()
-
-    # Create users table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            user_id TEXT PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            hashed_password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    # Insert test user
-    hashed_password = get_password_hash("testpass123")
-    cursor.execute(
-        "INSERT OR REPLACE INTO users (user_id, username, hashed_password) VALUES (?, ?, ?)",
-        ("test-user-id", "testuser", hashed_password),
-    )
-
-    conn.commit()
-    conn.close()
+    # Note: This app is local-only without authentication.
+    # No database initialization needed for tests.
 
     yield
-
-    # Clean up test data after each test
-    conn = sqlite3.connect(test_db_path)
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM users WHERE user_id != 'test-user-id'")
-    conn.commit()
-    conn.close()
 
     # Clear all sessions from session manager
     from ninebox.services.session_manager import session_manager  # noqa: PLC0415
@@ -337,11 +307,10 @@ def test_client(test_db_path: str) -> TestClient:
 
 
 @pytest.fixture
-def auth_headers(test_client: TestClient) -> dict[str, str]:
-    """Get authentication headers for testing."""
-    response = test_client.post(
-        "/api/auth/login", json={"username": "testuser", "password": "testpass123"}
-    )
-    assert response.status_code == 200
-    token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+def auth_headers() -> dict[str, str]:
+    """Get authentication headers for testing.
+
+    Note: This app is local-only without authentication.
+    This fixture returns empty headers for backward compatibility.
+    """
+    return {}

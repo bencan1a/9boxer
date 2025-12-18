@@ -43,21 +43,8 @@ def test_upload_when_invalid_file_type_then_returns_400(
     assert "Excel file" in response.json()["detail"]
 
 
-def test_upload_when_no_authentication_then_returns_401(
-    test_client: TestClient, sample_excel_file: Path
-) -> None:
-    """Test upload without authentication returns 401."""
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
-        files = {
-            "file": (
-                "test.xlsx",
-                f,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        }
-        response = test_client.post("/api/session/upload", files=files)
-
-    assert response.status_code == 401
+# NOTE: test_upload_when_no_authentication_then_returns_401 removed
+# This app is local-only without authentication
 
 
 def test_get_status_when_active_session_then_returns_200(
