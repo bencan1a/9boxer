@@ -34,6 +34,10 @@ class SessionState(BaseModel):
     original_filename: str
     original_file_path: str
 
+    # Excel sheet information (for robust export)
+    sheet_name: str
+    sheet_index: int
+
     # Current state (with modifications)
     current_employees: list[Employee]
 

@@ -16,7 +16,13 @@ class SessionManager:
         self.sessions: dict[str, SessionState] = {}
 
     def create_session(
-        self, user_id: str, employees: list[Employee], filename: str, file_path: str
+        self,
+        user_id: str,
+        employees: list[Employee],
+        filename: str,
+        file_path: str,
+        sheet_name: str,
+        sheet_index: int,
     ) -> str:
         """Create new session with uploaded data."""
         session_id = str(uuid.uuid4())
@@ -32,6 +38,8 @@ class SessionManager:
             original_employees=original_employees,
             original_filename=filename,
             original_file_path=file_path,
+            sheet_name=sheet_name,
+            sheet_index=sheet_index,
             current_employees=current_employees,
             changes=[],
         )

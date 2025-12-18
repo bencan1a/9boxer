@@ -10,7 +10,7 @@ import pytest
 
 from ninebox.models.employee import Employee
 from ninebox.services.excel_exporter import ExcelExporter
-from ninebox.services.excel_parser import ExcelParser
+from ninebox.services.excel_parser import ExcelParser, ParsingResult
 from ninebox.services.intelligence_service import calculate_overall_intelligence
 from ninebox.services.statistics_service import StatisticsService
 
@@ -29,7 +29,7 @@ class TestExcelParserPerformance:
         """
         parser = ExcelParser()
 
-        def parse_small_file() -> list[Employee]:
+        def parse_small_file() -> ParsingResult:
             return parser.parse(str(small_excel_file))
 
         benchmark(parse_small_file)
@@ -45,7 +45,7 @@ class TestExcelParserPerformance:
         """
         parser = ExcelParser()
 
-        def parse_large_file() -> list[Employee]:
+        def parse_large_file() -> ParsingResult:
             return parser.parse(str(large_excel_file))
 
         benchmark(parse_large_file)

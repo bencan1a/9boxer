@@ -11,7 +11,11 @@ class ExcelExporter:
     """Export modified employee data back to Excel."""
 
     def export(
-        self, original_file: str | Path, employees: list[Employee], output_path: str | Path
+        self,
+        original_file: str | Path,
+        employees: list[Employee],
+        output_path: str | Path,
+        sheet_index: int = 1,
     ) -> None:
         """
         Create new Excel file with updated ratings.
@@ -20,15 +24,19 @@ class ExcelExporter:
             original_file: Path to original Excel file
             employees: List of employees with current data
             output_path: Path to save modified Excel file
+            sheet_index: Index of the sheet to export to (default: 1 for backward compatibility)
         """
         # Read original file to preserve formatting
         workbook = openpyxl.load_workbook(original_file)
 
-        # Work with second sheet (index 1)
-        if len(workbook.worksheets) < 2:
-            raise ValueError("Excel file must have at least 2 sheets")
+        # Work with specified sheet
+        if len(workbook.worksheets) <= sheet_index:
+            raise ValueError(
+                f"Excel file must have at least {sheet_index + 1} sheets. "
+                f"Only {len(workbook.worksheets)} sheets found."
+            )
 
-        sheet = workbook.worksheets[1]
+        sheet = workbook.worksheets[sheet_index]
 
         # Find column indices
         perf_col = self._find_column(sheet, "Aug 2025 Talent Assessment Performance")
