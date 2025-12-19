@@ -26,6 +26,10 @@
       "to": "icon.png"
     },
     {
+      "from": "dist-electron/renderer/splash.html",
+      "to": "splash.html"
+    },
+    {
       "from": "../USER_GUIDE.html",
       "to": "USER_GUIDE.html"
     }
@@ -60,7 +64,9 @@
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
     "shortcutName": "9Boxer",
-    "uninstallDisplayName": "9Boxer"
+    "uninstallDisplayName": "9Boxer",
+    "installerIcon": "build/icon.ico",
+    "uninstallerIcon": "build/icon.ico"
   },
   "dmg": {
     "title": "${productName} ${version}"

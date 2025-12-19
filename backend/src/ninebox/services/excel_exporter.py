@@ -75,7 +75,9 @@ class ExcelExporter:
                 # Create movement description
                 old_label = get_position_label(change.old_performance, change.old_potential)
                 new_label = get_position_label(change.new_performance, change.new_potential)
-                change_description_map[change.employee_id] = f"Moved from {old_label} to {new_label}"
+                change_description_map[change.employee_id] = (
+                    f"Moved from {old_label} to {new_label}"
+                )
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):
@@ -122,7 +124,6 @@ class ExcelExporter:
 
         # Save modified workbook
         workbook.save(output_path)
-
 
     def _find_column(
         self, sheet: openpyxl.worksheet.worksheet.Worksheet, col_name: str, create: bool = False

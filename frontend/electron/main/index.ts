@@ -55,7 +55,13 @@ function createSplashScreen(): void {
     },
   });
 
-  splashWindow.loadFile(path.join(__dirname, '../renderer/splash.html'));
+  // Get splash screen path based on environment
+  const splashPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'splash.html')
+    : path.join(__dirname, '../renderer/splash.html');
+
+  console.log('🎨 Loading splash screen from:', splashPath);
+  splashWindow.loadFile(splashPath);
   splashWindow.center();
   console.log('🎨 Splash screen created');
 }
