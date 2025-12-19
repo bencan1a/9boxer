@@ -131,24 +131,28 @@ npm run electron:build
 
 The build process will:
 
-1. **Pre-build validation** (`scripts/ensure-backend.cjs`):
+1. **Generate USER_GUIDE.html** (`scripts/generate-user-guide.cjs`):
+   - Converts `USER_GUIDE.md` to `resources/USER_GUIDE.html`
+   - Ensures bundled documentation is up-to-date
+
+2. **Pre-build validation** (`scripts/ensure-backend.cjs`):
    - Checks if `backend/dist/ninebox/ninebox.exe` (or `ninebox`) exists
    - Exits with error if backend not found
 
-2. **Frontend build** (`npm run build`):
+3. **Frontend build** (`npm run build`):
    - Compiles React app with Vite
    - Outputs to `frontend/dist/`
 
-3. **Electron compilation**:
+4. **Electron compilation**:
    - Compiles TypeScript (`frontend/electron/`) to JavaScript
    - Outputs to `frontend/dist-electron/`
 
-4. **Electron packaging** (`electron-builder`):
+5. **Electron packaging** (`electron-builder`):
    - Packages Electron runtime (~150MB)
    - Includes React app from `frontend/dist/`
    - Includes Electron code from `frontend/dist-electron/`
    - Includes backend from `backend/dist/ninebox/`
-   - Includes `USER_GUIDE.html`
+   - Includes resources from `resources/` (USER_GUIDE.html, Sample_People_List.xlsx)
    - Creates platform-specific installer
 
 **Output:**
@@ -204,8 +208,12 @@ Key settings:
       "to": "app/dist"
     },
     {
-      "from": "../USER_GUIDE.html",       // Documentation
+      "from": "../resources/USER_GUIDE.html",  // User documentation
       "to": "USER_GUIDE.html"
+    },
+    {
+      "from": "../resources/Sample_People_List.xlsx",  // Sample data
+      "to": "Sample_People_List.xlsx"
     }
   ],
   "win": {

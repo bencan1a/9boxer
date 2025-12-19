@@ -30,11 +30,11 @@
       "to": "splash.html"
     },
     {
-      "from": "../USER_GUIDE.html",
+      "from": "../resources/USER_GUIDE.html",
       "to": "USER_GUIDE.html"
     },
     {
-      "from": "../Sample_People_List.xlsx",
+      "from": "../resources/Sample_People_List.xlsx",
       "to": "Sample_People_List.xlsx"
     }
   ],
