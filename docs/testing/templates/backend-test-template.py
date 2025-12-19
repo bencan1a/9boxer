@@ -14,19 +14,16 @@ Key Principles:
 - Aim for >80% coverage
 """
 
-from unittest.mock import Mock, patch, MagicMock
-from typing import Generator
-
 import pytest
 
-from ninebox.services.employee_service import EmployeeService
 from ninebox.models.employee import Employee
 from ninebox.models.session import Session
-
+from ninebox.services.employee_service import EmployeeService
 
 # ============================================================================
 # FIXTURES: Shared test data and setup
 # ============================================================================
+
 
 @pytest.fixture
 def sample_employee() -> Employee:
@@ -90,6 +87,7 @@ def employee_service(sample_employees) -> EmployeeService:
 # ============================================================================
 # TEST CLASS 1: Basic functionality tests
 # ============================================================================
+
 
 class TestEmployeeCreation:
     """
@@ -163,7 +161,7 @@ class TestEmployeeCreation:
         }
 
         # Act & Assert: Should raise validation error
-        with pytest.raises(ValueError, match="performance.*range"):
+        with pytest.raises(ValueError, match=r"performance.*range"):
             Employee(**invalid_data)
 
     def test_employee_creation_when_valid_data_then_not_marked_modified(
@@ -183,6 +181,7 @@ class TestEmployeeCreation:
 # ============================================================================
 # TEST CLASS 2: Service/business logic tests
 # ============================================================================
+
 
 class TestEmployeeService:
     """
@@ -225,7 +224,7 @@ class TestEmployeeService:
         invalid_position = 99  # Grid only has positions 1-9
 
         # Act & Assert: Should raise validation error
-        with pytest.raises(ValueError, match="position.*valid"):
+        with pytest.raises(ValueError, match=r"position.*valid"):
             employee_service.move_employee(
                 employee_id=1,
                 new_position=invalid_position,
@@ -234,7 +233,6 @@ class TestEmployeeService:
     def test_calculate_statistics_when_employees_present_then_returns_distribution(
         self,
         employee_service,
-        sample_employees,
     ):
         """
         Test: Calculate statistics for populated employee service.
@@ -269,6 +267,7 @@ class TestEmployeeService:
 # ============================================================================
 # TEST CLASS 3: API endpoint tests (using test client)
 # ============================================================================
+
 
 class TestEmployeeAPIEndpoints:
     """
@@ -378,6 +377,7 @@ class TestEmployeeAPIEndpoints:
 # TEST CLASS 4: Error handling and edge cases
 # ============================================================================
 
+
 class TestErrorHandling:
     """
     Test suite: Error handling and edge cases.
@@ -390,7 +390,7 @@ class TestErrorHandling:
         Verifies validation rejects empty strings.
         """
         # Arrange & Act & Assert
-        with pytest.raises(ValueError, match="name.*required"):
+        with pytest.raises(ValueError, match=r"name.*required"):
             Employee(
                 id=1,
                 name="",  # Empty name

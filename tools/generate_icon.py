@@ -20,7 +20,6 @@ def create_ninebox_icon(size: int = 512) -> Image.Image:
     draw = ImageDraw.Draw(img)
 
     # Colors
-    bg_color = (255, 255, 255, 255)  # White background
     grid_color = (33, 33, 33, 255)  # Dark gray/black lines
 
     # Calculate grid dimensions with padding

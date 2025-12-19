@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import openpyxl
+from openpyxl.worksheet.worksheet import Worksheet
 
 from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import get_position_label
@@ -86,7 +87,8 @@ class ExcelExporter:
                 continue
 
             try:
-                emp_id = int(emp_id_cell)
+                # Convert cell value to int, handling various types
+                emp_id = int(str(emp_id_cell))
             except (ValueError, TypeError):
                 continue
 
@@ -125,9 +127,7 @@ class ExcelExporter:
         # Save modified workbook
         workbook.save(output_path)
 
-    def _find_column(
-        self, sheet: openpyxl.worksheet.worksheet.Worksheet, col_name: str, create: bool = False
-    ) -> int | None:
+    def _find_column(self, sheet: Worksheet, col_name: str, create: bool = False) -> int | None:
         """Find column index by name."""
         for col_idx in range(1, sheet.max_column + 1):
             cell_value = sheet.cell(1, col_idx).value

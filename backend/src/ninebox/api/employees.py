@@ -39,8 +39,8 @@ async def get_employees(
     exclude_ids: str | None = Query(None, description="Comma-separated employee IDs"),
     performance: str | None = Query(None),
     potential: str | None = Query(None),
-    session_mgr: SessionManager = Depends(get_session_manager),
-    emp_service: EmployeeService = Depends(get_employee_service),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    emp_service: EmployeeService = Depends(get_employee_service),  # noqa: B008
 ) -> dict:
     """Get filtered list of employees."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -76,8 +76,8 @@ async def get_employees(
 
 @router.get("/filter-options")
 async def get_filter_options(
-    session_mgr: SessionManager = Depends(get_session_manager),
-    emp_service: EmployeeService = Depends(get_employee_service),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    emp_service: EmployeeService = Depends(get_employee_service),  # noqa: B008
 ) -> dict:
     """Get available filter options from current session."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -94,7 +94,7 @@ async def get_filter_options(
 @router.get("/{employee_id}", response_model=Employee)
 async def get_employee(
     employee_id: int,
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> Employee:
     """Get single employee by ID."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -120,7 +120,7 @@ async def get_employee(
 async def update_employee(
     employee_id: int,
     updates: UpdateEmployeeRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> dict:
     """Update employee fields."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -158,7 +158,7 @@ async def update_employee(
 async def move_employee(
     employee_id: int,
     move: MoveRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> dict:
     """Move employee to new position."""
     try:

@@ -26,9 +26,9 @@ async def get_statistics(
     exclude_ids: str | None = Query(None),
     performance: str | None = Query(None),
     potential: str | None = Query(None),
-    session_mgr: SessionManager = Depends(get_session_manager),
-    emp_service: EmployeeService = Depends(get_employee_service),
-    stats_service: StatisticsService = Depends(get_statistics_service),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    emp_service: EmployeeService = Depends(get_employee_service),  # noqa: B008
+    stats_service: StatisticsService = Depends(get_statistics_service),  # noqa: B008
 ) -> dict:
     """Get statistics for filtered employees."""
     session = session_mgr.get_session(LOCAL_USER_ID)

@@ -1,7 +1,10 @@
 """Session management API endpoints."""
 
+import gc
 import logging
 import shutil
+import time
+import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
@@ -30,7 +33,7 @@ class UpdateNotesRequest(BaseModel):
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),  # noqa: B008
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> dict:
     """Upload Excel file and create session."""
     # Validate file type
@@ -43,8 +46,6 @@ async def upload_file(
     logger = logging.getLogger(__name__)
 
     # Generate session ID first (needed for unique filename)
-    import uuid
-
     session_id = str(uuid.uuid4())
 
     # Save to PERMANENT location (not temp)
@@ -123,7 +124,7 @@ async def upload_file(
 
 @router.get("/status")
 async def get_session_status(
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> dict:
     """Get current session status."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -147,11 +148,9 @@ async def get_session_status(
 
 @router.delete("/clear")
 async def clear_session(
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> dict:
     """Clear current session."""
-    import gc
-    import time
 
     session = session_mgr.get_session(LOCAL_USER_ID)
 
@@ -185,7 +184,7 @@ async def clear_session(
 
 @router.post("/export")
 async def export_session(
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> FileResponse:
     """Export current session data to Excel."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -231,7 +230,7 @@ async def export_session(
 async def update_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> EmployeeMove:
     """Update notes for an employee's change entry."""
     try:

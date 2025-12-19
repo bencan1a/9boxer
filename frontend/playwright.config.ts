@@ -51,9 +51,12 @@ export default defineConfig({
   webServer: [
     {
       // Backend API server
-      command: process.platform === 'win32'
-        ? '..\\.venv\\Scripts\\python.exe -m uvicorn ninebox.main:app --reload'
-        : '../.venv/bin/python -m uvicorn ninebox.main:app --reload',
+      // In CI, use system Python; locally use venv
+      command: process.env.CI
+        ? 'python -m uvicorn ninebox.main:app --reload'
+        : process.platform === 'win32'
+          ? '..\\.venv\\Scripts\\python.exe -m uvicorn ninebox.main:app --reload'
+          : '../.venv/bin/python -m uvicorn ninebox.main:app --reload',
       url: 'http://localhost:8000/health',
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
