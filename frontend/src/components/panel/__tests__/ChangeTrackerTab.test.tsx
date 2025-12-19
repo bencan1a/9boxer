@@ -251,7 +251,7 @@ describe('ChangeTrackerTab', () => {
     fireEvent.blur(notesField)
 
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to save notes:', mockError)
+      expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] Failed to save notes', mockError)
     })
 
     consoleErrorSpy.mockRestore()

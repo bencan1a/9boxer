@@ -19,6 +19,7 @@ import {
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { useSessionStore } from "../../store/sessionStore";
 import { getPositionName, getShortPositionLabel } from "../../constants/positionLabels";
+import { logger } from "../../utils/logger";
 
 export const ChangeTrackerTab: React.FC = () => {
   const changes = useSessionStore((state) => state.changes);
@@ -40,7 +41,7 @@ export const ChangeTrackerTab: React.FC = () => {
     setEditingId(null);
     // Fire and forget - don't block UI while saving
     updateChangeNotes(employeeId, notesValue).catch((error) => {
-      console.error("Failed to save notes:", error);
+      logger.error('Failed to save notes', error);
     });
   };
 

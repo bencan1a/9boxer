@@ -6,6 +6,7 @@ import openpyxl
 import pytest
 
 from ninebox.models.employee import PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 from ninebox.services.excel_parser import ExcelParser
 
 
@@ -171,46 +172,42 @@ def test_calculate_position_when_all_combinations_then_returns_correct_positions
         Performance (columns): Low=1, Medium=2, High=3
         Potential (rows): Low=1-3, Medium=4-6, High=7-9
     """
-    parser = ExcelParser()
-
     # Low performance (column 1)
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
 
     # Medium performance (column 2)
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
 
     # High performance (column 3)
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
 
 
 def test_get_position_label_when_all_combinations_then_returns_correct_labels() -> None:
     """Test position label generation."""
-    parser = ExcelParser()
-
-    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Star [H,H]"
+    assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Star [H,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
+        get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
     )
-    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "Workhorse [H,L]"
-    assert parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth [M,H]"
+    assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "Workhorse [H,L]"
+    assert get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth [M,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
+        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
         == "Core Talent [M,M]"
     )
     assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW)
+        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW)
         == "Effective Pro [M,L]"
     )
-    assert parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
+    assert get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
+        get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
     )
     assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
+        get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
     )

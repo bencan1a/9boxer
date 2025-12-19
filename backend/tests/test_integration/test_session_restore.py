@@ -5,8 +5,9 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from ninebox.services.database import db_manager
-from ninebox.services.session_manager import SessionManager, session_manager
+from ninebox.core.dependencies import get_db_manager, get_session_manager
+from ninebox.services.database import DatabaseManager
+from ninebox.services.session_manager import SessionManager
 
 
 class TestSessionRestore:
@@ -38,7 +39,7 @@ class TestSessionRestore:
         original_filename = response.json()["uploaded_filename"]
 
         # Simulate backend restart by creating new SessionManager
-        session_manager.sessions.clear()  # Clear in-memory cache
+        get_session_manager.cache_clear()  # Clear in-memory cache
         new_manager = SessionManager()  # This should restore from database
 
         # Verify session was restored
@@ -85,7 +86,7 @@ class TestSessionRestore:
         assert response.json()["changes_count"] == 1
 
         # Simulate backend restart
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify changes were persisted
@@ -138,7 +139,7 @@ class TestSessionRestore:
         assert response.status_code == 200
 
         # Simulate backend restart
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify notes were persisted
@@ -174,7 +175,7 @@ class TestSessionRestore:
         assert response.status_code == 404
 
         # Simulate backend restart
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify no sessions were restored
@@ -213,7 +214,7 @@ class TestSessionRestore:
         assert response.status_code == 200
 
         # Simulate backend restart
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify only latest session was restored
@@ -230,7 +231,8 @@ class TestDatabaseIntegrity:
     ) -> None:
         """Test that creating a session inserts a database row."""
         # Count database rows before upload
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             initial_count = cursor.fetchone()[0]
 
@@ -246,7 +248,8 @@ class TestDatabaseIntegrity:
             test_client.post("/api/session/upload", files=files)
 
         # Count database rows after upload
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             final_count = cursor.fetchone()[0]
 
@@ -268,7 +271,8 @@ class TestDatabaseIntegrity:
             test_client.post("/api/session/upload", files=files)
 
         # Get updated_at timestamp before move
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT updated_at FROM sessions LIMIT 1")
             row = cursor.fetchone()
             initial_updated_at = row["updated_at"] if row else None
@@ -285,7 +289,8 @@ class TestDatabaseIntegrity:
         )
 
         # Get updated_at timestamp after move
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT updated_at FROM sessions LIMIT 1")
             row = cursor.fetchone()
             final_updated_at = row["updated_at"] if row else None
@@ -310,7 +315,8 @@ class TestDatabaseIntegrity:
             test_client.post("/api/session/upload", files=files)
 
         # Verify database row exists
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             count_before = cursor.fetchone()[0]
 
@@ -320,7 +326,8 @@ class TestDatabaseIntegrity:
         test_client.delete("/api/session/clear")
 
         # Verify database row was removed
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             count_after = cursor.fetchone()[0]
 
@@ -333,7 +340,8 @@ class TestErrorHandling:
     def test_restore_when_corrupted_data_then_skips_session(self) -> None:
         """Test that corrupted sessions are skipped during restore."""
         # Insert corrupted session data directly into database
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             conn.execute(
                 """
                 INSERT INTO sessions (
@@ -360,7 +368,7 @@ class TestErrorHandling:
             )
 
         # Create new SessionManager (should skip corrupted session)
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify corrupted session was skipped
@@ -374,7 +382,8 @@ class TestErrorHandling:
         rather than crashing the application.
         """
         # Insert data that will cause deserialization errors
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             conn.execute(
                 """
                 INSERT INTO sessions (
@@ -401,7 +410,7 @@ class TestErrorHandling:
             )
 
         # Clear and create new SessionManager
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Verify manager starts, but skips the bad session

@@ -1,10 +1,16 @@
 """Statistics API endpoints."""
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from ninebox.services.employee_service import employee_service
-from ninebox.services.session_manager import session_manager
-from ninebox.services.statistics_service import statistics_service
+from ninebox.core.dependencies import (
+    get_employee_service,
+    get_session_manager,
+    get_statistics_service,
+)
+from ninebox.models.filters import EmployeeFilters
+from ninebox.services.employee_service import EmployeeService
+from ninebox.services.session_manager import SessionManager
+from ninebox.services.statistics_service import StatisticsService
 
 router = APIRouter(prefix="/statistics", tags=["statistics"])
 
@@ -20,9 +26,12 @@ async def get_statistics(
     exclude_ids: str | None = Query(None),
     performance: str | None = Query(None),
     potential: str | None = Query(None),
+    session_mgr: SessionManager = Depends(get_session_manager),
+    emp_service: EmployeeService = Depends(get_employee_service),
+    stats_service: StatisticsService = Depends(get_statistics_service),
 ) -> dict:
     """Get statistics for filtered employees."""
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -30,26 +39,23 @@ async def get_statistics(
             detail="No active session",
         )
 
-    # Parse query parameters (same as employees endpoint)
-    levels_list = levels.split(",") if levels else None
-    job_profiles_list = job_profiles.split(",") if job_profiles else None
-    managers_list = managers.split(",") if managers else None
-    exclude_ids_list = [int(id.strip()) for id in exclude_ids.split(",")] if exclude_ids else None
-    performance_list = performance.split(",") if performance else None
-    potential_list = potential.split(",") if potential else None
+    # Parse query parameters using shared filter model
+    filters = EmployeeFilters.from_query_params(
+        levels=levels,
+        job_profiles=job_profiles,
+        managers=managers,
+        performance=performance,
+        potential=potential,
+        exclude_ids=exclude_ids,
+    )
 
     # Apply filters
-    filtered_employees = employee_service.filter_employees(
+    filtered_employees = emp_service.filter_employees(
         employees=session.current_employees,
-        levels=levels_list,
-        job_profiles=job_profiles_list,
-        managers=managers_list,
-        exclude_ids=exclude_ids_list,
-        performance=performance_list,
-        potential=potential_list,
+        **filters.to_filter_kwargs(),
     )
 
     # Calculate statistics
-    stats = statistics_service.calculate_distribution(filtered_employees)
+    stats = stats_service.calculate_distribution(filtered_employees)
 
     return stats

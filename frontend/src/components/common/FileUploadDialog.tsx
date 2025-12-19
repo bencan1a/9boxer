@@ -17,6 +17,7 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSessionStore } from "../../store/sessionStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
+import { logger } from "../../utils/logger";
 
 interface FileUploadDialogProps {
   open: boolean;
@@ -85,7 +86,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       setError(null);
     } catch (err) {
       setError("Failed to read file");
-      console.error("Error reading file:", err);
+      logger.error('Error reading file', err);
     }
   };
 

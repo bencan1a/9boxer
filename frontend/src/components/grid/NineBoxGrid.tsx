@@ -8,6 +8,7 @@ import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { GridBox } from "./GridBox";
 import { useEmployees } from "../../hooks/useEmployees";
 import { Employee } from "../../types/employee";
+import { logger } from "../../utils/logger";
 
 const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 
@@ -63,7 +64,7 @@ export const NineBoxGrid: React.FC = () => {
     try {
       await moveEmployee(employee.employee_id, performance, potential);
     } catch (error) {
-      console.error("Failed to move employee:", error);
+      logger.error('Failed to move employee', error);
     }
   };
 

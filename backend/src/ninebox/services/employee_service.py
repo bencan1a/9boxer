@@ -136,7 +136,3 @@ class EmployeeService:
             "managers": managers,
             "employees": employee_list,
         }
-
-
-# Global employee service instance
-employee_service = EmployeeService()

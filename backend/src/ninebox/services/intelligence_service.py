@@ -679,7 +679,7 @@ def _generate_location_interpretation(
             count_msg = f" ({len(significant_devs)} locations with significant deviations)"
 
         return (
-            f"[FIXED CODE v2.0] Significant location bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
+            f"Significant location bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline)."
         )
@@ -697,14 +697,14 @@ def _generate_location_interpretation(
         effect_desc = "medium" if effect_size < 0.5 else "large"
 
         return (
-            f"[FIXED CODE v2.0] Notable location pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"Notable location pattern detected (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline). Small sample sizes limit statistical significance."
         )
 
     # No significant deviations and small effect size
     if status == "green":
-        return "[FIXED CODE v2.0] Performance ratings are evenly distributed across locations. No significant anomalies detected."
+        return "Performance ratings are evenly distributed across locations. No significant anomalies detected."
 
     # Rare edge case
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
@@ -856,7 +856,7 @@ def _generate_tenure_interpretation(
             count_msg = f" ({len(significant_devs)} tenure groups with significant deviations)"
 
         return (
-            f"[FIXED CODE v2.0] Significant tenure bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
+            f"Significant tenure bias detected{count_msg} (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline)."
         )
@@ -874,14 +874,14 @@ def _generate_tenure_interpretation(
         effect_desc = "medium" if effect_size < 0.5 else "large"
 
         return (
-            f"[FIXED CODE v2.0] Notable tenure pattern detected (p={p_value:.4f}, {effect_desc} effect). "
+            f"Notable tenure pattern detected (p={p_value:.4f}, {effect_desc} effect). "
             f"{category}: {obs_pct:.1f}% high performers vs {exp_pct:.1f}% expected "
             f"(z={z_score:.2f}, {direction} than baseline). Small sample sizes limit statistical significance."
         )
 
     # No significant deviations and small effect size
     if status == "green":
-        return "[FIXED CODE v2.0] Performance ratings are evenly distributed across tenure groups. No significant anomalies detected."
+        return "Performance ratings are evenly distributed across tenure groups. No significant anomalies detected."
 
     # Rare edge case
     return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."

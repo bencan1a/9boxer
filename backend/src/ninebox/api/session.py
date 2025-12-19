@@ -4,14 +4,15 @@ import logging
 import shutil
 from pathlib import Path
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+from ninebox.core.dependencies import get_session_manager
 from ninebox.models.session import EmployeeMove
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
-from ninebox.services.session_manager import session_manager
+from ninebox.services.session_manager import SessionManager
 from ninebox.utils.paths import get_user_data_dir
 
 router = APIRouter(prefix="/session", tags=["session"])
@@ -29,6 +30,7 @@ class UpdateNotesRequest(BaseModel):
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Upload Excel file and create session."""
     # Validate file type
@@ -95,7 +97,7 @@ async def upload_file(
         f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}"
     )
 
-    session_manager.create_session(
+    session_mgr.create_session(
         user_id=LOCAL_USER_ID,
         employees=employees,
         filename=file.filename,
@@ -106,9 +108,9 @@ async def upload_file(
         session_id=session_id,
     )
 
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
     logger.info(
-        f"Session created successfully: session_id={session_id}, active_sessions={list(session_manager.sessions.keys())}"
+        f"Session created successfully: session_id={session_id}, active_sessions={list(session_mgr.sessions.keys())}"
     )
 
     return {
@@ -120,9 +122,11 @@ async def upload_file(
 
 
 @router.get("/status")
-async def get_session_status() -> dict:
+async def get_session_status(
+    session_mgr: SessionManager = Depends(get_session_manager),
+) -> dict:
     """Get current session status."""
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -142,16 +146,18 @@ async def get_session_status() -> dict:
 
 
 @router.delete("/clear")
-async def clear_session() -> dict:
+async def clear_session(
+    session_mgr: SessionManager = Depends(get_session_manager),
+) -> dict:
     """Clear current session."""
     import gc
     import time
 
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if session:
         # Delete session first
-        session_manager.delete_session(LOCAL_USER_ID)
+        session_mgr.delete_session(LOCAL_USER_ID)
 
         # Force garbage collection to release file handles (important on Windows)
         gc.collect()
@@ -178,9 +184,11 @@ async def clear_session() -> dict:
 
 
 @router.post("/export")
-async def export_session() -> FileResponse:
+async def export_session(
+    session_mgr: SessionManager = Depends(get_session_manager),
+) -> FileResponse:
     """Export current session data to Excel."""
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
         raise HTTPException(
@@ -223,10 +231,11 @@ async def export_session() -> FileResponse:
 async def update_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> EmployeeMove:
     """Update notes for an employee's change entry."""
     try:
-        updated_change = session_manager.update_change_notes(
+        updated_change = session_mgr.update_change_notes(
             user_id=LOCAL_USER_ID,
             employee_id=employee_id,
             notes=request.notes,

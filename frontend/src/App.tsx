@@ -10,6 +10,7 @@ import { theme } from "./theme/theme";
 import { DashboardPage } from "./components/dashboard/DashboardPage";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
+import { logger } from "./utils/logger";
 
 const App: React.FC = () => {
 
@@ -17,16 +18,16 @@ const App: React.FC = () => {
   useEffect(() => {
     // Handle uncaught errors (e.g., in setTimeout, setInterval callbacks)
     const handleError = (event: ErrorEvent) => {
-      console.error("Uncaught error:", event.error);
-      console.error("Error stack:", event.error?.stack);
+      logger.error('Uncaught error', event.error);
+      logger.error('Error stack', event.error?.stack);
       // Prevent the default browser error handling
       event.preventDefault();
     };
 
     // Handle unhandled promise rejections (e.g., in async code, API calls)
     const handleRejection = (event: PromiseRejectionEvent) => {
-      console.error("Unhandled promise rejection:", event.reason);
-      console.error("Rejection stack:", event.reason?.stack);
+      logger.error('Unhandled promise rejection', event.reason);
+      logger.error('Rejection stack', event.reason?.stack);
       // Prevent the default browser rejection handling
       event.preventDefault();
     };

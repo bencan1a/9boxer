@@ -6,6 +6,8 @@ import { create } from "zustand";
 import { apiClient } from "../services/api";
 import { Employee } from "../types/employee";
 import { EmployeeMove } from "../types/session";
+import { extractErrorMessage } from "../types/errors";
+import { logger } from "../utils/logger";
 
 interface SessionState {
   sessionId: string | null;
@@ -69,9 +71,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to upload file";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to upload file', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -100,9 +102,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         error: null,
         selectedEmployeeId: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to clear session";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to clear session', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -120,9 +122,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to load employees";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to load employees', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -174,9 +176,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to move employee";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to move employee', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -201,9 +203,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to update employee";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to update employee', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -227,9 +229,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to update change notes";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to update change notes', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -276,14 +278,14 @@ export const useSessionStore = create<SessionState>((set, get) => ({
           return true;
         } catch (error) {
           // Session no longer exists, fall through to auto-reload
-          console.log("Session expired, attempting to reload file from disk");
+          logger.debug("Session expired, attempting to reload file from disk");
           localStorage.removeItem("session_id");
         }
       }
 
       // If session doesn't exist but we have a file path, try to auto-reload
       if (cachedFilePath && window.electronAPI?.readFile) {
-        console.log("Auto-reloading file from:", cachedFilePath);
+        logger.debug("Auto-reloading file from:", cachedFilePath);
         const fileResult = await window.electronAPI.readFile(cachedFilePath);
 
         if (fileResult.success && fileResult.buffer && fileResult.fileName) {
@@ -298,10 +300,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
           // Re-upload the file
           await get().uploadFile(file, cachedFilePath);
-          console.log("File auto-reloaded successfully");
+          logger.debug("File auto-reloaded successfully");
           return true;
         } else {
-          console.error("Failed to read file:", fileResult.error);
+          logger.error("Failed to read file", fileResult.error);
           // File no longer exists or can't be read, clear the path
           localStorage.removeItem("last_file_path");
         }
@@ -313,8 +315,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         error: null,
       });
       return false;
-    } catch (error: any) {
-      console.error("Failed to restore session:", error);
+    } catch (error: unknown) {
+      logger.error('Failed to restore session', error);
       set({
         sessionId: null,
         isLoading: false,
