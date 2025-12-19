@@ -31,6 +31,7 @@ dependencies = [
     "pydantic>=2.4.0",
     "pydantic-settings>=2.0.0",
     "scipy>=1.11.0",
+    "numpy>=1.24.0",  # Required by intelligence_service.py
 ]
 
 [project.optional-dependencies]
@@ -42,6 +43,8 @@ dev = [
     "pytest-mock>=3.12.0",
     "pytest-xdist>=3.5.0",
     "httpx>=0.25.0",
+    "requests>=2.31.0",  # Used by e2e tests for frozen executable testing
+    "psutil>=5.9.0",  # Used by performance tests for resource monitoring
     "hypothesis>=6.98.0",
     "factory-boy>=3.3.0",
     "faker>=22.0.0",
@@ -94,6 +97,7 @@ markers = [
     "integration: Integration tests (slower, database/API required)",
     "e2e: End-to-end tests (slowest, full stack required)",
     "performance: Performance benchmarking tests",
+    "slow: Slow-running tests that take significant time",
 ]
 
 [tool.coverage.run]
