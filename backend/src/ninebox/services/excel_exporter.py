@@ -1,21 +1,26 @@
 """Excel file exporter service."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import openpyxl
 
 from ninebox.models.employee import Employee
 
+if TYPE_CHECKING:
+    from ninebox.models.session import SessionState
+
 
 class ExcelExporter:
     """Export modified employee data back to Excel."""
 
-    def export(
+    def export(  # noqa: PLR0912  # Complexity acceptable for data export logic
         self,
         original_file: str | Path,
         employees: list[Employee],
         output_path: str | Path,
         sheet_index: int = 1,
+        session: "SessionState | None" = None,
     ) -> None:
         """
         Create new Excel file with updated ratings.
@@ -25,6 +30,7 @@ class ExcelExporter:
             employees: List of employees with current data
             output_path: Path to save modified Excel file
             sheet_index: Index of the sheet to export to (default: 1 for backward compatibility)
+            session: Optional session state for accessing change notes
         """
         # Read original file to preserve formatting
         workbook = openpyxl.load_workbook(original_file)
@@ -52,9 +58,17 @@ class ExcelExporter:
         if modified_col > max_col:
             sheet.cell(1, modified_col, "Modified in Session")
             sheet.cell(1, modified_col + 1, "Modification Date")
+            sheet.cell(1, modified_col + 2, "9Boxer Change Notes")
 
         # Create employee lookup by ID
         employee_map = {e.employee_id: e for e in employees}
+
+        # Create change notes lookup by employee ID
+        change_notes_map = {}
+        if session:
+            for change in session.changes:
+                if change.notes:
+                    change_notes_map[change.employee_id] = change.notes
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):
@@ -90,6 +104,10 @@ class ExcelExporter:
                 sheet.cell(row_idx, modified_col, "Yes" if emp.modified_in_session else "No")
                 if emp.modified_in_session and emp.last_modified:
                     sheet.cell(row_idx, modified_col + 1, emp.last_modified.isoformat())
+
+                # Add change notes if available
+                notes_value = change_notes_map.get(emp_id, "")
+                sheet.cell(row_idx, modified_col + 2, notes_value)
 
         # Save modified workbook
         workbook.save(output_path)

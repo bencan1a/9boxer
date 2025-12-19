@@ -14,6 +14,7 @@ export interface EmployeeMove {
   new_potential: PotentialLevel;
   old_position: number;
   new_position: number;
+  notes?: string | null;
 }
 
 export interface SessionState {

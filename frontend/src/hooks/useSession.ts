@@ -17,6 +17,7 @@ export const useSession = () => {
     clearSession,
     loadEmployees,
     moveEmployee,
+    updateChangeNotes,
     selectedEmployeeId,
     selectEmployee,
   } = useSessionStore();
@@ -33,6 +34,7 @@ export const useSession = () => {
     clearSession,
     loadEmployees,
     moveEmployee,
+    updateChangeNotes,
     selectedEmployeeId,
     selectEmployee,
   };

@@ -10,7 +10,12 @@ from ninebox.services.excel_parser import JobFunctionConfig
 
 
 class EmployeeMove(BaseModel):
-    """Track a single employee move."""
+    """Track a single employee move.
+
+    This model maintains ONE entry per employee. When an employee is moved
+    multiple times, the existing entry is updated to preserve the original
+    old_position while updating the new_position.
+    """
 
     employee_id: int
     employee_name: str
@@ -21,6 +26,7 @@ class EmployeeMove(BaseModel):
     new_potential: PotentialLevel
     old_position: int
     new_position: int
+    notes: str | None = None
 
 
 class SessionState(BaseModel):

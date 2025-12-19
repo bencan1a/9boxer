@@ -2,7 +2,7 @@
  * API client service using Axios
  */
 
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosError } from "axios";
 import {
   UploadResponse,
   SessionStatusResponse,
@@ -14,7 +14,22 @@ import {
   IntelligenceData,
 } from "../types/api";
 import { Employee } from "../types/employee";
+import { EmployeeMove } from "../types/session";
 import { API_BASE_URL } from "../config";
+
+/**
+ * Custom error class that preserves backend error details
+ */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode?: number,
+    public detail?: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
 
 class ApiClient {
   private client: AxiosInstance;
@@ -26,6 +41,26 @@ class ApiClient {
         "Content-Type": "application/json",
       },
     });
+
+    // Add response interceptor to extract backend error details
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError<{ detail?: string }>) => {
+        // Extract backend error detail if available
+        const detail = error.response?.data?.detail;
+        const statusCode = error.response?.status;
+
+        // Create informative error message
+        let message = error.message;
+        if (detail) {
+          message = detail;
+        } else if (statusCode) {
+          message = `Request failed with status ${statusCode}`;
+        }
+
+        throw new ApiError(message, statusCode, detail);
+      }
+    );
   }
 
   // ==================== Session Methods ====================
@@ -64,6 +99,14 @@ class ApiClient {
     const response = await this.client.post("/api/session/export", null, {
       responseType: "blob",
     });
+    return response.data;
+  }
+
+  async updateChangeNotes(employeeId: number, notes: string): Promise<EmployeeMove> {
+    const response = await this.client.patch<EmployeeMove>(
+      `/api/session/changes/${employeeId}/notes`,
+      { notes }
+    );
     return response.data;
   }
 

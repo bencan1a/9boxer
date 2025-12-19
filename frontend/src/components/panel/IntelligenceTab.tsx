@@ -3,12 +3,13 @@
  */
 
 import React from "react";
-import { Box, CircularProgress, Alert, Button } from "@mui/material";
+import { Box, CircularProgress, Alert, Button, AlertTitle } from "@mui/material";
 import { useIntelligence } from "../../hooks/useIntelligence";
 import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
 import { AnomalySection } from "../intelligence/AnomalySection";
 import { DeviationChart } from "../intelligence/DeviationChart";
 import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
+import { ApiError } from "../../services/api";
 
 export const IntelligenceTab: React.FC = () => {
   const { data, isLoading, error, refetch } = useIntelligence();
@@ -31,17 +32,29 @@ export const IntelligenceTab: React.FC = () => {
 
   // Error state
   if (error) {
+    // Check if this is a session-not-found error (404)
+    const isSessionNotFound =
+      error instanceof ApiError && error.statusCode === 404;
+
     return (
       <Box sx={{ p: 2 }}>
         <Alert
-          severity="error"
+          severity={isSessionNotFound ? "warning" : "error"}
           action={
             <Button color="inherit" size="small" onClick={refetch}>
               Retry
             </Button>
           }
         >
-          {error.message || "Failed to load intelligence data"}
+          {isSessionNotFound ? (
+            <>
+              <AlertTitle>Session Not Found</AlertTitle>
+              Your data session was lost (likely due to the application
+              restarting). Please re-upload your Excel file to continue.
+            </>
+          ) : (
+            error.message || "Failed to load intelligence data"
+          )}
         </Alert>
       </Box>
     );

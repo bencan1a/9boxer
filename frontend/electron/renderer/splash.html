@@ -167,11 +167,20 @@
       opacity: 0.8;
       font-weight: 400;
       animation: messageAppear 0.4s ease-out 0.35s both;
+      transition: opacity 0.2s ease-in-out;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @keyframes messageAppear {
       from { opacity: 0; }
       to { opacity: 0.8; }
+    }
+
+    .message.fade {
+      opacity: 0.3;
     }
 
     /* Loading dots animation */
@@ -216,7 +225,79 @@
       <div class="loading-bar"></div>
     </div>
 
-    <p class="message">Starting application<span class="dots"></span></p>
+    <p class="message"><span id="loading-text"></span><span class="dots"></span></p>
   </div>
+
+  <script>
+    // Amusing HR-related loading messages
+    const loadingMessages = [
+      'Calibrating performance metrics',
+      'Shuffling org chart',
+      'Warming up the talent pipeline',
+      'Adjusting compensation bands',
+      'Brewing coffee for HR',
+      'Synchronizing succession plans',
+      'Polishing the 9 boxes',
+      'Herding high potentials',
+      'Optimizing employee potential',
+      'Loading performance reviews',
+      'Calculating flight risk',
+      'Balancing work-life integration',
+      'Preparing engagement surveys',
+      'Aligning strategic goals',
+      'Updating skill matrices',
+      'Generating talent insights',
+      'Assembling talent data',
+      'Categorizing competencies',
+      'Evaluating development plans',
+      'Initializing retention strategies'
+    ];
+
+    // Shuffle array to randomize order
+    function shuffle(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Get random messages
+    const randomMessages = shuffle(loadingMessages);
+    let currentIndex = 0;
+
+    const textElement = document.getElementById('loading-text');
+    const messageElement = document.querySelector('.message');
+
+    // Set initial message immediately
+    textElement.textContent = randomMessages[currentIndex];
+    currentIndex = 1;
+
+    // Cycle through messages with fade transition
+    function updateMessage() {
+      // Fade out
+      messageElement.classList.add('fade');
+
+      setTimeout(() => {
+        // Update text
+        textElement.textContent = randomMessages[currentIndex];
+        currentIndex = (currentIndex + 1) % randomMessages.length;
+
+        // If we've cycled through all, shuffle again
+        if (currentIndex === 0) {
+          randomMessages.splice(0, randomMessages.length, ...shuffle(loadingMessages));
+        }
+
+        // Fade in
+        messageElement.classList.remove('fade');
+      }, 200); // Match the CSS transition duration
+    }
+
+    // Start cycling after initial animation
+    setTimeout(() => {
+      setInterval(updateMessage, 500); // Change message every 500ms (0.5 seconds)
+    }, 1000); // Wait 1 second before starting to cycle
+  </script>
 </body>
 </html>
