@@ -49,7 +49,7 @@ class IntelligenceResponse(TypedDict):
 
 @router.get("", response_model=None)
 async def get_intelligence(
-    session_mgr: SessionManager = Depends(get_session_manager),
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
 ) -> IntelligenceResponse:
     """
     Get statistical intelligence analysis for the full dataset.

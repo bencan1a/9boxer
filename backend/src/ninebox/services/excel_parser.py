@@ -379,10 +379,11 @@ class SheetDetector:
                 f"with score {best_score}"
             )
 
-            # Type assertions - we know these are not None due to score check
-            assert best_sheet is not None
-            assert best_sheet_name is not None
-            assert best_sheet_index is not None
+            # Runtime checks - these should never be None if best_score > 0
+            if best_sheet is None or best_sheet_name is None or best_sheet_index is None:
+                raise ValueError(
+                    "Internal error: best_sheet data is None despite having a valid score"
+                )
 
             return best_sheet, best_sheet_name, best_sheet_index
 
