@@ -79,17 +79,16 @@ testpaths = ["backend/tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--strict-config",
-    "--cov=backend/src",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-report=xml",
-    "-n",
-    "auto",
-    "--dist=loadscope",
-]
+addopts = """
+    --strict-markers
+    --strict-config
+    --cov=backend/src
+    --cov-report=term-missing
+    --cov-report=html
+    --cov-report=xml
+    -n auto
+    --dist=loadscope
+"""
 markers = [
     "unit: Unit tests (fast, isolated)",
     "integration: Integration tests (slower, database/API required)",
