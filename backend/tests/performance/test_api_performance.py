@@ -9,9 +9,21 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+# Check if pytest-benchmark is available
+try:
+    import pytest_benchmark  # noqa: F401
+    BENCHMARK_AVAILABLE = True
+except ImportError:
+    BENCHMARK_AVAILABLE = False
 
-
-pytestmark = [pytest.mark.performance, pytest.mark.slow]
+pytestmark = [
+    pytest.mark.performance,
+    pytest.mark.slow,
+    pytest.mark.skipif(
+        not BENCHMARK_AVAILABLE,
+        reason="pytest-benchmark not installed. Install with: pip install pytest-benchmark"
+    )
+]
 
 class TestUploadPerformance:
     """Performance tests for file upload endpoint."""
