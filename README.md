@@ -18,7 +18,7 @@ A standalone desktop application for visualizing and managing employee performan
 - **Offline First**: Works completely offline, no internet required
 
 ### Technical Stack
-- **Desktop**: Electron 39 (cross-platform desktop wrapper)
+- **Desktop**: Electron 35 (cross-platform desktop wrapper)
 - **Frontend**: React 18 + TypeScript + Vite + Material-UI
 - **Backend**: FastAPI (Python 3.10+) bundled with PyInstaller
 - **State Management**: Zustand

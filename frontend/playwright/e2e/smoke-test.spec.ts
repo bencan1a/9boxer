@@ -14,9 +14,22 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 test.describe('Smoke Test - Critical Workflows', () => {
+  test.beforeEach(async ({ page }) => {
+    // Clear any existing session and start fresh
+    await page.goto('/');
+
+    // Clear localStorage to remove any persisted session
+    await page.evaluate(() => localStorage.clear());
+
+    // Reload to ensure clean state
+    await page.reload();
+
+    // Verify we start with no data
+    await expect(page.getByText('Upload an Excel file to begin')).toBeVisible();
+  });
+
   test('should complete full user workflow: upload, view, move, filter, and export', async ({ page }) => {
     // 1. UPLOAD - Upload Excel file and verify grid loads
-    await page.goto('/');
     await uploadExcelFile(page, 'sample-employees.xlsx');
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
@@ -129,12 +142,11 @@ test.describe('Smoke Test - Critical Workflows', () => {
     await notesField.click();
     await notesField.fill('Smoke test - verified change tracking');
 
-    // Blur to save
+    // Blur to save (click table header to trigger blur)
     await page.locator('[data-testid="change-tracker-table"]').click();
-    await page.waitForTimeout(500);
 
-    // Verify notes saved
-    await expect(notesField).toHaveValue('Smoke test - verified change tracking');
+    // Verify notes saved - use auto-retry with longer timeout for async save
+    await expect(notesField).toHaveValue('Smoke test - verified change tracking', { timeout: 10000 });
   });
 
   test('should verify statistics and intelligence tabs are accessible', async ({ page }) => {

@@ -89,9 +89,11 @@ addopts = [
     "--cov-report=xml",
 ]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
+    "unit: Fast isolated tests of individual functions/classes",
+    "integration: Tests that verify multiple components work together correctly",
+    "e2e: End-to-end tests using the frozen executable with full process lifecycle",
+    "performance: Benchmark tests for performance measurement (requires pytest-benchmark)",
+    "slow: Long-running tests (generally integration, e2e, or performance tests)",
 ]
 
 [tool.coverage.run]
