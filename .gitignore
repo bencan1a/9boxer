@@ -238,7 +238,7 @@ frontend/release/
 .claude/settings.local.json
 .vscode/settings.json
 frontend/playwright-report/
-frontend/coverage/**/
+frontend/coverage/
 frontend/test-results/
 frontend/playwright-report/
-frontend/playwright-report/index.html
+
