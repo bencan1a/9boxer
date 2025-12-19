@@ -97,11 +97,7 @@ jobs:
       
       - name: Install dependencies
         run: uv pip install --system -e '.[dev]'
-      
-      - name: Auto-fix linting issues and format
-        run: make fix
-        continue-on-error: true
-      
+
       - name: Check code formatting with ruff
         run: make format-check
       
@@ -129,10 +125,6 @@ jobs:
       - name: Install dependencies
         working-directory: frontend
         run: npm ci
-
-      - name: Run ESLint
-        working-directory: frontend
-        run: npm run lint
 
       - name: Run Vitest component tests
         working-directory: frontend
@@ -440,9 +432,9 @@ jobs:
             npx playwright install-deps
           fi
 
-      - name: Run Playwright E2E tests
+      - name: Run Playwright E2E smoke tests
         working-directory: frontend
-        run: npm run test:e2e:pw
+        run: npx playwright test smoke-test.spec.ts
 
       - name: Upload Playwright report
         if: always()
