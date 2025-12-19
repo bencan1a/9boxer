@@ -34,8 +34,8 @@
       "to": "USER_GUIDE.html"
     },
     {
-      "from": "../Anonymized Example.xlsx",
-      "to": "Anonymized Example.xlsx"
+      "from": "../Sample_People_List.xlsx",
+      "to": "Sample_People_List.xlsx"
     }
   ],
   "win": {
