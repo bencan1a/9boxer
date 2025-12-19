@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 # Backend runtime dependencies
@@ -42,6 +43,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
+    "pytest-xdist>=3.5.0",
     "httpx>=0.25.0",
     "hypothesis>=6.98.0",
     "factory-boy>=3.3.0",
@@ -87,13 +89,14 @@ addopts = [
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
+    "-n auto",
+    "--dist=loadscope",
 ]
 markers = [
-    "unit: Fast isolated tests of individual functions/classes",
-    "integration: Tests that verify multiple components work together correctly",
-    "e2e: End-to-end tests using the frozen executable with full process lifecycle",
-    "performance: Benchmark tests for performance measurement (requires pytest-benchmark)",
-    "slow: Long-running tests (generally integration, e2e, or performance tests)",
+    "unit: Unit tests (fast, isolated)",
+    "integration: Integration tests (slower, database/API required)",
+    "e2e: End-to-end tests (slowest, full stack required)",
+    "performance: Performance benchmarking tests",
 ]
 
 [tool.coverage.run]
@@ -104,6 +107,7 @@ omit = [
     "*/.venv/*",
     "*/venv/*",
 ]
+relative_files = true
 
 [tool.coverage.report]
 exclude_lines = [
@@ -187,7 +191,7 @@ line-ending = "auto"
 
 [tool.black]
 line-length = 100
-target-version = ['py310', 'py311', 'py312']
+target-version = ['py310', 'py311', 'py312', 'py313']
 include = '\.pyi?$'
 
 [tool.bandit]

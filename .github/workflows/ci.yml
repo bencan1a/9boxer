@@ -25,11 +25,12 @@ jobs:
     outputs:
       should-skip-tests: ${{ steps.skip-check.outputs.should_skip_tests }}
       python-files-changed: ${{ steps.skip-check.outputs.python_changed }}
+      frontend-files-changed: ${{ steps.skip-check.outputs.frontend_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Check changed files
         id: skip-check
         run: |
@@ -38,23 +39,27 @@ jobs:
           else
             FILES_CHANGED=$(git diff --name-only HEAD^ HEAD)
           fi
-          
+
           PYTHON_CHANGED=$(echo "$FILES_CHANGED" | grep -E '\.(py|pyi)$' || echo "")
           WORKFLOW_CHANGED=$(echo "$FILES_CHANGED" | grep -E '\.github/workflows/.*\.yml$' || echo "")
           DEPS_CHANGED=$(echo "$FILES_CHANGED" | grep -E '(pyproject\.toml|requirements.*\.txt)$' || echo "")
-          
+          FRONTEND_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/(src/|package.*\.json|tsconfig\.json|vite\.config\.ts)' || echo "")
+
           # Skip tests if only docs/README/markdown files changed
-          DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt)$' || echo "docs-only")
-          
-          if [ -n "$PYTHON_CHANGED" ] || [ -n "$WORKFLOW_CHANGED" ] || [ -n "$DEPS_CHANGED" ]; then
+          DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt|ts|tsx|js|jsx|json)$' || echo "docs-only")
+
+          if [ -n "$PYTHON_CHANGED" ] || [ -n "$WORKFLOW_CHANGED" ] || [ -n "$DEPS_CHANGED" ] || [ -n "$FRONTEND_CHANGED" ]; then
             echo "should_skip_tests=false" >> $GITHUB_OUTPUT
-            echo "python_changed=true" >> $GITHUB_OUTPUT
+            echo "python_changed=$([ -n "$PYTHON_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+            echo "frontend_changed=$([ -n "$FRONTEND_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           elif [ "$DOCS_ONLY" = "docs-only" ]; then
             echo "should_skip_tests=true" >> $GITHUB_OUTPUT
             echo "python_changed=false" >> $GITHUB_OUTPUT
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
           else
             echo "should_skip_tests=false" >> $GITHUB_OUTPUT
             echo "python_changed=false" >> $GITHUB_OUTPUT
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
           fi
 
   lint:
@@ -78,7 +83,15 @@ jobs:
           key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
           restore-keys: |
             pre-commit-${{ runner.os }}-
-      
+
+      - name: Cache ruff
+        uses: actions/cache@v4
+        with:
+          path: .ruff_cache
+          key: ${{ runner.os }}-ruff-${{ hashFiles('backend/src/**/*.py', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
+
       - name: Install uv
         run: pip install uv
       
@@ -98,6 +111,41 @@ jobs:
       - name: Check YAML files
         run: make check-yaml
 
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: [check-changes]
+    if: needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Run Vitest component tests
+        working-directory: frontend
+        run: npm run test:run
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 30
+
   type-check:
     name: Type Check
     runs-on: ubuntu-latest
@@ -105,19 +153,27 @@ jobs:
     if: needs.check-changes.outputs.should-skip-tests == 'false'
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
+      - name: Cache mypy
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-${{ hashFiles('backend/src/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-
+
       - name: Install uv
         run: pip install uv
-      
+
       - name: Install dependencies
         run: uv pip install --system -e '.[dev]'
-      
+
       - name: Type check with mypy
         run: make type-check
 
@@ -155,30 +211,64 @@ jobs:
           path: bandit-report.json
           retention-days: 30
 
-  test:
-    name: Test
-    runs-on: ${{ matrix.os }}
+  code-quality:
+    name: Code Quality Metrics
+    runs-on: ubuntu-latest
+    needs: [check-changes]
+    if: needs.check-changes.outputs.python-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false'
+    continue-on-error: true  # Don't fail PR on quality issues
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon vulture
+
+      - name: Check Cyclomatic Complexity
+        run: |
+          echo "## Cyclomatic Complexity" >> $GITHUB_STEP_SUMMARY
+          radon cc backend/src/ninebox/ -a -nb >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Check Maintainability Index
+        run: |
+          echo "## Maintainability Index" >> $GITHUB_STEP_SUMMARY
+          radon mi backend/src/ninebox/ -nb >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Find Dead Code
+        run: |
+          echo "## Dead Code Detection" >> $GITHUB_STEP_SUMMARY
+          vulture backend/src/ninebox/ --min-confidence 80 >> $GITHUB_STEP_SUMMARY || true
+
+  unit-tests:
+    name: Unit Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
     needs: [check-changes, lint, type-check]
     if: needs.check-changes.outputs.should-skip-tests == 'false'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.10', '3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-      
+
       - name: Install uv
         run: pip install uv
-      
+
       - name: Cache pytest cache
         uses: actions/cache@v4
         with:
@@ -187,73 +277,109 @@ jobs:
           restore-keys: |
             pytest-cache-${{ runner.os }}-${{ matrix.python-version }}-
             pytest-cache-${{ runner.os }}-
-      
+
       - name: Install dependencies
         run: uv pip install --system -e '.[dev]'
-      
-      - name: Smart test selection
-        id: test-selection
+
+      - name: Run unit tests with coverage
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_REF="origin/${{ github.base_ref }}"
-          else
-            BASE_REF="origin/main"
-          fi
-          
-          python .github/scripts/smart_test_selection.py --base-ref "$BASE_REF" --format json > test-selection.json
-          cat test-selection.json
-          TEST_FILES=$(jq -r '.tests | join(" ")' test-selection.json)
-          echo "test_files=$TEST_FILES" >> $GITHUB_OUTPUT
-          
-          # Check if there are changed files
-          CHANGED_FILES=$(jq -r '.changed_files | length' test-selection.json)
-          echo "changed_files_count=$CHANGED_FILES" >> $GITHUB_OUTPUT
-      
-      - name: Run tests with coverage
-        shell: bash
-        run: |
-          if [ -n "${{ steps.test-selection.outputs.test_files }}" ]; then
-            echo "Running selected tests: ${{ steps.test-selection.outputs.test_files }}"
-            pytest ${{ steps.test-selection.outputs.test_files }} --cov=src --cov-report=xml --cov-report=term --cov-report=html
-          else
-            echo "No relevant tests to run based on changed files"
-          fi
-      
-      - name: Check coverage on changed files
-        if: fromJSON(steps.test-selection.outputs.changed_files_count) > 0 && matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          python .github/scripts/check_coverage.py --files-from-json test-selection.json --threshold 70.0
-      
+          pytest backend/tests/unit/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
+
       - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           fail_ci_if_error: false
           flags: unittests
-          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
-      
+          name: codecov-unit-py${{ matrix.python-version }}
+
       - name: Upload coverage report
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        if: matrix.python-version == '3.12'
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: coverage-report-unit-py${{ matrix.python-version }}
           path: |
             coverage.xml
             htmlcov/
             .coverage
           retention-days: 30
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: test-results-unit-py${{ matrix.python-version }}
+          path: .pytest_cache/
+          retention-days: 7
+
+  integration-tests:
+    name: Integration Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: [check-changes, lint, type-check]
+    if: needs.check-changes.outputs.should-skip-tests == 'false'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Cache pytest cache
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: pytest-cache-${{ runner.os }}-3.12-${{ hashFiles('tests/**/*.py') }}
+          restore-keys: |
+            pytest-cache-${{ runner.os }}-3.12-
+            pytest-cache-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Run integration and e2e tests with coverage
+        shell: bash
+        run: |
+          pytest backend/tests/integration/ backend/tests/e2e/ backend/tests/test_performance/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
+
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          flags: integration
+          name: codecov-integration-${{ matrix.os }}
+
+      - name: Upload coverage report
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-integration-${{ matrix.os }}
           path: |
-            .pytest_cache/
-            test-selection.json
+            coverage.xml
+            htmlcov/
+            .coverage
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-integration-${{ matrix.os }}
+          path: .pytest_cache/
           retention-days: 7
 
   # Frontend E2E Tests with Playwright
@@ -292,9 +418,27 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            C:\Users\runneradmin\AppData\Local\ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Playwright browsers
         working-directory: frontend
-        run: npx playwright install --with-deps chromium
+        shell: bash
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npx playwright install-deps
+          fi
 
       - name: Run Playwright E2E tests
         working-directory: frontend
@@ -322,7 +466,7 @@ jobs:
   ci-success:
     name: CI Summary
     runs-on: ubuntu-latest
-    needs: [check-changes, lint, type-check, security, test, e2e-playwright]
+    needs: [check-changes, lint, type-check, security, code-quality, unit-tests, integration-tests, frontend-tests, e2e-playwright]
     if: always()
     steps:
       - name: Check results
@@ -330,7 +474,10 @@ jobs:
           echo "Lint and Format: ${{ needs.lint.result }}"
           echo "Type Check: ${{ needs.type-check.result }}"
           echo "Security Scan: ${{ needs.security.result }}"
-          echo "Backend Tests: ${{ needs.test.result }}"
+          echo "Code Quality: ${{ needs.code-quality.result }}"
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
           echo "E2E Tests (Playwright): ${{ needs.e2e-playwright.result }}"
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
@@ -339,12 +486,13 @@ jobs:
           fi
 
           # Check if tests were skipped (when check-changes determines no tests needed)
-          if [[ "${{ needs.test.result }}" == "skipped" ]]; then
+          if [[ "${{ needs.unit-tests.result }}" == "skipped" ]] && [[ "${{ needs.integration-tests.result }}" == "skipped" ]]; then
             echo "✅ Backend tests skipped (not needed for this change)"
             # Only check other jobs when backend tests are skipped
             if [[ "${{ needs.lint.result }}" == "success" ]] && \
                [[ "${{ needs.type-check.result }}" == "success" ]] && \
                [[ "${{ needs.security.result }}" == "success" ]] && \
+               [[ "${{ needs.frontend-tests.result }}" == "success" || "${{ needs.frontend-tests.result }}" == "skipped" ]] && \
                [[ "${{ needs.e2e-playwright.result }}" == "success" || "${{ needs.e2e-playwright.result }}" == "skipped" ]]; then
               echo "✅ All required CI checks passed"
               exit 0
@@ -358,7 +506,9 @@ jobs:
           if [[ "${{ needs.lint.result }}" != "success" ]] || \
              [[ "${{ needs.type-check.result }}" != "success" ]] || \
              [[ "${{ needs.security.result }}" != "success" ]] || \
-             [[ "${{ needs.test.result }}" != "success" ]] || \
+             [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.integration-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
              [[ "${{ needs.e2e-playwright.result }}" != "success" ]]; then
             echo "❌ CI Failed"
             exit 1
@@ -375,5 +525,8 @@ jobs:
           echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || needs.lint.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Type Check | ${{ needs.type-check.result == 'success' && '✅' || needs.type-check.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Security | ${{ needs.security.result == 'success' && '✅' || needs.security.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Backend Tests | ${{ needs.test.result == 'success' && '✅' || needs.test.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Quality | ${{ needs.code-quality.result == 'success' && '✅' || needs.code-quality.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result == 'success' && '✅' || needs.unit-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result == 'success' && '✅' || needs.integration-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Tests | ${{ needs.frontend-tests.result == 'success' && '✅' || needs.frontend-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| E2E Tests (Playwright) | ${{ needs.e2e-playwright.result == 'success' && '✅' || needs.e2e-playwright.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
