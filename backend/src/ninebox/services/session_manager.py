@@ -209,7 +209,6 @@ class SessionManager:
         self._persist_session(session)
         return change_entry
 
-
     def _restore_sessions(self) -> None:
         """Restore sessions from database on startup.
 

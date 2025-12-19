@@ -267,7 +267,14 @@ class SheetDetector:
     ]
 
     # Keywords in sheet names that suggest employee data
-    SHEET_NAME_KEYWORDS: ClassVar[list[str]] = ["employee", "talent", "people", "data", "worker", "staff"]
+    SHEET_NAME_KEYWORDS: ClassVar[list[str]] = [
+        "employee",
+        "talent",
+        "people",
+        "data",
+        "worker",
+        "staff",
+    ]
 
     @staticmethod
     def _score_sheet(df: pd.DataFrame, sheet_name: str) -> int:
@@ -690,4 +697,3 @@ class ExcelParser:
             if value_lower in ("no", "false", "0", "not ready", ""):
                 return False
         return None
-
