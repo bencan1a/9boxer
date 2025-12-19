@@ -8,7 +8,7 @@ for the FastAPI backend application.
 
 import sys
 from pathlib import Path
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, collect_data_files
 
 block_cipher = None
 
@@ -23,12 +23,16 @@ main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
+# Collect setuptools data files (includes vendored jaraco.text needed by pkg_resources)
+# setuptools vendors jaraco.text in setuptools/_vendor/jaraco/text/
+setuptools_datas = collect_data_files('setuptools', include_py_files=False)
+
 # Analysis: Collect all Python modules and dependencies
 a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
     binaries=scipy_binaries + numpy_binaries,
-    datas=scipy_datas + numpy_datas + [
+    datas=scipy_datas + numpy_datas + setuptools_datas + [
         # Include database schema file
         (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'src/ninebox/models'),
     ],
@@ -67,7 +71,6 @@ a = Analysis(
         # All ninebox modules
         'ninebox',
         'ninebox.api',
-        'ninebox.api.auth',
         'ninebox.api.employees',
         'ninebox.api.intelligence',
         'ninebox.api.session',
@@ -75,11 +78,12 @@ a = Analysis(
         'ninebox.core',
         'ninebox.core.config',
         'ninebox.core.database',
-        'ninebox.core.security',
+        'ninebox.core.dependencies',
         'ninebox.models',
         'ninebox.models.employee',
+        'ninebox.models.filters',
+        'ninebox.models.grid_positions',
         'ninebox.models.session',
-        'ninebox.models.user',
         'ninebox.services',
         'ninebox.services.employee_service',
         'ninebox.services.excel_exporter',
