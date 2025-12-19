@@ -244,3 +244,6 @@ frontend/coverage/
 frontend/test-results/
 frontend/playwright-report/
 
+# Playwright global setup PID file
+frontend/playwright/.backend.pid
+

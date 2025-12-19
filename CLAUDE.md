@@ -140,8 +140,24 @@ pre-commit install
 ```bash
 # Always activate venv first: . .venv/bin/activate
 
-pytest                                  # Run all backend tests
-pytest backend/tests/test_auth.py       # Run specific test file
+# Run all tests
+pytest                                  # Run all backend tests (372 tests)
+
+# Run specific test suites (organized by folder)
+pytest backend/tests/unit               # Unit tests only (~293 tests, fast)
+pytest backend/tests/integration        # Integration tests (~39 tests, medium)
+pytest backend/tests/e2e                # E2E tests (~16 tests, slow, requires built exe)
+pytest backend/tests/performance        # Performance tests (~24 tests, slow)
+
+# Run by marker (alternative to folder paths)
+pytest -m unit                          # Unit tests only
+pytest -m integration                   # Integration tests only
+pytest -m e2e                           # E2E tests only
+pytest -m performance                   # Performance tests only
+pytest -m "not slow"                    # Fast tests only (for quick checks)
+
+# Run specific test file
+pytest backend/tests/unit/api/test_employees.py
 pytest -k "test_login"                  # Run tests matching pattern
 pytest -v                               # Verbose output
 pytest --cov=backend/src                # Run with coverage
@@ -220,9 +236,17 @@ The backend uses the standard Python `src/` layout:
   - API routes in `routers/`
   - Business logic in `services/`
   - Data models in `models/`
-- **`backend/tests/`** - Test files following pytest conventions
-  - Named `test_*.py`
-  - Test functions named `test_function_when_condition_then_expected`
+- **`backend/tests/`** - Test files organized by suite type
+  - **`unit/`** - Fast isolated tests (~293 tests)
+    - `api/` - API endpoint tests (using TestClient)
+    - `core/` - Core functionality tests
+    - `models/` - Data model tests
+    - `services/` - Service layer tests
+    - `utils/` - Utility function tests
+  - **`integration/`** - Multi-component tests (~39 tests)
+  - **`e2e/`** - End-to-end frozen executable tests (~16 tests)
+  - **`performance/`** - Benchmark tests (~24 tests)
+  - Test naming: `test_function_when_condition_then_expected`
   - No conditional assertions in test bodies
 
 ### Frontend Structure
@@ -278,13 +302,18 @@ All code must have type annotations:
 ### Testing Approach
 1. **Run existing tests first** to establish baseline
 2. Follow TDD approach when practical
-3. Test naming: `test_function_when_condition_then_expected`
-4. No conditional logic in test bodies (no `if` statements)
-5. Avoid testing types - test behavior instead
-6. Avoid over-mocking (don't mock business logic)
-7. Aim for >80% coverage
+3. **Test suite organization** - Tests organized by suite type in folders:
+   - `backend/tests/unit/` - Fast isolated tests (use for most new tests)
+   - `backend/tests/integration/` - Multi-component integration tests
+   - `backend/tests/e2e/` - Full frozen executable tests
+   - `backend/tests/performance/` - Benchmark tests
+4. Test naming: `test_function_when_condition_then_expected`
+5. No conditional logic in test bodies (no `if` statements)
+6. Avoid testing types - test behavior instead
+7. Avoid over-mocking (don't mock business logic)
+8. Aim for >80% coverage
 
-See `.github/agents/test.md` for comprehensive testing guidance.
+See `.github/agents/test.md` for comprehensive testing guidance and `docs/testing/` for detailed test suite documentation.
 
 ### Frontend Testing
 
