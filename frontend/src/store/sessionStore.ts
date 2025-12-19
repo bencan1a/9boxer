@@ -6,6 +6,8 @@ import { create } from "zustand";
 import { apiClient } from "../services/api";
 import { Employee } from "../types/employee";
 import { EmployeeMove } from "../types/session";
+import { extractErrorMessage } from "../types/errors";
+import { logger } from "../utils/logger";
 
 interface SessionState {
   sessionId: string | null;
@@ -13,12 +15,13 @@ interface SessionState {
   originalEmployees: Employee[];
   changes: EmployeeMove[];
   filename: string | null;
+  filePath: string | null;
   isLoading: boolean;
   error: string | null;
   selectedEmployeeId: number | null;
 
   // Actions
-  uploadFile: (file: File) => Promise<void>;
+  uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
   loadEmployees: () => Promise<void>;
   moveEmployee: (
@@ -27,6 +30,7 @@ interface SessionState {
     potential: string
   ) => Promise<void>;
   updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
+  updateChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
   clearError: () => void;
   restoreSession: () => Promise<boolean>;
@@ -38,11 +42,12 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   originalEmployees: [],
   changes: [],
   filename: null,
+  filePath: null,
   isLoading: false,
   error: null,
   selectedEmployeeId: null,
 
-  uploadFile: async (file: File) => {
+  uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.upload(file);
@@ -50,21 +55,25 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       // Load employees after upload
       const employeesResponse = await apiClient.getEmployees();
 
-      // Persist session ID to localStorage
+      // Persist session ID and file path to localStorage
       localStorage.setItem("session_id", response.session_id);
+      if (filePath) {
+        localStorage.setItem("last_file_path", filePath);
+      }
 
       set({
         sessionId: response.session_id,
         filename: response.filename,
+        filePath: filePath || null,
         employees: employeesResponse.employees,
         originalEmployees: employeesResponse.employees,
         changes: [],
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to upload file";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to upload file', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -78,8 +87,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     try {
       await apiClient.clearSession();
 
-      // Clear session ID from localStorage
+      // Clear session ID and file path from localStorage
       localStorage.removeItem("session_id");
+      localStorage.removeItem("last_file_path");
 
       set({
         sessionId: null,
@@ -87,13 +97,14 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         originalEmployees: [],
         changes: [],
         filename: null,
+        filePath: null,
         isLoading: false,
         error: null,
         selectedEmployeeId: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to clear session";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to clear session', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -111,9 +122,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to load employees";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to load employees', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -141,8 +152,23 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         emp.employee_id === employeeId ? response.employee : emp
       );
 
-      // Add change to history
-      const changes = [...get().changes, response.change];
+      // Update change history based on whether employee is modified
+      let changes = get().changes;
+      if (!response.employee.modified_in_session) {
+        // Employee moved back to original position - remove change entry
+        changes = changes.filter((c) => c.employee_id !== employeeId);
+      } else {
+        // Employee is modified - update or add change entry
+        const existingChangeIndex = changes.findIndex((c) => c.employee_id === employeeId);
+        if (existingChangeIndex >= 0) {
+          // Update existing change entry
+          changes = [...changes];
+          changes[existingChangeIndex] = response.change;
+        } else {
+          // Add new change entry
+          changes = [...changes, response.change];
+        }
+      }
 
       set({
         employees: updatedEmployees,
@@ -150,9 +176,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to move employee";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to move employee', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -177,9 +203,35 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail || "Failed to update employee";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to update employee', error);
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
+    }
+  },
+
+  updateChangeNotes: async (employeeId: number, notes: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedChange = await apiClient.updateChangeNotes(employeeId, notes);
+
+      // Update change in history
+      const changes = get().changes.map((change) =>
+        change.employee_id === employeeId ? updatedChange : change
+      );
+
+      set({
+        changes,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to update change notes', error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -198,33 +250,73 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   restoreSession: async () => {
     const cachedSessionId = localStorage.getItem("session_id");
+    const cachedFilePath = localStorage.getItem("last_file_path");
 
-    if (!cachedSessionId) {
+    if (!cachedSessionId && !cachedFilePath) {
       return false;
     }
 
     set({ isLoading: true, error: null });
     try {
-      // Check if session still exists on backend
-      const sessionStatus = await apiClient.getSessionStatus();
+      // Try to restore from existing backend session first
+      if (cachedSessionId) {
+        try {
+          const sessionStatus = await apiClient.getSessionStatus();
+          const employeesResponse = await apiClient.getEmployees();
 
-      // Load employees from session
-      const employeesResponse = await apiClient.getEmployees();
+          set({
+            sessionId: sessionStatus.session_id,
+            filename: sessionStatus.uploaded_filename,
+            filePath: cachedFilePath,
+            employees: employeesResponse.employees,
+            originalEmployees: employeesResponse.employees,
+            changes: sessionStatus.changes,
+            isLoading: false,
+            error: null,
+          });
+
+          return true;
+        } catch (error) {
+          // Session no longer exists, fall through to auto-reload
+          logger.debug("Session expired, attempting to reload file from disk");
+          localStorage.removeItem("session_id");
+        }
+      }
+
+      // If session doesn't exist but we have a file path, try to auto-reload
+      if (cachedFilePath && window.electronAPI?.readFile) {
+        logger.debug("Auto-reloading file from:", cachedFilePath);
+        const fileResult = await window.electronAPI.readFile(cachedFilePath);
+
+        if (fileResult.success && fileResult.buffer && fileResult.fileName) {
+          // Convert buffer array back to Uint8Array and create a File object
+          const uint8Array = new Uint8Array(fileResult.buffer);
+          const blob = new Blob([uint8Array], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const file = new File([blob], fileResult.fileName, {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
+          // Re-upload the file
+          await get().uploadFile(file, cachedFilePath);
+          logger.debug("File auto-reloaded successfully");
+          return true;
+        } else {
+          logger.error("Failed to read file", fileResult.error);
+          // File no longer exists or can't be read, clear the path
+          localStorage.removeItem("last_file_path");
+        }
+      }
 
       set({
-        sessionId: sessionStatus.session_id,
-        filename: sessionStatus.uploaded_filename,
-        employees: employeesResponse.employees,
-        originalEmployees: employeesResponse.employees,
-        changes: [],
+        sessionId: null,
         isLoading: false,
         error: null,
       });
-
-      return true;
-    } catch (error: any) {
-      // Session no longer exists on backend, clear localStorage
-      localStorage.removeItem("session_id");
+      return false;
+    } catch (error: unknown) {
+      logger.error('Failed to restore session', error);
       set({
         sessionId: null,
         isLoading: false,

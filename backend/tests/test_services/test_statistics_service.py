@@ -3,6 +3,7 @@
 import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import get_position_label_by_number
 from ninebox.services.statistics_service import StatisticsService
 
 
@@ -155,15 +156,15 @@ def test_calculate_distribution_when_called_then_includes_box_labels(
 
     dist = {item["grid_position"]: item for item in stats["distribution"]}
 
-    assert dist[9]["position_label"] == "Top Talent [H,H]"
-    assert dist[8]["position_label"] == "High Impact Talent [H,M]"
-    assert dist[7]["position_label"] == "High/Low [H,L]"
-    assert dist[6]["position_label"] == "Growth Talent [M,H]"
+    assert dist[9]["position_label"] == "Star [H,H]"
+    assert dist[6]["position_label"] == "High Impact [H,M]"
+    assert dist[3]["position_label"] == "Workhorse [H,L]"
+    assert dist[8]["position_label"] == "Growth [M,H]"
     assert dist[5]["position_label"] == "Core Talent [M,M]"
-    assert dist[4]["position_label"] == "Med/Low [M,L]"
-    assert dist[3]["position_label"] == "Emerging Talent [L,H]"
-    assert dist[2]["position_label"] == "Inconsistent Talent [L,M]"
-    assert dist[1]["position_label"] == "Low/Low [L,L]"
+    assert dist[2]["position_label"] == "Effective Pro [M,L]"
+    assert dist[7]["position_label"] == "Enigma [L,H]"
+    assert dist[4]["position_label"] == "Inconsistent [L,M]"
+    assert dist[1]["position_label"] == "Underperformer [L,L]"
 
 
 def test_calculate_distribution_when_called_then_includes_total_count(
@@ -175,26 +176,24 @@ def test_calculate_distribution_when_called_then_includes_total_count(
     assert stats["total_employees"] == 5
 
 
-def test_get_box_label_when_all_positions_then_returns_correct_labels(
-    statistics_service: StatisticsService,
-) -> None:
+def test_get_box_label_when_all_positions_then_returns_correct_labels() -> None:
     """Test box label generation for all positions."""
-    assert statistics_service._get_box_label(9) == "Top Talent [H,H]"
-    assert statistics_service._get_box_label(8) == "High Impact Talent [H,M]"
-    assert statistics_service._get_box_label(7) == "High/Low [H,L]"
-    assert statistics_service._get_box_label(6) == "Growth Talent [M,H]"
-    assert statistics_service._get_box_label(5) == "Core Talent [M,M]"
-    assert statistics_service._get_box_label(4) == "Med/Low [M,L]"
-    assert statistics_service._get_box_label(3) == "Emerging Talent [L,H]"
-    assert statistics_service._get_box_label(2) == "Inconsistent Talent [L,M]"
-    assert statistics_service._get_box_label(1) == "Low/Low [L,L]"
+    assert get_position_label_by_number(9) == "Star [H,H]"
+    assert get_position_label_by_number(8) == "Growth [M,H]"
+    assert get_position_label_by_number(7) == "Enigma [L,H]"
+    assert get_position_label_by_number(6) == "High Impact [H,M]"
+    assert get_position_label_by_number(5) == "Core Talent [M,M]"
+    assert get_position_label_by_number(4) == "Inconsistent [L,M]"
+    assert get_position_label_by_number(3) == "Workhorse [H,L]"
+    assert get_position_label_by_number(2) == "Effective Pro [M,L]"
+    assert get_position_label_by_number(1) == "Underperformer [L,L]"
 
 
 def test_calculate_distribution_when_percentage_calculation_then_rounds_correctly(
     statistics_service: StatisticsService,
 ) -> None:
     """Test that percentage calculations round correctly."""
-    from datetime import date
+    from datetime import date  # noqa: PLC0415
 
     # Create 3 employees for non-round percentages
     employees = [
@@ -214,7 +213,7 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
             performance=PerformanceLevel.HIGH,
             potential=PotentialLevel.HIGH,
             grid_position=9,
-            position_label="Top Talent [H,H]",
+            position_label="Star [H,H]",
             talent_indicator="High",
         )
         for i in range(3)

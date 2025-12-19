@@ -6,6 +6,13 @@ import { useMemo } from "react";
 import { Employee } from "../types/employee";
 import { useSession } from "./useSession";
 import { useFilters } from "./useFilters";
+import {
+  getPositionLabel,
+  getShortPositionLabel,
+  getPositionName,
+  getPositionGuidance,
+  getPositionInfo,
+} from "../constants/positionLabels";
 
 export const useEmployees = () => {
   const { employees, moveEmployee, selectEmployee, selectedEmployeeId } =
@@ -37,37 +44,7 @@ export const useEmployees = () => {
     return grouped;
   }, [filteredEmployees]);
 
-  // Get position label from position number
-  const getPositionLabel = (position: number): string => {
-    const labels: Record<number, string> = {
-      1: "Low Performer / Low Potential [L,L]",
-      2: "Moderate Performer / Low Potential [M,L]",
-      3: "High Performer / Low Potential [H,L]",
-      4: "Low Performer / Moderate Potential [L,M]",
-      5: "Solid Contributor [M,M]",
-      6: "High Performer / Moderate Potential [H,M]",
-      7: "Low Performer / High Potential [L,H]",
-      8: "Rising Star [M,H]",
-      9: "Top Talent [H,H]",
-    };
-    return labels[position] || "Unknown";
-  };
-
-  // Get short position label
-  const getShortPositionLabel = (position: number): string => {
-    const labels: Record<number, string> = {
-      1: "[L,L]",
-      2: "[M,L]",
-      3: "[H,L]",
-      4: "[L,M]",
-      5: "[M,M]",
-      6: "[H,M]",
-      7: "[L,H]",
-      8: "[M,H]",
-      9: "[H,H]",
-    };
-    return labels[position] || "";
-  };
+  // Position label functions are now imported from constants/positionLabels.ts
 
   // Convert position to performance/potential
   const positionToLevels = (
@@ -95,6 +72,9 @@ export const useEmployees = () => {
     employeesByPosition,
     getPositionLabel,
     getShortPositionLabel,
+    getPositionName,
+    getPositionGuidance,
+    getPositionInfo,
     positionToLevels,
     moveEmployee,
     selectEmployee,

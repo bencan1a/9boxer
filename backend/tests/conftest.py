@@ -1,18 +1,15 @@
 """Root conftest for all tests."""
 
 import os
-import sqlite3
 import tempfile
+from collections.abc import Generator
 from datetime import date, datetime
 from pathlib import Path
-from typing import Generator
 
 import openpyxl
 import pytest
 from fastapi.testclient import TestClient
 
-from ninebox.core.database import init_db
-from ninebox.core.security import get_password_hash
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
 
 
@@ -29,49 +26,35 @@ def test_db_path() -> Generator[str, None, None]:
     yield db_path
 
     # Cleanup
-    if os.path.exists(db_path):
-        os.unlink(db_path)
+    if os.path.exists(db_path):  # noqa: PTH110
+        os.unlink(db_path)  # noqa: PTH108
 
 
 @pytest.fixture(autouse=True)
-def setup_test_db(test_db_path: str) -> Generator[None, None, None]:
+def setup_test_db() -> Generator[None, None, None]:
     """Initialize test database before each test."""
-    # Initialize database schema
-    conn = sqlite3.connect(test_db_path)
-    cursor = conn.cursor()
-
-    # Create users table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            user_id TEXT PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            hashed_password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    # Insert test user
-    hashed_password = get_password_hash("testpass123")
-    cursor.execute(
-        "INSERT OR REPLACE INTO users (user_id, username, hashed_password) VALUES (?, ?, ?)",
-        ("test-user-id", "testuser", hashed_password),
-    )
-
-    conn.commit()
-    conn.close()
+    # Note: This app is local-only without authentication.
+    # No database initialization needed for tests.
 
     yield
 
-    # Clean up test data after each test
-    conn = sqlite3.connect(test_db_path)
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM users WHERE user_id != 'test-user-id'")
-    conn.commit()
-    conn.close()
+    # Clear all sessions from dependency injection cache and database
+    # This ensures each test starts with clean service instances
+    from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
 
-    # Clear all sessions from session manager
-    from ninebox.services.session_manager import session_manager
-    session_manager.sessions.clear()
+    # Clear the lru_cache to get fresh instances for next test
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
+
+    # Clear database sessions table (using temporary DB manager)
+    from ninebox.services.database import DatabaseManager  # noqa: PLC0415
+    try:
+        temp_db = DatabaseManager()
+        with temp_db.get_connection() as conn:
+            conn.execute("DELETE FROM sessions")
+    except Exception:
+        # Ignore errors during cleanup
+        pass
 
 
 @pytest.fixture
@@ -97,7 +80,7 @@ def sample_employees() -> list[Employee]:
             performance=PerformanceLevel.HIGH,
             potential=PotentialLevel.HIGH,
             grid_position=9,
-            position_label="Top Talent [H,H]",
+            position_label="Star [H,H]",
             talent_indicator="High Potential",
             ratings_history=[
                 HistoricalRating(year=2023, rating="Strong"),
@@ -156,7 +139,7 @@ def sample_employees() -> list[Employee]:
             performance=PerformanceLevel.LOW,
             potential=PotentialLevel.HIGH,
             grid_position=7,
-            position_label="Emerging Talent [L,H]",
+            position_label="Enigma [L,H]",
             talent_indicator="Emerging",
             ratings_history=[],
             development_focus="Technical skills",
@@ -184,7 +167,7 @@ def sample_employees() -> list[Employee]:
             performance=PerformanceLevel.HIGH,
             potential=PotentialLevel.MEDIUM,
             grid_position=6,
-            position_label="High Impact Talent [H,M]",
+            position_label="High Impact [H,M]",
             talent_indicator="High Impact",
             ratings_history=[
                 HistoricalRating(year=2023, rating="Strong"),
@@ -215,7 +198,7 @@ def sample_employees() -> list[Employee]:
             performance=PerformanceLevel.MEDIUM,
             potential=PotentialLevel.HIGH,
             grid_position=8,
-            position_label="Growth Talent [M,H]",
+            position_label="Growth [M,H]",
             talent_indicator="Growth",
             ratings_history=[HistoricalRating(year=2024, rating="Solid")],
             development_focus="Strategic thinking",
@@ -317,10 +300,9 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
 def test_client(test_db_path: str) -> TestClient:
     """Create a FastAPI test client."""
     # Import app after database path is set
-    from ninebox.main import app
-
     # Patch database path for testing
-    import ninebox.core.database as db_module
+    import ninebox.core.database as db_module  # noqa: PLC0415
+    from ninebox.main import app  # noqa: PLC0415
 
     original_get_db_path = db_module.get_db_path
 
@@ -338,11 +320,10 @@ def test_client(test_db_path: str) -> TestClient:
 
 
 @pytest.fixture
-def auth_headers(test_client: TestClient) -> dict[str, str]:
-    """Get authentication headers for testing."""
-    response = test_client.post(
-        "/api/auth/login", json={"username": "testuser", "password": "testpass123"}
-    )
-    assert response.status_code == 200
-    token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+def auth_headers() -> dict[str, str]:
+    """Get authentication headers for testing.
+
+    Note: This app is local-only without authentication.
+    This fixture returns empty headers for backward compatibility.
+    """
+    return {}

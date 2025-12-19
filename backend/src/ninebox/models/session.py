@@ -1,14 +1,21 @@
 """Session data models."""
 
 from datetime import datetime
+from typing import ClassVar
 
 from pydantic import BaseModel
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.services.excel_parser import JobFunctionConfig
 
 
 class EmployeeMove(BaseModel):
-    """Track a single employee move."""
+    """Track a single employee move.
+
+    This model maintains ONE entry per employee. When an employee is moved
+    multiple times, the existing entry is updated to preserve the original
+    old_position while updating the new_position.
+    """
 
     employee_id: int
     employee_name: str
@@ -19,6 +26,7 @@ class EmployeeMove(BaseModel):
     new_potential: PotentialLevel
     old_position: int
     new_position: int
+    notes: str | None = None
 
 
 class SessionState(BaseModel):
@@ -33,6 +41,13 @@ class SessionState(BaseModel):
     original_filename: str
     original_file_path: str
 
+    # Excel sheet information (for robust export)
+    sheet_name: str
+    sheet_index: int
+
+    # Job function configuration (auto-detected from data)
+    job_function_config: JobFunctionConfig | None = None
+
     # Current state (with modifications)
     current_employees: list[Employee]
 
@@ -42,6 +57,6 @@ class SessionState(BaseModel):
     class Config:
         """Pydantic config."""
 
-        json_encoders = {
+        json_encoders: ClassVar = {
             datetime: lambda v: v.isoformat(),
         }

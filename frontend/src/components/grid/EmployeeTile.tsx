@@ -7,6 +7,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Employee } from "../../types/employee";
+import { logger } from "../../utils/logger";
 
 interface EmployeeTileProps {
   employee: Employee;
@@ -24,7 +25,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     });
 
   const handleCardClick = () => {
-    console.log('Card clicked - selecting employee:', employee.employee_id, employee.name);
+    logger.debug('Card clicked - selecting employee:', employee.employee_id, employee.name);
     onSelect(employee.employee_id);
   };
 
@@ -44,6 +45,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           boxShadow: 3,
         },
       }}
+      data-testid={`employee-card-${employee.employee_id}`}
     >
       {/* Drag Handle */}
       <Box
@@ -84,6 +86,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               size="small"
               color="secondary"
               sx={{ height: 18 }}
+              data-testid="modified-indicator"
             />
           )}
         </Box>

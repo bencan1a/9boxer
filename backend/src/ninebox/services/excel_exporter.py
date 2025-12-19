@@ -1,17 +1,27 @@
 """Excel file exporter service."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import openpyxl
 
 from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import get_position_label
+
+if TYPE_CHECKING:
+    from ninebox.models.session import SessionState
 
 
 class ExcelExporter:
     """Export modified employee data back to Excel."""
 
-    def export(
-        self, original_file: str | Path, employees: list[Employee], output_path: str | Path
+    def export(  # noqa: PLR0912  # Complexity acceptable for data export logic
+        self,
+        original_file: str | Path,
+        employees: list[Employee],
+        output_path: str | Path,
+        sheet_index: int = 1,
+        session: "SessionState | None" = None,
     ) -> None:
         """
         Create new Excel file with updated ratings.
@@ -20,15 +30,20 @@ class ExcelExporter:
             original_file: Path to original Excel file
             employees: List of employees with current data
             output_path: Path to save modified Excel file
+            sheet_index: Index of the sheet to export to (default: 1 for backward compatibility)
+            session: Optional session state for accessing change notes
         """
         # Read original file to preserve formatting
         workbook = openpyxl.load_workbook(original_file)
 
-        # Work with second sheet (index 1)
-        if len(workbook.worksheets) < 2:
-            raise ValueError("Excel file must have at least 2 sheets")
+        # Work with specified sheet
+        if len(workbook.worksheets) <= sheet_index:
+            raise ValueError(
+                f"Excel file must have at least {sheet_index + 1} sheets. "
+                f"Only {len(workbook.worksheets)} sheets found."
+            )
 
-        sheet = workbook.worksheets[1]
+        sheet = workbook.worksheets[sheet_index]
 
         # Find column indices
         perf_col = self._find_column(sheet, "Aug 2025 Talent Assessment Performance")
@@ -38,14 +53,29 @@ class ExcelExporter:
         promotion_readiness_col = self._find_column(sheet, "Promotion Readiness")
 
         # Add "Modified" columns if they don't exist
-        max_col = sheet.max_column
+        max_col = sheet.max_column or 1
         modified_col = self._find_column(sheet, "Modified in Session", create=True)
+        assert modified_col is not None, "modified_col should not be None when create=True"  # nosec B101  # Type narrowing
         if modified_col > max_col:
             sheet.cell(1, modified_col, "Modified in Session")
             sheet.cell(1, modified_col + 1, "Modification Date")
+            sheet.cell(1, modified_col + 2, "9Boxer Change Description")
+            sheet.cell(1, modified_col + 3, "9Boxer Change Notes")
 
         # Create employee lookup by ID
         employee_map = {e.employee_id: e for e in employees}
+
+        # Create change notes and descriptions lookup by employee ID
+        change_notes_map = {}
+        change_description_map = {}
+        if session:
+            for change in session.changes:
+                if change.notes:
+                    change_notes_map[change.employee_id] = change.notes
+                # Create movement description
+                old_label = get_position_label(change.old_performance, change.old_potential)
+                new_label = get_position_label(change.new_performance, change.new_potential)
+                change_description_map[change.employee_id] = f"Moved from {old_label} to {new_label}"
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):
@@ -73,15 +103,26 @@ class ExcelExporter:
 
                 # Update promotion readiness
                 if promotion_readiness_col and emp.promotion_readiness is not None:
-                    sheet.cell(row_idx, promotion_readiness_col, "Yes" if emp.promotion_readiness else "No")
+                    sheet.cell(
+                        row_idx, promotion_readiness_col, "Yes" if emp.promotion_readiness else "No"
+                    )
 
                 # Mark as modified
                 sheet.cell(row_idx, modified_col, "Yes" if emp.modified_in_session else "No")
                 if emp.modified_in_session and emp.last_modified:
                     sheet.cell(row_idx, modified_col + 1, emp.last_modified.isoformat())
 
+                # Add change description if available
+                description_value = change_description_map.get(emp_id, "")
+                sheet.cell(row_idx, modified_col + 2, description_value)
+
+                # Add change notes if available
+                notes_value = change_notes_map.get(emp_id, "")
+                sheet.cell(row_idx, modified_col + 3, notes_value)
+
         # Save modified workbook
         workbook.save(output_path)
+
 
     def _find_column(
         self, sheet: openpyxl.worksheet.worksheet.Worksheet, col_name: str, create: bool = False
@@ -94,6 +135,6 @@ class ExcelExporter:
 
         # If not found and create=True, return next available column
         if create:
-            return sheet.max_column + 1
+            return (sheet.max_column or 0) + 1
 
         return None

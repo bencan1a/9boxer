@@ -11,8 +11,14 @@ def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> dict[str, str]:
     """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
     return auth_headers
 
@@ -147,7 +153,9 @@ def test_move_employee_when_employee_not_exists_then_returns_404(
     """Test PATCH with non-existent employee returns 404."""
     move_data = {"performance": "Medium", "potential": "Medium"}
 
-    response = test_client.patch("/api/employees/999/move", json=move_data, headers=session_with_data)
+    response = test_client.patch(
+        "/api/employees/999/move", json=move_data, headers=session_with_data
+    )
 
     assert response.status_code == 404
 
@@ -215,11 +223,22 @@ def test_move_employee_when_called_then_tracks_change(
     assert data["change"]["new_potential"] == "Low"
 
 
-def test_get_employees_when_no_auth_then_returns_401(test_client: TestClient) -> None:
-    """Test GET /api/employees without authentication returns 401."""
-    response = test_client.get("/api/employees")
+def test_get_employees_when_invalid_exclude_ids_then_returns_400(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test that invalid exclude_ids returns 400 (not 500)."""
+    response = test_client.get(
+        "/api/employees?exclude_ids=1,invalid,3", headers=session_with_data
+    )
 
-    assert response.status_code == 401
+    assert response.status_code == 400
+    data = response.json()
+    assert "Invalid employee ID" in data["detail"]
+    assert "must be comma-separated integers" in data["detail"]
+
+
+# NOTE: test_get_employees_when_no_auth_then_returns_401 removed
+# This app is local-only without authentication
 
 
 def test_move_employee_when_updates_grid_position_then_position_correct(

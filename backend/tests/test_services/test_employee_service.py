@@ -94,7 +94,9 @@ def test_filter_employees_when_by_multiple_performance_levels_then_filters_corre
     filtered = employee_service.filter_employees(sample_employees, performance=["High", "Medium"])
 
     assert len(filtered) == 4
-    assert all(emp.performance in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM] for emp in filtered)
+    assert all(
+        emp.performance in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM] for emp in filtered
+    )
 
 
 def test_filter_employees_when_empty_list_then_returns_all(

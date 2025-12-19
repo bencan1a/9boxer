@@ -1,13 +1,18 @@
 """Intelligence API endpoints."""
 
+import logging
 from typing import TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from ninebox.api.auth import get_current_user_id
-from ninebox.services.session_manager import session_manager
+from ninebox.core.dependencies import get_session_manager
+from ninebox.services.intelligence_service import calculate_overall_intelligence
+from ninebox.services.session_manager import SessionManager
 
 router = APIRouter(prefix="/intelligence", tags=["intelligence"])
+
+# Constant user ID for local-only app (no authentication)
+LOCAL_USER_ID = "local-user"
 
 
 class AnomalyCount(TypedDict):
@@ -44,16 +49,13 @@ class IntelligenceResponse(TypedDict):
 
 @router.get("", response_model=None)
 async def get_intelligence(
-    user_id: str = Depends(get_current_user_id),
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> IntelligenceResponse:
     """
     Get statistical intelligence analysis for the full dataset.
 
     Note: This analyzes the FULL dataset, not filtered data.
     Anomaly detection requires the full population to establish baseline.
-
-    Args:
-        user_id: Current user ID from authentication token
 
     Returns:
         IntelligenceResponse containing quality score, anomaly counts, and dimension analyses
@@ -63,71 +65,49 @@ async def get_intelligence(
         HTTPException: 500 if intelligence calculation fails
     """
     # Get session
-    session = session_manager.get_session(user_id)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
+        # Log diagnostic information
+        logger = logging.getLogger(__name__)
+        logger.error(f"Intelligence: No session found for user_id={LOCAL_USER_ID}")
+        logger.error(f"Active sessions: {list(session_mgr.sessions.keys())}")
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session",
-        )
-
-    # Import intelligence service (will be created by Agent A)
-    try:
-        from ninebox.services.intelligence_service import calculate_overall_intelligence
-    except ImportError:
-        # Mock response if service not yet available
-        # This allows the API endpoint to be tested independently
-        return IntelligenceResponse(
-            quality_score=0,
-            anomaly_count=AnomalyCount(green=0, yellow=0, red=0),
-            location_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            function_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            level_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            tenure_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
+            detail="No active session found. Please upload an Excel file first.",
         )
 
     try:
+        # Log diagnostic information
+        logger = logging.getLogger(__name__)
+        logger.info(
+            f"Intelligence: Processing for user_id={LOCAL_USER_ID}, employees={len(session.current_employees)}"
+        )
+
+        # Check if employees list is empty
+        if not session.current_employees:
+            logger.error(
+                f"Intelligence: Session exists but current_employees is EMPTY for user_id={LOCAL_USER_ID}"
+            )
+            logger.error(
+                f"Session details: session_id={session.session_id}, original_count={len(session.original_employees)}"
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Session exists but contains no employee data. Please reload your Excel file.",
+            )
+
         # Calculate intelligence using full dataset (current_employees)
         intelligence = calculate_overall_intelligence(session.current_employees)
-        return intelligence
+        return IntelligenceResponse(**intelligence)  # type: ignore[typeddict-item, no-any-return]
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
+        logger = logging.getLogger(__name__)
+        logger.exception(f"Intelligence calculation failed for user_id={LOCAL_USER_ID}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to calculate intelligence: {str(e)}",
-        )
+            detail=f"Failed to calculate intelligence: {e!s}",
+        ) from e

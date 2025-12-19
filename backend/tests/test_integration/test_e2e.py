@@ -4,7 +4,6 @@ import io
 from pathlib import Path
 
 import openpyxl
-import pytest
 from fastapi.testclient import TestClient
 
 
@@ -12,35 +11,36 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     test_client: TestClient, sample_excel_file: Path
 ) -> None:
     """
-    Test complete workflow from login to logout.
+    Test complete workflow for local-only app.
 
     Workflow:
-    1. Login
-    2. Upload Excel file
-    3. Get employees
-    4. Move employee
-    5. Get statistics (verify updated)
-    6. Export file
-    7. Verify exported file has modifications
-    8. Logout
-    9. Clear session
-    """
-    # 1. Login
-    login_response = test_client.post(
-        "/api/auth/login", json={"username": "testuser", "password": "testpass123"}
-    )
-    assert login_response.status_code == 200
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
+    1. Upload Excel file
+    2. Get employees
+    3. Move employee
+    4. Get statistics (verify updated)
+    5. Export file
+    6. Verify exported file has modifications
+    7. Clear session
 
-    # 2. Upload Excel file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    Note: This app is local-only without authentication.
+    """
+    # No authentication needed for local-only app
+    headers = {}
+
+    # 1. Upload Excel file
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         upload_response = test_client.post("/api/session/upload", files=files, headers=headers)
     assert upload_response.status_code == 200
     assert upload_response.json()["employee_count"] == 5
 
-    # 3. Get employees
+    # 2. Get employees
     employees_response = test_client.get("/api/employees", headers=headers)
     assert employees_response.status_code == 200
     employees = employees_response.json()["employees"]
@@ -48,10 +48,8 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
 
     # Find first employee
     first_employee = employees[0]
-    original_performance = first_employee["performance"]
-    original_potential = first_employee["potential"]
 
-    # 4. Move employee
+    # 3. Move employee
     move_data = {"performance": "Low", "potential": "Medium"}
     move_response = test_client.patch(
         f"/api/employees/{first_employee['employee_id']}/move", json=move_data, headers=headers
@@ -61,7 +59,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     assert move_response.json()["employee"]["potential"] == "Medium"
     assert move_response.json()["employee"]["modified_in_session"] is True
 
-    # 5. Get statistics (verify updated)
+    # 4. Get statistics (verify updated)
     stats_response = test_client.get("/api/statistics", headers=headers)
     assert stats_response.status_code == 200
     stats = stats_response.json()
@@ -69,12 +67,12 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     assert stats["by_performance"]["Low"] > 0
     assert stats["by_potential"]["Medium"] > 0
 
-    # 6. Export file
+    # 5. Export file
     export_response = test_client.post("/api/session/export", headers=headers)
     assert export_response.status_code == 200
     assert len(export_response.content) > 0
 
-    # 7. Verify exported file has modifications
+    # 6. Verify exported file has modifications
     exported_file = io.BytesIO(export_response.content)
     workbook = openpyxl.load_workbook(exported_file)
     sheet = workbook.worksheets[1]
@@ -97,11 +95,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
             break
     assert modified_found
 
-    # 8. Logout
-    logout_response = test_client.post("/api/auth/logout", headers=headers)
-    assert logout_response.status_code == 200
-
-    # 9. Clear session
+    # 7. Clear session
     clear_response = test_client.delete("/api/session/clear", headers=headers)
     assert clear_response.status_code == 200
 
@@ -121,8 +115,14 @@ def test_filtering_workflow_when_applied_then_filters_correctly(
     6. Verify statistics match filtered employees
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Get filter options
@@ -172,8 +172,14 @@ def test_multiple_moves_when_performed_then_all_tracked(
     5. Export and verify all changes in file
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Move multiple employees
@@ -224,70 +230,8 @@ def test_multiple_moves_when_performed_then_all_tracked(
     assert modified_count == 3
 
 
-def test_session_isolation_when_multiple_users_then_sessions_separate(
-    test_client: TestClient, test_db_path: str, sample_excel_file: Path
-) -> None:
-    """
-    Test that different users have isolated sessions.
-
-    Workflow:
-    1. Create second test user
-    2. Login as first user, upload file
-    3. Login as second user, upload file
-    4. Verify each user sees only their own data
-    """
-    # 1. Create second test user
-    import sqlite3
-
-    from ninebox.core.security import get_password_hash
-
-    conn = sqlite3.connect(test_db_path)
-    cursor = conn.cursor()
-    hashed_password = get_password_hash("testpass456")
-    cursor.execute(
-        "INSERT INTO users (user_id, username, hashed_password) VALUES (?, ?, ?)",
-        ("test-user-2", "testuser2", hashed_password),
-    )
-    conn.commit()
-    conn.close()
-
-    # 2. Login as first user, upload file
-    login1 = test_client.post(
-        "/api/auth/login", json={"username": "testuser", "password": "testpass123"}
-    )
-    headers1 = {"Authorization": f"Bearer {login1.json()['access_token']}"}
-
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test1.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        test_client.post("/api/session/upload", files=files, headers=headers1)
-
-    # 3. Login as second user, upload file
-    login2 = test_client.post(
-        "/api/auth/login", json={"username": "testuser2", "password": "testpass456"}
-    )
-    headers2 = {"Authorization": f"Bearer {login2.json()['access_token']}"}
-
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test2.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-        test_client.post("/api/session/upload", files=files, headers=headers2)
-
-    # 4. Verify each user sees only their own data
-    status1 = test_client.get("/api/session/status", headers=headers1)
-    assert status1.json()["uploaded_filename"] == "test1.xlsx"
-
-    status2 = test_client.get("/api/session/status", headers=headers2)
-    assert status2.json()["uploaded_filename"] == "test2.xlsx"
-
-    # Moves by user 1 should not affect user 2
-    test_client.patch(
-        "/api/employees/1/move", json={"performance": "Low", "potential": "Low"}, headers=headers1
-    )
-
-    stats1 = test_client.get("/api/statistics", headers=headers1)
-    stats2 = test_client.get("/api/statistics", headers=headers2)
-
-    assert stats1.json()["modified_employees"] == 1
-    assert stats2.json()["modified_employees"] == 0
+# NOTE: test_session_isolation_when_multiple_users_then_sessions_separate removed
+# This app is local-only without authentication, so multi-user session isolation doesn't apply
 
 
 def test_error_recovery_when_invalid_operations_then_session_intact(
@@ -304,8 +248,14 @@ def test_error_recovery_when_invalid_operations_then_session_intact(
     5. Verify everything works
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Attempt invalid move
@@ -349,8 +299,14 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
     5. Verify changes reflected
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with sample_excel_file.open("rb") as f:
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # 2. Make some changes

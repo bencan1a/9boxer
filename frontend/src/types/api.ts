@@ -35,6 +35,7 @@ export interface SessionStatusResponse {
   active: boolean;
   employee_count: number;
   changes_count: number;
+  changes: EmployeeMove[];
   uploaded_filename: string;
   created_at: string;
 }

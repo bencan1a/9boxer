@@ -1,32 +1,38 @@
 """Tests for Excel parser service."""
 
-from datetime import date
 from pathlib import Path
 
 import openpyxl
 import pytest
 
 from ninebox.models.employee import PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 from ninebox.services.excel_parser import ExcelParser
 
 
 def test_parse_when_valid_file_then_returns_employees(sample_excel_file: Path) -> None:
     """Test parsing a valid Excel file."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
 
-    assert len(employees) == 5
-    assert all(emp.employee_id > 0 for emp in employees)
-    assert all(emp.name for emp in employees)
+    assert len(result.employees) == 5
+    assert all(emp.employee_id > 0 for emp in result.employees)
+    assert all(emp.name for emp in result.employees)
+    # Verify metadata is populated
+    assert result.metadata.sheet_name is not None
+    assert result.metadata.parsed_rows == 5
+    assert result.metadata.total_rows >= 5
 
 
-def test_parse_when_valid_file_then_extracts_employee_data_correctly(sample_excel_file: Path) -> None:
+def test_parse_when_valid_file_then_extracts_employee_data_correctly(
+    sample_excel_file: Path,
+) -> None:
     """Test that employee data is extracted correctly."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
 
     # Check first employee
-    emp = employees[0]
+    emp = result.employees[0]
     assert emp.employee_id == 1
     assert emp.name == "Alice Smith"
     assert emp.business_title == "Senior Engineer"
@@ -39,7 +45,8 @@ def test_parse_when_valid_file_then_extracts_employee_data_correctly(sample_exce
 def test_parse_when_valid_file_then_handles_historical_ratings(sample_excel_file: Path) -> None:
     """Test that historical ratings are parsed correctly."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
+    employees = result.employees
 
     # First employee has 2 ratings
     emp = employees[0]
@@ -55,10 +62,13 @@ def test_parse_when_valid_file_then_handles_historical_ratings(sample_excel_file
     assert emp.ratings_history[0].year == 2024
 
 
-def test_parse_when_valid_file_then_calculates_grid_positions_correctly(sample_excel_file: Path) -> None:
+def test_parse_when_valid_file_then_calculates_grid_positions_correctly(
+    sample_excel_file: Path,
+) -> None:
     """Test grid position calculation."""
     parser = ExcelParser()
-    employees = parser.parse(sample_excel_file)
+    result = parser.parse(sample_excel_file)
+    employees = result.employees
 
     # H,H = High Performance (3), High Potential (6) = 9
     assert employees[0].grid_position == 9
@@ -93,14 +103,17 @@ def test_parse_when_valid_file_then_handles_optional_fields_gracefully(tmp_path:
     workbook.save(file_path)
 
     parser = ExcelParser()
-    employees = parser.parse(file_path)
+    result = parser.parse(file_path)
 
-    assert len(employees) == 1
-    emp = employees[0]
+    assert len(result.employees) == 1
+    emp = result.employees[0]
     assert emp.employee_id == 1
     assert emp.name == "Test User"
     assert emp.development_focus is None
     assert emp.notes is None
+    # Verify defaulted fields tracking
+    assert result.metadata.defaulted_fields.get("Performance", 0) == 1
+    assert result.metadata.defaulted_fields.get("Potential", 0) == 1
 
 
 def test_parse_when_invalid_file_format_then_raises_error(tmp_path: Path) -> None:
@@ -159,48 +172,42 @@ def test_calculate_position_when_all_combinations_then_returns_correct_positions
         Performance (columns): Low=1, Medium=2, High=3
         Potential (rows): Low=1-3, Medium=4-6, High=7-9
     """
-    parser = ExcelParser()
-
     # Low performance (column 1)
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
-    assert parser._calculate_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
 
     # Medium performance (column 2)
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
-    assert parser._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
 
     # High performance (column 3)
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
-    assert parser._calculate_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
 
 
 def test_get_position_label_when_all_combinations_then_returns_correct_labels() -> None:
     """Test position label generation."""
-    parser = ExcelParser()
-
-    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Top Talent [H,H]"
+    assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Star [H,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM)
-        == "High Impact Talent [H,M]"
+        get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
     )
-    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "High/Low [H,L]"
+    assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "Workhorse [H,L]"
+    assert get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth [M,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth Talent [M,H]"
-    )
-    assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
+        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
         == "Core Talent [M,M]"
     )
-    assert parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == "Med/Low [M,L]"
     assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH)
-        == "Emerging Talent [L,H]"
+        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW)
+        == "Effective Pro [M,L]"
+    )
+    assert get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
+    assert (
+        get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
     )
     assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM)
-        == "Inconsistent Talent [L,M]"
+        get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
     )
-    assert parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Low/Low [L,L]"

@@ -1,6 +1,18 @@
 """Statistics calculation service."""
 
+from collections import Counter
+from typing import TypedDict
+
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import get_position_label_by_number
+
+
+class BoxStats(TypedDict):
+    """Statistics for a single 9-box position."""
+
+    count: int
+    percentage: float
+    label: str
 
 
 class StatisticsService:
@@ -9,9 +21,13 @@ class StatisticsService:
     def calculate_distribution(self, employees: list[Employee]) -> dict:
         """Calculate 9-box distribution."""
         # Initialize counts
-        distribution_dict = {}
+        distribution_dict: dict[str, BoxStats] = {}
         for i in range(1, 10):
-            distribution_dict[str(i)] = {"count": 0, "percentage": 0.0, "label": self._get_box_label(i)}
+            distribution_dict[str(i)] = {
+                "count": 0,
+                "percentage": 0.0,
+                "label": get_position_label_by_number(i),
+            }
 
         # Count employees in each box
         for emp in employees:
@@ -48,6 +64,10 @@ class StatisticsService:
             "High": sum(1 for e in employees if e.potential == PotentialLevel.HIGH),
         }
 
+        # Aggregate by job function
+        job_function_counts = Counter(e.job_function for e in employees)
+        by_job_function = dict(job_function_counts.most_common())
+
         # Count modified employees
         modified_count = sum(1 for e in employees if e.modified_in_session)
 
@@ -61,23 +81,5 @@ class StatisticsService:
             "distribution": distribution,
             "by_performance": by_performance,
             "by_potential": by_potential,
+            "by_job_function": by_job_function,
         }
-
-    def _get_box_label(self, position: int) -> str:
-        """Get label for a grid position."""
-        labels = {
-            9: "Top Talent [H,H]",
-            8: "High Impact Talent [H,M]",
-            7: "High/Low [H,L]",
-            6: "Growth Talent [M,H]",
-            5: "Core Talent [M,M]",
-            4: "Med/Low [M,L]",
-            3: "Emerging Talent [L,H]",
-            2: "Inconsistent Talent [L,M]",
-            1: "Low/Low [L,L]",
-        }
-        return labels.get(position, f"Position {position}")
-
-
-# Global statistics service instance
-statistics_service = StatisticsService()

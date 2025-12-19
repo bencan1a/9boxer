@@ -95,14 +95,8 @@ export const useFilters = () => {
    * Extract unique filter options from employee data
    */
   const getAvailableOptions = (employees: Employee[]): FilterOptions => {
-    console.log('🔍 getAvailableOptions called');
-    console.log('  - employees type:', typeof employees);
-    console.log('  - employees is array?', Array.isArray(employees));
-    console.log('  - employees length:', employees?.length ?? 'undefined');
-
     // Handle empty or undefined employees array
     if (!employees || employees.length === 0) {
-      console.warn('⚠️  Returning empty filter options - employees array is empty or undefined');
       return {
         levels: [],
         jobFunctions: [],
@@ -110,8 +104,6 @@ export const useFilters = () => {
         managers: [],
       };
     }
-
-    console.log('✅ Processing', employees.length, 'employees for filter options');
 
     // Extract unique job levels
     const levels = Array.from(
@@ -125,45 +117,35 @@ export const useFilters = () => {
     ).sort();
 
     // Extract unique job functions
-    const rawJobFunctions = employees.map((emp) => emp.job_function);
-    console.log('📋 Raw job functions (all):', rawJobFunctions);
-    console.log('  - Sample employee structure:', employees[0]);
-    const filteredJobFunctions = rawJobFunctions.filter(Boolean);
-    console.log('  - After filter(Boolean):', filteredJobFunctions);
     const jobFunctions = Array.from(
-      new Set(filteredJobFunctions)
+      new Set(
+        employees
+          .map((emp) => emp.job_function)
+          .filter(Boolean)
+      )
     ).sort();
-    console.log('  - Final unique job functions:', jobFunctions);
 
     // Extract unique locations and map to display names
-    const rawLocations = employees.map((emp) => emp.location);
-    console.log('🌍 Raw locations (all):', rawLocations);
-    const filteredLocations = rawLocations.filter(Boolean);
-    console.log('  - After filter(Boolean):', filteredLocations);
-    const mappedLocations = filteredLocations.map((location) => mapLocationToDisplay(location));
-    console.log('  - After mapping to display names:', mappedLocations);
     const locations = Array.from(
-      new Set(mappedLocations)
+      new Set(
+        employees
+          .map((emp) => emp.location)
+          .filter(Boolean)
+          .map((location) => mapLocationToDisplay(location))
+      )
     ).sort();
-    console.log('  - Final unique locations:', locations);
 
     // Extract unique managers
     const managers = Array.from(
       new Set(employees.map((emp) => emp.manager))
     ).sort();
 
-    const result = {
+    return {
       levels,
       jobFunctions,
       locations,
       managers,
     };
-
-    console.log('📊 Final filter options result:', result);
-    console.log('  - Job functions count:', jobFunctions.length);
-    console.log('  - Locations count:', locations.length);
-
-    return result;
   };
 
   return {

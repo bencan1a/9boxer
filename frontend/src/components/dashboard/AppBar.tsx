@@ -3,7 +3,6 @@
  */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   AppBar as MuiAppBar,
   Toolbar,
@@ -13,31 +12,36 @@ import {
   Chip,
   Badge,
   CircularProgress,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import LogoutIcon from "@mui/icons-material/Logout";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useAuthStore } from "../../store/authStore";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
+import { extractErrorMessage } from "../../types/errors";
+import { logger } from "../../utils/logger";
 
 export const AppBar: React.FC = () => {
-  const navigate = useNavigate();
-  const { logout } = useAuthStore();
   const { sessionId, employees, filename, changes } = useSessionStore();
-  const { toggleDrawer, hasActiveFilters, applyFilters } = useFilters();
+  const {
+    toggleDrawer,
+    hasActiveFilters,
+    applyFilters,
+    selectedLevels,
+    selectedJobFunctions,
+    selectedLocations,
+    selectedManagers,
+    excludedEmployeeIds,
+  } = useFilters();
   const { showSuccess, showError } = useSnackbar();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   const handleExport = async () => {
     if (!sessionId) return;
@@ -59,18 +63,69 @@ export const AppBar: React.FC = () => {
       document.body.removeChild(a);
 
       showSuccess(`Successfully exported ${changes.length} change(s) to ${filename}`);
-    } catch (error: any) {
-      console.error("Export failed:", error);
-      const errorMessage = error.response?.data?.detail || "Failed to export file";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Export failed', error);
       showError(errorMessage);
     } finally {
       setIsExporting(false);
     }
   };
 
+  const handleOpenHelp = async () => {
+    try {
+      // Check if running in Electron
+      if (window.electronAPI?.openUserGuide) {
+        const result = await window.electronAPI.openUserGuide();
+        if (!result.success) {
+          showError(result.error || "Failed to open user guide");
+        }
+      } else {
+        // Fallback for web browser (not typically used)
+        showError("User guide is only available in the desktop application");
+      }
+    } catch (error: unknown) {
+      logger.error('Failed to open user guide', error);
+      showError("Failed to open user guide");
+    }
+  };
+
+  // Build filter tooltip message
+  const getFilterTooltip = (): string => {
+    if (!hasActiveFilters) {
+      return "Filter employees";
+    }
+
+    const filterParts: string[] = [];
+
+    if (selectedLevels.length > 0) {
+      filterParts.push(`Levels: ${selectedLevels.join(", ")}`);
+    }
+    if (selectedJobFunctions.length > 0) {
+      filterParts.push(`Functions: ${selectedJobFunctions.join(", ")}`);
+    }
+    if (selectedLocations.length > 0) {
+      filterParts.push(`Locations: ${selectedLocations.join(", ")}`);
+    }
+    if (selectedManagers.length > 0) {
+      filterParts.push(`Managers: ${selectedManagers.join(", ")}`);
+    }
+    if (excludedEmployeeIds.length > 0) {
+      filterParts.push(`Excluded: ${excludedEmployeeIds.length} employee(s)`);
+    }
+
+    return `Active filters:\n${filterParts.join("\n")}`;
+  };
+
   // Get filtered employee count
   const filteredEmployees = applyFilters(employees);
   const displayedCount = filteredEmployees.length;
+
+  // Build employee count label
+  const employeeCountLabel =
+    hasActiveFilters && displayedCount < employees.length
+      ? `${displayedCount} of ${employees.length} employees`
+      : `${employees.length} employees`;
 
   // Check if there are modifications to export
   const hasModifications = changes.length > 0;
@@ -79,103 +134,111 @@ export const AppBar: React.FC = () => {
     <>
       <MuiAppBar position="static" elevation={2}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            9-Box Performance Review
+          {/* Left: App title */}
+          <Typography variant="h6" component="div">
+            9Boxer
           </Typography>
 
-          {/* VERSION INDICATOR - HOT RELOAD TEST */}
-          <Box
-            sx={{
-              backgroundColor: "green",
-              color: "white",
-              px: 2,
-              py: 0.5,
-              mr: 2,
-              borderRadius: 1,
-              fontWeight: "bold",
-              fontSize: "0.875rem",
-            }}
-          >
-            v2.0.0-DEV - HOT RELOAD ✨
+          {/* Center: Status information */}
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+            {sessionId && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Chip
+                  label={filename || "Session Active"}
+                  color="secondary"
+                  size="small"
+                  variant="outlined"
+                  sx={{ color: "white", borderColor: "white" }}
+                />
+                <Chip
+                  label={employeeCountLabel}
+                  color="secondary"
+                  size="small"
+                  sx={{ color: "white" }}
+                  data-testid="employee-count"
+                />
+              </Box>
+            )}
           </Box>
 
-          {/* Session Info */}
-          {sessionId && (
-            <Box sx={{ display: "flex", alignItems: "center", mr: 2, gap: 1 }}>
-              <Chip
-                label={filename || "Session Active"}
-                color="secondary"
-                size="small"
-                variant="outlined"
-                sx={{ color: "white", borderColor: "white" }}
-              />
-              <Chip
-                label={`${displayedCount} of ${employees.length} employees`}
-                color="secondary"
-                size="small"
-                sx={{ color: "white" }}
-              />
+          {/* Right: Action buttons */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                minWidth: "120px", // Reserve space for indicator to prevent shifting
+              }}
+            >
+              <Tooltip title={getFilterTooltip()} placement="bottom">
+                <Button
+                  color="inherit"
+                  startIcon={<FilterListIcon />}
+                  disabled={!sessionId}
+                  onClick={toggleDrawer}
+                  data-testid="filter-button"
+                >
+                  Filters
+                </Button>
+              </Tooltip>
+              {hasActiveFilters && (
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: "#ffa726",
+                  }}
+                />
+              )}
             </Box>
-          )}
 
-          {/* Action Buttons */}
-          <Button
-            color="inherit"
-            startIcon={<UploadFileIcon />}
-            onClick={() => setUploadDialogOpen(true)}
-            sx={{ mr: 1 }}
-          >
-            Upload
-          </Button>
-
-          <Badge
-            variant="dot"
-            color="secondary"
-            invisible={!hasActiveFilters}
-            sx={{
-              "& .MuiBadge-badge": {
-                backgroundColor: "#ffa726",
-              },
-            }}
-          >
             <Button
               color="inherit"
-              startIcon={<FilterListIcon />}
-              disabled={!sessionId}
-              onClick={toggleDrawer}
-              sx={{ mr: 1 }}
+              startIcon={<UploadFileIcon />}
+              onClick={() => setUploadDialogOpen(true)}
+              data-testid="upload-button"
             >
-              Filters
+              Import
             </Button>
-          </Badge>
 
-          <Badge
-            badgeContent={hasModifications ? changes.length : 0}
-            color="secondary"
-            sx={{
-              "& .MuiBadge-badge": {
-                backgroundColor: "#4caf50",
-              },
-            }}
-          >
-            <Button
-              color="inherit"
-              startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
-              disabled={!sessionId || !hasModifications || isExporting}
-              onClick={handleExport}
-              sx={{ mr: 2 }}
-            >
-              {isExporting ? "Exporting..." : "Apply"}
-            </Button>
-          </Badge>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Button
+                color="inherit"
+                startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
+                disabled={!sessionId || !hasModifications || isExporting}
+                onClick={handleExport}
+                data-testid="export-button"
+              >
+                {isExporting ? "Exporting..." : "Apply"}
+              </Button>
+              {hasModifications && (
+                <Tooltip title={`${changes.length} change(s) will be applied on export`}>
+                  <Chip
+                    label={changes.length}
+                    size="small"
+                    sx={{
+                      backgroundColor: "#4caf50",
+                      color: "white",
+                      height: 20,
+                      fontSize: "0.7rem",
+                    }}
+                  />
+                </Tooltip>
+              )}
+            </Box>
 
-          <Button
-            color="inherit"
-            startIcon={<LogoutIcon />}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
+            <Tooltip title="Open User Guide">
+              <IconButton
+                color="inherit"
+                onClick={handleOpenHelp}
+                data-testid="help-button"
+              >
+                <HelpOutlineIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Toolbar>
       </MuiAppBar>
 
