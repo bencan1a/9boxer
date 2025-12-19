@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ninebox.api import employees, intelligence, session, statistics
 from ninebox.core.config import settings
-from ninebox.services.session_manager import session_manager
+from ninebox.core.dependencies import get_session_manager
 
 # Create FastAPI app
 app = FastAPI(
@@ -14,11 +14,17 @@ app = FastAPI(
     description="9Boxer Application API",
 )
 
-# Configure CORS
-# Allow all origins to support both web (localhost) and Electron (file://)
+# CORS Configuration for Desktop Application
+# Allow all origins is acceptable because:
+# 1. Backend only runs on localhost (127.0.0.1:8000)
+# 2. Frontend is bundled Electron app (file:// or localhost)
+# 3. Not exposed to external network
+# 4. Desktop app deployment model (single-user, local-only)
+# WARNING: If backend becomes network-accessible, restrict origins to:
+# ["http://localhost:3000", "http://localhost:5173"]  # noqa: ERA001 (documentation example, not commented code)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins including file://
+    allow_origins=["*"],  # Safe for desktop app, see comment above
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,8 +56,9 @@ async def health_check() -> dict:
 @app.get("/debug/sessions")
 async def debug_sessions() -> dict:
     """Debug endpoint to check active sessions (for development only)."""
+    session_mgr = get_session_manager()
     sessions_info = {}
-    for session_key, sess in session_manager.sessions.items():
+    for session_key, sess in session_mgr.sessions.items():
         sessions_info[session_key] = {
             "session_id": sess.session_id,
             "employee_count": len(sess.current_employees),
@@ -62,13 +69,14 @@ async def debug_sessions() -> dict:
         }
 
     return {
-        "total_sessions": len(session_manager.sessions),
+        "total_sessions": len(session_mgr.sessions),
         "sessions": sessions_info,
     }
 
 
 if __name__ == "__main__":
     import os
+
     import uvicorn
 
     # Allow port to be configured via environment variable (useful for testing)

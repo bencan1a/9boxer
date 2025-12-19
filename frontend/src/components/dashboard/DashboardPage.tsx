@@ -56,10 +56,8 @@ export const DashboardPage: React.FC = () => {
       // Use requestAnimationFrame to ensure DOM is ready
       requestAnimationFrame(() => {
         if (isRightPanelCollapsed) {
-          console.log("Collapsing panel");
           panel.collapse();
         } else {
-          console.log("Expanding panel");
           panel.expand();
         }
       });

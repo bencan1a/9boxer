@@ -464,9 +464,9 @@ def test_upload_when_valid_file_then_saves_to_uploads_directory(
     assert response.status_code == 200
 
     # Verify session created
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
 
-    session = session_manager.get_session("local-user")
+    session = get_session_manager().get_session("local-user")
     assert session is not None
 
     # Verify file path is in uploads/ directory
@@ -493,9 +493,9 @@ def test_upload_when_valid_file_then_filename_includes_session_id(
     session_id = response.json()["session_id"]
 
     # Verify filename starts with session_id
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
 
-    session = session_manager.get_session("local-user")
+    session = get_session_manager().get_session("local-user")
     assert session is not None
 
     file_path = Path(session.original_file_path)
@@ -518,9 +518,9 @@ def test_upload_when_valid_file_then_file_persists_after_upload(
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # Get session to find file path
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
 
-    session = session_manager.get_session("local-user")
+    session = get_session_manager().get_session("local-user")
     assert session is not None
 
     file_path = Path(session.original_file_path)
@@ -546,9 +546,9 @@ def test_clear_session_when_session_exists_then_deletes_uploaded_file(
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # Get file path before clearing
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
 
-    session = session_manager.get_session("local-user")
+    session = get_session_manager().get_session("local-user")
     assert session is not None
     file_path = Path(session.original_file_path)
     assert file_path.exists()
@@ -580,9 +580,9 @@ def test_clear_session_when_file_missing_then_handles_gracefully(
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
     # Manually delete the file
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
 
-    session = session_manager.get_session("local-user")
+    session = get_session_manager().get_session("local-user")
     assert session is not None
     file_path = Path(session.original_file_path)
 

@@ -24,6 +24,8 @@ import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
+import { extractErrorMessage } from "../../types/errors";
+import { logger } from "../../utils/logger";
 
 export const AppBar: React.FC = () => {
   const { sessionId, employees, filename, changes } = useSessionStore();
@@ -61,9 +63,9 @@ export const AppBar: React.FC = () => {
       document.body.removeChild(a);
 
       showSuccess(`Successfully exported ${changes.length} change(s) to ${filename}`);
-    } catch (error: any) {
-      console.error("Export failed:", error);
-      const errorMessage = error.response?.data?.detail || "Failed to export file";
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Export failed', error);
       showError(errorMessage);
     } finally {
       setIsExporting(false);
@@ -82,8 +84,8 @@ export const AppBar: React.FC = () => {
         // Fallback for web browser (not typically used)
         showError("User guide is only available in the desktop application");
       }
-    } catch (error: any) {
-      console.error("Failed to open user guide:", error);
+    } catch (error: unknown) {
+      logger.error('Failed to open user guide', error);
       showError("Failed to open user guide");
     }
   };

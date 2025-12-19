@@ -11,6 +11,7 @@ from typing import Any, ClassVar
 import pandas as pd
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 
 logger = logging.getLogger(__name__)
 
@@ -396,122 +397,6 @@ class ExcelParser:
         self.warnings: list[str] = []
         self.job_function_config: JobFunctionConfig | None = None
 
-    @staticmethod
-    def _categorize_job_function(job_function: str) -> str:  # noqa: PLR0911, PLR0912
-        """
-        Extract meaningful job function from job profile string.
-
-        Attempts to identify function keywords and categorize them into
-        broader functional areas. Returns the raw string if no match found.
-        """
-        if not job_function or not job_function.strip():
-            return "Unknown"
-
-        job_function_lower = job_function.lower().strip()
-
-        # Product-related roles
-        if "product" in job_function_lower:
-            if "manage" in job_function_lower or "manager" in job_function_lower:
-                return "Product Management"
-            elif "design" in job_function_lower:
-                return "Product Design"
-            else:
-                return "Product"
-
-        # Engineering roles
-        elif (
-            "engineer" in job_function_lower
-            or "software" in job_function_lower
-            or "developer" in job_function_lower
-        ):
-            if "data" in job_function_lower:
-                return "Data Engineering"
-            elif (
-                "machine learning" in job_function_lower
-                or "ml " in job_function_lower
-                or "ai " in job_function_lower
-            ):
-                return "ML/AI Engineering"
-            else:
-                return "Engineering"
-
-        # Design roles
-        elif "design" in job_function_lower:
-            if "ux" in job_function_lower or "user experience" in job_function_lower:
-                return "UX Design"
-            elif "product" in job_function_lower:
-                return "Product Design"
-            else:
-                return "Design"
-
-        # Research roles
-        elif "research" in job_function_lower:
-            if "ux" in job_function_lower or "user" in job_function_lower:
-                return "UX Research"
-            elif "data" in job_function_lower:
-                return "Data Science"
-            else:
-                return "Research"
-
-        # Data roles
-        elif "data" in job_function_lower:
-            if "scien" in job_function_lower:
-                return "Data Science"
-            elif "analy" in job_function_lower:
-                return "Data Analytics"
-            else:
-                return "Data"
-
-        # Writing/Documentation roles
-        elif (
-            "tech" in job_function_lower and "writ" in job_function_lower
-        ) or "technical writ" in job_function_lower:
-            return "Technical Writing"
-        elif "content" in job_function_lower:
-            return "Content"
-
-        # Management roles
-        elif (
-            "manager" in job_function_lower
-            or "director" in job_function_lower
-            or "vp " in job_function_lower
-            or "head of" in job_function_lower
-        ):
-            return "Management"
-
-        # Sales/Marketing roles
-        elif "sales" in job_function_lower or "account" in job_function_lower:
-            return "Sales"
-        elif "marketing" in job_function_lower:
-            return "Marketing"
-
-        # Support roles
-        elif "support" in job_function_lower or "success" in job_function_lower:
-            return "Customer Success"
-
-        # HR/People roles
-        elif (
-            "hr " in job_function_lower
-            or "people" in job_function_lower
-            or "talent" in job_function_lower
-        ):
-            return "People/HR"
-
-        # Finance/Operations
-        elif "finance" in job_function_lower or "accounting" in job_function_lower:
-            return "Finance"
-        elif "operations" in job_function_lower or " ops " in job_function_lower:
-            return "Operations"
-
-        # If no category matched, return the original (truncated to avoid too many unique values)
-        else:
-            # Extract first meaningful word(s) as function name
-            words = job_function.split()
-            if words:
-                # Take first 1-2 words as the function name
-                return " ".join(words[: min(2, len(words))]).title()
-            return "Other"
-
     def parse(self, file_path: str | Path) -> ParsingResult:
         """
         Read Excel sheet and convert to Employee list.
@@ -663,7 +548,7 @@ class ExcelParser:
             potential = PotentialLevel.MEDIUM
 
         # Calculate grid position
-        grid_position = self._calculate_position(performance, potential)
+        grid_position = calculate_grid_position(performance, potential)
 
         # Get position label
         position_label_col = self._find_column(
@@ -677,7 +562,7 @@ class ExcelParser:
         if position_label_col is None or pd.isna(row.get(position_label_col)):
             if position_label_col is None:
                 self.defaulted_fields["Position Label"] += 1
-            position_label = self._get_position_label(performance, potential)
+            position_label = get_position_label(performance, potential)
         else:
             position_label = str(row.get(position_label_col))
 
@@ -710,9 +595,11 @@ class ExcelParser:
                 raw_job_title, self.job_function_config
             )
         else:
-            # Fallback to old method if no config (shouldn't happen in normal flow)
+            # Fallback if no config (shouldn't happen in normal flow)
             job_function = (
-                self._categorize_job_function(raw_job_title) if raw_job_title else "Unknown"
+                JobFunctionAnalyzer.normalize_job_title(raw_job_title)
+                if raw_job_title
+                else "Unknown"
             )
 
         employee = Employee(
@@ -804,42 +691,3 @@ class ExcelParser:
                 return False
         return None
 
-    def _calculate_position(self, perf: PerformanceLevel, pot: PotentialLevel) -> int:
-        """Calculate 1-9 grid position from performance/potential.
-
-        Grid layout (standard 9-box):
-            Performance (columns): Low=1, Medium=2, High=3
-            Potential (rows): Low=1-3, Medium=4-6, High=7-9
-
-            Position = (potential_row * 3) + performance_column
-
-            Example: High Performance (3), Low Potential (0*3) = position 3
-        """
-        # Performance determines column (1-3)
-        perf_map = {
-            PerformanceLevel.LOW: 1,
-            PerformanceLevel.MEDIUM: 2,
-            PerformanceLevel.HIGH: 3,
-        }
-        # Potential determines row (0, 3, 6)
-        pot_map = {
-            PotentialLevel.LOW: 0,
-            PotentialLevel.MEDIUM: 3,
-            PotentialLevel.HIGH: 6,
-        }
-        return pot_map[pot] + perf_map[perf]
-
-    def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
-        """Get position label from performance/potential."""
-        labels = {
-            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
-            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
-            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
-            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
-            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
-            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
-        }
-        return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")

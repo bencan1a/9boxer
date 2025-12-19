@@ -4,6 +4,7 @@ from collections import Counter
 from typing import TypedDict
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import get_position_label_by_number
 
 
 class BoxStats(TypedDict):
@@ -25,7 +26,7 @@ class StatisticsService:
             distribution_dict[str(i)] = {
                 "count": 0,
                 "percentage": 0.0,
-                "label": self._get_box_label(i),
+                "label": get_position_label_by_number(i),
             }
 
         # Count employees in each box
@@ -82,22 +83,3 @@ class StatisticsService:
             "by_potential": by_potential,
             "by_job_function": by_job_function,
         }
-
-    def _get_box_label(self, position: int) -> str:
-        """Get label for a grid position."""
-        labels = {
-            9: "Star [H,H]",
-            8: "Growth [M,H]",
-            7: "Enigma [L,H]",
-            6: "High Impact [H,M]",
-            5: "Core Talent [M,M]",
-            4: "Inconsistent [L,M]",
-            3: "Workhorse [H,L]",
-            2: "Effective Pro [M,L]",
-            1: "Underperformer [L,L]",
-        }
-        return labels.get(position, f"Position {position}")
-
-
-# Global statistics service instance
-statistics_service = StatisticsService()

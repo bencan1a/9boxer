@@ -10,6 +10,7 @@ import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
 import { getPositionName, getPositionGuidance } from "../../constants/positionLabels";
+import { logger } from "../../utils/logger";
 
 // Styling constants
 const BOX_HEIGHTS = {
@@ -51,7 +52,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
 }) => {
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
-    console.error(
+    logger.error(
       `GridBox (position ${position}): Cannot be both expanded and collapsed. Using expanded state.`
     );
   }

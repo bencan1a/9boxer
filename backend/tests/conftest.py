@@ -38,16 +38,19 @@ def setup_test_db() -> Generator[None, None, None]:
 
     yield
 
-    # Clear all sessions from session manager AND database
-    from ninebox.services.session_manager import session_manager  # noqa: PLC0415
-    from ninebox.services.database import db_manager  # noqa: PLC0415
+    # Clear all sessions from dependency injection cache and database
+    # This ensures each test starts with clean service instances
+    from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
 
-    # Clear in-memory sessions
-    session_manager.sessions.clear()
+    # Clear the lru_cache to get fresh instances for next test
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
 
-    # Clear database sessions table
+    # Clear database sessions table (using temporary DB manager)
+    from ninebox.services.database import DatabaseManager  # noqa: PLC0415
     try:
-        with db_manager.get_connection() as conn:
+        temp_db = DatabaseManager()
+        with temp_db.get_connection() as conn:
             conn.execute("DELETE FROM sessions")
     except Exception:
         # Ignore errors during cleanup

@@ -5,6 +5,7 @@ from datetime import datetime
 import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 from ninebox.services.session_manager import SessionManager
 
 
@@ -242,9 +243,7 @@ def test_delete_session_when_not_exists_then_returns_false(session_manager: Sess
     assert result is False
 
 
-def test_position_calculation_when_all_9_grid_positions_then_correct(
-    session_manager: SessionManager,
-) -> None:
+def test_position_calculation_when_all_9_grid_positions_then_correct() -> None:
     """Test position calculation for all 9 grid positions.
 
     Standard 9-box grid layout:
@@ -252,24 +251,22 @@ def test_position_calculation_when_all_9_grid_positions_then_correct(
         Potential (rows): Low=1-3, Medium=4-6, High=7-9
     """
     # Low performance (column 1)
-    assert session_manager._calculate_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
-    assert session_manager._calculate_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
-    assert session_manager._calculate_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.LOW) == 1
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == 4
+    assert calculate_grid_position(PerformanceLevel.LOW, PotentialLevel.HIGH) == 7
 
     # Medium performance (column 2)
-    assert session_manager._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
-    assert session_manager._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
-    assert session_manager._calculate_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == 2
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == 5
+    assert calculate_grid_position(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == 8
 
     # High performance (column 3)
-    assert session_manager._calculate_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
-    assert session_manager._calculate_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
-    assert session_manager._calculate_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.LOW) == 3
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == 6
+    assert calculate_grid_position(PerformanceLevel.HIGH, PotentialLevel.HIGH) == 9
 
 
-def test_position_label_generation_when_all_combinations_then_correct(
-    session_manager: SessionManager,
-) -> None:
+def test_position_label_generation_when_all_combinations_then_correct() -> None:
     """Test position label generation for all combinations."""
     labels = {
         (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
@@ -284,7 +281,7 @@ def test_position_label_generation_when_all_combinations_then_correct(
     }
 
     for (perf, pot), expected_label in labels.items():
-        assert session_manager._get_position_label(perf, pot) == expected_label
+        assert get_position_label(perf, pot) == expected_label
 
 
 def test_create_session_when_called_then_deep_copies_employees(

@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 from ninebox.models.session import EmployeeMove, SessionState
 from ninebox.services.database import db_manager
 from ninebox.services.excel_parser import JobFunctionConfig
@@ -125,7 +126,7 @@ class SessionManager:
         )
 
         # Calculate new position
-        new_position = self._calculate_position(new_performance, new_potential)
+        new_position = calculate_grid_position(new_performance, new_potential)
         now = datetime.utcnow()
 
         # Find existing change entry for this employee (one entry per employee)
@@ -158,7 +159,7 @@ class SessionManager:
         employee.performance = new_performance
         employee.potential = new_potential
         employee.grid_position = new_position
-        employee.position_label = self._get_position_label(new_performance, new_potential)
+        employee.position_label = get_position_label(new_performance, new_potential)
         employee.last_modified = now
 
         # Check if employee is back to original position - if so, remove from changes
@@ -208,45 +209,6 @@ class SessionManager:
         self._persist_session(session)
         return change_entry
 
-    def _calculate_position(self, perf: PerformanceLevel, pot: PotentialLevel) -> int:
-        """Calculate 1-9 grid position from performance/potential.
-
-        Grid layout (standard 9-box):
-            Performance (columns): Low=1, Medium=2, High=3
-            Potential (rows): Low=1-3, Medium=4-6, High=7-9
-
-            Position = (potential_row * 3) + performance_column
-
-            Example: High Performance (3), Low Potential (0*3) = position 3
-        """
-        # Performance determines column (1-3)
-        perf_map = {
-            PerformanceLevel.LOW: 1,
-            PerformanceLevel.MEDIUM: 2,
-            PerformanceLevel.HIGH: 3,
-        }
-        # Potential determines row (0, 3, 6)
-        pot_map = {
-            PotentialLevel.LOW: 0,
-            PotentialLevel.MEDIUM: 3,
-            PotentialLevel.HIGH: 6,
-        }
-        return pot_map[pot] + perf_map[perf]
-
-    def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
-        """Get position label from performance/potential."""
-        labels = {
-            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
-            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
-            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
-            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
-            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
-            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
-        }
-        return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")
 
     def _restore_sessions(self) -> None:
         """Restore sessions from database on startup.
@@ -367,7 +329,3 @@ class SessionManager:
         except Exception as e:
             logger.error(f"Unexpected error deleting session for user {user_id}: {e}")
             # Don't raise - session is already deleted from memory
-
-
-# Global session manager instance
-session_manager = SessionManager()

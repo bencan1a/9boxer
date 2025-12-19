@@ -223,6 +223,20 @@ def test_move_employee_when_called_then_tracks_change(
     assert data["change"]["new_potential"] == "Low"
 
 
+def test_get_employees_when_invalid_exclude_ids_then_returns_400(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test that invalid exclude_ids returns 400 (not 500)."""
+    response = test_client.get(
+        "/api/employees?exclude_ids=1,invalid,3", headers=session_with_data
+    )
+
+    assert response.status_code == 400
+    data = response.json()
+    assert "Invalid employee ID" in data["detail"]
+    assert "must be comma-separated integers" in data["detail"]
+
+
 # NOTE: test_get_employees_when_no_auth_then_returns_401 removed
 # This app is local-only without authentication
 

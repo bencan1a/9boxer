@@ -8,9 +8,10 @@ import openpyxl
 import pytest
 from fastapi.testclient import TestClient
 
+from ninebox.core.dependencies import get_db_manager, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
-from ninebox.services.database import db_manager
-from ninebox.services.session_manager import SessionManager, session_manager
+from ninebox.services.database import DatabaseManager
+from ninebox.services.session_manager import SessionManager
 
 
 class TestEndToEndPersistence:
@@ -81,7 +82,8 @@ class TestEndToEndPersistence:
         assert status_before["changes_count"] == 3
 
         # Step 4: Simulate backend restart
-        session_manager.sessions.clear()
+        # Clear the dependency cache to force new instance creation
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         # Step 5: Verify all changes persisted after restart
@@ -110,8 +112,10 @@ class TestEndToEndPersistence:
             assert change.notes == expected_notes
 
         # Step 6: Export to Excel and verify changes reflected
-        # Manually set session_manager's sessions to restored session for export
-        session_manager.sessions = new_manager.sessions
+        # The new_manager already has the sessions loaded from DB
+        # Use dependency injection to override the session manager for this test
+        # Since we're using test_client which has its own app instance,
+        # the export should work with the persisted data
 
         response = test_client.post("/api/session/export")
         assert response.status_code == 200
@@ -167,7 +171,8 @@ class TestEndToEndPersistence:
             test_client.post("/api/session/upload", files=files)
 
         # Verify database state after upload
-        with db_manager.get_connection() as conn:
+        db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT * FROM sessions")
             rows = cursor.fetchall()
             assert len(rows) == 1
@@ -193,7 +198,7 @@ class TestEndToEndPersistence:
         )
 
         # Verify database updated after move
-        with db_manager.get_connection() as conn:
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT changes, updated_at FROM sessions")
             row = cursor.fetchone()
             import json
@@ -206,7 +211,7 @@ class TestEndToEndPersistence:
         test_client.delete("/api/session/clear")
 
         # Verify database cleaned up
-        with db_manager.get_connection() as conn:
+        with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             count = cursor.fetchone()[0]
             assert count == 0
@@ -249,7 +254,7 @@ class TestEndToEndPersistence:
         )
 
         # Simulate restart
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
         new_manager = SessionManager()
 
         restored_session = list(new_manager.sessions.values())[0]
@@ -367,7 +372,7 @@ class TestPerformanceBenchmarks:
         assert response.json()["employee_count"] == 100
 
         # Measure restore time
-        session_manager.sessions.clear()
+        get_session_manager.cache_clear()
 
         start_time = time.perf_counter()
         new_manager = SessionManager()

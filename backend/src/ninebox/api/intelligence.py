@@ -3,9 +3,11 @@
 import logging
 from typing import TypedDict
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from ninebox.services.session_manager import session_manager
+from ninebox.core.dependencies import get_session_manager
+from ninebox.services.intelligence_service import calculate_overall_intelligence
+from ninebox.services.session_manager import SessionManager
 
 router = APIRouter(prefix="/intelligence", tags=["intelligence"])
 
@@ -46,7 +48,9 @@ class IntelligenceResponse(TypedDict):
 
 
 @router.get("", response_model=None)
-async def get_intelligence() -> IntelligenceResponse:
+async def get_intelligence(
+    session_mgr: SessionManager = Depends(get_session_manager),
+) -> IntelligenceResponse:
     """
     Get statistical intelligence analysis for the full dataset.
 
@@ -61,72 +65,17 @@ async def get_intelligence() -> IntelligenceResponse:
         HTTPException: 500 if intelligence calculation fails
     """
     # Get session
-    session = session_manager.get_session(LOCAL_USER_ID)
+    session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
         # Log diagnostic information
         logger = logging.getLogger(__name__)
         logger.error(f"Intelligence: No session found for user_id={LOCAL_USER_ID}")
-        logger.error(f"Active sessions: {list(session_manager.sessions.keys())}")
+        logger.error(f"Active sessions: {list(session_mgr.sessions.keys())}")
 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No active session found. Please upload an Excel file first.",
-        )
-
-    # Import intelligence service (will be created by Agent A)
-    try:
-        from ninebox.services.intelligence_service import calculate_overall_intelligence  # noqa: PLC0415, I001
-    except ImportError as e:
-        # Mock response if service not yet available
-        # This allows the API endpoint to be tested independently
-        logger = logging.getLogger(__name__)
-        logger.error(f"Intelligence: Failed to import intelligence_service: {e}")
-        logger.exception("Full traceback:")
-
-        return IntelligenceResponse(
-            quality_score=0,
-            anomaly_count=AnomalyCount(green=0, yellow=0, red=0),
-            location_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            function_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            level_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
-            tenure_analysis=DimensionAnalysis(
-                chi_square=0.0,
-                p_value=1.0,
-                effect_size=0.0,
-                degrees_of_freedom=0,
-                sample_size=0,
-                status="green",
-                deviations=[],
-                interpretation="Service not available",
-            ),
         )
 
     try:

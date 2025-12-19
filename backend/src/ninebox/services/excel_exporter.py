@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 
 import openpyxl
 
-from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import get_position_label
 
 if TYPE_CHECKING:
     from ninebox.models.session import SessionState
@@ -72,8 +73,8 @@ class ExcelExporter:
                 if change.notes:
                     change_notes_map[change.employee_id] = change.notes
                 # Create movement description
-                old_label = self._get_position_label(change.old_performance, change.old_potential)
-                new_label = self._get_position_label(change.new_performance, change.new_potential)
+                old_label = get_position_label(change.old_performance, change.old_potential)
+                new_label = get_position_label(change.new_performance, change.new_potential)
                 change_description_map[change.employee_id] = f"Moved from {old_label} to {new_label}"
 
         # Update rows with modified data
@@ -122,20 +123,6 @@ class ExcelExporter:
         # Save modified workbook
         workbook.save(output_path)
 
-    def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
-        """Get position label from performance/potential."""
-        labels = {
-            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
-            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
-            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
-            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
-            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
-            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
-        }
-        return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")
 
     def _find_column(
         self, sheet: openpyxl.worksheet.worksheet.Worksheet, col_name: str, create: bool = False

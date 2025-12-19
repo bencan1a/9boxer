@@ -5,6 +5,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { logger } from "../../utils/logger";
 
 interface Props {
   children: ReactNode;
@@ -32,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    logger.error('Uncaught error', error, errorInfo);
     this.setState({
       error,
       errorInfo,
