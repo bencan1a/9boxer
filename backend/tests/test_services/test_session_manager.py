@@ -309,3 +309,376 @@ def test_create_session_when_called_then_deep_copies_employees(
     assert session.original_employees[0].performance == PerformanceLevel.HIGH
     # Input list should not be affected
     assert sample_employees[0].performance == PerformanceLevel.HIGH
+
+
+def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that moving same employee twice results in single entry showing net change."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Employee 1 starts at H,H (position 9)
+    # Move 1: H,H -> M,M (position 5)
+    first_change = session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify first change
+    session = session_manager.get_session("user1")
+    assert len(session.changes) == 1
+    assert first_change.old_position == 9  # H,H
+    assert first_change.new_position == 5  # M,M
+
+    # Move 2: M,M -> L,L (position 1)
+    second_change = session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.LOW,
+        new_potential=PotentialLevel.LOW,
+    )
+
+    # Should still be only one entry, showing movement from original to final
+    session = session_manager.get_session("user1")
+    assert len(session.changes) == 1
+    assert second_change.old_position == 9  # Still H,H (original position)
+    assert second_change.new_position == 1  # L,L (final position)
+    assert second_change.old_performance == PerformanceLevel.HIGH
+    assert second_change.old_potential == PotentialLevel.HIGH
+    assert second_change.new_performance == PerformanceLevel.LOW
+    assert second_change.new_potential == PotentialLevel.LOW
+
+
+def test_move_employee_when_moved_back_to_original_then_entry_removed(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that moving employee back to original position removes change entry entirely."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Employee 1 starts at H,H
+    original_performance = sample_employees[0].performance
+    original_potential = sample_employees[0].potential
+
+    # Move away from original
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify change was tracked
+    session = session_manager.get_session("user1")
+    assert len(session.changes) == 1
+    assert session.changes[0].employee_id == 1
+
+    # Move back to original position
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=original_performance,
+        new_potential=original_potential,
+    )
+
+    # Change entry should be completely removed
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.changes) == 0
+    assert session.current_employees[0].modified_in_session is False
+
+
+def test_move_employee_when_multiple_employees_moved_then_tracks_all_changes(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that multiple employees can have change entries tracked simultaneously."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Move three different employees
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.LOW,
+    )
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=2,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.HIGH,
+    )
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=3,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.changes) == 3
+
+    # Verify each employee has exactly one entry
+    employee_ids = {c.employee_id for c in session.changes}
+    assert employee_ids == {1, 2, 3}
+
+
+def test_move_employee_when_moved_multiple_times_then_preserves_original_position(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that multiple moves preserve the original starting position."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Employee 2 starts at M,M (position 5)
+    # Move through several positions
+    session_manager.move_employee(
+        user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.HIGH
+    )
+    session_manager.move_employee(
+        user_id="user1", employee_id=2, new_performance=PerformanceLevel.LOW, new_potential=PotentialLevel.LOW
+    )
+    session_manager.move_employee(
+        user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.MEDIUM
+    )
+
+    # Verify entry always shows original starting position
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.changes) == 1
+    change = session.changes[0]
+    assert change.employee_id == 2
+    assert change.old_position == 5  # Original M,M
+    assert change.old_performance == PerformanceLevel.MEDIUM
+    assert change.old_potential == PotentialLevel.MEDIUM
+    assert change.new_position == 6  # Final H,M
+    assert change.new_performance == PerformanceLevel.HIGH
+    assert change.new_potential == PotentialLevel.MEDIUM
+
+
+def test_update_change_notes_when_valid_employee_then_updates_notes(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test updating notes for an employee with a change entry."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Move employee to create change entry
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify no notes initially
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.changes[0].notes is None
+
+    # Update notes
+    test_notes = "Promoted to team lead due to excellent Q4 performance"
+    updated_change = session_manager.update_change_notes(
+        user_id="user1",
+        employee_id=1,
+        notes=test_notes,
+    )
+
+    # Verify notes were updated
+    assert updated_change.notes == test_notes
+    assert updated_change.employee_id == 1
+
+    # Verify notes persist in session
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.changes[0].notes == test_notes
+
+
+def test_update_change_notes_when_notes_updated_multiple_times_then_overwrites(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that updating notes multiple times overwrites previous value."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Move employee and add initial notes
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+    session_manager.update_change_notes(user_id="user1", employee_id=1, notes="Initial notes")
+
+    # Update notes again
+    final_notes = "Updated notes after review"
+    updated_change = session_manager.update_change_notes(
+        user_id="user1",
+        employee_id=1,
+        notes=final_notes,
+    )
+
+    # Verify only final notes are stored
+    assert updated_change.notes == final_notes
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.changes[0].notes == final_notes
+
+
+def test_update_change_notes_when_no_session_then_raises_error(
+    session_manager: SessionManager,
+) -> None:
+    """Test updating notes without active session raises error."""
+    with pytest.raises(ValueError, match="No active session"):
+        session_manager.update_change_notes(
+            user_id="nonexistent",
+            employee_id=1,
+            notes="Some notes",
+        )
+
+
+def test_update_change_notes_when_no_change_entry_then_raises_error(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test updating notes for employee without change entry raises error."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Don't move employee (no change entry exists)
+    with pytest.raises(ValueError, match="No change entry found for employee 1"):
+        session_manager.update_change_notes(
+            user_id="user1",
+            employee_id=1,
+            notes="Some notes",
+        )
+
+
+def test_update_change_notes_when_employee_moved_back_then_raises_error(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test updating notes after employee moved back to original raises error."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    original_performance = sample_employees[0].performance
+    original_potential = sample_employees[0].potential
+
+    # Move employee away then back
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=original_performance,
+        new_potential=original_potential,
+    )
+
+    # Change entry should be removed, so updating notes should fail
+    with pytest.raises(ValueError, match="No change entry found for employee 1"):
+        session_manager.update_change_notes(
+            user_id="user1",
+            employee_id=1,
+            notes="Some notes",
+        )
+
+
+def test_move_employee_when_notes_exist_then_preserves_notes(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that moving employee again preserves existing notes."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Move employee and add notes
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+    test_notes = "Performance improvement plan completed"
+    session_manager.update_change_notes(user_id="user1", employee_id=1, notes=test_notes)
+
+    # Verify notes were added
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.changes[0].notes == test_notes
+
+    # Move employee again to a different position
+    session_manager.move_employee(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.LOW,
+        new_potential=PotentialLevel.LOW,
+    )
+
+    # Verify notes are still present after second move
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.changes) == 1
+    assert session.changes[0].notes == test_notes
+    # Verify the position was updated but notes preserved
+    assert session.changes[0].new_position == 1  # L,L
+    assert session.changes[0].old_position == 9  # Original H,H

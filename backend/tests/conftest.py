@@ -38,10 +38,20 @@ def setup_test_db() -> Generator[None, None, None]:
 
     yield
 
-    # Clear all sessions from session manager
+    # Clear all sessions from session manager AND database
     from ninebox.services.session_manager import session_manager  # noqa: PLC0415
+    from ninebox.services.database import db_manager  # noqa: PLC0415
 
+    # Clear in-memory sessions
     session_manager.sessions.clear()
+
+    # Clear database sessions table
+    try:
+        with db_manager.get_connection() as conn:
+            conn.execute("DELETE FROM sessions")
+    except Exception:
+        # Ignore errors during cleanup
+        pass
 
 
 @pytest.fixture

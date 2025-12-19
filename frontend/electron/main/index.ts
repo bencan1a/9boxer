@@ -2,11 +2,13 @@ import { app, BrowserWindow, dialog, Menu, ipcMain } from 'electron';
 import { spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import axios from 'axios';
+import { WindowStateManager } from './windowState';
 
 // Global references
 let mainWindow: BrowserWindow | null = null;
 let backendProcess: ChildProcess | null = null;
 let splashWindow: BrowserWindow | null = null;
+let windowStateManager: WindowStateManager | null = null;
 
 // Mode detection
 const isDev = !app.isPackaged;
@@ -337,14 +339,18 @@ function setupIpcHandlers(): void {
  * Loads the frontend via file:// protocol (production) or Vite dev server (development).
  */
 function createWindow(): void {
+  // Initialize window state manager
+  if (!windowStateManager) {
+    windowStateManager = new WindowStateManager();
+  }
+
   // Get icon path based on environment
   const iconPath = app.isPackaged
     ? path.join(process.resourcesPath, 'icon.png')
     : path.join(__dirname, '../../build/icon.png');
 
-  mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
+  // Apply saved window bounds (or use defaults)
+  const windowOptions = windowStateManager.applyBounds({
     minWidth: 1024,
     minHeight: 768,
     title: '9Boxer',
@@ -357,6 +363,11 @@ function createWindow(): void {
     },
     show: false, // Don't show until ready
   });
+
+  mainWindow = new BrowserWindow(windowOptions);
+
+  // Start tracking window state changes
+  windowStateManager.track(mainWindow);
 
   // Load from file system or Vite dev server
   const url = getWindowUrl();
@@ -414,6 +425,12 @@ app.on('ready', async () => {
     mainWindow?.once('ready-to-show', () => {
       console.log('🎉 Main window ready to show');
       closeSplashScreen();
+
+      // Restore maximized state if needed
+      if (mainWindow && windowStateManager) {
+        windowStateManager.restoreMaximizedState(mainWindow);
+      }
+
       mainWindow?.show();
       mainWindow?.focus();
       mainWindow?.moveTop();

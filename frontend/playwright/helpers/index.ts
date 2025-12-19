@@ -6,4 +6,5 @@
  */
 
 export { uploadExcelFile } from './upload';
-export { waitForBackend, checkBackendHealth } from './backend';
+export { waitForBackend, checkBackendHealth, restartBackend, triggerSessionSave } from './backend';
+export { dragEmployeeToPosition } from './dragAndDrop';

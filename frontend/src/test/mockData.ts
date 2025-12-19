@@ -1,4 +1,5 @@
 import { Employee, PerformanceLevel, PotentialLevel } from '../types/employee'
+import { EmployeeMove } from '../types/session'
 
 /**
  * Create a mock employee for testing
@@ -133,3 +134,45 @@ export const mockStatistics = {
     lowPerformers: { positions: [1, 2, 4], count: 1, percentage: 20 },
   },
 }
+
+/**
+ * Mock employee changes for ChangeTrackerTab testing
+ */
+export const mockChanges: EmployeeMove[] = [
+  {
+    employee_id: 1,
+    employee_name: 'Alice Johnson',
+    timestamp: new Date('2024-01-15T10:30:00Z').toISOString(),
+    old_performance: PerformanceLevel.MEDIUM,
+    old_potential: PotentialLevel.HIGH,
+    new_performance: PerformanceLevel.HIGH,
+    new_potential: PotentialLevel.HIGH,
+    old_position: 8,
+    new_position: 9,
+    notes: 'Promoted after successful project delivery',
+  },
+  {
+    employee_id: 2,
+    employee_name: 'Bob Smith',
+    timestamp: new Date('2024-01-15T11:45:00Z').toISOString(),
+    old_performance: PerformanceLevel.LOW,
+    old_potential: PotentialLevel.MEDIUM,
+    new_performance: PerformanceLevel.MEDIUM,
+    new_potential: PotentialLevel.MEDIUM,
+    old_position: 4,
+    new_position: 5,
+    notes: 'Improvement after coaching',
+  },
+  {
+    employee_id: 3,
+    employee_name: 'Carol White',
+    timestamp: new Date('2024-01-15T14:20:00Z').toISOString(),
+    old_performance: PerformanceLevel.HIGH,
+    old_potential: PotentialLevel.MEDIUM,
+    new_performance: PerformanceLevel.HIGH,
+    new_potential: PotentialLevel.HIGH,
+    old_position: 6,
+    new_position: 9,
+    notes: null,
+  },
+]

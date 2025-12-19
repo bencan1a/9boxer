@@ -28,6 +28,7 @@ interface SessionState {
     potential: string
   ) => Promise<void>;
   updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
+  updateChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
   clearError: () => void;
   restoreSession: () => Promise<boolean>;
@@ -149,8 +150,23 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         emp.employee_id === employeeId ? response.employee : emp
       );
 
-      // Add change to history
-      const changes = [...get().changes, response.change];
+      // Update change history based on whether employee is modified
+      let changes = get().changes;
+      if (!response.employee.modified_in_session) {
+        // Employee moved back to original position - remove change entry
+        changes = changes.filter((c) => c.employee_id !== employeeId);
+      } else {
+        // Employee is modified - update or add change entry
+        const existingChangeIndex = changes.findIndex((c) => c.employee_id === employeeId);
+        if (existingChangeIndex >= 0) {
+          // Update existing change entry
+          changes = [...changes];
+          changes[existingChangeIndex] = response.change;
+        } else {
+          // Add new change entry
+          changes = [...changes, response.change];
+        }
+      }
 
       set({
         employees: updatedEmployees,
@@ -196,6 +212,32 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }
   },
 
+  updateChangeNotes: async (employeeId: number, notes: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedChange = await apiClient.updateChangeNotes(employeeId, notes);
+
+      // Update change in history
+      const changes = get().changes.map((change) =>
+        change.employee_id === employeeId ? updatedChange : change
+      );
+
+      set({
+        changes,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail || "Failed to update change notes";
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
+    }
+  },
+
   selectEmployee: (employeeId: number | null) => {
     set({ selectedEmployeeId: employeeId });
   },
@@ -226,7 +268,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             filePath: cachedFilePath,
             employees: employeesResponse.employees,
             originalEmployees: employeesResponse.employees,
-            changes: [],
+            changes: sessionStatus.changes,
             isLoading: false,
             error: null,
           });

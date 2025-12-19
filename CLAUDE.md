@@ -30,6 +30,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 If you see "module not found" errors, the venv is not activated. This is the #1 cause of issues.
 
+## Critical: Windows Reserved Names
+
+**IMPORTANT**: This project is developed on Windows. Avoid creating files with Windows reserved device names.
+
+### Reserved Names to NEVER Use as Filenames
+Windows reserves these names (case-insensitive, with or without extensions):
+- `CON`, `PRN`, `AUX`, `NUL`
+- `COM1` through `COM9`
+- `LPT1` through `LPT9`
+
+**Common Issue: `nul` Files**
+If you see phantom `nul` files that cannot be deleted/moved/renamed:
+- **Cause**: Using `"nul"` as a filename parameter instead of as a device redirect
+- **Symptom**: Zero-byte files appearing in git status but cannot be manipulated in Windows Explorer
+- **Fix**: Run `git clean -fd` to remove them
+
+### Proper Null Device Usage
+
+**In Python code:**
+```python
+import os
+import subprocess
+
+# ✅ CORRECT - Cross-platform null device
+with open(os.devnull, 'w') as devnull:
+    subprocess.run(['command'], stdout=devnull, stderr=devnull)
+
+# ❌ WRONG - Creates phantom file on Windows
+with open('nul', 'w') as f:
+    f.write('data')
+```
+
+**In shell commands:**
+```bash
+# ✅ CORRECT - Proper redirect syntax
+command 2>nul          # Windows (stderr to null)
+command >nul 2>&1      # Windows (stdout and stderr to null)
+command 2>/dev/null    # Unix (stderr to null)
+
+# ❌ WRONG - Treats nul as filename
+command > "nul"        # Creates file
+echo data > nul        # Creates file
+```
+
+**In Bash tool usage:**
+- Never use `nul` as a command or filename parameter
+- Always use proper shell redirect syntax (`>nul`, `2>nul`)
+- For cross-platform scripts, use conditional logic or `os.devnull`
+
 ## Project Structure
 
 This is a consolidated monorepo for a standalone Electron desktop application:
@@ -342,7 +391,14 @@ test.describe('Employee Upload Flow', () => {
 - Use factory functions for variations on test data
 - Keep test data realistic and representative
 
-See `agent-projects/test-automation-investment/test-principles.md` for comprehensive testing principles and best practices.
+**Comprehensive Testing Documentation:**
+- **`docs/testing/`** - Complete testing guides and templates
+  - `test-principles.md` - Core testing philosophy and best practices
+  - `quick-reference.md` - Fast lookup for common patterns and commands
+  - `testing-checklist.md` - Pre-commit testing checklist
+  - `templates/` - Test templates for backend, component, and E2E tests
+
+See `docs/testing/` for comprehensive testing principles and best practices.
 
 ### CI/CD Pipeline
 GitHub Actions workflows in `.github/workflows/`:
@@ -453,4 +509,9 @@ For unavoidable warnings:
 - **`docs/CONTEXT.md`** - Main documentation context for AI agents
 - **`docs/facts.json`** - Stable project truths (highest authority)
 - **`pyproject.toml`** - All tool configurations and dependencies
-- **`.github/agents/test.md`** - Comprehensive testing guidance
+- **`.github/agents/test.md`** - Backend testing strategies (agent profile)
+- **`docs/testing/`** - Comprehensive testing documentation
+  - `test-principles.md` - Testing philosophy and best practices
+  - `quick-reference.md` - Quick lookup for testing patterns
+  - `testing-checklist.md` - Pre-commit testing checklist
+  - `templates/` - Test templates for all test types

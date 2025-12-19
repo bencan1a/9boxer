@@ -9,6 +9,7 @@ A simple guide to using the 9Boxer desktop application for talent management.
 - [Uploading Employee Data](#uploading-employee-data)
 - [Understanding the 9-Box Grid](#understanding-the-9-box-grid)
 - [Working with Employees](#working-with-employees)
+- [Tracking Changes and Adding Notes](#tracking-changes-and-adding-notes)
 - [Filtering and Exclusions](#filtering-and-exclusions)
 - [Viewing Statistics and Intelligence](#viewing-statistics-and-intelligence)
 - [Exporting Your Changes](#exporting-your-changes)
@@ -75,8 +76,9 @@ The employee count updates to show how many are currently displayed.
 
 ### 4. View Insights (30 seconds)
 
-**Click any employee** to open the right panel with three tabs:
+**Click any employee** to open the right panel with four tabs:
 - **Details** - Employee info and movement history
+- **Changes** - Track all employee movements with notes on why changes were made
 - **Statistics** - Distribution charts showing your talent spread
 - **Intelligence** - Advanced analytics identifying patterns and anomalies
 
@@ -237,7 +239,7 @@ POT.      Problem         Performer       Performer
 
 ### Viewing Employee Details
 
-**Click on any employee tile** to open the right panel with three tabs:
+**Click on any employee tile** to open the right panel with four tabs:
 
 **Details Tab:**
 - Employee name and ID
@@ -245,6 +247,11 @@ POT.      Problem         Performer       Performer
 - Job level, profile, and manager
 - Organizational chain hierarchy
 - **Timeline** - Complete history of all position changes with timestamps
+
+**Changes Tab:**
+- Track all employee movements across the 9-box grid
+- Add notes explaining why each change was made
+- Notes are included when you export to Excel (see [Tracking Changes](#tracking-changes-and-adding-notes))
 
 **Statistics Tab:**
 - Distribution data for all employees (see [Viewing Statistics](#viewing-statistics-and-intelligence))
@@ -277,6 +284,117 @@ POT.      Problem         Performer       Performer
 - Selected employee details appear in the right panel
 - Click another employee to change selection
 - Click outside the grid to deselect
+
+---
+
+## Tracking Changes and Adding Notes
+
+The **Changes** tab provides a comprehensive tracking system for all employee movements with the ability to add notes explaining your decisions.
+
+### Accessing the Change Tracker
+
+1. **Click the "Changes" tab** in the right panel (second tab after Details)
+2. The change tracker displays a table of all employee movements
+3. Each row shows one employee who has been moved from their original position
+
+### Understanding the Change Tracker Table
+
+The table has three columns:
+
+**Employee:**
+- Shows the employee's full name
+- Helps you quickly identify who has been moved
+
+**Movement:**
+- Visual display showing: "From Position → To Position"
+- Uses color-coded chips to show the transition
+- Position labels (e.g., "Core Performer [M,M]" → "Star [H,H]")
+- Arrow icon between positions for clarity
+
+**Notes:**
+- Editable text field for each employee
+- Document the rationale for the change
+- Preserved across sessions and included in Excel export
+
+### How the Change Tracker Works
+
+**Automatic Tracking:**
+- When you drag an employee to a new box, an entry is automatically added to the change tracker
+- Each employee appears only once in the tracker showing their net change from original position
+- If you move an employee multiple times, the tracker updates to show the overall change (from original to current)
+
+**Automatic Removal:**
+- If you move an employee back to their original position, the entry is automatically removed from the tracker
+- This keeps the tracker clean, showing only employees who are actually in modified positions
+
+**Persistence:**
+- Changes are saved automatically when you add notes
+- The change tracker persists when you close and reopen the app (as long as you don't clear the session)
+- All changes and notes are preserved until you upload a new file
+
+### Adding Notes to Track Your Rationale
+
+Notes help you document why each change was made, which is valuable for:
+- Calibration meetings and performance discussions
+- Justifying rating changes to management
+- Future reference when reviewing decisions
+- Compliance and audit trails
+
+**To add a note:**
+1. **Click in the Notes field** for the employee
+2. **Type your explanation** (e.g., "Promoted to manager role in Q4, strong leadership")
+3. **Click outside the field or press Tab** to save
+   - Notes save automatically in the background
+   - You can immediately move to the next field without waiting
+4. The note is now saved and will be included in your Excel export
+
+**Note Tips:**
+- Be specific about the reason (promotion, performance improvement, role change, etc.)
+- Keep notes concise but informative
+- Use consistent terminology across your team
+- Notes support multiple lines for longer explanations
+
+### Empty State
+
+If you haven't moved any employees yet, you'll see:
+- An icon and message: "No changes yet"
+- Instruction: "Move employees to track changes here"
+
+This reminds you that the change tracker is ready but waiting for you to make employee movements.
+
+### Use Cases
+
+**Talent Calibration Sessions:**
+1. Move employees during the meeting
+2. Add notes capturing the discussion and consensus
+3. Review the Changes tab to confirm all decisions
+4. Export with notes for the record
+
+**Performance Review Cycles:**
+1. Adjust ratings throughout the review period
+2. Document the reason for each rating change
+3. Reference notes when discussing changes with managers
+4. Include notes in the exported file for HR records
+
+**Succession Planning:**
+1. Identify and move high-potential employees
+2. Note development plans or promotion timelines
+3. Track progress across multiple sessions
+4. Export notes for succession planning documentation
+
+**Audit and Compliance:**
+1. Every movement is tracked with who, what, and when
+2. Add notes explaining the business justification
+3. Export provides complete audit trail
+4. Maintain transparency in talent decisions
+
+### Tips for Effective Change Tracking
+
+1. **Add notes immediately** - Capture your reasoning while it's fresh
+2. **Be specific** - "Completed leadership training, ready for next level" is better than "Good performance"
+3. **Use consistent language** - Adopt standard phrases for common scenarios
+4. **Review before export** - Check the Changes tab to ensure all notes are complete
+5. **Keep it professional** - Notes may be reviewed by others; maintain professionalism
 
 ---
 
@@ -471,10 +589,19 @@ The exported Excel file contains:
 - All employee data from your original file
 - Updated performance ratings (based on grid position)
 - Updated potential ratings (based on grid position)
+- **"9Boxer Change Notes" column** - Contains all notes you added in the Changes tab
+- "Modified in Session" column - Shows "Yes" for employees who were moved
+- "Modification Date" column - Timestamp of when each employee was last moved
 - All original columns preserved (level, manager, chain, etc.)
 - Any additional columns from your original file
 
 Your original file remains completely unchanged.
+
+**About the Notes Column:**
+- A new column called "9Boxer Change Notes" is automatically added to the export
+- Contains the notes you added for each employee in the Changes tab
+- Only employees with notes will have values in this column
+- Perfect for documenting rationale and maintaining audit trails
 
 ### After Export
 
@@ -504,7 +631,8 @@ Your original file remains completely unchanged.
 2. **Use filters strategically** - Focus on one department, level, or manager at a time
 3. **Check the timeline** - Review an employee's movement history before making changes
 4. **Export frequently** - Save your work after major changes (remember: no auto-save!)
-5. **Keep notes separately** - Document why employees were moved for future reference
+5. **Document your decisions** - Add notes in the Changes tab explaining why each employee was moved
+6. **Review the Changes tab** - Before exporting, check the Changes tab to ensure all movements have notes
 
 ### Conducting Performance Reviews
 
@@ -512,8 +640,10 @@ Your original file remains completely unchanged.
 2. **Review under-performers** - Determine who needs improvement plans
 3. **Look for patterns** - Are certain departments or managers consistently higher/lower?
 4. **Calibrate ratings** - Ensure ratings are consistent across teams
-5. **Plan development** - Use the grid to identify training and succession needs
-6. **Check Intelligence** - Review anomalies before finalizing placements
+5. **Document decisions** - Add notes in the Changes tab during the review to capture rationale
+6. **Plan development** - Use the grid to identify training and succession needs
+7. **Check Intelligence** - Review anomalies before finalizing placements
+8. **Review change tracker** - Use the Changes tab to ensure all rating changes are documented
 
 ### Collaboration
 
@@ -646,14 +776,16 @@ Your original file remains completely unchanged.
 9Boxer is a desktop application that helps you:
 - ✓ Visualize employee talent on a 3×3 grid
 - ✓ Easily move employees between boxes via drag-and-drop
+- ✓ Track all changes with the built-in change tracker
+- ✓ Add notes documenting why each change was made
 - ✓ Filter and focus on specific groups
 - ✓ View statistics and advanced intelligence
-- ✓ Export updated ratings back to Excel
+- ✓ Export updated ratings and notes back to Excel
 
 All your data stays local and secure on your computer. Remember to export your changes before closing!
 
 ---
 
-**Version**: 2.0
+**Version**: 2.1
 **Last Updated**: December 2024
 **Questions?** Review this guide or contact your system administrator

@@ -1,0 +1,12 @@
+exclude:
+  - backend/tests
+  - frontend/tests
+  - venv
+  - .venv
+  - node_modules
+
+skips:
+  - B101
+  - B404
+  - B603
+  - B607

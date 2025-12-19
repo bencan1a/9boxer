@@ -161,6 +161,20 @@
     "main_context": "docs/CONTEXT.md",
     "automation": "GitHub Actions + tools/build_context.py"
   },
+  "platform_considerations": {
+    "primary_development_platform": "Windows",
+    "windows_reserved_names": {
+      "forbidden_filenames": ["CON", "PRN", "AUX", "NUL", "COM1-COM9", "LPT1-LPT9"],
+      "note": "These names are reserved by Windows (case-insensitive, with or without extensions)",
+      "common_issue": "Using 'nul' as a filename creates phantom files that cannot be deleted",
+      "fix": "Run 'git clean -fd' to remove phantom reserved-name files",
+      "prevention": {
+        "python": "Use os.devnull instead of 'nul' string literal",
+        "bash": "Use proper redirect syntax (>nul, 2>nul) not quoted 'nul' filenames",
+        "cross_platform": "Use os.devnull for platform-agnostic null device access"
+      }
+    }
+  },
   "key_architectural_decisions": {
     "standalone_executable": "No Python installation required for end users",
     "cross_platform": "Same codebase for Windows, macOS, Linux",

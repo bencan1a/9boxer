@@ -6,7 +6,9 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
+from ninebox.models.session import EmployeeMove
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
 from ninebox.services.session_manager import session_manager
@@ -16,6 +18,12 @@ router = APIRouter(prefix="/session", tags=["session"])
 
 # Constant user ID for local-only app (no authentication)
 LOCAL_USER_ID = "local-user"
+
+
+class UpdateNotesRequest(BaseModel):
+    """Request model for updating change notes."""
+
+    notes: str
 
 
 @router.post("/upload")
@@ -30,14 +38,21 @@ async def upload_file(
             detail="File must be an Excel file (.xlsx or .xls)",
         )
 
-    # Save uploaded file temporarily
-    temp_dir = get_user_data_dir() / "temp"
-    temp_dir.mkdir(parents=True, exist_ok=True)
+    logger = logging.getLogger(__name__)
 
-    temp_file_path = temp_dir / f"{LOCAL_USER_ID}_{file.filename}"
+    # Generate session ID first (needed for unique filename)
+    import uuid
+
+    session_id = str(uuid.uuid4())
+
+    # Save to PERMANENT location (not temp)
+    uploads_dir = get_user_data_dir() / "uploads"
+    uploads_dir.mkdir(parents=True, exist_ok=True)
+
+    permanent_path = uploads_dir / f"{session_id}_{file.filename}"
 
     try:
-        with temp_file_path.open("wb") as buffer:
+        with permanent_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     except Exception as e:
         raise HTTPException(
@@ -46,11 +61,9 @@ async def upload_file(
         ) from e
 
     # Parse Excel file
-    logger = logging.getLogger(__name__)
-
     parser = ExcelParser()
     try:
-        result = parser.parse(str(temp_file_path))
+        result = parser.parse(str(permanent_path))
         employees = result.employees
 
         # Log parsing metadata
@@ -70,8 +83,8 @@ async def upload_file(
             )
 
     except Exception as e:
-        # Clean up temp file on error
-        temp_file_path.unlink(missing_ok=True)
+        # Clean up permanent file on error
+        permanent_path.unlink(missing_ok=True)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to parse Excel file: {e!s}",
@@ -82,14 +95,15 @@ async def upload_file(
         f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}"
     )
 
-    session_id = session_manager.create_session(
+    session_manager.create_session(
         user_id=LOCAL_USER_ID,
         employees=employees,
         filename=file.filename,
-        file_path=str(temp_file_path),
+        file_path=str(permanent_path),
         sheet_name=result.metadata.sheet_name,
         sheet_index=result.metadata.sheet_index,
         job_function_config=result.metadata.job_function_config,
+        session_id=session_id,
     )
 
     session = session_manager.get_session(LOCAL_USER_ID)
@@ -121,6 +135,7 @@ async def get_session_status() -> dict:
         "active": True,
         "employee_count": len(session.current_employees),
         "changes_count": len(session.changes),
+        "changes": session.changes,
         "uploaded_filename": session.original_filename,
         "created_at": session.created_at.isoformat(),
     }
@@ -129,15 +144,35 @@ async def get_session_status() -> dict:
 @router.delete("/clear")
 async def clear_session() -> dict:
     """Clear current session."""
+    import gc
+    import time
+
     session = session_manager.get_session(LOCAL_USER_ID)
 
     if session:
-        # Clean up temp file
-        temp_file = Path(session.original_file_path)
-        temp_file.unlink(missing_ok=True)
-
-        # Delete session
+        # Delete session first
         session_manager.delete_session(LOCAL_USER_ID)
+
+        # Force garbage collection to release file handles (important on Windows)
+        gc.collect()
+
+        # Clean up uploaded file from permanent location
+        uploaded_file = Path(session.original_file_path)
+
+        # Retry deletion with small delays (handles file locking on Windows)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                uploaded_file.unlink(missing_ok=True)
+                break
+            except PermissionError:
+                if attempt < max_retries - 1:
+                    time.sleep(0.1)  # Wait 100ms before retry
+                else:
+                    # Log error but don't fail the request
+                    logging.getLogger(__name__).warning(
+                        f"Could not delete file {uploaded_file} after {max_retries} attempts"
+                    )
 
     return {"success": True}
 
@@ -168,6 +203,7 @@ async def export_session() -> FileResponse:
             employees=session.current_employees,
             output_path=str(output_path),
             sheet_index=session.sheet_index,
+            session=session,
         )
     except Exception as e:
         raise HTTPException(
@@ -181,3 +217,20 @@ async def export_session() -> FileResponse:
         filename=output_filename,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
+
+
+@router.patch("/changes/{employee_id}/notes")
+async def update_change_notes(
+    employee_id: int,
+    request: UpdateNotesRequest,
+) -> EmployeeMove:
+    """Update notes for an employee's change entry."""
+    try:
+        updated_change = session_manager.update_change_notes(
+            user_id=LOCAL_USER_ID,
+            employee_id=employee_id,
+            notes=request.notes,
+        )
+        return updated_change
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
