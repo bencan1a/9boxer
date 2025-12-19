@@ -233,5 +233,13 @@ frontend/release/
 *.AppImage
 *.deb
 *.rpm
+
+
 .claude/settings.local.json
 .vscode/settings.json
+frontend/playwright-report/
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright-report/index.html
+.claude/settings.local.json
