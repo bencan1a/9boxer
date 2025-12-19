@@ -64,7 +64,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   // Quick filter functions
   const excludeVPs = () => {
     const vpIds = employees
-      .filter((emp) => emp.job_level.includes("MT6"))
+      .filter((emp) =>
+        emp.job_level.includes("MT6") ||
+        emp.job_level.toLowerCase().includes("vp") ||
+        emp.job_level.toLowerCase().includes("vice president")
+      )
       .map((emp) => emp.employee_id);
     setSelectedIds(vpIds);
   };
@@ -73,7 +77,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
     const directorPlusIds = employees
       .filter(
         (emp) =>
-          emp.job_level.includes("MT5") || emp.job_level.includes("MT6")
+          emp.job_level.includes("MT5") ||
+          emp.job_level.includes("MT6") ||
+          emp.job_level.toLowerCase().includes("director") ||
+          emp.job_level.toLowerCase().includes("vp") ||
+          emp.job_level.toLowerCase().includes("vice president")
       )
       .map((emp) => emp.employee_id);
     setSelectedIds(directorPlusIds);
@@ -83,7 +91,10 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
     const managerIds = employees
       .filter(
         (emp) =>
-          emp.job_level.includes("MT2") || emp.job_level.includes("MT4")
+          emp.job_level.includes("MT2") ||
+          emp.job_level.includes("MT4") ||
+          emp.job_level.toLowerCase().includes("manager") ||
+          emp.job_level.toLowerCase() === "mgr"
       )
       .map((emp) => emp.employee_id);
     setSelectedIds(managerIds);
@@ -141,7 +152,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth data-testid="exclusion-dialog">
       {/* Header */}
       <DialogTitle>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -160,10 +171,10 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
           Quick Filters
         </Typography>
         <ButtonGroup variant="outlined" size="small" sx={{ mb: 2, flexWrap: "wrap" }}>
-          <Button onClick={excludeVPs}>Exclude VPs</Button>
-          <Button onClick={excludeDirectorsPlus}>Exclude Directors+</Button>
-          <Button onClick={excludeManagers}>Exclude Managers</Button>
-          <Button onClick={clearSelections} color="secondary">
+          <Button onClick={excludeVPs} data-testid="exclude-vps-button">Exclude VPs</Button>
+          <Button onClick={excludeDirectorsPlus} data-testid="exclude-directors-plus-button">Exclude Directors+</Button>
+          <Button onClick={excludeManagers} data-testid="exclude-managers-button">Exclude Managers</Button>
+          <Button onClick={clearSelections} color="secondary" data-testid="clear-selections-button">
             Clear All
           </Button>
         </ButtonGroup>
@@ -218,6 +229,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
                     checked={selectedIds.includes(emp.employee_id)}
                     onChange={() => toggleEmployee(emp.employee_id)}
                     size="small"
+                    data-testid={`exclusion-checkbox-${emp.employee_id}`}
                   />
                 }
                 label={
@@ -237,11 +249,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
 
       {/* Footer */}
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }} data-testid="selected-count">
           {selectedIds.length} selected
         </Typography>
         <Button onClick={handleCancel}>Cancel</Button>
-        <Button variant="contained" onClick={handleApply}>
+        <Button variant="contained" onClick={handleApply} data-testid="apply-exclusions-button">
           Apply Exclusions
         </Button>
       </DialogActions>

@@ -41,8 +41,8 @@ test.describe('Intelligence Analysis Flow', () => {
     // Wait for content to load
     await page.waitForTimeout(500);
 
-    // Verify the tab panel is visible
-    await expect(page.locator('#panel-tabpanel-2')).toBeVisible();
+    // Verify the tab panel is visible (Intelligence is tab index 3)
+    await expect(page.locator('#panel-tabpanel-3')).toBeVisible();
 
     // The intelligence view should show various dimensions of analysis
     // These might include:
@@ -52,7 +52,7 @@ test.describe('Intelligence Analysis Flow', () => {
     // - Potential distribution
 
     // Verify the content area exists and has data
-    const tabPanel = page.locator('#panel-tabpanel-2');
+    const tabPanel = page.locator('#panel-tabpanel-3');
     const childElements = await tabPanel.locator('*').count();
     expect(childElements).toBeGreaterThan(0);
   });

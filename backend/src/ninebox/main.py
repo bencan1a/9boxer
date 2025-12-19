@@ -68,6 +68,9 @@ async def debug_sessions() -> dict:
 
 
 if __name__ == "__main__":
+    import os
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)  # nosec B104  # Intentional for server binding
+    # Allow port to be configured via environment variable (useful for testing)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)  # nosec B104  # Intentional for server binding

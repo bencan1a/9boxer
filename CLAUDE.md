@@ -43,8 +43,15 @@ Windows reserves these names (case-insensitive, with or without extensions):
 **Common Issue: `nul` Files**
 If you see phantom `nul` files that cannot be deleted/moved/renamed:
 - **Cause**: Using `"nul"` as a filename parameter instead of as a device redirect
-- **Symptom**: Zero-byte files appearing in git status but cannot be manipulated in Windows Explorer
-- **Fix**: Run `git clean -fd` to remove them
+- **Symptom**: Zero-byte files appearing in git status but cannot be manipulated in Windows Explorer or git
+- **Fix**: Use PowerShell with device path syntax:
+  ```powershell
+  # From PowerShell (adjust paths as needed)
+  del "\\.\C:\Git_Repos\9boxer\nul"
+  del "\\.\C:\Git_Repos\9boxer\backend\nul"
+  del "\\.\C:\Git_Repos\9boxer\frontend\nul"
+  ```
+  Alternative: `Remove-Item -Path "\\?\C:\full\path\to\nul" -Force`
 
 ### Proper Null Device Usage
 

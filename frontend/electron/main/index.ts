@@ -10,8 +10,8 @@ let backendProcess: ChildProcess | null = null;
 let splashWindow: BrowserWindow | null = null;
 let windowStateManager: WindowStateManager | null = null;
 
-// Mode detection
-const isDev = !app.isPackaged;
+// Mode detection (lazy to avoid accessing app before it's ready)
+const getIsDev = () => !app.isPackaged;
 
 // Backend configuration
 const BACKEND_PORT = 8000;
@@ -76,7 +76,7 @@ function closeSplashScreen(): void {
  * Logs mode information and app paths.
  */
 function setupLogging(): void {
-  if (isDev) {
+  if (getIsDev()) {
     console.log('🔧 Running in DEVELOPMENT mode');
     console.log('📁 App path:', app.getAppPath());
     console.log('📁 User data path:', app.getPath('userData'));
@@ -98,7 +98,7 @@ function logEnvironmentInfo(): void {
   console.log('  Chrome:', process.versions.chrome);
   console.log('  Platform:', process.platform);
   console.log('  Architecture:', process.arch);
-  console.log('  Development:', isDev);
+  console.log('  Development:', getIsDev());
   console.log('  Packaged:', app.isPackaged);
 }
 
@@ -150,12 +150,12 @@ async function startBackend(): Promise<void> {
       APP_DATA_DIR: appDataPath,
       PORT: BACKEND_PORT.toString(),
     },
-    stdio: isDev ? 'inherit' : ['ignore', 'pipe', 'pipe'], // Pipe output in production
+    stdio: getIsDev() ? 'inherit' : ['ignore', 'pipe', 'pipe'], // Pipe output in production
     windowsHide: true, // Hide console window on Windows
   });
 
   // Create log file for backend output (production mode only)
-  if (!isDev && backendProcess.stdout && backendProcess.stderr) {
+  if (!getIsDev() && backendProcess.stdout && backendProcess.stderr) {
     const fs = require('fs');
     const logPath = path.join(appDataPath, 'backend.log');
     const logStream = fs.createWriteStream(logPath, { flags: 'a' });
@@ -203,7 +203,7 @@ async function startBackend(): Promise<void> {
  * Production: Loads from bundled files via file:// protocol
  */
 function getWindowUrl(): string {
-  if (isDev && process.env.VITE_DEV_SERVER_URL) {
+  if (getIsDev() && process.env.VITE_DEV_SERVER_URL) {
     // Development mode: use Vite dev server for hot reload
     const devServerUrl = process.env.VITE_DEV_SERVER_URL;
     console.log('🔥 Using Vite dev server:', devServerUrl);
@@ -380,7 +380,7 @@ function createWindow(): void {
   }
 
   // Open DevTools in development mode only
-  if (isDev) {
+  if (getIsDev()) {
     mainWindow.webContents.openDevTools();
   }
 

@@ -59,7 +59,6 @@ describe('ChangeTrackerTab', () => {
 
     expect(screen.getByText('Employee')).toBeInTheDocument()
     expect(screen.getByText('Movement')).toBeInTheDocument()
-    expect(screen.getByText('Time')).toBeInTheDocument()
     expect(screen.getByText('Notes')).toBeInTheDocument()
   })
 
@@ -82,13 +81,16 @@ describe('ChangeTrackerTab', () => {
     expect(screen.getByText('Star [H,H]')).toBeInTheDocument()
   })
 
-  it('displays timestamp correctly', () => {
+  it('does not display timestamp in UI', () => {
     mockChangesData = [mockChanges[0]]
 
     render(<ChangeTrackerTab />)
 
-    // Our mocked formatDistanceToNow should return "4 hours ago"
-    expect(screen.getByText('4 hours ago')).toBeInTheDocument()
+    // Timestamps are used for sorting but not displayed in UI
+    // Verify the table has the correct columns (Employee, Movement, Notes only)
+    const table = screen.getByTestId('change-tracker-table')
+    expect(table).toBeInTheDocument()
+    expect(screen.queryByText(/hours ago/)).not.toBeInTheDocument()
   })
 
   it('displays existing notes in TextField', () => {

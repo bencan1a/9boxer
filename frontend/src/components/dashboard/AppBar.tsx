@@ -119,6 +119,12 @@ export const AppBar: React.FC = () => {
   const filteredEmployees = applyFilters(employees);
   const displayedCount = filteredEmployees.length;
 
+  // Build employee count label
+  const employeeCountLabel =
+    hasActiveFilters && displayedCount < employees.length
+      ? `${displayedCount} of ${employees.length} employees`
+      : `${employees.length} employees`;
+
   // Check if there are modifications to export
   const hasModifications = changes.length > 0;
 
@@ -143,10 +149,11 @@ export const AppBar: React.FC = () => {
                   sx={{ color: "white", borderColor: "white" }}
                 />
                 <Chip
-                  label={`${displayedCount} of ${employees.length} employees`}
+                  label={employeeCountLabel}
                   color="secondary"
                   size="small"
                   sx={{ color: "white" }}
+                  data-testid="employee-count"
                 />
               </Box>
             )}

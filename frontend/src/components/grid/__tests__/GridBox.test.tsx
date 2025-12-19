@@ -17,7 +17,7 @@ describe('GridBox', () => {
   const defaultProps = {
     position: 9,
     employees: [],
-    shortLabel: 'H,H',
+    shortLabel: '[H,H]',
     onSelectEmployee: mockOnSelectEmployee,
     onExpand: mockOnExpand,
     onCollapse: mockOnCollapse,
@@ -30,7 +30,7 @@ describe('GridBox', () => {
       </DndWrapper>
     )
 
-    expect(screen.getByText('H,H')).toBeInTheDocument()
+    expect(screen.getByText(/Star \[H,H\]/)).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
   })
 
@@ -53,7 +53,7 @@ describe('GridBox', () => {
       </DndWrapper>
     )
 
-    expect(screen.getByText('H,H')).toBeInTheDocument()
+    expect(screen.getByText(/Star \[H,H\]/)).toBeInTheDocument()
     // Badge component is present (MUI Badge may not display 0 by default)
     const badge = container.querySelector('[data-testid="grid-box-9-count"]')
     expect(badge).toBeInTheDocument()
@@ -71,19 +71,17 @@ describe('GridBox', () => {
   })
 
   it('hides count badge when collapsed', () => {
-    render(
+    const { container } = render(
       <DndWrapper>
         <GridBox {...defaultProps} employees={mockEmployees.slice(0, 2)} isCollapsed={true} />
       </DndWrapper>
     )
 
     // Label should still be visible
-    expect(screen.getByText('H,H')).toBeInTheDocument()
-    // Badge should not be visible (check for "2" in badge)
-    const badge = screen.queryByText('2')
-    // The badge might not be rendered or might be in the DOM but hidden via CSS
-    // Since MUI Badge might still render the content, we check for visibility via the short label being present
-    expect(screen.getByText('H,H')).toBeInTheDocument()
+    expect(screen.getByText(/Star \[H,H\]/)).toBeInTheDocument()
+    // Badge should not be rendered when collapsed (check data-testid doesn't exist)
+    const badge = container.querySelector('[data-testid="grid-box-9-count"]')
+    expect(badge).not.toBeInTheDocument()
   })
 
   it('shows expand button when not expanded', () => {
