@@ -51,11 +51,35 @@ jobs:
       - name: Install uv
         run: pip install uv
 
+      - name: Cache pytest
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: ${{ runner.os }}-pytest-${{ hashFiles('backend/tests/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Cache mypy
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-${{ hashFiles('backend/src/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-
+
+      - name: Cache ruff
+        uses: actions/cache@v4
+        with:
+          path: .ruff_cache
+          key: ${{ runner.os }}-ruff-${{ hashFiles('backend/src/**/*.py', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
+
       - name: Install dependencies
         run: uv pip install --system -e '.[dev]'
 
       - name: Run full test suite and enforce coverage threshold
-        run: pytest --cov=src --cov-fail-under=70 --cov-report=xml --cov-report=term --cov-report=html -v
+        run: pytest --cov=backend/src --cov-fail-under=70 --cov-report=xml --cov-report=term --cov-report=html -v
 
       - name: Run security scan
         run: make security-report
@@ -93,6 +117,22 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
+
+      - name: Cache pytest
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: ${{ runner.os }}-pytest-${{ hashFiles('backend/tests/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Cache ruff
+        uses: actions/cache@v4
+        with:
+          path: .ruff_cache
+          key: ${{ runner.os }}-ruff-${{ hashFiles('backend/src/**/*.py', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
 
       - name: Install uv
         run: pip install uv
@@ -141,6 +181,17 @@ jobs:
 
       - name: Install Python dependencies
         run: uv pip install --system -e '.[dev]'
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            C:\Users\runneradmin\AppData\Local\ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install frontend dependencies
         working-directory: frontend
