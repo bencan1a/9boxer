@@ -10,6 +10,54 @@ import re
 from pathlib import Path
 
 
+def _process_lists(lines: list[str]) -> list[str]:  # noqa: PLR0912
+    """
+    Process markdown lists and convert them to HTML.
+
+    Args:
+        lines: List of text lines to process
+
+    Returns:
+        List of HTML lines with lists converted
+
+    Note:
+        This function has many branches due to state machine logic for list parsing.
+        Each branch handles a specific case (unordered list, ordered list, paragraph, etc.).
+    """
+    in_list = False
+    result = []
+    for line in lines:
+        if re.match(r"^- ", line):
+            if not in_list:
+                result.append("<ul>")
+                in_list = True
+            result.append("<li>" + line[2:] + "</li>")
+        elif re.match(r"^\d+\. ", line):
+            if not in_list:
+                result.append("<ol>")
+                in_list = True
+            result.append("<li>" + re.sub(r"^\d+\. ", "", line) + "</li>")
+        else:
+            if in_list:
+                if result and "<ul>" in result[-2:]:
+                    result.append("</ul>")
+                elif result and "<ol>" in result[-2:]:
+                    result.append("</ol>")
+                in_list = False
+            if line.strip():
+                result.append("<p>" + line + "</p>")
+            else:
+                result.append("")
+
+    if in_list:
+        if "<ul>" in result[-2:]:
+            result.append("</ul>")
+        else:
+            result.append("</ol>")
+
+    return result
+
+
 def markdown_to_html(markdown_text: str) -> str:
     """
     Convert markdown text to HTML with basic formatting.
@@ -23,60 +71,30 @@ def markdown_to_html(markdown_text: str) -> str:
     html = markdown_text
 
     # Convert headers
-    html = re.sub(r'^# (.+)$', r'<h1 id="\1">\1</h1>', html, flags=re.MULTILINE)
-    html = re.sub(r'^## (.+)$', r'<h2 id="\1">\1</h2>', html, flags=re.MULTILINE)
-    html = re.sub(r'^### (.+)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-    html = re.sub(r'^#### (.+)$', r'<h4>\1</h4>', html, flags=re.MULTILINE)
+    html = re.sub(r"^# (.+)$", r'<h1 id="\1">\1</h1>', html, flags=re.MULTILINE)
+    html = re.sub(r"^## (.+)$", r'<h2 id="\1">\1</h2>', html, flags=re.MULTILINE)
+    html = re.sub(r"^### (.+)$", r"<h3>\1</h3>", html, flags=re.MULTILINE)
+    html = re.sub(r"^#### (.+)$", r"<h4>\1</h4>", html, flags=re.MULTILINE)
 
     # Convert horizontal rules
-    html = re.sub(r'^---$', r'<hr />', html, flags=re.MULTILINE)
+    html = re.sub(r"^---$", r"<hr />", html, flags=re.MULTILINE)
 
     # Convert bold
-    html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
+    html = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", html)
 
     # Convert code blocks
-    html = re.sub(r'```(\w+)?\n(.*?)```', r'<pre><code>\2</code></pre>', html, flags=re.DOTALL)
+    html = re.sub(r"```(\w+)?\n(.*?)```", r"<pre><code>\2</code></pre>", html, flags=re.DOTALL)
 
     # Convert inline code
-    html = re.sub(r'`([^`]+)`', r'<code>\1</code>', html)
+    html = re.sub(r"`([^`]+)`", r"<code>\1</code>", html)
 
-    # Convert unordered lists
-    lines = html.split('\n')
-    in_list = False
-    result = []
-    for line in lines:
-        if re.match(r'^- ', line):
-            if not in_list:
-                result.append('<ul>')
-                in_list = True
-            result.append('<li>' + line[2:] + '</li>')
-        elif re.match(r'^\d+\. ', line):
-            if not in_list:
-                result.append('<ol>')
-                in_list = True
-            result.append('<li>' + re.sub(r'^\d+\. ', '', line) + '</li>')
-        else:
-            if in_list:
-                if result and '<ul>' in result[-2:]:
-                    result.append('</ul>')
-                elif result and '<ol>' in result[-2:]:
-                    result.append('</ol>')
-                in_list = False
-            if line.strip():
-                result.append('<p>' + line + '</p>')
-            else:
-                result.append('')
-
-    if in_list:
-        if '<ul>' in result[-2:]:
-            result.append('</ul>')
-        else:
-            result.append('</ol>')
-
-    html = '\n'.join(result)
+    # Convert lists by processing lines
+    lines = html.split("\n")
+    result = _process_lists(lines)
+    html = "\n".join(result)
 
     # Clean up multiple consecutive p tags
-    html = re.sub(r'<p>\s*</p>', '', html)
+    html = re.sub(r"<p>\s*</p>", "", html)
 
     return html
 
@@ -241,7 +259,7 @@ def main() -> None:
 
     # Read markdown
     print(f"Reading {md_path}...")
-    with open(md_path, 'r', encoding='utf-8') as f:
+    with md_path.open(encoding="utf-8") as f:
         markdown_content = f.read()
 
     # Convert to HTML
@@ -253,7 +271,7 @@ def main() -> None:
 
     # Write output
     print(f"Writing to {html_path}...")
-    with open(html_path, 'w', encoding='utf-8') as f:
+    with html_path.open("w", encoding="utf-8") as f:
         f.write(full_html)
 
     print(f"[OK] Successfully generated {html_path}")

@@ -88,7 +88,7 @@ def map_source_to_tests(source_files: list[str]) -> set[str]:
 
         # Handle test files themselves - if a test file changes, run that test
         if normalized_path.startswith("backend/tests/"):
-            if source_path.exists() and source_path.stem != "__init__" and source_path.stem != "conftest":
+            if source_path.exists() and source_path.stem not in {"__init__", "conftest"}:
                 test_files.add(normalized_path)
             continue
 
@@ -110,7 +110,9 @@ def map_source_to_tests(source_files: list[str]) -> set[str]:
                 test_name = f"test_{relative_to_ninebox.stem}.py"
 
                 # Map to unit test: backend/tests/unit/<module>/<test_name>
-                unit_test_path = project_root / "backend" / "tests" / "unit" / module_dir / test_name
+                unit_test_path = (
+                    project_root / "backend" / "tests" / "unit" / module_dir / test_name
+                )
                 if unit_test_path.exists():
                     # Store as POSIX path (forward slashes) for consistency
                     test_files.add(unit_test_path.relative_to(project_root).as_posix())
@@ -118,7 +120,9 @@ def map_source_to_tests(source_files: list[str]) -> set[str]:
                 # Also check for integration tests with various naming patterns
                 # Pattern 1: test_<filename>_integration.py (exact match)
                 integration_test_name = f"test_{relative_to_ninebox.stem}_integration.py"
-                integration_test_path = project_root / "backend" / "tests" / "integration" / integration_test_name
+                integration_test_path = (
+                    project_root / "backend" / "tests" / "integration" / integration_test_name
+                )
                 if integration_test_path.exists():
                     test_files.add(integration_test_path.relative_to(project_root).as_posix())
 
@@ -127,11 +131,19 @@ def map_source_to_tests(source_files: list[str]) -> set[str]:
                 base_name = relative_to_ninebox.stem
                 for suffix in ["_service", "_manager", "_handler", "_controller"]:
                     if base_name.endswith(suffix):
-                        base_name = base_name[:-len(suffix)]
+                        base_name = base_name[: -len(suffix)]
                         alternative_integration_name = f"test_{base_name}_integration.py"
-                        alternative_integration_path = project_root / "backend" / "tests" / "integration" / alternative_integration_name
+                        alternative_integration_path = (
+                            project_root
+                            / "backend"
+                            / "tests"
+                            / "integration"
+                            / alternative_integration_name
+                        )
                         if alternative_integration_path.exists():
-                            test_files.add(alternative_integration_path.relative_to(project_root).as_posix())
+                            test_files.add(
+                                alternative_integration_path.relative_to(project_root).as_posix()
+                            )
                         break  # Only strip one suffix
 
             except ValueError:
