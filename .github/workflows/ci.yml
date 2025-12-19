@@ -73,9 +73,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
-      
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
       - name: Cache pre-commit hooks
         uses: actions/cache@v4
         with:
@@ -149,8 +156,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Cache mypy
         uses: actions/cache@v4
@@ -183,15 +197,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
-      
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
       - name: Install uv
         run: pip install uv
-      
+
       - name: Install dependencies
         run: uv pip install --system -e '.[dev]'
-      
+
       - name: Run security scan
         run: make security-report
       
@@ -215,7 +236,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Install dependencies
@@ -246,7 +267,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.13']
     steps:
       - uses: actions/checkout@v4
         with:
@@ -256,7 +277,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Install uv
         run: pip install uv
@@ -279,7 +307,7 @@ jobs:
           pytest backend/tests/unit/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.12'
+        if: matrix.python-version == '3.13'
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
@@ -288,7 +316,7 @@ jobs:
           name: codecov-unit-py${{ matrix.python-version }}
 
       - name: Upload coverage report
-        if: matrix.python-version == '3.12'
+        if: matrix.python-version == '3.13'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-unit-py${{ matrix.python-version }}
@@ -320,11 +348,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Install uv
         run: pip install uv
@@ -333,9 +368,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .pytest_cache
-          key: pytest-cache-${{ runner.os }}-3.12-${{ hashFiles('tests/**/*.py') }}
+          key: pytest-cache-${{ runner.os }}-3.13-${{ hashFiles('tests/**/*.py') }}
           restore-keys: |
-            pytest-cache-${{ runner.os }}-3.12-
+            pytest-cache-${{ runner.os }}-3.13-
             pytest-cache-${{ runner.os }}-
 
       - name: Install dependencies
@@ -387,11 +422,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -423,14 +465,9 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: frontend
-        shell: bash
-        run: |
-          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-            npx playwright install --with-deps chromium
-          else
-            npx playwright install-deps
-          fi
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright E2E smoke tests
         working-directory: frontend
