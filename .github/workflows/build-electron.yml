@@ -1,15 +1,7 @@
 name: Build Electron App
 
 on:
-  push:
-    branches:
-      - main
-      - standalone_app
-  pull_request:
-    branches:
-      - main
-      - standalone_app
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:  # Manual trigger only
 
 jobs:
   build:
@@ -73,12 +65,19 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Generate macOS icon
+        if: matrix.platform == 'macos'
+        working-directory: frontend
+        run: node scripts/generate-icons.cjs < /dev/null || true
+
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'
         working-directory: frontend
         run: |
           npm run build
-          npx tsc -p electron/tsconfig.json
+          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
           npx electron-builder --linux --x64
 
       - name: Build Electron app (Windows)
@@ -86,7 +85,9 @@ jobs:
         working-directory: frontend
         run: |
           npm run build
-          npx tsc -p electron/tsconfig.json
+          if (!(Test-Path "dist/index.html")) { Write-Error "❌ Vite build failed - index.html not found"; exit 1 }
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
           npx electron-builder --win --x64
 
       - name: Build Electron app (macOS)
@@ -94,7 +95,9 @@ jobs:
         working-directory: frontend
         run: |
           npm run build
-          npx tsc -p electron/tsconfig.json
+          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
           npx electron-builder --mac --x64 --arm64
 
       # Upload artifacts
