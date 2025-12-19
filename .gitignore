@@ -13,6 +13,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+# Exception: frontend/build contains source assets (icons)
+!frontend/build/
 develop-eggs/
 dist/
 downloads/
