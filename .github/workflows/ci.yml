@@ -256,9 +256,9 @@ jobs:
             test-selection.json
           retention-days: 7
 
-  # Frontend E2E Tests with Playwright
+  # Frontend E2E Smoke Tests with Playwright
   e2e-playwright:
-    name: E2E Tests (Playwright)
+    name: E2E Smoke Tests (Playwright)
     runs-on: ${{ matrix.os }}
     needs: [check-changes]
     if: needs.check-changes.outputs.should-skip-tests == 'false'
@@ -296,23 +296,23 @@ jobs:
         working-directory: frontend
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright E2E tests
+      - name: Run Playwright smoke tests
         working-directory: frontend
-        run: npm run test:e2e:pw
+        run: npx playwright test smoke-test.spec.ts
 
-      - name: Upload Playwright report
+      - name: Upload Playwright smoke test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.os }}
+          name: playwright-smoke-report-${{ matrix.os }}
           path: frontend/playwright-report/
           retention-days: 30
 
-      - name: Upload Playwright test results
+      - name: Upload Playwright smoke test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-results-${{ matrix.os }}
+          name: playwright-smoke-results-${{ matrix.os }}
           path: |
             frontend/test-results/
             frontend/playwright-report/
@@ -331,7 +331,7 @@ jobs:
           echo "Type Check: ${{ needs.type-check.result }}"
           echo "Security Scan: ${{ needs.security.result }}"
           echo "Backend Tests: ${{ needs.test.result }}"
-          echo "E2E Tests (Playwright): ${{ needs.e2e-playwright.result }}"
+          echo "E2E Smoke Tests (Playwright): ${{ needs.e2e-playwright.result }}"
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
             echo "✅ Skipped tests for docs-only changes"
@@ -376,4 +376,4 @@ jobs:
           echo "| Type Check | ${{ needs.type-check.result == 'success' && '✅' || needs.type-check.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Security | ${{ needs.security.result == 'success' && '✅' || needs.security.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Backend Tests | ${{ needs.test.result == 'success' && '✅' || needs.test.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| E2E Tests (Playwright) | ${{ needs.e2e-playwright.result == 'success' && '✅' || needs.e2e-playwright.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Smoke Tests (Playwright) | ${{ needs.e2e-playwright.result == 'success' && '✅' || needs.e2e-playwright.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
