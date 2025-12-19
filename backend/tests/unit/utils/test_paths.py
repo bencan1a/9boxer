@@ -31,11 +31,13 @@ class TestGetResourcePath:
         assert str(result).endswith(os.path.join("backend", "data", "test.txt"))
         assert result.is_absolute()
 
-    def test_get_resource_path_when_frozen_mode_then_uses_meipass(self) -> None:
+    def test_get_resource_path_when_frozen_mode_then_uses_meipass(self, tmp_path: Path) -> None:
         """Test path resolution in PyInstaller frozen mode."""
         # Arrange
         relative_path = "data/test.txt"
-        mock_meipass = Path(r"C:\temp\_MEI12345")
+        # Use tmp_path for platform-agnostic absolute path
+        mock_meipass = tmp_path / "_MEI12345"
+        mock_meipass.mkdir(parents=True, exist_ok=True)
 
         # Act
         with patch.object(sys, "frozen", True, create=True):

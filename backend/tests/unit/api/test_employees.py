@@ -183,6 +183,12 @@ def test_get_filter_options_when_no_session_then_returns_404(
     test_client: TestClient, auth_headers: dict[str, str]
 ) -> None:
     """Test GET /api/employees/filter-options with no session returns 404."""
+    # Explicitly clear any existing session from previous tests
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
+
+    session_mgr = get_session_manager()
+    session_mgr.sessions.clear()
+
     response = test_client.get("/api/employees/filter-options", headers=auth_headers)
 
     assert response.status_code == 404

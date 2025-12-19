@@ -379,7 +379,7 @@ jobs:
       - name: Run integration and e2e tests with coverage
         shell: bash
         run: |
-          pytest backend/tests/integration/ backend/tests/e2e/ backend/tests/test_performance/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
+          pytest backend/tests/integration/ backend/tests/e2e/ backend/tests/performance/ -v -n 0 --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest'
