@@ -1,4 +1,4 @@
-# Contributing to Python Template
+# Contributing to 9Boxer
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
@@ -8,31 +8,41 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 1. **Fork and clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/python-template.git
-   cd python-template
+   git clone https://github.com/yourusername/9boxer.git
+   cd 9boxer
    ```
 
-2. **Set up development environment**:
+2. **Set up Python backend environment** (from project root):
    ```bash
-   make dev
-   # Or manually:
+   python3 -m venv .venv
+   . .venv/bin/activate        # Linux/macOS
+   # or
+   .venv\Scripts\activate      # Windows
+
+   pip install --upgrade pip
    pip install -e '.[dev]'
    pre-commit install
    ```
 
-3. **Create a feature branch**:
+3. **Set up frontend environment**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+4. **Create a feature branch**:
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
-### Using DevContainer
+### Using DevContainer (Optional)
 
-For the best development experience, use the provided devcontainer:
+For cloud-based or containerized development:
 
 1. Open the project in VS Code
 2. Click "Reopen in Container" when prompted
 3. Wait for the container to build and start
-4. All dependencies will be automatically installed
+4. All dependencies (Python backend + Node.js frontend) will be automatically installed
 
 ## 📝 Contribution Guidelines
 
