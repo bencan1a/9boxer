@@ -17,7 +17,7 @@ class TestSettings:
         config = Settings()
 
         # Assert
-        assert config.app_name == "9-Box Performance Review"
+        assert config.app_name == "9Boxer"
         assert config.app_version == "0.1.0"
         assert config.debug is False
         assert isinstance(config.cors_origins, list)
@@ -94,7 +94,7 @@ class TestSettingsSingleton:
     def test_settings_singleton_when_accessed_then_has_expected_defaults(self) -> None:
         """Test singleton has expected default values."""
         # Assert
-        assert settings.app_name == "9-Box Performance Review"
+        assert settings.app_name == "9Boxer"
         assert settings.app_version == "0.1.0"
         assert isinstance(settings.cors_origins, list)
         assert settings.max_upload_size > 0

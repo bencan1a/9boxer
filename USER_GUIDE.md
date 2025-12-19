@@ -1,113 +1,177 @@
-# 9-Box Performance Review System - User Guide
+# 9Boxer - User Guide
 
-A comprehensive guide to using the 9-Box Performance Review System.
+A simple guide to using the 9Boxer desktop application for talent management.
 
 ## Table of Contents
-- [Getting Started](#getting-started)
-- [Login](#login)
+- [What is 9-Box?](#what-is-9-box)
+- [Installation](#installation)
+- [Quick Tour](#quick-tour)
 - [Uploading Employee Data](#uploading-employee-data)
 - [Understanding the 9-Box Grid](#understanding-the-9-box-grid)
 - [Working with Employees](#working-with-employees)
 - [Filtering and Exclusions](#filtering-and-exclusions)
-- [Viewing Statistics](#viewing-statistics)
+- [Viewing Statistics and Intelligence](#viewing-statistics-and-intelligence)
 - [Exporting Your Changes](#exporting-your-changes)
 - [Tips and Best Practices](#tips-and-best-practices)
+- [Troubleshooting](#troubleshooting)
 
-## Getting Started
+## What is 9-Box?
 
-The 9-Box Performance Review System helps visualize and manage employee talent by plotting them on a grid based on:
-- **Performance** (Current performance in role)
-- **Potential** (Future growth capacity)
+9Boxer helps you visualize and manage employee talent by plotting people on a grid based on:
+- **Performance** - Current performance in their role
+- **Potential** - Future growth capacity
 
-### Accessing the Application
+This desktop application keeps all your data local and secure on your computer.
 
-1. Open your web browser
-2. Navigate to the application URL (e.g., http://localhost:3000)
-3. You'll see the login screen
+## Installation
 
-## Login
+### Installing the Application
 
-### Default Credentials
-- **Username**: `bencan`
-- **Password**: `password`
+1. **Download the installer** for your operating system (Windows, macOS, or Linux)
+2. **Run the installer**
+3. **Windows users**: You may see a security warning that says "Windows protected your PC"
+   - Click "More info"
+   - Click "Run anyway"
+   - This warning appears because the app is not yet signed with a Microsoft certificate
+4. **Follow the installation prompts** to complete setup
+5. **Launch the application** from your desktop or applications folder
 
-### Logging In
-1. Enter your username in the "Username" field
-2. Enter your password in the "Password" field
-3. Click the "Sign In" button
-4. Upon successful login, you'll be redirected to the dashboard
+The application will start with an empty dashboard ready for you to upload your employee data.
 
-### After Login
-- You'll see the main application bar at the top
-- The 9-box grid will be empty until you upload data
-- Buttons available: Upload, Filters, Apply, Logout
+## Quick Tour
+
+Here's a 5-minute overview of what you can do with 9-Box:
+
+### 1. Import Your Data (2 minutes)
+
+**Click the "Upload" button** in the top bar and select your Excel file containing employee data. Your file needs these columns (case-sensitive):
+- `Employee ID` - Unique ID for each person
+- `Worker` - Full name
+- `Performance` - Rating: Low, Medium, or High
+- `Potential` - Rating: Low, Medium, or High
+
+Optional columns like `Job Level - Primary Position`, `Business Title`, `Manager`, and `Organization Name - Level 01` for organizational hierarchy can also be included.
+
+Once uploaded, you'll see employee tiles arranged in a 3×3 grid based on their performance and potential ratings.
+
+### 2. Arrange the Grid (1 minute)
+
+**Drag and drop employees** between boxes to adjust their ratings:
+- Click and hold an employee tile
+- Drag to a different box
+- Release to drop
+- Changed employees turn yellow
+
+The "Apply" button shows how many changes you've made.
+
+### 3. Filter Your View (1 minute)
+
+**Click the "Filters" button** to focus on specific groups:
+- Filter by job level, manager, department, or performance ratings
+- Use "Manage Exclusions" to temporarily hide specific employees
+- Quick filter buttons let you exclude VPs, Directors, or Managers with one click
+
+The employee count updates to show how many are currently displayed.
+
+### 4. View Insights (30 seconds)
+
+**Click any employee** to open the right panel with three tabs:
+- **Details** - Employee info and movement history
+- **Statistics** - Distribution charts showing your talent spread
+- **Intelligence** - Advanced analytics identifying patterns and anomalies
+
+### 5. Export Changes (30 seconds)
+
+**Click the "Apply" button** to save your changes:
+- Downloads a new Excel file named `modified_[original_filename].xlsx`
+- Contains all employees with updated performance/potential ratings
+- Original file remains unchanged
+
+**Important**: Your changes are NOT auto-saved. Always export before closing the application.
+
+---
 
 ## Uploading Employee Data
 
 ### Excel File Requirements
 
-Your Excel file must contain these columns:
-- `employee_id` - Unique identifier for each employee
-- `employee_name` - Full name of the employee
-- `performance` - Performance rating (Low, Medium, High)
-- `potential` - Potential rating (Low, Medium, High)
+Your Excel file must contain these columns (column names are case-sensitive):
 
-Optional columns:
-- `level` - Job level (e.g., IC, Manager, VP)
-- `job_profile` - Job title or role
-- `manager` - Manager's name
-- `chain_level_1`, `chain_level_2`, etc. - Organizational hierarchy
+**Required:**
+- `Employee ID` - Unique identifier for each employee
+- `Worker` - Full name of the employee
+- `Performance` - Performance rating: Low, Medium, or High
+- `Potential` - Potential rating: Low, Medium, or High
+
+**Optional:**
+- `Job Level - Primary Position` - Job level (e.g., IC, Manager, VP, MT2, MT5, MT6)
+- `Business Title` - Job title or function
+- `Job Title` - Alternative job title field
+- `Manager` - Manager's name
+- `Organization Name - Level 01`, `Organization Name - Level 02`, etc. - Organizational hierarchy
+- Any other columns you want to preserve
 
 ### Upload Process
 
-1. **Click "Upload" button** in the top bar
-2. **Select your file**:
-   - Click "Select File" in the dialog
-   - Browse to your Excel file (.xlsx or .xls)
+1. **Click "Upload" button** in the top application bar
+2. **Select your file** using the file picker dialog
+   - Only .xlsx or .xls formats supported
    - File must be less than 10MB
-3. **Upload**:
-   - Click "Upload" button
-   - Wait for the upload to complete
-   - You'll see a success message
-4. **View results**:
-   - The grid will populate with employee tiles
+3. **Wait for upload** to complete
+   - You'll see a success notification
+   - The grid populates with employee tiles
    - Employee count appears in the top bar
 
 ### Upload Errors
 
-Common errors and solutions:
-
 **"Please select an Excel file (.xlsx or .xls)"**
-- Ensure your file has the correct extension
-- Not .csv, .txt, or other formats
+- Your file must be an Excel format, not .csv or .txt
 
 **"File size must be less than 10MB"**
-- Your file is too large
 - Remove unnecessary data or split into multiple files
 
-**"Missing required columns"**
-- Ensure your file has all required columns
-- Check spelling and capitalization
+**"Missing required columns"** or **"No sheet found containing employee data"**
+- Ensure your file has these exact column names: `Employee ID`, `Worker`, `Performance`, `Potential`
+- Column names are case-sensitive and must match exactly
+- Check spelling and capitalization carefully
+
+### Excel File Template
+
+**Minimum format:**
+```
+Employee ID | Worker       | Performance | Potential
+1           | John Doe     | High        | High
+2           | Jane Smith   | Medium      | High
+3           | Bob Johnson  | High        | Medium
+```
+
+**Complete format with optional columns:**
+```
+Employee ID | Worker       | Performance | Potential | Job Level - Primary Position | Business Title | Manager | Organization Name - Level 01
+1           | John Doe     | High        | High      | IC                            | Engineer       | Alice   | Engineering
+2           | Jane Smith   | Medium      | High      | Manager                       | Manager        | Bob     | Sales
+```
+
+---
 
 ## Understanding the 9-Box Grid
 
 ### Grid Layout
 
-The grid is organized as a 3x3 matrix:
+The grid is organized as a 3×3 matrix:
 
 ```
-           LOW          MEDIUM          HIGH
-        PERFORMANCE   PERFORMANCE   PERFORMANCE
+              LOW            MEDIUM          HIGH
+          PERFORMANCE     PERFORMANCE    PERFORMANCE
 
-HIGH    Enigma/       High           Stars
-POT.    Question      Potential      (Top Talent)
-        Mark
+HIGH      Enigma/         High            Stars
+POT.      Question Mark   Potential       (Top Talent)
 
-MED.    Under-        Core           High
-POT.    Performer     Performer      Performer
+MED.      Under-          Core            High
+POT.      Performer       Performer       Performer
 
-LOW     Too New to    Solid          Strong
-POT.    Rate/Problem  Performer      Performer
+LOW       Too New/        Solid           Strong
+POT.      Problem         Performer       Performer
 ```
 
 ### Box Categories
@@ -115,361 +179,481 @@ POT.    Rate/Problem  Performer      Performer
 **Stars (High Performance, High Potential)**
 - Top performers ready for bigger roles
 - Succession planning candidates
-- Retention priorities
+- Highest retention priority
 
 **High Potential (Medium Performance, High Potential)**
-- Future leaders
-- Need development and experience
+- Future leaders in development
+- Need more experience
 - Fast-track candidates
 
 **High Performer (High Performance, Medium Potential)**
 - Excellent in current role
 - May not want advancement
-- Key contributors
+- Critical contributors
 
 **Core Performer (Medium Performance, Medium Potential)**
 - Solid, reliable employees
-- Meet expectations
-- Backbone of organization
+- Meet expectations consistently
+- Backbone of the organization
 
-**And so on...**
+**Solid Performer (Low Performance, Medium Potential)**
+- Reliable workers
+- Steady contributors
+- Lower growth trajectory
+
+**Strong Performer (High Performance, Low Potential)**
+- Excel in current role
+- Limited advancement desire or capacity
+- Valuable individual contributors
+
+**Under-Performer (Low Performance, Low Potential)**
+- Performance improvement needed
+- May require action plans
+- Potential fit issues
+
+**Enigma/Question Mark (High Potential, Low Performance)**
+- High potential but not yet performing
+- May be too new to rate accurately
+- Require close monitoring and support
 
 ### Color Coding
 
-- **Green boxes** (top row): High potential employees
-- **Yellow boxes** (middle row): Medium potential
-- **Orange boxes** (bottom row): Lower potential or new hires
-- **Blue employee tiles**: Default
-- **Yellow highlight**: Modified position (dragged to new box)
+- **Green boxes** (top row) - High potential employees
+- **Yellow boxes** (middle row) - Medium potential
+- **Orange boxes** (bottom row) - Lower potential or new hires
+- **Blue employee tiles** - Default appearance
+- **Yellow highlight** - Employee has been moved (modified)
+
+### Expanding/Collapsing Boxes
+
+- **Click on a box header** to expand it and see more employee details
+- **Click again** or **press ESC** to collapse
+- Expansion state is remembered during your session
+- Useful when a box contains many employees
+
+---
 
 ## Working with Employees
 
 ### Viewing Employee Details
 
-1. **Click on any employee tile**
-2. **Right panel opens** with two tabs:
-   - **Details**: Employee information
-   - **Statistics**: Performance distribution
+**Click on any employee tile** to open the right panel with three tabs:
 
-#### Details Tab Shows:
+**Details Tab:**
 - Employee name and ID
-- Current performance rating
-- Current potential rating
-- Job level
-- Job profile
-- Manager
-- Organizational chain levels
-- **Timeline**: History of all movements
+- Current performance and potential ratings
+- Job level, profile, and manager
+- Organizational chain hierarchy
+- **Timeline** - Complete history of all position changes with timestamps
 
-#### Timeline
-- Shows when employee was moved
-- Displays old and new positions
-- Timestamp for each change
-- Helps track career progression
+**Statistics Tab:**
+- Distribution data for all employees (see [Viewing Statistics](#viewing-statistics-and-intelligence))
+
+**Intelligence Tab:**
+- Advanced analytics and anomaly detection (see [Intelligence Analysis](#intelligence-tab))
 
 ### Moving Employees
 
-#### Drag and Drop
+#### How to Drag and Drop
+
 1. **Click and hold** on an employee tile
-2. **Drag** to the desired box
-3. **Release** to drop
-4. Tile turns **yellow** to indicate change
-5. Badge on "Apply" button shows number of changes
+2. **Drag** to the desired box on the grid
+3. **Release** to drop the employee
+4. The tile turns **yellow** to indicate it's been modified
+5. A badge on the "Apply" button shows your total change count
 
 #### What Happens When You Move
-- Employee's performance and potential ratings update
-- Change is recorded in the timeline
-- Modified indicator (yellow highlight) appears
-- Change count increases in top bar
 
-### Selecting Employees
+- Employee's performance and potential ratings automatically update
+- The change is recorded in the timeline (visible in Details tab)
+- A yellow highlight appears on the modified employee
+- The change counter in the top bar increments
 
-- Click any employee tile to select
-- Selected employee details appear in right panel
-- Click again or click another employee to change selection
-- Click outside to deselect
+**Remember**: Changes are NOT saved until you click "Apply" and export!
+
+### Selecting and Deselecting
+
+- Click any employee tile to select and view details
+- Selected employee details appear in the right panel
+- Click another employee to change selection
+- Click outside the grid to deselect
+
+---
 
 ## Filtering and Exclusions
 
 ### Using Filters
 
-1. **Click "Filters" button** in top bar
-2. **Filter drawer opens** on the right
-3. **Available filters**:
-   - Performance levels
-   - Potential levels
-   - Job levels
-   - Job profiles
-   - Managers
-   - Chain levels
+Filters let you focus on specific groups of employees.
 
-#### Applying Filters
-1. Select checkboxes for criteria you want
-2. Multiple selections are combined (OR logic within category)
-3. Different categories are combined (AND logic between categories)
-4. Click outside or use filters button to close
-5. Grid updates automatically
+**To open filters:**
+1. Click the **"Filters"** button in the top application bar
+2. The filter drawer opens on the right side
 
-#### Filter Indicator
-- Orange dot appears on Filters button when active
-- Employee count shows "X of Y employees"
-- Filtered employees are hidden from grid
+**Available filters:**
+- Performance levels (Low, Medium, High)
+- Potential levels (Low, Medium, High)
+- Job levels (IC, Manager, VP, etc.)
+- Job profiles/functions
+- Managers
+- Organizational chain levels
 
-#### Clearing Filters
+**How filtering works:**
+1. Check the boxes for criteria you want to see
+2. Multiple selections within a category use OR logic (show employees matching ANY)
+3. Different categories use AND logic (show employees matching ALL categories)
+4. Grid updates automatically as you select
+5. Click outside or press the Filters button again to close
+
+**Filter indicators:**
+- Orange dot appears on the Filters button when any filters are active
+- Employee count shows "X of Y employees" (X displayed, Y total)
+- Filtered-out employees are hidden from the grid
+
+**To clear filters:**
 - Uncheck all boxes
-- Or click "Clear All" (if available)
+- Or click "Clear All" if available
 
 ### Employee Exclusions
 
-For temporarily hiding specific employees:
+Exclusions let you temporarily hide specific employees without deleting them.
 
-1. **Click "Filters" button**
-2. **Scroll to bottom** of filter drawer
-3. **Click "Manage Exclusions"**
-4. **Exclusion dialog opens**
+**To manage exclusions:**
+1. Click **"Filters"** button
+2. Scroll to the bottom of the filter drawer
+3. Click **"Manage Exclusions"**
+4. The exclusion dialog opens
 
-#### Exclusion Dialog Features
+**Exclusion dialog has two approaches:**
 
-**All Employees Tab**
-- Shows complete list of employees
-- Search box to find employees
+**Individual Selection:**
+- Complete list of all employees
+- Search box to quickly find people
 - Checkbox next to each name
 - Check to exclude, uncheck to include
 
-**Quick Filters Tab**
-- Pre-defined filter combinations
-- Examples:
-  - "Exclude all Low performers"
-  - "Exclude VPs and above"
-  - "Show only High Potential"
-- One-click application
+**Quick Filter Buttons:**
+- **Exclude VPs** - Hides all VP level employees (MT6)
+- **Exclude Directors+** - Hides Directors and VPs (MT5, MT6)
+- **Exclude Managers** - Hides all manager levels (MT2, MT4)
+- One-click application for common scenarios
 
-#### Using Exclusions
-1. Select employees to exclude
-2. Or use a quick filter
-3. Click "Apply"
-4. Excluded employees disappear from grid
-5. Employee count updates
+**After making selections:**
+1. Click **"Apply"**
+2. Excluded employees disappear from grid
+3. Employee count updates to show "X of Y employees"
 
-#### Managing Exclusions
+**Managing exclusions:**
 - Excluded employees are hidden, not deleted
-- Can be re-included at any time
-- Exclusions persist during session
-- Cleared when you upload new file or logout
+- Can be re-included at any time using the same dialog
+- Exclusions persist during your session
+- Cleared when you upload a new file or restart the application
 
-## Viewing Statistics
+---
+
+## Viewing Statistics and Intelligence
+
+The right panel provides comprehensive data when you click any employee (or none for global view).
+
+### Details Tab
+
+Shows comprehensive employee information:
+- Employee name and ID
+- Current performance and potential ratings
+- Job level, profile, and manager
+- Organizational chain hierarchy (Organization Name - Level 01, Level 02, etc.)
+- **Timeline** - Complete history of all position changes with timestamps
+
+The timeline helps you:
+- Track when each employee was moved
+- See their old and new positions
+- Understand career progression over time
 
 ### Statistics Tab
 
-1. **Select any employee** (or none for global stats)
-2. **Click "Statistics" tab** in right panel
-3. **View distribution data**
+Displays distribution data for your entire workforce.
 
-### What You'll See
+**Distribution Table:**
+- Rows represent Performance levels (High, Medium, Low)
+- Columns represent Potential levels (High, Medium, Low)
+- Each cell shows employee count in that box
+- Percentages show proportion of total workforce
 
-#### Distribution Table
-- Rows: Performance levels (High, Medium, Low)
-- Columns: Potential levels (High, Medium, Low)
-- Numbers in cells: Employee count in each box
-- Percentages: Proportion of total
-
-#### Distribution Chart
+**Distribution Chart:**
 - Visual bar chart representation
-- Each box shows as a colored bar
-- Height represents number of employees
-- Hover for exact numbers
+- Each bar represents one box in the 9-box grid
+- Height indicates number of employees
+- Easy to spot imbalances at a glance
 
-### Interpreting Statistics
+**Interpreting Your Distribution:**
 
-**Ideal Distribution** (rough guideline):
-- 10-15% in top-right (Stars)
-- 15-20% in High Potential boxes
-- 50-60% in Core/Solid Performer boxes
+*Ideal distribution (rough guideline):*
+- 10-15% in Stars (top-right)
+- 15-20% in High Potential boxes (top row)
+- 50-60% in Core/Solid Performer boxes (middle)
 - 10-20% in lower boxes
 
-**Red Flags**:
-- Too many in bottom-left (under-performers)
-- Too few in top rows (succession risk)
-- Skewed heavily to one side
+*Red flags to watch for:*
+- Too many in bottom-left (under-performers) - performance issues
+- Too few in top rows - succession planning risk
+- Heavily skewed to one side - calibration needed
+- Very uneven distribution - potential rating inconsistency
+
+### Intelligence Tab
+
+Advanced statistical analysis that identifies patterns and anomalies in your data.
+
+**Distribution Analysis:**
+- Chi-square statistical test results
+- Identifies statistically significant patterns
+- Overall quality score for your data distribution
+- Helps validate that ratings are properly calibrated
+
+**Anomaly Detection:**
+
+The Intelligence tab highlights unusual distributions across different dimensions:
+- **By Job Level** - Are managers rated differently than ICs?
+- **By Job Profile** - Do certain functions have skewed ratings?
+- **By Manager** - Do some managers rate too high or too low?
+- **By Location** - Are certain offices rated inconsistently?
+
+For each dimension, you'll see:
+- Expected employee count based on overall distribution
+- Actual employee count
+- Deviation highlighting (outliers marked)
+- Potential biases or calibration issues
+
+**How to Use Intelligence:**
+
+1. Click **"Intelligence"** tab in the right panel
+2. Review the overall quality score at the top
+3. Scan for anomalies highlighted in red or yellow
+4. Investigate any significant outliers:
+   - Does one manager rate everyone as "High"?
+   - Does one department have no stars?
+   - Are new hires properly rated as "Too New"?
+5. Use insights to validate or adjust your placements
+6. Re-calibrate ratings across teams if needed
+
+This helps ensure:
+- Fair and consistent ratings across the organization
+- Identification of potential bias
+- Data quality and accuracy
+- Informed succession planning decisions
+
+---
 
 ## Exporting Your Changes
 
 ### When to Export
 
-After you've:
-- Moved employees to correct boxes
-- Reviewed your changes
-- Ready to save modifications
+Export your changes when you:
+- Have moved employees to their correct boxes
+- Want to save your current session
+- Are ready to share updated ratings
+- Need a backup before making more changes
+
+**Critical**: The application does NOT auto-save. You must export to save your work.
 
 ### Export Process
 
-1. **Make changes** by dragging employees
-2. **Check badge** on Apply button (shows change count)
-3. **Click "Apply" button**
-4. **File downloads** automatically
-   - Named: `modified_[original_filename].xlsx`
+1. **Make changes** by dragging employees to different boxes
+2. **Check the badge** on the "Apply" button - it shows how many changes you've made
+3. **Click the "Apply" button**
+4. **File downloads automatically** to your default download folder
+   - File name format: `modified_[original_filename].xlsx`
    - Contains all employees with updated ratings
-   - Preserves all original columns
+   - All original columns are preserved
 
 ### What's in the Export
 
-- All employee data from original file
-- Updated performance ratings
-- Updated potential ratings
-- Original columns preserved
-- New columns (if any) preserved
+The exported Excel file contains:
+- All employee data from your original file
+- Updated performance ratings (based on grid position)
+- Updated potential ratings (based on grid position)
+- All original columns preserved (level, manager, chain, etc.)
+- Any additional columns from your original file
+
+Your original file remains completely unchanged.
 
 ### After Export
 
-- Changes are saved to the file
-- Original file remains unchanged
-- Can continue making more changes
-- Each export creates a new file
+- Changes are now saved to the new file
+- You can continue making more changes in the application
+- Each time you click "Apply", a new file is created
+- Use the exported file as input for your next session
 
 ### Export Errors
 
 **"No modifications to export"**
-- You haven't moved any employees
-- Make at least one change first
+- You haven't moved any employees yet
+- Drag at least one employee to a new box before exporting
 
 **"Export failed"**
-- Check your internet connection
-- Try again
-- Contact support if persistent
+- Check that your download folder isn't full
+- Ensure you have write permissions to the download location
+- Try closing and reopening the application
+
+---
 
 ## Tips and Best Practices
 
 ### General Usage
 
-1. **Review before moving**: Click employee to view details first
-2. **Use filters strategically**: Focus on one group at a time
-3. **Check timeline**: Review employee history before changing
-4. **Save frequently**: Export after major changes
-5. **Document reasons**: Keep notes on why employees were moved
+1. **Review before moving** - Click an employee to view their details and history before adjusting their rating
+2. **Use filters strategically** - Focus on one department, level, or manager at a time
+3. **Check the timeline** - Review an employee's movement history before making changes
+4. **Export frequently** - Save your work after major changes (remember: no auto-save!)
+5. **Keep notes separately** - Document why employees were moved for future reference
 
-### Performance Reviews
+### Conducting Performance Reviews
 
-1. **Start with stars**: Identify top talent first
-2. **Review under-performers**: Action plans needed?
-3. **Look for patterns**: Departments or managers with issues
-4. **Calibrate ratings**: Are ratings consistent across teams?
-5. **Plan development**: Use grid to identify training needs
+1. **Start with stars** - Identify and confirm your top talent first
+2. **Review under-performers** - Determine who needs improvement plans
+3. **Look for patterns** - Are certain departments or managers consistently higher/lower?
+4. **Calibrate ratings** - Ensure ratings are consistent across teams
+5. **Plan development** - Use the grid to identify training and succession needs
+6. **Check Intelligence** - Review anomalies before finalizing placements
 
 ### Collaboration
 
-1. **Share screen**: Review grid with managers
-2. **Discuss movements**: Explain rationale for changes
-3. **Export versions**: Save before/after for comparison
-4. **Keep records**: Export at key milestones
+1. **Share screen** - Review the grid with managers during calibration sessions
+2. **Discuss movements** - Explain your rationale for any changes
+3. **Export versions** - Save before/after files for comparison
+4. **Keep milestone records** - Export at key points (quarterly, annually)
+5. **Use consistent criteria** - Ensure all reviewers use the same performance/potential definitions
 
 ### Data Quality
 
-1. **Verify uploads**: Check employee count after upload
-2. **Update regularly**: Re-upload with latest data
-3. **Clean data**: Fix issues in Excel before upload
-4. **Backup originals**: Keep copy of source file
+1. **Verify uploads** - Check the employee count after upload to ensure all data loaded
+2. **Update regularly** - Re-upload with the latest employee data before each session
+3. **Clean data first** - Fix any data issues in Excel before uploading
+4. **Backup originals** - Keep a copy of your source file
+5. **Validate exports** - Open exported files to verify changes were saved correctly
 
 ### Session Management
 
-1. **One file at a time**: Uploading new file replaces current session
-2. **Session cleared on logout**: Export changes first
-3. **No auto-save**: Must manually export
-4. **Refresh caution**: Changes lost if page refreshed without export
+1. **One file at a time** - Uploading a new file replaces the current session completely
+2. **Export before closing** - All changes are lost if you close without exporting
+3. **No auto-save** - You must manually click "Apply" to save changes
+4. **Restart fresh** - If something seems wrong, restart the app and re-upload
 
-### Security
+### Data Security
 
-1. **Logout when done**: Click Logout button
-2. **Don't share credentials**: Each user should have own account
-3. **Secure downloads**: Exported files contain sensitive data
-4. **Delete old exports**: Clean up downloaded files
+1. **Local processing** - All employee data stays on your computer; nothing is sent to external servers
+2. **Secure storage** - Store exported files in a secure location
+3. **Clean up exports** - Delete old exported files when no longer needed
+4. **Careful sharing** - These files contain sensitive employee performance data
+5. **Access control** - Limit who can access the application and exported files
 
-## Keyboard Shortcuts
-
-Currently no keyboard shortcuts implemented. Future versions may include:
-- Arrow keys to navigate employees
-- Enter to select employee
-- Esc to close dialogs
-- Ctrl+S to export
+---
 
 ## Troubleshooting
 
-### Can't login
-- Check username and password spelling
-- Ensure Caps Lock is off
-- Contact administrator if forgot password
+### Application won't start
+
+- **Check installation** - Ensure the app installed completely without errors
+- **Restart your computer** - Sometimes a restart is needed after installation
+- **Check antivirus** - Security software may be blocking the application
+- **Reinstall** - Uninstall and reinstall the application
 
 ### File won't upload
-- Check file format (.xlsx or .xls)
-- Verify file size (< 10MB)
-- Ensure required columns exist
-- Try different browser
 
-### Employees don't appear
-- Check if filters are active (orange dot)
-- Verify file upload succeeded
-- Refresh page and re-upload
+**Check file format**
+- File must be .xlsx or .xls (not .csv, .txt, or other formats)
+
+**Check file size**
+- File must be less than 10MB
+- If too large, remove unnecessary columns or rows
+
+**Check required columns**
+- Must have these exact names: `Employee ID`, `Worker`, `Performance`, `Potential`
+- Column names are case-sensitive - capitalization must match exactly
+
+**Try a minimal file**
+- Create a test file with just 3 employees to verify upload works
+- If successful, the issue is with your original file data
+
+### Employees don't appear after upload
+
+- **Check filters** - Look for an orange dot on the Filters button indicating active filters
+- **Check exclusions** - Open "Manage Exclusions" to see if employees are hidden
+- **Verify upload** - Did you see a success notification?
+- **Check employee count** - Does the top bar show employees (e.g., "150 employees")?
+- **Restart** - Close and reopen the application, then re-upload
 
 ### Can't drag employees
-- Ensure you clicked and held on tile
-- Try different browser
-- Check if page is fully loaded
+
+- **Click and hold** - Make sure you're clicking and holding (not just clicking)
+- **Wait for load** - Ensure the page is fully loaded before trying to drag
+- **Check the tile** - Make sure you're clicking on the employee tile itself
+- **Restart the app** - Close and reopen if dragging still doesn't work
 
 ### Changes not saving
-- Must click "Apply" to export
-- Check download folder for exported file
-- Verify export completed successfully
+
+- **Click "Apply"** - Changes are NOT saved until you click the Apply button
+- **Check download folder** - The exported file downloads to your default location
+- **Look for the file** - Search for files starting with `modified_`
+- **Check permissions** - Ensure you have write access to your download folder
 
 ### Right panel won't open
-- Click directly on employee tile
-- Ensure employee is not filtered out
-- Try refreshing page
+
+- **Click the tile** - Click directly on an employee tile (not the box background)
+- **Check filters** - Employee might be filtered out
+- **Check selection** - Try clicking a different employee
+- **Restart** - Close and reopen the application
+
+### Performance is slow
+
+- **Large file** - Files with thousands of employees may load slowly
+- **Many changes** - Hundreds of drag-and-drop operations can slow the app
+- **Export and restart** - Export your changes, then restart with the new file
+- **Filter the view** - Use filters to show fewer employees at once
+
+### Grid looks wrong or incomplete
+
+- **Refresh** - Close and reopen the application
+- **Re-upload** - Upload your file again
+- **Check data** - Verify your Excel file has correct performance/potential values
+- **Expand boxes** - Some boxes may be collapsed; click to expand them
+
+---
 
 ## Getting Help
 
 ### In-Application Help
-- Hover over elements for tooltips
-- Error messages provide guidance
-- Success notifications confirm actions
+
+- **Tooltips** - Hover over buttons and elements for helpful tooltips
+- **Error messages** - Read error messages carefully; they usually explain the issue
+- **Success notifications** - Green notifications confirm your actions
 
 ### Additional Resources
-- **README.md**: Technical setup and development
-- **DEPLOYMENT.md**: Installation and configuration
-- **API Documentation**: http://localhost:8000/docs
 
-### Support Contacts
-- Check documentation first
-- Review common errors above
-- Submit issue on GitHub
-- Contact system administrator
+- **README.md** - Technical setup and development information in the project repository
+- Review this guide for detailed explanations
 
-## Appendix: Excel File Template
+### Support
 
-### Minimum Required Format
-
-```
-employee_id | employee_name | performance | potential
-1           | John Doe      | High        | High
-2           | Jane Smith    | Medium      | High
-3           | Bob Johnson   | High        | Medium
-```
-
-### Complete Format
-
-```
-employee_id | employee_name | performance | potential | level | job_profile | manager | chain_level_1 | chain_level_2
-1           | John Doe      | High        | High      | IC    | Engineer    | Alice   | Engineering   | Product
-2           | Jane Smith    | Medium      | High      | Mgr   | Manager     | Bob     | Sales         | Revenue
-```
-
-### Valid Values
-
-**Performance**: Low, Medium, High
-**Potential**: Low, Medium, High
-**Level**: Any text (IC, Manager, VP, etc.)
-**Other columns**: Any text
+1. Review the [Troubleshooting](#troubleshooting) section above
+2. Check that you're following the correct workflow (see [Quick Tour](#quick-tour))
+3. Verify your Excel file meets the requirements (see [Excel File Requirements](#excel-file-requirements))
+4. Submit issues or questions to the project repository
 
 ---
 
-**Version**: 1.0
+## Summary
+
+9Boxer is a desktop application that helps you:
+- ✓ Visualize employee talent on a 3×3 grid
+- ✓ Easily move employees between boxes via drag-and-drop
+- ✓ Filter and focus on specific groups
+- ✓ View statistics and advanced intelligence
+- ✓ Export updated ratings back to Excel
+
+All your data stays local and secure on your computer. Remember to export your changes before closing!
+
+---
+
+**Version**: 2.0
 **Last Updated**: December 2024
-**Questions?** Contact your system administrator
+**Questions?** Review this guide or contact your system administrator

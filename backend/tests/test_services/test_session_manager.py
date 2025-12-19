@@ -272,15 +272,15 @@ def test_position_label_generation_when_all_combinations_then_correct(
 ) -> None:
     """Test position label generation for all combinations."""
     labels = {
-        (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Top Talent [H,H]",
-        (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact Talent [H,M]",
-        (PerformanceLevel.HIGH, PotentialLevel.LOW): "High/Low [H,L]",
-        (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth Talent [M,H]",
+        (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
+        (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
+        (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
+        (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
         (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-        (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Med/Low [M,L]",
-        (PerformanceLevel.LOW, PotentialLevel.HIGH): "Emerging Talent [L,H]",
-        (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent Talent [L,M]",
-        (PerformanceLevel.LOW, PotentialLevel.LOW): "Low/Low [L,L]",
+        (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
+        (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
+        (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
+        (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
     }
 
     for (perf, pot), expected_label in labels.items():

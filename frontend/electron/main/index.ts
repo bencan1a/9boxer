@@ -41,8 +41,8 @@ function getBackendPath(): string {
  */
 function createSplashScreen(): void {
   splashWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
+    width: 500,
+    height: 400,
     transparent: true,
     frame: false,
     alwaysOnTop: true,
@@ -301,6 +301,35 @@ function setupIpcHandlers(): void {
       };
     }
   });
+
+  // Handle opening user guide in default browser
+  ipcMain.handle('app:openUserGuide', async () => {
+    try {
+      const { shell } = require('electron');
+      const userGuidePath = app.isPackaged
+        ? path.join(process.resourcesPath, 'USER_GUIDE.html')
+        : path.join(__dirname, '../../../USER_GUIDE.html');
+
+      console.log('📖 Opening user guide from:', userGuidePath);
+
+      // Check if file exists
+      const fs = require('fs');
+      if (!fs.existsSync(userGuidePath)) {
+        console.error('❌ User guide not found at:', userGuidePath);
+        return { success: false, error: 'User guide file not found' };
+      }
+
+      // Open in default browser
+      await shell.openExternal(`file://${userGuidePath}`);
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to open user guide:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  });
 }
 
 /**
@@ -318,7 +347,7 @@ function createWindow(): void {
     height: 900,
     minWidth: 1024,
     minHeight: 768,
-    title: '9-Box Performance Review',
+    title: '9Boxer',
     icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
@@ -362,7 +391,7 @@ function createWindow(): void {
 // App lifecycle events
 app.on('ready', async () => {
   try {
-    console.log('🚀 Starting 9-Box Performance Review...');
+    console.log('🚀 Starting 9Boxer...');
 
     // Setup logging and environment info
     setupLogging();

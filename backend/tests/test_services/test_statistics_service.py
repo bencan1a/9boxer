@@ -155,15 +155,15 @@ def test_calculate_distribution_when_called_then_includes_box_labels(
 
     dist = {item["grid_position"]: item for item in stats["distribution"]}
 
-    assert dist[9]["position_label"] == "Top Talent [H,H]"
-    assert dist[8]["position_label"] == "High Impact Talent [H,M]"
-    assert dist[7]["position_label"] == "High/Low [H,L]"
-    assert dist[6]["position_label"] == "Growth Talent [M,H]"
+    assert dist[9]["position_label"] == "Star [H,H]"
+    assert dist[6]["position_label"] == "High Impact [H,M]"
+    assert dist[3]["position_label"] == "Workhorse [H,L]"
+    assert dist[8]["position_label"] == "Growth [M,H]"
     assert dist[5]["position_label"] == "Core Talent [M,M]"
-    assert dist[4]["position_label"] == "Med/Low [M,L]"
-    assert dist[3]["position_label"] == "Emerging Talent [L,H]"
-    assert dist[2]["position_label"] == "Inconsistent Talent [L,M]"
-    assert dist[1]["position_label"] == "Low/Low [L,L]"
+    assert dist[2]["position_label"] == "Effective Pro [M,L]"
+    assert dist[7]["position_label"] == "Enigma [L,H]"
+    assert dist[4]["position_label"] == "Inconsistent [L,M]"
+    assert dist[1]["position_label"] == "Underperformer [L,L]"
 
 
 def test_calculate_distribution_when_called_then_includes_total_count(
@@ -214,7 +214,7 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
             performance=PerformanceLevel.HIGH,
             potential=PotentialLevel.HIGH,
             grid_position=9,
-            position_label="Top Talent [H,H]",
+            position_label="Star [H,H]",
             talent_indicator="High",
         )
         for i in range(3)

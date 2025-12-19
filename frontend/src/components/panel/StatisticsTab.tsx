@@ -121,8 +121,8 @@ export const StatisticsTab: React.FC = () => {
       {/* Summary Cards */}
       <Grid container spacing={2}>
         <Grid item xs={4}>
-          <Card variant="outlined">
-            <CardContent>
+          <Card variant="outlined" sx={{ height: "100%" }}>
+            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <Typography variant="h4" color="primary" gutterBottom>
                 {statistics.total_employees}
               </Typography>
@@ -134,8 +134,8 @@ export const StatisticsTab: React.FC = () => {
         </Grid>
 
         <Grid item xs={4}>
-          <Card variant="outlined">
-            <CardContent>
+          <Card variant="outlined" sx={{ height: "100%" }}>
+            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <Typography variant="h4" color="warning.main" gutterBottom>
                 {statistics.modified_employees}
               </Typography>
@@ -147,8 +147,8 @@ export const StatisticsTab: React.FC = () => {
         </Grid>
 
         <Grid item xs={4}>
-          <Card variant="outlined">
-            <CardContent>
+          <Card variant="outlined" sx={{ height: "100%" }}>
+            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <Typography variant="h4" color="success.main" gutterBottom>
                 {statistics.high_performers}
               </Typography>

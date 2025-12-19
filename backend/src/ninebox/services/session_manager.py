@@ -6,6 +6,7 @@ from datetime import datetime
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.session import EmployeeMove, SessionState
+from ninebox.services.excel_parser import JobFunctionConfig
 
 
 class SessionManager:
@@ -23,6 +24,7 @@ class SessionManager:
         file_path: str,
         sheet_name: str,
         sheet_index: int,
+        job_function_config: JobFunctionConfig | None = None,
     ) -> str:
         """Create new session with uploaded data."""
         session_id = str(uuid.uuid4())
@@ -40,6 +42,7 @@ class SessionManager:
             original_file_path=file_path,
             sheet_name=sheet_name,
             sheet_index=sheet_index,
+            job_function_config=job_function_config,
             current_employees=current_employees,
             changes=[],
         )
@@ -144,15 +147,15 @@ class SessionManager:
     def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
         """Get position label from performance/potential."""
         labels = {
-            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Top Talent [H,H]",
-            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact Talent [H,M]",
-            (PerformanceLevel.HIGH, PotentialLevel.LOW): "High/Low [H,L]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth Talent [M,H]",
+            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
+            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
+            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
             (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Med/Low [M,L]",
-            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Emerging Talent [L,H]",
-            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent Talent [L,M]",
-            (PerformanceLevel.LOW, PotentialLevel.LOW): "Low/Low [L,L]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
+            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
+            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
+            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
         }
         return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")
 

@@ -29,6 +29,7 @@ interface ElectronAPI {
     success: boolean;
     error?: string;
   }>;
+  openUserGuide: () => Promise<{ success: boolean; error?: string }>;
 }
 
 // Expose protected methods that allow the renderer process to use
@@ -45,6 +46,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // File system APIs for auto-reload functionality
   readFile: (filePath: string) => ipcRenderer.invoke('file:readFile', filePath),
+
+  // Help & Documentation
+  openUserGuide: () => ipcRenderer.invoke('app:openUserGuide'),
 
   // For future expansion:
   // - System notifications

@@ -4,6 +4,7 @@ This module provides statistical analysis functions to detect anomalous patterns
 in employee rating distributions across various dimensions (location, function, level, tenure).
 """
 
+import logging
 from typing import Any, cast
 
 import numpy as np
@@ -103,10 +104,11 @@ def _get_status(
     significant_devs = [d for d in deviations if d.get("is_significant", False)]
 
     # DEBUG: Log to verify new code is running
-    import logging
     logger = logging.getLogger(__name__)
-    logger.info(f"[NEW CODE] _get_status called: p={p_value:.4f}, effect={effect_size:.3f}, "
-                f"significant_devs={len(significant_devs)}/{len(deviations)}")
+    logger.info(
+        f"[NEW CODE] _get_status called: p={p_value:.4f}, effect={effect_size:.3f}, "
+        f"significant_devs={len(significant_devs)}/{len(deviations)}"
+    )
 
     if significant_devs:
         # We have at least one category with significant deviation (|z| > 2)
@@ -123,9 +125,7 @@ def _get_status(
     # BUT: Check effect size - medium/large effect should still be flagged
     # This catches cases where sample sizes are too small for significant z-scores
     # but the overall pattern shows a meaningful difference
-    if effect_size >= 0.5:  # Large effect
-        return "yellow"
-    elif effect_size >= 0.3:  # Medium effect
+    if effect_size >= 0.5 or effect_size >= 0.3:  # Large effect
         return "yellow"
 
     # No significant deviations and small effect size - check p-value

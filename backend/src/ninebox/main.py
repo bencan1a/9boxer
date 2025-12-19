@@ -5,12 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ninebox.api import employees, intelligence, session, statistics
 from ninebox.core.config import settings
+from ninebox.services.session_manager import session_manager
 
 # Create FastAPI app
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="9-Box Performance Review Application API",
+    description="9Boxer Application API",
 )
 
 # Configure CORS
@@ -49,8 +50,6 @@ async def health_check() -> dict:
 @app.get("/debug/sessions")
 async def debug_sessions() -> dict:
     """Debug endpoint to check active sessions (for development only)."""
-    from ninebox.services.session_manager import session_manager
-
     sessions_info = {}
     for session_key, sess in session_manager.sessions.items():
         sessions_info[session_key] = {

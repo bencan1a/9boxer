@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+**9Boxer is a standalone desktop application** built with Electron that embeds a FastAPI backend bundled with PyInstaller. It visualizes and manages employee performance using the 9-box talent grid methodology.
+
+**Key Architecture Points:**
+- **Deployment**: Standalone Electron desktop app (Windows/macOS/Linux installers)
+- **Frontend**: React 18 + TypeScript + Vite + Material-UI wrapped in Electron
+- **Backend**: FastAPI (Python 3.10+) bundled as executable with PyInstaller
+- **Communication**: Backend runs as subprocess, frontend communicates via HTTP (localhost:8000)
+- **Database**: SQLite stored in user's app data directory
+- **No external dependencies**: Everything bundled, no Python/Node.js installation required for end users
+
+**Legacy Note**: Docker-based web deployment configuration exists but is dormant and not actively maintained. The primary deployment target is the standalone Electron application.
+
 ## Critical: Virtual Environment
 
 **This is a monorepo with backend (Python) and frontend (Node.js).**
@@ -18,7 +32,7 @@ If you see "module not found" errors, the venv is not activated. This is the #1 
 
 ## Project Structure
 
-This is a consolidated monorepo:
+This is a consolidated monorepo for a standalone Electron desktop application:
 
 ```
 9boxer/
@@ -27,13 +41,32 @@ This is a consolidated monorepo:
   backend/            ← FastAPI backend
     src/ninebox/      ← Backend source code
     tests/            ← Backend tests
-    build_config/     ← PyInstaller configuration
-    scripts/          ← Build scripts
+    build_config/     ← PyInstaller configuration (ninebox.spec)
+    scripts/          ← Build scripts (build_executable.sh/bat)
+    dist/ninebox/     ← PyInstaller output (bundled backend executable)
   frontend/           ← React + Electron frontend
     node_modules/     ← Frontend deps (separate from Python)
     src/              ← React components
-    electron/         ← Electron main/preload/renderer
+    electron/         ← Electron wrapper
+      main/index.ts   ← Main process (backend lifecycle, window management)
+      preload/index.ts← IPC bridge (secure contextBridge API)
+      renderer/       ← Splash screen
+    release/          ← Electron Builder output (platform-specific installers)
+  USER_GUIDE.html     ← Bundled user documentation
 ```
+
+**Backend Lifecycle (Electron Integration):**
+1. Electron main process spawns backend executable from `resources/backend/`
+2. Waits for health check at http://localhost:8000/health
+3. Frontend loads and communicates with backend via HTTP
+4. Backend killed when app closes
+
+**Build Outputs:**
+- Backend: `backend/dist/ninebox/` (PyInstaller executable, ~225MB)
+- Frontend: `frontend/release/` (Platform installers, ~300MB each)
+  - Windows: NSIS installer (.exe)
+  - macOS: DMG installer (.dmg)
+  - Linux: AppImage (.AppImage)
 
 ## Common Commands
 
@@ -80,9 +113,37 @@ make fix                       # Auto-fix formatting and linting
 ```bash
 cd frontend
 npm install                    # Install dependencies
-npm run dev                    # Vite dev server
-npm run electron:dev           # Run Electron in dev mode
-npm run electron:build         # Build production installer
+npm run dev                    # Vite dev server (for web development)
+npm run electron:dev           # Run Electron in dev mode (full app)
+npm test                       # Run Vitest component tests
+npm run test:e2e:pw            # Run Playwright E2E tests
+```
+
+### Build Commands (Standalone Application)
+
+**Important**: The backend must be built BEFORE building the frontend/Electron app.
+
+```bash
+# Step 1: Build backend executable (from project root)
+cd backend
+.venv\Scripts\activate         # Windows
+# or
+. .venv/bin/activate           # Linux/macOS
+.\scripts\build_executable.bat # Windows
+# or
+./scripts/build_executable.sh  # Linux/macOS
+
+# Verify backend build
+ls dist/ninebox/               # Should see ninebox.exe or ninebox executable
+
+# Step 2: Build Electron application
+cd ../frontend
+npm run electron:build         # Validates backend exists, then builds
+
+# Output in frontend/release/
+# - Windows: 9Boxer-1.0.0-Windows-x64.exe
+# - macOS: 9Boxer-1.0.0-macOS-x64.dmg
+# - Linux: 9Boxer-1.0.0-Linux-x64.AppImage
 ```
 
 ### Makefile Targets
@@ -171,7 +232,9 @@ See `.github/agents/test.md` for comprehensive testing guidance.
 
 ### Frontend Testing
 
-**Test Frameworks:** Vitest + React Testing Library (component tests), Cypress (E2E tests)
+**Test Frameworks:**
+- **Component Tests:** Vitest + React Testing Library
+- **E2E Tests:** Playwright
 
 **Running Tests:**
 ```bash
@@ -190,12 +253,19 @@ npm run test:coverage
 # Component tests with UI
 npm run test:ui
 
-# E2E tests - open Cypress UI
-npm run cy:open
-
-# E2E tests - run headless
-npm run cy:run
+# E2E tests - Playwright
+npm run test:e2e:pw              # Run all Playwright E2E tests
+npm run test:e2e:pw:ui           # Run with Playwright UI mode
+npm run test:e2e:pw:debug        # Run in debug mode
+npx playwright test upload-flow.spec.ts  # Run specific test file
 ```
+
+**Playwright Features:**
+- Automatically starts both backend (FastAPI) and frontend (Vite) servers
+- No manual server setup required
+- Tests run in isolation with automatic cleanup
+- Superior ARM compatibility and performance
+- All 12 E2E tests passing
 
 **Writing Component Tests:**
 - Test framework: React Testing Library with Vitest
@@ -227,36 +297,48 @@ describe('Button', () => {
 });
 ```
 
-**Writing E2E Tests:**
-- Test framework: Cypress
-- Location: `frontend/cypress/e2e/` with naming pattern `feature-flow.cy.ts`
+**Writing E2E Tests with Playwright:**
+- Test framework: Playwright
+- Location: `frontend/playwright/e2e/` with naming pattern `feature-flow.spec.ts`
+- Helpers: `frontend/playwright/helpers/` (uploadFile, navigation, assertions)
+- Fixtures: `frontend/playwright/fixtures/` (Excel test files)
+- Configuration: `frontend/playwright.config.ts`
 - Test complete user workflows end-to-end
-- Use `cy.visit()` to start at URL, `cy.uploadExcelFile()` for custom commands
-- Use `data-testid` attributes to find elements reliably
+- Use `page.goto()` to navigate, helper functions from `playwright/helpers/`
+- Use `data-testid` attributes for reliable element selection
 - Verify both UI updates and data consistency
-- Use `beforeEach()` for setup common to multiple tests
+- Servers auto-start (no manual setup required)
 
 Example pattern:
 ```typescript
-describe('Employee Upload Flow', () => {
-  beforeEach(() => {
-    cy.visit('/');
-  });
+import { test, expect } from '@playwright/test';
+import { uploadExcelFile } from '../helpers/upload';
 
-  it('allows user to upload Excel file and view employees', () => {
-    // Upload file using custom command
-    cy.uploadExcelFile('sample-employees.xlsx');
+test.describe('Employee Upload Flow', () => {
+  test('allows user to upload Excel file and view employees', async ({ page }) => {
+    await page.goto('/');
+
+    // Upload file using helper function
+    await uploadExcelFile(page, 'sample-employees.xlsx');
 
     // Verify grid displays with employees
-    cy.get('[data-testid="nine-box-grid"]').should('be.visible');
-    cy.get('[data-testid="employee-card"]').should('have.length.greaterThan', 0);
+    await expect(page.getByTestId('nine-box-grid')).toBeVisible();
+    const employeeCards = page.getByTestId('employee-card');
+    await expect(employeeCards).toHaveCount(await employeeCards.count());
   });
 });
 ```
 
+**Playwright Test Files:**
+- `upload-flow.spec.ts` - File upload workflows (3 tests)
+- `employee-movement.spec.ts` - Drag and drop functionality (2 tests)
+- `filter-flow.spec.ts` - Search and filtering (3 tests)
+- `export-flow.spec.ts` - Excel export functionality (2 tests)
+- `intelligence-flow.spec.ts` - AI insights features (2 tests)
+
 **Test Data & Fixtures:**
-- Fixture data located in `frontend/src/test/mockData.ts`
-- E2E fixtures located in `frontend/cypress/fixtures/`
+- Component test mock data: `frontend/src/test/mockData.ts`
+- E2E test fixtures: `frontend/playwright/fixtures/`
 - Use factory functions for variations on test data
 - Keep test data realistic and representative
 

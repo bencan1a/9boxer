@@ -1,5 +1,6 @@
 """Intelligence API endpoints."""
 
+import logging
 from typing import TypedDict
 
 from fastapi import APIRouter, HTTPException, status
@@ -64,7 +65,6 @@ async def get_intelligence() -> IntelligenceResponse:
 
     if not session:
         # Log diagnostic information
-        import logging
         logger = logging.getLogger(__name__)
         logger.error(f"Intelligence: No session found for user_id={LOCAL_USER_ID}")
         logger.error(f"Active sessions: {list(session_manager.sessions.keys())}")
@@ -80,7 +80,6 @@ async def get_intelligence() -> IntelligenceResponse:
     except ImportError as e:
         # Mock response if service not yet available
         # This allows the API endpoint to be tested independently
-        import logging
         logger = logging.getLogger(__name__)
         logger.error(f"Intelligence: Failed to import intelligence_service: {e}")
         logger.exception("Full traceback:")
@@ -132,14 +131,19 @@ async def get_intelligence() -> IntelligenceResponse:
 
     try:
         # Log diagnostic information
-        import logging
         logger = logging.getLogger(__name__)
-        logger.info(f"Intelligence: Processing for user_id={LOCAL_USER_ID}, employees={len(session.current_employees)}")
+        logger.info(
+            f"Intelligence: Processing for user_id={LOCAL_USER_ID}, employees={len(session.current_employees)}"
+        )
 
         # Check if employees list is empty
         if not session.current_employees:
-            logger.error(f"Intelligence: Session exists but current_employees is EMPTY for user_id={LOCAL_USER_ID}")
-            logger.error(f"Session details: session_id={session.session_id}, original_count={len(session.original_employees)}")
+            logger.error(
+                f"Intelligence: Session exists but current_employees is EMPTY for user_id={LOCAL_USER_ID}"
+            )
+            logger.error(
+                f"Session details: session_id={session.session_id}, original_count={len(session.original_employees)}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Session exists but contains no employee data. Please reload your Excel file.",
@@ -152,7 +156,6 @@ async def get_intelligence() -> IntelligenceResponse:
         # Re-raise HTTP exceptions
         raise
     except Exception as e:
-        import logging
         logger = logging.getLogger(__name__)
         logger.exception(f"Intelligence calculation failed for user_id={LOCAL_USER_ID}")
         raise HTTPException(

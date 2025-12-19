@@ -1,0 +1,17 @@
+/**
+ * Panel collapse/expand animations
+ * Adds smooth transitions to react-resizable-panels
+ */
+
+[data-panel] {
+  transition: flex-basis 0.2s ease-in-out, flex-grow 0.2s ease-in-out;
+}
+
+[data-panel-resize-handle] {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Smooth transition for panel content */
+[data-panel-group] {
+  transition: all 0.2s ease-in-out;
+}

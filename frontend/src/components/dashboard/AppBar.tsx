@@ -12,10 +12,13 @@ import {
   Chip,
   Badge,
   CircularProgress,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DownloadIcon from "@mui/icons-material/Download";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
@@ -24,7 +27,16 @@ import { apiClient } from "../../services/api";
 
 export const AppBar: React.FC = () => {
   const { sessionId, employees, filename, changes } = useSessionStore();
-  const { toggleDrawer, hasActiveFilters, applyFilters } = useFilters();
+  const {
+    toggleDrawer,
+    hasActiveFilters,
+    applyFilters,
+    selectedLevels,
+    selectedJobFunctions,
+    selectedLocations,
+    selectedManagers,
+    excludedEmployeeIds,
+  } = useFilters();
   const { showSuccess, showError } = useSnackbar();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -58,6 +70,51 @@ export const AppBar: React.FC = () => {
     }
   };
 
+  const handleOpenHelp = async () => {
+    try {
+      // Check if running in Electron
+      if (window.electronAPI?.openUserGuide) {
+        const result = await window.electronAPI.openUserGuide();
+        if (!result.success) {
+          showError(result.error || "Failed to open user guide");
+        }
+      } else {
+        // Fallback for web browser (not typically used)
+        showError("User guide is only available in the desktop application");
+      }
+    } catch (error: any) {
+      console.error("Failed to open user guide:", error);
+      showError("Failed to open user guide");
+    }
+  };
+
+  // Build filter tooltip message
+  const getFilterTooltip = (): string => {
+    if (!hasActiveFilters) {
+      return "Filter employees";
+    }
+
+    const filterParts: string[] = [];
+
+    if (selectedLevels.length > 0) {
+      filterParts.push(`Levels: ${selectedLevels.join(", ")}`);
+    }
+    if (selectedJobFunctions.length > 0) {
+      filterParts.push(`Functions: ${selectedJobFunctions.join(", ")}`);
+    }
+    if (selectedLocations.length > 0) {
+      filterParts.push(`Locations: ${selectedLocations.join(", ")}`);
+    }
+    if (selectedManagers.length > 0) {
+      filterParts.push(`Managers: ${selectedManagers.join(", ")}`);
+    }
+    if (excludedEmployeeIds.length > 0) {
+      filterParts.push(`Excluded: ${excludedEmployeeIds.length} employee(s)`);
+    }
+
+    return `Active filters:\n${filterParts.join("\n")}`;
+  };
+
   // Get filtered employee count
   const filteredEmployees = applyFilters(employees);
   const displayedCount = filteredEmployees.length;
@@ -69,81 +126,110 @@ export const AppBar: React.FC = () => {
     <>
       <MuiAppBar position="static" elevation={2}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            9-Box Performance Review
+          {/* Left: App title */}
+          <Typography variant="h6" component="div">
+            9Boxer
           </Typography>
 
-          {/* Session Info */}
-          {sessionId && (
-            <Box sx={{ display: "flex", alignItems: "center", mr: 2, gap: 1 }}>
-              <Chip
-                label={filename || "Session Active"}
-                color="secondary"
-                size="small"
-                variant="outlined"
-                sx={{ color: "white", borderColor: "white" }}
-              />
-              <Chip
-                label={`${displayedCount} of ${employees.length} employees`}
-                color="secondary"
-                size="small"
-                sx={{ color: "white" }}
-              />
+          {/* Center: Status information */}
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+            {sessionId && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Chip
+                  label={filename || "Session Active"}
+                  color="secondary"
+                  size="small"
+                  variant="outlined"
+                  sx={{ color: "white", borderColor: "white" }}
+                />
+                <Chip
+                  label={`${displayedCount} of ${employees.length} employees`}
+                  color="secondary"
+                  size="small"
+                  sx={{ color: "white" }}
+                />
+              </Box>
+            )}
+          </Box>
+
+          {/* Right: Action buttons */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                minWidth: "120px", // Reserve space for indicator to prevent shifting
+              }}
+            >
+              <Tooltip title={getFilterTooltip()} placement="bottom">
+                <Button
+                  color="inherit"
+                  startIcon={<FilterListIcon />}
+                  disabled={!sessionId}
+                  onClick={toggleDrawer}
+                  data-testid="filter-button"
+                >
+                  Filters
+                </Button>
+              </Tooltip>
+              {hasActiveFilters && (
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: "#ffa726",
+                  }}
+                />
+              )}
             </Box>
-          )}
 
-          {/* Action Buttons */}
-          <Button
-            color="inherit"
-            startIcon={<UploadFileIcon />}
-            onClick={() => setUploadDialogOpen(true)}
-            sx={{ mr: 1 }}
-            data-testid="upload-button"
-          >
-            Upload
-          </Button>
-
-          <Badge
-            variant="dot"
-            color="secondary"
-            invisible={!hasActiveFilters}
-            sx={{
-              "& .MuiBadge-badge": {
-                backgroundColor: "#ffa726",
-              },
-            }}
-          >
             <Button
               color="inherit"
-              startIcon={<FilterListIcon />}
-              disabled={!sessionId}
-              onClick={toggleDrawer}
-              sx={{ mr: 1 }}
-              data-testid="filter-button"
+              startIcon={<UploadFileIcon />}
+              onClick={() => setUploadDialogOpen(true)}
+              data-testid="upload-button"
             >
-              Filters
+              Import
             </Button>
-          </Badge>
 
-          <Badge
-            badgeContent={hasModifications ? changes.length : 0}
-            color="secondary"
-            sx={{
-              "& .MuiBadge-badge": {
-                backgroundColor: "#4caf50",
-              },
-            }}
-          >
-            <Button
-              color="inherit"
-              startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
-              disabled={!sessionId || !hasModifications || isExporting}
-              onClick={handleExport}
-              data-testid="export-button"
-            >
-              {isExporting ? "Exporting..." : "Apply"}
-            </Button>
-          </Badge>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Button
+                color="inherit"
+                startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
+                disabled={!sessionId || !hasModifications || isExporting}
+                onClick={handleExport}
+                data-testid="export-button"
+              >
+                {isExporting ? "Exporting..." : "Apply"}
+              </Button>
+              {hasModifications && (
+                <Tooltip title={`${changes.length} change(s) will be applied on export`}>
+                  <Chip
+                    label={changes.length}
+                    size="small"
+                    sx={{
+                      backgroundColor: "#4caf50",
+                      color: "white",
+                      height: 20,
+                      fontSize: "0.7rem",
+                    }}
+                  />
+                </Tooltip>
+              )}
+            </Box>
+
+            <Tooltip title="Open User Guide">
+              <IconButton
+                color="inherit"
+                onClick={handleOpenHelp}
+                data-testid="help-button"
+              >
+                <HelpOutlineIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Toolbar>
       </MuiAppBar>
 

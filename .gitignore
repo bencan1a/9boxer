@@ -233,3 +233,5 @@ frontend/release/
 *.AppImage
 *.deb
 *.rpm
+.claude/settings.local.json
+.vscode/settings.json

@@ -1,17 +1,28 @@
 """Excel file parser service."""
 
 import logging
-from collections import defaultdict
+import re
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 import pandas as pd
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class JobFunctionConfig:
+    """Configuration for job function grouping."""
+
+    common_functions: list[str]  # Functions above threshold
+    threshold_percentage: float  # Threshold used (e.g., 5.0 for 5%)
+    total_unique_functions: int  # Total unique functions in data
+    other_count: int  # Number of employees in "Other" bucket
 
 
 @dataclass
@@ -25,6 +36,7 @@ class ParsingMetadata:
     failed_rows: int
     defaulted_fields: dict[str, int] = field(default_factory=lambda: defaultdict(int))
     warnings: list[str] = field(default_factory=list)
+    job_function_config: JobFunctionConfig | None = None
 
 
 @dataclass
@@ -35,11 +47,208 @@ class ParsingResult:
     metadata: ParsingMetadata
 
 
+class JobFunctionAnalyzer:
+    """Analyze and group job functions from employee data."""
+
+    DEFAULT_THRESHOLD_PERCENTAGE = 5.0  # Keep functions with >= 5% of employees
+    MIN_COMMON_FUNCTIONS = 5  # Always keep at least top 5 functions
+
+    # Seniority/level prefixes to remove (case-insensitive)
+    SENIORITY_PREFIXES: ClassVar[list[str]] = [
+        "Lead",
+        "Senior",
+        "Sr.",
+        "Sr",
+        "Principal",
+        "Staff",
+        "Junior",
+        "Jr.",
+        "Jr",
+        "Executive",
+        "Chief",
+        "Associate",
+        "Entry Level",
+        "Entry-Level",
+    ]
+
+    # Level descriptors to remove when followed by actual function
+    # Order matters - match longer patterns first
+    LEVEL_DESCRIPTORS: ClassVar[list[str]] = [
+        "Advanced Professional",
+        "Experienced Professional",
+        "Professional",
+        "Experienced",
+        "Advanced",
+    ]
+
+    @staticmethod
+    def normalize_job_title(title: str) -> str:
+        """
+        Normalize job title by removing seniority prefixes and cleaning formatting.
+
+        Transformations:
+        - "Lead Product Manager" → "Product Manager"
+        - "Sr. Principal, Product Management-IRL" → "Product Manager"
+        - "Senior Product Designer" → "Product Designer"
+        - "Product Management" → "Product Manager"
+        - "Advanced Professional, UI/UX Designer" → "UX Designer"
+        - "UI/UX Designer" → "UX Designer"
+
+        Args:
+            title: Raw job title from data
+
+        Returns:
+            Normalized job function name
+        """
+        if not title or not title.strip():
+            return ""
+
+        normalized = title.strip()
+
+        # Remove country codes (3-letter codes at the end, optionally preceded by hyphen)
+        normalized = re.sub(r"-?[A-Z]{3}$", "", normalized)
+
+        # Remove level descriptors followed by comma/whitespace
+        # Process in order (longer patterns first)
+        for descriptor in JobFunctionAnalyzer.LEVEL_DESCRIPTORS:
+            # Match descriptor followed by optional comma and whitespace
+            pattern = rf"\b{re.escape(descriptor)},?\s*"
+            normalized = re.sub(pattern, "", normalized, flags=re.IGNORECASE)
+
+        # Remove seniority prefixes at the start (followed by space, comma, or whitespace)
+        for prefix in JobFunctionAnalyzer.SENIORITY_PREFIXES:
+            # Match prefix at start, followed by whitespace or comma
+            pattern = rf"^{re.escape(prefix)}[\s,]+"
+            normalized = re.sub(pattern, "", normalized, flags=re.IGNORECASE)
+
+        # Normalize UI/UX variations (do this before other normalizations)
+        # UI/UX Designer, UX/UI Designer → UX Designer
+        # UI/UX Researcher → UX Researcher
+        normalized = re.sub(r"\bUI/UX\b", "UX", normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r"\bUX/UI\b", "UX", normalized, flags=re.IGNORECASE)
+        # User Interface → UI (will become UX above if followed by Designer)
+        normalized = re.sub(r"\bUser Interface\b", "UI", normalized, flags=re.IGNORECASE)
+
+        # Clean up multiple spaces, leading/trailing whitespace, and trailing commas
+        normalized = re.sub(r"\s+", " ", normalized)
+        normalized = normalized.strip().strip(",").strip()
+
+        # Normalize common function variations (Management → Manager, Design → Designer, etc.)
+        # Only apply if there's a word before it (e.g., "Product Management" not just "Management")
+        function_mappings = {
+            r"\bManagement$": "Manager",
+            r"\bDesign$": "Designer",
+            r"\bWriting$": "Writer",
+            r"\bDevelopment$": "Developer",
+            r"\bEngineering$": "Engineer",
+        }
+
+        for pattern, replacement in function_mappings.items():
+            # Check if pattern matches and there's a word before it
+            if re.search(rf"\w+\s+{pattern}", normalized, re.IGNORECASE):
+                normalized = re.sub(pattern, replacement, normalized, flags=re.IGNORECASE)
+
+        # If nothing left after cleaning, return original
+        if not normalized:
+            return title.strip()
+
+        return normalized
+
+    @staticmethod
+    def analyze_job_functions(
+        job_titles: list[str],
+        threshold_percentage: float = DEFAULT_THRESHOLD_PERCENTAGE,
+        min_common: int = MIN_COMMON_FUNCTIONS,
+    ) -> JobFunctionConfig:
+        """
+        Analyze job titles and determine which should be common vs "Other".
+
+        Normalizes titles first (removes seniority prefixes) to group by function, not level.
+
+        Args:
+            job_titles: List of raw job titles from Excel data
+            threshold_percentage: Minimum percentage to be considered "common" (default 5%)
+            min_common: Minimum number of common functions to keep (default 5)
+
+        Returns:
+            JobFunctionConfig with common functions and metadata
+        """
+        # Normalize job titles to group by function, not seniority level
+        normalized_titles = [JobFunctionAnalyzer.normalize_job_title(title) for title in job_titles]
+
+        # Count occurrences of each normalized job title
+        title_counts = Counter(normalized_titles)
+        total_employees = len(normalized_titles)
+        total_unique = len(title_counts)
+
+        # Calculate threshold count
+        threshold_count = max(1, int(total_employees * threshold_percentage / 100))
+
+        # Get functions above threshold
+        common_functions = [
+            title for title, count in title_counts.items() if count >= threshold_count
+        ]
+
+        # Ensure we have at least min_common functions
+        if len(common_functions) < min_common:
+            # Get top N most common functions
+            most_common = title_counts.most_common(min_common)
+            common_functions = [title for title, _ in most_common]
+
+        # Sort common functions alphabetically for consistency
+        common_functions = sorted(common_functions)
+
+        # Count employees in "Other" bucket
+        other_count = sum(
+            count for title, count in title_counts.items() if title not in common_functions
+        )
+
+        logger.info(
+            f"Job function analysis: {len(common_functions)} common functions "
+            f"(threshold: {threshold_percentage}%, {threshold_count} employees), "
+            f"{other_count} employees in 'Other' bucket, "
+            f"{total_unique} total unique functions"
+        )
+
+        return JobFunctionConfig(
+            common_functions=common_functions,
+            threshold_percentage=threshold_percentage,
+            total_unique_functions=total_unique,
+            other_count=other_count,
+        )
+
+    @staticmethod
+    def categorize_job_function(job_title: str, config: JobFunctionConfig) -> str:
+        """
+        Categorize a job title as either a common function or "Other".
+
+        Normalizes the title first to match against normalized common functions.
+
+        Args:
+            job_title: The raw job title
+            config: Job function configuration from analysis
+
+        Returns:
+            Either the normalized job function (if common) or "Other"
+        """
+        if not job_title or not job_title.strip():
+            return "Unknown"
+
+        # Normalize the title (remove seniority prefixes, etc.)
+        normalized_title = JobFunctionAnalyzer.normalize_job_title(job_title)
+
+        # Check if normalized title is in common functions
+        if normalized_title in config.common_functions:
+            return normalized_title
+        else:
+            return "Other"
+
+
 class SheetDetector:
     """Detect which sheet in an Excel file contains employee data."""
 
     # Required columns that must be present for employee data
-    REQUIRED_COLUMNS = [
+    REQUIRED_COLUMNS: ClassVar[list[str]] = [
         "Employee ID",
         "Worker",
         "Business Title",
@@ -47,7 +256,7 @@ class SheetDetector:
     ]
 
     # Optional columns that boost the score
-    OPTIONAL_COLUMNS = [
+    OPTIONAL_COLUMNS: ClassVar[list[str]] = [
         "Performance",
         "Potential",
         "Aug 2025 Talent Assessment Performance",
@@ -57,7 +266,7 @@ class SheetDetector:
     ]
 
     # Keywords in sheet names that suggest employee data
-    SHEET_NAME_KEYWORDS = ["employee", "talent", "people", "data", "worker", "staff"]
+    SHEET_NAME_KEYWORDS: ClassVar[list[str]] = ["employee", "talent", "people", "data", "worker", "staff"]
 
     @staticmethod
     def _score_sheet(df: pd.DataFrame, sheet_name: str) -> int:
@@ -121,7 +330,9 @@ class SheetDetector:
                     sheet_name_str = str(sheet_name)
                     score = SheetDetector._score_sheet(df, sheet_name_str)
 
-                    logger.debug(f"Sheet '{sheet_name_str}' (index {idx}): score={score}, rows={len(df)}, columns={len(df.columns)}")
+                    logger.debug(
+                        f"Sheet '{sheet_name_str}' (index {idx}): score={score}, rows={len(df)}, columns={len(df.columns)}"
+                    )
 
                     if score > best_score:
                         best_score = score
@@ -183,6 +394,7 @@ class ExcelParser:
         """Initialize the parser with tracking for defaults and warnings."""
         self.defaulted_fields: dict[str, int] = defaultdict(int)
         self.warnings: list[str] = []
+        self.job_function_config: JobFunctionConfig | None = None
 
     @staticmethod
     def _categorize_job_function(job_function: str) -> str:  # noqa: PLR0911, PLR0912
@@ -333,10 +545,25 @@ class ExcelParser:
 
         # Track statistics
         total_rows = len(df)
+
+        # PASS 1: Collect all raw job titles for analysis
+        logger.info(f"Pass 1: Analyzing job functions from {total_rows} rows")
+        raw_job_titles = []
+        for _, row in df.iterrows():
+            # Use Business Title as the source of truth for job function
+            business_title = row.get("Business Title", "")
+            if pd.notna(business_title):
+                raw_job_titles.append(str(business_title).strip())
+            else:
+                raw_job_titles.append("")
+
+        # Analyze job functions to determine common vs "Other"
+        self.job_function_config = JobFunctionAnalyzer.analyze_job_functions(raw_job_titles)
+
+        # PASS 2: Parse employees with categorized job functions
+        logger.info(f"Pass 2: Parsing {total_rows} employee rows")
         employees = []
         failed_rows = 0
-
-        logger.info(f"Parsing {total_rows} rows from sheet '{sheet_name}'")
 
         for idx, row in df.iterrows():
             try:
@@ -364,6 +591,7 @@ class ExcelParser:
             failed_rows=failed_rows,
             defaulted_fields=dict(self.defaulted_fields),
             warnings=self.warnings,
+            job_function_config=self.job_function_config,
         )
 
         logger.info(
@@ -377,7 +605,7 @@ class ExcelParser:
 
         return ParsingResult(employees=employees, metadata=metadata)
 
-    def _parse_employee_row(self, row: pd.Series) -> Employee:
+    def _parse_employee_row(self, row: pd.Series) -> Employee:  # noqa: PLR0912
         """Parse a single employee row."""
         # Extract historical ratings
         history = []
@@ -404,7 +632,9 @@ class ExcelParser:
             performance_str = "Medium"
         else:
             performance_val = row.get(performance_col)
-            performance_str = str(performance_val).strip() if pd.notna(performance_val) else "Medium"
+            performance_str = (
+                str(performance_val).strip() if pd.notna(performance_val) else "Medium"
+            )
             if not pd.notna(performance_val):
                 self.defaulted_fields["Performance"] += 1
 
@@ -461,17 +691,29 @@ class ExcelParser:
         else:
             hire_date = date.today()
 
-        # Extract location and job function from job_profile
+        # Extract location from job_profile
         # Location is the last 3 characters (country code)
-        # Job function is the job_profile without the location, categorized into groups
         job_profile_str = str(row.get("Job Profile", row.get("Job Title", "")))
-        if len(job_profile_str) >= 3:
-            location = job_profile_str[-3:].upper()
-            raw_job_function = job_profile_str[:-3].strip()
-            job_function = self._categorize_job_function(raw_job_function)
+        location = job_profile_str[-3:].upper() if len(job_profile_str) >= 3 else ""
+
+        # Extract job function from Business Title (source of truth)
+        # Categorize using the auto-detected common functions
+        business_title = row.get("Business Title", "")
+        if pd.notna(business_title) and business_title:
+            raw_job_title = str(business_title).strip()
         else:
-            location = ""
-            job_function = self._categorize_job_function(job_profile_str)
+            raw_job_title = ""
+
+        # Categorize job function using configuration
+        if self.job_function_config:
+            job_function = JobFunctionAnalyzer.categorize_job_function(
+                raw_job_title, self.job_function_config
+            )
+        else:
+            # Fallback to old method if no config (shouldn't happen in normal flow)
+            job_function = (
+                self._categorize_job_function(raw_job_title) if raw_job_title else "Unknown"
+            )
 
         employee = Employee(
             employee_id=int(row["Employee ID"]),
@@ -514,7 +756,9 @@ class ExcelParser:
             potential=potential,
             grid_position=grid_position,
             position_label=position_label,
-            talent_indicator=str(row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))).strip()
+            talent_indicator=str(
+                row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))
+            ).strip()
             if pd.notna(row.get("FY25 Talent Indicator"))
             else "",
             ratings_history=history,
@@ -588,14 +832,14 @@ class ExcelParser:
     def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
         """Get position label from performance/potential."""
         labels = {
-            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Top Talent [H,H]",
-            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact Talent [H,M]",
-            (PerformanceLevel.HIGH, PotentialLevel.LOW): "High/Low [H,L]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth Talent [M,H]",
+            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
+            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
+            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
             (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
-            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Med/Low [M,L]",
-            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Emerging Talent [L,H]",
-            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent Talent [L,M]",
-            (PerformanceLevel.LOW, PotentialLevel.LOW): "Low/Low [L,L]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
+            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
+            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
+            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
         }
         return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")

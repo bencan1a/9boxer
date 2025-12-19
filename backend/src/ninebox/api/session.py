@@ -1,5 +1,6 @@
 """Session management API endpoints."""
 
+import logging
 import shutil
 from pathlib import Path
 
@@ -45,7 +46,6 @@ async def upload_file(
         ) from e
 
     # Parse Excel file
-    import logging
     logger = logging.getLogger(__name__)
 
     parser = ExcelParser()
@@ -65,7 +65,9 @@ async def upload_file(
             logger.info(f"Defaulted fields: {result.metadata.defaulted_fields}")
 
         if result.metadata.warnings:
-            logger.warning(f"Parsing warnings ({len(result.metadata.warnings)}): {result.metadata.warnings[:3]}...")
+            logger.warning(
+                f"Parsing warnings ({len(result.metadata.warnings)}): {result.metadata.warnings[:3]}..."
+            )
 
     except Exception as e:
         # Clean up temp file on error
@@ -76,7 +78,9 @@ async def upload_file(
         ) from e
 
     # Create session
-    logger.info(f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}")
+    logger.info(
+        f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}"
+    )
 
     session_id = session_manager.create_session(
         user_id=LOCAL_USER_ID,
@@ -85,10 +89,13 @@ async def upload_file(
         file_path=str(temp_file_path),
         sheet_name=result.metadata.sheet_name,
         sheet_index=result.metadata.sheet_index,
+        job_function_config=result.metadata.job_function_config,
     )
 
     session = session_manager.get_session(LOCAL_USER_ID)
-    logger.info(f"Session created successfully: session_id={session_id}, active_sessions={list(session_manager.sessions.keys())}")
+    logger.info(
+        f"Session created successfully: session_id={session_id}, active_sessions={list(session_manager.sessions.keys())}"
+    )
 
     return {
         "session_id": session_id,
