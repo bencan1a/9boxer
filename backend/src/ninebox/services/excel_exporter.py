@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import openpyxl
 
-from ninebox.models.employee import Employee
+from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 
 if TYPE_CHECKING:
     from ninebox.models.session import SessionState
@@ -58,17 +58,23 @@ class ExcelExporter:
         if modified_col > max_col:
             sheet.cell(1, modified_col, "Modified in Session")
             sheet.cell(1, modified_col + 1, "Modification Date")
-            sheet.cell(1, modified_col + 2, "9Boxer Change Notes")
+            sheet.cell(1, modified_col + 2, "9Boxer Change Description")
+            sheet.cell(1, modified_col + 3, "9Boxer Change Notes")
 
         # Create employee lookup by ID
         employee_map = {e.employee_id: e for e in employees}
 
-        # Create change notes lookup by employee ID
+        # Create change notes and descriptions lookup by employee ID
         change_notes_map = {}
+        change_description_map = {}
         if session:
             for change in session.changes:
                 if change.notes:
                     change_notes_map[change.employee_id] = change.notes
+                # Create movement description
+                old_label = self._get_position_label(change.old_performance, change.old_potential)
+                new_label = self._get_position_label(change.new_performance, change.new_potential)
+                change_description_map[change.employee_id] = f"Moved from {old_label} to {new_label}"
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):
@@ -105,12 +111,31 @@ class ExcelExporter:
                 if emp.modified_in_session and emp.last_modified:
                     sheet.cell(row_idx, modified_col + 1, emp.last_modified.isoformat())
 
+                # Add change description if available
+                description_value = change_description_map.get(emp_id, "")
+                sheet.cell(row_idx, modified_col + 2, description_value)
+
                 # Add change notes if available
                 notes_value = change_notes_map.get(emp_id, "")
-                sheet.cell(row_idx, modified_col + 2, notes_value)
+                sheet.cell(row_idx, modified_col + 3, notes_value)
 
         # Save modified workbook
         workbook.save(output_path)
+
+    def _get_position_label(self, perf: PerformanceLevel, pot: PotentialLevel) -> str:
+        """Get position label from performance/potential."""
+        labels = {
+            (PerformanceLevel.HIGH, PotentialLevel.HIGH): "Star [H,H]",
+            (PerformanceLevel.HIGH, PotentialLevel.MEDIUM): "High Impact [H,M]",
+            (PerformanceLevel.HIGH, PotentialLevel.LOW): "Workhorse [H,L]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.HIGH): "Growth [M,H]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM): "Core Talent [M,M]",
+            (PerformanceLevel.MEDIUM, PotentialLevel.LOW): "Effective Pro [M,L]",
+            (PerformanceLevel.LOW, PotentialLevel.HIGH): "Enigma [L,H]",
+            (PerformanceLevel.LOW, PotentialLevel.MEDIUM): "Inconsistent [L,M]",
+            (PerformanceLevel.LOW, PotentialLevel.LOW): "Underperformer [L,L]",
+        }
+        return labels.get((perf, pot), f"[{perf.value[0]},{pot.value[0]}]")
 
     def _find_column(
         self, sheet: openpyxl.worksheet.worksheet.Worksheet, col_name: str, create: bool = False

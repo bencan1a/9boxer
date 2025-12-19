@@ -48,16 +48,16 @@ describe('NineBoxGrid', () => {
   it('renders all 9 grid boxes with correct labels', () => {
     render(<NineBoxGrid />)
 
-    // Check for all position labels
-    expect(screen.getByText('[L,L]')).toBeInTheDocument()
-    expect(screen.getByText('[M,L]')).toBeInTheDocument()
-    expect(screen.getByText('[H,L]')).toBeInTheDocument()
-    expect(screen.getByText('[L,M]')).toBeInTheDocument()
-    expect(screen.getByText('[M,M]')).toBeInTheDocument()
-    expect(screen.getByText('[H,M]')).toBeInTheDocument()
-    expect(screen.getByText('[L,H]')).toBeInTheDocument()
-    expect(screen.getByText('[M,H]')).toBeInTheDocument()
-    expect(screen.getByText('[H,H]')).toBeInTheDocument()
+    // Check for all position labels (now displayed as "Name [X,Y]")
+    expect(screen.getByText(/Underperformer \[L,L\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Effective Pro \[M,L\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Workhorse \[H,L\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Inconsistent \[L,M\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Core Talent \[M,M\]/)).toBeInTheDocument()
+    expect(screen.getByText(/High Impact \[H,M\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Enigma \[L,H\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Growth \[M,H\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Star \[H,H\]/)).toBeInTheDocument()
   })
 
   it('distributes employees to correct positions', () => {

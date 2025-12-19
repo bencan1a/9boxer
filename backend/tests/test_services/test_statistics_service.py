@@ -179,15 +179,15 @@ def test_get_box_label_when_all_positions_then_returns_correct_labels(
     statistics_service: StatisticsService,
 ) -> None:
     """Test box label generation for all positions."""
-    assert statistics_service._get_box_label(9) == "Top Talent [H,H]"
-    assert statistics_service._get_box_label(8) == "High Impact Talent [H,M]"
-    assert statistics_service._get_box_label(7) == "High/Low [H,L]"
-    assert statistics_service._get_box_label(6) == "Growth Talent [M,H]"
+    assert statistics_service._get_box_label(9) == "Star [H,H]"
+    assert statistics_service._get_box_label(8) == "Growth [M,H]"
+    assert statistics_service._get_box_label(7) == "Enigma [L,H]"
+    assert statistics_service._get_box_label(6) == "High Impact [H,M]"
     assert statistics_service._get_box_label(5) == "Core Talent [M,M]"
-    assert statistics_service._get_box_label(4) == "Med/Low [M,L]"
-    assert statistics_service._get_box_label(3) == "Emerging Talent [L,H]"
-    assert statistics_service._get_box_label(2) == "Inconsistent Talent [L,M]"
-    assert statistics_service._get_box_label(1) == "Low/Low [L,L]"
+    assert statistics_service._get_box_label(4) == "Inconsistent [L,M]"
+    assert statistics_service._get_box_label(3) == "Workhorse [H,L]"
+    assert statistics_service._get_box_label(2) == "Effective Pro [M,L]"
+    assert statistics_service._get_box_label(1) == "Underperformer [L,L]"
 
 
 def test_calculate_distribution_when_percentage_calculation_then_rounds_correctly(

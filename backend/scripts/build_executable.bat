@@ -30,11 +30,16 @@ echo Installing PyInstaller...
 pip install pyinstaller
 
 echo Cleaning previous builds...
-if exist build rmdir /s /q build
-if exist dist rmdir /s /q dist
+REM Use PowerShell for robust cleanup with retries
+powershell -Command "$ErrorActionPreference = 'SilentlyContinue'; if (Test-Path 'build') { Remove-Item -Path 'build' -Recurse -Force; Start-Sleep -Milliseconds 500 }; if (Test-Path 'dist') { Remove-Item -Path 'dist' -Recurse -Force; Start-Sleep -Milliseconds 500 }"
+if %ERRORLEVEL% NEQ 0 (
+    echo Warning: Could not clean all files. Attempting to continue...
+    echo If build fails, close all apps, restart your computer, and try again.
+)
 
 echo Building with PyInstaller...
-pyinstaller build_config\ninebox.spec
+REM Use --noconfirm to skip the delete prompt since we already cleaned above
+pyinstaller --noconfirm build_config\ninebox.spec
 
 echo Testing executable...
 if exist "dist\ninebox\ninebox.exe" (

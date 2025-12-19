@@ -86,15 +86,15 @@ class StatisticsService:
     def _get_box_label(self, position: int) -> str:
         """Get label for a grid position."""
         labels = {
-            9: "Top Talent [H,H]",
-            8: "High Impact Talent [H,M]",
-            7: "High/Low [H,L]",
-            6: "Growth Talent [M,H]",
+            9: "Star [H,H]",
+            8: "Growth [M,H]",
+            7: "Enigma [L,H]",
+            6: "High Impact [H,M]",
             5: "Core Talent [M,M]",
-            4: "Med/Low [M,L]",
-            3: "Emerging Talent [L,H]",
-            2: "Inconsistent Talent [L,M]",
-            1: "Low/Low [L,L]",
+            4: "Inconsistent [L,M]",
+            3: "Workhorse [H,L]",
+            2: "Effective Pro [M,L]",
+            1: "Underperformer [L,L]",
         }
         return labels.get(position, f"Position {position}")
 

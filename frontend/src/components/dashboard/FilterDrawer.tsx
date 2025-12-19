@@ -234,6 +234,7 @@ export const FilterDrawer: React.FC = () => {
                     size="small"
                     fullWidth
                     onClick={() => setExclusionDialogOpen(true)}
+                    data-testid="exclude-employees-button"
                   >
                     Exclude Employees
                   </Button>

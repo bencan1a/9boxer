@@ -34,9 +34,9 @@ describe('FileUploadDialog', () => {
   it('renders dialog with title and description when open', () => {
     render(<FileUploadDialog open={true} onClose={mockOnClose} />)
 
-    expect(screen.getByText('Upload Excel File')).toBeInTheDocument()
+    expect(screen.getByText('Import Excel File')).toBeInTheDocument()
     expect(
-      screen.getByText('Upload a 9-Box talent mapping Excel file (.xlsx or .xls)')
+      screen.getByText('Import a 9-Box talent mapping Excel file (.xlsx or .xls)')
     ).toBeInTheDocument()
   })
 
@@ -51,7 +51,7 @@ describe('FileUploadDialog', () => {
   it('disables upload button when no file is selected', () => {
     render(<FileUploadDialog open={true} onClose={mockOnClose} />)
 
-    const uploadButton = screen.getByRole('button', { name: /upload/i })
+    const uploadButton = screen.getByRole('button', { name: /import/i })
     expect(uploadButton).toBeDisabled()
   })
 

@@ -14,8 +14,10 @@ These tests require the frozen executable to be built first using:
 
 import io
 import os
+import socket
 import subprocess
 import time
+import uuid
 from collections.abc import Generator
 from pathlib import Path
 
@@ -31,9 +33,17 @@ if platform.system() == "Windows":
 else:
     FROZEN_EXE_PATH = Path("backend/dist/ninebox/ninebox")
 
-BASE_URL = "http://localhost:8000"
 STARTUP_TIMEOUT = 15  # seconds
 STARTUP_POLL_INTERVAL = 0.5  # seconds
+
+
+def get_free_port() -> int:
+    """Get a free port number for the test backend instance."""
+    sock = socket.socket()
+    sock.bind(("", 0))
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
 
 
 @pytest.fixture
@@ -43,12 +53,12 @@ def frozen_executable_path() -> Path:
 
 
 @pytest.fixture
-def frozen_backend() -> Generator[subprocess.Popen, None, None]:
+def frozen_backend() -> Generator[tuple[subprocess.Popen, str], None, None]:
     """
     Start the frozen backend executable and ensure it's ready.
 
     Yields:
-        subprocess.Popen: The running backend process
+        tuple: (subprocess.Popen, base_url) - The running backend process and its base URL
 
     Raises:
         pytest.Failed: If the backend fails to start within timeout
@@ -59,13 +69,20 @@ def frozen_backend() -> Generator[subprocess.Popen, None, None]:
             f"Frozen executable not found at {FROZEN_EXE_PATH}. Run ./scripts/build_executable.sh first."
         )
 
+    # Get free port for this test instance to avoid conflicts
+    port = get_free_port()
+    base_url = f"http://localhost:{port}"
+
+    # Create unique database for this test instance to ensure isolation
+    test_db = FROZEN_EXE_PATH.parent / f"test_frozen_{uuid.uuid4().hex}.db"
+
     # Start the executable
     proc = subprocess.Popen(
         [str(FROZEN_EXE_PATH)],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         cwd=str(FROZEN_EXE_PATH.parent),
-        env={**os.environ, "DATABASE_PATH": str(FROZEN_EXE_PATH.parent / "test_frozen.db")},
+        env={**os.environ, "DATABASE_PATH": str(test_db), "PORT": str(port)},
     )
 
     # Wait for startup (max STARTUP_TIMEOUT seconds)
@@ -87,7 +104,7 @@ def frozen_backend() -> Generator[subprocess.Popen, None, None]:
 
         # Check health endpoint
         try:
-            resp = requests.get(f"{BASE_URL}/health", timeout=1)
+            resp = requests.get(f"{base_url}/health", timeout=1)
             if resp.status_code == 200:
                 backend_ready = True
                 break
@@ -106,10 +123,10 @@ def frozen_backend() -> Generator[subprocess.Popen, None, None]:
             f"STDERR: {stderr.decode()}"
         )
 
-    print(f"\n✓ Backend started in {startup_time:.2f}s")
+    print(f"\n[OK] Backend started in {startup_time:.2f}s on port {port}")
 
     try:
-        yield proc
+        yield proc, base_url
     finally:
         # Clean shutdown
         if proc.poll() is None:
@@ -121,13 +138,12 @@ def frozen_backend() -> Generator[subprocess.Popen, None, None]:
                 proc.wait()
 
         # Clean up test database
-        test_db = FROZEN_EXE_PATH.parent / "test_frozen.db"
         if test_db.exists():
             test_db.unlink()
 
 
 @pytest.fixture
-def auth_token(frozen_backend: subprocess.Popen) -> str:
+def auth_token(frozen_backend: tuple[subprocess.Popen, str]) -> str:
     """
     Get authentication token for API requests.
 
@@ -135,11 +151,12 @@ def auth_token(frozen_backend: subprocess.Popen) -> str:
     Returns empty string for backward compatibility.
 
     Args:
-        frozen_backend: The running backend process
+        frozen_backend: The running backend process and base URL
 
     Returns:
         str: Empty string (no authentication)
     """
+    proc, base_url = frozen_backend
     return ""
 
 
@@ -316,13 +333,14 @@ def test_frozen_executable_exists() -> None:
     assert os.access(FROZEN_EXE_PATH, os.X_OK), "Executable is not executable"
 
 
-def test_frozen_executable_starts(frozen_backend: subprocess.Popen) -> None:
+def test_frozen_executable_starts(frozen_backend: tuple[subprocess.Popen, str]) -> None:
     """Test that frozen executable starts and responds to health check."""
+    proc, base_url = frozen_backend
     # Backend already started by fixture, just verify it's running
-    assert frozen_backend.poll() is None, "Backend process has terminated"
+    assert proc.poll() is None, "Backend process has terminated"
 
     # Test health endpoint
-    response = requests.get(f"{BASE_URL}/health", timeout=5)
+    response = requests.get(f"{base_url}/health", timeout=5)
     assert response.status_code == 200
 
     data = response.json()
@@ -331,9 +349,10 @@ def test_frozen_executable_starts(frozen_backend: subprocess.Popen) -> None:
     assert "status" in data
 
 
-def test_frozen_swagger_ui_accessible(frozen_backend: subprocess.Popen) -> None:
+def test_frozen_swagger_ui_accessible(frozen_backend: tuple[subprocess.Popen, str]) -> None:
     """Test that Swagger UI documentation is accessible."""
-    response = requests.get(f"{BASE_URL}/docs", timeout=5)
+    proc, base_url = frozen_backend
+    response = requests.get(f"{base_url}/docs", timeout=5)
     assert response.status_code == 200
     assert b"swagger" in response.content.lower()
 
@@ -354,9 +373,10 @@ def test_frozen_swagger_ui_accessible(frozen_backend: subprocess.Popen) -> None:
 
 
 def test_frozen_excel_import(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test Excel import with frozen executable."""
+    proc, base_url = frozen_backend
     # Upload Excel file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -367,7 +387,7 @@ def test_frozen_excel_import(
             )
         }
         response = requests.post(
-            f"{BASE_URL}/api/session/upload",
+            f"{base_url}/api/session/upload",
             files=files,
             headers=auth_headers,
             timeout=10,
@@ -385,9 +405,10 @@ def test_frozen_excel_import(
 
 
 def test_frozen_excel_import_get_employees(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test retrieving employees after Excel import."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -398,11 +419,11 @@ def test_frozen_excel_import_get_employees(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Get employees
-    response = requests.get(f"{BASE_URL}/api/employees", headers=auth_headers, timeout=5)
+    response = requests.get(f"{base_url}/api/employees", headers=auth_headers, timeout=5)
     assert response.status_code == 200
 
     data = response.json()
@@ -424,9 +445,10 @@ def test_frozen_excel_import_get_employees(
 
 
 def test_frozen_employee_move(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test moving an employee in the 9-box grid."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -437,12 +459,12 @@ def test_frozen_employee_move(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Move employee
     response = requests.patch(
-        f"{BASE_URL}/api/employees/1/move",
+        f"{base_url}/api/employees/1/move",
         json={"performance": "Low", "potential": "Medium"},
         headers=auth_headers,
         timeout=5,
@@ -458,9 +480,10 @@ def test_frozen_employee_move(
 
 
 def test_frozen_employee_statistics(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test statistics calculation with scipy in frozen executable."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -471,11 +494,11 @@ def test_frozen_employee_statistics(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Get statistics
-    response = requests.get(f"{BASE_URL}/api/statistics", headers=auth_headers, timeout=5)
+    response = requests.get(f"{base_url}/api/statistics", headers=auth_headers, timeout=5)
     assert response.status_code == 200
 
     data = response.json()
@@ -493,9 +516,10 @@ def test_frozen_employee_statistics(
 
 
 def test_frozen_excel_export(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test Excel export with frozen executable."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -506,19 +530,19 @@ def test_frozen_excel_export(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Move an employee
     requests.patch(
-        f"{BASE_URL}/api/employees/1/move",
+        f"{base_url}/api/employees/1/move",
         json={"performance": "Low", "potential": "Low"},
         headers=auth_headers,
         timeout=5,
     )
 
     # Export to Excel
-    response = requests.post(f"{BASE_URL}/api/session/export", headers=auth_headers, timeout=10)
+    response = requests.post(f"{base_url}/api/session/export", headers=auth_headers, timeout=10)
     assert response.status_code == 200
     assert len(response.content) > 0
 
@@ -540,9 +564,10 @@ def test_frozen_excel_export(
 
 
 def test_frozen_excel_export_contains_changes(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test that exported Excel file contains modifications."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -553,19 +578,19 @@ def test_frozen_excel_export_contains_changes(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Move an employee
     requests.patch(
-        f"{BASE_URL}/api/employees/1/move",
+        f"{base_url}/api/employees/1/move",
         json={"performance": "Medium", "potential": "High"},
         headers=auth_headers,
         timeout=5,
     )
 
     # Export
-    response = requests.post(f"{BASE_URL}/api/session/export", headers=auth_headers, timeout=10)
+    response = requests.post(f"{base_url}/api/session/export", headers=auth_headers, timeout=10)
     assert response.status_code == 200
 
     # Verify changes are in exported file
@@ -604,12 +629,16 @@ def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
     # Use a separate database for this test
     test_db = frozen_executable_path.parent / "test_perf.db"
 
+    # Get free port for this test instance
+    port = get_free_port()
+    base_url = f"http://localhost:{port}"
+
     proc = subprocess.Popen(
         [str(frozen_executable_path)],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         cwd=str(frozen_executable_path.parent),
-        env={**os.environ, "DATABASE_PATH": str(test_db)},
+        env={**os.environ, "DATABASE_PATH": str(test_db), "PORT": str(port)},
     )
 
     start_time = time.time()
@@ -624,7 +653,7 @@ def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
                 pytest.fail("Process crashed during startup")
 
             try:
-                resp = requests.get(f"{BASE_URL}/health", timeout=1)
+                resp = requests.get(f"{base_url}/health", timeout=1)
                 if resp.status_code == 200:
                     backend_ready = True
                     break
@@ -636,7 +665,7 @@ def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
         assert backend_ready, "Backend did not start in time"
         assert startup_time < 5.0, f"Startup time {startup_time:.2f}s exceeds 5 second target"
 
-        print(f"\n✓ Startup time: {startup_time:.2f}s")
+        print(f"\n[OK] Startup time: {startup_time:.2f}s")
 
     finally:
         if proc.poll() is None:
@@ -647,17 +676,18 @@ def test_frozen_performance_startup_time(frozen_executable_path: Path) -> None:
 
 
 def test_frozen_performance_response_time(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str]
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str]
 ) -> None:
     """Measure response time of health check endpoint."""
+    proc, base_url = frozen_backend
     # Warm up
-    requests.get(f"{BASE_URL}/health", timeout=5)
+    requests.get(f"{base_url}/health", timeout=5)
 
     # Measure response time
     samples = []
     for _ in range(10):
         start = time.time()
-        response = requests.get(f"{BASE_URL}/health", timeout=5)
+        response = requests.get(f"{base_url}/health", timeout=5)
         elapsed = time.time() - start
 
         assert response.status_code == 200
@@ -666,8 +696,8 @@ def test_frozen_performance_response_time(
     avg_response_time = sum(samples) / len(samples)
     max_response_time = max(samples)
 
-    print(f"\n✓ Average response time: {avg_response_time:.2f}ms")
-    print(f"✓ Max response time: {max_response_time:.2f}ms")
+    print(f"\n[OK] Average response time: {avg_response_time:.2f}ms")
+    print(f"[OK] Max response time: {max_response_time:.2f}ms")
 
     # Should be under 5000ms average (5 seconds is reasonable for API calls)
     # Note: This includes database queries and JSON serialization
@@ -676,21 +706,22 @@ def test_frozen_performance_response_time(
     )
 
 
-def test_frozen_performance_memory_usage(frozen_backend: subprocess.Popen) -> None:
+def test_frozen_performance_memory_usage(frozen_backend: tuple[subprocess.Popen, str]) -> None:
     """Measure memory usage of frozen executable."""
+    proc, base_url = frozen_backend
     try:
         import psutil  # noqa: PLC0415
     except ImportError:
         pytest.skip("psutil not installed")
 
     # Get process
-    proc = psutil.Process(frozen_backend.pid)
+    psutil_proc = psutil.Process(proc.pid)
 
     # Measure memory
-    memory_info = proc.memory_info()
+    memory_info = psutil_proc.memory_info()
     memory_mb = memory_info.rss / (1024 * 1024)
 
-    print(f"\n✓ Memory usage: {memory_mb:.2f} MB")
+    print(f"\n[OK] Memory usage: {memory_mb:.2f} MB")
 
     # Should be under 200MB idle
     assert memory_mb < 200, f"Memory usage {memory_mb:.2f} MB exceeds 200 MB target"
@@ -702,9 +733,10 @@ def test_frozen_performance_memory_usage(frozen_backend: subprocess.Popen) -> No
 
 
 def test_frozen_error_handling_invalid_excel(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], tmp_path: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], tmp_path: Path
 ) -> None:
     """Test error handling for invalid Excel file."""
+    proc, base_url = frozen_backend
     # Create invalid file
     invalid_file = tmp_path / "invalid.xlsx"
     invalid_file.write_text("This is not an Excel file")
@@ -719,7 +751,7 @@ def test_frozen_error_handling_invalid_excel(
             )
         }
         response = requests.post(
-            f"{BASE_URL}/api/session/upload",
+            f"{base_url}/api/session/upload",
             files=files,
             headers=auth_headers,
             timeout=10,
@@ -730,20 +762,22 @@ def test_frozen_error_handling_invalid_excel(
 
 
 def test_frozen_error_handling_session_not_active(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str]
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str]
 ) -> None:
     """Test error handling when session is not active."""
+    proc, base_url = frozen_backend
     # Try to get employees without uploading file
-    response = requests.get(f"{BASE_URL}/api/employees", headers=auth_headers, timeout=5)
+    response = requests.get(f"{base_url}/api/employees", headers=auth_headers, timeout=5)
 
     # Should return error or empty list
     assert response.status_code in [200, 400, 404]
 
 
 def test_frozen_error_handling_invalid_employee_id(
-    frozen_backend: subprocess.Popen, auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test error handling for invalid employee ID."""
+    proc, base_url = frozen_backend
     # Upload file
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -754,12 +788,12 @@ def test_frozen_error_handling_invalid_employee_id(
             )
         }
         requests.post(
-            f"{BASE_URL}/api/session/upload", files=files, headers=auth_headers, timeout=10
+            f"{base_url}/api/session/upload", files=files, headers=auth_headers, timeout=10
         )
 
     # Try to move non-existent employee
     response = requests.patch(
-        f"{BASE_URL}/api/employees/999/move",
+        f"{base_url}/api/employees/999/move",
         json={"performance": "High", "potential": "High"},
         headers=auth_headers,
         timeout=5,
@@ -775,12 +809,13 @@ def test_frozen_error_handling_invalid_employee_id(
 
 
 def test_frozen_complete_workflow(
-    frozen_backend: subprocess.Popen, sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str], sample_excel_file: Path
 ) -> None:
     """Test complete workflow with frozen executable.
 
     Note: This app is local-only without authentication.
     """
+    proc, base_url = frozen_backend
     # No authentication needed for local-only app
     headers = {}
 
@@ -794,7 +829,7 @@ def test_frozen_complete_workflow(
             )
         }
         upload_response = requests.post(
-            f"{BASE_URL}/api/session/upload",
+            f"{base_url}/api/session/upload",
             files=files,
             headers=headers,
             timeout=10,
@@ -803,14 +838,14 @@ def test_frozen_complete_workflow(
     assert upload_response.json()["employee_count"] == 3
 
     # 2. Get employees
-    employees_response = requests.get(f"{BASE_URL}/api/employees", headers=headers, timeout=5)
+    employees_response = requests.get(f"{base_url}/api/employees", headers=headers, timeout=5)
     assert employees_response.status_code == 200
     employees = employees_response.json()["employees"]
     assert len(employees) == 3
 
     # 3. Move employee
     move_response = requests.patch(
-        f"{BASE_URL}/api/employees/1/move",
+        f"{base_url}/api/employees/1/move",
         json={"performance": "Medium", "potential": "High"},
         headers=headers,
         timeout=5,
@@ -819,13 +854,13 @@ def test_frozen_complete_workflow(
     assert move_response.json()["employee"]["modified_in_session"] is True
 
     # 4. Get statistics
-    stats_response = requests.get(f"{BASE_URL}/api/statistics", headers=headers, timeout=5)
+    stats_response = requests.get(f"{base_url}/api/statistics", headers=headers, timeout=5)
     assert stats_response.status_code == 200
     stats = stats_response.json()
     assert stats["modified_employees"] == 1
 
     # 5. Export file
-    export_response = requests.post(f"{BASE_URL}/api/session/export", headers=headers, timeout=10)
+    export_response = requests.post(f"{base_url}/api/session/export", headers=headers, timeout=10)
     assert export_response.status_code == 200
     assert len(export_response.content) > 0
 
@@ -834,4 +869,4 @@ def test_frozen_complete_workflow(
     workbook = openpyxl.load_workbook(exported_file)
     assert len(workbook.worksheets) >= 2
 
-    print("\n✓ Complete workflow test passed")
+    print("\n[OK] Complete workflow test passed")
