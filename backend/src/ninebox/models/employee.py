@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 from enum import Enum
-from typing import Optional
+from typing import ClassVar
 
 from pydantic import BaseModel
 
@@ -47,12 +47,12 @@ class Employee(BaseModel):
 
     # Management
     manager: str
-    management_chain_01: Optional[str] = None
-    management_chain_02: Optional[str] = None
-    management_chain_03: Optional[str] = None
-    management_chain_04: Optional[str] = None
-    management_chain_05: Optional[str] = None
-    management_chain_06: Optional[str] = None
+    management_chain_01: str | None = None
+    management_chain_02: str | None = None
+    management_chain_03: str | None = None
+    management_chain_04: str | None = None
+    management_chain_05: str | None = None
+    management_chain_06: str | None = None
 
     # Tenure
     hire_date: date
@@ -70,20 +70,20 @@ class Employee(BaseModel):
     ratings_history: list[HistoricalRating] = []
 
     # Development
-    development_focus: Optional[str] = None
-    development_action: Optional[str] = None
-    notes: Optional[str] = None
-    promotion_status: Optional[str] = None
-    promotion_readiness: Optional[bool] = None
+    development_focus: str | None = None
+    development_action: str | None = None
+    notes: str | None = None
+    promotion_status: str | None = None
+    promotion_readiness: bool | None = None
 
     # Metadata
     modified_in_session: bool = False
-    last_modified: Optional[datetime] = None
+    last_modified: datetime | None = None
 
     class Config:
         """Pydantic config."""
 
-        json_encoders = {
+        json_encoders: ClassVar = {
             date: lambda v: v.isoformat(),
             datetime: lambda v: v.isoformat() if v else None,
         }

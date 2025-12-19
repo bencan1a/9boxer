@@ -1,6 +1,8 @@
-# 9-Box Performance Review System
+# 9Boxer
 
-A modern web application for visualizing and managing employee performance using the 9-box talent grid methodology.
+A standalone desktop application for visualizing and managing employee performance using the 9-box talent grid methodology.
+
+**Built with Electron**, 9Boxer runs entirely on your local machine with no server or cloud dependencies required. Everything is bundled into a single installer for Windows, macOS, and Linux.
 
 ## Features
 
@@ -12,140 +14,173 @@ A modern web application for visualizing and managing employee performance using
 - **Advanced Filtering**: Filter by level, manager, job profile, and more
 - **Employee Exclusion**: Temporarily hide employees from view
 - **Statistics Dashboard**: Visual analytics and distribution charts
-- **Secure Authentication**: JWT-based authentication system
+- **Native File Dialogs**: OS-native file pickers for better UX
+- **Offline First**: Works completely offline, no internet required
 
 ### Technical Stack
-- **Backend**: FastAPI (Python 3.10+)
-- **Frontend**: React 18 + TypeScript + Vite
-- **UI Framework**: Material-UI (MUI)
+- **Desktop**: Electron 39 (cross-platform desktop wrapper)
+- **Frontend**: React 18 + TypeScript + Vite + Material-UI
+- **Backend**: FastAPI (Python 3.10+) bundled with PyInstaller
 - **State Management**: Zustand
-- **Database**: SQLite
+- **Database**: SQLite (stored in user's app data directory)
 - **Excel Processing**: openpyxl
-- **Containerization**: Docker & Docker Compose
+- **Communication**: HTTP over localhost (backend runs as subprocess)
 
 ## Quick Start
 
-### Prerequisites
-- Docker and Docker Compose (recommended)
-- OR: Python 3.10+, Node.js 18+
+### Download and Install (End Users)
 
-### Option 1: Docker (Recommended)
+**Download the latest release for your platform:**
 
-1. Clone the repository:
+- **Windows**: Download and run `9Boxer-Setup-1.0.0.exe`
+- **macOS**: Download and open `9Boxer-1.0.0.dmg`, drag to Applications
+- **Linux**: Download `9Boxer-1.0.0.AppImage`, make executable, and run
+
+No Python or Node.js installation required! Everything is bundled in the installer.
+
+### Development Setup (Developers)
+
+**Prerequisites:**
+- Python 3.10+ (for backend development)
+- Node.js 18+ (for frontend development)
+- Git
+
+**Option 1: Run Electron App in Development Mode (Recommended for Full Testing)**
+
 ```bash
+# 1. Clone the repository
 git clone <repository-url>
 cd 9boxer
-```
 
-2. Create environment file:
-```bash
-cp .env.example .env
-# Edit .env and change SECRET_KEY in production!
-```
+# 2. Set up Python virtual environment (from project root)
+python3 -m venv .venv
+. .venv/bin/activate     # Windows: .venv\Scripts\activate
 
-3. Build and run:
-```bash
-docker-compose up --build
-```
-
-4. Access the application:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
-
-5. Login with default credentials:
-- Username: `bencan`
-- Password: `password`
-
-### Option 2: Local Development
-
-#### Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python3 -m venv venv
-. venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
+# 3. Install Python dependencies
 pip install --upgrade pip
 pip install -e '.[dev]'
 
-# Run backend
-cd src
-python -m ninebox.main
-```
+# 4. Build backend executable (required for Electron)
+cd backend
+.\scripts\build_executable.bat  # Windows
+# or
+./scripts/build_executable.sh   # Linux/macOS
 
-Backend will run on http://localhost:8000
-
-#### Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
+# 5. Install frontend dependencies
+cd ../frontend
 npm install
 
-# Run development server
+# 6. Run Electron app in development mode
+npm run electron:dev
+```
+
+The app will launch with:
+- Backend running from built executable (http://localhost:8000)
+- Frontend with Vite hot reload (http://localhost:5173)
+- Electron DevTools enabled
+
+**Option 2: Separate Frontend/Backend Development**
+
+For faster frontend development without Electron:
+
+```bash
+# Terminal 1: Run backend executable
+cd backend/dist/ninebox
+./ninebox  # or ninebox.exe on Windows
+
+# Terminal 2: Run Vite dev server
+cd frontend
 npm run dev
 ```
 
-Frontend will run on http://localhost:5173
+Access at http://localhost:5173 (web mode, no Electron features)
+
+## Building Production Releases
+
+To create distributable installers:
+
+```bash
+# 1. Build backend (from project root)
+cd backend
+. .venv/bin/activate  # or .venv\Scripts\activate on Windows
+.\scripts\build_executable.bat  # Windows
+# or
+./scripts/build_executable.sh   # Linux/macOS
+
+# 2. Build Electron app
+cd ../frontend
+npm run electron:build
+
+# Output in frontend/release/:
+# - Windows: 9Boxer-Setup-1.0.0.exe (~300MB)
+# - macOS: 9Boxer-1.0.0.dmg (~300MB)
+# - Linux: 9Boxer-1.0.0.AppImage (~300MB)
+```
+
+See [BUILD.md](BUILD.md) for detailed build instructions and troubleshooting.
 
 ## Usage
 
-### 1. Login
-- Use default credentials: `bencan` / `password`
-- Or create a new user (see Backend API docs)
-
-### 2. Upload Excel File
-- Click "Upload" button in the top bar
-- Select a 9-box Excel file (.xlsx or .xls)
+### 1. Upload Excel File
+- Click "Upload" button in the app bar
+- Select a 9-box Excel file (.xlsx or .xls) using the native file dialog
 - File must contain columns: employee_id, employee_name, performance, potential
 
-### 3. Interact with the Grid
+### 2. Interact with the Grid
 - **Drag employees**: Click and drag employee tiles to new boxes
 - **View details**: Click on an employee to see their profile and history
 - **Filter**: Use the Filters button to narrow down displayed employees
 - **Exclude**: Use the exclusion dialog to temporarily hide employees
 
-### 4. Export Changes
+### 3. Export Changes
 - Make changes by dragging employees
-- Click "Apply" button (shows badge with change count)
-- Download modified Excel file
+- Click "Export" button
+- Save modified Excel file using the native save dialog
+
+### 4. View Statistics
+- Click "Statistics" to see distribution charts
+- View employee counts per box
+- Analyze performance and potential trends
 
 ## Project Structure
 
 ```
 9boxer/
-├── backend/                 # FastAPI backend
-│   ├── src/
-│   │   └── ninebox/
-│   │       ├── core/       # Core functionality (auth, database)
-│   │       ├── models/     # Pydantic models
-│   │       ├── routes/     # API endpoints
-│   │       ├── services/   # Business logic
-│   │       └── main.py     # Application entry point
-│   ├── tests/              # Backend tests (119 tests, 92% coverage)
-│   └── pyproject.toml      # Backend dependencies
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── contexts/       # React contexts
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── services/       # API client
-│   │   ├── store/          # Zustand state management
-│   │   └── types/          # TypeScript types
-│   └── package.json        # Frontend dependencies
-├── docker/                 # Docker configuration
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.frontend
-│   └── nginx.conf
-├── docker-compose.yml      # Docker Compose configuration
-├── .env.example           # Environment variables template
-├── DEPLOYMENT.md          # Deployment guide
-└── USER_GUIDE.md          # User manual
+├── backend/                      # FastAPI backend
+│   ├── src/ninebox/              # Backend source code
+│   │   ├── core/                 # Core functionality (database, config)
+│   │   ├── models/               # Pydantic models
+│   │   ├── routers/              # API endpoints
+│   │   ├── services/             # Business logic
+│   │   ├── utils/                # Utilities (path resolution)
+│   │   └── main.py               # FastAPI application entry point
+│   ├── tests/                    # Backend tests (pytest)
+│   ├── build_config/             # PyInstaller configuration
+│   │   └── ninebox.spec          # PyInstaller spec file
+│   ├── scripts/                  # Build scripts
+│   │   ├── build_executable.sh   # Linux/macOS build script
+│   │   └── build_executable.bat  # Windows build script
+│   └── dist/ninebox/             # Built backend executable (gitignored)
+├── frontend/                     # React + Electron frontend
+│   ├── src/                      # React application
+│   │   ├── components/           # React components
+│   │   ├── hooks/                # Custom React hooks
+│   │   ├── services/             # API client
+│   │   ├── store/                # Zustand state management
+│   │   └── types/                # TypeScript types
+│   ├── electron/                 # Electron wrapper
+│   │   ├── main/                 # Main process (backend lifecycle)
+│   │   ├── preload/              # Preload scripts (IPC bridge)
+│   │   └── renderer/             # Splash screen
+│   ├── cypress/                  # E2E tests
+│   ├── release/                  # Built installers (gitignored)
+│   ├── electron-builder.json     # Electron packaging config
+│   └── package.json              # Frontend dependencies
+├── .venv/                        # Python virtual environment
+├── pyproject.toml                # Python dependencies + quality config
+├── BUILD.md                      # Build instructions
+├── DEPLOYMENT.md                 # Deployment guide
+└── USER_GUIDE.md                 # User manual
 ```
 
 ## Development
@@ -153,40 +188,55 @@ Frontend will run on http://localhost:5173
 ### Backend Testing
 
 ```bash
-cd backend
-. venv/bin/activate
-pytest                     # Run all tests
-pytest --cov              # Run with coverage
-pytest -k "test_name"     # Run specific tests
+# From project root
+. .venv/bin/activate    # Windows: .venv\Scripts\activate
+pytest                  # Run all tests
+pytest --cov            # Run with coverage
+pytest -k "test_name"   # Run specific tests
 ```
 
 Current coverage: 92% (119 tests)
 
-### Frontend Development
+### Frontend Testing
 
 ```bash
 cd frontend
-npm run dev              # Development server
-npm run build            # Production build
-npm run preview          # Preview production build
-npm run lint             # Lint code
+
+# Component tests (Vitest + React Testing Library)
+npm test                # Watch mode
+npm run test:run        # Run once
+npm run test:coverage   # With coverage
+
+# E2E tests (Cypress)
+npm run cy:open         # Interactive mode
+npm run cy:run          # Headless mode
 ```
 
 ### Code Quality
 
-Backend uses:
+**Backend** (Python):
 - ruff for linting and formatting
-- mypy for type checking
+- mypy + pyright for type checking
 - bandit for security scanning
 - pytest for testing
 
 ```bash
-cd backend
-. venv/bin/activate
-ruff format .           # Format code
-ruff check .            # Lint code
-mypy src/              # Type check
-bandit -r src/         # Security scan
+. .venv/bin/activate    # From project root
+make check-all          # Run all quality checks
+make fix                # Auto-fix formatting and linting
+```
+
+**Frontend** (TypeScript):
+- ESLint for linting
+- Prettier for formatting
+- TypeScript compiler for type checking
+- Vitest for unit tests, Cypress for E2E
+
+```bash
+cd frontend
+npm run lint            # Lint code
+npm run format          # Format code
+npm run type-check      # TypeScript checks
 ```
 
 ## API Documentation
@@ -219,23 +269,37 @@ Once the backend is running, visit:
 
 ## Configuration
 
-### Environment Variables
+### Application Data
 
-See `.env.example` for all available options:
+9Boxer stores data in platform-specific directories:
 
-- `SECRET_KEY` - JWT secret key (MUST change in production!)
-- `DATABASE_URL` - Database connection string
-- `CORS_ORIGINS` - Allowed CORS origins
-- `LOG_LEVEL` - Logging level (DEBUG, INFO, WARNING, ERROR)
-- `TOKEN_EXPIRE_MINUTES` - JWT token expiration (default: 60)
+- **Windows**: `C:\Users\{user}\AppData\Roaming\9Boxer\`
+- **macOS**: `~/Library/Application Support/9Boxer/`
+- **Linux**: `~/.config/9Boxer/`
+
+Contents:
+- `ninebox.db` - SQLite database with employees and changes
+- `backend.log` - Backend server logs (production mode)
+- Uploaded Excel files (temporary)
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions including:
-- Production deployment
-- Environment configuration
-- Security best practices
-- Troubleshooting
+The primary deployment model is **standalone desktop installers**. See [BUILD.md](BUILD.md) for complete build instructions.
+
+**Distribution:**
+1. Build platform-specific installers (see "Building Production Releases" above)
+2. Distribute installers to users via:
+   - GitHub Releases
+   - Internal file sharing
+   - Download portal
+
+**User Installation:**
+- Windows: Run .exe installer, follow wizard
+- macOS: Open .dmg, drag to Applications
+- Linux: Make .AppImage executable, run
+
+**Legacy Docker Deployment:**
+Docker-based web deployment configuration exists for legacy purposes but is not actively maintained. See [DEPLOYMENT.md](DEPLOYMENT.md) for details if needed.
 
 ## User Guide
 
@@ -264,8 +328,11 @@ For issues and questions:
 ## Acknowledgments
 
 Built with:
-- FastAPI - High-performance Python web framework
+- Electron - Cross-platform desktop framework
 - React - UI library
+- FastAPI - High-performance Python web framework
+- PyInstaller - Python executable bundler
 - Material-UI - React component library
 - Zustand - State management
+- Vite - Frontend build tool
 - openpyxl - Excel file processing

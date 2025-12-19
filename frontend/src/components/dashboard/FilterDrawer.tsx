@@ -2,7 +2,7 @@
  * Left sidebar filter panel
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Drawer,
   Box,
@@ -48,19 +48,10 @@ export const FilterDrawer: React.FC = () => {
   const [exclusionDialogOpen, setExclusionDialogOpen] = useState(false);
 
   // Get available filter options from current employee data
-  console.log('🎨 FilterDrawer rendering...');
-  console.log('  - employees:', employees);
-  console.log('  - employees count:', employees?.length ?? 0);
-  console.log('  - employees is array?', Array.isArray(employees));
-
-  const filterOptions = getAvailableOptions(employees);
-
-  // Debug logging
-  console.log('🎨 FilterDrawer - filterOptions received:');
-  console.log('  - jobFunctions:', filterOptions.jobFunctions);
-  console.log('  - locations:', filterOptions.locations);
-  console.log('  - levels:', filterOptions.levels);
-  console.log('  - managers:', filterOptions.managers.length, 'managers');
+  // Memoize to avoid reprocessing on every render (e.g., when drawer opens/closes)
+  const filterOptions = useMemo(() => {
+    return getAvailableOptions(employees);
+  }, [employees]);
 
   return (
     <>
@@ -243,6 +234,7 @@ export const FilterDrawer: React.FC = () => {
                     size="small"
                     fullWidth
                     onClick={() => setExclusionDialogOpen(true)}
+                    data-testid="exclude-employees-button"
                   >
                     Exclude Employees
                   </Button>
@@ -258,6 +250,7 @@ export const FilterDrawer: React.FC = () => {
               color="secondary"
               fullWidth
               onClick={clearAllFilters}
+              data-testid="clear-filter-button"
             >
               Clear All Filters
             </Button>

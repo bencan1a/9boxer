@@ -2,54 +2,204 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+**9Boxer is a standalone desktop application** built with Electron that embeds a FastAPI backend bundled with PyInstaller. It visualizes and manages employee performance using the 9-box talent grid methodology.
+
+**Key Architecture Points:**
+- **Deployment**: Standalone Electron desktop app (Windows/macOS/Linux installers)
+- **Frontend**: React 18 + TypeScript + Vite + Material-UI wrapped in Electron
+- **Backend**: FastAPI (Python 3.10+) bundled as executable with PyInstaller
+- **Communication**: Backend runs as subprocess, frontend communicates via HTTP (localhost:8000)
+- **Database**: SQLite stored in user's app data directory
+- **No external dependencies**: Everything bundled, no Python/Node.js installation required for end users
+
+**Legacy Note**: Docker-based web deployment configuration exists but is dormant and not actively maintained. The primary deployment target is the standalone Electron application.
+
 ## Critical: Virtual Environment
 
-**ALWAYS activate the virtual environment before running Python commands:**
+**This is a monorepo with backend (Python) and frontend (Node.js).**
+
+**For Python/Backend work, ALWAYS activate the root virtual environment:**
 ```bash
-. venv/bin/activate
+# From project root
+. .venv/bin/activate   # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
 ```
 
 If you see "module not found" errors, the venv is not activated. This is the #1 cause of issues.
+
+## Critical: Windows Reserved Names
+
+**IMPORTANT**: This project is developed on Windows. Avoid creating files with Windows reserved device names.
+
+### Reserved Names to NEVER Use as Filenames
+Windows reserves these names (case-insensitive, with or without extensions):
+- `CON`, `PRN`, `AUX`, `NUL`
+- `COM1` through `COM9`
+- `LPT1` through `LPT9`
+
+**Common Issue: `nul` Files**
+If you see phantom `nul` files that cannot be deleted/moved/renamed:
+- **Cause**: Using `"nul"` as a filename parameter instead of as a device redirect
+- **Symptom**: Zero-byte files appearing in git status but cannot be manipulated in Windows Explorer or git
+- **Fix**: Use PowerShell with device path syntax:
+  ```powershell
+  # From PowerShell (adjust paths as needed)
+  del "\\.\C:\Git_Repos\9boxer\nul"
+  del "\\.\C:\Git_Repos\9boxer\backend\nul"
+  del "\\.\C:\Git_Repos\9boxer\frontend\nul"
+  ```
+  Alternative: `Remove-Item -Path "\\?\C:\full\path\to\nul" -Force`
+
+### Proper Null Device Usage
+
+**In Python code:**
+```python
+import os
+import subprocess
+
+# ✅ CORRECT - Cross-platform null device
+with open(os.devnull, 'w') as devnull:
+    subprocess.run(['command'], stdout=devnull, stderr=devnull)
+
+# ❌ WRONG - Creates phantom file on Windows
+with open('nul', 'w') as f:
+    f.write('data')
+```
+
+**In shell commands:**
+```bash
+# ✅ CORRECT - Proper redirect syntax
+command 2>nul          # Windows (stderr to null)
+command >nul 2>&1      # Windows (stdout and stderr to null)
+command 2>/dev/null    # Unix (stderr to null)
+
+# ❌ WRONG - Treats nul as filename
+command > "nul"        # Creates file
+echo data > nul        # Creates file
+```
+
+**In Bash tool usage:**
+- Never use `nul` as a command or filename parameter
+- Always use proper shell redirect syntax (`>nul`, `2>nul`)
+- For cross-platform scripts, use conditional logic or `os.devnull`
+
+## Project Structure
+
+This is a consolidated monorepo for a standalone Electron desktop application:
+
+```
+9boxer/
+  .venv/              ← Single Python venv (backend deps + quality tools)
+  pyproject.toml      ← Backend dependencies + comprehensive quality config
+  backend/            ← FastAPI backend
+    src/ninebox/      ← Backend source code
+    tests/            ← Backend tests
+    build_config/     ← PyInstaller configuration (ninebox.spec)
+    scripts/          ← Build scripts (build_executable.sh/bat)
+    dist/ninebox/     ← PyInstaller output (bundled backend executable)
+  frontend/           ← React + Electron frontend
+    node_modules/     ← Frontend deps (separate from Python)
+    src/              ← React components
+    electron/         ← Electron wrapper
+      main/index.ts   ← Main process (backend lifecycle, window management)
+      preload/index.ts← IPC bridge (secure contextBridge API)
+      renderer/       ← Splash screen
+    release/          ← Electron Builder output (platform-specific installers)
+  USER_GUIDE.html     ← Bundled user documentation
+```
+
+**Backend Lifecycle (Electron Integration):**
+1. Electron main process spawns backend executable from `resources/backend/`
+2. Waits for health check at http://localhost:8000/health
+3. Frontend loads and communicates with backend via HTTP
+4. Backend killed when app closes
+
+**Build Outputs:**
+- Backend: `backend/dist/ninebox/` (PyInstaller executable, ~225MB)
+- Frontend: `frontend/release/` (Platform installers, ~300MB each)
+  - Windows: NSIS installer (.exe)
+  - macOS: DMG installer (.dmg)
+  - Linux: AppImage (.AppImage)
 
 ## Common Commands
 
 ### Development Setup
 ```bash
-# First time setup
-python3 -m venv venv
-. venv/bin/activate
+# First time setup (from project root)
+python3 -m venv .venv
+. .venv/bin/activate
 pip install --upgrade pip
 pip install -e '.[dev]'
 pre-commit install
 ```
 
-### Testing
+### Testing (Backend)
 ```bash
-# Always activate venv first: . venv/bin/activate
+# Always activate venv first: . .venv/bin/activate
 
-pytest                              # Run all tests
-pytest tests/test_calculator.py     # Run specific test file
-pytest -k "test_add"                # Run tests matching pattern
-pytest -v                           # Verbose output
-pytest --cov=src                    # Run with coverage
+pytest                                  # Run all backend tests
+pytest backend/tests/test_auth.py       # Run specific test file
+pytest -k "test_login"                  # Run tests matching pattern
+pytest -v                               # Verbose output
+pytest --cov=backend/src                # Run with coverage
 ```
 
-### Code Quality
+### Code Quality (Backend)
 ```bash
 # Run all quality checks at once
 make check-all
 
 # Individual checks
-ruff format .           # Format code
-ruff format --check .   # Check formatting
-ruff check .            # Lint code
-ruff check --fix .      # Auto-fix linting issues
-mypy src/               # Type check with mypy
-pyright                 # Type check with pyright
-bandit -r src/          # Security scan
+ruff format .                  # Format code
+ruff format --check .          # Check formatting
+ruff check .                   # Lint code
+ruff check --fix .             # Auto-fix linting issues
+mypy backend/src/              # Type check with mypy
+pyright                        # Type check with pyright
+bandit -r backend/src/         # Security scan
 
 # Quick fix
-make fix                # Auto-fix formatting and linting
+make fix                       # Auto-fix formatting and linting
+```
+
+### Frontend Commands
+```bash
+cd frontend
+npm install                    # Install dependencies
+npm run dev                    # Vite dev server (for web development)
+npm run electron:dev           # Run Electron in dev mode (full app)
+npm test                       # Run Vitest component tests
+npm run test:e2e:pw            # Run Playwright E2E tests
+```
+
+### Build Commands (Standalone Application)
+
+**Important**: The backend must be built BEFORE building the frontend/Electron app.
+
+```bash
+# Step 1: Build backend executable (from project root)
+cd backend
+.venv\Scripts\activate         # Windows
+# or
+. .venv/bin/activate           # Linux/macOS
+.\scripts\build_executable.bat # Windows
+# or
+./scripts/build_executable.sh  # Linux/macOS
+
+# Verify backend build
+ls dist/ninebox/               # Should see ninebox.exe or ninebox executable
+
+# Step 2: Build Electron application
+cd ../frontend
+npm run electron:build         # Validates backend exists, then builds
+
+# Output in frontend/release/
+# - Windows: 9Boxer-1.0.0-Windows-x64.exe
+# - macOS: 9Boxer-1.0.0-macOS-x64.dmg
+# - Linux: 9Boxer-1.0.0-Linux-x64.AppImage
 ```
 
 ### Makefile Targets
@@ -62,16 +212,25 @@ make fix                # Auto-fix formatting and linting
 
 ## Architecture Overview
 
-### Package Structure
-This project uses the standard Python `src/` layout:
-- **`src/python_template/`** - Main package source code
-  - Type aliases defined inline (e.g., `Number = int | float`)
+### Backend Package Structure
+The backend uses the standard Python `src/` layout:
+- **`backend/src/ninebox/`** - FastAPI backend application
   - All functions require type annotations
   - Comprehensive docstrings with examples
-- **`tests/`** - Test files following pytest conventions
+  - API routes in `routers/`
+  - Business logic in `services/`
+  - Data models in `models/`
+- **`backend/tests/`** - Test files following pytest conventions
   - Named `test_*.py`
   - Test functions named `test_function_when_condition_then_expected`
   - No conditional assertions in test bodies
+
+### Frontend Structure
+- **`frontend/src/`** - React application (TypeScript)
+- **`frontend/electron/`** - Electron wrapper
+  - `main/` - Main process
+  - `preload/` - Preload scripts
+  - `renderer/` - Renderer utilities
 
 ### File Organization Conventions
 The project has strict conventions for where files belong (see [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)):
@@ -126,6 +285,127 @@ All code must have type annotations:
 7. Aim for >80% coverage
 
 See `.github/agents/test.md` for comprehensive testing guidance.
+
+### Frontend Testing
+
+**Test Frameworks:**
+- **Component Tests:** Vitest + React Testing Library
+- **E2E Tests:** Playwright
+
+**Running Tests:**
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Component tests (watch mode)
+npm test
+
+# Component tests (run once)
+npm run test:run
+
+# Component tests with coverage
+npm run test:coverage
+
+# Component tests with UI
+npm run test:ui
+
+# E2E tests - Playwright
+npm run test:e2e:pw              # Run all Playwright E2E tests
+npm run test:e2e:pw:ui           # Run with Playwright UI mode
+npm run test:e2e:pw:debug        # Run in debug mode
+npx playwright test upload-flow.spec.ts  # Run specific test file
+```
+
+**Playwright Features:**
+- Automatically starts both backend (FastAPI) and frontend (Vite) servers
+- No manual server setup required
+- Tests run in isolation with automatic cleanup
+- Superior ARM compatibility and performance
+- All 12 E2E tests passing
+
+**Writing Component Tests:**
+- Test framework: React Testing Library with Vitest
+- Location: `frontend/src/components/__tests__/` or colocated `ComponentName.test.tsx`
+- Follow user-visible behavior, not implementation details
+- Use `data-testid` attributes for reliable element selection
+- Use `render` from `@/test/utils` (includes test providers)
+- Mock user events with `fireEvent` or `userEvent`
+- Test async behavior with `waitFor`
+
+Example pattern:
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@/test/utils';
+import Button from '@/components/Button';
+
+describe('Button', () => {
+  it('displays label when rendered', () => {
+    render(<Button label="Click me" />);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('calls onClick handler when clicked', () => {
+    const handleClick = vi.fn();
+    render(<Button label="Click" onClick={handleClick} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalled();
+  });
+});
+```
+
+**Writing E2E Tests with Playwright:**
+- Test framework: Playwright
+- Location: `frontend/playwright/e2e/` with naming pattern `feature-flow.spec.ts`
+- Helpers: `frontend/playwright/helpers/` (uploadFile, navigation, assertions)
+- Fixtures: `frontend/playwright/fixtures/` (Excel test files)
+- Configuration: `frontend/playwright.config.ts`
+- Test complete user workflows end-to-end
+- Use `page.goto()` to navigate, helper functions from `playwright/helpers/`
+- Use `data-testid` attributes for reliable element selection
+- Verify both UI updates and data consistency
+- Servers auto-start (no manual setup required)
+
+Example pattern:
+```typescript
+import { test, expect } from '@playwright/test';
+import { uploadExcelFile } from '../helpers/upload';
+
+test.describe('Employee Upload Flow', () => {
+  test('allows user to upload Excel file and view employees', async ({ page }) => {
+    await page.goto('/');
+
+    // Upload file using helper function
+    await uploadExcelFile(page, 'sample-employees.xlsx');
+
+    // Verify grid displays with employees
+    await expect(page.getByTestId('nine-box-grid')).toBeVisible();
+    const employeeCards = page.getByTestId('employee-card');
+    await expect(employeeCards).toHaveCount(await employeeCards.count());
+  });
+});
+```
+
+**Playwright Test Files:**
+- `upload-flow.spec.ts` - File upload workflows (3 tests)
+- `employee-movement.spec.ts` - Drag and drop functionality (2 tests)
+- `filter-flow.spec.ts` - Search and filtering (3 tests)
+- `export-flow.spec.ts` - Excel export functionality (2 tests)
+- `intelligence-flow.spec.ts` - AI insights features (2 tests)
+
+**Test Data & Fixtures:**
+- Component test mock data: `frontend/src/test/mockData.ts`
+- E2E test fixtures: `frontend/playwright/fixtures/`
+- Use factory functions for variations on test data
+- Keep test data realistic and representative
+
+**Comprehensive Testing Documentation:**
+- **`docs/testing/`** - Complete testing guides and templates
+  - `test-principles.md` - Core testing philosophy and best practices
+  - `quick-reference.md` - Fast lookup for common patterns and commands
+  - `testing-checklist.md` - Pre-commit testing checklist
+  - `templates/` - Test templates for backend, component, and E2E tests
+
+See `docs/testing/` for comprehensive testing principles and best practices.
 
 ### CI/CD Pipeline
 GitHub Actions workflows in `.github/workflows/`:
@@ -236,4 +516,9 @@ For unavoidable warnings:
 - **`docs/CONTEXT.md`** - Main documentation context for AI agents
 - **`docs/facts.json`** - Stable project truths (highest authority)
 - **`pyproject.toml`** - All tool configurations and dependencies
-- **`.github/agents/test.md`** - Comprehensive testing guidance
+- **`.github/agents/test.md`** - Backend testing strategies (agent profile)
+- **`docs/testing/`** - Comprehensive testing documentation
+  - `test-principles.md` - Testing philosophy and best practices
+  - `quick-reference.md` - Quick lookup for testing patterns
+  - `testing-checklist.md` - Pre-commit testing checklist
+  - `templates/` - Test templates for all test types

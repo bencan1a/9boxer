@@ -1,14 +1,39 @@
 """Employee filtering and query service."""
 
-from typing import Optional
-
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 
 # European country codes (ISO 3166-1 alpha-3)
 EUROPEAN_COUNTRIES = {
-    "GBR", "FRA", "DEU", "ITA", "ESP", "NLD", "BEL", "SWE", "NOR", "DNK",
-    "FIN", "POL", "AUT", "CHE", "IRL", "PRT", "GRC", "CZE", "HUN", "ROU",
-    "BGR", "HRV", "SVK", "SVN", "LTU", "LVA", "EST", "LUX", "MLT", "CYP"
+    "GBR",
+    "FRA",
+    "DEU",
+    "ITA",
+    "ESP",
+    "NLD",
+    "BEL",
+    "SWE",
+    "NOR",
+    "DNK",
+    "FIN",
+    "POL",
+    "AUT",
+    "CHE",
+    "IRL",
+    "PRT",
+    "GRC",
+    "CZE",
+    "HUN",
+    "ROU",
+    "BGR",
+    "HRV",
+    "SVK",
+    "SVN",
+    "LTU",
+    "LVA",
+    "EST",
+    "LUX",
+    "MLT",
+    "CYP",
 }
 
 LOCATION_MAP = {
@@ -32,14 +57,14 @@ class EmployeeService:
     def filter_employees(
         self,
         employees: list[Employee],
-        levels: Optional[list[str]] = None,
-        job_profiles: Optional[list[str]] = None,
-        job_functions: Optional[list[str]] = None,
-        locations: Optional[list[str]] = None,
-        managers: Optional[list[str]] = None,
-        exclude_ids: Optional[list[int]] = None,
-        performance: Optional[list[str]] = None,
-        potential: Optional[list[str]] = None,
+        levels: list[str] | None = None,
+        job_profiles: list[str] | None = None,
+        job_functions: list[str] | None = None,
+        locations: list[str] | None = None,
+        managers: list[str] | None = None,
+        exclude_ids: list[int] | None = None,
+        performance: list[str] | None = None,
+        potential: list[str] | None = None,
     ) -> list[Employee]:
         """Apply filters to employee list."""
         filtered = employees
@@ -83,21 +108,19 @@ class EmployeeService:
     def get_filter_options(self, employees: list[Employee]) -> dict:
         """Extract unique filter options from employee list."""
         # Extract unique job levels
-        levels = sorted(set(e.job_level for e in employees))
+        levels = sorted({e.job_level for e in employees})
 
         # Extract unique job profiles (legacy - kept for backward compatibility)
-        job_profiles = sorted(set(e.job_profile for e in employees if e.job_profile))
+        job_profiles = sorted({e.job_profile for e in employees if e.job_profile})
 
         # Extract unique job functions
-        job_functions = sorted(set(e.job_function for e in employees if e.job_function))
+        job_functions = sorted({e.job_function for e in employees if e.job_function})
 
         # Extract unique locations and map to display names
-        locations = sorted(set(
-            map_location_to_display(e.location) for e in employees if e.location
-        ))
+        locations = sorted({map_location_to_display(e.location) for e in employees if e.location})
 
         # Extract unique managers
-        managers = sorted(set(e.manager for e in employees if e.manager))
+        managers = sorted({e.manager for e in employees if e.manager})
 
         # List all employees for exclusion selector
         employee_list = [
@@ -113,7 +136,3 @@ class EmployeeService:
             "managers": managers,
             "employees": employee_list,
         }
-
-
-# Global employee service instance
-employee_service = EmployeeService()

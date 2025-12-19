@@ -11,8 +11,14 @@ def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> dict[str, str]:
     """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:
-        files = {"file": ("test.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
     return auth_headers
 
@@ -209,8 +215,19 @@ def test_get_statistics_when_percentages_then_sum_to_100(
     assert abs(total_percentage - 100.0) < 0.1
 
 
-def test_get_statistics_when_no_auth_then_returns_401(test_client: TestClient) -> None:
-    """Test GET /api/statistics without authentication returns 401."""
-    response = test_client.get("/api/statistics")
+def test_get_statistics_when_invalid_exclude_ids_then_returns_400(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test that invalid exclude_ids returns 400 (not 500)."""
+    response = test_client.get(
+        "/api/statistics?exclude_ids=1,invalid,3", headers=session_with_data
+    )
 
-    assert response.status_code == 401
+    assert response.status_code == 400
+    data = response.json()
+    assert "Invalid employee ID" in data["detail"]
+    assert "must be comma-separated integers" in data["detail"]
+
+
+# NOTE: test_get_statistics_when_no_auth_then_returns_401 removed
+# This app is local-only without authentication

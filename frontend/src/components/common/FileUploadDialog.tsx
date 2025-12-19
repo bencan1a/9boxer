@@ -1,5 +1,5 @@
 /**
- * File upload dialog component
+ * File import dialog component
  */
 
 import React, { useState } from "react";
@@ -17,6 +17,7 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSessionStore } from "../../store/sessionStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
+import { logger } from "../../utils/logger";
 
 interface FileUploadDialogProps {
   open: boolean;
@@ -30,8 +31,64 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
   const { uploadFile, isLoading } = useSessionStore();
   const { showSuccess, showError } = useSnackbar();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Use Electron file dialog if available, otherwise fall back to HTML input
+  const handleSelectFileClick = async () => {
+    if (window.electronAPI?.openFileDialog) {
+      // Use Electron file dialog to get the actual file path
+      const filePath = await window.electronAPI.openFileDialog();
+      if (filePath) {
+        await handleFileSelectFromPath(filePath);
+      }
+    }
+  };
+
+  const handleFileSelectFromPath = async (filePath: string) => {
+    try {
+      // Read the file using Electron API
+      const fileResult = await window.electronAPI!.readFile(filePath);
+      if (!fileResult.success || !fileResult.buffer || !fileResult.fileName) {
+        setError(fileResult.error || "Failed to read file");
+        return;
+      }
+
+      // Convert buffer to File object
+      const uint8Array = new Uint8Array(fileResult.buffer);
+      const blob = new Blob([uint8Array], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const file = new File([blob], fileResult.fileName, {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Validate file size (< 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setError("File size must be less than 10MB");
+        setSelectedFile(null);
+        setSelectedFilePath(null);
+        return;
+      }
+
+      // Validate file type
+      if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
+        setError("Please select an Excel file (.xlsx or .xls)");
+        setSelectedFile(null);
+        setSelectedFilePath(null);
+        return;
+      }
+
+      setSelectedFile(file);
+      setSelectedFilePath(filePath);
+      setError(null);
+    } catch (err) {
+      setError("Failed to read file");
+      logger.error('Error reading file', err);
+    }
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -51,11 +108,12 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
         return;
       }
       setSelectedFile(file);
+      setSelectedFilePath(null); // No path available from HTML input
       setError(null);
     }
   };
 
-  const handleUpload = async () => {
+  const handleImport = async () => {
     if (!selectedFile) {
       setError("Please select a file first");
       return;
@@ -65,16 +123,18 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     setSuccess(false);
 
     try {
-      await uploadFile(selectedFile);
+      // Pass the file path to uploadFile so it can be persisted
+      await uploadFile(selectedFile, selectedFilePath || undefined);
       setSuccess(true);
-      showSuccess(`Successfully uploaded ${selectedFile.name}`);
+      showSuccess(`Successfully imported ${selectedFile.name}`);
       setTimeout(() => {
         onClose();
         setSelectedFile(null);
+        setSelectedFilePath(null);
         setSuccess(false);
       }, 1500);
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Failed to upload file";
+      const errorMessage = err.response?.data?.detail || "Failed to import file";
       setError(errorMessage);
       showError(errorMessage);
     }
@@ -84,18 +144,19 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     if (!isLoading) {
       onClose();
       setSelectedFile(null);
+      setSelectedFilePath(null);
       setError(null);
       setSuccess(false);
     }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Upload Excel File</DialogTitle>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth data-testid="file-upload-dialog">
+      <DialogTitle>Import Excel File</DialogTitle>
       <DialogContent>
         <Box sx={{ py: 2 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Upload a 9-Box talent mapping Excel file (.xlsx or .xls)
+            Import a 9-Box talent mapping Excel file (.xlsx or .xls)
           </Typography>
 
           {error && (
@@ -106,7 +167,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
           {success && (
             <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-              File uploaded successfully!
+              File imported successfully!
             </Alert>
           )}
 
@@ -121,24 +182,39 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
               backgroundColor: "background.default",
             }}
           >
-            <input
-              accept=".xlsx,.xls"
-              style={{ display: "none" }}
-              id="file-upload-input"
-              type="file"
-              onChange={handleFileSelect}
-              disabled={isLoading}
-            />
-            <label htmlFor="file-upload-input">
+            {window.electronAPI ? (
+              // Electron: Use native file dialog
               <Button
-                component="span"
                 variant="outlined"
                 startIcon={<CloudUploadIcon />}
                 disabled={isLoading}
+                onClick={handleSelectFileClick}
               >
                 Select File
               </Button>
-            </label>
+            ) : (
+              // Web: Use HTML file input
+              <>
+                <input
+                  accept=".xlsx,.xls"
+                  style={{ display: "none" }}
+                  id="file-upload-input"
+                  type="file"
+                  onChange={handleFileSelect}
+                  disabled={isLoading}
+                />
+                <label htmlFor="file-upload-input">
+                  <Button
+                    component="span"
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    disabled={isLoading}
+                  >
+                    Select File
+                  </Button>
+                </label>
+              </>
+            )}
 
             {selectedFile && (
               <Typography variant="body2" sx={{ mt: 2 }}>
@@ -153,12 +229,13 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           Cancel
         </Button>
         <Button
-          onClick={handleUpload}
+          onClick={handleImport}
           variant="contained"
           disabled={!selectedFile || isLoading}
           startIcon={isLoading ? <CircularProgress size={16} /> : null}
+          data-testid="upload-submit-button"
         >
-          {isLoading ? "Uploading..." : "Upload"}
+          {isLoading ? "Importing..." : "Import"}
         </Button>
       </DialogActions>
     </Dialog>

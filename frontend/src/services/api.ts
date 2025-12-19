@@ -4,9 +4,6 @@
 
 import axios, { AxiosInstance, AxiosError } from "axios";
 import {
-  LoginRequest,
-  TokenResponse,
-  UserResponse,
   UploadResponse,
   SessionStatusResponse,
   EmployeesResponse,
@@ -17,76 +14,53 @@ import {
   IntelligenceData,
 } from "../types/api";
 import { Employee } from "../types/employee";
-import { useAuthStore } from "../store/authStore";
+import { EmployeeMove } from "../types/session";
+import { API_BASE_URL } from "../config";
+
+/**
+ * Custom error class that preserves backend error details
+ */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode?: number,
+    public detail?: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
 
 class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      baseURL: "",
+      baseURL: API_BASE_URL,
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    // Request interceptor to add Authorization header
-    this.client.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem("auth_token");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-
-    // Response interceptor for error handling and activity tracking
+    // Add response interceptor to extract backend error details
     this.client.interceptors.response.use(
-      (response) => {
-        // Record activity on successful API call to extend session
-        const { recordActivity, isAuthenticated } = useAuthStore.getState();
-        if (isAuthenticated) {
-          recordActivity();
+      (response) => response,
+      (error: AxiosError<{ detail?: string }>) => {
+        // Extract backend error detail if available
+        const detail = error.response?.data?.detail;
+        const statusCode = error.response?.status;
+
+        // Create informative error message
+        let message = error.message;
+        if (detail) {
+          message = detail;
+        } else if (statusCode) {
+          message = `Request failed with status ${statusCode}`;
         }
-        return response;
-      },
-      (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Unauthorized - clear token, expiration, and activity, then redirect to login
-          localStorage.removeItem("auth_token");
-          localStorage.removeItem("auth_expires_at");
-          localStorage.removeItem("auth_last_activity");
-          window.location.href = "/login";
-        }
-        return Promise.reject(error);
+
+        throw new ApiError(message, statusCode, detail);
       }
     );
-  }
-
-  // ==================== Auth Methods ====================
-
-  async login(username: string, password: string): Promise<TokenResponse> {
-    const response = await this.client.post<TokenResponse>("/api/auth/login", {
-      username,
-      password,
-    } as LoginRequest);
-    return response.data;
-  }
-
-  async logout(): Promise<{ success: boolean }> {
-    const response = await this.client.post<{ success: boolean }>(
-      "/api/auth/logout"
-    );
-    return response.data;
-  }
-
-  async me(): Promise<UserResponse> {
-    const response = await this.client.get<UserResponse>("/api/auth/me");
-    return response.data;
   }
 
   // ==================== Session Methods ====================
@@ -125,6 +99,14 @@ class ApiClient {
     const response = await this.client.post("/api/session/export", null, {
       responseType: "blob",
     });
+    return response.data;
+  }
+
+  async updateChangeNotes(employeeId: number, notes: string): Promise<EmployeeMove> {
+    const response = await this.client.patch<EmployeeMove>(
+      `/api/session/changes/${employeeId}/notes`,
+      { notes }
+    );
     return response.data;
   }
 

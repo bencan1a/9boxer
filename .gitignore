@@ -35,6 +35,8 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+# Exception: Keep our build configuration spec file
+!backend/build_config/*.spec
 
 # Installer logs
 pip-log.txt
@@ -222,3 +224,21 @@ __marimo__/
 
 /**/node_modules/
 backend/data/temp/
+
+# Electron build artifacts
+frontend/dist-electron/
+frontend/release/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+
+.claude/settings.local.json
+.vscode/settings.json
+frontend/playwright-report/
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/
+

@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, Paper } from "@mui/material";
 import { DetailsTab } from "./DetailsTab";
+import { ChangeTrackerTab } from "./ChangeTrackerTab";
 import { StatisticsTab } from "./StatisticsTab";
 import { IntelligenceTab } from "./IntelligenceTab";
 
@@ -54,9 +55,10 @@ export const RightPanel: React.FC = () => {
           aria-label="panel tabs"
           variant="fullWidth"
         >
-          <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" />
-          <Tab label="Statistics" id="panel-tab-1" aria-controls="panel-tabpanel-1" />
-          <Tab label="Intelligence" id="panel-tab-2" aria-controls="panel-tabpanel-2" />
+          <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
+          <Tab label="Changes" id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="changes-tab" />
+          <Tab label="Statistics" id="panel-tab-2" aria-controls="panel-tabpanel-2" data-testid="statistics-tab" />
+          <Tab label="Intelligence" id="panel-tab-3" aria-controls="panel-tabpanel-3" data-testid="intelligence-tab" />
         </Tabs>
       </Box>
 
@@ -66,10 +68,14 @@ export const RightPanel: React.FC = () => {
         </TabPanel>
 
         <TabPanel value={activeTab} index={1}>
-          <StatisticsTab />
+          <ChangeTrackerTab />
         </TabPanel>
 
         <TabPanel value={activeTab} index={2}>
+          <StatisticsTab />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={3}>
           <IntelligenceTab />
         </TabPanel>
       </Box>
