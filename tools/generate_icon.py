@@ -2,6 +2,7 @@
 """Generate app icon with 3x3 grid for Nine Box application."""
 
 from pathlib import Path
+
 from PIL import Image, ImageDraw
 
 
@@ -15,12 +16,12 @@ def create_ninebox_icon(size: int = 512) -> Image.Image:
         PIL Image with 3x3 grid
     """
     # Create image with white background
-    img = Image.new('RGBA', (size, size), (255, 255, 255, 255))
+    img = Image.new("RGBA", (size, size), (255, 255, 255, 255))
     draw = ImageDraw.Draw(img)
 
     # Colors
     bg_color = (255, 255, 255, 255)  # White background
-    grid_color = (33, 33, 33, 255)   # Dark gray/black lines
+    grid_color = (33, 33, 33, 255)  # Dark gray/black lines
 
     # Calculate grid dimensions with padding
     padding = int(size * 0.1)  # 10% padding on each side
@@ -36,9 +37,7 @@ def create_ninebox_icon(size: int = 512) -> Image.Image:
 
             # Draw cell border
             draw.rectangle(
-                [x, y, x + cell_size, y + cell_size],
-                outline=grid_color,
-                width=line_width
+                [x, y, x + cell_size, y + cell_size], outline=grid_color, width=line_width
             )
 
     return img
@@ -55,7 +54,7 @@ def save_icon_formats(base_img: Image.Image, output_dir: Path) -> None:
 
     # Save high-res PNG
     base_img.save(output_dir / "icon.png", "PNG")
-    print(f"[OK] Saved icon.png (512x512)")
+    print("[OK] Saved icon.png (512x512)")
 
     # Save standard sizes for Linux
     linux_sizes = [16, 32, 48, 64, 128, 256, 512]
@@ -67,12 +66,8 @@ def save_icon_formats(base_img: Image.Image, output_dir: Path) -> None:
     # Save ICO for Windows (multi-resolution, up to 512x512 for electron-builder)
     ico_sizes = [(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256), (512, 512)]
     ico_images = [base_img.resize(size, Image.Resampling.LANCZOS) for size in ico_sizes]
-    ico_images[0].save(
-        output_dir / "icon.ico",
-        format="ICO",
-        sizes=ico_sizes
-    )
-    print(f"[OK] Saved icon.ico (multi-resolution, up to 512x512)")
+    ico_images[0].save(output_dir / "icon.ico", format="ICO", sizes=ico_sizes)
+    print("[OK] Saved icon.ico (multi-resolution, up to 512x512)")
 
     print(f"\n[OK] All icons saved to {output_dir}")
     print("\nNote: For macOS .icns generation, you'll need to run:")
