@@ -32,6 +32,10 @@
     {
       "from": "../USER_GUIDE.html",
       "to": "USER_GUIDE.html"
+    },
+    {
+      "from": "../Anonymized Example.xlsx",
+      "to": "Anonymized Example.xlsx"
     }
   ],
   "win": {
