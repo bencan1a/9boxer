@@ -2,51 +2,221 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Loading...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading 9Boxer...</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
       color: white;
+      overflow: hidden;
     }
+
+    /* Animated background gradient */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: backgroundMove 20s linear infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes backgroundMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
     .container {
       text-align: center;
+      z-index: 1;
+      animation: fadeIn 0.3s ease-out;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 9-Box Grid Logo */
+    .logo {
+      margin: 0 auto 30px;
+      width: 120px;
+      height: 120px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 6px;
+      animation: logoAppear 0.4s ease-out 0.1s both;
+    }
+
+    @keyframes logoAppear {
+      from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+      to { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .logo-cell {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      backdrop-filter: blur(10px);
+      animation: cellPulse 1s ease-in-out infinite;
+    }
+
+    /* Different animation delays for each cell */
+    .logo-cell:nth-child(1) { animation-delay: 0s; }
+    .logo-cell:nth-child(2) { animation-delay: 0.05s; }
+    .logo-cell:nth-child(3) { animation-delay: 0.1s; }
+    .logo-cell:nth-child(4) { animation-delay: 0.15s; }
+    .logo-cell:nth-child(5) {
+      animation-delay: 0.2s;
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    .logo-cell:nth-child(6) { animation-delay: 0.25s; }
+    .logo-cell:nth-child(7) { animation-delay: 0.3s; }
+    .logo-cell:nth-child(8) { animation-delay: 0.35s; }
+    .logo-cell:nth-child(9) { animation-delay: 0.4s; }
+
+    @keyframes cellPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
     h1 {
-      font-size: 32px;
-      font-weight: 300;
-      margin-bottom: 30px;
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleSlide 0.4s ease-out 0.2s both;
     }
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid white;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
+
+    @keyframes titleSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .message {
+
+    .subtitle {
       font-size: 16px;
+      font-weight: 400;
       opacity: 0.9;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: subtitleSlide 0.4s ease-out 0.25s both;
+    }
+
+    @keyframes subtitleSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 0.9; transform: translateY(0); }
+    }
+
+    /* Loading Bar */
+    .loading-container {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      animation: loadingContainerAppear 0.4s ease-out 0.3s both;
+    }
+
+    @keyframes loadingContainerAppear {
+      from { opacity: 0; width: 0; }
+      to { opacity: 1; width: 200px; }
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.6) 0%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,0.6) 100%);
+      border-radius: 2px;
+      animation: loadingProgress 0.75s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes loadingProgress {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .message {
+      font-size: 14px;
+      opacity: 0.8;
+      font-weight: 400;
+      animation: messageAppear 0.4s ease-out 0.35s both;
+    }
+
+    @keyframes messageAppear {
+      from { opacity: 0; }
+      to { opacity: 0.8; }
+    }
+
+    /* Loading dots animation */
+    .dots {
+      display: inline-block;
+      width: 20px;
+      text-align: left;
+    }
+
+    .dots::after {
+      content: '';
+      animation: dots 0.75s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>9-Box Performance Review</h1>
-    <div class="spinner"></div>
-    <p class="message">Loading application...</p>
+    <!-- 9-Box Grid Logo -->
+    <div class="logo">
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+      <div class="logo-cell"></div>
+    </div>
+
+    <h1>9Boxer</h1>
+    <p class="subtitle">Talent Management</p>
+
+    <div class="loading-container">
+      <div class="loading-bar"></div>
+    </div>
+
+    <p class="message">Starting application<span class="dots"></span></p>
   </div>
 </body>
 </html>

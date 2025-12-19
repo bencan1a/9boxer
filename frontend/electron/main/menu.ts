@@ -125,8 +125,8 @@ export function createMenu(mainWindow: BrowserWindow): Menu {
 
             dialog.showMessageBox(mainWindow, {
               type: 'info',
-              title: 'About 9-Box Performance Review',
-              message: '9-Box Performance Review',
+              title: 'About 9Boxer',
+              message: '9Boxer',
               detail: `Version: ${version}\n\nA talent management tool for performance and potential assessment.\n\n© 2025 Your Company`,
               buttons: ['OK'],
             });

@@ -1,5 +1,5 @@
 /**
- * File upload dialog component
+ * File import dialog component
  */
 
 import React, { useState } from "react";
@@ -112,7 +112,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     }
   };
 
-  const handleUpload = async () => {
+  const handleImport = async () => {
     if (!selectedFile) {
       setError("Please select a file first");
       return;
@@ -125,7 +125,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Pass the file path to uploadFile so it can be persisted
       await uploadFile(selectedFile, selectedFilePath || undefined);
       setSuccess(true);
-      showSuccess(`Successfully uploaded ${selectedFile.name}`);
+      showSuccess(`Successfully imported ${selectedFile.name}`);
       setTimeout(() => {
         onClose();
         setSelectedFile(null);
@@ -133,7 +133,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
         setSuccess(false);
       }, 1500);
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Failed to upload file";
+      const errorMessage = err.response?.data?.detail || "Failed to import file";
       setError(errorMessage);
       showError(errorMessage);
     }
@@ -151,11 +151,11 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth data-testid="file-upload-dialog">
-      <DialogTitle>Upload Excel File</DialogTitle>
+      <DialogTitle>Import Excel File</DialogTitle>
       <DialogContent>
         <Box sx={{ py: 2 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Upload a 9-Box talent mapping Excel file (.xlsx or .xls)
+            Import a 9-Box talent mapping Excel file (.xlsx or .xls)
           </Typography>
 
           {error && (
@@ -166,7 +166,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
           {success && (
             <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-              File uploaded successfully!
+              File imported successfully!
             </Alert>
           )}
 
@@ -228,13 +228,13 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           Cancel
         </Button>
         <Button
-          onClick={handleUpload}
+          onClick={handleImport}
           variant="contained"
           disabled={!selectedFile || isLoading}
           startIcon={isLoading ? <CircularProgress size={16} /> : null}
           data-testid="upload-submit-button"
         >
-          {isLoading ? "Uploading..." : "Upload"}
+          {isLoading ? "Importing..." : "Import"}
         </Button>
       </DialogActions>
     </Dialog>

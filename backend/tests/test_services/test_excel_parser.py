@@ -193,31 +193,24 @@ def test_get_position_label_when_all_combinations_then_returns_correct_labels() 
     """Test position label generation."""
     parser = ExcelParser()
 
+    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Star [H,H]"
     assert (
-        parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Top Talent [H,H]"
+        parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
     )
-    assert (
-        parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM)
-        == "High Impact Talent [H,M]"
-    )
-    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "High/Low [H,L]"
-    assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH)
-        == "Growth Talent [M,H]"
-    )
+    assert parser._get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "Workhorse [H,L]"
+    assert parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth [M,H]"
     assert (
         parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
         == "Core Talent [M,M]"
     )
     assert (
-        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == "Med/Low [M,L]"
+        parser._get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW)
+        == "Effective Pro [M,L]"
+    )
+    assert parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
+    assert (
+        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
     )
     assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH)
-        == "Emerging Talent [L,H]"
+        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
     )
-    assert (
-        parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM)
-        == "Inconsistent Talent [L,M]"
-    )
-    assert parser._get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Low/Low [L,L]"

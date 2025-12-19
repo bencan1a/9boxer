@@ -4,11 +4,12 @@
 
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { Box, Typography, Badge, IconButton, alpha } from "@mui/material";
+import { Box, Typography, Badge, IconButton, alpha, Tooltip } from "@mui/material";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
+import { getPositionName, getPositionGuidance } from "../../constants/positionLabels";
 
 // Styling constants
 const BOX_HEIGHTS = {
@@ -61,21 +62,28 @@ export const GridBox: React.FC<GridBoxProps> = ({
   });
 
   // Background color based on position (performance/potential)
+  // Position layout: [7=L,H], [8=M,H], [9=H,H] (top row)
+  //                  [4=L,M], [5=M,M], [6=H,M] (middle row)
+  //                  [1=L,L], [2=M,L], [3=H,L] (bottom row)
   const getBackgroundColor = (pos: number): string => {
-    // High performance rows (3, 6, 9)
-    if ([3, 6, 9].includes(pos)) {
-      return "#e8f5e9"; // Light green
+    // Purple: [M,H], [H,H], [H,M] = positions 8, 9, 6
+    if ([6, 8, 9].includes(pos)) {
+      return "#e1d5f0"; // Pastel purple
     }
-    // High potential columns (7, 8, 9)
-    if ([7, 8, 9].includes(pos)) {
-      return "#e3f2fd"; // Light blue
+    // Red: [L,L], [M,L], [L,M] = positions 1, 2, 4
+    if ([1, 2, 4].includes(pos)) {
+      return "#ffd9d9"; // Pastel red
     }
-    // Medium
-    if ([2, 5, 8].includes(pos)) {
-      return "#fff9e6"; // Light yellow
+    // Green: [M,M] = position 5
+    if (pos === 5) {
+      return "#d4edda"; // Pastel green
     }
-    // Low
-    return "#ffebee"; // Light red
+    // Yellow: [L,H], [H,L] = positions 7, 3
+    if ([3, 7].includes(pos)) {
+      return "#fff9d9"; // Pastel yellow
+    }
+    // Fallback (should not happen)
+    return "#f5f5f5";
   };
 
   // Calculate dynamic styling based on expansion state
@@ -139,17 +147,25 @@ export const GridBox: React.FC<GridBoxProps> = ({
           mb: isCollapsed ? 0 : 1,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1 }}>
-          <Typography
-            variant="caption"
-            fontWeight="bold"
-            sx={{
-              fontSize: isExpanded ? "0.85rem" : "0.7rem",
-              display: "block",
-            }}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+          <Tooltip
+            title={getPositionGuidance(position)}
+            arrow
+            placement="top"
+            enterDelay={300}
           >
-            {shortLabel}
-          </Typography>
+            <Typography
+              variant="caption"
+              fontWeight="bold"
+              sx={{
+                fontSize: isExpanded ? "0.85rem" : "0.7rem",
+                display: "block",
+                cursor: "help",
+              }}
+            >
+              {getPositionName(position)} {shortLabel}
+            </Typography>
+          </Tooltip>
           {!isCollapsed && (
             <Badge
               badgeContent={employees.length}

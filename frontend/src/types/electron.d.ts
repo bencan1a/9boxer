@@ -48,6 +48,12 @@ export interface ElectronAPI {
     error?: string;
   }>;
 
+  /**
+   * Open the user guide in the default browser.
+   * Returns success status and error message if failed.
+   */
+  openUserGuide: () => Promise<{ success: boolean; error?: string }>;
+
   // Future APIs that could be added:
   // showNotification(title: string, options?: NotificationOptions): void;
   // getClipboardText(): Promise<string>;

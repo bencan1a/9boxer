@@ -34,14 +34,14 @@ def create_test_employee(
 
     position_labels = {
         1: "Underperformer [L,L]",
-        2: "Inconsistent [M,L]",
-        3: "Solid Contributor [H,L]",
-        4: "Emerging Talent [L,M]",
+        2: "Effective Pro [M,L]",
+        3: "Workhorse [H,L]",
+        4: "Inconsistent [L,M]",
         5: "Core Talent [M,M]",
-        6: "High Impact Talent [H,M]",
-        7: "Emerging Talent [L,H]",
-        8: "Growth Talent [M,H]",
-        9: "Top Talent [H,H]",
+        6: "High Impact [H,M]",
+        7: "Enigma [L,H]",
+        8: "Growth [M,H]",
+        9: "Star [H,H]",
     }
 
     return Employee(

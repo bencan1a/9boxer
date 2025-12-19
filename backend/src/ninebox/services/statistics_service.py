@@ -1,5 +1,6 @@
 """Statistics calculation service."""
 
+from collections import Counter
 from typing import TypedDict
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
@@ -62,6 +63,10 @@ class StatisticsService:
             "High": sum(1 for e in employees if e.potential == PotentialLevel.HIGH),
         }
 
+        # Aggregate by job function
+        job_function_counts = Counter(e.job_function for e in employees)
+        by_job_function = dict(job_function_counts.most_common())
+
         # Count modified employees
         modified_count = sum(1 for e in employees if e.modified_in_session)
 
@@ -75,6 +80,7 @@ class StatisticsService:
             "distribution": distribution,
             "by_performance": by_performance,
             "by_potential": by_potential,
+            "by_job_function": by_job_function,
         }
 
     def _get_box_label(self, position: int) -> str:

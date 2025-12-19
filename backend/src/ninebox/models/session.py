@@ -6,6 +6,7 @@ from typing import ClassVar
 from pydantic import BaseModel
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.services.excel_parser import JobFunctionConfig
 
 
 class EmployeeMove(BaseModel):
@@ -37,6 +38,9 @@ class SessionState(BaseModel):
     # Excel sheet information (for robust export)
     sheet_name: str
     sheet_index: int
+
+    # Job function configuration (auto-detected from data)
+    job_function_config: JobFunctionConfig | None = None
 
     # Current state (with modifications)
     current_employees: list[Employee]

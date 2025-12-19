@@ -41,7 +41,7 @@ def _create_employee(
         performance=performance,
         potential=PotentialLevel.MEDIUM,
         grid_position=5,
-        position_label="Core Contributor [M,M]",
+        position_label="Core Talent [M,M]",
         talent_indicator="Core",
     )
 

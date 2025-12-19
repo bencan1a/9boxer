@@ -158,9 +158,7 @@ async def update_employee(
 
 
 @router.patch("/{employee_id}/move")
-async def move_employee(
-    employee_id: int, move: MoveRequest
-) -> dict:
+async def move_employee(employee_id: int, move: MoveRequest) -> dict:
     """Move employee to new position."""
     try:
         # Convert strings to enums

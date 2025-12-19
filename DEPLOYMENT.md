@@ -1,574 +1,544 @@
 # Deployment Guide
 
-This guide covers deploying the 9-Box Performance Review System in various environments.
+This guide covers deploying and distributing the 9Boxer standalone desktop application.
 
 ## Table of Contents
-- [Docker Deployment (Recommended)](#docker-deployment-recommended)
-- [Manual Deployment](#manual-deployment)
-- [Production Configuration](#production-configuration)
-- [Security Best Practices](#security-best-practices)
+- [Overview](#overview)
+- [Building Installers](#building-installers)
+- [Distribution Methods](#distribution-methods)
+- [User Installation](#user-installation)
+- [Application Data](#application-data)
+- [Updates](#updates)
 - [Troubleshooting](#troubleshooting)
+- [Legacy Docker Deployment](#legacy-docker-deployment)
 
-## Docker Deployment (Recommended)
+## Overview
+
+9Boxer is distributed as a **standalone desktop application** with platform-specific installers:
+
+- **Windows**: NSIS installer (.exe)
+- **macOS**: DMG disk image (.dmg)
+- **Linux**: AppImage (.AppImage)
+
+**No server required!** The application runs entirely on the user's local machine:
+- Frontend: Electron-wrapped React app
+- Backend: FastAPI executable (bundled with PyInstaller)
+- Database: SQLite in user's app data directory
+- Communication: HTTP over localhost
+
+## Building Installers
+
+See [BUILD.md](BUILD.md) for complete build instructions.
+
+**Quick build steps:**
+
+```bash
+# 1. Build backend executable
+cd backend
+. .venv/bin/activate  # Windows: .venv\Scripts\activate
+.\scripts\build_executable.bat  # Windows
+# or
+./scripts/build_executable.sh   # Linux/macOS
+
+# 2. Build Electron installer
+cd ../frontend
+npm run electron:build
+
+# Output in frontend/release/
+```
+
+## Distribution Methods
+
+### 1. GitHub Releases (Recommended)
+
+Best for open-source or public distribution:
+
+1. **Create a Release:**
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+2. **Upload Installers:**
+   - Go to GitHub → Releases → Draft new release
+   - Select tag (v1.0.0)
+   - Upload files from `frontend/release/`:
+     - `9Boxer-Setup-1.0.0.exe` (Windows)
+     - `9Boxer-1.0.0.dmg` (macOS)
+     - `9Boxer-1.0.0.AppImage` (Linux)
+   - Write release notes
+   - Publish release
+
+3. **Users Download:**
+   - Visit GitHub Releases page
+   - Download installer for their platform
+   - Install and run
+
+### 2. Internal File Server
+
+For corporate/internal deployment:
+
+1. **Host installers on internal server:**
+   ```
+   https://intranet.company.com/downloads/9boxer/
+   ├── windows/
+   │   └── 9Boxer-Setup-1.0.0.exe
+   ├── macos/
+   │   └── 9Boxer-1.0.0.dmg
+   └── linux/
+       └── 9Boxer-1.0.0.AppImage
+   ```
+
+2. **Provide download links** via email, intranet, or documentation
+
+3. **Users download and install**
+
+### 3. Cloud Storage
+
+For small teams:
+
+1. Upload to Google Drive, Dropbox, OneDrive, etc.
+2. Share download links with users
+3. Users download and install
+
+**Note:** Some cloud providers may block executable downloads. Use direct links when possible.
+
+### 4. Package Managers (Advanced)
+
+**Windows (Chocolatey):**
+Create a Chocolatey package for automated installation:
+```powershell
+choco install 9boxer
+```
+
+**macOS (Homebrew Cask):**
+Create a Homebrew cask:
+```bash
+brew install --cask 9boxer
+```
+
+**Linux (Custom Repository):**
+Host .deb or .rpm packages in a package repository.
+
+See [Electron Builder docs](https://www.electron.build/) for package manager integration.
+
+## User Installation
+
+### Windows
+
+1. **Download** `9Boxer-Setup-1.0.0.exe`
+2. **Run installer** (double-click)
+3. **Follow installation wizard:**
+   - Choose installation directory
+   - Create desktop shortcut (optional)
+   - Add to Start menu (default)
+4. **Launch** from Start menu or desktop shortcut
+
+**Installation location:** `C:\Users\{user}\AppData\Local\Programs\9Boxer\`
+
+**Uninstall:** Control Panel → Programs → Uninstall 9Boxer
+
+### macOS
+
+1. **Download** `9Boxer-1.0.0.dmg`
+2. **Open DMG** (double-click)
+3. **Drag 9Boxer** to Applications folder
+4. **Eject DMG**
+5. **Launch** from Applications or Spotlight
+
+**First launch:** Right-click → Open (to bypass Gatekeeper if unsigned)
+
+**Installation location:** `/Applications/9Boxer.app`
+
+**Uninstall:** Drag 9Boxer.app to Trash
+
+### Linux
+
+1. **Download** `9Boxer-1.0.0.AppImage`
+2. **Make executable:**
+   ```bash
+   chmod +x 9Boxer-1.0.0.AppImage
+   ```
+3. **Run:**
+   ```bash
+   ./9Boxer-1.0.0.AppImage
+   ```
+
+**Optional:** Integrate with desktop environment:
+```bash
+# Install AppImageLauncher for automatic integration
+sudo apt install appimagelauncher  # Debian/Ubuntu
+```
+
+**Installation location:** User's choice (portable)
+
+**Uninstall:** Delete .AppImage file
+
+## Application Data
+
+9Boxer stores user data in platform-specific directories:
+
+### Windows
+
+**Location:** `C:\Users\{user}\AppData\Roaming\9Boxer\`
+
+**Contents:**
+```
+C:\Users\{user}\AppData\Roaming\9Boxer\
+├── ninebox.db           # SQLite database
+├── backend.log          # Backend server logs
+└── uploads/             # Temporary Excel files
+```
+
+### macOS
+
+**Location:** `~/Library/Application Support/9Boxer/`
+
+**Contents:**
+```
+~/Library/Application Support/9Boxer/
+├── ninebox.db           # SQLite database
+├── backend.log          # Backend server logs
+└── uploads/             # Temporary Excel files
+```
+
+### Linux
+
+**Location:** `~/.config/9Boxer/`
+
+**Contents:**
+```
+~/.config/9Boxer/
+├── ninebox.db           # SQLite database
+├── backend.log          # Backend server logs
+└── uploads/             # Temporary Excel files
+```
+
+### Data Backup
+
+**To backup user data:**
+
+```bash
+# Windows
+xcopy "C:\Users\{user}\AppData\Roaming\9Boxer" "D:\Backups\9Boxer" /E /I
+
+# macOS
+cp -r "~/Library/Application Support/9Boxer" ~/Backups/9Boxer
+
+# Linux
+cp -r ~/.config/9Boxer ~/Backups/9Boxer
+```
+
+**To restore:**
+- Copy backup folder back to original location
+- Restart 9Boxer
+
+## Updates
+
+### Manual Updates
+
+1. **Download new installer** (same as initial installation)
+2. **Run installer** (overwrites previous version)
+3. **Data is preserved** (stored in separate app data directory)
+
+### Automatic Updates (Advanced)
+
+Implement auto-updates with [electron-updater](https://www.electron.build/auto-update):
+
+1. **Install electron-updater:**
+   ```bash
+   npm install electron-updater
+   ```
+
+2. **Configure in main process:**
+   ```typescript
+   import { autoUpdater } from 'electron-updater';
+
+   app.on('ready', () => {
+     autoUpdater.checkForUpdatesAndNotify();
+   });
+   ```
+
+3. **Host update files:**
+   - GitHub Releases (automatic with electron-updater)
+   - Custom update server (requires configuration)
+
+4. **Users get notified:**
+   - App checks for updates on launch
+   - Shows notification when update available
+   - Downloads and installs in background
+
+See [electron-updater docs](https://www.electron.build/auto-update) for details.
+
+## Troubleshooting
+
+### Installation Issues
+
+#### Windows: "Windows protected your PC"
+
+**Cause:** Unsigned executable (SmartScreen warning)
+
+**Solution:**
+- Click "More info" → "Run anyway"
+- OR: Code sign the executable (requires code signing certificate)
+
+#### macOS: "9Boxer cannot be opened because it is from an unidentified developer"
+
+**Cause:** Unsigned app (Gatekeeper protection)
+
+**Solution:**
+- Right-click app → Open → Click "Open" in dialog
+- OR: Code sign and notarize the app (requires Apple Developer account)
+
+#### Linux: AppImage won't run
+
+**Cause:** Missing FUSE support
+
+**Solution:**
+```bash
+# Install FUSE
+sudo apt install fuse libfuse2  # Debian/Ubuntu
+sudo dnf install fuse fuse-libs  # Fedora
+
+# Or extract and run without FUSE
+./9Boxer-1.0.0.AppImage --appimage-extract
+./squashfs-root/AppRun
+```
+
+### Runtime Issues
+
+#### Backend won't start
+
+**Symptoms:** App opens but shows error connecting to backend
+
+**Diagnosis:**
+1. Check backend logs:
+   - Windows: `%APPDATA%\9Boxer\backend.log`
+   - macOS: `~/Library/Application Support/9Boxer/backend.log`
+   - Linux: `~/.config/9Boxer/backend.log`
+
+2. Check if port 8000 is in use:
+   ```bash
+   # Windows
+   netstat -ano | findstr :8000
+
+   # macOS/Linux
+   lsof -i :8000
+   ```
+
+**Solutions:**
+- Kill process using port 8000
+- Check firewall settings
+- Reinstall application
+
+#### Database errors
+
+**Symptoms:** Can't upload files, changes not saving
+
+**Diagnosis:** Check database file exists and has write permissions
+
+**Solutions:**
+```bash
+# Windows
+icacls "%APPDATA%\9Boxer" /grant %username%:F /T
+
+# macOS/Linux
+chmod -R u+rw ~/Library/Application Support/9Boxer  # macOS
+chmod -R u+rw ~/.config/9Boxer                      # Linux
+```
+
+#### App crashes on launch
+
+**Diagnosis:**
+1. Enable DevTools in production (temporarily):
+   - Edit `frontend/electron/main/index.ts`:
+     ```typescript
+     const isDev = true;  // Force dev mode
+     ```
+   - Rebuild and test
+
+2. Check Electron logs (platform-specific)
+
+**Solutions:**
+- Check system requirements (Windows 10+, macOS 10.14+, Linux kernel 4.4+)
+- Reinstall application
+- Clear app data (backup first!)
+
+### Performance Issues
+
+#### App slow to start
+
+**Cause:** Backend startup time (PyInstaller overhead)
+
+**Expected:** 3-5 seconds on first launch, 1-2 seconds on subsequent launches
+
+**Solutions:**
+- Normal behavior, no action needed
+- Ensure antivirus isn't scanning executable on every launch
+
+#### High memory usage
+
+**Cause:** Large Excel files, many employees
+
+**Expected:** 200-500MB for normal usage
+
+**Solutions:**
+- Close other applications
+- Filter employees to reduce grid size
+- Export and clear session periodically
+
+## Security Considerations
+
+### Code Signing
+
+**Windows:**
+- Get code signing certificate (DigiCert, Sectigo, etc.)
+- Sign executable with `signtool` (included in Windows SDK)
+- Prevents SmartScreen warnings
+
+**macOS:**
+- Get Apple Developer account ($99/year)
+- Create Developer ID certificate
+- Sign app with `codesign`
+- Notarize with Apple (required for macOS 10.15+)
+
+**Linux:**
+- Code signing not commonly used
+- GPG signatures for AppImages (optional)
+
+### Sandboxing
+
+**Current:** Electron sandbox enabled for renderer process
+
+**Main process:** Has full system access (required for spawning backend)
+
+**Renderer process:** Isolated, only accesses backend via HTTP
+
+### User Permissions
+
+**Required permissions:**
+- Read/write to user's app data directory
+- Network access to localhost (for backend communication)
+- File system access (for Excel file upload/export)
+
+**Not required:**
+- Admin/root privileges
+- Internet access
+- System-wide file access
+
+### Data Privacy
+
+**Local-only:**
+- All data stored on user's machine
+- No cloud sync
+- No telemetry or analytics (by default)
+
+**Sensitive data:**
+- Employee names and performance ratings stored in SQLite
+- Database not encrypted (can be added if needed)
+- Consider data protection laws (GDPR, etc.) when distributing
+
+## Monitoring and Support
+
+### Logging
+
+**Backend logs:** `{AppData}/9Boxer/backend.log`
+
+**Contents:**
+- API requests and responses
+- Database operations
+- Errors and warnings
+
+**Log rotation:** Not implemented (manual cleanup required)
+
+### Error Reporting
+
+**Current:** No automatic error reporting
+
+**To implement:**
+1. Add error tracking service (Sentry, Rollbar, etc.)
+2. Capture errors in main and renderer processes
+3. Send to error tracking service (with user consent)
+
+### User Support
+
+**For users:**
+1. Check [USER_GUIDE.md](USER_GUIDE.md) for usage help
+2. Check app logs for errors
+3. Contact IT support or developers
+
+**For administrators:**
+1. Check this deployment guide
+2. Review [BUILD.md](BUILD.md) for build issues
+3. Check GitHub issues for known problems
+
+## Legacy Docker Deployment
+
+**Note:** Docker-based web deployment is legacy and not actively maintained. The primary deployment model is standalone desktop application.
+
+<details>
+<summary>Click to expand Docker deployment instructions (legacy)</summary>
 
 ### Prerequisites
 - Docker 20.10+
 - Docker Compose 2.0+
-- 2GB+ RAM
-- 10GB+ disk space
 
 ### Steps
 
-1. **Clone the repository**:
-```bash
-git clone <repository-url>
-cd 9boxer
-```
+1. **Clone repository:**
+   ```bash
+   git clone <repository-url>
+   cd 9boxer
+   ```
 
-2. **Create environment file**:
-```bash
-cp .env.example .env
-```
+2. **Create environment file:**
+   ```bash
+   cp .env.example .env
+   ```
 
-Edit `.env` and configure:
-```bash
-# IMPORTANT: Generate a strong secret key!
-SECRET_KEY=your-very-long-random-secret-key-here
+   Edit `.env`:
+   ```bash
+   SECRET_KEY=your-very-long-random-secret-key
+   LOG_LEVEL=INFO
+   TOKEN_EXPIRE_MINUTES=60
+   ```
 
-# Optional: Customize other settings
-LOG_LEVEL=INFO
-TOKEN_EXPIRE_MINUTES=60
-```
+3. **Build and start:**
+   ```bash
+   docker-compose up --build -d
+   ```
 
-3. **Generate a secure SECRET_KEY**:
-```bash
-# Use Python
-python -c "import secrets; print(secrets.token_urlsafe(32))"
+4. **Access application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
 
-# Or OpenSSL
-openssl rand -base64 32
-```
-
-4. **Build and start containers**:
-```bash
-# Build images
-docker-compose build
-
-# Start services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-```
-
-5. **Verify deployment**:
-```bash
-# Check container status
-docker-compose ps
-
-# Should show:
-# ninebox-backend   running   0.0.0.0:8000->8000/tcp
-# ninebox-frontend  running   0.0.0.0:3000->80/tcp
-
-# Check health
-curl http://localhost:8000/health
-curl http://localhost:3000/health
-```
-
-6. **Access the application**:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
+5. **Default credentials:**
+   - Username: `bencan`
+   - Password: `password`
 
 ### Docker Commands
 
 ```bash
-# Start services
-docker-compose up -d
-
-# Stop services
-docker-compose down
-
-# View logs
-docker-compose logs -f [service-name]
-
-# Restart services
-docker-compose restart
-
-# Rebuild and restart
-docker-compose up -d --build
-
-# Remove all data (WARNING: Destroys database!)
-docker-compose down -v
+docker-compose up -d          # Start services
+docker-compose down           # Stop services
+docker-compose logs -f        # View logs
+docker-compose restart        # Restart services
+docker-compose down -v        # Remove all data
 ```
 
-## Manual Deployment
+### Production Deployment (Docker)
 
-### Backend Deployment
+Use nginx reverse proxy, SSL certificates, and PostgreSQL for production.
 
-#### Prerequisites
-- Python 3.10+
-- pip
-- Virtual environment
+See [nginx configuration examples in legacy docs](DEPLOYMENT_LEGACY.md).
 
-#### Steps
+</details>
 
-1. **Set up backend**:
-```bash
-cd backend
+## References
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install --upgrade pip
-pip install -e .
-```
-
-2. **Configure environment**:
-```bash
-# Create .env file in backend directory
-cat > .env << EOF
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///data/ninebox.db
-LOG_LEVEL=INFO
-EOF
-```
-
-3. **Initialize database**:
-```bash
-python -c "from ninebox.core.database import init_db; init_db()"
-```
-
-4. **Run backend**:
-```bash
-# Development
-cd src
-python -m ninebox.main
-
-# Production (with Gunicorn)
-pip install gunicorn
-gunicorn ninebox.main:app \
-  --workers 4 \
-  --worker-class uvicorn.workers.UvicornWorker \
-  --bind 0.0.0.0:8000 \
-  --access-logfile - \
-  --error-logfile -
-```
-
-### Frontend Deployment
-
-#### Prerequisites
-- Node.js 18+
-- npm
-
-#### Steps
-
-1. **Set up frontend**:
-```bash
-cd frontend
-npm install
-```
-
-2. **Configure API endpoint**:
-Edit `frontend/src/services/api.ts` and update the `baseURL`:
-```typescript
-baseURL: "http://your-backend-domain:8000",
-```
-
-3. **Build frontend**:
-```bash
-npm run build
-# Output in dist/ directory
-```
-
-4. **Serve frontend**:
-
-**Option A: Using nginx**:
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /path/to/frontend/dist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8000/api/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-**Option B: Using serve**:
-```bash
-npm install -g serve
-serve -s dist -p 3000
-```
-
-## Production Configuration
-
-### Environment Variables
-
-#### Backend
-```bash
-# Security (REQUIRED)
-SECRET_KEY=very-long-random-string-change-in-production
-
-# Database
-DATABASE_URL=sqlite:////app/data/ninebox.db
-
-# CORS (adjust for your domains)
-CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
-
-# Logging
-LOG_LEVEL=WARNING  # Use WARNING or ERROR in production
-
-# JWT
-TOKEN_EXPIRE_MINUTES=60
-```
-
-#### Frontend
-Update `frontend/.env.production`:
-```bash
-VITE_API_BASE_URL=https://api.yourdomain.com
-```
-
-### Database
-
-#### SQLite (Default)
-- Good for: Small deployments, single-server setups
-- Limitations: No concurrent writes, single file
-- Location: `/app/data/ninebox.db` (in Docker)
-- Backup: Copy the database file
-
-#### Upgrading to PostgreSQL (Recommended for Production)
-
-1. **Install PostgreSQL**:
-```bash
-# Using Docker
-docker run -d \
-  --name ninebox-postgres \
-  -e POSTGRES_PASSWORD=yourpassword \
-  -e POSTGRES_DB=ninebox \
-  -p 5432:5432 \
-  postgres:15
-```
-
-2. **Update DATABASE_URL**:
-```bash
-DATABASE_URL=postgresql://user:password@localhost:5432/ninebox
-```
-
-3. **Install dependencies**:
-```bash
-pip install psycopg2-binary
-```
-
-### Reverse Proxy (nginx)
-
-Recommended nginx configuration for production:
-
-```nginx
-upstream backend {
-    server localhost:8000;
-}
-
-server {
-    listen 80;
-    server_name yourdomain.com;
-
-    # Redirect to HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name yourdomain.com;
-
-    # SSL certificates (use Let's Encrypt)
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-
-    # SSL configuration
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-
-    # Frontend
-    root /var/www/ninebox/dist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Backend API
-    location /api/ {
-        proxy_pass http://backend/api/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # Auth endpoints
-    location /auth/ {
-        proxy_pass http://backend/auth/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    # File uploads
-    location /session/ {
-        client_max_body_size 10M;
-        proxy_pass http://backend/session/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-## Security Best Practices
-
-### 1. SECRET_KEY
-- **CRITICAL**: Change the default SECRET_KEY
-- Use a cryptographically secure random string (32+ characters)
-- Never commit the secret key to version control
-- Rotate periodically (invalidates existing tokens)
-
-### 2. CORS Configuration
-```bash
-# Only allow your domains
-CORS_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
-```
-
-### 3. HTTPS
-- Always use HTTPS in production
-- Use Let's Encrypt for free SSL certificates
-- Redirect HTTP to HTTPS
-
-### 4. Database Security
-- Use strong passwords
-- Restrict database access to localhost
-- Regular backups
-- Encrypt sensitive data
-
-### 5. File Upload Security
-- Already limited to .xlsx/.xls files
-- 10MB file size limit
-- Files processed in memory, not stored permanently
-
-### 6. Authentication
-- JWT tokens expire after 60 minutes (configurable)
-- Passwords are hashed with bcrypt
-- No password reset functionality (add if needed)
-
-### 7. Rate Limiting
-Consider adding rate limiting with nginx:
-```nginx
-limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
-
-location /api/ {
-    limit_req zone=api burst=20;
-    proxy_pass http://backend/api/;
-}
-```
-
-## Monitoring
-
-### Health Checks
-
-```bash
-# Backend health
-curl http://localhost:8000/health
-
-# Frontend health
-curl http://localhost:3000/health
-```
-
-### Logging
-
-**Backend logs**:
-```bash
-# Docker
-docker-compose logs -f backend
-
-# Manual deployment
-tail -f /path/to/logs/ninebox.log
-```
-
-**Frontend logs** (nginx):
-```bash
-tail -f /var/log/nginx/access.log
-tail -f /var/log/nginx/error.log
-```
-
-### Metrics
-
-Consider adding:
-- Prometheus for metrics collection
-- Grafana for visualization
-- Application performance monitoring (APM)
-
-## Backup and Recovery
-
-### Database Backup
-
-**SQLite**:
-```bash
-# Backup
-cp /app/data/ninebox.db /backups/ninebox_$(date +%Y%m%d).db
-
-# Restore
-cp /backups/ninebox_20231215.db /app/data/ninebox.db
-```
-
-**PostgreSQL**:
-```bash
-# Backup
-pg_dump ninebox > ninebox_backup.sql
-
-# Restore
-psql ninebox < ninebox_backup.sql
-```
-
-### Docker Volumes Backup
-
-```bash
-# Backup volume
-docker run --rm \
-  -v ninebox-backend-data:/data \
-  -v $(pwd):/backup \
-  alpine tar czf /backup/backup.tar.gz /data
-
-# Restore volume
-docker run --rm \
-  -v ninebox-backend-data:/data \
-  -v $(pwd):/backup \
-  alpine tar xzf /backup/backup.tar.gz -C /
-```
-
-## Troubleshooting
-
-### Container won't start
-
-```bash
-# Check logs
-docker-compose logs backend
-docker-compose logs frontend
-
-# Common issues:
-# - Port already in use (change ports in docker-compose.yml)
-# - Permission issues (check file permissions)
-# - Missing .env file (create from .env.example)
-```
-
-### Database errors
-
-```bash
-# Reset database (WARNING: Destroys data!)
-docker-compose down -v
-docker-compose up -d
-
-# Or manually:
-rm /app/data/ninebox.db
-python -c "from ninebox.core.database import init_db; init_db()"
-```
-
-### CORS errors
-
-```bash
-# Update CORS_ORIGINS in .env
-CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
-
-# Restart backend
-docker-compose restart backend
-```
-
-### File upload fails
-
-```bash
-# Check nginx configuration
-client_max_body_size 10M;
-
-# Check backend file size limit (in code)
-# Default is 10MB
-```
-
-### Frontend can't reach backend
-
-```bash
-# Check API base URL in frontend
-# src/services/api.ts should point to correct backend URL
-
-# Check nginx proxy configuration
-# Ensure /api/ routes are proxied correctly
-```
-
-### Performance issues
-
-```bash
-# Scale backend workers
-docker-compose up -d --scale backend=3
-
-# Or with Gunicorn
-gunicorn ninebox.main:app --workers 4
-```
-
-### Memory issues
-
-```bash
-# Limit container memory
-docker-compose.yml:
-  backend:
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-```
-
-## Upgrading
-
-### Docker upgrade
-
-```bash
-# Pull latest code
-git pull
-
-# Rebuild containers
-docker-compose down
-docker-compose build
-docker-compose up -d
-```
-
-### Manual upgrade
-
-```bash
-# Backend
-cd backend
-git pull
-source venv/bin/activate
-pip install -e .
-# Restart service
-
-# Frontend
-cd frontend
-git pull
-npm install
-npm run build
-# Restart web server
-```
-
-## Support
-
-For issues:
-1. Check logs: `docker-compose logs -f`
-2. Verify environment variables
-3. Check health endpoints
-4. Review nginx error logs
-5. Open an issue on GitHub
+- [BUILD.md](BUILD.md) - Complete build instructions
+- [USER_GUIDE.md](USER_GUIDE.md) - End user guide
+- [Electron Documentation](https://www.electronjs.org/docs/)
+- [Electron Builder](https://www.electron.build/)
+- [PyInstaller](https://pyinstaller.org/)

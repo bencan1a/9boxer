@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     """Application settings."""
 
     # App
-    app_name: str = "9-Box Performance Review"
+    app_name: str = "9Boxer"
     app_version: str = "0.1.0"
     debug: bool = False
 

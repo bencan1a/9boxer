@@ -2,7 +2,7 @@
   "name": "9boxer-electron",
   "private": true,
   "version": "1.0.0",
-  "description": "9-Box Performance Review - Desktop Application",
+  "description": "9Boxer - Desktop Application",
   "author": "Your Company",
   "main": "dist-electron/main/index.js",
   "engines": {
@@ -16,18 +16,21 @@
     "prebuild": "node scripts/ensure-backend.cjs",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
-    "electron:build": "npm run build && tsc -p electron/tsconfig.json && electron-builder",
-    "electron:build:win": "npm run build && tsc -p electron/tsconfig.json && electron-builder --win",
-    "electron:build:mac": "npm run build && tsc -p electron/tsconfig.json && electron-builder --mac",
-    "electron:build:linux": "npm run build && tsc -p electron/tsconfig.json && electron-builder --linux",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "e2e": "cypress run --spec 'cypress/e2e/**/*.cy.ts'",
+    "copy-splash": "node scripts/copy-splash.cjs",
+    "electron:compile": "tsc -p electron/tsconfig.json && npm run copy-splash",
+    "electron:watch": "tsc -p electron/tsconfig.json --watch",
+    "electron:dev": "npm run copy-splash && concurrently -n \"vite,electron-tsc,electron\" -c \"blue,yellow,green\" \"npm run dev\" \"npm run electron:watch\" \"wait-on http://localhost:5173 dist-electron/main/index.js && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
+    "electron:build": "npm run build && npm run electron:compile && electron-builder",
+    "electron:build:win": "npm run build && npm run electron:compile && electron-builder --win",
+    "electron:build:mac": "npm run build && npm run electron:compile && electron-builder --mac",
+    "electron:build:linux": "npm run build && npm run electron:compile && electron-builder --linux",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e:pw": "playwright test",
+    "test:e2e:pw:ui": "playwright test --ui",
+    "test:e2e:pw:debug": "playwright test --debug"
   },
   "build": {
     "extends": "electron-builder.json"
@@ -51,7 +54,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@testing-library/cypress": "^10.1.0",
+    "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
@@ -65,7 +68,6 @@
     "@vitest/ui": "^4.0.16",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "cypress": "^15.0.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "esbuild": "^0.27.2",

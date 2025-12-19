@@ -1,6 +1,6 @@
 {
   "appId": "com.yourcompany.ninebox",
-  "productName": "9-Box Performance Review",
+  "productName": "9Boxer",
   "copyright": "Copyright © 2025 Your Company",
   "directories": {
     "output": "release"
@@ -24,6 +24,10 @@
     {
       "from": "build/icon.png",
       "to": "icon.png"
+    },
+    {
+      "from": "../USER_GUIDE.html",
+      "to": "USER_GUIDE.html"
     }
   ],
   "win": {
@@ -55,8 +59,8 @@
     "allowElevation": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "9-Box Performance Review",
-    "uninstallDisplayName": "9-Box Performance Review"
+    "shortcutName": "9Boxer",
+    "uninstallDisplayName": "9Boxer"
   },
   "dmg": {
     "title": "${productName} ${version}"
