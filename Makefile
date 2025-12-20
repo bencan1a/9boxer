@@ -46,7 +46,7 @@ security-report:  ## Run security checks and generate JSON report
 	@echo "Security report generated: bandit-report.json"
 
 check-yaml:  ## Check YAML file syntax
-	python -c "import yaml; import sys; from pathlib import Path; [yaml.safe_load(f.read_text()) for f in Path('.github/workflows').glob('*.yml')]"
+	python -c "import yaml; import sys; from pathlib import Path; [yaml.safe_load(f.read_text(encoding='utf-8')) for f in Path('.github/workflows').glob('*.yml')]"
 
 check-all:  ## Run all checks (format, lint, type, security, test)
 	@echo "Running format check..."

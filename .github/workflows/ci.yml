@@ -33,6 +33,7 @@ jobs:
 
       - name: Check changed files
         id: skip-check
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             FILES_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
@@ -372,6 +373,7 @@ jobs:
     if: always()
     steps:
       - name: Check results
+        shell: bash
         run: |
           echo "Lint and Format: ${{ needs.lint.result }}"
           echo "Type Check: ${{ needs.type-check.result }}"
@@ -416,6 +418,7 @@ jobs:
 
       - name: Generate summary
         if: always()
+        shell: bash
         run: |
           echo "## CI Pipeline Summary (Post-Merge Fast Validation)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
