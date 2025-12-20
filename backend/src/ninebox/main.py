@@ -81,4 +81,4 @@ if __name__ == "__main__":
 
     # Allow port to be configured via environment variable (useful for testing)
     port = int(os.getenv("PORT", "8000"))
-    uvicorn.run(app, host="0.0.0.0", port=port)  # nosec B104  # Intentional for server binding
+    uvicorn.run(app, host="127.0.0.1", port=port)  # Localhost-only for desktop app security
