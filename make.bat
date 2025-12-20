@@ -83,11 +83,13 @@ echo   docker-clean            Stop containers and remove volumes
 goto end
 
 :install
-pip install -e .
+pip install uv
+uv pip install --system -e .
 goto end
 
 :install-dev
-pip install -e ".[dev]"
+pip install uv
+uv pip install --system -e ".[dev]"
 pre-commit install
 goto end
 
@@ -192,8 +194,8 @@ goto end
 
 :dev
 echo Setting up development environment...
-pip install --upgrade pip
-pip install -e ".[dev]"
+pip install uv
+uv pip install --system -e ".[dev]"
 pre-commit install
 echo.
 echo Development environment ready!

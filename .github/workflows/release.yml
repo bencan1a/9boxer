@@ -33,12 +33,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-          cache: 'pip'
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e '.[dev]'
+        run: uv pip install --system -e '.[dev]'
 
       - name: Run full test suite
         run: pytest --cov=backend/src --cov-fail-under=70 -v
@@ -72,10 +82,21 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
+
       - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine
+        run: uv pip install --system build twine
 
       - name: Build package
         run: python -m build

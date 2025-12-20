@@ -7,10 +7,12 @@ help:  ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 install:  ## Install the package
-	pip install -e .
+	pip install uv
+	uv pip install --system -e .
 
 install-dev:  ## Install the package with development dependencies
-	pip install -e '.[dev]'
+	pip install uv
+	uv pip install --system -e '.[dev]'
 	pre-commit install
 
 test:  ## Run tests
@@ -80,8 +82,8 @@ clean:  ## Clean up generated files
 
 dev:  ## Set up development environment
 	@echo "Setting up development environment..."
-	pip install --upgrade pip
-	pip install -e '.[dev]'
+	pip install uv
+	uv pip install --system -e '.[dev]'
 	pre-commit install
 	@echo "\nDevelopment environment ready!"
 
