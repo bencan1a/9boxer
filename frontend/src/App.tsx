@@ -2,17 +2,51 @@
  * Main App component with routing
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
-import { theme } from "./theme/theme";
+import { CssBaseline, Box } from "@mui/material";
+import { getTheme } from "./theme/theme";
+import { useUiStore } from "./store/uiStore";
 import { DashboardPage } from "./components/dashboard/DashboardPage";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
 import { logger } from "./utils/logger";
 
 const App: React.FC = () => {
+  // Get effective theme from store
+  const effectiveTheme = useUiStore((state) => state.effectiveTheme);
+
+  // Create dynamic theme based on effective theme
+  const theme = useMemo(() => getTheme(effectiveTheme), [effectiveTheme]);
+
+  // Initialize theme detection and listen for OS theme changes
+  useEffect(() => {
+    // Check if running in Electron environment
+    if (!window.electronAPI?.theme) {
+      logger.warn('Electron API not available - theme detection disabled (running in web mode)');
+      return;
+    }
+
+    // Get initial system theme
+    window.electronAPI.theme
+      .getSystemTheme()
+      .then((systemTheme) => {
+        logger.info('Initial system theme detected:', systemTheme);
+        useUiStore.getState().setSystemTheme(systemTheme);
+      })
+      .catch((error) => {
+        logger.error('Failed to get system theme:', error);
+      });
+
+    // Listen for system theme changes
+    const cleanup = window.electronAPI.theme.onSystemThemeChange((systemTheme) => {
+      logger.info('System theme changed to:', systemTheme);
+      useUiStore.getState().setSystemTheme(systemTheme);
+    });
+
+    return cleanup;
+  }, []);
 
   // Global error handlers to catch errors outside React component tree
   useEffect(() => {
@@ -46,12 +80,20 @@ const App: React.FC = () => {
       <ThemeProvider theme={theme}>
         <SnackbarProvider>
           <CssBaseline />
-          <HashRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-            </Routes>
-          </HashRouter>
+          <Box
+            sx={{
+              transition: 'background-color 0.3s ease, color 0.3s ease',
+              minHeight: '100vh',
+              backgroundColor: 'background.default',
+            }}
+          >
+            <HashRouter>
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+              </Routes>
+            </HashRouter>
+          </Box>
         </SnackbarProvider>
       </ThemeProvider>
     </ErrorBoundary>

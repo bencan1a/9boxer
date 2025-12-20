@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from "react-resizable-panels";
@@ -18,6 +19,7 @@ import { useUiStore } from "../../store/uiStore";
 const PANEL_COLLAPSE_BREAKPOINT = 1024; // Collapse panel below this width
 
 export const DashboardPage: React.FC = () => {
+  const theme = useTheme();
   const { sessionId } = useSession();
   const restoreSession = useSessionStore((state) => state.restoreSession);
   const {
@@ -159,13 +161,13 @@ export const DashboardPage: React.FC = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "col-resize",
-                      backgroundColor: "divider",
+                      backgroundColor: theme.palette.divider,
                       transition: "background-color 0.2s",
                       "&:hover": {
-                        backgroundColor: "primary.main",
+                        backgroundColor: theme.palette.primary.main,
                       },
                       "&:active": {
-                        backgroundColor: "primary.dark",
+                        backgroundColor: theme.palette.primary.dark,
                       },
                     }}
                   >
@@ -173,7 +175,7 @@ export const DashboardPage: React.FC = () => {
                       sx={{
                         width: "2px",
                         height: "40px",
-                        backgroundColor: "background.paper",
+                        backgroundColor: theme.palette.background.paper,
                         borderRadius: "1px",
                       }}
                     />
@@ -213,10 +215,10 @@ export const DashboardPage: React.FC = () => {
                     right: 16,
                     top: 16,
                     zIndex: 10,
-                    backgroundColor: "background.paper",
+                    backgroundColor: theme.palette.background.paper,
                     boxShadow: 2,
                     "&:hover": {
-                      backgroundColor: "action.hover",
+                      backgroundColor: theme.palette.action.hover,
                     },
                   }}
                 >

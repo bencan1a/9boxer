@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
+import { getTheme } from '../theme/theme'
 
-// Create a default theme for testing
-const theme = createTheme()
+// Create a default theme for testing (light mode)
+const theme = getTheme('light')
 
 // Custom render function that includes providers
 interface AllTheProvidersProps {

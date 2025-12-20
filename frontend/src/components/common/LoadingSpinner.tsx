@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -16,6 +17,8 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   message,
   overlay = false,
 }) => {
+  const theme = useTheme();
+
   const content = (
     <Box
       sx={{
@@ -47,7 +50,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: alpha(theme.palette.background.default, 0.8),
           zIndex: 9999,
         }}
       >

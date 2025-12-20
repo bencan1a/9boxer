@@ -30,6 +30,20 @@ interface ElectronAPI {
     error?: string;
   }>;
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
+  theme: {
+    /**
+     * Get the current system theme preference.
+     * Returns 'light' or 'dark' based on OS settings.
+     */
+    getSystemTheme: () => Promise<'light' | 'dark'>;
+    /**
+     * Listen for system theme changes.
+     * Returns a cleanup function to remove the listener.
+     * @param callback - Function to call when theme changes
+     * @returns Cleanup function to remove the listener
+     */
+    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
+  };
 }
 
 // Expose protected methods that allow the renderer process to use
@@ -49,6 +63,47 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Help & Documentation
   openUserGuide: () => ipcRenderer.invoke('app:openUserGuide'),
+
+  // OS Theme Detection
+  theme: {
+    /**
+     * Get the current system theme preference.
+     * @returns Promise resolving to 'light' or 'dark'
+     */
+    getSystemTheme: (): Promise<'light' | 'dark'> =>
+      ipcRenderer.invoke('theme:getSystemTheme'),
+
+    /**
+     * Register a callback for system theme changes.
+     * The callback will be invoked whenever the OS theme preference changes.
+     *
+     * @param callback - Function to call with new theme ('light' or 'dark')
+     * @returns Cleanup function to remove the listener
+     *
+     * @example
+     * ```typescript
+     * const cleanup = window.electronAPI.theme.onSystemThemeChange((theme) => {
+     *   console.log('System theme changed to:', theme);
+     *   // Update your app's theme accordingly
+     * });
+     *
+     * // Later, when component unmounts:
+     * cleanup();
+     * ```
+     */
+    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, theme: 'light' | 'dark') => {
+        callback(theme);
+      };
+
+      ipcRenderer.on('theme:systemThemeChanged', listener);
+
+      // Return cleanup function
+      return () => {
+        ipcRenderer.removeListener('theme:systemThemeChanged', listener);
+      };
+    },
+  },
 
   // For future expansion:
   // - System notifications

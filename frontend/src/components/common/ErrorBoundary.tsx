@@ -58,7 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
             alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
-            backgroundColor: "#f5f5f5",
+            bgcolor: "background.default",
             padding: 3,
           }}
         >
@@ -68,6 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
               maxWidth: 600,
               padding: 4,
               textAlign: "center",
+              bgcolor: "background.paper",
             }}
           >
             <ErrorOutlineIcon
@@ -89,7 +90,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 sx={{
                   mt: 3,
                   p: 2,
-                  backgroundColor: "#f5f5f5",
+                  bgcolor: "action.hover",
                   borderRadius: 1,
                   textAlign: "left",
                 }}
@@ -101,6 +102,7 @@ export class ErrorBoundary extends Component<Props, State> {
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
                     fontFamily: "monospace",
+                    color: "text.primary",
                   }}
                 >
                   {this.state.error.toString()}

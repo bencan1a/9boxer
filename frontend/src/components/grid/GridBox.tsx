@@ -5,6 +5,7 @@
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { Box, Typography, Badge, IconButton, alpha, Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import { Employee } from "../../types/employee";
@@ -57,6 +58,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
     );
   }
 
+  const theme = useTheme();
   const { setNodeRef, isOver } = useDroppable({
     id: `grid-${position}`,
     data: { position },
@@ -67,24 +69,24 @@ export const GridBox: React.FC<GridBoxProps> = ({
   //                  [4=L,M], [5=M,M], [6=H,M] (middle row)
   //                  [1=L,L], [2=M,L], [3=H,L] (bottom row)
   const getBackgroundColor = (pos: number): string => {
-    // Purple: [M,H], [H,H], [H,M] = positions 8, 9, 6
+    // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
     if ([6, 8, 9].includes(pos)) {
-      return "#e1d5f0"; // Pastel purple
+      return theme.palette.gridBox.highPerformer;
     }
-    // Red: [L,L], [M,L], [L,M] = positions 1, 2, 4
+    // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
     if ([1, 2, 4].includes(pos)) {
-      return "#ffd9d9"; // Pastel red
+      return theme.palette.gridBox.needsAttention;
     }
-    // Green: [M,M] = position 5
+    // Solid Performer: [M,M] = position 5
     if (pos === 5) {
-      return "#d4edda"; // Pastel green
+      return theme.palette.gridBox.solidPerformer;
     }
-    // Yellow: [L,H], [H,L] = positions 7, 3
+    // Development: [L,H], [H,L] = positions 7, 3
     if ([3, 7].includes(pos)) {
-      return "#fff9d9"; // Pastel yellow
+      return theme.palette.gridBox.development;
     }
     // Fallback (should not happen)
-    return "#f5f5f5";
+    return theme.palette.background.default;
   };
 
   // Calculate dynamic styling based on expansion state
@@ -96,7 +98,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
       borderColor: isOver ? "primary.main" : "divider",
       borderRadius: 1,
       p: 1.5,
-      backgroundColor: isOver ? "primary.light" : bgColor,
+      backgroundColor: isOver ? alpha(theme.palette.primary.main, 0.15) : bgColor,
       transition:
         "min-height 0.3s ease-in-out, max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, border-style 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
       userSelect: "none",

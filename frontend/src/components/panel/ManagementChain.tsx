@@ -5,6 +5,7 @@
 
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Employee } from "../../types/employee";
 
@@ -13,6 +14,8 @@ interface ManagementChainProps {
 }
 
 export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) => {
+  const theme = useTheme();
+
   // Build the management chain from bottom to top
   const chain: Array<{ name: string; level: string }> = [];
 
@@ -89,8 +92,8 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
             variant="outlined"
             sx={{
               p: 0.75,
-              backgroundColor: index === 0 ? "primary.50" : "background.paper",
-              borderColor: index === 0 ? "primary.main" : "divider",
+              backgroundColor: index === 0 ? alpha(theme.palette.primary.main, 0.08) : theme.palette.background.paper,
+              borderColor: index === 0 ? theme.palette.primary.main : theme.palette.divider,
               borderWidth: index === 0 ? 2 : 1,
             }}
           >

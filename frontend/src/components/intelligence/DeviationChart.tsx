@@ -14,7 +14,8 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 interface AnomalyDeviation {
   category: string;
@@ -42,6 +43,8 @@ interface ChartDataPoint {
 }
 
 export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) => {
+  const theme = useTheme();
+
   if (!data || data.length === 0) {
     return (
       <Box
@@ -72,9 +75,9 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
 
   // Get color based on significance
   const getBarColor = (item: ChartDataPoint): string => {
-    if (!item.is_significant) return "#4caf50"; // Green - not significant
-    if (item.p_value !== undefined && item.p_value < 0.01) return "#f44336"; // Red - highly significant
-    return "#ff9800"; // Yellow - moderately significant
+    if (!item.is_significant) return theme.palette.success.main; // Green - not significant
+    if (item.p_value !== undefined && item.p_value < 0.01) return theme.palette.error.main; // Red - highly significant
+    return theme.palette.warning.main; // Yellow - moderately significant
   };
 
   // Custom tooltip
@@ -82,12 +85,11 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
     if (active && payload && payload.length) {
       const data = payload[0].payload as ChartDataPoint;
       return (
-        <Box
+        <Paper
+          elevation={3}
           sx={{
-            backgroundColor: "#fff",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
             p: 1.5,
+            borderRadius: 1,
           }}
         >
           <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
@@ -110,7 +112,7 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
           <Typography variant="body2" color="text.secondary">
             N: {data.sample_size}
           </Typography>
-        </Box>
+        </Paper>
       );
     }
     return null;
@@ -147,7 +149,7 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
             />
             <Bar
               dataKey="expected"
-              fill="#9e9e9e"
+              fill={theme.palette.action.disabled}
               name="Expected %"
               radius={[4, 4, 0, 0]}
             />

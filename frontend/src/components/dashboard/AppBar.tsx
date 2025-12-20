@@ -10,24 +10,27 @@ import {
   Button,
   Box,
   Chip,
-  Badge,
   CircularProgress,
   IconButton,
   Tooltip,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DownloadIcon from "@mui/icons-material/Download";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
+import { SettingsDialog } from "../settings/SettingsDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
 import { extractErrorMessage } from "../../types/errors";
 import { logger } from "../../utils/logger";
 
 export const AppBar: React.FC = () => {
+  const theme = useTheme();
   const { sessionId, employees, filename, changes } = useSessionStore();
   const {
     toggleDrawer,
@@ -41,6 +44,7 @@ export const AppBar: React.FC = () => {
   } = useFilters();
   const { showSuccess, showError } = useSnackbar();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
@@ -145,16 +149,20 @@ export const AppBar: React.FC = () => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Chip
                   label={filename || "Session Active"}
-                  color="secondary"
                   size="small"
-                  variant="outlined"
-                  sx={{ color: "white", borderColor: "white" }}
+                  sx={{
+                    bgcolor: theme.palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.16)'
+                      : 'rgba(0, 0, 0, 0.08)',
+                    color: theme.palette.primary.contrastText,
+                    borderColor: 'transparent',
+                  }}
                 />
                 <Chip
                   label={employeeCountLabel}
                   color="secondary"
                   size="small"
-                  sx={{ color: "white" }}
+                  sx={{ color: theme.palette.primary.contrastText }}
                   data-testid="employee-count"
                 />
               </Box>
@@ -188,7 +196,7 @@ export const AppBar: React.FC = () => {
                     width: 8,
                     height: 8,
                     borderRadius: "50%",
-                    backgroundColor: "#ffa726",
+                    backgroundColor: theme.palette.warning.main,
                   }}
                 />
               )}
@@ -219,8 +227,8 @@ export const AppBar: React.FC = () => {
                     label={changes.length}
                     size="small"
                     sx={{
-                      backgroundColor: "#4caf50",
-                      color: "white",
+                      backgroundColor: theme.palette.success.main,
+                      color: theme.palette.success.contrastText,
                       height: 20,
                       fontSize: "0.7rem",
                     }}
@@ -228,6 +236,16 @@ export const AppBar: React.FC = () => {
                 </Tooltip>
               )}
             </Box>
+
+            <Tooltip title="Settings">
+              <IconButton
+                color="inherit"
+                onClick={() => setSettingsDialogOpen(true)}
+                data-testid="settings-button"
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
 
             <Tooltip title="Open User Guide">
               <IconButton
@@ -245,6 +263,11 @@ export const AppBar: React.FC = () => {
       <FileUploadDialog
         open={uploadDialogOpen}
         onClose={() => setUploadDialogOpen(false)}
+      />
+
+      <SettingsDialog
+        open={settingsDialogOpen}
+        onClose={() => setSettingsDialogOpen(false)}
       />
     </>
   );

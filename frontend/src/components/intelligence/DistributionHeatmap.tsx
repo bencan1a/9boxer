@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 
 interface FunctionDistribution {
   function: string;
@@ -25,6 +26,8 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
   data,
   title,
 }) => {
+  const theme = useTheme();
+
   if (!data || data.length === 0) {
     return (
       <Box
@@ -54,18 +57,32 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
 
   // Get color based on percentage (gradient from light to dark)
   const getHeatmapColor = (percentage: number): string => {
-    if (percentage === 0) return "#f5f5f5";
+    if (percentage === 0) {
+      return theme.palette.mode === 'dark'
+        ? theme.palette.grey[800]
+        : theme.palette.grey[100];
+    }
     const intensity = percentage / maxPercentage;
-    // Scale from light blue to dark blue
-    const blue = Math.floor(255 - intensity * 155);
-    const green = Math.floor(200 - intensity * 100);
-    return `rgb(25, ${green}, ${blue})`;
+
+    // Use theme primary color for gradient
+    const primaryRgb = theme.palette.mode === 'dark'
+      ? { r: 144, g: 202, b: 249 } // Light blue for dark mode
+      : { r: 25, g: 118, b: 210 }; // Primary blue for light mode
+
+    // Interpolate from light to primary color
+    const r = Math.floor(primaryRgb.r + (255 - primaryRgb.r) * (1 - intensity));
+    const g = Math.floor(primaryRgb.g + (255 - primaryRgb.g) * (1 - intensity));
+    const b = Math.floor(primaryRgb.b + (255 - primaryRgb.b) * (1 - intensity));
+
+    return `rgb(${r}, ${g}, ${b})`;
   };
 
   // Get text color based on background
   const getTextColor = (percentage: number): string => {
     const intensity = percentage / maxPercentage;
-    return intensity > 0.6 ? "#ffffff" : "#000000";
+    return intensity > 0.6
+      ? theme.palette.getContrastText(theme.palette.primary.main)
+      : theme.palette.text.primary;
   };
 
   return (
@@ -85,6 +102,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 display: "flex",
                 alignItems: "center",
                 px: 1,
+                color: theme.palette.text.primary,
               }}
             >
               Function
@@ -124,7 +142,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
               sx={{
                 display: "flex",
                 mb: 0.5,
-                "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.02)" },
+                "&:hover": { backgroundColor: alpha(theme.palette.text.primary, 0.02) },
               }}
             >
               <Box
@@ -135,6 +153,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   alignItems: "center",
                   px: 1,
                   fontWeight: "medium",
+                  color: theme.palette.text.primary,
                 }}
               >
                 {fn.function}
@@ -159,11 +178,11 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                       alignItems: "center",
                       fontSize: "11px",
                       px: 0.5,
-                      border: "1px solid #e0e0e0",
+                      border: `1px solid ${theme.palette.divider}`,
                       cursor: "default",
                       position: "relative",
                       "&:hover": {
-                        boxShadow: "inset 0 0 0 2px #1976d2",
+                        boxShadow: `inset 0 0 0 2px ${theme.palette.primary.main}`,
                       },
                     }}
                     title={`${fn.function} - Position ${pos}\n${percentage.toFixed(1)}% (${count} employees)`}
@@ -214,7 +233,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   width: 30,
                   height: 20,
                   backgroundColor: getHeatmapColor(maxPercentage * intensity),
-                  border: "1px solid #e0e0e0",
+                  border: `1px solid ${theme.palette.divider}`,
                 }}
               />
             ))}

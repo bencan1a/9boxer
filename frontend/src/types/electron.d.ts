@@ -54,6 +54,48 @@ export interface ElectronAPI {
    */
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
 
+  /**
+   * OS theme detection and change notifications.
+   */
+  theme: {
+    /**
+     * Get the current system theme preference.
+     * Reads the OS-level theme setting (dark mode vs light mode).
+     *
+     * @returns Promise resolving to 'light' or 'dark'
+     *
+     * @example
+     * ```typescript
+     * const theme = await window.electronAPI.theme.getSystemTheme();
+     * console.log('System theme:', theme); // 'light' or 'dark'
+     * ```
+     */
+    getSystemTheme: () => Promise<'light' | 'dark'>;
+
+    /**
+     * Register a callback for system theme changes.
+     * The callback will be invoked whenever the OS theme preference changes.
+     * Returns a cleanup function to remove the listener.
+     *
+     * @param callback - Function to call with new theme ('light' or 'dark')
+     * @returns Cleanup function to remove the listener
+     *
+     * @example
+     * ```typescript
+     * // In a React component
+     * useEffect(() => {
+     *   const cleanup = window.electronAPI?.theme.onSystemThemeChange((theme) => {
+     *     console.log('System theme changed to:', theme);
+     *     setThemeMode(theme);
+     *   });
+     *
+     *   return cleanup; // Cleanup on unmount
+     * }, []);
+     * ```
+     */
+    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
+  };
+
   // Future APIs that could be added:
   // showNotification(title: string, options?: NotificationOptions): void;
   // getClipboardText(): Promise<string>;
