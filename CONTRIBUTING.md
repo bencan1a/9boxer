@@ -19,8 +19,8 @@ Thank you for your interest in contributing! This document provides guidelines a
    # or
    .venv\Scripts\activate      # Windows
 
-   pip install --upgrade pip
-   pip install -e '.[dev]'
+   pip install uv
+   uv pip install --system -e '.[dev]'
    pre-commit install
    ```
 

@@ -122,7 +122,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-          cache: 'pip'
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
 
       - name: Cache pytest
         uses: actions/cache@v4

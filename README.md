@@ -57,8 +57,8 @@ python3 -m venv .venv
 . .venv/bin/activate     # Windows: .venv\Scripts\activate
 
 # 3. Install Python dependencies
-pip install --upgrade pip
-pip install -e '.[dev]'
+pip install uv
+uv pip install --system -e '.[dev]'
 
 # 4. Build backend executable (required for Electron)
 cd backend

@@ -239,8 +239,8 @@ This is a consolidated monorepo for a standalone Electron desktop application:
 # First time setup (from project root)
 python3 -m venv .venv
 . .venv/bin/activate
-pip install --upgrade pip
-pip install -e '.[dev]'
+pip install uv
+uv pip install --system -e '.[dev]'
 pre-commit install
 ```
 
