@@ -12,9 +12,8 @@ from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.database import DatabaseManager
 from ninebox.services.session_manager import SessionManager
 
-
-
 pytestmark = pytest.mark.unit
+
 
 @pytest.fixture
 def temp_db() -> Path:
@@ -335,10 +334,11 @@ def test_multiple_sessions_when_restored_then_all_loaded(
 
         manager2 = SessionManager()
 
+        # Trigger lazy loading by accessing a session
+        session1 = manager2.get_session("user1")
+
         # Verify all 3 sessions restored
         assert len(manager2.sessions) == 3
-
-        session1 = manager2.get_session("user1")
         assert session1 is not None
         assert session1.session_id == session_id1
         assert session1.original_filename == "test1.xlsx"

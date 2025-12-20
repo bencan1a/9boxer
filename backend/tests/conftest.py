@@ -14,10 +14,17 @@ from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel
 
 
 @pytest.fixture(scope="session")
-def test_db_path() -> Generator[str, None, None]:
-    """Create a temporary database for testing."""
-    # Create a temporary database
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False) as f:
+def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
+    """Create a temporary database for testing.
+
+    Supports pytest-xdist by creating separate database files per worker.
+    """
+    # Get worker ID for parallel test execution (pytest-xdist)
+    worker_id = getattr(request.config, 'workerinput', {}).get('workerid', 'master')
+
+    # Create a temporary database with worker-specific name
+    suffix = f"_{worker_id}.db" if worker_id != 'master' else ".db"
+    with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
         db_path = f.name
 
     # Set environment variable for tests
@@ -32,28 +39,40 @@ def test_db_path() -> Generator[str, None, None]:
 
 @pytest.fixture(autouse=True)
 def setup_test_db() -> Generator[None, None, None]:
-    """Initialize test database before each test."""
-    # Note: This app is local-only without authentication.
-    # No database initialization needed for tests.
+    """Clean up in-memory state and database after each test.
 
+    This fixture clears dependency injection caches, in-memory state,
+    and database sessions to ensure tests start with a clean slate.
+
+    Note: Integration tests use transaction-based isolation (see integration/conftest.py),
+    so this database cleanup only affects unit tests.
+    """
     yield
 
-    # Clear all sessions from dependency injection cache and database
-    # This ensures each test starts with clean service instances
+    # Clear in-memory state from dependency injection cache
     from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
+
+    # Reset session manager's in-memory state
+    try:
+        mgr = get_session_manager()
+        mgr._sessions_loaded = False  # Reset lazy loading flag
+        mgr._sessions.clear()  # Clear in-memory session cache
+    except Exception:
+        pass  # If manager doesn't exist yet, that's fine
 
     # Clear the lru_cache to get fresh instances for next test
     get_session_manager.cache_clear()
     get_db_manager.cache_clear()
 
-    # Clear database sessions table (using temporary DB manager)
+    # Clear database sessions (for unit tests that use test_client)
+    # Integration tests handle this via transaction rollback
     from ninebox.services.database import DatabaseManager  # noqa: PLC0415
     try:
         temp_db = DatabaseManager()
         with temp_db.get_connection() as conn:
             conn.execute("DELETE FROM sessions")
     except Exception:
-        # Ignore errors during cleanup
+        # Ignore errors during cleanup (e.g., if database doesn't exist)
         pass
 
 
