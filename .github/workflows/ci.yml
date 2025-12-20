@@ -483,20 +483,21 @@ jobs:
       - name: Run Playwright E2E smoke tests
         working-directory: frontend
         run: npx playwright test smoke-test.spec.ts
+        run: npx playwright test smoke-test.spec.ts
 
-      - name: Upload Playwright report
+      - name: Upload Playwright smoke test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.os }}
+          name: playwright-smoke-report-${{ matrix.os }}
           path: frontend/playwright-report/
           retention-days: 30
 
-      - name: Upload Playwright test results
+      - name: Upload Playwright smoke test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-results-${{ matrix.os }}
+          name: playwright-smoke-results-${{ matrix.os }}
           path: |
             frontend/test-results/
             frontend/playwright-report/
