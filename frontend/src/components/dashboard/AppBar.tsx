@@ -7,75 +7,36 @@ import {
   AppBar as MuiAppBar,
   Toolbar,
   Typography,
-  Button,
   Box,
-  Chip,
-  CircularProgress,
   IconButton,
   Tooltip,
+  Badge,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import DownloadIcon from "@mui/icons-material/Download";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DonutLargeIcon from "@mui/icons-material/DonutLarge";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
-import { FileUploadDialog } from "../common/FileUploadDialog";
+import { FileMenu } from "./FileMenu";
 import { SettingsDialog } from "../settings/SettingsDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
-import { apiClient } from "../../services/api";
-import { extractErrorMessage } from "../../types/errors";
 import { logger } from "../../utils/logger";
 
 export const AppBar: React.FC = () => {
   const theme = useTheme();
-  const { sessionId, employees, filename, changes, donutModeActive, toggleDonutMode } = useSessionStore();
+  const { sessionId } = useSessionStore();
   const {
     toggleDrawer,
     hasActiveFilters,
-    applyFilters,
     selectedLevels,
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
     excludedEmployeeIds,
   } = useFilters();
-  const { showSuccess, showError } = useSnackbar();
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const { showError } = useSnackbar();
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-
-  const handleExport = async () => {
-    if (!sessionId) return;
-
-    setIsExporting(true);
-    try {
-      const blob = await apiClient.exportSession();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `modified_${filename || "employees.xlsx"}`;
-      document.body.appendChild(a);
-      a.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      showSuccess(`Successfully exported ${changes.length} change(s) to ${filename}`);
-    } catch (error: unknown) {
-      const errorMessage = extractErrorMessage(error);
-      logger.error('Export failed', error);
-      showError(errorMessage);
-    } finally {
-      setIsExporting(false);
-    }
-  };
 
   const handleOpenHelp = async () => {
     try {
@@ -92,23 +53,6 @@ export const AppBar: React.FC = () => {
     } catch (error: unknown) {
       logger.error('Failed to open user guide', error);
       showError("Failed to open user guide");
-    }
-  };
-
-  const handleToggleDonutMode = async () => {
-    if (!sessionId) return;
-
-    try {
-      await toggleDonutMode(!donutModeActive);
-      showSuccess(
-        donutModeActive
-          ? "Donut Mode deactivated"
-          : "Donut Mode activated - showing only position 5 employees"
-      );
-    } catch (error: unknown) {
-      const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to toggle donut mode', error);
-      showError(errorMessage);
     }
   };
 
@@ -139,172 +83,56 @@ export const AppBar: React.FC = () => {
     return `Active filters:\n${filterParts.join("\n")}`;
   };
 
-  // Get filtered employee count
-  const filteredEmployees = applyFilters(employees);
-  const displayedCount = filteredEmployees.length;
-
-  // Build employee count label
-  const employeeCountLabel =
-    hasActiveFilters && displayedCount < employees.length
-      ? `${displayedCount} of ${employees.length} employees`
-      : `${employees.length} employees`;
-
-  // Check if there are modifications to export
-  const hasModifications = changes.length > 0;
-
   return (
     <>
       <MuiAppBar position="static" elevation={2}>
         <Toolbar>
-          {/* Left: App title */}
-          <Typography variant="h6" component="div">
-            9Boxer
-          </Typography>
-
-          {/* Center: Status information */}
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-            {sessionId && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Chip
-                  label={filename || "Session Active"}
-                  size="small"
-                  sx={{
-                    bgcolor: theme.palette.mode === 'dark'
-                      ? 'rgba(255, 255, 255, 0.16)'
-                      : 'rgba(0, 0, 0, 0.08)',
-                    color: theme.palette.primary.contrastText,
-                    borderColor: 'transparent',
-                  }}
-                />
-                <Chip
-                  label={employeeCountLabel}
-                  color="secondary"
-                  size="small"
-                  sx={{ color: theme.palette.primary.contrastText }}
-                  data-testid="employee-count"
-                />
-              </Box>
-            )}
+          {/* Left: App title with logo */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <img
+              src="/build/icon_32x32.png"
+              alt="9Boxer logo"
+              style={{ width: 28, height: 28 }}
+            />
+            <Typography variant="h6" component="div">
+              9Boxer
+            </Typography>
           </Box>
+
+          {/* Center-left: File menu */}
+          <Box sx={{ ml: 4 }}>
+            <FileMenu />
+          </Box>
+
+          {/* Spacer */}
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Right: Action buttons */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                minWidth: "120px", // Reserve space for indicator to prevent shifting
-              }}
-            >
-              <Tooltip title={getFilterTooltip()} placement="bottom">
-                <span>
-                  <Button
+            <Tooltip title={getFilterTooltip()} placement="bottom">
+              <span>
+                <Badge
+                  variant="dot"
+                  invisible={!hasActiveFilters}
+                  color="warning"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      right: -3,
+                      top: 8,
+                    },
+                  }}
+                >
+                  <IconButton
                     color="inherit"
-                    startIcon={<FilterListIcon />}
                     disabled={!sessionId}
                     onClick={toggleDrawer}
                     data-testid="filter-button"
                   >
-                    Filters
-                  </Button>
-                </span>
-              </Tooltip>
-              {hasActiveFilters && (
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    backgroundColor: theme.palette.warning.main,
-                  }}
-                />
-              )}
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-              }}
-            >
-              <Tooltip
-                title={
-                  donutModeActive
-                    ? "Donut Mode Active - Only showing position 5 employees for evaluation"
-                    : "Enable Donut Mode to evaluate position 5 employees"
-                }
-                placement="bottom"
-              >
-                <span>
-                  <Button
-                    color={donutModeActive ? "secondary" : "inherit"}
-                    variant={donutModeActive ? "contained" : "text"}
-                    startIcon={<DonutLargeIcon />}
-                    disabled={!sessionId}
-                    onClick={handleToggleDonutMode}
-                    data-testid="donut-mode-button"
-                    sx={{
-                      minWidth: { xs: "auto", sm: "140px" },
-                    }}
-                  >
-                    <Box sx={{ display: { xs: "none", sm: "block" } }}>
-                      Donut Mode
-                    </Box>
-                  </Button>
-                </span>
-              </Tooltip>
-              {donutModeActive && (
-                <Chip
-                  label="ACTIVE"
-                  size="small"
-                  sx={{
-                    backgroundColor: theme.palette.secondary.main,
-                    color: theme.palette.secondary.contrastText,
-                    height: 20,
-                    fontSize: "0.7rem",
-                    fontWeight: "bold",
-                  }}
-                  data-testid="donut-mode-indicator"
-                />
-              )}
-            </Box>
-
-            <Button
-              color="inherit"
-              startIcon={<UploadFileIcon />}
-              onClick={() => setUploadDialogOpen(true)}
-              data-testid="upload-button"
-            >
-              Import
-            </Button>
-
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Button
-                color="inherit"
-                startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
-                disabled={!sessionId || !hasModifications || isExporting}
-                onClick={handleExport}
-                data-testid="export-button"
-              >
-                {isExporting ? "Exporting..." : "Apply"}
-              </Button>
-              {hasModifications && (
-                <Tooltip title={`${changes.length} change(s) will be applied on export`}>
-                  <Chip
-                    label={changes.length}
-                    size="small"
-                    sx={{
-                      backgroundColor: theme.palette.success.main,
-                      color: theme.palette.success.contrastText,
-                      height: 20,
-                      fontSize: "0.7rem",
-                    }}
-                  />
-                </Tooltip>
-              )}
-            </Box>
+                    <FilterListIcon />
+                  </IconButton>
+                </Badge>
+              </span>
+            </Tooltip>
 
             <Tooltip title="Settings">
               <IconButton
@@ -328,11 +156,6 @@ export const AppBar: React.FC = () => {
           </Box>
         </Toolbar>
       </MuiAppBar>
-
-      <FileUploadDialog
-        open={uploadDialogOpen}
-        onClose={() => setUploadDialogOpen(false)}
-      />
 
       <SettingsDialog
         open={settingsDialogOpen}

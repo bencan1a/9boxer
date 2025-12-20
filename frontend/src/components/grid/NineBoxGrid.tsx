@@ -6,6 +6,8 @@ import React, { useState, useEffect } from "react";
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from "@dnd-kit/core";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { GridBox } from "./GridBox";
+import { EmployeeCount } from "./EmployeeCount";
+import { ViewModeToggle } from "./ViewModeToggle";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { Employee } from "../../types/employee";
@@ -175,13 +177,37 @@ export const NineBoxGrid: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <Box sx={{ p: 3, height: "100%", width: "100%", userSelect: "none" }} data-testid="nine-box-grid">
-        {/* Axis Labels */}
-        <Box sx={{ display: "flex", mb: 2, width: "100%" }}>
-          <Box sx={{ width: 80 }} /> {/* Spacer for left label */}
-          <Box sx={{ flex: 1, textAlign: "center" }}>
-            <Typography variant="h6" fontWeight="bold">
-              Performance (Low → High)
-            </Typography>
+        {/* Header row with Performance label, employee count, and view mode toggle */}
+        <Box sx={{ display: "flex", mb: 2, width: "100%", alignItems: "center" }}>
+          <Box sx={{ width: 80 }} /> {/* Spacer for left label alignment */}
+
+          <Box sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 2
+          }}>
+            {/* Left: Empty for balance */}
+            <Box sx={{ width: 120 }} />
+
+            {/* Center: Performance label + Employee count */}
+            <Box sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flexDirection: { xs: "column", sm: "row" }
+            }}>
+              <Typography variant="h6" fontWeight="bold">
+                Performance (Low → High)
+              </Typography>
+              <EmployeeCount />
+            </Box>
+
+            {/* Right: View mode toggle */}
+            <Box sx={{ minWidth: 120 }}>
+              <ViewModeToggle />
+            </Box>
           </Box>
         </Box>
 
