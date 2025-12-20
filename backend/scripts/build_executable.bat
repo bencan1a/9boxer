@@ -33,13 +33,13 @@ echo Activating virtual environment from root...
 call %VENV_PATH%\Scripts\activate.bat
 
 echo Installing dependencies from root...
-python -m pip install --upgrade pip
+pip install uv
 cd ..
-pip install -e .
+uv pip install --system -e .
 cd backend
 
 echo Installing PyInstaller...
-pip install pyinstaller
+uv pip install --system pyinstaller
 
 echo Cleaning previous builds...
 REM Use PowerShell for robust cleanup with retries

@@ -251,6 +251,200 @@ class SessionManager:
         self._persist_session(session)
         return change_entry
 
+    def update_donut_change_notes(self, user_id: str, employee_id: int, notes: str) -> EmployeeMove:
+        """Update notes for an employee's donut change entry.
+
+        Sessions are lazily loaded from database on first access.
+
+        Args:
+            user_id: User session identifier
+            employee_id: Employee whose donut notes to update
+            notes: Notes text to store
+
+        Returns:
+            EmployeeMove: Updated donut change entry with notes
+
+        Raises:
+            ValueError: If no active session or no donut change entry exists for employee
+
+        Example:
+            >>> manager.update_donut_change_notes("user1", 123, "Exploring higher potential role")
+            EmployeeMove(employee_id=123, notes="Exploring higher potential role", ...)
+        """
+        self._ensure_sessions_loaded()
+        session = self.sessions.get(user_id)
+        if not session:
+            raise ValueError("No active session")
+
+        # Find donut change entry for this employee
+        change_entry = next((c for c in session.donut_changes if c.employee_id == employee_id), None)
+        if not change_entry:
+            raise ValueError(f"No donut change entry found for employee {employee_id}")
+
+        # Update notes
+        change_entry.notes = notes
+        self._persist_session(session)
+        return change_entry
+
+    def move_employee_donut(
+        self,
+        user_id: str,
+        employee_id: int,
+        new_performance: PerformanceLevel,
+        new_potential: PotentialLevel,
+    ) -> EmployeeMove:
+        """Update employee donut position in session.
+
+        Maintains ONE entry per employee in the donut_changes list:
+        - If employee already has a donut change entry: UPDATE it (preserve old_position, update new_position)
+        - If employee is new to donut changes: CREATE new entry
+        - If employee is moved back to position 5: REMOVE entry entirely and clear donut fields
+
+        Sessions are lazily loaded from database on first access.
+
+        Args:
+            user_id: User session identifier
+            employee_id: Employee to move in donut mode
+            new_performance: New donut performance level
+            new_potential: New donut potential level
+
+        Returns:
+            EmployeeMove: The donut change entry (either new or updated)
+
+        Raises:
+            ValueError: If no active session or employee not found
+
+        Example:
+            >>> manager.move_employee_donut("user1", 123, PerformanceLevel.HIGH, PotentialLevel.MEDIUM)
+            EmployeeMove(employee_id=123, old_position=5, new_position=8, ...)
+        """
+        self._ensure_sessions_loaded()
+        session = self.sessions.get(user_id)
+        if not session:
+            raise ValueError("No active session")
+
+        # Find employee
+        employee = next(
+            (e for e in session.current_employees if e.employee_id == employee_id), None
+        )
+        if not employee:
+            raise ValueError(f"Employee {employee_id} not found")
+
+        # Calculate new position
+        new_position = calculate_grid_position(new_performance, new_potential)
+        now = datetime.utcnow()
+
+        # Position 5 is the center position (Medium/Medium) - moving back here clears donut state
+        is_position_5 = new_position == 5
+
+        # Find existing donut change entry for this employee (one entry per employee)
+        existing_change = next(
+            (c for c in session.donut_changes if c.employee_id == employee_id), None
+        )
+
+        if is_position_5:
+            # Moving back to position 5 - clear donut fields and remove from changes
+            employee.donut_performance = None
+            employee.donut_potential = None
+            employee.donut_position = None
+            employee.donut_position_label = None
+            employee.donut_modified = False
+            employee.donut_last_modified = None
+            employee.donut_notes = None
+
+            # Remove from donut_changes list if exists
+            if existing_change:
+                session.donut_changes = [
+                    c for c in session.donut_changes if c.employee_id != employee_id
+                ]
+
+            # Return a change entry to indicate the move back (even though it's removed from list)
+            change = EmployeeMove(
+                employee_id=employee_id,
+                employee_name=employee.name,
+                timestamp=now,
+                old_performance=existing_change.new_performance
+                if existing_change
+                else employee.performance,
+                old_potential=existing_change.new_potential
+                if existing_change
+                else employee.potential,
+                new_performance=new_performance,
+                new_potential=new_potential,
+                old_position=existing_change.new_position
+                if existing_change
+                else employee.grid_position,
+                new_position=new_position,
+                notes=None,
+            )
+        else:
+            # Normal donut move (not position 5)
+            if existing_change:
+                # Update existing entry (preserve original old_position from first donut move)
+                existing_change.new_performance = new_performance
+                existing_change.new_potential = new_potential
+                existing_change.new_position = new_position
+                existing_change.timestamp = now
+                change = existing_change
+            else:
+                # Create new entry - old position is either previous donut position or current grid position
+                old_performance = employee.donut_performance or employee.performance
+                old_potential = employee.donut_potential or employee.potential
+                old_position = employee.donut_position or employee.grid_position
+
+                change = EmployeeMove(
+                    employee_id=employee_id,
+                    employee_name=employee.name,
+                    timestamp=now,
+                    old_performance=old_performance,
+                    old_potential=old_potential,
+                    new_performance=new_performance,
+                    new_potential=new_potential,
+                    old_position=old_position,
+                    new_position=new_position,
+                    notes=None,
+                )
+                session.donut_changes.append(change)
+
+            # Update employee donut fields
+            employee.donut_performance = new_performance
+            employee.donut_potential = new_potential
+            employee.donut_position = new_position
+            employee.donut_position_label = get_position_label(new_performance, new_potential)
+            employee.donut_modified = True
+            employee.donut_last_modified = now
+
+        self._persist_session(session)
+        return change
+
+    def toggle_donut_mode(self, user_id: str, enabled: bool) -> SessionState:
+        """Toggle donut mode on or off for a session.
+
+        Sessions are lazily loaded from database on first access.
+
+        Args:
+            user_id: User session identifier
+            enabled: True to enable donut mode, False to disable
+
+        Returns:
+            SessionState: Updated session state
+
+        Raises:
+            ValueError: If no active session
+
+        Example:
+            >>> manager.toggle_donut_mode("user1", True)
+            SessionState(donut_mode_active=True, ...)
+        """
+        self._ensure_sessions_loaded()
+        session = self.sessions.get(user_id)
+        if not session:
+            raise ValueError("No active session")
+
+        session.donut_mode_active = enabled
+        self._persist_session(session)
+        return session
+
     def _restore_sessions(self) -> None:
         """Restore sessions from database on startup.
 
@@ -316,8 +510,9 @@ class SessionManager:
                         user_id, session_id, created_at, original_filename,
                         original_file_path, sheet_name, sheet_index,
                         job_function_config, original_employees,
-                        current_employees, changes, updated_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        current_employees, changes, donut_changes,
+                        donut_mode_active, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         data["user_id"],
@@ -331,6 +526,8 @@ class SessionManager:
                         json.dumps(data["original_employees"]),
                         json.dumps(data["current_employees"]),
                         json.dumps(data["changes"]),
+                        json.dumps(data["donut_changes"]),
+                        1 if data["donut_mode_active"] else 0,
                         data["updated_at"],
                     ),
                 )

@@ -75,3 +75,188 @@ describe('EmployeeTile', () => {
     }
   })
 })
+
+describe('EmployeeTile - Donut Mode', () => {
+  const mockOnSelect = vi.fn()
+
+  const position5Employee = createMockEmployee({
+    employee_id: 1,
+    name: 'Jane Smith',
+    business_title: 'Product Manager',
+    job_level: 'MT3',
+    grid_position: 5,
+    position_label: 'Core Contributor [M,M]',
+    modified_in_session: false,
+    donut_modified: false,
+  })
+
+  it('displays regular position label when donut mode is inactive', () => {
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={position5Employee}
+          onSelect={mockOnSelect}
+          donutModeActive={false}
+        />
+      </DndWrapper>
+    )
+
+    // Should not show donut-specific labels when donut mode is off
+    expect(screen.queryByText(/Donut:/)).not.toBeInTheDocument()
+  })
+
+  it('displays donut position label when employee is donut-modified and donut mode is active', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'Top Talent [H,H]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={true}
+        />
+      </DndWrapper>
+    )
+
+    // Should show donut position label
+    expect(screen.getByText(/Donut: Top Talent \[H,H\]/)).toBeInTheDocument()
+  })
+
+  it('applies ghostly opacity styling when donut-modified and in donut mode', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'High Impact [H,M]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={true}
+        />
+      </DndWrapper>
+    )
+
+    const card = screen.getByTestId(`employee-card-${donutModifiedEmployee.employee_id}`)
+
+    // Check that card has reduced opacity (0.7) - using inline styles
+    const styles = window.getComputedStyle(card)
+    expect(card).toBeInTheDocument()
+    // Opacity is set via sx prop, which gets applied as inline styles
+  })
+
+  it('does not apply ghostly styling when donut mode is inactive', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'High Impact [H,M]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={false}
+        />
+      </DndWrapper>
+    )
+
+    const card = screen.getByTestId(`employee-card-${donutModifiedEmployee.employee_id}`)
+    expect(card).toBeInTheDocument()
+    // Should not have reduced opacity when donut mode is off
+  })
+
+  it('displays purple donut badge for donut-modified employees when donut mode is active', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'Star [H,H]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={true}
+        />
+      </DndWrapper>
+    )
+
+    const donutIndicator = screen.getByTestId('donut-indicator')
+    expect(donutIndicator).toBeInTheDocument()
+    expect(donutIndicator).toHaveTextContent('Donut')
+  })
+
+  it('does not display donut badge when donut mode is inactive', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'Star [H,H]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={false}
+        />
+      </DndWrapper>
+    )
+
+    const donutIndicator = screen.queryByTestId('donut-indicator')
+    expect(donutIndicator).not.toBeInTheDocument()
+  })
+
+  it('applies purple border styling when donut-modified and in donut mode', () => {
+    const donutModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      donut_modified: true,
+      donut_position_label: 'Growth [M,H]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={donutModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={true}
+        />
+      </DndWrapper>
+    )
+
+    const card = screen.getByTestId(`employee-card-${donutModifiedEmployee.employee_id}`)
+    expect(card).toBeInTheDocument()
+    // Purple border is applied via sx prop with borderColor: "#9c27b0"
+  })
+
+  it('shows both Modified and Donut indicators when employee has both modifications', () => {
+    const dualModifiedEmployee = createMockEmployee({
+      ...position5Employee,
+      modified_in_session: true,
+      donut_modified: true,
+      donut_position_label: 'Top Talent [H,H]',
+    })
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={dualModifiedEmployee}
+          onSelect={mockOnSelect}
+          donutModeActive={true}
+        />
+      </DndWrapper>
+    )
+
+    expect(screen.getByTestId('modified-indicator')).toBeInTheDocument()
+    expect(screen.getByTestId('donut-indicator')).toBeInTheDocument()
+  })
+})

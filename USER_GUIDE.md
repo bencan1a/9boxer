@@ -9,6 +9,7 @@ A simple guide to using the 9Boxer desktop application for talent management.
 - [Uploading Employee Data](#uploading-employee-data)
 - [Understanding the 9-Box Grid](#understanding-the-9-box-grid)
 - [Working with Employees](#working-with-employees)
+- [Donut Mode Exercise](#donut-mode-exercise)
 - [Tracking Changes and Adding Notes](#tracking-changes-and-adding-notes)
 - [Filtering and Exclusions](#filtering-and-exclusions)
 - [Viewing Statistics and Intelligence](#viewing-statistics-and-intelligence)
@@ -295,6 +296,289 @@ When you expand a box containing multiple employees:
 
 ---
 
+## Donut Mode Exercise
+
+**Donut Mode** is a special exercise mode designed to validate that employees in the center "Core Talent" box truly belong there. The name comes from the visualization: you're looking at everyone in the center hole of the donut and asking, "Where would they go if they couldn't stay in the center?"
+
+### What is the Donut Exercise?
+
+The Donut Exercise is a talent management technique that helps identify:
+- Employees who may be misplaced in the Core Talent box
+- People who are on an upward trajectory (should be High Potential or Stars)
+- People who may be slipping (should be Solid Performers or lower)
+- Whether your center box is properly calibrated
+
+**The key question:** For each employee in the center box, if they couldn't be rated as "Medium Performance, Medium Potential," where would they actually belong?
+
+### When to Use Donut Mode
+
+Use Donut Mode during:
+- **Talent calibration sessions** - Validate center box placements across teams
+- **Performance review cycles** - Ensure Core Talent ratings are accurate
+- **Succession planning** - Identify hidden stars or under-performers
+- **Quality checks** - Verify your 9-box ratings are properly differentiated
+
+### How to Activate Donut Mode
+
+1. **Upload your employee data** as normal
+2. **Click the "Donut Mode" button** in the top application bar
+   - Located next to the Filters button
+   - Has a donut icon
+3. **The grid changes** to show only employees currently in position 5 (Core Talent box)
+4. **An "ACTIVE" indicator** appears next to the button showing donut mode is on
+
+**To deactivate:**
+- Click the "Donut Mode" button again
+- The grid returns to normal view showing all employees
+
+### What Happens in Donut Mode
+
+When you activate Donut Mode:
+
+**Grid Changes:**
+- Only employees in position 5 (Core Talent [M,M]) are displayed
+- All other employees are temporarily hidden
+- Box labels remain the same (you can still place people in any box)
+- Drag-and-drop continues to work normally
+
+**Visual Indicators:**
+- "Donut Mode" button turns purple and shows "contained" style
+- "ACTIVE" chip appears next to the button
+- The employee count shows only position 5 employees
+
+**Key Principle:**
+Donut placements are **separate from actual positions**. Moving someone in Donut Mode does NOT change their real performance/potential ratings. This is purely an exercise to explore "what-if" scenarios.
+
+### Working in Donut Mode
+
+#### Placing Employees
+
+1. **Review the employees** currently shown (all from position 5)
+2. **Drag an employee** to where they would go if they couldn't be Medium/Medium:
+   - Drag to position 9 (Stars) if they're actually high performers with potential
+   - Drag to position 2 (Solid Performer) if they're really just meeting minimum standards
+   - Place anywhere that reflects their true capability
+3. **The employee's appearance changes** to show they've been "donut-placed":
+   - Becomes semi-transparent (ghostly, 70% opacity)
+   - Gets a purple border
+   - Shows a purple "Donut" badge
+4. **The placement is tracked** separately from their actual position
+
+**Important:**
+- You can place employees in any box, including back to position 5 if you think they're correctly placed
+- Moving someone back to position 5 removes their donut placement (clears the exercise data)
+- You can move the same employee multiple times; only the final placement is tracked
+
+#### Visual Indicators in Donut Mode
+
+When an employee has been placed in Donut Mode, they display:
+
+**Ghostly Appearance:**
+- Semi-transparent (70% opacity) to indicate this is an exploratory placement
+- Clearly distinguishable from regular employee tiles
+
+**Purple Border:**
+- 2px purple border around the tile
+- Distinct from the yellow border used for regular modifications
+
+**Purple "Donut" Badge:**
+- Small purple badge with "Donut" text
+- Appears on the employee tile
+- Confirms this is a donut exercise placement
+
+**Position Label:**
+- Shows the donut position (e.g., "Donut: Star [H,H]")
+- Italic text to differentiate from regular position labels
+
+### Tracking Donut Changes
+
+Donut Mode changes are tracked separately from regular changes to keep the exercise data isolated.
+
+**When Donut Mode is active:**
+
+1. **Click the "Changes" tab** in the right panel
+2. **You'll see two tabs:**
+   - **Regular Changes** - Normal employee movements and notes
+   - **Donut Changes** - Donut exercise placements and notes
+3. **The "Donut Changes" tab** shows:
+   - Employee name
+   - Movement from Core Talent to their donut position
+   - Notes field for documenting your reasoning
+   - Count of donut placements in the tab label
+
+**The change tracker automatically:**
+- Adds an entry when you place someone in donut mode
+- Updates the entry if you move them again (shows net change)
+- Removes the entry if you move them back to position 5
+- Keeps donut changes separate from regular changes
+
+**When Donut Mode is inactive:**
+- You can still see the donut changes in the Changes tab if any exist
+- This lets you review your donut exercise conclusions in normal mode
+- Regular changes continue to track actual position changes
+
+### Adding Notes to Donut Placements
+
+Notes help you document why someone should (or shouldn't) be in the center box.
+
+**To add a note:**
+1. **Open the Changes tab** in the right panel
+2. **Switch to "Donut Changes" tab** (if not already selected)
+3. **Click in the Notes field** for the employee
+4. **Type your reasoning**:
+   - "Actually exceeds expectations, should be High Performer"
+   - "Struggling with recent projects, may need development"
+   - "Ready for advancement, High Potential trajectory"
+   - "Correctly placed in Core Talent"
+5. **Click outside the field or press Tab** to save
+   - Notes save automatically
+   - No need to wait for confirmation
+
+**Note Tips:**
+- Be specific about what makes them not-quite-center-box
+- Reference specific achievements or concerns
+- Document trajectory (improving vs. declining)
+- Note if they're correctly placed (confirms calibration)
+
+### Switching Between Modes
+
+You can toggle between Donut Mode and normal mode at any time.
+
+**Toggling to Donut Mode:**
+- Grid filters to position 5 employees only
+- Employees with donut placements appear at their donut positions
+- Donut visual indicators (ghostly, purple border, badge) appear
+- Donut Changes tab becomes visible
+
+**Toggling to Normal Mode:**
+- Grid shows all employees
+- All employees appear at their actual positions
+- Donut visual indicators disappear
+- Regular changes display normally
+- Donut placements remain saved (not lost)
+
+**Placements Persist:**
+- Donut placements are saved when you make them
+- They persist when you toggle modes on and off
+- They remain in your session until you upload a new file
+- They're included in your Excel export
+
+**Important:**
+When in normal mode, employees appear at their actual positions, NOT their donut positions. The donut placements are only visible when Donut Mode is active.
+
+### Exporting Donut Data
+
+When you export your changes (click "Apply" button), the Excel file includes donut exercise data in dedicated columns.
+
+**Four new columns are added:**
+
+1. **Donut Exercise Position** - The position number (1-9) from the exercise
+2. **Donut Exercise Label** - The box label (e.g., "Star [H,H]")
+3. **Donut Exercise Change Description** - Formatted text like "Donut: Moved from Core Talent [M,M] to Star [H,H]"
+4. **Donut Exercise Notes** - Your notes explaining the donut placement
+
+**For employees with donut placements:**
+- All four columns are populated with their donut exercise data
+- The regular performance/potential columns show their ACTUAL ratings (unchanged)
+- This gives you both actual ratings and exercise findings side-by-side
+
+**For employees without donut placements:**
+- The four donut columns are empty
+- Only employees you placed in Donut Mode have donut data
+
+**For employees with regular changes:**
+- Regular changes appear in "Modified in Session" and "9Boxer Change Notes" columns
+- Donut changes appear in separate "Donut Exercise" columns
+- You can have both regular and donut data for the same employee
+
+This separation ensures:
+- Actual talent ratings remain intact
+- Exercise findings are clearly documented
+- You can review donut conclusions without affecting real data
+- Full audit trail of both actual and exploratory placements
+
+### Use Cases and Examples
+
+**Example 1: Calibration Meeting**
+
+During a talent calibration session, you notice your Core Talent box has 45 employees - more than expected.
+
+1. **Activate Donut Mode** to see only those 45 employees
+2. **Review each one** and ask: "If they can't be Medium/Medium, where do they really belong?"
+3. **Place employees** at their true level:
+   - 8 people → High Potential (they're actually exceeding)
+   - 5 people → Solid Performers (just meeting minimums)
+   - 32 people → Back to position 5 (correctly placed)
+4. **Add notes** explaining each decision
+5. **Export the results** to review with leadership
+6. **Use the findings** to recalibrate actual ratings in a future session
+
+**Example 2: Identifying Hidden Stars**
+
+You suspect some Core Talent employees are actually rising stars.
+
+1. **Activate Donut Mode**
+2. **Look for patterns**:
+   - Recent promotions
+   - Consistently exceeding goals
+   - Taking on leadership roles
+3. **Place high-performers** in High Potential or Stars boxes
+4. **Add notes** with evidence (projects, metrics, feedback)
+5. **Review Donut Changes tab** to see your "promoted" list
+6. **Export** to create a development/succession plan
+
+**Example 3: Performance Review Validation**
+
+Before finalizing performance reviews, validate your center box.
+
+1. **Activate Donut Mode** before submitting ratings
+2. **Challenge each placement**: Does this person truly belong in Core Talent?
+3. **Move anyone** who's borderline to their more accurate box
+4. **Document reasoning** in notes for each move
+5. **Review the findings** with managers
+6. **Adjust actual ratings** based on donut exercise insights
+
+### Tips for Effective Donut Exercises
+
+1. **Do it with others** - Calibration meetings are ideal for donut exercises
+2. **Be honest** - The exercise only works if you're truthful about placements
+3. **Document everything** - Add notes for every placement, even "correctly placed"
+4. **Look for patterns** - If many people move to High Potential, your center box may be too broad
+5. **Use as validation** - Donut mode confirms (or challenges) your current ratings
+6. **Review before export** - Check the Donut Changes tab to ensure all notes are complete
+7. **Compare both views** - Toggle between modes to see actual vs. exercise placements
+8. **Act on findings** - Use donut insights to recalibrate actual ratings in a future session
+
+### Donut Mode Best Practices
+
+**Before the Exercise:**
+- Upload current employee data
+- Ensure position 5 placements are up to date
+- Have clear criteria for what "Core Talent" means
+- Gather recent performance data
+
+**During the Exercise:**
+- Focus only on position 5 employees
+- Ask: "Where would they go if not Medium/Medium?"
+- Be specific in your notes
+- Consider trajectory, not just current state
+- Challenge assumptions about "safe" middle ratings
+
+**After the Exercise:**
+- Review the Donut Changes tab for all placements
+- Look for patterns (many moving up? many moving down?)
+- Discuss findings with stakeholders
+- Export for documentation and reference
+- Plan to address any significant discrepancies
+
+**Common Findings:**
+- **Many move to High Potential** - Your "Core" bar may be too low
+- **Many move to Solid Performer** - You may be over-rating average performance
+- **Even split up and down** - Good differentiation, Core Talent is well-calibrated
+- **Most stay at position 5** - Either correct calibration or need to challenge more
+
+---
+
 ## Tracking Changes and Adding Notes
 
 The **Changes** tab provides a comprehensive tracking system for all employee movements with the ability to add notes explaining your decisions.
@@ -304,6 +588,17 @@ The **Changes** tab provides a comprehensive tracking system for all employee mo
 1. **Click the "Changes" tab** in the right panel (second tab after Details)
 2. The change tracker displays a table of all employee movements
 3. Each row shows one employee who has been moved from their original position
+
+**When donut mode is active or donut changes exist:**
+- The change tracker shows two tabs: **Regular Changes** and **Donut Changes**
+- **Regular Changes** tab displays normal employee movements
+- **Donut Changes** tab displays donut exercise placements (see [Donut Mode Exercise](#donut-mode-exercise))
+- Tab badges show the count of changes in each category
+- Click between tabs to view regular or donut changes
+
+**When donut mode is inactive and no donut changes exist:**
+- The change tracker shows a single list of regular changes (original behavior)
+- No tabs are displayed for a cleaner interface
 
 ### Understanding the Change Tracker Table
 
@@ -594,22 +889,33 @@ Export your changes when you:
 ### What's in the Export
 
 The exported Excel file contains:
+
+**Regular Employee Data:**
 - All employee data from your original file
 - Updated performance ratings (based on grid position)
 - Updated potential ratings (based on grid position)
-- **"9Boxer Change Notes" column** - Contains all notes you added in the Changes tab
-- "Modified in Session" column - Shows "Yes" for employees who were moved
-- "Modification Date" column - Timestamp of when each employee was last moved
 - All original columns preserved (level, manager, chain, etc.)
 - Any additional columns from your original file
 
+**Regular Change Tracking Columns:**
+- **"9Boxer Change Notes"** - Contains notes you added for regular changes
+- **"Modified in Session"** - Shows "Yes" for employees who were moved
+- **"Modification Date"** - Timestamp of when each employee was last moved
+- **"9Boxer Change Description"** - Formatted description of the movement (e.g., "Moved from Core Talent [M,M] to Star [H,H]")
+
+**Donut Exercise Columns** (if you used Donut Mode):
+- **"Donut Exercise Position"** - Position number (1-9) from donut exercise
+- **"Donut Exercise Label"** - Box label from donut exercise (e.g., "Star [H,H]")
+- **"Donut Exercise Change Description"** - Formatted text (e.g., "Donut: Moved from Core Talent [M,M] to High Potential [M,H]")
+- **"Donut Exercise Notes"** - Notes you added during the donut exercise
+
 Your original file remains completely unchanged.
 
-**About the Notes Column:**
-- A new column called "9Boxer Change Notes" is automatically added to the export
-- Contains the notes you added for each employee in the Changes tab
-- Only employees with notes will have values in this column
-- Perfect for documenting rationale and maintaining audit trails
+**Important:**
+- Regular changes affect the actual Performance/Potential columns
+- Donut exercise data appears in separate columns and does NOT change actual ratings
+- This lets you export both real talent decisions and exploratory exercise findings
+- See [Donut Mode Exercise](#donut-mode-exercise) for more details on donut data
 
 ### After Export
 
@@ -784,16 +1090,17 @@ Your original file remains completely unchanged.
 9Boxer is a desktop application that helps you:
 - ✓ Visualize employee talent on a 3×3 grid
 - ✓ Easily move employees between boxes via drag-and-drop
+- ✓ Use Donut Mode to validate center box placements
 - ✓ Track all changes with the built-in change tracker
 - ✓ Add notes documenting why each change was made
 - ✓ Filter and focus on specific groups
 - ✓ View statistics and advanced intelligence
-- ✓ Export updated ratings and notes back to Excel
+- ✓ Export updated ratings, donut exercise data, and notes back to Excel
 
 All your data stays local and secure on your computer. Remember to export your changes before closing!
 
 ---
 
-**Version**: 2.1
+**Version**: 2.2
 **Last Updated**: December 2024
 **Questions?** Review this guide or contact your system administrator

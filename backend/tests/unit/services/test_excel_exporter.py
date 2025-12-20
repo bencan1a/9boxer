@@ -296,3 +296,173 @@ def test_find_column_when_column_not_exists_and_create_true_then_returns_next_in
     col_idx = excel_exporter._find_column(sheet, "NewColumn", create=True)
 
     assert col_idx == original_max_col + 1
+
+
+# ========== Donut Mode Tests ==========
+
+
+def test_export_when_donut_data_exists_then_includes_columns(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test export includes donut exercise columns when data exists."""
+    # Mark employee with donut placement
+    sample_employees[0].donut_modified = True
+    sample_employees[0].donut_position = 6
+    sample_employees[0].donut_position_label = "High Impact [H,M]"
+    sample_employees[0].donut_notes = "Testing hypothetical placement"
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find donut columns
+    donut_position_col_found = False
+    donut_label_col_found = False
+    donut_description_col_found = False
+    donut_notes_col_found = False
+
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value:
+            cell_str = str(cell_value)
+            if "Donut Exercise Position" in cell_str:
+                donut_position_col_found = True
+            if "Donut Exercise Label" in cell_str:
+                donut_label_col_found = True
+            if "Donut Exercise Change Description" in cell_str:
+                donut_description_col_found = True
+            if "Donut Exercise Notes" in cell_str:
+                donut_notes_col_found = True
+
+    assert donut_position_col_found
+    assert donut_label_col_found
+    assert donut_description_col_found
+    assert donut_notes_col_found
+
+
+def test_export_when_donut_data_exists_then_populates_correctly(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test donut data is populated correctly in export."""
+    # Setup session with donut changes
+    from ninebox.models.session import EmployeeMove, SessionState  # noqa: PLC0415
+
+    # Mark employee with donut placement (employee 1: moved from H,H to H,M)
+    sample_employees[0].donut_modified = True
+    sample_employees[0].donut_position = 6
+    sample_employees[0].donut_position_label = "High Impact [H,M]"
+    sample_employees[0].donut_performance = PerformanceLevel.HIGH
+    sample_employees[0].donut_potential = PotentialLevel.MEDIUM
+    sample_employees[0].donut_notes = "Exploring management track"
+
+    # Create session with donut changes
+    session = SessionState(
+        session_id="test-session",
+        user_id="user1",
+        created_at=datetime.utcnow(),
+        original_employees=sample_employees,
+        current_employees=sample_employees,
+        original_filename="test.xlsx",
+        original_file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+        changes=[],
+        donut_changes=[
+            EmployeeMove(
+                employee_id=1,
+                employee_name="Alice Smith",
+                timestamp=datetime.utcnow(),
+                old_performance=PerformanceLevel.HIGH,
+                old_potential=PotentialLevel.HIGH,
+                new_performance=PerformanceLevel.HIGH,
+                new_potential=PotentialLevel.MEDIUM,
+                old_position=9,
+                new_position=6,
+                notes="Exploring management track",
+            )
+        ],
+    )
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path, session=session)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find donut columns
+    donut_position_col = None
+    donut_label_col = None
+    donut_description_col = None
+    donut_notes_col = None
+
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value:
+            cell_str = str(cell_value)
+            if "Donut Exercise Position" == cell_str:
+                donut_position_col = col_idx
+            elif "Donut Exercise Label" == cell_str:
+                donut_label_col = col_idx
+            elif "Donut Exercise Change Description" == cell_str:
+                donut_description_col = col_idx
+            elif "Donut Exercise Notes" == cell_str:
+                donut_notes_col = col_idx
+
+    assert donut_position_col is not None
+    assert donut_label_col is not None
+    assert donut_description_col is not None
+    assert donut_notes_col is not None
+
+    # Check first employee row (row 2) has donut data
+    assert sheet.cell(2, donut_position_col).value == 6
+    assert sheet.cell(2, donut_label_col).value == "High Impact [H,M]"
+    assert "Donut: Moved from Star [H,H] to High Impact [H,M]" in str(
+        sheet.cell(2, donut_description_col).value
+    )
+    assert sheet.cell(2, donut_notes_col).value == "Exploring management track"
+
+
+def test_export_when_no_donut_data_then_empty_cells(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test employees without donut placements have empty cells."""
+    # No donut modifications for any employee
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find donut position column
+    donut_position_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Donut Exercise Position" == str(cell_value):
+            donut_position_col = col_idx
+            break
+
+    assert donut_position_col is not None
+
+    # All employee rows should have empty donut columns (empty cells have value "")
+    for row_idx in range(2, sheet.max_row + 1):
+        # Donut position column and the next 3 columns should be empty string (written by exporter)
+        # or None (not written at all)
+        donut_pos_val = sheet.cell(row_idx, donut_position_col).value
+        assert donut_pos_val == "" or donut_pos_val is None
+        donut_label_val = sheet.cell(row_idx, donut_position_col + 1).value
+        assert donut_label_val == "" or donut_label_val is None
+        donut_desc_val = sheet.cell(row_idx, donut_position_col + 2).value
+        assert donut_desc_val == "" or donut_desc_val is None
+        donut_notes_val = sheet.cell(row_idx, donut_position_col + 3).value
+        assert donut_notes_val == "" or donut_notes_val is None

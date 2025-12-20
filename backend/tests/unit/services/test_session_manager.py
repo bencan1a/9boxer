@@ -682,3 +682,258 @@ def test_move_employee_when_notes_exist_then_preserves_notes(
     # Verify the position was updated but notes preserved
     assert session.changes[0].new_position == 1  # L,L
     assert session.changes[0].old_position == 9  # Original H,H
+
+
+# ========== Donut Mode Tests ==========
+
+
+def test_move_employee_donut_when_called_then_updates_employee(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test SessionManager.move_employee_donut() updates employee donut fields."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Employee 1 starts at H,H (position 9)
+    # Move in donut mode to H,M (position 6)
+    change = session_manager.move_employee_donut(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify change entry
+    assert change.employee_id == 1
+    assert change.old_performance == PerformanceLevel.HIGH
+    assert change.old_potential == PerformanceLevel.HIGH
+    assert change.new_performance == PerformanceLevel.HIGH
+    assert change.new_potential == PotentialLevel.MEDIUM
+    assert change.old_position == 9
+    assert change.new_position == 6
+
+    # Verify employee was updated
+    session = session_manager.get_session("user1")
+    assert session is not None
+    emp = session.current_employees[0]
+    assert emp.donut_performance == PerformanceLevel.HIGH
+    assert emp.donut_potential == PotentialLevel.MEDIUM
+    assert emp.donut_position == 6
+    assert emp.donut_position_label == "High Impact [H,M]"
+    assert emp.donut_modified is True
+    assert emp.donut_last_modified is not None
+
+    # Original grid position should be unchanged
+    assert emp.performance == PerformanceLevel.HIGH
+    assert emp.potential == PerformanceLevel.HIGH
+    assert emp.grid_position == 9
+
+
+def test_move_employee_donut_when_multiple_moves_then_tracks_final(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test that moving employee in donut mode multiple times tracks net change."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Employee 1 starts at H,H (position 9)
+    # Move 1: H,H -> H,M (position 6)
+    first_change = session_manager.move_employee_donut(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify first change
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.donut_changes) == 1
+    assert first_change.old_position == 9
+    assert first_change.new_position == 6
+
+    # Move 2: H,M -> L,L (position 1)
+    second_change = session_manager.move_employee_donut(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.LOW,
+        new_potential=PotentialLevel.LOW,
+    )
+
+    # Should still be only one entry, showing movement from original to final
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.donut_changes) == 1
+    assert second_change.old_position == 9  # Still H,H (original position)
+    assert second_change.new_position == 1  # L,L (final position)
+    assert second_change.old_performance == PerformanceLevel.HIGH
+    assert second_change.old_potential == PerformanceLevel.HIGH
+    assert second_change.new_performance == PerformanceLevel.LOW
+    assert second_change.new_potential == PerformanceLevel.LOW
+
+
+def test_move_employee_donut_when_return_to_5_then_clears_data(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test moving back to position 5 clears donut fields and removes entry."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Move employee away from position (employee 1: H,H -> H,M)
+    session_manager.move_employee_donut(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Verify change was tracked
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.donut_changes) == 1
+    assert session.current_employees[0].donut_modified is True
+
+    # Move back to position 5 (M,M)
+    session_manager.move_employee_donut(
+        user_id="user1",
+        employee_id=1,
+        new_performance=PerformanceLevel.MEDIUM,
+        new_potential=PotentialLevel.MEDIUM,
+    )
+
+    # Change entry should be completely removed
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert len(session.donut_changes) == 0
+
+    # Donut fields should be cleared
+    emp = session.current_employees[0]
+    assert emp.donut_modified is False
+    assert emp.donut_performance is None
+    assert emp.donut_potential is None
+    assert emp.donut_position is None
+    assert emp.donut_position_label is None
+    assert emp.donut_last_modified is None
+    assert emp.donut_notes is None
+
+
+def test_toggle_donut_mode_when_enabled_then_sets_flag(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test toggling donut mode on sets the flag."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Verify initially off
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.donut_mode_active is False
+
+    # Toggle on
+    updated_session = session_manager.toggle_donut_mode(user_id="user1", enabled=True)
+
+    assert updated_session.donut_mode_active is True
+
+    # Verify persisted
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.donut_mode_active is True
+
+
+def test_toggle_donut_mode_when_disabled_then_clears_flag(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test toggling donut mode off clears the flag."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    # Enable donut mode first
+    session_manager.toggle_donut_mode(user_id="user1", enabled=True)
+
+    # Verify it's on
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.donut_mode_active is True
+
+    # Toggle off
+    updated_session = session_manager.toggle_donut_mode(user_id="user1", enabled=False)
+
+    assert updated_session.donut_mode_active is False
+
+    # Verify persisted
+    session = session_manager.get_session("user1")
+    assert session is not None
+    assert session.donut_mode_active is False
+
+
+def test_toggle_donut_mode_when_no_session_then_raises_error(
+    session_manager: SessionManager,
+) -> None:
+    """Test toggling donut mode without active session raises error."""
+    with pytest.raises(ValueError, match="No active session"):
+        session_manager.toggle_donut_mode(user_id="nonexistent", enabled=True)
+
+
+def test_move_employee_donut_when_no_session_then_raises_error(
+    session_manager: SessionManager,
+) -> None:
+    """Test moving employee in donut mode without active session raises error."""
+    with pytest.raises(ValueError, match="No active session"):
+        session_manager.move_employee_donut(
+            user_id="nonexistent",
+            employee_id=1,
+            new_performance=PerformanceLevel.MEDIUM,
+            new_potential=PotentialLevel.MEDIUM,
+        )
+
+
+def test_move_employee_donut_when_invalid_employee_then_raises_error(
+    session_manager: SessionManager, sample_employees: list[Employee]
+) -> None:
+    """Test moving non-existent employee in donut mode raises error."""
+    session_manager.create_session(
+        user_id="user1",
+        employees=sample_employees,
+        filename="test.xlsx",
+        file_path="/tmp/test.xlsx",
+        sheet_name="Employee Data",
+        sheet_index=1,
+    )
+
+    with pytest.raises(ValueError, match="Employee 999 not found"):
+        session_manager.move_employee_donut(
+            user_id="user1",
+            employee_id=999,
+            new_performance=PerformanceLevel.MEDIUM,
+            new_potential=PotentialLevel.MEDIUM,
+        )

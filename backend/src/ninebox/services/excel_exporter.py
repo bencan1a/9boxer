@@ -66,6 +66,10 @@ class ExcelExporter:
             sheet.cell(1, modified_col + 1, "Modification Date")
             sheet.cell(1, modified_col + 2, "9Boxer Change Description")
             sheet.cell(1, modified_col + 3, "9Boxer Change Notes")
+            sheet.cell(1, modified_col + 4, "Donut Exercise Position")
+            sheet.cell(1, modified_col + 5, "Donut Exercise Label")
+            sheet.cell(1, modified_col + 6, "Donut Exercise Change Description")
+            sheet.cell(1, modified_col + 7, "Donut Exercise Notes")
 
         # Create employee lookup by ID
         employee_map = {e.employee_id: e for e in employees}
@@ -82,6 +86,17 @@ class ExcelExporter:
                 new_label = get_position_label(change.new_performance, change.new_potential)
                 change_description_map[change.employee_id] = (
                     f"Moved from {old_label} to {new_label}"
+                )
+
+        # Create donut change descriptions lookup by employee ID
+        donut_change_description_map = {}
+        if session:
+            for change in session.donut_changes:
+                # Create donut movement description
+                old_label = get_position_label(change.old_performance, change.old_potential)
+                new_label = get_position_label(change.new_performance, change.new_potential)
+                donut_change_description_map[change.employee_id] = (
+                    f"Donut: Moved from {old_label} to {new_label}"
                 )
 
         # Update rows with modified data
@@ -127,6 +142,24 @@ class ExcelExporter:
                 # Add change notes if available
                 notes_value = change_notes_map.get(emp_id, "")
                 sheet.cell(row_idx, modified_col + 3, notes_value)
+
+                # Add donut exercise data if employee was modified in donut mode
+                if emp.donut_modified:
+                    # Donut Exercise Position
+                    sheet.cell(row_idx, modified_col + 4, emp.donut_position)
+                    # Donut Exercise Label
+                    sheet.cell(row_idx, modified_col + 5, emp.donut_position_label or "")
+                    # Donut Exercise Change Description
+                    donut_description = donut_change_description_map.get(emp_id, "")
+                    sheet.cell(row_idx, modified_col + 6, donut_description)
+                    # Donut Exercise Notes
+                    sheet.cell(row_idx, modified_col + 7, emp.donut_notes or "")
+                else:
+                    # Leave donut columns empty if not modified in donut mode
+                    sheet.cell(row_idx, modified_col + 4, "")
+                    sheet.cell(row_idx, modified_col + 5, "")
+                    sheet.cell(row_idx, modified_col + 6, "")
+                    sheet.cell(row_idx, modified_col + 7, "")
 
         # Save modified workbook
         workbook.save(output_path)

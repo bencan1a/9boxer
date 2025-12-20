@@ -262,3 +262,142 @@ def test_move_employee_when_updates_grid_position_then_position_correct(
     data = response.json()
     assert data["employee"]["grid_position"] == 5
     assert "Core Talent" in data["employee"]["position_label"]
+
+
+# ========== Donut Mode Tests ==========
+
+
+def test_move_employee_donut_when_valid_request_then_updates_donut_position(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test moving employee in donut mode updates donut fields."""
+    # Employee 1 starts at H,H (position 9)
+    # Move in donut mode to H,M (position 6)
+    move_data = {"performance": "High", "potential": "Medium"}
+
+    response = test_client.patch(
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["employee"]["donut_position"] == 6
+    assert data["employee"]["donut_performance"] == "High"
+    assert data["employee"]["donut_potential"] == "Medium"
+    assert data["employee"]["donut_modified"] is True
+    assert data["employee"]["donut_position_label"] == "High Impact [H,M]"
+    assert data["employee"]["donut_last_modified"] is not None
+
+    # Original grid position should be unchanged
+    assert data["employee"]["grid_position"] == 9
+    assert data["employee"]["performance"] == "High"
+    assert data["employee"]["potential"] == "High"
+
+
+def test_move_employee_donut_when_with_notes_then_saves_notes(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test donut move with notes saves notes to employee and change entry."""
+    move_data = {
+        "performance": "Medium",
+        "potential": "High",
+        "notes": "Exploring potential growth path",
+    }
+
+    response = test_client.patch(
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["employee"]["donut_notes"] == "Exploring potential growth path"
+    assert data["change"]["notes"] == "Exploring potential growth path"
+
+
+def test_move_employee_donut_when_multiple_moves_then_updates_entry(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test multiple donut moves update single entry preserving original position."""
+    # First move: H,H (position 9) -> M,M (position 5)
+    first_move = {"performance": "Medium", "potential": "Medium"}
+    response1 = test_client.patch(
+        "/api/employees/1/move-donut", json=first_move, headers=session_with_data
+    )
+    assert response1.status_code == 200
+    change1 = response1.json()["change"]
+    assert change1["old_position"] == 9
+    assert change1["new_position"] == 5
+
+    # Second move: M,M (position 5) -> L,L (position 1)
+    second_move = {"performance": "Low", "potential": "Low"}
+    response2 = test_client.patch(
+        "/api/employees/1/move-donut", json=second_move, headers=session_with_data
+    )
+    assert response2.status_code == 200
+    change2 = response2.json()["change"]
+
+    # Should show original position (9) to final position (1)
+    assert change2["old_position"] == 9
+    assert change2["new_position"] == 1
+    assert change2["old_performance"] == "High"
+    assert change2["old_potential"] == "High"
+    assert change2["new_performance"] == "Low"
+    assert change2["new_potential"] == "Low"
+
+
+def test_move_employee_donut_when_moved_to_5_then_removes_entry(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test moving to position 5 (M,M) clears donut fields and removes change entry."""
+    # First move employee away from position 5
+    first_move = {"performance": "High", "potential": "Medium"}
+    response1 = test_client.patch(
+        "/api/employees/1/move-donut", json=first_move, headers=session_with_data
+    )
+    assert response1.status_code == 200
+    assert response1.json()["employee"]["donut_modified"] is True
+
+    # Move back to position 5 (M,M)
+    second_move = {"performance": "Medium", "potential": "Medium"}
+    response2 = test_client.patch(
+        "/api/employees/1/move-donut", json=second_move, headers=session_with_data
+    )
+    assert response2.status_code == 200
+    employee = response2.json()["employee"]
+
+    # Donut fields should be cleared
+    assert employee["donut_position"] is None
+    assert employee["donut_performance"] is None
+    assert employee["donut_potential"] is None
+    assert employee["donut_modified"] is False
+    assert employee["donut_last_modified"] is None
+    assert employee["donut_notes"] is None
+
+
+def test_move_employee_donut_when_invalid_employee_then_404(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test donut move with non-existent employee returns 404."""
+    move_data = {"performance": "Medium", "potential": "Medium"}
+
+    response = test_client.patch(
+        "/api/employees/999/move-donut", json=move_data, headers=session_with_data
+    )
+
+    assert response.status_code == 404
+    assert "Employee 999 not found" in response.json()["detail"]
+
+
+def test_move_employee_donut_when_invalid_position_then_400(
+    test_client: TestClient, session_with_data: dict[str, str]
+) -> None:
+    """Test donut move with invalid performance/potential returns 400."""
+    move_data = {"performance": "Invalid", "potential": "Medium"}
+
+    response = test_client.patch(
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+    )
+
+    assert response.status_code == 400
+    assert "Invalid performance or potential value" in response.json()["detail"]

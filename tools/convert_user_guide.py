@@ -181,55 +181,81 @@ def generate_html(content: str) -> str:
         }}
 
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
+            color: rgba(255, 255, 255, 0.87);
+            background-color: #121212;
             padding: 20px;
+            /* Custom scrollbar styling for dark mode */
+            scrollbar-color: #424242 #1e1e1e;
+        }}
+
+        body::-webkit-scrollbar {{
+            width: 12px;
+            height: 12px;
+        }}
+
+        body::-webkit-scrollbar-track {{
+            background: #1e1e1e;
+        }}
+
+        body::-webkit-scrollbar-thumb {{
+            background: #424242;
+            border-radius: 6px;
+            border: 3px solid #1e1e1e;
+        }}
+
+        body::-webkit-scrollbar-thumb:hover {{
+            background: #616161;
         }}
 
         .container {{
             max-width: 900px;
             margin: 0 auto;
-            background: white;
+            background: #1e1e1e;
             padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }}
 
         h1 {{
-            color: #1976d2;
-            border-bottom: 3px solid #1976d2;
+            color: #90caf9;
+            border-bottom: 3px solid #90caf9;
             padding-bottom: 10px;
             margin-bottom: 20px;
             font-size: 2.5em;
+            font-weight: 500;
         }}
 
         h2 {{
-            color: #1976d2;
+            color: #90caf9;
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 1.8em;
-            border-bottom: 2px solid #e0e0e0;
+            font-weight: 500;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.12);
             padding-bottom: 8px;
         }}
 
         h3 {{
-            color: #424242;
+            color: rgba(255, 255, 255, 0.87);
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 1.4em;
+            font-weight: 500;
         }}
 
         h4 {{
-            color: #616161;
+            color: rgba(255, 255, 255, 0.60);
             margin-top: 15px;
             margin-bottom: 8px;
             font-size: 1.1em;
+            font-weight: 500;
         }}
 
         p {{
             margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.87);
         }}
 
         ul, ol {{
@@ -239,10 +265,12 @@ def generate_html(content: str) -> str:
 
         li {{
             margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.87);
         }}
 
         code {{
-            background-color: #f5f5f5;
+            background-color: #2c2c2c;
+            color: #ffb74d;
             padding: 2px 6px;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
@@ -250,47 +278,70 @@ def generate_html(content: str) -> str:
         }}
 
         pre {{
-            background-color: #f5f5f5;
+            background-color: #2c2c2c;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
             margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }}
 
         pre code {{
             background: none;
             padding: 0;
+            color: rgba(255, 255, 255, 0.87);
         }}
 
         strong {{
             font-weight: 600;
-            color: #212121;
+            color: rgba(255, 255, 255, 0.87);
         }}
 
         hr {{
             border: none;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
             margin: 30px 0;
         }}
 
         a {{
-            color: #1976d2;
+            color: #90caf9;
             text-decoration: none;
         }}
 
         a:hover {{
+            color: #b3d9f7;
             text-decoration: underline;
         }}
 
         @media print {{
             body {{
                 background: white;
+                color: black;
                 padding: 0;
             }}
 
             .container {{
                 box-shadow: none;
                 padding: 20px;
+                background: white;
+            }}
+
+            h1, h2 {{
+                color: #1976d2;
+            }}
+
+            code {{
+                background-color: #f5f5f5;
+                color: #d32f2f;
+            }}
+
+            pre {{
+                background-color: #f5f5f5;
+                border: 1px solid #e0e0e0;
+            }}
+
+            a {{
+                color: #1976d2;
             }}
         }}
     </style>

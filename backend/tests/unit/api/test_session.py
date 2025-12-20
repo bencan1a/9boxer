@@ -611,3 +611,83 @@ def test_clear_session_when_file_missing_then_handles_gracefully(
     response = test_client.delete("/api/session/clear", headers=auth_headers)
     assert response.status_code == 200
     assert response.json()["success"] is True
+
+
+# ========== Donut Mode Tests ==========
+
+
+def test_toggle_donut_mode_when_enabled_then_activates(
+    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
+    """Test toggling donut mode on activates it."""
+    # Upload file to create session
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        test_client.post("/api/session/upload", files=files, headers=auth_headers)
+
+    # Toggle donut mode on
+    response = test_client.post(
+        "/api/session/toggle-donut-mode",
+        json={"enabled": True},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["donut_mode_active"] is True
+    assert "session_id" in data
+
+
+def test_toggle_donut_mode_when_disabled_then_deactivates(
+    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+) -> None:
+    """Test toggling donut mode off deactivates it."""
+    # Upload file and enable donut mode
+    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        files = {
+            "file": (
+                "test.xlsx",
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
+        test_client.post("/api/session/upload", files=files, headers=auth_headers)
+
+    test_client.post(
+        "/api/session/toggle-donut-mode",
+        json={"enabled": True},
+        headers=auth_headers,
+    )
+
+    # Toggle donut mode off
+    response = test_client.post(
+        "/api/session/toggle-donut-mode",
+        json={"enabled": False},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["donut_mode_active"] is False
+
+
+def test_toggle_donut_mode_when_no_session_then_returns_404(
+    test_client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    """Test toggling donut mode without active session returns 404."""
+    response = test_client.post(
+        "/api/session/toggle-donut-mode",
+        json={"enabled": True},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 404
+    assert "No active session" in response.json()["detail"]

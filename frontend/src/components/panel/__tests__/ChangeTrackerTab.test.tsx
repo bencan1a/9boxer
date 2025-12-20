@@ -16,13 +16,19 @@ vi.mock('date-fns', () => ({
 
 // Mock the session store module
 const mockUpdateChangeNotes = vi.fn()
+const mockUpdateDonutChangeNotes = vi.fn()
 let mockChangesData: any[] = []
+let mockDonutChangesData: any[] = []
+let mockDonutModeActive: boolean = false
 
 vi.mock('../../../store/sessionStore', () => ({
   useSessionStore: vi.fn((selector) => {
     const state = {
       changes: mockChangesData,
+      donutChanges: mockDonutChangesData,
+      donutModeActive: mockDonutModeActive,
       updateChangeNotes: mockUpdateChangeNotes,
+      updateDonutChangeNotes: mockUpdateDonutChangeNotes,
     }
     return selector(state)
   }),
@@ -32,7 +38,10 @@ describe('ChangeTrackerTab', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUpdateChangeNotes.mockResolvedValue(undefined)
+    mockUpdateDonutChangeNotes.mockResolvedValue(undefined)
     mockChangesData = []
+    mockDonutChangesData = []
+    mockDonutModeActive = false
   })
 
   it('displays empty state when no changes exist', () => {
@@ -88,7 +97,7 @@ describe('ChangeTrackerTab', () => {
 
     // Timestamps are used for sorting but not displayed in UI
     // Verify the table has the correct columns (Employee, Movement, Notes only)
-    const table = screen.getByTestId('change-tracker-table')
+    const table = screen.getByTestId('change-table')
     expect(table).toBeInTheDocument()
     expect(screen.queryByText(/hours ago/)).not.toBeInTheDocument()
   })
@@ -294,5 +303,137 @@ describe('ChangeTrackerTab', () => {
     expect(consoleWarnSpy).not.toHaveBeenCalled()
 
     consoleWarnSpy.mockRestore()
+  })
+
+  // ==================== Donut Mode Tests ====================
+
+  it('displays tabs when donut mode is active', () => {
+    mockChangesData = [mockChanges[0]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    expect(screen.getByTestId('regular-changes-tab')).toBeInTheDocument()
+    expect(screen.getByTestId('donut-changes-tab')).toBeInTheDocument()
+  })
+
+  it('displays tabs when donut changes exist even if donut mode is inactive', () => {
+    mockChangesData = [mockChanges[0]]
+    mockDonutChangesData = [mockChanges[1]]
+    mockDonutModeActive = false
+
+    render(<ChangeTrackerTab />)
+
+    expect(screen.getByTestId('regular-changes-tab')).toBeInTheDocument()
+    expect(screen.getByTestId('donut-changes-tab')).toBeInTheDocument()
+  })
+
+  it('does not display tabs when donut mode is inactive and no donut changes exist', () => {
+    mockChangesData = [mockChanges[0]]
+    mockDonutModeActive = false
+
+    render(<ChangeTrackerTab />)
+
+    expect(screen.queryByTestId('regular-changes-tab')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('donut-changes-tab')).not.toBeInTheDocument()
+  })
+
+  it('displays donut changes in donut changes tab', () => {
+    mockChangesData = []
+    mockDonutChangesData = [mockChanges[0]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    // Switch to donut changes tab
+    fireEvent.click(screen.getByTestId('donut-changes-tab'))
+
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+  })
+
+  it('displays empty state for donut changes when no donut changes exist', () => {
+    mockChangesData = [mockChanges[0]]
+    mockDonutChangesData = []
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    // Switch to donut changes tab
+    fireEvent.click(screen.getByTestId('donut-changes-tab'))
+
+    expect(screen.getByText('No donut changes yet')).toBeInTheDocument()
+    expect(screen.getByText('Move employees in donut mode to track changes')).toBeInTheDocument()
+  })
+
+  it('calls updateDonutChangeNotes when donut change notes are edited', async () => {
+    mockChangesData = []
+    mockDonutChangesData = [mockChanges[0]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    // Switch to donut changes tab
+    fireEvent.click(screen.getByTestId('donut-changes-tab'))
+
+    const notesField = screen.getByDisplayValue('Promoted after successful project delivery')
+
+    fireEvent.focus(notesField)
+    fireEvent.change(notesField, { target: { value: 'Donut notes updated' } })
+    fireEvent.blur(notesField)
+
+    await waitFor(() => {
+      expect(mockUpdateDonutChangeNotes).toHaveBeenCalledWith(1, 'Donut notes updated')
+    })
+
+    expect(mockUpdateChangeNotes).not.toHaveBeenCalled()
+  })
+
+  it('displays donut changes with secondary color chip', () => {
+    mockChangesData = []
+    mockDonutChangesData = [mockChanges[0]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    // Switch to donut changes tab
+    fireEvent.click(screen.getByTestId('donut-changes-tab'))
+
+    // Check that the new position chip exists (we can't directly check color in JSDOM)
+    expect(screen.getByText('Star [H,H]')).toBeInTheDocument()
+  })
+
+  it('displays correct change counts in tab labels', () => {
+    mockChangesData = [mockChanges[0], mockChanges[1]]
+    mockDonutChangesData = [mockChanges[2]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    expect(screen.getByText('Regular Changes (2)')).toBeInTheDocument()
+    expect(screen.getByText('Donut Changes (1)')).toBeInTheDocument()
+  })
+
+  it('switches between regular and donut changes tabs correctly', () => {
+    mockChangesData = [mockChanges[0]]
+    mockDonutChangesData = [mockChanges[1]]
+    mockDonutModeActive = true
+
+    render(<ChangeTrackerTab />)
+
+    // Initially on regular changes tab
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+    expect(screen.queryByText('Bob Smith')).not.toBeInTheDocument()
+
+    // Switch to donut changes tab
+    fireEvent.click(screen.getByTestId('donut-changes-tab'))
+
+    expect(screen.queryByText('Alice Johnson')).not.toBeInTheDocument()
+    expect(screen.getByText('Bob Smith')).toBeInTheDocument()
+
+    // Switch back to regular changes tab
+    fireEvent.click(screen.getByTestId('regular-changes-tab'))
+
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+    expect(screen.queryByText('Bob Smith')).not.toBeInTheDocument()
   })
 })

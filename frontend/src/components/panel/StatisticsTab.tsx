@@ -23,6 +23,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { useStatistics } from "../../hooks/useStatistics";
 import { useEmployees } from "../../hooks/useEmployees";
+import { useSessionStore } from "../../store/sessionStore";
 import { DistributionChart } from "./DistributionChart";
 
 // SVG Curly Brace Component (opening to the left like })
@@ -70,7 +71,8 @@ const CurlyBrace: React.FC<{
 export const StatisticsTab: React.FC = () => {
   const theme = useTheme();
   const { employees } = useEmployees(); // Get filtered employees
-  const { statistics, isLoading, error } = useStatistics(employees);
+  const donutModeActive = useSessionStore((state) => state.donutModeActive);
+  const { statistics, isLoading, error } = useStatistics(employees, donutModeActive);
 
   if (isLoading) {
     return (
@@ -191,7 +193,11 @@ export const StatisticsTab: React.FC = () => {
                   <TableRow
                     key={row.grid_position}
                     sx={{
-                      backgroundColor: row.count > 0 ? "transparent" : "grey.50",
+                      backgroundColor: row.count > 0
+                        ? "transparent"
+                        : theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.05)"
+                          : "grey.50",
                     }}
                   >
                     <TableCell component="th" scope="row">

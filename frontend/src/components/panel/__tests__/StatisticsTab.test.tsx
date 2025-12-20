@@ -1,35 +1,32 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../../test/utils'
 import { mockEmployees, mockStatistics } from '../../../test/mockData'
+import { StatisticsTab } from '../StatisticsTab'
 
 // Mock the DistributionChart component to avoid recharts issues in tests
 vi.mock('../DistributionChart', () => ({
   DistributionChart: () => <div data-testid="distribution-chart">Distribution Chart</div>,
 }))
 
+// Mock the hooks
+vi.mock('../../../hooks/useEmployees', () => ({
+  useEmployees: () => ({ employees: mockEmployees }),
+}))
+
+vi.mock('../../../hooks/useStatistics', () => ({
+  useStatistics: () => ({
+    statistics: mockStatistics,
+    isLoading: false,
+    error: null,
+  }),
+}))
+
+vi.mock('../../../store/sessionStore', () => ({
+  useSessionStore: vi.fn(() => false), // donutModeActive = false
+}))
+
 describe('StatisticsTab', () => {
-  beforeEach(async () => {
-    // Reset modules before each test
-    vi.resetModules()
-  })
-
-  it('displays statistics when data is loaded', async () => {
-    // Mock hooks locally for this test
-    vi.doMock('../../../hooks/useEmployees', () => ({
-      useEmployees: () => ({ employees: mockEmployees }),
-    }))
-
-    vi.doMock('../../../hooks/useStatistics', () => ({
-      useStatistics: () => ({
-        statistics: mockStatistics,
-        isLoading: false,
-        error: null,
-      }),
-    }))
-
-    // Import component after mocks are set
-    const { StatisticsTab } = await import('../StatisticsTab')
-
+  it('displays statistics when data is loaded', () => {
     render(<StatisticsTab />)
 
     // Check for total employees
@@ -38,21 +35,7 @@ describe('StatisticsTab', () => {
     expect(screen.getByText('High Performers')).toBeInTheDocument()
   })
 
-  it('renders distribution table', async () => {
-    vi.doMock('../../../hooks/useEmployees', () => ({
-      useEmployees: () => ({ employees: mockEmployees }),
-    }))
-
-    vi.doMock('../../../hooks/useStatistics', () => ({
-      useStatistics: () => ({
-        statistics: mockStatistics,
-        isLoading: false,
-        error: null,
-      }),
-    }))
-
-    const { StatisticsTab } = await import('../StatisticsTab')
-
+  it('renders distribution table', () => {
     render(<StatisticsTab />)
 
     // Check table headers
@@ -61,21 +44,7 @@ describe('StatisticsTab', () => {
     expect(screen.getByText('Percentage')).toBeInTheDocument()
   })
 
-  it('renders distribution chart component', async () => {
-    vi.doMock('../../../hooks/useEmployees', () => ({
-      useEmployees: () => ({ employees: mockEmployees }),
-    }))
-
-    vi.doMock('../../../hooks/useStatistics', () => ({
-      useStatistics: () => ({
-        statistics: mockStatistics,
-        isLoading: false,
-        error: null,
-      }),
-    }))
-
-    const { StatisticsTab } = await import('../StatisticsTab')
-
+  it('renders distribution chart component', () => {
     render(<StatisticsTab />)
 
     expect(screen.getByTestId('distribution-chart')).toBeInTheDocument()

@@ -27,7 +27,7 @@ export const createMockEmployee = (overrides?: Partial<Employee>): Employee => {
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.HIGH,
     grid_position: 9,
-    position_label: 'Top Talent [H,H]',
+    position_label: 'Star [H,H]',
     talent_indicator: 'High Performer',
     ratings_history: [
       { year: 2023, rating: 'Leading' },
@@ -55,7 +55,7 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.HIGH,
     grid_position: 9,
-    position_label: 'Top Talent [H,H]',
+    position_label: 'Star [H,H]',
   }),
   createMockEmployee({
     employee_id: 2,
@@ -64,7 +64,7 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.MEDIUM,
     potential: PotentialLevel.HIGH,
     grid_position: 8,
-    position_label: 'Emerging [M,H]',
+    position_label: 'Growth [M,H]',
   }),
   createMockEmployee({
     employee_id: 3,
@@ -73,7 +73,7 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.LOW,
     potential: PotentialLevel.HIGH,
     grid_position: 7,
-    position_label: 'High Potential [L,H]',
+    position_label: 'Enigma [L,H]',
   }),
   createMockEmployee({
     employee_id: 4,
@@ -82,7 +82,7 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.MEDIUM,
     grid_position: 6,
-    position_label: 'Strong Contributor [H,M]',
+    position_label: 'High Impact [H,M]',
     modified_in_session: true,
   }),
   createMockEmployee({
@@ -92,7 +92,7 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.MEDIUM,
     potential: PotentialLevel.MEDIUM,
     grid_position: 5,
-    position_label: 'Core Contributor [M,M]',
+    position_label: 'Core Talent [M,M]',
   }),
 ]
 
@@ -119,15 +119,15 @@ export const mockStatistics = {
   modified_employees: 1,
   high_performers: 2,
   distribution: [
-    { grid_position: 1, position_label: 'Low/Low [L,L]', count: 0, percentage: 0 },
-    { grid_position: 2, position_label: 'Inconsistent Talent [L,M]', count: 0, percentage: 0 },
-    { grid_position: 3, position_label: 'Emerging Talent [L,H]', count: 0, percentage: 0 },
-    { grid_position: 4, position_label: 'Med/Low [M,L]', count: 0, percentage: 0 },
+    { grid_position: 1, position_label: 'Underperformer [L,L]', count: 0, percentage: 0 },
+    { grid_position: 2, position_label: 'Effective Pro [M,L]', count: 0, percentage: 0 },
+    { grid_position: 3, position_label: 'Workhorse [H,L]', count: 0, percentage: 0 },
+    { grid_position: 4, position_label: 'Inconsistent [L,M]', count: 0, percentage: 0 },
     { grid_position: 5, position_label: 'Core Talent [M,M]', count: 1, percentage: 20 },
-    { grid_position: 6, position_label: 'Growth Talent [M,H]', count: 1, percentage: 20 },
-    { grid_position: 7, position_label: 'High/Low [H,L]', count: 1, percentage: 20 },
-    { grid_position: 8, position_label: 'High Impact Talent [H,M]', count: 1, percentage: 20 },
-    { grid_position: 9, position_label: 'Top Talent [H,H]', count: 1, percentage: 20 },
+    { grid_position: 6, position_label: 'High Impact [H,M]', count: 1, percentage: 20 },
+    { grid_position: 7, position_label: 'Enigma [L,H]', count: 1, percentage: 20 },
+    { grid_position: 8, position_label: 'Growth [M,H]', count: 1, percentage: 20 },
+    { grid_position: 9, position_label: 'Star [H,H]', count: 1, percentage: 20 },
   ],
   groupedStats: {
     highPerformers: { positions: [6, 8, 9], count: 2, percentage: 40 },

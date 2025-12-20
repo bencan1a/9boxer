@@ -44,7 +44,7 @@ function getBackendPath(): string {
 function createSplashScreen(): void {
   splashWindow = new BrowserWindow({
     width: 500,
-    height: 400,
+    height: 350,
     transparent: true,
     frame: false,
     alwaysOnTop: true,
