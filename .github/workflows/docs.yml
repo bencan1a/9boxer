@@ -5,9 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'backend/src/**'
       - 'docs/**'
-      - 'agent-plans/**'
       - 'agent-projects/**'
       - 'tools/build_context.py'
       - '.github/workflows/docs.yml'
@@ -23,7 +22,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -47,7 +46,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Cache uv packages
@@ -66,7 +65,7 @@ jobs:
           path: |
             docs/_generated/
             docs/_build/
-          key: docs-${{ runner.os }}-${{ hashFiles('src/**/*.py', 'docs/**/*.md', 'tools/build_context.py') }}
+          key: docs-${{ runner.os }}-${{ hashFiles('backend/src/**/*.py', 'docs/**/*.md', 'tools/build_context.py') }}
           restore-keys: |
             docs-${{ runner.os }}-
 

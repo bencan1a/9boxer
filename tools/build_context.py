@@ -446,9 +446,9 @@ def main() -> int:
     print("Generating API documentation...")
     if generate_api_docs():
         changes.append("Regenerated API documentation")
-        print("  ✓ API docs generated")
+        print("  [OK] API docs generated")
     else:
-        print("  ⚠ API docs skipped")
+        print("  [SKIP] API docs skipped")
     print()
 
     # Collect active plans
@@ -462,7 +462,7 @@ def main() -> int:
         plans_index_file = GENERATED_DIR / "plans_index.md"
         plans_index_file.write_text(plans_index, encoding="utf-8")
         changes.append(f"Updated plans index ({len(plans)} active plans)")
-        print(f"  ✓ Plans index written to {plans_index_file.relative_to(REPO_ROOT)}")
+        print(f"  [OK] Plans index written to {plans_index_file.relative_to(REPO_ROOT)}")
     print()
 
     # Build main context file
@@ -471,32 +471,32 @@ def main() -> int:
     context_file = DOCS_DIR / "CONTEXT.md"
     context_file.write_text(context, encoding="utf-8")
     changes.append(f"Rebuilt CONTEXT.md ({len(context):,} chars)")
-    print(f"  ✓ CONTEXT.md written ({len(context):,} characters)")
+    print(f"  [OK] CONTEXT.md written ({len(context):,} characters)")
     print()
 
     # Update SUMMARY.md
     print("Updating SUMMARY.md...")
     update_summary(git_sha)
     changes.append("Updated SUMMARY.md")
-    print("  ✓ SUMMARY.md updated")
+    print("  [OK] SUMMARY.md updated")
     print()
 
     # Update CHANGELOG.md
     print("Updating CHANGELOG.md...")
     update_changelog(git_sha, changes)
-    print("  ✓ CHANGELOG.md updated")
+    print("  [OK] CHANGELOG.md updated")
     print()
 
     # Clean temporary files
     print(f"Cleaning agent-tmp/ (files older than {CLEAN_TMP_AGE_DAYS} days)...")
     removed = clean_tmp_directory()
     if removed > 0:
-        print(f"  ✓ Removed {removed} old file(s)")
+        print(f"  [OK] Removed {removed} old file(s)")
     else:
-        print("  ✓ No old files to remove")
+        print("  [OK] No old files to remove")
     print()
 
-    print("✅ Documentation build complete!")
+    print("[SUCCESS] Documentation build complete!")
     return 0
 
 

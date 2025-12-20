@@ -32,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Install dependencies
@@ -41,7 +41,7 @@ jobs:
           pip install -e '.[dev]'
 
       - name: Run full test suite
-        run: pytest --cov=src --cov-fail-under=70 -v
+        run: pytest --cov=backend/src --cov-fail-under=70 -v
 
       - name: Run security scan
         run: bandit -r src/ -ll
@@ -70,7 +70,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - name: Install build tools
         run: |

@@ -4,6 +4,15 @@
 This script analyzes changed files and selects relevant tests to run.
 It maps source files to their corresponding test files and outputs
 the tests that should be executed.
+
+Mapping Logic for 9boxer:
+- backend/src/ninebox/api/employees.py -> backend/tests/unit/api/test_employees.py
+- backend/src/ninebox/services/excel_parser.py -> backend/tests/unit/services/test_excel_parser.py
+- backend/src/ninebox/services/intelligence_service.py ->
+    - backend/tests/unit/services/test_intelligence_service.py
+    - backend/tests/integration/test_intelligence_integration.py (strips _service suffix)
+- Test files map to themselves when changed
+- Skips __init__.py, main.py, and non-Python files
 """
 
 import argparse
@@ -74,40 +83,91 @@ def map_source_to_tests(source_files: list[str]) -> set[str]:
         if source_path.suffix != ".py":
             continue
 
-        # Skip files not in src directory
-        if not str(source_path).startswith("src/"):
+        # Normalize path for comparison (handle Windows backslashes)
+        normalized_path = source_path.as_posix()
+
+        # Handle test files themselves - if a test file changes, run that test
+        if normalized_path.startswith("backend/tests/"):
+            if source_path.exists() and source_path.stem not in {"__init__", "conftest"}:
+                test_files.add(normalized_path)
             continue
 
-        # Map to test file
-        # src/python_template/calculator.py -> tests/test_calculator.py
-        try:
-            relative_to_src = source_path.relative_to("src/python_template")
-        except ValueError:
-            # Skip files not in src/python_template
-            continue
+        # Handle backend source files: backend/src/ninebox/
+        if normalized_path.startswith("backend/src/ninebox/"):
+            try:
+                # Extract relative path from backend/src/ninebox/
+                # e.g., backend/src/ninebox/api/employees.py -> api/employees.py
+                relative_to_ninebox = source_path.relative_to("backend/src/ninebox")
 
-        test_name = f"test_{relative_to_src.stem}.py"
-        test_path = project_root / "tests" / test_name
+                # Skip __init__.py and main.py
+                if relative_to_ninebox.stem in ("__init__", "main"):
+                    continue
 
-        if test_path.exists():
-            test_files.add(str(test_path.relative_to(project_root)))
+                # Extract module directory (e.g., api, services, models, utils, core)
+                module_dir = relative_to_ninebox.parent
+
+                # Build test file name: test_<filename>.py
+                test_name = f"test_{relative_to_ninebox.stem}.py"
+
+                # Map to unit test: backend/tests/unit/<module>/<test_name>
+                unit_test_path = (
+                    project_root / "backend" / "tests" / "unit" / module_dir / test_name
+                )
+                if unit_test_path.exists():
+                    # Store as POSIX path (forward slashes) for consistency
+                    test_files.add(unit_test_path.relative_to(project_root).as_posix())
+
+                # Also check for integration tests with various naming patterns
+                # Pattern 1: test_<filename>_integration.py (exact match)
+                integration_test_name = f"test_{relative_to_ninebox.stem}_integration.py"
+                integration_test_path = (
+                    project_root / "backend" / "tests" / "integration" / integration_test_name
+                )
+                if integration_test_path.exists():
+                    test_files.add(integration_test_path.relative_to(project_root).as_posix())
+
+                # Pattern 2: test_<base_name>_integration.py (strip common suffixes like _service, _manager)
+                # e.g., intelligence_service -> intelligence, session_manager -> session
+                base_name = relative_to_ninebox.stem
+                for suffix in ["_service", "_manager", "_handler", "_controller"]:
+                    if base_name.endswith(suffix):
+                        base_name = base_name[: -len(suffix)]
+                        alternative_integration_name = f"test_{base_name}_integration.py"
+                        alternative_integration_path = (
+                            project_root
+                            / "backend"
+                            / "tests"
+                            / "integration"
+                            / alternative_integration_name
+                        )
+                        if alternative_integration_path.exists():
+                            test_files.add(
+                                alternative_integration_path.relative_to(project_root).as_posix()
+                            )
+                        break  # Only strip one suffix
+
+            except ValueError:
+                # Not in backend/src/ninebox/, skip
+                continue
 
     return test_files
 
 
 def get_changed_source_files(changed_files: list[str]) -> list[str]:
-    """Filter changed files to only include source files in src directory.
+    """Filter changed files to only include source files in backend/src/ninebox directory.
 
     Args:
         changed_files: List of all changed files
 
     Returns:
-        List of changed source files in src directory
+        List of changed source files in backend/src/ninebox directory
     """
     source_files = []
     for file_path in changed_files:
         path = Path(file_path)
-        if str(path).startswith("src/") and path.suffix == ".py":
+        # Normalize path for comparison (handle Windows backslashes)
+        normalized_path = path.as_posix()
+        if normalized_path.startswith("backend/src/ninebox/") and path.suffix == ".py":
             source_files.append(file_path)
     return source_files
 
