@@ -6,10 +6,6 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch: # Allow manual trigger
     inputs:
-      python-version:
-        description: 'Python version to test (leave empty for all)'
-        required: false
-        default: ''
       os:
         description: 'Operating system to test (leave empty for all)'
         required: false
@@ -38,14 +34,13 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]') }}
-        python-version: ${{ github.event.inputs.python-version && fromJSON(format('["{0}"]', github.event.inputs.python-version)) || fromJSON('["3.13"]') }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Cache uv packages
@@ -54,9 +49,9 @@ jobs:
           path: |
             ~/.cache/uv
             ~/AppData/Local/uv/cache
-          key: uv-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+          key: uv-${{ runner.os }}-py3.13-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            uv-${{ runner.os }}-py${{ matrix.python-version }}-
+            uv-${{ runner.os }}-py3.13-
             uv-${{ runner.os }}-
 
       - name: Install uv
@@ -102,7 +97,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: security-scan-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: security-scan-${{ matrix.os }}-py3.13
           path: bandit-report.json
           retention-days: 30
 
@@ -110,7 +105,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          name: test-results-${{ matrix.os }}-py3.13
           path: |
             coverage.xml
             htmlcov/
