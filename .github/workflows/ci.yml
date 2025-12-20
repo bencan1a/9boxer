@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
@@ -471,17 +471,6 @@ jobs:
           restore-keys: |
             node-modules-${{ runner.os }}-
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/ms-playwright
-            ~/Library/Caches/ms-playwright
-            ~/AppData/Local/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
       - name: Install uv
         run: pip install uv
 
@@ -511,7 +500,6 @@ jobs:
 
       - name: Run Playwright E2E smoke tests
         working-directory: frontend
-        run: npx playwright test smoke-test.spec.ts
         run: npx playwright test smoke-test.spec.ts
 
       - name: Upload Playwright smoke test report
