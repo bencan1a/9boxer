@@ -23,15 +23,16 @@ main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
-# Collect setuptools data files (includes vendored jaraco.text needed by pkg_resources)
+# Collect setuptools with all data files (includes vendored jaraco.text needed by pkg_resources)
 # setuptools vendors jaraco.text in setuptools/_vendor/jaraco/text/
-setuptools_datas = collect_data_files('setuptools', include_py_files=False)
+# Using collect_all to ensure vendored data files are included
+setuptools_datas, setuptools_binaries, setuptools_hiddenimports = collect_all('setuptools')
 
 # Analysis: Collect all Python modules and dependencies
 a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
-    binaries=scipy_binaries + numpy_binaries,
+    binaries=scipy_binaries + numpy_binaries + setuptools_binaries,
     datas=scipy_datas + numpy_datas + setuptools_datas + [
         # Include database schema file
         (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'src/ninebox/models'),
@@ -93,7 +94,7 @@ a = Analysis(
         'ninebox.services.statistics_service',
         'ninebox.utils',
         'ninebox.utils.paths',
-    ] + scipy_hiddenimports + numpy_hiddenimports,
+    ] + scipy_hiddenimports + numpy_hiddenimports + setuptools_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

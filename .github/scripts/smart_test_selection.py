@@ -13,6 +13,11 @@ Mapping Logic for 9boxer:
     - backend/tests/integration/test_intelligence_integration.py (strips _service suffix)
 - Test files map to themselves when changed
 - Skips __init__.py, main.py, and non-Python files
+
+E2E Test Mapping Logic:
+- Maps backend/frontend files to Playwright E2E tests
+- Always includes smoke-test.spec.ts
+- Returns "ALL" tests for critical files (models.py, database.py, config changes)
 """
 
 import argparse
@@ -20,6 +25,62 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+
+# All Playwright E2E test files (14 total)
+ALL_E2E_TESTS = [
+    "smoke-test.spec.ts",
+    "upload-flow.spec.ts",
+    "export-flow.spec.ts",
+    "export-validation.spec.ts",
+    "employee-movement.spec.ts",
+    "employee-details.spec.ts",
+    "drag-drop-visual.spec.ts",
+    "filter-flow.spec.ts",
+    "filter-application.spec.ts",
+    "exclusions-quick-filters.spec.ts",
+    "intelligence-flow.spec.ts",
+    "change-tracking.spec.ts",
+    "grid-expansion.spec.ts",
+    "statistics-tab.spec.ts",
+]
+
+# Mapping of files to E2E tests
+E2E_TEST_MAPPING: dict[str, list[str] | str] = {
+    # Backend API mappings
+    "backend/src/ninebox/services/excel_parser.py": ["upload-flow.spec.ts"],
+    "backend/src/ninebox/services/excel_exporter.py": [
+        "export-flow.spec.ts",
+        "export-validation.spec.ts",
+    ],
+    "backend/src/ninebox/services/intelligence_service.py": ["intelligence-flow.spec.ts"],
+    "backend/src/ninebox/routers/employees.py": [
+        "employee-movement.spec.ts",
+        "employee-details.spec.ts",
+    ],
+    "backend/src/ninebox/routers/filters.py": [
+        "filter-flow.spec.ts",
+        "filter-application.spec.ts",
+        "exclusions-quick-filters.spec.ts",
+    ],
+    # Frontend component mappings
+    "frontend/src/components/NineBoxGrid.tsx": [
+        "employee-movement.spec.ts",
+        "drag-drop-visual.spec.ts",
+        "grid-expansion.spec.ts",
+    ],
+    "frontend/src/components/FileUpload.tsx": ["upload-flow.spec.ts"],
+    "frontend/src/components/FilterDrawer.tsx": [
+        "filter-flow.spec.ts",
+        "filter-application.spec.ts",
+    ],
+    "frontend/src/components/ChangeTracker.tsx": ["change-tracking.spec.ts"],
+    "frontend/src/components/StatisticsPanel.tsx": ["statistics-tab.spec.ts"],
+    "frontend/src/components/DetailsPanel.tsx": ["employee-details.spec.ts"],
+    # Critical files - run ALL tests
+    "backend/src/ninebox/models.py": "ALL",
+    "backend/src/ninebox/database.py": "ALL",
+    "pyproject.toml": "ALL",
+}
 
 
 def get_changed_files(base_ref: str = "origin/main") -> list[str]:
@@ -172,6 +233,70 @@ def get_changed_source_files(changed_files: list[str]) -> list[str]:
     return source_files
 
 
+def map_files_to_e2e_tests(changed_files: list[str]) -> set[str]:
+    """Map changed files to relevant Playwright E2E tests.
+
+    This function analyzes changed files and determines which E2E tests should run.
+    It uses both exact file matches and pattern-based matching to determine relevance.
+
+    Args:
+        changed_files: List of changed file paths
+
+    Returns:
+        Set of E2E test file names to run. Always includes smoke-test.spec.ts.
+        Returns all tests if critical files changed or if "ALL" is matched.
+
+    Examples:
+        >>> map_files_to_e2e_tests(["backend/src/ninebox/services/excel_parser.py"])
+        {'smoke-test.spec.ts', 'upload-flow.spec.ts'}
+
+        >>> map_files_to_e2e_tests(["backend/src/ninebox/models.py"])
+        {'smoke-test.spec.ts', 'upload-flow.spec.ts', ...}  # All 14 tests
+
+        >>> map_files_to_e2e_tests(["frontend/src/components/NineBoxGrid.tsx"])
+        {'smoke-test.spec.ts', 'employee-movement.spec.ts', 'drag-drop-visual.spec.ts', 'grid-expansion.spec.ts'}
+    """
+    # Always run smoke test
+    e2e_tests = {"smoke-test.spec.ts"}
+    run_all_tests = False
+
+    for file_path in changed_files:
+        path = Path(file_path)
+        # Normalize path for comparison (handle Windows backslashes)
+        normalized_path = path.as_posix()
+
+        # Check for exact matches in mapping
+        if normalized_path in E2E_TEST_MAPPING:
+            mapped_tests = E2E_TEST_MAPPING[normalized_path]
+            if mapped_tests == "ALL":
+                run_all_tests = True
+                break
+            e2e_tests.update(mapped_tests)
+            continue
+
+        # Check for pattern matches (e.g., any file in .github/workflows/)
+        if normalized_path.startswith(".github/workflows/"):
+            run_all_tests = True
+            break
+
+        # Check for partial path matches (for flexibility)
+        # Example: Any change to frontend/electron/ should run all tests
+        if normalized_path.startswith("frontend/electron/"):
+            run_all_tests = True
+            break
+
+        # Check for package.json or package-lock.json changes
+        if normalized_path in ["frontend/package.json", "frontend/package-lock.json"]:
+            run_all_tests = True
+            break
+
+    # If run_all_tests flag is set, return all 14 tests
+    if run_all_tests:
+        return set(ALL_E2E_TESTS)
+
+    return e2e_tests
+
+
 def main() -> int:  # noqa: PLR0912
     """Main entry point for smart test selection."""
     parser = argparse.ArgumentParser(description="Smart test selection based on changed files")
@@ -191,6 +316,11 @@ def main() -> int:  # noqa: PLR0912
         action="store_true",
         help="Output the changed source files instead of test files",
     )
+    parser.add_argument(
+        "--e2e-tests",
+        action="store_true",
+        help="Output Playwright E2E tests instead of pytest tests",
+    )
 
     args = parser.parse_args()
 
@@ -207,7 +337,25 @@ def main() -> int:  # noqa: PLR0912
             print("")
         return 0
 
-    # Get changed source files
+    # Handle E2E test selection
+    if args.e2e_tests:
+        e2e_tests = map_files_to_e2e_tests(changed_files)
+
+        # Output based on format
+        if args.format == "json":
+            print(json.dumps({"tests": sorted(e2e_tests), "changed_files": changed_files}))
+        elif args.format == "pytest":
+            # For Playwright, output space-separated list for CLI usage
+            if e2e_tests:
+                print(" ".join(sorted(e2e_tests)))
+            else:
+                print("")  # Empty string means no tests to run
+        else:  # list
+            for test in sorted(e2e_tests):
+                print(test)
+        return 0
+
+    # Get changed source files (for backend tests)
     changed_source_files = get_changed_source_files(changed_files)
 
     if args.output_changed_files:
