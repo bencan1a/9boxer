@@ -274,7 +274,7 @@ def anonymize_dataframe(df: pd.DataFrame, name_mapping: dict, location_map: dict
     return df_anon
 
 
-def main():
+def main() -> None:
     """Main function to anonymize the Excel file."""
     input_file = "PUX_ Talent Mapping  IC Review_CONFIDENTIAL.3.xlsx"
     output_file = "Talent_Mapping_ANONYMIZED_Example.xlsx"
@@ -290,7 +290,7 @@ def main():
     print(f"Main sheet has {len(df_main)} rows and {len(df_main.columns)} columns")
 
     # Collect all unique names from all name columns
-    all_names = set()
+    all_names: set[str] = set()
     name_columns = [
         "Worker",
         "Worker's Manager",

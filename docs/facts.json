@@ -5,7 +5,7 @@
   "architecture": {
     "type": "Electron desktop application",
     "frontend": "React 18 + TypeScript + Vite + Material-UI",
-    "desktop_wrapper": "Electron 39",
+    "desktop_wrapper": "Electron 35",
     "backend": "FastAPI (Python 3.10+) bundled with PyInstaller",
     "database": "SQLite (stored in user's app data directory)",
     "communication": "HTTP over localhost:8000"
@@ -27,7 +27,7 @@
       "server": "Uvicorn (embedded)"
     },
     "desktop": {
-      "runtime": "Electron 39",
+      "runtime": "Electron 35",
       "packager": "Electron Builder",
       "platforms": ["Windows (NSIS)", "macOS (DMG)", "Linux (AppImage)"]
     }

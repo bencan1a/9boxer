@@ -7,7 +7,7 @@ name = "ninebox"
 version = "0.1.0"
 description = "9Boxer Application - Backend API"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 license = {text = "MIT"}
 authors = [
     {name = "Your Company", email = "your.email@example.com"}
@@ -18,9 +18,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 # Backend runtime dependencies
@@ -33,6 +31,7 @@ dependencies = [
     "pydantic>=2.4.0",
     "pydantic-settings>=2.0.0",
     "scipy>=1.11.0",
+    "numpy>=1.24.0",  # Required by intelligence_service.py
 ]
 
 [project.optional-dependencies]
@@ -42,7 +41,10 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
+    "pytest-xdist>=3.5.0",
     "httpx>=0.25.0",
+    "requests>=2.31.0",  # Used by e2e tests for frozen executable testing
+    "psutil>=5.9.0",  # Used by performance tests for resource monitoring
     "hypothesis>=6.98.0",
     "factory-boy>=3.3.0",
     "faker>=22.0.0",
@@ -80,18 +82,22 @@ testpaths = ["backend/tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--strict-config",
-    "--cov=backend/src",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-report=xml",
-]
+addopts = """
+    --strict-markers
+    --strict-config
+    --cov=backend/src
+    --cov-report=term-missing
+    --cov-report=html
+    --cov-report=xml
+    -n auto
+    --dist=loadscope
+"""
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
+    "unit: Unit tests (fast, isolated)",
+    "integration: Integration tests (slower, database/API required)",
+    "e2e: End-to-end tests (slowest, full stack required)",
+    "performance: Performance benchmarking tests",
+    "slow: Slow-running tests that take significant time",
 ]
 
 [tool.coverage.run]
@@ -102,6 +108,7 @@ omit = [
     "*/.venv/*",
     "*/venv/*",
 ]
+relative_files = true
 
 [tool.coverage.report]
 exclude_lines = [
@@ -185,7 +192,7 @@ line-ending = "auto"
 
 [tool.black]
 line-length = 100
-target-version = ['py310', 'py311', 'py312']
+target-version = ['py310', 'py311', 'py312', 'py313']
 include = '\.pyi?$'
 
 [tool.bandit]

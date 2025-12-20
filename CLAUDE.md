@@ -30,6 +30,110 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 If you see "module not found" errors, the venv is not activated. This is the #1 cause of issues.
 
+## ⚠️ CRITICAL: Windows Environment - Bash Tool Usage
+
+**🚨 ABSOLUTE REQUIREMENT FOR CLAUDE CODE AGENTS 🚨**
+
+This project is developed on **Windows**. The Bash tool runs in a Unix-like environment (Git Bash/WSL), but operates on a Windows filesystem. You **MUST** follow these rules:
+
+### ❌ NEVER DO THESE THINGS ❌
+
+1. **NEVER use `rm` to remove files** - Use `git rm` for tracked files, or ask the user
+2. **NEVER use `touch` to create files** - Use the Write tool
+3. **NEVER write to `/dev/null`** - It will create a file called `dev` in root
+4. **NEVER redirect to `nul` with quotes** - `> "nul"` creates a permanent phantom file
+5. **NEVER use `cp` or `mv` directly** - Prefer git commands or ask user
+
+### ✅ CORRECT APPROACHES ✅
+
+**For file operations:**
+```bash
+# ✅ CORRECT - Use git commands
+git rm file.txt
+git mv oldfile.txt newfile.txt
+
+# ✅ CORRECT - Use Write tool for new files
+# Use the Write tool instead of touch or echo >
+
+# ✅ CORRECT - Discard output (no quotes around nul)
+command >nul 2>&1        # Windows redirect (no quotes!)
+command 2>/dev/null      # Will work in Git Bash
+```
+
+**For checking file existence:**
+```bash
+# ✅ CORRECT - Use test operators
+if [ -f "file.txt" ]; then echo "exists"; fi
+
+# ✅ CORRECT - Use git
+git ls-files "file.txt"
+```
+
+### 🔥 THE `nul` FILE CATASTROPHE 🔥
+
+**If you create a file called `nul` by mistake:**
+- It CANNOT be deleted with normal commands
+- It CANNOT be removed via git
+- It CANNOT be manipulated in Windows Explorer
+- It requires **administrator PowerShell** to remove
+- It will permanently appear in `git status`
+
+**Why this happens:**
+- `nul` is a Windows reserved device name (like `CON`, `PRN`, `AUX`)
+- Writing `> "nul"` treats it as a filename, not a device
+- Windows creates a special file that breaks normal file operations
+
+**How to avoid:**
+- NEVER use `> "nul"` or `>> "nul"`
+- ALWAYS use `>nul` (no quotes) for Windows redirects
+- ALWAYS use `2>/dev/null` for Unix-style redirects
+- BETTER: Use `os.devnull` in Python scripts
+
+### 🚨 CRITICAL: Windows Path Handling 🚨
+
+**ABSOLUTE PATHS BREAK IN BASH ON WINDOWS!**
+
+When using the Bash tool on Windows, Git Bash misinterprets Windows absolute paths like `c:\Git_Repos\9boxer\agent-tmp\file.txt`, causing catastrophic failures:
+- The colon `:` gets encoded as UTF-8 (`\357\200\272`)
+- Backslashes disappear
+- Result: File created as `cGit_Repos9boxeragent-tmpfile.txt` in the wrong location
+
+**❌ NEVER DO THIS:**
+```bash
+# ❌ WRONG - Windows absolute path in Bash
+echo "content" > c:\Git_Repos\9boxer\agent-tmp\file.txt
+cat c:\Git_Repos\9boxer\backend\src\ninebox\models.py
+```
+
+**✅ ALWAYS DO THIS:**
+```bash
+# ✅ CORRECT - Relative paths only
+echo "content" > agent-tmp/file.txt
+cat backend/src/ninebox/models.py
+
+# ✅ BETTER - Use Write/Read/Edit tools for file operations
+# Use Write tool to create agent-tmp/file.txt
+# Use Read tool to read backend/src/ninebox/models.py
+```
+
+**For File Operations - Strict Priority Order:**
+1. **FIRST CHOICE**: Use Write/Read/Edit tools (they handle paths correctly)
+2. **SECOND CHOICE**: Use relative paths from working directory in Bash
+3. **NEVER**: Use Windows absolute paths (C:\...) in Bash commands
+
+**If You Create Malformed Path Files:**
+- Symptom: Files like `cGit_Repos9boxeragent-tmpfile.txt` appear in git status
+- Cause: Used absolute Windows path in Bash tool
+- Fix: Ask user to clean up via PowerShell or Windows Explorer
+
+### When in Doubt
+
+**ASK THE USER** before performing file system operations that:
+- Delete files (use git rm for tracked files)
+- Move files (use git mv for tracked files)
+- Redirect output to special files
+- Create files in unusual locations
+
 ## Critical: Windows Reserved Names
 
 **IMPORTANT**: This project is developed on Windows. Avoid creating files with Windows reserved device names.
@@ -108,7 +212,11 @@ This is a consolidated monorepo for a standalone Electron desktop application:
       preload/index.ts← IPC bridge (secure contextBridge API)
       renderer/       ← Splash screen
     release/          ← Electron Builder output (platform-specific installers)
-  USER_GUIDE.html     ← Bundled user documentation
+  resources/          ← Bundled application resources
+    USER_GUIDE.html   ← User documentation (bundled with app)
+    Sample_People_List.xlsx ← Sample data file (bundled with app)
+  tools/              ← Build and utility scripts
+    convert_user_guide.py ← Generates USER_GUIDE.html from .md
 ```
 
 **Backend Lifecycle (Electron Integration):**
@@ -140,8 +248,24 @@ pre-commit install
 ```bash
 # Always activate venv first: . .venv/bin/activate
 
-pytest                                  # Run all backend tests
-pytest backend/tests/test_auth.py       # Run specific test file
+# Run all tests
+pytest                                  # Run all backend tests (372 tests)
+
+# Run specific test suites (organized by folder)
+pytest backend/tests/unit               # Unit tests only (~293 tests, fast)
+pytest backend/tests/integration        # Integration tests (~39 tests, medium)
+pytest backend/tests/e2e                # E2E tests (~16 tests, slow, requires built exe)
+pytest backend/tests/performance        # Performance tests (~24 tests, slow)
+
+# Run by marker (alternative to folder paths)
+pytest -m unit                          # Unit tests only
+pytest -m integration                   # Integration tests only
+pytest -m e2e                           # E2E tests only
+pytest -m performance                   # Performance tests only
+pytest -m "not slow"                    # Fast tests only (for quick checks)
+
+# Run specific test file
+pytest backend/tests/unit/api/test_employees.py
 pytest -k "test_login"                  # Run tests matching pattern
 pytest -v                               # Verbose output
 pytest --cov=backend/src                # Run with coverage
@@ -194,12 +318,28 @@ ls dist/ninebox/               # Should see ninebox.exe or ninebox executable
 
 # Step 2: Build Electron application
 cd ../frontend
-npm run electron:build         # Validates backend exists, then builds
+npm run electron:build         # Generates USER_GUIDE.html, validates backend, then builds
+
+# The build automatically:
+# - Converts USER_GUIDE.md → resources/USER_GUIDE.html
+# - Validates backend executable exists
+# - Builds and packages the application
 
 # Output in frontend/release/
 # - Windows: 9Boxer-1.0.0-Windows-x64.exe
 # - macOS: 9Boxer-1.0.0-macOS-x64.dmg
 # - Linux: 9Boxer-1.0.0-Linux-x64.AppImage
+```
+
+**Manual USER_GUIDE regeneration** (optional):
+```bash
+# From project root
+.venv/Scripts/python.exe tools/convert_user_guide.py  # Windows
+# or
+.venv/bin/python tools/convert_user_guide.py          # Linux/macOS
+
+# Or from frontend directory
+npm run generate:guide
 ```
 
 ### Makefile Targets
@@ -220,9 +360,17 @@ The backend uses the standard Python `src/` layout:
   - API routes in `routers/`
   - Business logic in `services/`
   - Data models in `models/`
-- **`backend/tests/`** - Test files following pytest conventions
-  - Named `test_*.py`
-  - Test functions named `test_function_when_condition_then_expected`
+- **`backend/tests/`** - Test files organized by suite type
+  - **`unit/`** - Fast isolated tests (~293 tests)
+    - `api/` - API endpoint tests (using TestClient)
+    - `core/` - Core functionality tests
+    - `models/` - Data model tests
+    - `services/` - Service layer tests
+    - `utils/` - Utility function tests
+  - **`integration/`** - Multi-component tests (~39 tests)
+  - **`e2e/`** - End-to-end frozen executable tests (~16 tests)
+  - **`performance/`** - Benchmark tests (~24 tests)
+  - Test naming: `test_function_when_condition_then_expected`
   - No conditional assertions in test bodies
 
 ### Frontend Structure
@@ -278,13 +426,18 @@ All code must have type annotations:
 ### Testing Approach
 1. **Run existing tests first** to establish baseline
 2. Follow TDD approach when practical
-3. Test naming: `test_function_when_condition_then_expected`
-4. No conditional logic in test bodies (no `if` statements)
-5. Avoid testing types - test behavior instead
-6. Avoid over-mocking (don't mock business logic)
-7. Aim for >80% coverage
+3. **Test suite organization** - Tests organized by suite type in folders:
+   - `backend/tests/unit/` - Fast isolated tests (use for most new tests)
+   - `backend/tests/integration/` - Multi-component integration tests
+   - `backend/tests/e2e/` - Full frozen executable tests
+   - `backend/tests/performance/` - Benchmark tests
+4. Test naming: `test_function_when_condition_then_expected`
+5. No conditional logic in test bodies (no `if` statements)
+6. Avoid testing types - test behavior instead
+7. Avoid over-mocking (don't mock business logic)
+8. Aim for >80% coverage
 
-See `.github/agents/test.md` for comprehensive testing guidance.
+See `.github/agents/test.md` for comprehensive testing guidance and `docs/testing/` for detailed test suite documentation.
 
 ### Frontend Testing
 
