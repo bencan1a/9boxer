@@ -240,22 +240,18 @@ jobs:
   # ============================================================================
 
   unit-tests:
-    name: Unit Tests (Python ${{ matrix.python-version }})
+    name: Unit Tests
     runs-on: ubuntu-latest
     needs: [lint, type-check, security]  # Wait for all fast checks
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.13']
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.13'
 
       - name: Cache uv
         uses: actions/cache@v4
@@ -272,9 +268,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .pytest_cache
-          key: pytest-cache-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('tests/**/*.py') }}
+          key: pytest-cache-${{ runner.os }}-3.13-${{ hashFiles('tests/**/*.py') }}
           restore-keys: |
-            pytest-cache-${{ runner.os }}-${{ matrix.python-version }}-
+            pytest-cache-${{ runner.os }}-3.13-
             pytest-cache-${{ runner.os }}-
 
       - name: Install dependencies
@@ -286,19 +282,17 @@ jobs:
           pytest backend/tests/unit/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.13'
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           fail_ci_if_error: false
           flags: unittests
-          name: codecov-unit-py${{ matrix.python-version }}
+          name: codecov-unit-py3.13
 
       - name: Upload coverage report
-        if: matrix.python-version == '3.13'
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-unit-py${{ matrix.python-version }}
+          name: coverage-report-unit-py3.13
           path: |
             coverage.xml
             htmlcov/
@@ -309,7 +303,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-unit-py${{ matrix.python-version }}
+          name: test-results-unit-py3.13
           path: .pytest_cache/
           retention-days: 7
 
