@@ -44,6 +44,8 @@ class TestSessionRestore:
         get_session_manager.cache_clear()  # Clear in-memory cache
         new_manager = SessionManager()  # This should restore from database
 
+        # Trigger lazy loading of sessions (sessions are loaded on first access)
+
         # Verify session was restored
         assert len(new_manager.sessions) == 1
         restored_session = list(new_manager.sessions.values())[0]
