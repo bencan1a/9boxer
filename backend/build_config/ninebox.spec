@@ -23,17 +23,15 @@ main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
-# Collect setuptools with all data files (includes vendored jaraco.text needed by pkg_resources)
-# setuptools vendors jaraco.text in setuptools/_vendor/jaraco/text/
-# Using collect_all to ensure vendored data files are included
-setuptools_datas, setuptools_binaries, setuptools_hiddenimports = collect_all('setuptools')
+# Note: setuptools and pkg_resources are build-time dependencies only,
+# not needed at runtime. Excluding them avoids the jaraco.text Lorem ipsum.txt error.
 
 # Analysis: Collect all Python modules and dependencies
 a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
-    binaries=scipy_binaries + numpy_binaries + setuptools_binaries,
-    datas=scipy_datas + numpy_datas + setuptools_datas + [
+    binaries=scipy_binaries + numpy_binaries,
+    datas=scipy_datas + numpy_datas + [
         # Include database schema file
         (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'src/ninebox/models'),
     ],
@@ -55,13 +53,6 @@ a = Analysis(
         'pydantic',
         'pydantic_core',
         'pydantic_settings',
-
-        # Authentication
-        'jose',
-        'passlib',
-        'passlib.handlers',
-        'passlib.handlers.bcrypt',
-        'bcrypt',
 
         # Data processing
         'pandas',
@@ -94,7 +85,7 @@ a = Analysis(
         'ninebox.services.statistics_service',
         'ninebox.utils',
         'ninebox.utils.paths',
-    ] + scipy_hiddenimports + numpy_hiddenimports + setuptools_hiddenimports,
+    ] + scipy_hiddenimports + numpy_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -107,6 +98,8 @@ a = Analysis(
         'notebook',
         'pytest',
         # Note: unittest is needed by numpy.testing (used by scipy), so don't exclude it
+        # Exclude pkg_resources to avoid setuptools vendored jaraco.text Lorem ipsum.txt error
+        'pkg_resources',
     ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
