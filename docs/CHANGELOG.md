@@ -10,6 +10,13 @@ Each entry includes:
 
 ---
 
+## Build at 2025-12-20T02:37:37.384204+00:00
+**Source SHA**: 3b2a2b1ea58f83ab4f13f5ac729ba8d8357fd876
+
+### Changes
+- Rebuilt CONTEXT.md (10,419 chars)
+- Updated SUMMARY.md
+
 ## Build at 2025-12-20T02:06:38.870120+00:00
 **Source SHA**: 2f5ac397d02f743550147a4e647af30609ba06e2
 
