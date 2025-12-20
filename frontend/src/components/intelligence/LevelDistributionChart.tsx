@@ -15,6 +15,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 interface LevelDistribution {
   level: string;
@@ -49,6 +50,8 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
   title,
   baselineHighPct = 25,
 }) => {
+  const theme = useTheme();
+
   if (!data || data.length === 0) {
     return (
       <Box
@@ -80,9 +83,9 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
 
   // Performance category colors (traffic light system)
   const colors = {
-    low: "#f44336", // Red
-    medium: "#ff9800", // Yellow/Orange
-    high: "#4caf50", // Green
+    low: theme.palette.error.main, // Red
+    medium: theme.palette.warning.main, // Yellow/Orange
+    high: theme.palette.success.main, // Green
   };
 
   // Custom tooltip
@@ -90,12 +93,11 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
     if (active && payload && payload.length) {
       const data = payload[0].payload as ChartDataPoint;
       return (
-        <Box
+        <Paper
+          elevation={3}
           sx={{
-            backgroundColor: "#fff",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
             p: 1.5,
+            borderRadius: 1,
           }}
         >
           <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
@@ -113,7 +115,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             Total: {data.total}
           </Typography>
-        </Box>
+        </Paper>
       );
     }
     return null;
@@ -131,7 +133,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
             margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
             stackOffset="expand"
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.charts.gridLines} />
             <XAxis
               dataKey="level"
               angle={-45}
@@ -139,6 +141,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               height={80}
               interval={0}
               style={{ fontSize: "12px" }}
+              stroke={theme.palette.text.secondary}
             />
             <YAxis
               label={{
@@ -147,6 +150,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
                 position: "insideLeft",
               }}
               tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+              stroke={theme.palette.text.secondary}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
@@ -158,13 +162,13 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
             {/* Baseline reference line */}
             <ReferenceLine
               y={baselineHighPct / 100}
-              stroke="#666"
+              stroke={theme.palette.text.secondary}
               strokeDasharray="5 5"
               label={{
                 value: `Baseline (${baselineHighPct}%)`,
                 position: "right",
                 fontSize: 11,
-                fill: "#666",
+                fill: theme.palette.text.secondary,
               }}
             />
 

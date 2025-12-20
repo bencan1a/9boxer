@@ -14,6 +14,7 @@ import {
   Cell,
 } from "recharts";
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { PositionDistribution } from "../../types/api";
 
 interface DistributionChartProps {
@@ -21,6 +22,8 @@ interface DistributionChartProps {
 }
 
 export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) => {
+  const theme = useTheme();
+
   if (!data || data.length === 0) {
     return (
       <Box
@@ -45,11 +48,15 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
   const maxCount = Math.max(...sortedData.map((d) => d.count));
 
   const getBarColor = (count: number): string => {
-    if (count === 0) return "#e0e0e0";
+    if (count === 0) return theme.palette.action.disabledBackground;
     const intensity = count / maxCount;
-    // Scale from light blue to dark blue
-    const blue = Math.floor(255 - intensity * 100);
-    return `rgb(25, ${blue}, 210)`;
+    // Use primary color with varying opacity
+    const primary = theme.palette.primary.main;
+    const rgb = primary.match(/\d+/g);
+    if (rgb && rgb.length >= 3) {
+      return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${0.3 + intensity * 0.7})`;
+    }
+    return primary;
   };
 
   return (
@@ -59,7 +66,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
           data={sortedData}
           margin={{ top: 10, right: 10, left: 0, bottom: 60 }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.charts.gridLines} />
           <XAxis
             dataKey="position_label"
             angle={-45}
@@ -67,14 +74,17 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
             height={80}
             interval={0}
             style={{ fontSize: "12px" }}
+            stroke={theme.palette.text.secondary}
           />
           <YAxis
             label={{ value: "Employee Count", angle: -90, position: "insideLeft" }}
+            stroke={theme.palette.text.secondary}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#fff",
-              border: "1px solid #ccc",
+              backgroundColor: theme.palette.charts.tooltip,
+              color: theme.palette.text.primary,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: "4px",
             }}
             formatter={(value: number) => [`${value} employees`, "Count"]}

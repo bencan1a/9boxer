@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, Menu, ipcMain, nativeTheme } from 'electron';
 import { spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import axios from 'axios';
@@ -232,6 +232,12 @@ function getWindowUrl(): string {
  * These handlers are invoked from the renderer process via ipcRenderer.invoke().
  */
 function setupIpcHandlers(): void {
+  // Handle getting system theme preference
+  ipcMain.handle('theme:getSystemTheme', () => {
+    console.log('🎨 [Theme] System theme requested:', nativeTheme.shouldUseDarkColors ? 'dark' : 'light');
+    return nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+  });
+
   // Handle file open dialog for importing Excel files
   ipcMain.handle('dialog:openFile', async () => {
     if (!mainWindow) {
@@ -405,6 +411,25 @@ function createWindow(): void {
   });
 }
 
+/**
+ * Set up OS theme change listener.
+ * Notifies the renderer process when the system theme preference changes.
+ * This should be called after the main window is created.
+ */
+function setupThemeListener(): void {
+  nativeTheme.on('updated', () => {
+    const theme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+    console.log('🎨 [Theme] System theme changed to:', theme);
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('theme:systemThemeChanged', theme);
+    }
+  });
+
+  console.log('🎨 [Theme] Theme listener initialized, current theme:',
+    nativeTheme.shouldUseDarkColors ? 'dark' : 'light');
+}
+
 // App lifecycle events
 app.on('ready', async () => {
   try {
@@ -423,6 +448,7 @@ app.on('ready', async () => {
     // Create main window
     createWindow();
     setupIpcHandlers();
+    setupThemeListener();
 
     // Remove the application menu for a cleaner interface
     Menu.setApplicationMenu(null);

@@ -4,6 +4,7 @@
 
 import React, { useState } from "react";
 import { Box, Tabs, Tab, Paper } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { DetailsTab } from "./DetailsTab";
 import { ChangeTrackerTab } from "./ChangeTrackerTab";
 import { StatisticsTab } from "./StatisticsTab";
@@ -32,6 +33,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 };
 
 export const RightPanel: React.FC = () => {
+  const theme = useTheme();
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -46,14 +48,23 @@ export const RightPanel: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        backgroundColor: theme.palette.background.paper,
       }}
     >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box sx={{ borderBottom: 1, borderColor: theme.palette.divider }}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           aria-label="panel tabs"
           variant="fullWidth"
+          sx={{
+            "& .MuiTab-root": {
+              color: theme.palette.text.secondary,
+            },
+            "& .Mui-selected": {
+              color: theme.palette.primary.main,
+            },
+          }}
         >
           <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
           <Tab label="Changes" id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="changes-tab" />

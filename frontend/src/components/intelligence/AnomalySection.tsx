@@ -20,6 +20,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
@@ -38,6 +39,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
   analysis,
   chartComponent,
 }) => {
+  const theme = useTheme();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
 
   // Get status icon and color
@@ -174,7 +176,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
-              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+              "&:hover": { backgroundColor: alpha(theme.palette.text.primary, 0.04) },
               borderRadius: 1,
               p: 1,
               mt: 1,
@@ -213,7 +215,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
                       key={index}
                       sx={{
                         backgroundColor: deviation.is_significant
-                          ? "rgba(255, 152, 0, 0.08)"
+                          ? alpha(theme.palette.warning.main, 0.08)
                           : "transparent",
                       }}
                     >

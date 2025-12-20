@@ -14,6 +14,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Employee, PotentialLevel } from "../../types/employee";
 import { useSessionStore } from "../../store/sessionStore";
 

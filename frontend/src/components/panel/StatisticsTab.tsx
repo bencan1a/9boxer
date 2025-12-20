@@ -20,6 +20,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useStatistics } from "../../hooks/useStatistics";
 import { useEmployees } from "../../hooks/useEmployees";
 import { DistributionChart } from "./DistributionChart";
@@ -67,6 +68,7 @@ const CurlyBrace: React.FC<{
 };
 
 export const StatisticsTab: React.FC = () => {
+  const theme = useTheme();
   const { employees } = useEmployees(); // Get filtered employees
   const { statistics, isLoading, error } = useStatistics(employees);
 
@@ -230,7 +232,7 @@ export const StatisticsTab: React.FC = () => {
                       >
                         <CurlyBrace
                           height={rowHeight * 3}
-                          color="#2e7d32"
+                          color={theme.palette.success.main}
                           percentage={`${statistics.groupedStats.highPerformers.percentage.toFixed(1)}%`}
                         />
                       </TableCell>
@@ -247,7 +249,7 @@ export const StatisticsTab: React.FC = () => {
                       >
                         <CurlyBrace
                           height={rowHeight * 3}
-                          color="#ed6c02"
+                          color={theme.palette.warning.main}
                           percentage={`${statistics.groupedStats.lowPerformers.percentage.toFixed(1)}%`}
                         />
                       </TableCell>
