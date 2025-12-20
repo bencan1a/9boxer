@@ -1,0 +1,149 @@
+# MkDocs Material Configuration for 9Boxer User Guide
+# This generates static documentation bundled with the Electron app for offline use
+
+# Site Information
+site_name: 9Boxer User Guide
+site_description: Complete guide to using the 9Boxer desktop application for talent management
+site_author: 9Boxer Team
+
+# Directory Configuration
+docs_dir: docs  # Documentation source is in the docs/ directory
+site_dir: site  # Build output directory (in project root)
+
+# URL Configuration
+# CRITICAL: Use flat file structure for file:// protocol compatibility
+# Without this, links open directories instead of HTML files when accessed via file://
+use_directory_urls: false  # Generate page.html instead of page/index.html
+
+# Deployment - Local only (bundled with app, no site_url needed)
+# The documentation is served as static files from the Electron app
+
+# Theme Configuration
+theme:
+  name: material
+
+  # Dark theme to match 9Boxer app aesthetic
+  palette:
+    scheme: slate  # Dark mode
+    primary: blue  # Matches app primary color (#1976d2 / #90caf9)
+    accent: blue   # Matches app accent color
+
+  # Material Design features for enhanced navigation
+  features:
+    - navigation.instant      # Fast page loads without full reload
+    - navigation.tracking     # Update URL with current section
+    - navigation.sections     # Group navigation items into sections
+    - navigation.top          # Back to top button
+    - search.suggest          # Search suggestions as you type
+    - search.highlight        # Highlight search terms in results
+    - search.share            # Share search results via URL
+    - content.code.copy       # Copy button for code blocks
+    - content.tabs.link       # Link tabbed content across pages
+
+  # Icon configuration
+  icon:
+    repo: fontawesome/brands/github
+
+  # Font configuration (matches app Roboto font)
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+# Plugins
+plugins:
+  # Offline search with lunr.js (no external dependencies)
+  - search:
+      lang: en
+      separator: '[\s\-\.]+'  # Search word separators
+
+  # Note: mkdocs-minify-plugin was removed due to dependency compatibility issues
+  # The unminified build is still suitable for bundling with the Electron app
+
+# Markdown Extensions
+markdown_extensions:
+  # Admonitions (callout boxes for tips, warnings, etc.)
+  - admonition
+
+  # Collapsible admonitions
+  - pymdownx.details
+
+  # Advanced code blocks with syntax highlighting
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+  # Tabbed content
+  - pymdownx.tabbed:
+      alternate_style: true
+
+  # Syntax highlighting for code blocks
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+
+  # Inline code highlighting
+  - pymdownx.inlinehilite
+
+  # Include file snippets
+  - pymdownx.snippets
+
+  # Keyboard shortcuts styling
+  - pymdownx.keys
+
+  # Table of contents with permalinks
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+  # Add attributes to HTML elements
+  - attr_list
+
+  # Enable markdown in HTML blocks
+  - md_in_html
+
+  # Definition lists
+  - def_list
+
+  # Task lists with checkboxes
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+  # Better emoji support
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# Navigation Structure
+# This will be populated by content migration agents
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Uploading Data: uploading-data.md
+  - Understanding the Grid: understanding-grid.md
+  - Donut Mode: donut-mode.md
+  - Working with Employees: working-with-employees.md
+  - Tracking Changes: tracking-changes.md
+  - Filters: filters.md
+  - Statistics: statistics.md
+  - Exporting: exporting.md
+  - Settings: settings.md
+  - Tips & Best Practices: tips.md
+  - Troubleshooting: troubleshooting.md
+
+# Extra CSS/JS (optional for future customization)
+# extra_css:
+#   - stylesheets/extra.css
+# extra_javascript:
+#   - javascripts/extra.js
+
+# Copyright notice
+copyright: Copyright &copy; 2024 9Boxer Team
+
+# Social links (optional, can be removed for offline docs)
+# extra:
+#   social:
+#     - icon: fontawesome/brands/github
+#       link: https://github.com/yourorg/9boxer
