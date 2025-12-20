@@ -87,12 +87,20 @@ Prefixes:
    - [ ] Code follows project style guidelines
    - [ ] All tests pass
    - [ ] Test coverage maintained or improved
-   - [ ] Documentation updated
+   - [ ] Documentation updated (see [Documentation Checklist](#documentation-checklist))
    - [ ] Commit messages are clear
    - [ ] PR description explains changes
    - [ ] Breaking changes are documented
 
-3. **Review process**:
+3. **Documentation checklist** (for PRs with user-facing changes):
+   - [ ] User guide pages updated in `docs/`
+   - [ ] Screenshots regenerated if UI changed
+   - [ ] Built and previewed locally (`mkdocs serve`)
+   - [ ] Tested in Electron (`npm run electron:dev`)
+   - [ ] All internal links verified
+   - [ ] Cross-references updated in related pages
+
+4. **Review process**:
    - All CI checks must pass
    - At least one approval required
    - Address review feedback
@@ -204,10 +212,51 @@ def function_name(param1: str, param2: int) -> bool:
 
 ### Updating Documentation
 
+For detailed guidance on maintaining documentation, see [docs/maintaining-user-guide.md](docs/maintaining-user-guide.md).
+
+#### Quick Reference
+
+**I added a new feature**:
+1. Update relevant documentation page in `docs/` (e.g., `docs/working-with-employees.md`)
+2. If UI changed, regenerate screenshots: `cd frontend && npm run generate:screenshots`
+3. Build and preview: `cd docs && mkdocs serve`
+4. Test in Electron: `cd frontend && npm run electron:dev`
+
+**I changed the UI**:
+1. Regenerate screenshots: `cd frontend && npm run generate:screenshots`
+2. Review affected documentation pages for accuracy
+3. Update text if workflow changed
+
+**I added a new major feature**:
+1. Create new documentation page: `docs/my-feature.md`
+2. Add to navigation in `mkdocs.yml` (project root)
+3. Add screenshots showing the feature
+4. Link from related pages
+
+#### Documentation Standards
+
 - Update README.md for user-facing changes
 - Update docstrings for API changes
 - Add examples for new features
 - Update CHANGELOG.md
+- **Documentation updates are required for feature PRs**
+
+#### User Guide Documentation
+
+The user guide uses **MkDocs Material** for professional multi-page documentation:
+
+- **Source**: Markdown files in `docs/` directory
+- **Build**: `mkdocs build` creates static HTML site
+- **Bundle**: Included in Electron app as offline documentation
+- **Preview**: `cd docs && mkdocs serve` for live editing
+
+**Key files**:
+- `docs/*.md` - Documentation pages (commit these)
+- `mkdocs.yml` - Navigation and configuration (project root, commit this)
+- `docs/images/screenshots/*.png` - Auto-generated screenshots (commit these)
+- `/site` - Build output (don't commit, git-ignored)
+- `tools/generate_docs_screenshots.py` - Screenshot generator
+- `frontend/scripts/generate-user-guide.cjs` - Build wrapper script
 
 ## 🐛 Reporting Bugs
 

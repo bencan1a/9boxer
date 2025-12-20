@@ -1,6 +1,6 @@
 # Agent temporary files (ephemeral outputs, debug scripts)
 agent-tmp/*
-!agent-tmp/README.md
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -170,7 +170,8 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-/site
+site/
+resources/user-guide/
 
 # mypy
 .mypy_cache/
@@ -247,3 +248,4 @@ frontend/playwright-report/
 # Playwright global setup PID file
 frontend/playwright/.backend.pid
 
+agent_tmp/toolbar-ux-redesign-plan.md
