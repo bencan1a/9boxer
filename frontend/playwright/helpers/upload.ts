@@ -4,9 +4,8 @@ import * as path from 'path';
 /**
  * Upload an Excel file through the file upload dialog
  *
- * This helper replicates the Cypress `cy.uploadExcelFile()` custom command.
- * It handles the complete upload flow:
- * 1. Clicks the upload button in the app bar
+ * This helper handles the complete upload flow:
+ * 1. Opens the upload dialog (via empty state button or FileMenu)
  * 2. Waits for the file upload dialog to appear
  * 3. Selects the specified file from the fixtures directory
  * 4. Clicks the submit button
@@ -18,8 +17,24 @@ import * as path from 'path';
  * await uploadExcelFile(page, 'sample-employees.xlsx');
  */
 export async function uploadExcelFile(page: Page, fileName: string): Promise<void> {
-  // Click the upload button in the app bar
-  await page.locator('[data-testid="upload-button"]').click();
+  // Try to click the empty state import button first (if no file loaded)
+  const emptyStateButton = page.locator('[data-testid="empty-state-import-button"]');
+  const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
+
+  // Check which button is visible and click it
+  const isEmptyState = await emptyStateButton.isVisible().catch(() => false);
+
+  if (isEmptyState) {
+    // No file loaded - use empty state button
+    await emptyStateButton.click();
+  } else {
+    // File already loaded - use FileMenu
+    await fileMenuButton.click();
+    // Wait for menu to open
+    await page.waitForTimeout(300);
+    // Click Import Data menu item
+    await page.locator('[data-testid="import-data-menu-item"]').click();
+  }
 
   // Wait for the dialog to open
   await expect(page.locator('[data-testid="file-upload-dialog"]')).toBeVisible();

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * Generate USER_GUIDE.html from USER_GUIDE.md before building
+ * Build user guide documentation using MkDocs Material before building
  *
- * This script runs the Python conversion script to ensure the bundled
- * USER_GUIDE.html is up-to-date with the markdown source.
+ * This script runs the MkDocs build script to generate the static documentation
+ * site that will be bundled with the Electron application. The documentation
+ * is built to resources/user-guide/ for offline use.
  */
 
 const { execSync } = require('child_process');
@@ -12,7 +13,7 @@ const fs = require('fs');
 
 const projectRoot = path.resolve(__dirname, '../..');
 const venvDir = path.join(projectRoot, '.venv');
-const scriptPath = path.join(projectRoot, 'tools', 'convert_user_guide.py');
+const scriptPath = path.join(projectRoot, 'tools', 'build_user_guide.py');
 
 // Determine Python executable path based on platform
 const pythonExe = process.platform === 'win32'
@@ -32,26 +33,26 @@ if (!fs.existsSync(pythonExe)) {
   process.exit(1);
 }
 
-// Check if conversion script exists
+// Check if build script exists
 if (!fs.existsSync(scriptPath)) {
-  console.error('\x1b[31m✗ Conversion script not found!\x1b[0m');
+  console.error('\x1b[31m✗ Build script not found!\x1b[0m');
   console.error(`Expected at: ${scriptPath}`);
   process.exit(1);
 }
 
-console.log('\x1b[36m📄 Generating USER_GUIDE.html from USER_GUIDE.md...\x1b[0m');
+console.log('\x1b[36m📄 Building user guide documentation with MkDocs...\x1b[0m');
 
 try {
-  // Run the Python conversion script
+  // Run the MkDocs build script
   const output = execSync(`"${pythonExe}" "${scriptPath}"`, {
     cwd: projectRoot,
     encoding: 'utf8',
     stdio: 'inherit'
   });
 
-  console.log('\x1b[32m✓ USER_GUIDE.html generated successfully\x1b[0m');
+  console.log('\x1b[32m✓ User guide documentation built successfully\x1b[0m');
 } catch (error) {
-  console.error('\x1b[31m✗ Failed to generate USER_GUIDE.html\x1b[0m');
+  console.error('\x1b[31m✗ Failed to build user guide documentation\x1b[0m');
   console.error(error.message);
   process.exit(1);
 }

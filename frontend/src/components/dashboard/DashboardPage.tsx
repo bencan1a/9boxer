@@ -3,15 +3,17 @@
  */
 
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import { Box, Typography, IconButton, Tooltip, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from "react-resizable-panels";
 import { AppBar } from "./AppBar";
 import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
+import { FileUploadDialog } from "../common/FileUploadDialog";
 import { useSession } from "../../hooks/useSession";
 import { useSessionStore } from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
@@ -33,6 +35,7 @@ export const DashboardPage: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const rightPanelRef = useRef<ImperativePanelHandle>(null);
   const [isPanelMounted, setIsPanelMounted] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   // Restore session from localStorage on mount
   useEffect(() => {
@@ -120,18 +123,66 @@ export const DashboardPage: React.FC = () => {
           }}
         >
           {!sessionId ? (
-            <Box
-              sx={{
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h5" color="text.secondary">
-                Upload an Excel file to begin
-              </Typography>
-            </Box>
+            <>
+              <Box
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 3,
+                  p: 4,
+                }}
+              >
+                {/* Icon */}
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    backgroundColor: "action.hover",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <UploadFileIcon sx={{ fontSize: 60, color: "primary.main" }} />
+                </Box>
+
+                {/* Heading */}
+                <Typography variant="h4" fontWeight="500" textAlign="center">
+                  No File Loaded
+                </Typography>
+
+                {/* Description */}
+                <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ maxWidth: 500 }}>
+                  Drop an Excel file here or click Import Data to get started
+                </Typography>
+
+                {/* Import Button */}
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<UploadFileIcon />}
+                  onClick={() => setUploadDialogOpen(true)}
+                  data-testid="empty-state-import-button"
+                  sx={{ mt: 2 }}
+                >
+                  Import Data
+                </Button>
+
+                {/* Optional: Sample data hint */}
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 2 }}>
+                  New to 9Boxer? Try importing the sample file from Help → User Guide
+                </Typography>
+              </Box>
+
+              <FileUploadDialog
+                open={uploadDialogOpen}
+                onClose={() => setUploadDialogOpen(false)}
+              />
+            </>
           ) : (
             <Box sx={{ height: "100%", width: "100%", p: 2, position: "relative" }}>
               <PanelGroup

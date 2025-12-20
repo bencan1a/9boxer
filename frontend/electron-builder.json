@@ -30,8 +30,9 @@
       "to": "splash.html"
     },
     {
-      "from": "../resources/USER_GUIDE.html",
-      "to": "USER_GUIDE.html"
+      "from": "../resources/user-guide/",
+      "to": "user-guide/",
+      "filter": ["**/*"]
     },
     {
       "from": "../resources/Sample_People_List.xlsx",

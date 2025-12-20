@@ -18,6 +18,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "copy-splash": "node scripts/copy-splash.cjs",
     "generate:guide": "node scripts/generate-user-guide.cjs",
+    "generate:screenshots": "node scripts/generate-screenshots.cjs",
     "electron:compile": "tsc -p electron/tsconfig.json && npm run copy-splash",
     "electron:watch": "tsc -p electron/tsconfig.json --watch",
     "electron:dev": "npm run copy-splash && concurrently -n \"vite,electron-tsc,electron\" -c \"blue,yellow,green\" \"npm run dev\" \"npm run electron:watch\" \"wait-on http://localhost:5173 dist-electron/main/index.js && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",

@@ -1,17 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '../../../test/utils'
 import { NineBoxGrid } from '../NineBoxGrid'
-import { mockEmployeesByPosition, createMockEmployee } from '../../../test/mockData'
+import { mockEmployeesByPosition, mockEmployees, createMockEmployee } from '../../../test/mockData'
 import { useSessionStore } from '../../../store/sessionStore'
 
 const mockMoveEmployee = vi.fn()
 const mockMoveEmployeeDonut = vi.fn()
 const mockSelectEmployee = vi.fn()
+const mockToggleDonutMode = vi.fn()
 
 // Mock the useEmployees hook
 vi.mock('../../../hooks/useEmployees', () => ({
   useEmployees: () => ({
     employeesByPosition: mockEmployeesByPosition,
+    employees: mockEmployees, // Add employees array for EmployeeCount
     getShortPositionLabel: (position: number) => {
       const labels: Record<number, string> = {
         1: '[L,L]',
@@ -45,6 +47,18 @@ vi.mock('../../../hooks/useEmployees', () => ({
   }),
 }))
 
+// Mock the useFilters hook (for EmployeeCount)
+vi.mock('../../../hooks/useFilters', () => ({
+  useFilters: () => ({
+    hasActiveFilters: false,
+    selectedLevels: [],
+    selectedJobFunctions: [],
+    selectedLocations: [],
+    selectedManagers: [],
+    excludedEmployeeIds: [],
+  }),
+}))
+
 // Mock the sessionStore
 vi.mock('../../../store/sessionStore', () => ({
   useSessionStore: vi.fn(),
@@ -57,8 +71,11 @@ describe('NineBoxGrid', () => {
 
     // Default mock - donut mode inactive
     vi.mocked(useSessionStore).mockReturnValue({
+      sessionId: 'test-session-id',
       donutModeActive: false,
+      employees: mockEmployees, // Add employees array for EmployeeCount
       moveEmployeeDonut: mockMoveEmployeeDonut,
+      toggleDonutMode: mockToggleDonutMode,
     } as any)
   })
 
@@ -113,8 +130,11 @@ describe('NineBoxGrid - Donut Mode', () => {
 
   it('passes donutModeActive prop to GridBox when donut mode is active', () => {
     vi.mocked(useSessionStore).mockReturnValue({
+      sessionId: 'test-session-id',
       donutModeActive: true,
+      employees: mockEmployees,
       moveEmployeeDonut: mockMoveEmployeeDonut,
+      toggleDonutMode: mockToggleDonutMode,
     } as any)
 
     render(<NineBoxGrid />)
@@ -127,8 +147,11 @@ describe('NineBoxGrid - Donut Mode', () => {
 
   it('passes donutModeActive as false when donut mode is inactive', () => {
     vi.mocked(useSessionStore).mockReturnValue({
+      sessionId: 'test-session-id',
       donutModeActive: false,
+      employees: mockEmployees,
       moveEmployeeDonut: mockMoveEmployeeDonut,
+      toggleDonutMode: mockToggleDonutMode,
     } as any)
 
     render(<NineBoxGrid />)
