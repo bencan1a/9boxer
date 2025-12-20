@@ -1,0 +1,796 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  workflow_dispatch:  # Allow manual triggering
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write  # For uploading SARIF files
+
+jobs:
+  # ============================================================================
+  # Stage 0: Change Detection
+  # ============================================================================
+
+  check-changes:
+    name: Check for Code Changes
+    runs-on: windows-latest
+    outputs:
+      should-skip-tests: ${{ steps.skip-check.outputs.should_skip_tests }}
+      python-files-changed: ${{ steps.skip-check.outputs.python_changed }}
+      frontend-files-changed: ${{ steps.skip-check.outputs.frontend_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check changed files
+        id: skip-check
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            FILES_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            FILES_CHANGED=$(git diff --name-only HEAD^ HEAD)
+          fi
+
+          PYTHON_CHANGED=$(echo "$FILES_CHANGED" | grep -E '\.(py|pyi)$' || echo "")
+          WORKFLOW_CHANGED=$(echo "$FILES_CHANGED" | grep -E '\.github/workflows/.*\.yml$' || echo "")
+          DEPS_CHANGED=$(echo "$FILES_CHANGED" | grep -E '(pyproject\.toml|requirements.*\.txt)$' || echo "")
+          FRONTEND_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/(src/|package.*\.json|tsconfig\.json|vite\.config\.ts)' || echo "")
+
+          # Skip tests if only docs/README/markdown files changed
+          DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt|ts|tsx|js|jsx|json)$' || echo "docs-only")
+
+          if [ -n "$PYTHON_CHANGED" ] || [ -n "$WORKFLOW_CHANGED" ] || [ -n "$DEPS_CHANGED" ] || [ -n "$FRONTEND_CHANGED" ]; then
+            echo "should_skip_tests=false" >> $GITHUB_OUTPUT
+            echo "python_changed=$([ -n "$PYTHON_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+            echo "frontend_changed=$([ -n "$FRONTEND_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          elif [ "$DOCS_ONLY" = "docs-only" ]; then
+            echo "should_skip_tests=true" >> $GITHUB_OUTPUT
+            echo "python_changed=false" >> $GITHUB_OUTPUT
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_skip_tests=false" >> $GITHUB_OUTPUT
+            echo "python_changed=false" >> $GITHUB_OUTPUT
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ============================================================================
+  # Stage 1: Fast Validation (fail fast on basic issues)
+  # ============================================================================
+
+  lint:
+    name: Lint and Format Check
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-skip-tests == 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            pre-commit-${{ runner.os }}-
+
+      - name: Cache ruff
+        uses: actions/cache@v4
+        with:
+          path: .ruff_cache
+          key: ${{ runner.os }}-ruff-${{ hashFiles('backend/src/**/*.py', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Check code formatting with ruff
+        run: make format-check
+
+      - name: Lint with ruff
+        run: make lint
+
+      - name: Check YAML files
+        run: make check-yaml
+
+  type-check:
+    name: Type Check
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-skip-tests == 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Cache mypy
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-${{ hashFiles('backend/src/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Type check with mypy
+        run: make type-check
+
+  security:
+    name: Security Scan
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-skip-tests == 'false'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Run security scan
+        run: make security-report
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-report
+          path: bandit-report.json
+          retention-days: 7
+
+  code-complexity:
+    name: Code Complexity Check (BLOCKING)
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.python-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon
+
+      - name: Check Cyclomatic Complexity
+        shell: bash
+        run: |
+          echo "## Cyclomatic Complexity Report" >> $GITHUB_STEP_SUMMARY
+          radon cc backend/src/ninebox/ -a -nb --total-average | tee complexity.txt
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat complexity.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Extract average complexity and fail if > 10.0 (using Python for Windows compatibility)
+          AVG_CC=$(grep "Average complexity:" complexity.txt | grep -oP '\d+\.\d+' || echo "0")
+          THRESHOLD_EXCEEDED=$(python -c "print('yes' if float('$AVG_CC') > 10.0 else 'no')")
+          if [ "$THRESHOLD_EXCEEDED" = "yes" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **FAILED:** Average cyclomatic complexity ($AVG_CC) exceeds threshold (10.0)" >> $GITHUB_STEP_SUMMARY
+            echo "::error::Average cyclomatic complexity ($AVG_CC) exceeds threshold (10.0)"
+            exit 1
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Average cyclomatic complexity ($AVG_CC) within threshold (≤10.0)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check Maintainability Index
+        shell: bash
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Maintainability Index Report" >> $GITHUB_STEP_SUMMARY
+          radon mi backend/src/ninebox/ -nb --min C | tee maintainability.txt
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat maintainability.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # radon mi exits with non-zero if any file below threshold
+          # The --min C flag ensures all files have MI >= 20 (C rating)
+          if [ $? -ne 0 ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **FAILED:** Some files have maintainability index below C rating (< 20)" >> $GITHUB_STEP_SUMMARY
+            echo "::error::Some files have maintainability index below C rating"
+            exit 1
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All files have maintainability index ≥ C rating" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Stage 2: Unit Testing (after fast checks pass)
+  # ============================================================================
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: windows-latest
+    needs: [lint, type-check, security, code-complexity]  # Wait for all fast checks
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Cache pytest cache
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: pytest-cache-${{ runner.os }}-3.13-${{ hashFiles('backend/tests/**/*.py') }}
+          restore-keys: |
+            pytest-cache-${{ runner.os }}-3.13-
+            pytest-cache-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Run unit tests with coverage
+        shell: bash
+        run: |
+          pytest backend/tests/unit/ -v --cov=backend/src --cov-report=xml --cov-report=term --cov-report=html
+
+      - name: Enforce coverage on changed files
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          # Get changed Python files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^backend/src/.*\.py$' || echo "")
+
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "## Coverage Report (Changed Files)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Checking coverage on changed files (minimum 80%):" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            FAILED=0
+            for file in $CHANGED_FILES; do
+              # Get coverage for this file
+              COVERAGE=$(python -m coverage report --include="$file" 2>/dev/null | tail -n 1 | awk '{print $4}' | sed 's/%//')
+              if [ -n "$COVERAGE" ]; then
+                echo "$file: $COVERAGE%" | tee -a $GITHUB_STEP_SUMMARY
+                # Use Python for Windows compatibility (bc may not be available)
+                BELOW_THRESHOLD=$(python -c "print('yes' if float('$COVERAGE') < 80 else 'no')")
+                if [ "$BELOW_THRESHOLD" = "yes" ]; then
+                  FAILED=1
+                fi
+              fi
+            done
+
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            if [ $FAILED -eq 1 ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "❌ **FAILED:** Some changed files have coverage below 80%" >> $GITHUB_STEP_SUMMARY
+              echo "::error::Coverage below 80% on changed files"
+              exit 1
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ All changed files have coverage ≥ 80%" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          flags: unittests
+          name: codecov-unit-py3.13-windows
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-unit-py3.13
+          path: |
+            coverage.xml
+            htmlcov/
+            .coverage
+          retention-days: 7
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-unit-py3.13
+          path: .pytest_cache/
+          retention-days: 7
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: windows-latest
+    needs: [check-changes, unit-tests]  # Run after unit tests
+    if: needs.check-changes.outputs.python-files-changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Cache pytest cache
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: pytest-cache-${{ runner.os }}-3.13-${{ hashFiles('backend/tests/**/*.py') }}
+          restore-keys: |
+            pytest-cache-${{ runner.os }}-3.13-
+            pytest-cache-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Run integration tests with coverage
+        shell: bash
+        run: |
+          pytest backend/tests/integration/ -v -n 0 --cov=backend/src --cov-report=xml --cov-report=term
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-integration
+          path: coverage.xml
+          retention-days: 7
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-integration
+          path: .pytest_cache/
+          retention-days: 7
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: windows-latest
+    needs: [check-changes, unit-tests]  # Run after unit tests
+    if: needs.check-changes.outputs.python-files-changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Cache pytest cache
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: pytest-cache-${{ runner.os }}-3.13-${{ hashFiles('backend/tests/**/*.py') }}
+          restore-keys: |
+            pytest-cache-${{ runner.os }}-3.13-
+            pytest-cache-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Run performance tests
+        shell: bash
+        run: |
+          pytest backend/tests/performance/ -v --durations=10
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-performance
+          path: .pytest_cache/
+          retention-days: 7
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: windows-latest
+    needs: [check-changes, lint, type-check]  # Don't need security scan for frontend
+    if: needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run Vitest component tests
+        working-directory: frontend
+        run: npm run test:run
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 7
+
+  # ============================================================================
+  # Stage 3: E2E Testing with Smart Test Selection
+  # ============================================================================
+
+  e2e-tests-smart:
+    name: E2E Tests (Smart Selection)
+    runs-on: windows-latest
+    needs: [unit-tests, frontend-tests]  # Wait for both backend and frontend tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install Python dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            ~/AppData/Local/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Determine E2E tests to run
+        id: select-tests
+        shell: bash
+        run: |
+          # Get changed files
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          fi
+
+          # Always run smoke test
+          TESTS_TO_RUN="smoke-test.spec.ts"
+
+          # Check for critical file changes that require all E2E tests
+          CRITICAL_CHANGES=$(echo "$CHANGED_FILES" | grep -E '(backend/src/ninebox/models\.py|backend/src/ninebox/database\.py|pyproject\.toml|\.github/workflows/)' || echo "")
+
+          if [ -n "$CRITICAL_CHANGES" ]; then
+            echo "Critical files changed, running ALL E2E tests"
+            echo "run_all=true" >> $GITHUB_OUTPUT
+            echo "tests=" >> $GITHUB_OUTPUT
+          else
+            # Map changed files to specific E2E tests
+            echo "$CHANGED_FILES" | while read -r file; do
+              case "$file" in
+                backend/src/ninebox/services/excel_parser.py)
+                  echo "upload-flow.spec.ts" >> e2e_tests.txt
+                  ;;
+                backend/src/ninebox/services/excel_exporter.py)
+                  echo "export-flow.spec.ts" >> e2e_tests.txt
+                  echo "export-validation.spec.ts" >> e2e_tests.txt
+                  ;;
+                backend/src/ninebox/services/intelligence_service.py)
+                  echo "intelligence-flow.spec.ts" >> e2e_tests.txt
+                  ;;
+                backend/src/ninebox/routers/employees.py)
+                  echo "employee-movement.spec.ts" >> e2e_tests.txt
+                  echo "employee-details.spec.ts" >> e2e_tests.txt
+                  ;;
+                backend/src/ninebox/routers/filters.py)
+                  echo "filter-flow.spec.ts" >> e2e_tests.txt
+                  echo "filter-application.spec.ts" >> e2e_tests.txt
+                  echo "exclusions-quick-filters.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/NineBoxGrid.tsx)
+                  echo "employee-movement.spec.ts" >> e2e_tests.txt
+                  echo "drag-drop-visual.spec.ts" >> e2e_tests.txt
+                  echo "grid-expansion.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/FileUpload.tsx)
+                  echo "upload-flow.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/FilterDrawer.tsx)
+                  echo "filter-flow.spec.ts" >> e2e_tests.txt
+                  echo "filter-application.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/ChangeTracker.tsx)
+                  echo "change-tracking.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/StatisticsPanel.tsx)
+                  echo "statistics-tab.spec.ts" >> e2e_tests.txt
+                  ;;
+                frontend/src/components/DetailsPanel.tsx)
+                  echo "employee-details.spec.ts" >> e2e_tests.txt
+                  ;;
+              esac
+            done
+
+            # Deduplicate and add to TESTS_TO_RUN
+            if [ -f e2e_tests.txt ]; then
+              MAPPED_TESTS=$(sort -u e2e_tests.txt | tr '\n' ' ')
+              TESTS_TO_RUN="$TESTS_TO_RUN $MAPPED_TESTS"
+            fi
+
+            echo "run_all=false" >> $GITHUB_OUTPUT
+            echo "tests=$TESTS_TO_RUN" >> $GITHUB_OUTPUT
+          fi
+
+          echo "E2E tests to run: $TESTS_TO_RUN"
+          echo "## E2E Test Selection" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$CRITICAL_CHANGES" != "" ]; then
+            echo "**Running ALL E2E tests** (critical files changed)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Selected tests:** $TESTS_TO_RUN" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Run Playwright E2E tests (all tests)
+        if: steps.select-tests.outputs.run_all == 'true'
+        working-directory: frontend
+        run: npx playwright test
+
+      - name: Run Playwright E2E tests (selected tests)
+        if: steps.select-tests.outputs.run_all == 'false'
+        working-directory: frontend
+        shell: bash
+        run: |
+          npx playwright test ${{ steps.select-tests.outputs.tests }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-pr
+          path: frontend/playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-pr
+          path: |
+            frontend/test-results/
+            frontend/playwright-report/
+          retention-days: 7
+
+  # ============================================================================
+  # Stage 4: Summary
+  # ============================================================================
+
+  pr-summary:
+    name: PR Validation Summary
+    runs-on: windows-latest
+    needs: [
+      check-changes,
+      lint,
+      type-check,
+      security,
+      code-complexity,
+      unit-tests,
+      integration-tests,
+      performance-tests,
+      frontend-tests,
+      e2e-tests-smart
+    ]
+    if: always()
+    steps:
+      - name: Check results
+        shell: bash
+        run: |
+          echo "Lint and Format: ${{ needs.lint.result }}"
+          echo "Type Check: ${{ needs.type-check.result }}"
+          echo "Security Scan: ${{ needs.security.result }}"
+          echo "Code Complexity: ${{ needs.code-complexity.result }}"
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "Performance Tests: ${{ needs.performance-tests.result }}"
+          echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
+          echo "E2E Tests: ${{ needs.e2e-tests-smart.result }}"
+
+          if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
+            echo "✅ Skipped tests for docs-only changes"
+            exit 0
+          fi
+
+          # Check if any required job failed
+          if [[ "${{ needs.lint.result }}" != "success" ]] || \
+             [[ "${{ needs.type-check.result }}" != "success" ]] || \
+             [[ "${{ needs.security.result }}" != "success" ]] || \
+             [[ "${{ needs.code-complexity.result }}" != "success" && "${{ needs.code-complexity.result }}" != "skipped" ]] || \
+             [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.integration-tests.result }}" != "success" && "${{ needs.integration-tests.result }}" != "skipped" ]] || \
+             [[ "${{ needs.performance-tests.result }}" != "success" && "${{ needs.performance-tests.result }}" != "skipped" ]] || \
+             [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
+             [[ "${{ needs.e2e-tests-smart.result }}" != "success" ]]; then
+            echo "❌ PR Validation Failed"
+            exit 1
+          fi
+          echo "✅ All PR validation checks passed"
+
+      - name: Generate summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## PR Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Validation Stages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 1: Fast Validation**" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || needs.lint.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Type Check | ${{ needs.type-check.result == 'success' && '✅' || needs.type-check.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security | ${{ needs.security.result == 'success' && '✅' || needs.security.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Complexity | ${{ needs.code-complexity.result == 'success' && '✅' || needs.code-complexity.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 2: Comprehensive Testing**" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result == 'success' && '✅' || needs.unit-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result == 'success' && '✅' || needs.integration-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance Tests | ${{ needs.performance-tests.result == 'success' && '✅' || needs.performance-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Tests | ${{ needs.frontend-tests.result == 'success' && '✅' || needs.frontend-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 3: E2E Testing**" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests (Smart) | ${{ needs.e2e-tests-smart.result == 'success' && '✅' || needs.e2e-tests-smart.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
+            echo "ℹ️ **Note:** Tests skipped for docs-only changes" >> $GITHUB_STEP_SUMMARY
+          fi

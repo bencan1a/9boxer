@@ -1,15 +1,16 @@
 """Excel file exporter service."""
 
-from pathlib import Path
+from __future__ import annotations
+
+from pathlib import Path  # noqa: TC003
 from typing import TYPE_CHECKING
 
-import openpyxl
-from openpyxl.worksheet.worksheet import Worksheet
-
-from ninebox.models.employee import Employee
+from ninebox.models.employee import Employee  # noqa: TC001
 from ninebox.models.grid_positions import get_position_label
 
 if TYPE_CHECKING:
+    from openpyxl.worksheet.worksheet import Worksheet
+
     from ninebox.models.session import SessionState
 
 
@@ -22,7 +23,7 @@ class ExcelExporter:
         employees: list[Employee],
         output_path: str | Path,
         sheet_index: int = 1,
-        session: "SessionState | None" = None,
+        session: SessionState | None = None,
     ) -> None:
         """
         Create new Excel file with updated ratings.
@@ -34,6 +35,9 @@ class ExcelExporter:
             sheet_index: Index of the sheet to export to (default: 1 for backward compatibility)
             session: Optional session state for accessing change notes
         """
+        # Lazy import openpyxl to reduce startup time
+        import openpyxl  # noqa: PLC0415
+
         # Read original file to preserve formatting
         workbook = openpyxl.load_workbook(original_file)
 
