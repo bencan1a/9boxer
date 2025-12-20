@@ -80,6 +80,15 @@ class Employee(BaseModel):
     modified_in_session: bool = False
     last_modified: datetime | None = None
 
+    # Donut Mode fields (temporary alternative placements)
+    donut_performance: PerformanceLevel | None = None
+    donut_potential: PotentialLevel | None = None
+    donut_position: int | None = None
+    donut_position_label: str | None = None
+    donut_modified: bool = False
+    donut_last_modified: datetime | None = None
+    donut_notes: str | None = None
+
     class Config:
         """Pydantic config."""
 

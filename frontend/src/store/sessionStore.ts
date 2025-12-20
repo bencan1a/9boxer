@@ -20,6 +20,10 @@ interface SessionState {
   error: string | null;
   selectedEmployeeId: number | null;
 
+  // Donut Mode state
+  donutModeActive: boolean;
+  donutChanges: EmployeeMove[];
+
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
@@ -31,9 +35,19 @@ interface SessionState {
   ) => Promise<void>;
   updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
   updateChangeNotes: (employeeId: number, notes: string) => Promise<void>;
+  updateDonutChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
   clearError: () => void;
   restoreSession: () => Promise<boolean>;
+
+  // Donut Mode actions
+  toggleDonutMode: (enabled: boolean) => Promise<void>;
+  moveEmployeeDonut: (
+    employeeId: number,
+    performance: string,
+    potential: string,
+    notes?: string
+  ) => Promise<void>;
 }
 
 export const useSessionStore = create<SessionState>((set, get) => ({
@@ -46,6 +60,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   isLoading: false,
   error: null,
   selectedEmployeeId: null,
+
+  // Donut Mode state
+  donutModeActive: false,
+  donutChanges: [],
 
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
@@ -240,6 +258,32 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }
   },
 
+  updateDonutChangeNotes: async (employeeId: number, notes: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedChange = await apiClient.updateDonutChangeNotes(employeeId, notes);
+
+      // Update donut change in history
+      const donutChanges = get().donutChanges.map((change) =>
+        change.employee_id === employeeId ? updatedChange : change
+      );
+
+      set({
+        donutChanges,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to update donut change notes', error);
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
+    }
+  },
+
   selectEmployee: (employeeId: number | null) => {
     set({ selectedEmployeeId: employeeId });
   },
@@ -323,6 +367,85 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         error: null,
       });
       return false;
+    }
+  },
+
+  // ==================== Donut Mode Actions ====================
+
+  toggleDonutMode: async (enabled: boolean) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.toggleDonutMode(enabled);
+
+      set({
+        donutModeActive: response.donut_mode_active,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to toggle donut mode', error);
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
+    }
+  },
+
+  moveEmployeeDonut: async (
+    employeeId: number,
+    performance: string,
+    potential: string,
+    notes?: string
+  ) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.moveEmployeeDonut(
+        employeeId,
+        performance,
+        potential,
+        notes
+      );
+
+      // Update employee in list
+      const employees = get().employees;
+      const updatedEmployees = employees.map((emp) =>
+        emp.employee_id === employeeId ? response.employee : emp
+      );
+
+      // Update donut change history based on whether employee is modified
+      let donutChanges = get().donutChanges;
+      if (!response.employee.donut_modified) {
+        // Employee moved back to original position - remove change entry
+        donutChanges = donutChanges.filter((c) => c.employee_id !== employeeId);
+      } else {
+        // Employee is modified - update or add change entry
+        const existingChangeIndex = donutChanges.findIndex((c) => c.employee_id === employeeId);
+        if (existingChangeIndex >= 0) {
+          // Update existing change entry
+          donutChanges = [...donutChanges];
+          donutChanges[existingChangeIndex] = response.change;
+        } else {
+          // Add new change entry
+          donutChanges = [...donutChanges, response.change];
+        }
+      }
+
+      set({
+        employees: updatedEmployees,
+        donutChanges,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to move employee in donut mode', error);
+      set({
+        isLoading: false,
+        error: errorMessage,
+      });
+      throw error;
     }
   },
 }));

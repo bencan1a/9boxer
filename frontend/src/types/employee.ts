@@ -66,4 +66,13 @@ export interface Employee {
   // Metadata
   modified_in_session: boolean;
   last_modified: string | null; // ISO datetime string
+
+  // Donut Mode (alternative positioning system)
+  donut_performance?: PerformanceLevel;
+  donut_potential?: PotentialLevel;
+  donut_position?: number; // 1-9
+  donut_position_label?: string; // "Top Talent [H,H]", etc.
+  donut_modified?: boolean;
+  donut_last_modified?: string; // ISO datetime string
+  donut_notes?: string;
 }

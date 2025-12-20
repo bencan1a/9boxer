@@ -5,6 +5,7 @@
 import { useMemo } from "react";
 import { Employee, PerformanceLevel } from "../types/employee";
 import { PositionDistribution } from "../types/api";
+import { getPositionLabel } from "../constants/positionLabels";
 
 interface StatisticsData {
   total_employees: number;
@@ -23,22 +24,7 @@ interface UseStatisticsResult {
   error: string | null;
 }
 
-const getBoxLabel = (position: number): string => {
-  const labels: Record<number, string> = {
-    9: "Top Talent [H,H]",
-    8: "High Impact Talent [H,M]",
-    7: "High/Low [H,L]",
-    6: "Growth Talent [M,H]",
-    5: "Core Talent [M,M]",
-    4: "Med/Low [M,L]",
-    3: "Emerging Talent [L,H]",
-    2: "Inconsistent Talent [L,M]",
-    1: "Low/Low [L,L]",
-  };
-  return labels[position] || `Position ${position}`;
-};
-
-export const useStatistics = (employees: Employee[]): UseStatisticsResult => {
+export const useStatistics = (employees: Employee[], donutModeActive = false): UseStatisticsResult => {
   const statistics = useMemo(() => {
     if (!employees || employees.length === 0) {
       return null;
@@ -50,12 +36,20 @@ export const useStatistics = (employees: Employee[]): UseStatisticsResult => {
       { count: number; percentage: number; label: string }
     > = {};
     for (let i = 1; i <= 9; i++) {
-      distributionDict[i] = { count: 0, percentage: 0, label: getBoxLabel(i) };
+      distributionDict[i] = { count: 0, percentage: 0, label: getPositionLabel(i) };
     }
 
     // Count employees in each box
+    // In donut mode, use donut_position for donut-modified employees
     employees.forEach((emp) => {
-      const pos = emp.grid_position;
+      let pos: number;
+
+      if (donutModeActive && emp.donut_modified && emp.donut_position) {
+        pos = emp.donut_position;
+      } else {
+        pos = emp.grid_position;
+      }
+
       if (pos >= 1 && pos <= 9) {
         distributionDict[pos].count += 1;
       }
@@ -78,9 +72,10 @@ export const useStatistics = (employees: Employee[]): UseStatisticsResult => {
     }));
 
     // Count modified employees
-    const modifiedCount = employees.filter(
-      (e) => e.modified_in_session
-    ).length;
+    // In donut mode, count donut-modified employees; otherwise count regular modifications
+    const modifiedCount = donutModeActive
+      ? employees.filter((e) => e.donut_modified).length
+      : employees.filter((e) => e.modified_in_session).length;
 
     // Count high performers (High performance)
     const highPerformers = employees.filter(
@@ -124,7 +119,7 @@ export const useStatistics = (employees: Employee[]): UseStatisticsResult => {
         },
       },
     };
-  }, [employees]);
+  }, [employees, donutModeActive]);
 
   return {
     statistics,

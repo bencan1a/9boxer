@@ -20,6 +20,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import DownloadIcon from "@mui/icons-material/Download";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
+import DonutLargeIcon from "@mui/icons-material/DonutLarge";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { FileUploadDialog } from "../common/FileUploadDialog";
@@ -31,7 +32,7 @@ import { logger } from "../../utils/logger";
 
 export const AppBar: React.FC = () => {
   const theme = useTheme();
-  const { sessionId, employees, filename, changes } = useSessionStore();
+  const { sessionId, employees, filename, changes, donutModeActive, toggleDonutMode } = useSessionStore();
   const {
     toggleDrawer,
     hasActiveFilters,
@@ -91,6 +92,23 @@ export const AppBar: React.FC = () => {
     } catch (error: unknown) {
       logger.error('Failed to open user guide', error);
       showError("Failed to open user guide");
+    }
+  };
+
+  const handleToggleDonutMode = async () => {
+    if (!sessionId) return;
+
+    try {
+      await toggleDonutMode(!donutModeActive);
+      showSuccess(
+        donutModeActive
+          ? "Donut Mode deactivated"
+          : "Donut Mode activated - showing only position 5 employees"
+      );
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error('Failed to toggle donut mode', error);
+      showError(errorMessage);
     }
   };
 
@@ -180,15 +198,17 @@ export const AppBar: React.FC = () => {
               }}
             >
               <Tooltip title={getFilterTooltip()} placement="bottom">
-                <Button
-                  color="inherit"
-                  startIcon={<FilterListIcon />}
-                  disabled={!sessionId}
-                  onClick={toggleDrawer}
-                  data-testid="filter-button"
-                >
-                  Filters
-                </Button>
+                <span>
+                  <Button
+                    color="inherit"
+                    startIcon={<FilterListIcon />}
+                    disabled={!sessionId}
+                    onClick={toggleDrawer}
+                    data-testid="filter-button"
+                  >
+                    Filters
+                  </Button>
+                </span>
               </Tooltip>
               {hasActiveFilters && (
                 <Box
@@ -198,6 +218,55 @@ export const AppBar: React.FC = () => {
                     borderRadius: "50%",
                     backgroundColor: theme.palette.warning.main,
                   }}
+                />
+              )}
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+              }}
+            >
+              <Tooltip
+                title={
+                  donutModeActive
+                    ? "Donut Mode Active - Only showing position 5 employees for evaluation"
+                    : "Enable Donut Mode to evaluate position 5 employees"
+                }
+                placement="bottom"
+              >
+                <span>
+                  <Button
+                    color={donutModeActive ? "secondary" : "inherit"}
+                    variant={donutModeActive ? "contained" : "text"}
+                    startIcon={<DonutLargeIcon />}
+                    disabled={!sessionId}
+                    onClick={handleToggleDonutMode}
+                    data-testid="donut-mode-button"
+                    sx={{
+                      minWidth: { xs: "auto", sm: "140px" },
+                    }}
+                  >
+                    <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                      Donut Mode
+                    </Box>
+                  </Button>
+                </span>
+              </Tooltip>
+              {donutModeActive && (
+                <Chip
+                  label="ACTIVE"
+                  size="small"
+                  sx={{
+                    backgroundColor: theme.palette.secondary.main,
+                    color: theme.palette.secondary.contrastText,
+                    height: 20,
+                    fontSize: "0.7rem",
+                    fontWeight: "bold",
+                  }}
+                  data-testid="donut-mode-indicator"
                 />
               )}
             </Box>

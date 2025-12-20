@@ -24,14 +24,14 @@ echo "Activating virtual environment from root..."
 
 # Install dependencies from root (where pyproject.toml is)
 echo "Installing dependencies..."
-pip install --upgrade pip
+pip install uv
 cd ..  # Go to project root
-pip install -e .
+uv pip install --system -e .
 cd backend  # Back to backend directory
 
 # Install PyInstaller if needed
 echo "Installing PyInstaller..."
-pip install pyinstaller
+uv pip install --system pyinstaller
 
 # Clean previous builds
 echo "Cleaning previous builds..."

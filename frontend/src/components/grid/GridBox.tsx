@@ -39,6 +39,7 @@ interface GridBoxProps {
   isCollapsed?: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
+  donutModeActive?: boolean;
 }
 
 export const GridBox: React.FC<GridBoxProps> = ({
@@ -50,6 +51,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   isCollapsed = false,
   onExpand,
   onCollapse,
+  donutModeActive = false,
 }) => {
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
@@ -221,6 +223,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
               key={employee.employee_id}
               employee={employee}
               onSelect={onSelectEmployee}
+              donutModeActive={donutModeActive}
             />
           ))}
         </Box>

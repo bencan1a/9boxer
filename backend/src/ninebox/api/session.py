@@ -30,6 +30,12 @@ class UpdateNotesRequest(BaseModel):
     notes: str
 
 
+class ToggleDonutModeRequest(BaseModel):
+    """Request model for toggling donut mode."""
+
+    enabled: bool
+
+
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),  # noqa: B008
@@ -242,3 +248,58 @@ async def update_change_notes(
         return updated_change
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
+
+@router.patch("/donut-changes/{employee_id}/notes")
+async def update_donut_change_notes(
+    employee_id: int,
+    request: UpdateNotesRequest,
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+) -> EmployeeMove:
+    """Update notes for an employee's donut change entry."""
+    try:
+        updated_change = session_mgr.update_donut_change_notes(
+            user_id=LOCAL_USER_ID,
+            employee_id=employee_id,
+            notes=request.notes,
+        )
+        return updated_change
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
+
+@router.post("/toggle-donut-mode")
+async def toggle_donut_mode(
+    request: ToggleDonutModeRequest,
+    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+) -> dict:
+    """Toggle donut mode on or off for the current session.
+
+    Donut mode is a separate exercise mode that allows exploring hypothetical
+    employee placements without affecting the main grid positions.
+
+    Args:
+        request: ToggleDonutModeRequest containing enabled boolean
+
+    Returns:
+        dict: Response containing updated session state with donut_mode_active flag
+
+    Raises:
+        HTTPException: 404 if no active session exists
+    """
+    try:
+        session = session_mgr.toggle_donut_mode(
+            user_id=LOCAL_USER_ID,
+            enabled=request.enabled,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        ) from e
+
+    return {
+        "donut_mode_active": session.donut_mode_active,
+        "session_id": session.session_id,
+        "success": True,
+    }

@@ -89,10 +89,36 @@ class DatabaseManager:
         try:
             with self.get_connection() as conn:
                 conn.executescript(schema_sql)
+                # Run migrations after schema creation
+                self._run_migrations(conn)
             logger.info("Database schema initialized successfully")
         except sqlite3.Error as e:
             logger.error(f"Failed to initialize database schema: {e}")
             raise
+
+    def _run_migrations(self, conn: sqlite3.Connection) -> None:
+        """Run database migrations to add new columns to existing tables.
+
+        This method handles schema evolution for existing databases.
+        Each migration is idempotent - safe to run multiple times.
+
+        Args:
+            conn: Database connection (must be within a transaction context)
+        """
+        # Migration 1: Add donut mode columns (added in Donut Mode feature)
+        # Check if columns exist and add them if missing
+        cursor = conn.execute("PRAGMA table_info(sessions)")
+        columns = {row[1] for row in cursor.fetchall()}
+
+        if "donut_changes" not in columns:
+            logger.info("Running migration: Adding donut_changes column")
+            conn.execute("ALTER TABLE sessions ADD COLUMN donut_changes TEXT NOT NULL DEFAULT '[]'")
+
+        if "donut_mode_active" not in columns:
+            logger.info("Running migration: Adding donut_mode_active column")
+            conn.execute(
+                "ALTER TABLE sessions ADD COLUMN donut_mode_active INTEGER NOT NULL DEFAULT 0"
+            )
 
 
 # Global database manager instance

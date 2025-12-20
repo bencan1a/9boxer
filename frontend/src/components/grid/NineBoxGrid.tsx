@@ -7,6 +7,7 @@ import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from "@dnd-kit/
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { GridBox } from "./GridBox";
 import { useEmployees } from "../../hooks/useEmployees";
+import { useSessionStore } from "../../store/sessionStore";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 
@@ -20,6 +21,8 @@ export const NineBoxGrid: React.FC = () => {
     moveEmployee,
     selectEmployee,
   } = useEmployees();
+
+  const { donutModeActive, moveEmployeeDonut } = useSessionStore();
 
   const [activeEmployee, setActiveEmployee] = useState<Employee | null>(null);
   const [expandedPosition, setExpandedPosition] = useState<number | null>(() => {
@@ -62,7 +65,12 @@ export const NineBoxGrid: React.FC = () => {
     const { performance, potential } = positionToLevels(targetPosition);
 
     try {
-      await moveEmployee(employee.employee_id, performance, potential);
+      // Use appropriate move function based on donut mode
+      if (donutModeActive) {
+        await moveEmployeeDonut(employee.employee_id, performance, potential);
+      } else {
+        await moveEmployee(employee.employee_id, performance, potential);
+      }
     } catch (error) {
       logger.error('Failed to move employee', error);
     }
@@ -217,6 +225,7 @@ export const NineBoxGrid: React.FC = () => {
                 isCollapsed={expandedPosition !== null && expandedPosition !== position}
                 onExpand={() => handleExpandBox(position)}
                 onCollapse={handleCollapseBox}
+                donutModeActive={donutModeActive}
               />
             ))}
           </Box>

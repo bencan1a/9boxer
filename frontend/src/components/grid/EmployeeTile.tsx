@@ -12,11 +12,13 @@ import { logger } from "../../utils/logger";
 interface EmployeeTileProps {
   employee: Employee;
   onSelect: (employeeId: number) => void;
+  donutModeActive?: boolean;
 }
 
 export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
+  donutModeActive = false,
 }) => {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
@@ -29,6 +31,14 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     onSelect(employee.employee_id);
   };
 
+  // Determine if employee has been modified in donut mode
+  const isDonutModified = donutModeActive && employee.donut_modified;
+
+  // Determine which position label to show
+  const displayLabel = donutModeActive && employee.donut_position_label
+    ? employee.donut_position_label
+    : employee.position_label;
+
   return (
     <Card
       ref={setNodeRef}
@@ -38,11 +48,15 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         minWidth: 280, // Minimum width for multi-column grid layout
         maxWidth: 400, // Maximum width for readability
         borderLeft: employee.modified_in_session ? 4 : 0,
-        borderColor: "secondary.main",
+        borderLeftColor: "secondary.main",
         cursor: "pointer",
         display: "flex",
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 0.5 : (isDonutModified ? 0.7 : 1),
         userSelect: "none",
+        border: isDonutModified ? 2 : 0,
+        borderStyle: isDonutModified ? "solid" : "none",
+        borderColor: isDonutModified ? "#9c27b0" : undefined,
+        boxShadow: isDonutModified ? 2 : 1,
         "&:hover": {
           boxShadow: 3,
         },
@@ -80,7 +94,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
           {employee.business_title}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5, flexWrap: "wrap" }}>
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
           {employee.modified_in_session && (
             <Chip
@@ -91,7 +105,30 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               data-testid="modified-indicator"
             />
           )}
+          {isDonutModified && (
+            <Chip
+              label="Donut"
+              size="small"
+              sx={{
+                height: 18,
+                backgroundColor: "#9c27b0",
+                color: "white",
+                fontWeight: "bold",
+              }}
+              data-testid="donut-indicator"
+            />
+          )}
         </Box>
+        {isDonutModified && employee.donut_position_label && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontSize="0.65rem"
+            sx={{ mt: 0.5, display: "block", fontStyle: "italic" }}
+          >
+            Donut: {displayLabel}
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

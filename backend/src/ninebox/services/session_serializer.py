@@ -53,7 +53,7 @@ class SessionSerializer:
         return session_dict
 
     @staticmethod
-    def deserialize(row: dict[str, Any]) -> SessionState:
+    def deserialize(row: dict[str, Any]) -> SessionState:  # noqa: PLR0912
         """Convert database row to SessionState.
 
         Reconstructs SessionState from database dict, including:
@@ -106,6 +106,13 @@ class SessionSerializer:
         if isinstance(data.get("changes"), str):
             data["changes"] = json.loads(data["changes"])
 
+        if isinstance(data.get("donut_changes"), str):
+            data["donut_changes"] = json.loads(data["donut_changes"])
+
+        # Convert SQLite integer to boolean for donut_mode_active
+        if isinstance(data.get("donut_mode_active"), int):
+            data["donut_mode_active"] = bool(data["donut_mode_active"])
+
         # Reconstruct JobFunctionConfig if present
         if data.get("job_function_config") is not None:
             jfc_data = data["job_function_config"]
@@ -130,6 +137,12 @@ class SessionSerializer:
             data["changes"] = [
                 SessionSerializer._deserialize_employee_move(move_data)
                 for move_data in data["changes"]
+            ]
+
+        if "donut_changes" in data:
+            data["donut_changes"] = [
+                SessionSerializer._deserialize_employee_move(move_data)
+                for move_data in data["donut_changes"]
             ]
 
         # Use Pydantic's model_validate to reconstruct SessionState
@@ -160,9 +173,12 @@ class SessionSerializer:
             date_str = data["hire_date"]
             data["hire_date"] = datetime.fromisoformat(date_str.replace("Z", "+00:00")).date()
 
-        # Parse datetime strings (last_modified)
+        # Parse datetime strings (last_modified, donut_last_modified)
         if isinstance(data.get("last_modified"), str):
             data["last_modified"] = datetime.fromisoformat(data["last_modified"])
+
+        if isinstance(data.get("donut_last_modified"), str):
+            data["donut_last_modified"] = datetime.fromisoformat(data["donut_last_modified"])
 
         # Convert enum strings to enum values (Pydantic should handle this, but be explicit)
         if isinstance(data.get("performance"), str):
@@ -170,6 +186,12 @@ class SessionSerializer:
 
         if isinstance(data.get("potential"), str):
             data["potential"] = PotentialLevel(data["potential"])
+
+        if isinstance(data.get("donut_performance"), str):
+            data["donut_performance"] = PerformanceLevel(data["donut_performance"])
+
+        if isinstance(data.get("donut_potential"), str):
+            data["donut_potential"] = PotentialLevel(data["donut_potential"])
 
         # Reconstruct HistoricalRating objects
         if data.get("ratings_history"):

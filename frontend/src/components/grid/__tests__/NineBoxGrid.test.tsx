@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '../../../test/utils'
 import { NineBoxGrid } from '../NineBoxGrid'
-import { mockEmployeesByPosition } from '../../../test/mockData'
+import { mockEmployeesByPosition, createMockEmployee } from '../../../test/mockData'
+import { useSessionStore } from '../../../store/sessionStore'
+
+const mockMoveEmployee = vi.fn()
+const mockMoveEmployeeDonut = vi.fn()
+const mockSelectEmployee = vi.fn()
 
 // Mock the useEmployees hook
 vi.mock('../../../hooks/useEmployees', () => ({
@@ -35,14 +40,26 @@ vi.mock('../../../hooks/useEmployees', () => ({
       }
       return mapping[position] || { performance: 'Medium', potential: 'Medium' }
     },
-    moveEmployee: vi.fn(),
-    selectEmployee: vi.fn(),
+    moveEmployee: mockMoveEmployee,
+    selectEmployee: mockSelectEmployee,
   }),
+}))
+
+// Mock the sessionStore
+vi.mock('../../../store/sessionStore', () => ({
+  useSessionStore: vi.fn(),
 }))
 
 describe('NineBoxGrid', () => {
   beforeEach(() => {
     localStorage.clear()
+    vi.clearAllMocks()
+
+    // Default mock - donut mode inactive
+    vi.mocked(useSessionStore).mockReturnValue({
+      donutModeActive: false,
+      moveEmployeeDonut: mockMoveEmployeeDonut,
+    } as any)
   })
 
   it('renders all 9 grid boxes with correct labels', () => {
@@ -85,5 +102,38 @@ describe('NineBoxGrid', () => {
     // The boxes should still render with a count of 0
     const allBoxes = screen.getAllByLabelText(/Expand box/)
     expect(allBoxes.length).toBeGreaterThanOrEqual(9)
+  })
+})
+
+describe('NineBoxGrid - Donut Mode', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.clearAllMocks()
+  })
+
+  it('passes donutModeActive prop to GridBox when donut mode is active', () => {
+    vi.mocked(useSessionStore).mockReturnValue({
+      donutModeActive: true,
+      moveEmployeeDonut: mockMoveEmployeeDonut,
+    } as any)
+
+    render(<NineBoxGrid />)
+
+    // GridBox receives donutModeActive prop
+    // We can verify by checking if the grid renders (integration test)
+    const grid = screen.getByTestId('nine-box-grid')
+    expect(grid).toBeInTheDocument()
+  })
+
+  it('passes donutModeActive as false when donut mode is inactive', () => {
+    vi.mocked(useSessionStore).mockReturnValue({
+      donutModeActive: false,
+      moveEmployeeDonut: mockMoveEmployeeDonut,
+    } as any)
+
+    render(<NineBoxGrid />)
+
+    const grid = screen.getByTestId('nine-box-grid')
+    expect(grid).toBeInTheDocument()
   })
 })

@@ -12,6 +12,8 @@ import {
   FilterOptionsResponse,
   StatisticsResponse,
   IntelligenceData,
+  DonutModeToggleResponse,
+  MoveDonutRequest,
 } from "../types/api";
 import { Employee } from "../types/employee";
 import { EmployeeMove } from "../types/session";
@@ -110,6 +112,22 @@ class ApiClient {
     return response.data;
   }
 
+  async updateDonutChangeNotes(employeeId: number, notes: string): Promise<EmployeeMove> {
+    const response = await this.client.patch<EmployeeMove>(
+      `/api/session/donut-changes/${employeeId}/notes`,
+      { notes }
+    );
+    return response.data;
+  }
+
+  async toggleDonutMode(enabled: boolean): Promise<DonutModeToggleResponse> {
+    const response = await this.client.post<DonutModeToggleResponse>(
+      "/api/session/toggle-donut-mode",
+      { enabled }
+    );
+    return response.data;
+  }
+
   // ==================== Employee Methods ====================
 
   async getEmployees(filters?: {
@@ -167,6 +185,23 @@ class ApiClient {
         performance,
         potential,
       } as MoveRequest
+    );
+    return response.data;
+  }
+
+  async moveEmployeeDonut(
+    employeeId: number,
+    performance: string,
+    potential: string,
+    notes?: string
+  ): Promise<MoveResponse> {
+    const response = await this.client.patch<MoveResponse>(
+      `/api/employees/${employeeId}/move-donut`,
+      {
+        performance,
+        potential,
+        notes,
+      } as MoveDonutRequest
     );
     return response.data;
   }

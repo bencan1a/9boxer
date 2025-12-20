@@ -38,6 +38,12 @@ export interface SessionStatusResponse {
   changes: EmployeeMove[];
   uploaded_filename: string;
   created_at: string;
+  donut_mode_active: boolean;
+}
+
+export interface DonutModeToggleResponse {
+  donut_mode_active: boolean;
+  session_id: string;
 }
 
 // Employee types
@@ -56,6 +62,12 @@ export interface MoveResponse {
   employee: Employee;
   change: EmployeeMove;
   success: boolean;
+}
+
+export interface MoveDonutRequest {
+  performance: string; // "Low", "Medium", "High"
+  potential: string; // "Low", "Medium", "High"
+  notes?: string;
 }
 
 export interface FilterOptionsResponse {

@@ -54,6 +54,10 @@ class SessionState(BaseModel):
     # Change tracking
     changes: list[EmployeeMove] = []
 
+    # Donut Mode state
+    donut_changes: list[EmployeeMove] = []
+    donut_mode_active: bool = False
+
     class Config:
         """Pydantic config."""
 
