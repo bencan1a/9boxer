@@ -316,7 +316,7 @@ function setupIpcHandlers(): void {
       const { shell } = require('electron');
       const userGuidePath = app.isPackaged
         ? path.join(process.resourcesPath, 'USER_GUIDE.html')
-        : path.join(__dirname, '../../../USER_GUIDE.html');
+        : path.join(__dirname, '../../../resources/USER_GUIDE.html');
 
       console.log('📖 Opening user guide from:', userGuidePath);
 

@@ -1,5 +1,5 @@
 {
-  "name": "Python Development",
+  "name": "9Boxer Electron Development",
   "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
@@ -11,7 +11,7 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": false,
         "python.formatting.provider": "none",
@@ -29,6 +29,21 @@
             "source.organizeImports": "explicit"
           }
         },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
         "terminal.integrated.defaultProfile.linux": "bash"
@@ -39,6 +54,8 @@
         "charliermarsh.ruff",
         "ms-python.mypy-type-checker",
         "ms-python.debugpy",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "tamasfe.even-better-toml",
@@ -47,9 +64,9 @@
       ]
     }
   },
-  "postCreateCommand": "python3 -m venv venv && . venv/bin/activate && pip install --upgrade pip && pip install -e '.[dev]'",
+  "postCreateCommand": "python3 -m venv .venv && . .venv/bin/activate && pip install --upgrade pip && pip install -e '.[dev]' && cd frontend && npm install",
   "remoteUser": "vscode",
-  "updateContentCommand": ". venv/bin/activate && pip install -e '.[dev]'",
+  "updateContentCommand": ". .venv/bin/activate && pip install -e '.[dev]' && cd frontend && npm install",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
   ]

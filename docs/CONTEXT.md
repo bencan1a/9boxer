@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-19T17:29:35.645482+00:00
-**Source SHA**: 2d311fbfd05524f43bd15cb63a8c19a360cf1da6
+**Generated**: 2025-12-19T19:13:19.088409+00:00
+**Source SHA**: e7d77b8db879066acb157496326e80974d2634de
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -16,7 +16,7 @@ This file provides comprehensive context about the project for AI agents and dev
   "architecture": {
     "type": "Electron desktop application",
     "frontend": "React 18 + TypeScript + Vite + Material-UI",
-    "desktop_wrapper": "Electron 39",
+    "desktop_wrapper": "Electron 35",
     "backend": "FastAPI (Python 3.10+) bundled with PyInstaller",
     "database": "SQLite (stored in user's app data directory)",
     "communication": "HTTP over localhost:8000"
@@ -38,7 +38,7 @@ This file provides comprehensive context about the project for AI agents and dev
       "server": "Uvicorn (embedded)"
     },
     "desktop": {
-      "runtime": "Electron 39",
+      "runtime": "Electron 35",
       "packager": "Electron Builder",
       "platforms": ["Windows (NSIS)", "macOS (DMG)", "Linux (AppImage)"]
     }
@@ -243,7 +243,7 @@ A standalone desktop application for visualizing and managing employee performan
 - **Offline First**: Works completely offline, no internet required
 
 ### Technical Stack
-- **Desktop**: Electron 39 (cross-platform desktop wrapper)
+- **Desktop**: Electron 35 (cross-platform desktop wrapper)
 - **Frontend**: React 18 + TypeScript + Vite + Material-UI
 - **Backend**: FastAPI (Python 3.10+) bundled with PyInstaller
 - **State Management**: Zustand
