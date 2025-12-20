@@ -18,7 +18,7 @@ A standalone desktop application for visualizing and managing employee performan
 - **Offline First**: Works completely offline, no internet required
 
 ### Technical Stack
-- **Desktop**: Electron 39 (cross-platform desktop wrapper)
+- **Desktop**: Electron 35 (cross-platform desktop wrapper)
 - **Frontend**: React 18 + TypeScript + Vite + Material-UI
 - **Backend**: FastAPI (Python 3.10+) bundled with PyInstaller
 - **State Management**: Zustand
@@ -299,7 +299,7 @@ The primary deployment model is **standalone desktop installers**. See [BUILD.md
 - Linux: Make .AppImage executable, run
 
 **Legacy Docker Deployment:**
-Docker-based web deployment configuration exists for legacy purposes but is not actively maintained. See [DEPLOYMENT.md](DEPLOYMENT.md) for details if needed.
+The project was originally a Docker-based web application but has migrated to a standalone Electron desktop app. Legacy Docker configuration files have been archived to the [`legacy/`](legacy/) directory for historical reference. These files are not actively maintained. See [legacy/README.md](legacy/README.md) for details.
 
 ## User Guide
 

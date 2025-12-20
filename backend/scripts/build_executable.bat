@@ -3,6 +3,18 @@ REM Build script for Windows
 
 echo Building 9-Box Backend Executable...
 
+REM Kill any running ninebox.exe processes to avoid file locks
+echo Checking for running ninebox.exe processes...
+tasklist /FI "IMAGENAME eq ninebox.exe" 2>nul | find /I "ninebox.exe" >nul
+if %ERRORLEVEL% EQU 0 (
+    echo Killing running ninebox.exe processes...
+    taskkill /F /IM ninebox.exe >nul 2>&1
+    timeout /t 2 /nobreak >nul
+    echo Done.
+) else (
+    echo No running ninebox.exe processes found.
+)
+
 cd /d "%~dp0\.."
 
 REM Check for root venv (one level up from backend\)

@@ -47,27 +47,17 @@ export default defineConfig({
     },
   ],
 
-  // Auto-start both backend and frontend dev servers before running tests
-  webServer: [
-    {
-      // Backend API server
-      // In CI, use system Python; locally use venv
-      command: process.env.CI
-        ? 'python -m uvicorn ninebox.main:app --reload'
-        : process.platform === 'win32'
-          ? '..\\.venv\\Scripts\\python.exe -m uvicorn ninebox.main:app --reload'
-          : '../.venv/bin/python -m uvicorn ninebox.main:app --reload',
-      url: 'http://localhost:8000/health',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-      cwd: '../backend',  // Run from backend directory
-    },
-    {
-      // Frontend Vite dev server
-      command: 'npm run dev',
-      url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-    },
-  ],
+  // Global setup/teardown for backend server
+  // Backend is started once before all tests and stopped after all tests
+  globalSetup: require.resolve('./playwright/global-setup.ts'),
+  globalTeardown: require.resolve('./playwright/global-teardown.ts'),
+
+  // Auto-start frontend dev server before running tests
+  // Backend is handled by globalSetup
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
 });
