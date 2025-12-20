@@ -35,6 +35,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       onClick={handleCardClick}
       sx={{
         mb: 1,
+        minWidth: 280, // Minimum width for multi-column grid layout
+        maxWidth: 400, // Maximum width for readability
         borderLeft: employee.modified_in_session ? 4 : 0,
         borderColor: "secondary.main",
         cursor: "pointer",

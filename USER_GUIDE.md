@@ -228,10 +228,18 @@ POT.      Problem         Performer       Performer
 
 ### Expanding/Collapsing Boxes
 
-- **Click on a box header** to expand it and see more employee details
-- **Click again** or **press ESC** to collapse
+- **Click the expand button** (⛶ icon) on any box to expand it
+- **Click the collapse button** (⛶ icon) or **press ESC** to collapse
 - Expansion state is remembered during your session
 - Useful when a box contains many employees
+
+**Multi-Column Layout:**
+When you expand a box containing multiple employees:
+- Employee cards automatically arrange in multiple columns (instead of a single column)
+- Cards are displayed in a responsive grid that maximizes screen space
+- Up to 3-4 columns may appear depending on your screen size
+- All drag-and-drop functionality continues to work normally
+- This makes it easier to see and manage boxes with many employees without excessive scrolling
 
 ---
 

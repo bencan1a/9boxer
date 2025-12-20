@@ -207,14 +207,24 @@ export const GridBox: React.FC<GridBoxProps> = ({
       </Box>
 
       {/* Employees - hidden when collapsed */}
-      {!isCollapsed &&
-        employees.map((employee) => (
-          <EmployeeTile
-            key={employee.employee_id}
-            employee={employee}
-            onSelect={onSelectEmployee}
-          />
-        ))}
+      {!isCollapsed && (
+        <Box
+          sx={{
+            // Multi-column grid layout when expanded for better space utilization
+            display: isExpanded ? "grid" : "block",
+            gridTemplateColumns: isExpanded ? "repeat(auto-fill, minmax(280px, 1fr))" : undefined,
+            gap: isExpanded ? 1.5 : 0, // 12px gap between cards in grid mode
+          }}
+        >
+          {employees.map((employee) => (
+            <EmployeeTile
+              key={employee.employee_id}
+              employee={employee}
+              onSelect={onSelectEmployee}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };
