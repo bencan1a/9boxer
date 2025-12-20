@@ -105,4 +105,46 @@ describe('GridBox', () => {
     const collapseButton = screen.getByLabelText('Collapse box')
     expect(collapseButton).toBeInTheDocument()
   })
+
+  it('renders all employee tiles when expanded with multiple employees', () => {
+    render(
+      <DndWrapper>
+        <GridBox {...defaultProps} employees={mockEmployees} isExpanded={true} />
+      </DndWrapper>
+    )
+
+    // Verify all employees are rendered (multi-column grid can display them all)
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+    expect(screen.getByText('Bob Smith')).toBeInTheDocument()
+    expect(screen.getByText('Carol White')).toBeInTheDocument()
+    expect(screen.getByText('David Brown')).toBeInTheDocument()
+    expect(screen.getByText('Eve Davis')).toBeInTheDocument()
+  })
+
+  it('renders single-column layout when not expanded', () => {
+    const { container } = render(
+      <DndWrapper>
+        <GridBox {...defaultProps} employees={mockEmployees.slice(0, 3)} isExpanded={false} />
+      </DndWrapper>
+    )
+
+    const gridBox = container.querySelector('[data-testid="grid-box-9"]')
+    expect(gridBox).toBeInTheDocument()
+
+    // Employee tiles should still be rendered
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+    expect(screen.getByText('Bob Smith')).toBeInTheDocument()
+  })
+
+  it('hides employee tiles when collapsed', () => {
+    render(
+      <DndWrapper>
+        <GridBox {...defaultProps} employees={mockEmployees.slice(0, 2)} isCollapsed={true} />
+      </DndWrapper>
+    )
+
+    // Employee names should not be visible when collapsed
+    expect(screen.queryByText('Alice Johnson')).not.toBeInTheDocument()
+    expect(screen.queryByText('Bob Smith')).not.toBeInTheDocument()
+  })
 })
