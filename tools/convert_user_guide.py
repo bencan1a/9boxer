@@ -10,6 +10,33 @@ import re
 from pathlib import Path
 
 
+def _slugify(text: str) -> str:
+    """
+    Convert header text to a URL-friendly slug for anchor links.
+
+    Args:
+        text: Header text to slugify
+
+    Returns:
+        Lowercase slug with hyphens instead of spaces
+
+    Example:
+        >>> _slugify("What is 9-Box?")
+        'what-is-9-box'
+    """
+    # Convert to lowercase
+    slug = text.lower()
+    # Replace spaces with hyphens
+    slug = re.sub(r"\s+", "-", slug)
+    # Remove special characters except hyphens
+    slug = re.sub(r"[^\w-]", "", slug)
+    # Remove multiple consecutive hyphens
+    slug = re.sub(r"-+", "-", slug)
+    # Strip leading/trailing hyphens
+    slug = slug.strip("-")
+    return slug
+
+
 def _process_lists(lines: list[str]) -> list[str]:  # noqa: PLR0912
     """
     Process markdown lists and convert them to HTML.
@@ -25,35 +52,52 @@ def _process_lists(lines: list[str]) -> list[str]:  # noqa: PLR0912
         Each branch handles a specific case (unordered list, ordered list, paragraph, etc.).
     """
     in_list = False
+    list_type = None  # Track if we're in 'ul' or 'ol'
     result = []
+
     for line in lines:
+        # Check if line is a markdown list item
         if re.match(r"^- ", line):
-            if not in_list:
+            if not in_list or list_type != "ul":
+                if in_list:
+                    # Close previous list type
+                    result.append(f"</{list_type}>")
                 result.append("<ul>")
                 in_list = True
+                list_type = "ul"
             result.append("<li>" + line[2:] + "</li>")
         elif re.match(r"^\d+\. ", line):
-            if not in_list:
+            if not in_list or list_type != "ol":
+                if in_list:
+                    # Close previous list type
+                    result.append(f"</{list_type}>")
                 result.append("<ol>")
                 in_list = True
+                list_type = "ol"
             result.append("<li>" + re.sub(r"^\d+\. ", "", line) + "</li>")
         else:
+            # Close list if we were in one
             if in_list:
-                if result and "<ul>" in result[-2:]:
-                    result.append("</ul>")
-                elif result and "<ol>" in result[-2:]:
-                    result.append("</ol>")
+                result.append(f"</{list_type}>")
                 in_list = False
+                list_type = None
+
+            # Process non-list content
             if line.strip():
-                result.append("<p>" + line + "</p>")
+                # Check if line is already a block-level HTML tag (don't wrap in <p>)
+                # Only skip block-level tags, not inline tags like <strong>, <code>, <a>
+                if re.match(r"^\s*<(h[1-6]|hr|pre|ul|ol|div|blockquote)", line):
+                    result.append(line)
+                else:
+                    # Wrap text and inline HTML in <p> tags
+                    result.append("<p>" + line + "</p>")
             else:
+                # Preserve empty lines
                 result.append("")
 
+    # Close any open list at the end
     if in_list:
-        if "<ul>" in result[-2:]:
-            result.append("</ul>")
-        else:
-            result.append("</ol>")
+        result.append(f"</{list_type}>")
 
     return result
 
@@ -70,14 +114,28 @@ def markdown_to_html(markdown_text: str) -> str:
     """
     html = markdown_text
 
-    # Convert headers
-    html = re.sub(r"^# (.+)$", r'<h1 id="\1">\1</h1>', html, flags=re.MULTILINE)
-    html = re.sub(r"^## (.+)$", r'<h2 id="\1">\1</h2>', html, flags=re.MULTILINE)
+    # Convert headers with proper anchor IDs
+    # Use a lambda to call _slugify on the captured group
+    html = re.sub(
+        r"^# (.+)$",
+        lambda m: f'<h1 id="{_slugify(m.group(1))}">{m.group(1)}</h1>',
+        html,
+        flags=re.MULTILINE,
+    )
+    html = re.sub(
+        r"^## (.+)$",
+        lambda m: f'<h2 id="{_slugify(m.group(1))}">{m.group(1)}</h2>',
+        html,
+        flags=re.MULTILINE,
+    )
     html = re.sub(r"^### (.+)$", r"<h3>\1</h3>", html, flags=re.MULTILINE)
     html = re.sub(r"^#### (.+)$", r"<h4>\1</h4>", html, flags=re.MULTILINE)
 
     # Convert horizontal rules
     html = re.sub(r"^---$", r"<hr />", html, flags=re.MULTILINE)
+
+    # Convert markdown links [text](url) to <a href="url">text</a>
+    html = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', html)
 
     # Convert bold
     html = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", html)
