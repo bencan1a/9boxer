@@ -142,6 +142,11 @@ nav:
     - Common Decisions: common-decisions.md
   - Help:
     - Frequently Asked Questions: faq.md
+  - Contributing:
+    - Documentation Guidelines: contributing/README.md
+    - Voice & Tone Guide: contributing/voice-and-tone-guide.md
+    - Documentation Writing Guide: contributing/documentation-writing-guide.md
+    - Screenshot Guide: contributing/screenshot-guide.md
 
 # Extra CSS/JS (optional for future customization)
 # extra_css:

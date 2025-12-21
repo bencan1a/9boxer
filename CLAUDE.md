@@ -631,6 +631,16 @@ The `tools/build_context.py` script automatically:
 - Files auto-deleted after 7 days
 - Never commit these files (gitignored)
 
+**When writing or revising user documentation:**
+- Follow the comprehensive writing standards in `docs/contributing/`
+- Read **[Voice & Tone Guide](docs/contributing/voice-and-tone-guide.md)** for writing style (second person, active voice, contractions)
+- Follow **[Documentation Writing Guide](docs/contributing/documentation-writing-guide.md)** for structure patterns and best practices
+- Use **[Screenshot Guide](docs/contributing/screenshot-guide.md)** for visual content standards
+- Test all workflows in the actual application before documenting
+- Validate accessibility (WCAG 2.1 Level AA): alt text, heading hierarchy, descriptive link text
+- Target readability: Flesch Reading Ease >60 (conversational)
+- Quality bar: Voice & Tone 95%+, Technical Accuracy 95%+
+
 ### Configuration
 Environment variables for `tools/build_context.py`:
 - `CONTEXT_MAX_CHARS` - Max size of CONTEXT.md (default: 150000)
@@ -675,3 +685,8 @@ For unavoidable warnings:
   - `quick-reference.md` - Quick lookup for testing patterns
   - `testing-checklist.md` - Pre-commit testing checklist
   - `templates/` - Test templates for all test types
+- **`docs/contributing/`** - User documentation writing standards
+  - `README.md` - Overview of documentation contributing guidelines
+  - `voice-and-tone-guide.md` - Writing style quick reference (DO's and DON'Ts)
+  - `documentation-writing-guide.md` - Comprehensive documentation standards and patterns
+  - `screenshot-guide.md` - Screenshot technical specs and annotation standards
