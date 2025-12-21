@@ -1029,7 +1029,7 @@ class ScreenshotGenerator:
 
         try:
             # Open filters drawer
-            filters_button = self.page.locator('[data-testid="filters-button"]')
+            filters_button = self.page.locator('[data-testid="filter-button"]')
             if await filters_button.count() > 0:
                 await filters_button.click()
                 await asyncio.sleep(0.5)
@@ -1059,7 +1059,7 @@ class ScreenshotGenerator:
 
         try:
             # Open filters drawer
-            filters_button = self.page.locator('[data-testid="filters-button"]')
+            filters_button = self.page.locator('[data-testid="filter-button"]')
             if await filters_button.count() > 0:
                 await filters_button.click()
                 await asyncio.sleep(0.5)
@@ -1093,7 +1093,7 @@ class ScreenshotGenerator:
 
         try:
             # Open filters drawer
-            filters_button = self.page.locator('[data-testid="filters-button"]')
+            filters_button = self.page.locator('[data-testid="filter-button"]')
             if await filters_button.count() > 0:
                 await filters_button.click()
                 await asyncio.sleep(0.5)
@@ -1125,11 +1125,11 @@ class ScreenshotGenerator:
                 await stats_tab.click()
                 await asyncio.sleep(0.5)
 
-                # Capture the statistics panel (using tabpanel role since right-panel testid doesn't exist)
+                # Capture the statistics panel using tab-panel test ID
                 await asyncio.sleep(1)  # Wait for tab content to load
                 return await self.capture_screenshot(
                     "statistics/statistics-panel-distribution",
-                    element_selector='[role="tabpanel"][id="panel-tabpanel-2"]',
+                    element_selector='[data-testid="tab-panel-2"]',
                 )
         except Exception as e:
             print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Statistics panel capture failed: {e}")
@@ -1182,7 +1182,7 @@ class ScreenshotGenerator:
 
         try:
             # Activate donut mode
-            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            donut_toggle = self.page.locator('[data-testid="donut-view-button"]')
             if await donut_toggle.count() > 0:
                 toggle_state = await donut_toggle.get_attribute("aria-pressed")
                 if toggle_state != "true":
@@ -1210,13 +1210,13 @@ class ScreenshotGenerator:
 
         await self.close_dialogs()
 
-        # First deactivate donut mode for normal grid
+        # First deactivate donut mode for normal grid (click grid view button)
         try:
-            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
-            if await donut_toggle.count() > 0:
-                toggle_state = await donut_toggle.get_attribute("aria-pressed")
-                if toggle_state == "true":
-                    await donut_toggle.click()
+            grid_toggle = self.page.locator('[data-testid="grid-view-button"]')
+            if await grid_toggle.count() > 0:
+                toggle_state = await grid_toggle.get_attribute("aria-pressed")
+                if toggle_state != "true":
+                    await grid_toggle.click()
                     await asyncio.sleep(0.5)
         except Exception:
             pass

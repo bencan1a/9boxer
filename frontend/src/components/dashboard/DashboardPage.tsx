@@ -205,6 +205,7 @@ export const DashboardPage: React.FC = () => {
 
                 <PanelResizeHandle>
                   <Box
+                    data-testid="panel-resize-handle"
                     sx={{
                       width: "8px",
                       height: "100%",

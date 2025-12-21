@@ -28,6 +28,11 @@ import { ExclusionDialog } from "./ExclusionDialog";
 
 const DRAWER_WIDTH = 280;
 
+// Helper function to create valid test IDs from values
+const sanitizeTestId = (value: string): string => {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+};
+
 export const FilterDrawer: React.FC = () => {
   const theme = useTheme();
   const { employees } = useSession();
@@ -62,6 +67,7 @@ export const FilterDrawer: React.FC = () => {
         anchor="left"
         open={isDrawerOpen}
         onClose={toggleDrawer}
+        data-testid="filter-drawer"
         sx={{
           width: DRAWER_WIDTH,
           flexShrink: 0,
@@ -82,7 +88,7 @@ export const FilterDrawer: React.FC = () => {
             <Typography variant="h6" sx={{ flexGrow: 1, color: theme.palette.text.primary }}>
               Filters
             </Typography>
-            <IconButton size="small" onClick={toggleDrawer}>
+            <IconButton size="small" onClick={toggleDrawer} data-testid="filter-close-button">
               <CloseIcon />
             </IconButton>
           </Box>
@@ -96,6 +102,7 @@ export const FilterDrawer: React.FC = () => {
               defaultExpanded
               disableGutters
               elevation={0}
+              data-testid="filter-accordion-job-levels"
               sx={{
                 backgroundColor: "transparent",
                 "&:before": { display: "none" },
@@ -119,6 +126,7 @@ export const FilterDrawer: React.FC = () => {
                           checked={selectedLevels.includes(level)}
                           onChange={() => toggleLevel(level)}
                           size="small"
+                          data-testid={`filter-checkbox-job-levels-${sanitizeTestId(level)}`}
                         />
                       }
                       label={level}
@@ -133,6 +141,7 @@ export const FilterDrawer: React.FC = () => {
               defaultExpanded
               disableGutters
               elevation={0}
+              data-testid="filter-accordion-job-functions"
               sx={{
                 backgroundColor: "transparent",
                 "&:before": { display: "none" },
@@ -156,6 +165,7 @@ export const FilterDrawer: React.FC = () => {
                           checked={selectedJobFunctions.includes(jobFunction)}
                           onChange={() => toggleJobFunction(jobFunction)}
                           size="small"
+                          data-testid={`filter-checkbox-job-functions-${sanitizeTestId(jobFunction)}`}
                         />
                       }
                       label={
@@ -174,6 +184,7 @@ export const FilterDrawer: React.FC = () => {
               defaultExpanded
               disableGutters
               elevation={0}
+              data-testid="filter-accordion-locations"
               sx={{
                 backgroundColor: "transparent",
                 "&:before": { display: "none" },
@@ -197,6 +208,7 @@ export const FilterDrawer: React.FC = () => {
                           checked={selectedLocations.includes(location)}
                           onChange={() => toggleLocation(location)}
                           size="small"
+                          data-testid={`filter-checkbox-locations-${sanitizeTestId(location)}`}
                         />
                       }
                       label={
@@ -214,6 +226,7 @@ export const FilterDrawer: React.FC = () => {
             <Accordion
               disableGutters
               elevation={0}
+              data-testid="filter-accordion-managers"
               sx={{
                 backgroundColor: "transparent",
                 "&:before": { display: "none" },
@@ -237,6 +250,7 @@ export const FilterDrawer: React.FC = () => {
                           checked={selectedManagers.includes(manager)}
                           onChange={() => toggleManager(manager)}
                           size="small"
+                          data-testid={`filter-checkbox-managers-${sanitizeTestId(manager)}`}
                         />
                       }
                       label={
@@ -256,6 +270,7 @@ export const FilterDrawer: React.FC = () => {
             <Accordion
               disableGutters
               elevation={0}
+              data-testid="filter-accordion-exclusions"
               sx={{
                 backgroundColor: "transparent",
                 "&:before": { display: "none" },

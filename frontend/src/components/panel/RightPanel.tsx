@@ -23,6 +23,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
       hidden={value !== index}
       id={`panel-tabpanel-${index}`}
       aria-labelledby={`panel-tab-${index}`}
+      data-testid={`tab-panel-${index}`}
       style={{ height: "100%" }}
     >
       {value === index && (
@@ -43,6 +44,7 @@ export const RightPanel: React.FC = () => {
   return (
     <Paper
       elevation={2}
+      data-testid="right-panel"
       sx={{
         height: "100%",
         display: "flex",
