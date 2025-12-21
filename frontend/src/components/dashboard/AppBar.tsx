@@ -115,6 +115,7 @@ export const AppBar: React.FC = () => {
                   variant="dot"
                   invisible={!hasActiveFilters}
                   color="warning"
+                  data-testid="filter-badge"
                   sx={{
                     '& .MuiBadge-badge': {
                       right: -3,

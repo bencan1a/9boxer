@@ -110,6 +110,7 @@ export const FileMenu: React.FC = () => {
           badgeContent={hasChanges ? `${changes.length}` : 0}
           color="success"
           invisible={!hasChanges}
+          data-testid="file-menu-badge"
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: theme.palette.success.main,
