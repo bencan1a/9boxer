@@ -4,9 +4,43 @@ Focus on specific groups of employees using filters and exclusions. These tools 
 
 ---
 
+<details>
+<summary>📋 Quick Reference (Click to expand)</summary>
+
+**Applying Filters:**
+- Click Filters button → Check desired criteria → Grid updates automatically
+- Active filters show orange dot on Filters button
+- Employee count shows "X of Y employees" (X = visible, Y = total)
+- Click outside drawer to close
+
+**Common Filter Combinations:**
+- Focus on department: Use Organizational Chain filter
+- View high performers: Check "High" under Performance
+- Find discussion topics: Combine Performance + Potential ranges
+- Review manager's team: Select specific Manager name
+
+**Managing Exclusions:**
+- Click Filters → Manage Exclusions → Check individuals to hide
+- Quick buttons: Exclude VPs, Exclude Directors+, Exclude Managers
+- Excluded employees hidden from grid but included in exports
+
+**Clearing Filters:**
+- Uncheck all boxes individually OR click "Clear All" button
+- Exclusions persist during session but clear on new upload
+
+[See detailed instructions below ↓](#using-filters)
+
+</details>
+
+---
+
 ## Using Filters
 
 Filters let you display only employees who match specific criteria. All other employees are temporarily hidden from the grid.
+
+> 📋 **Real-World Scenario**
+>
+> Sarah is preparing for her quarterly talent review meeting. She has 47 employees but only needs to discuss the 12 in her direct team. She uses the **Department** filter to focus on just her team, making the meeting prep much faster.
 
 ### Opening the Filter Drawer
 
@@ -28,6 +62,10 @@ You can filter employees by:
 | **Organizational Chain** | Org levels | Department, division, or hierarchy level |
 
 ### How Filtering Works
+
+> 📋 **Real-World Scenario**
+>
+> Marcus manages 25 people across three teams. During his quarterly review, he uses the **Department** filter to review each team separately. This helps him focus the discussion and compare employees within the same context.
 
 **Applying Filters:**
 
@@ -73,6 +111,10 @@ The grid returns to showing all employees.
 ## Employee Exclusions
 
 Exclusions let you temporarily hide specific individual employees from the grid. This is useful for removing outliers, temporarily excluding certain people from analysis, or focusing on a subset.
+
+> 📋 **Real-World Scenario**
+>
+> James is reviewing leadership bench strength for his board presentation. He uses the **Exclude Directors+** button to focus only on individual contributors and first-line managers, identifying 8 high-potential employees ready for promotion to leadership roles.
 
 !!! info "Filters vs. Exclusions"
     **Filters** hide employees based on criteria (job level, performance, etc.)

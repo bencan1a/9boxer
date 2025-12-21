@@ -49,7 +49,7 @@ The timeline in the Details tab shows an employee's complete movement history:
 - **Export at milestones** - Save quarterly, after calibration sessions, or before major meetings
 - **Export for backups** - Create backup versions before making experimental changes
 
-See [Exporting Your Changes](exporting.md) for details.
+Learn about naming conventions and file management in the [Exporting Your Changes guide](exporting.md).
 
 ### Document Your Decisions
 
@@ -62,7 +62,7 @@ Add notes in the Changes tab to explain why each employee was moved:
 
 Example: "Promoted to manager role in Q4, strong leadership skills demonstrated"
 
-See [Tracking Changes](tracking-changes.md) for details.
+Learn about the change tracking system in the [Tracking Changes guide](tracking-changes.md).
 
 ### Review the Changes Tab
 
@@ -392,7 +392,7 @@ Validate that employees in the center box (Core Talent) truly belong there:
 5. Export donut findings for review with leadership
 6. Use insights to recalibrate actual ratings in a future session
 
-See [Donut Mode Exercise](donut-mode.md) for complete workflow.
+Follow the complete step-by-step process in the [Donut Mode Exercise guide](donut-mode.md).
 
 ### Start with Filters for Large Datasets
 

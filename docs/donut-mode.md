@@ -2,6 +2,31 @@
 
 **Donut Mode** is a special exercise mode designed to validate that employees in the center "Core Talent" box truly belong there. The name comes from the visualization: you're looking at everyone in the center hole of the donut and asking, "Where would they go if they couldn't stay in the center?"
 
+## When to Use This
+
+### Common Scenarios
+
+You'll want to use Donut Mode when:
+
+- **Before calibration meetings** - Validate your center box placements to prepare discussion topics ([see Preparing for Talent Calibration](workflows/talent-calibration.md))
+- **Center box is overcrowded** - Challenge the 65% of employees sitting "safely" in Medium/Medium to find hidden stars or under-performers
+- **Quality checking ratings** - Ensure your Core Talent ratings are accurate and not just default placements
+- **Identifying rising stars** - Find high-potential employees who may be under-rated in the center
+- **Preparing for performance reviews** - Validate that all Medium/Medium ratings are truly justified
+
+### Related Workflows
+
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Use Donut Mode to identify borderline cases and prepare calibration talking points
+- [Understanding the Grid](understanding-grid.md) - Learn what Position 5 (Core Talent) means and when employees belong there
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> David's Core Talent box has 45 employees - 65% of his workforce. During the Donut Exercise, he discovers 8 are actually High Potential and 5 are really just Solid Performers. This insight helps him recalibrate ratings and identify development opportunities before the quarterly talent review.
+
+---
+
 ## What is the Donut Exercise?
 
 The Donut Exercise is a talent management technique that helps identify:
@@ -24,6 +49,10 @@ Use Donut Mode during:
 - **Quality checks** - Verify your 9-box ratings are properly differentiated
 
 ## How to Activate Donut Mode
+
+> 📋 **Real-World Scenario**
+>
+> Marcus's Core Talent box has 45 employees - 65% of his workforce. During the Donut Exercise, he discovers 8 are actually High Potential and 5 are really just Solid Performers. This insight helps him recalibrate ratings and identify development opportunities before the quarterly talent review.
 
 1. **Upload your employee data** as normal
 2. **Click the "Donut Mode" button** in the top application bar
@@ -87,7 +116,7 @@ When an employee has been placed in Donut Mode, they display:
 
 **Purple Border**
 : 2px solid purple border around the tile
-: Distinct from the yellow border used for regular modifications
+: Distinct from the orange border used for regular modifications
 
 **Purple "Donut" Badge**
 : Small purple badge with "Donut" text
@@ -201,6 +230,10 @@ You can toggle between Donut Mode and normal mode at any time.
 
 When you export your changes (click "Apply" button), the Excel file includes donut exercise data in dedicated columns.
 
+> 📋 **Real-World Scenario**
+>
+> After completing her Donut Exercise, Priya exports the results showing 15 employees she identified as under-rated high-potentials. She shares this file with department heads to discuss which employees should be moved from Core Talent to High Potential in the next calibration session. The separate donut columns let her show exploratory findings without changing actual ratings.
+
 ### Four New Columns Are Added
 
 1. **Donut Exercise Position** - The position number (1-9) from the exercise
@@ -238,7 +271,7 @@ This separation ensures:
 
     _(Screenshot to be added: Excel file with donut exercise columns highlighted)_
 
-See [Exporting Your Changes](exporting.md) for more details on the export process.
+Learn how donut exercise data appears in your exported file in the [Exporting Your Changes guide](exporting.md).
 
 ## Use Cases and Examples
 
@@ -355,7 +388,7 @@ Before finalizing performance reviews, validate your center box.
 |--------|-------------|------------|
 | **Purpose** | Update actual talent ratings | Validate center box placements |
 | **Data Impact** | Changes performance/potential ratings | No impact on actual ratings |
-| **Visual** | Yellow highlight for changes | Purple border, ghostly appearance, badge |
+| **Visual** | Orange left border for changes | Purple border, ghostly appearance, badge |
 | **Tracking** | "Regular Changes" tab | "Donut Changes" tab (separate) |
 | **Export** | Updates Performance/Potential columns | Separate "Donut Exercise" columns |
 | **Persistence** | Changes saved to actual ratings | Exercise data saved separately |

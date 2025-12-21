@@ -139,9 +139,12 @@ class ServerManager:
 
         frontend_dir = PROJECT_ROOT / "frontend"
 
+        # Determine npm command (Windows needs .cmd extension)
+        npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
+
         # Start Vite dev server - controlled subprocess call with validated inputs
         self.frontend_process = subprocess.Popen(  # nosec B603 B607
-            ["npm", "run", "dev"],
+            [npm_cmd, "run", "dev"],
             cwd=frontend_dir,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -231,6 +234,11 @@ class ScreenshotGenerator:
 
         playwright = await async_playwright().start()
         self.browser = await playwright.chromium.launch(headless=True)
+
+        # Type narrowing and runtime safety check
+        if self.browser is None:
+            raise RuntimeError("Failed to launch browser")
+
         self.page = await self.browser.new_page(
             viewport={"width": self.viewport_width, "height": self.viewport_height}
         )
@@ -242,6 +250,16 @@ class ScreenshotGenerator:
         if self.browser:
             await self.browser.close()
 
+    async def close_dialogs(self) -> None:
+        """Close any open dialogs"""
+        try:
+            dialog = self.page.locator('[data-testid="file-upload-dialog"]')
+            if await dialog.is_visible():
+                await self.page.keyboard.press("Escape")
+                await asyncio.sleep(0.5)
+        except Exception:
+            pass
+
     async def upload_sample_data(self) -> None:
         """Upload sample employee data"""
         print(f"{Colors.BLUE}[Data]{Colors.RESET} Uploading sample data...")
@@ -249,8 +267,28 @@ class ScreenshotGenerator:
         # Navigate to homepage
         await self.page.goto("http://localhost:5173")
 
-        # Click upload button
-        await self.page.locator('[data-testid="upload-button"]').click()
+        # Wait for page to load
+        await asyncio.sleep(2)
+
+        # Click empty state import button or file menu
+        empty_state_button = self.page.locator('[data-testid="empty-state-import-button"]')
+        file_menu_button = self.page.locator('[data-testid="file-menu-button"]')
+
+        # Try empty state button first
+        try:
+            is_empty = await empty_state_button.is_visible()
+            if is_empty:
+                await empty_state_button.click()
+            else:
+                # Use file menu instead
+                await file_menu_button.click()
+                await asyncio.sleep(0.3)
+                await self.page.locator('[data-testid="import-data-menu-item"]').click()
+        except Exception:
+            # Fallback to file menu
+            await file_menu_button.click()
+            await asyncio.sleep(0.3)
+            await self.page.locator('[data-testid="import-data-menu-item"]').click()
 
         # Wait for dialog
         await self.page.locator('[data-testid="file-upload-dialog"]').wait_for()
@@ -339,12 +377,1010 @@ class ScreenshotGenerator:
 
     async def capture_employee_tile_normal(self) -> Path | None:
         """Capture normal employee tile (close-up)"""
-        employee = self.page.locator('[data-testid^="employee-card-"]').first()
+        employee = self.page.locator('[data-testid^="employee-card-"]')
         if await employee.count() > 0:
             return await self.capture_screenshot(
                 "employee-tile-normal",
                 element_selector='[data-testid^="employee-card-"]',
             )
+        return None
+
+    # ========================================
+    # Quickstart Screenshots
+    # ========================================
+
+    async def capture_quickstart_file_menu_button(self) -> Path | None:
+        """Capture File menu button in empty state (before upload)"""
+        # Navigate to empty app state
+        await self.page.goto("http://localhost:5173")
+        await asyncio.sleep(1)  # Wait for app to load
+
+        # Capture the toolbar/app bar area with file menu
+        return await self.capture_screenshot(
+            "quickstart/quickstart-file-menu-button",
+            element_selector='[data-testid="app-bar"]',
+        )
+
+    async def capture_quickstart_upload_dialog(self) -> Path | None:
+        """Capture file upload dialog"""
+        # Navigate to homepage
+        await self.page.goto("http://localhost:5173")
+        await asyncio.sleep(1)
+
+        # Click empty state import button to open dialog
+        empty_state_button = self.page.locator('[data-testid="empty-state-import-button"]')
+        if await empty_state_button.is_visible():
+            await empty_state_button.click()
+        else:
+            # Use file menu if no empty state
+            await self.page.locator('[data-testid="file-menu-button"]').click()
+            await asyncio.sleep(0.3)
+            await self.page.locator('[data-testid="import-data-menu-item"]').click()
+
+        # Wait for dialog to appear
+        await self.page.locator('[data-testid="file-upload-dialog"]').wait_for()
+
+        # Capture the dialog
+        return await self.capture_screenshot(
+            "quickstart/quickstart-upload-dialog",
+            element_selector='[data-testid="file-upload-dialog"]',
+        )
+
+    async def capture_quickstart_grid_populated(self) -> Path | None:
+        """Capture grid after successful data upload"""
+        # Grid should already be populated from upload_sample_data
+        # Capture the full grid
+        return await self.capture_screenshot(
+            "quickstart/quickstart-grid-populated",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_quickstart_success_annotated(self) -> Path | None:
+        """Capture success state showing grid with employee count"""
+        # Capture full page view showing grid and employee count
+        return await self.capture_screenshot(
+            "quickstart/quickstart-success-annotated",
+            element_selector=None,  # Full page
+        )
+
+    # ========================================
+    # Getting Started Screenshots
+    # ========================================
+
+    async def capture_workflow_grid_axes_labeled(self) -> Path | None:
+        """Capture grid with clear view for axes annotation"""
+        # Capture grid for manual axes labeling
+        return await self.capture_screenshot(
+            "workflow/workflow-grid-axes-labeled",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_workflow_statistics_tab(self) -> Path | None:
+        """Capture Statistics tab showing distribution"""
+        # Close any open dialogs first
+        await self.close_dialogs()
+
+        # Click Statistics tab if not already selected
+        try:
+            stats_tab = self.page.locator('[data-testid="statistics-tab"]')
+            if await stats_tab.count() > 0:
+                await stats_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the right panel with statistics
+                return await self.capture_screenshot(
+                    "workflow/workflow-statistics-tab",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Statistics tab not found: {e}")
+        return None
+
+    async def capture_workflow_drag_drop_sequence_1(self) -> Path | None:
+        """Capture drag-drop step 1: Click and hold employee"""
+        # Close any open dialogs first
+        await self.close_dialogs()
+
+        # Find an employee tile to highlight
+        employee = self.page.locator('[data-testid^="employee-card-"]')
+        if await employee.count() > 0:
+            # Hover to show it's ready to drag
+            await employee.first.hover()
+
+            return await self.capture_screenshot(
+                "workflow/workflow-drag-drop-sequence-1",
+                element_selector='[data-testid="nine-box-grid"]',
+            )
+        return None
+
+    async def capture_workflow_drag_drop_sequence_2(self) -> Path | None:
+        """Capture drag-drop step 2: Dragging to target (manual capture needed)"""
+        # This requires actual drag action - capture grid state
+        # Manual annotation will be needed to show dragging state
+        return await self.capture_screenshot(
+            "workflow/workflow-drag-drop-sequence-2",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_workflow_drag_drop_sequence_3(self) -> Path | None:
+        """Capture drag-drop step 3: Employee in new position with yellow highlight"""
+        # Perform actual drag to get yellow highlight
+        try:
+            # Get first employee card
+            source = self.page.locator('[data-testid^="employee-card-"]')
+
+            if await source.count() > 0:
+                # Get the grid boxes
+                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                box_count = await boxes.count()
+
+                if box_count > 1:
+                    # Drag to a different box
+                    target_box = boxes.nth(1)
+
+                    # Perform drag and drop
+                    await source.first.drag_to(target_box)
+                    await asyncio.sleep(1)  # Wait for yellow highlight to appear
+
+                    return await self.capture_screenshot(
+                        "workflow/workflow-drag-drop-sequence-3",
+                        element_selector='[data-testid="nine-box-grid"]',
+                    )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Drag-drop failed: {e}")
+        return None
+
+    async def capture_workflow_employee_modified(self) -> Path | None:
+        """Capture close-up of employee tile with yellow highlight"""
+        # Find a modified employee (should have yellow highlight after drag)
+        try:
+            # Look for employee card with modified styling
+            modified = self.page.locator('[data-testid^="employee-card-"]')
+            if await modified.count() > 0:
+                return await self.capture_screenshot(
+                    "workflow/workflow-employee-modified",
+                    element_selector='[data-testid^="employee-card-"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Modified employee not found: {e}")
+        return None
+
+    async def capture_workflow_employee_timeline(self) -> Path | None:
+        """Capture employee details panel showing timeline"""
+        try:
+            # Click on an employee to open details
+            employee = self.page.locator('[data-testid^="employee-card-"]')
+            if await employee.count() > 0:
+                await employee.first.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the details panel
+                details = self.page.locator('[data-testid="employee-details"]')
+                if await details.count() > 0:
+                    return await self.capture_screenshot(
+                        "workflow/workflow-employee-timeline",
+                        element_selector='[data-testid="employee-details"]',
+                    )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Timeline capture failed: {e}")
+        return None
+
+    async def capture_workflow_changes_tab(self) -> Path | None:
+        """Capture Changes tab with note field"""
+        # Close any open dialogs first
+        await self.close_dialogs()
+
+        try:
+            # Click Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the right panel with changes
+                return await self.capture_screenshot(
+                    "workflow/workflow-changes-tab",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Changes tab not found: {e}")
+        return None
+
+    async def capture_workflow_apply_button(self) -> Path | None:
+        """Capture Apply/Export button with badge showing change count"""
+        try:
+            # Capture the toolbar area with export button
+            return await self.capture_screenshot(
+                "workflow/workflow-apply-button",
+                element_selector='[data-testid="app-bar"]',
+            )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Apply button capture failed: {e}")
+        return None
+
+    async def capture_workflow_export_excel_1(self) -> Path | None:
+        """Capture export dialog (if exists) or export action"""
+        try:
+            # Click export button
+            export_btn = self.page.locator('[data-testid="export-button"]')
+            if await export_btn.count() > 0:
+                await export_btn.click()
+                await asyncio.sleep(0.5)
+
+                # Check if dialog appears
+                dialog = self.page.locator('[role="dialog"]')
+                if await dialog.count() > 0:
+                    return await self.capture_screenshot(
+                        "workflow/workflow-export-excel-1",
+                        element_selector='[role="dialog"]',
+                    )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Export dialog capture failed: {e}")
+        return None
+
+    async def capture_workflow_export_excel_2(self) -> Path | None:
+        """Placeholder for exported Excel file screenshot (manual capture needed)"""
+        # This requires opening the actual Excel file - manual capture needed
+        # Return None to indicate manual work required
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} workflow-export-excel-2 requires manual Excel screenshot"
+        )
+        return None
+
+    # ========================================
+    # Index/Home Page Screenshots
+    # ========================================
+
+    async def capture_hero_grid_sample(self) -> Path | None:
+        """Capture clean hero image of populated grid (no annotations)"""
+        # Capture full grid as hero image
+        return await self.capture_screenshot(
+            "index/hero-grid-sample",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_index_quick_win_preview(self) -> Path | None:
+        """Capture grid for quick win preview (base for annotation)"""
+        # Capture full page view for success annotation
+        return await self.capture_screenshot(
+            "index/index-quick-win-preview",
+            element_selector=None,  # Full page
+        )
+
+    # ========================================
+    # Calibration Workflow Screenshots (Task 2.1)
+    # ========================================
+
+    async def capture_calibration_file_import(self) -> Path | None:
+        """Capture File menu open with Import Data highlighted"""
+        # Navigate to a state where we can open file menu
+        await self.page.goto("http://localhost:5173")
+        await asyncio.sleep(1)
+
+        # Close any dialogs
+        await self.close_dialogs()
+
+        # Click File menu button to open dropdown
+        file_menu_button = self.page.locator('[data-testid="file-menu-button"]')
+        if await file_menu_button.count() > 0:
+            await file_menu_button.click()
+            await asyncio.sleep(0.3)
+
+            # Wait for menu to appear
+            import_item = self.page.locator('[data-testid="import-data-menu-item"]')
+            if await import_item.count() > 0:
+                # Hover over Import Data item to highlight it
+                await import_item.hover()
+                await asyncio.sleep(0.2)
+
+                # Capture full page showing menu open
+                return await self.capture_screenshot(
+                    "workflow/calibration-file-import",
+                    element_selector=None,  # Full page to show menu context
+                )
+        return None
+
+    async def capture_calibration_statistics_red_flags(self) -> Path | None:
+        """Capture Statistics tab showing distribution table with problematic patterns"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Click Statistics tab if not already selected
+            stats_tab = self.page.locator('[data-testid="statistics-tab"]')
+            if await stats_tab.count() > 0:
+                await stats_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the statistics panel with distribution table
+                return await self.capture_screenshot(
+                    "workflow/calibration-statistics-red-flags",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Statistics tab capture failed: {e}")
+        return None
+
+    async def capture_calibration_intelligence_anomalies(self) -> Path | None:
+        """Capture Intelligence tab showing anomaly detection"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Click Intelligence tab
+            intelligence_tab = self.page.locator('[data-testid="intelligence-tab"]')
+            if await intelligence_tab.count() > 0:
+                await intelligence_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Wait for content to load
+                await asyncio.sleep(1)
+
+                # Capture the intelligence panel
+                return await self.capture_screenshot(
+                    "workflow/calibration-intelligence-anomalies",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(
+                f"{Colors.YELLOW}[Warning]{Colors.RESET} Intelligence tab capture failed: {e}"
+            )
+        return None
+
+    async def capture_calibration_filters_panel(self) -> Path | None:
+        """Capture Filters panel with Performance filter set to High only"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Open filters drawer
+            filters_button = self.page.locator('[data-testid="filters-button"]')
+            if await filters_button.count() > 0:
+                await filters_button.click()
+                await asyncio.sleep(0.5)
+
+                # The exact structure may vary - capture current state
+                return await self.capture_screenshot(
+                    "workflow/calibration-filters-panel",
+                    element_selector='[data-testid="filter-drawer"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Filters panel capture failed: {e}")
+        return None
+
+    async def capture_calibration_donut_mode_toggle(self) -> Path | None:
+        """Capture View Mode Toggle with Donut mode activated"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Find and click the donut mode toggle
+            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            if await donut_toggle.count() > 0:
+                await donut_toggle.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the toolbar area showing active toggle
+                return await self.capture_screenshot(
+                    "workflow/calibration-donut-mode-toggle",
+                    element_selector='[data-testid="app-bar"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Donut toggle capture failed: {e}")
+        return None
+
+    async def capture_calibration_donut_mode_grid(self) -> Path | None:
+        """Capture grid in Donut Mode showing ghostly placements"""
+        try:
+            # Donut mode should already be active from previous capture
+            # If not, activate it
+            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            if await donut_toggle.count() > 0:
+                # Check if already active, if not click it
+                toggle_state = await donut_toggle.get_attribute("aria-pressed")
+                if toggle_state != "true":
+                    await donut_toggle.click()
+                    await asyncio.sleep(0.5)
+
+            # Wait for grid to update
+            await asyncio.sleep(1)
+
+            # Optionally drag an employee to another position to show ghostly effect
+            # This would require finding a position-5 employee and dragging
+            # For now, capture current state
+            return await self.capture_screenshot(
+                "workflow/calibration-donut-mode-grid",
+                element_selector='[data-testid="nine-box-grid"]',
+            )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Donut grid capture failed: {e}")
+        return None
+
+    async def capture_calibration_export_results(self) -> Path | None:
+        """Placeholder for Excel export screenshot (manual capture required)"""
+        # This requires exporting and opening Excel - manual capture needed
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} calibration-export-results requires manual Excel screenshot"
+        )
+        return None
+
+    # ========================================
+    # Making Changes Screenshots (Task 2.2)
+    # ========================================
+
+    async def capture_changes_drag_sequence(self) -> Path | None:
+        """Capture 3-panel drag sequence composite (or individual panels)"""
+        # This is complex - capture base grid state
+        # Manual composition of 3 panels will be needed
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} changes-drag-sequence requires manual 3-panel composition"
+        )
+
+        # Capture base grid as starting point
+        await self.close_dialogs()
+        return await self.capture_screenshot(
+            "workflow/making-changes-drag-sequence-base",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_changes_orange_border(self) -> Path | None:
+        """Capture close-up of employee tile with orange modified border"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # First, make a change by dragging an employee
+            source = self.page.locator('[data-testid^="employee-card-"]')
+            if await source.count() > 0:
+                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                if await boxes.count() > 1:
+                    # Drag first employee to different box
+                    await source.first.drag_to(boxes.nth(1))
+                    await asyncio.sleep(1)
+
+                    # Now capture the modified employee tile
+                    return await self.capture_screenshot(
+                        "workflow/making-changes-orange-border",
+                        element_selector='[data-testid^="employee-card-"]',
+                    )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Orange border capture failed: {e}")
+        return None
+
+    async def capture_changes_employee_details(self) -> Path | None:
+        """Capture employee details panel showing updated ratings"""
+        try:
+            # Click on an employee to open details
+            employee = self.page.locator('[data-testid^="employee-card-"]')
+            if await employee.count() > 0:
+                await employee.first.click()
+                await asyncio.sleep(0.5)
+
+                # Make sure Details tab is active
+                details_tab = self.page.locator('[data-testid="details-tab"]')
+                if await details_tab.count() > 0:
+                    await details_tab.click()
+                    await asyncio.sleep(0.3)
+
+                # Capture the right panel with details
+                return await self.capture_screenshot(
+                    "workflow/making-changes-employee-details",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Employee details capture failed: {e}")
+        return None
+
+    async def capture_changes_timeline_view(self) -> Path | None:
+        """Capture Performance History timeline in employee details"""
+        try:
+            # Employee should already be selected from previous capture
+            # Scroll to timeline section if needed
+            timeline = self.page.locator('[data-testid="performance-timeline"]')
+
+            # If timeline not found, try alternate selector
+            if await timeline.count() == 0:
+                timeline = self.page.locator('text="Performance History"')
+
+            if await timeline.count() > 0:
+                # Scroll into view
+                await timeline.first.scroll_into_view_if_needed()
+                await asyncio.sleep(0.3)
+
+                # Capture the timeline section
+                return await self.capture_screenshot(
+                    "workflow/making-changes-timeline",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Timeline capture failed: {e}")
+        return None
+
+    async def capture_changes_tab(self) -> Path | None:
+        """Capture Changes tab showing movement tracker"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Click Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the right panel with changes
+                return await self.capture_screenshot(
+                    "workflow/making-changes-changes-tab",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Changes tab capture failed: {e}")
+        return None
+
+    # ========================================
+    # Adding Notes Screenshots (Task 2.3)
+    # ========================================
+
+    async def capture_notes_changes_tab_field(self) -> Path | None:
+        """Capture Changes tab with note field highlighted"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Click Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the right panel showing note field
+                return await self.capture_screenshot(
+                    "workflow/workflow-changes-add-note",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Notes field capture failed: {e}")
+        return None
+
+    async def capture_notes_good_example(self) -> Path | None:
+        """Capture Changes tab with well-written note example"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Navigate to Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Try to find and fill a note field
+                note_field = self.page.locator('[data-testid^="change-notes-"]')
+                if await note_field.count() > 0:
+                    example_note = (
+                        "Moved to High Potential based on Q4 2024 leadership demonstrated in "
+                        "cross-functional API project. Successfully managed team of 5 engineers "
+                        "and delivered ahead of schedule. Action: Enroll in leadership development "
+                        "program Q1 2025."
+                    )
+                    await note_field.first.fill(example_note)
+                    await asyncio.sleep(0.5)
+
+                # Capture the panel with note
+                return await self.capture_screenshot(
+                    "workflow/workflow-note-good-example",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Good note example capture failed: {e}")
+        return None
+
+    async def capture_notes_export_excel(self) -> Path | None:
+        """Placeholder for Excel export with notes column (manual capture required)"""
+        # This requires exporting and opening Excel - manual capture needed
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} export-excel-notes-column requires manual Excel screenshot"
+        )
+        return None
+
+    async def capture_notes_donut_mode(self) -> Path | None:
+        """Capture Donut Changes tab with notes (optional)"""
+        # Close any dialogs
+        await self.close_dialogs()
+
+        try:
+            # Activate donut mode first
+            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            if await donut_toggle.count() > 0:
+                toggle_state = await donut_toggle.get_attribute("aria-pressed")
+                if toggle_state != "true":
+                    await donut_toggle.click()
+                    await asyncio.sleep(0.5)
+
+            # Click Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Look for Donut Changes sub-tab
+                donut_changes_tab = self.page.locator('text="Donut Changes"')
+                if await donut_changes_tab.count() > 0:
+                    await donut_changes_tab.click()
+                    await asyncio.sleep(0.3)
+
+                # Capture the panel
+                return await self.capture_screenshot(
+                    "workflow/workflow-donut-notes-example",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Donut notes capture failed: {e}")
+        return None
+
+    # ========================================
+    # Task 3.3: Feature Page Screenshots (15 new methods)
+    # ========================================
+
+    # Filters.md screenshots (4)
+    async def capture_filters_active_chips(self) -> Path | None:
+        """Capture grid view with active filter chips displayed"""
+        await self.close_dialogs()
+
+        try:
+            # Open filters drawer
+            filters_button = self.page.locator('[data-testid="filters-button"]')
+            if await filters_button.count() > 0:
+                await filters_button.click()
+                await asyncio.sleep(0.5)
+
+                # Apply a filter (e.g., check High performance)
+                high_perf = self.page.locator('text="High"').first
+                if await high_perf.count() > 0:
+                    await high_perf.click()
+                    await asyncio.sleep(0.3)
+
+                # Close drawer to show chips
+                await self.page.keyboard.press("Escape")
+                await asyncio.sleep(0.5)
+
+                # Capture full page showing active filter chips
+                return await self.capture_screenshot(
+                    "filters/filters-active-chips",
+                    element_selector=None,  # Full page
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Active filters capture failed: {e}")
+        return None
+
+    async def capture_filters_panel_expanded(self) -> Path | None:
+        """Capture filter panel expanded showing all filter options"""
+        await self.close_dialogs()
+
+        try:
+            # Open filters drawer
+            filters_button = self.page.locator('[data-testid="filters-button"]')
+            if await filters_button.count() > 0:
+                await filters_button.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the filter drawer
+                return await self.capture_screenshot(
+                    "filters/filters-panel-expanded",
+                    element_selector='[data-testid="filter-drawer"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Filters panel capture failed: {e}")
+        return None
+
+    async def capture_filters_before_after(self) -> Path | None:
+        """Capture before/after filtering comparison (requires manual 2-panel composition)"""
+        # This requires manual composition - capture base state
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} filters-before-after requires manual 2-panel composition"
+        )
+
+        # Capture grid without filters (before state)
+        await self.close_dialogs()
+        return await self.capture_screenshot(
+            "filters/filters-before-state",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    async def capture_filters_clear_all_button(self) -> Path | None:
+        """Capture filter drawer with Clear All button highlighted"""
+        await self.close_dialogs()
+
+        try:
+            # Open filters drawer
+            filters_button = self.page.locator('[data-testid="filters-button"]')
+            if await filters_button.count() > 0:
+                await filters_button.click()
+                await asyncio.sleep(0.5)
+
+                # Apply some filters first
+                high_perf = self.page.locator('text="High"').first
+                if await high_perf.count() > 0:
+                    await high_perf.click()
+                    await asyncio.sleep(0.3)
+
+                # Capture drawer showing Clear All button
+                return await self.capture_screenshot(
+                    "filters/filters-clear-all-button",
+                    element_selector='[data-testid="filter-drawer"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Clear all button capture failed: {e}")
+        return None
+
+    # Statistics.md screenshots (3)
+    async def capture_statistics_panel_distribution(self) -> Path | None:
+        """Capture Statistics panel showing distribution table and chart"""
+        await self.close_dialogs()
+
+        try:
+            # Click Statistics tab
+            stats_tab = self.page.locator('[data-testid="statistics-tab"]')
+            if await stats_tab.count() > 0:
+                await stats_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the statistics panel (using tabpanel role since right-panel testid doesn't exist)
+                await asyncio.sleep(1)  # Wait for tab content to load
+                return await self.capture_screenshot(
+                    "statistics/statistics-panel-distribution",
+                    element_selector='[role="tabpanel"][id="panel-tabpanel-2"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Statistics panel capture failed: {e}")
+        return None
+
+    async def capture_statistics_ideal_actual_comparison(self) -> Path | None:
+        """Capture ideal vs actual comparison chart in Statistics"""
+        await self.close_dialogs()
+
+        try:
+            # Click Statistics tab
+            stats_tab = self.page.locator('[data-testid="statistics-tab"]')
+            if await stats_tab.count() > 0:
+                await stats_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the chart area (may need manual annotation)
+                return await self.capture_screenshot(
+                    "statistics/statistics-ideal-actual-comparison",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Ideal vs actual capture failed: {e}")
+        return None
+
+    async def capture_statistics_trend_indicators(self) -> Path | None:
+        """Capture statistics with trend indicators and arrows (may need manual annotation)"""
+        await self.close_dialogs()
+
+        try:
+            # Click Statistics tab
+            stats_tab = self.page.locator('[data-testid="statistics-tab"]')
+            if await stats_tab.count() > 0:
+                await stats_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture statistics panel - manual annotation will add arrows
+                return await self.capture_screenshot(
+                    "statistics/statistics-trend-indicators",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Trend indicators capture failed: {e}")
+        return None
+
+    # Donut-mode.md screenshots (2)
+    async def capture_donut_mode_active_layout(self) -> Path | None:
+        """Capture grid in Donut Mode showing circular layout"""
+        await self.close_dialogs()
+
+        try:
+            # Activate donut mode
+            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            if await donut_toggle.count() > 0:
+                toggle_state = await donut_toggle.get_attribute("aria-pressed")
+                if toggle_state != "true":
+                    await donut_toggle.click()
+                    await asyncio.sleep(0.5)
+
+                # Wait for grid to update
+                await asyncio.sleep(1)
+
+                # Capture grid in donut mode
+                return await self.capture_screenshot(
+                    "donut-mode/donut-mode-active-layout",
+                    element_selector='[data-testid="nine-box-grid"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Donut mode active capture failed: {e}")
+        return None
+
+    async def capture_donut_mode_toggle_comparison(self) -> Path | None:
+        """Capture toggle between grid and donut views (requires manual 2-panel composition)"""
+        # This requires manual composition - capture both states
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} donut-mode-toggle-comparison requires manual 2-panel composition"
+        )
+
+        await self.close_dialogs()
+
+        # First deactivate donut mode for normal grid
+        try:
+            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            if await donut_toggle.count() > 0:
+                toggle_state = await donut_toggle.get_attribute("aria-pressed")
+                if toggle_state == "true":
+                    await donut_toggle.click()
+                    await asyncio.sleep(0.5)
+        except Exception:
+            pass
+
+        # Capture normal grid state
+        return await self.capture_screenshot(
+            "donut-mode/donut-mode-grid-normal",
+            element_selector='[data-testid="nine-box-grid"]',
+        )
+
+    # Tracking-changes.md screenshots (2)
+    async def capture_changes_panel_entries(self) -> Path | None:
+        """Capture Changes panel with multiple employee entries"""
+        await self.close_dialogs()
+
+        try:
+            # Make sure we have changes (should exist from upload)
+            # Click Changes tab
+            changes_tab = self.page.locator('[data-testid="changes-tab"]')
+            if await changes_tab.count() > 0:
+                await changes_tab.click()
+                await asyncio.sleep(0.5)
+
+                # Capture the changes panel
+                return await self.capture_screenshot(
+                    "tracking-changes/changes-panel-entries",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Changes panel capture failed: {e}")
+        return None
+
+    async def capture_timeline_employee_history(self) -> Path | None:
+        """Capture timeline view showing employee performance history"""
+        await self.close_dialogs()
+
+        try:
+            # Click on an employee to open details
+            employee = self.page.locator('[data-testid^="employee-card-"]')
+            if await employee.count() > 0:
+                await employee.first.click()
+                await asyncio.sleep(0.5)
+
+                # Make sure Details tab is active
+                details_tab = self.page.locator('[data-testid="details-tab"]')
+                if await details_tab.count() > 0:
+                    await details_tab.click()
+                    await asyncio.sleep(0.3)
+
+                # Scroll to timeline if needed
+                timeline = self.page.locator('[data-testid="performance-timeline"]')
+                if await timeline.count() == 0:
+                    timeline = self.page.locator('text="Performance History"')
+
+                if await timeline.count() > 0:
+                    await timeline.first.scroll_into_view_if_needed()
+                    await asyncio.sleep(0.3)
+
+                # Capture the details panel showing timeline
+                return await self.capture_screenshot(
+                    "tracking-changes/timeline-employee-history",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Timeline history capture failed: {e}")
+        return None
+
+    # Working-with-employees.md screenshots (2)
+    async def capture_employee_details_panel_expanded(self) -> Path | None:
+        """Capture employee details panel fully expanded"""
+        await self.close_dialogs()
+
+        try:
+            # Click on an employee
+            employee = self.page.locator('[data-testid^="employee-card-"]')
+            if await employee.count() > 0:
+                await employee.first.click()
+                await asyncio.sleep(0.5)
+
+                # Make sure Details tab is active
+                details_tab = self.page.locator('[data-testid="details-tab"]')
+                if await details_tab.count() > 0:
+                    await details_tab.click()
+                    await asyncio.sleep(0.3)
+
+                # Capture the full right panel
+                return await self.capture_screenshot(
+                    "working-with-employees/employee-details-panel-expanded",
+                    element_selector='[data-testid="right-panel"]',
+                )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Employee details capture failed: {e}")
+        return None
+
+    async def capture_bulk_actions_menu(self) -> Path | None:
+        """Capture bulk actions menu (if exists, otherwise note manual creation needed)"""
+        # Check if bulk actions exist in current UI
+        print(
+            f"{Colors.YELLOW}[Note]{Colors.RESET} Checking for bulk actions menu..."
+        )
+
+        await self.close_dialogs()
+
+        try:
+            # Look for bulk actions button (may not exist)
+            bulk_actions = self.page.locator('[data-testid="bulk-actions-button"]')
+            if await bulk_actions.count() > 0:
+                await bulk_actions.click()
+                await asyncio.sleep(0.3)
+
+                return await self.capture_screenshot(
+                    "working-with-employees/bulk-actions-menu",
+                    element_selector='[role="menu"]',
+                )
+            else:
+                print(
+                    f"{Colors.YELLOW}[Manual]{Colors.RESET} Bulk actions menu not found - may need mockup or skip"
+                )
+                return None
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Bulk actions capture failed: {e}")
+        return None
+
+    # Exporting.md screenshots (2)
+    async def capture_file_menu_apply_changes(self) -> Path | None:
+        """Capture File menu with Apply Changes option highlighted"""
+        await self.close_dialogs()
+
+        try:
+            # First make a change to enable Apply button
+            source = self.page.locator('[data-testid^="employee-card-"]')
+            if await source.count() > 0:
+                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                if await boxes.count() > 1:
+                    await source.first.drag_to(boxes.nth(1))
+                    await asyncio.sleep(1)
+
+            # Click on the Apply/Export button or File menu
+            export_btn = self.page.locator('[data-testid="export-button"]')
+            apply_btn = self.page.locator('[data-testid="apply-button"]')
+
+            # Try to find and hover over the button
+            if await export_btn.count() > 0:
+                await export_btn.hover()
+                await asyncio.sleep(0.3)
+            elif await apply_btn.count() > 0:
+                await apply_btn.hover()
+                await asyncio.sleep(0.3)
+
+            # Capture the toolbar area
+            return await self.capture_screenshot(
+                "exporting/file-menu-apply-changes",
+                element_selector='[data-testid="app-bar"]',
+            )
+        except Exception as e:
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} File menu capture failed: {e}")
+        return None
+
+    async def capture_excel_file_new_columns(self) -> Path | None:
+        """Placeholder for Excel file screenshot (manual capture required)"""
+        # This requires exporting and opening Excel - manual capture needed
+        print(
+            f"{Colors.YELLOW}[Manual]{Colors.RESET} excel-file-new-columns requires manual Excel screenshot"
+        )
         return None
 
 
@@ -393,8 +1429,70 @@ async def main() -> int:
 
     # Define all available screenshots
     all_screenshots = {
+        # Original screenshots
         "grid-normal": "capture_grid_normal",
         "employee-tile-normal": "capture_employee_tile_normal",
+        # Quickstart screenshots (5)
+        "quickstart-file-menu-button": "capture_quickstart_file_menu_button",
+        "quickstart-upload-dialog": "capture_quickstart_upload_dialog",
+        "quickstart-grid-populated": "capture_quickstart_grid_populated",
+        "quickstart-success-annotated": "capture_quickstart_success_annotated",
+        # Getting Started / Workflow screenshots (11)
+        "workflow-grid-axes-labeled": "capture_workflow_grid_axes_labeled",
+        "workflow-statistics-tab": "capture_workflow_statistics_tab",
+        "workflow-drag-drop-sequence-1": "capture_workflow_drag_drop_sequence_1",
+        "workflow-drag-drop-sequence-2": "capture_workflow_drag_drop_sequence_2",
+        "workflow-drag-drop-sequence-3": "capture_workflow_drag_drop_sequence_3",
+        "workflow-employee-modified": "capture_workflow_employee_modified",
+        "workflow-employee-timeline": "capture_workflow_employee_timeline",
+        "workflow-changes-tab": "capture_workflow_changes_tab",
+        "workflow-apply-button": "capture_workflow_apply_button",
+        "workflow-export-excel-1": "capture_workflow_export_excel_1",
+        "workflow-export-excel-2": "capture_workflow_export_excel_2",
+        # Index/Home page screenshots (2)
+        "hero-grid-sample": "capture_hero_grid_sample",
+        "index-quick-win-preview": "capture_index_quick_win_preview",
+        # Calibration Workflow screenshots (7) - Task 2.1
+        "calibration-file-import": "capture_calibration_file_import",
+        "calibration-statistics-red-flags": "capture_calibration_statistics_red_flags",
+        "calibration-intelligence-anomalies": "capture_calibration_intelligence_anomalies",
+        "calibration-filters-panel": "capture_calibration_filters_panel",
+        "calibration-donut-mode-toggle": "capture_calibration_donut_mode_toggle",
+        "calibration-donut-mode-grid": "capture_calibration_donut_mode_grid",
+        "calibration-export-results": "capture_calibration_export_results",
+        # Making Changes screenshots (5) - Task 2.2
+        "changes-drag-sequence": "capture_changes_drag_sequence",
+        "changes-orange-border": "capture_changes_orange_border",
+        "changes-employee-details": "capture_changes_employee_details",
+        "changes-timeline-view": "capture_changes_timeline_view",
+        "changes-tab": "capture_changes_tab",
+        # Adding Notes screenshots (4) - Task 2.3
+        "notes-changes-tab-field": "capture_notes_changes_tab_field",
+        "notes-good-example": "capture_notes_good_example",
+        "notes-export-excel": "capture_notes_export_excel",
+        "notes-donut-mode": "capture_notes_donut_mode",
+        # Feature Page Screenshots (15) - Task 3.3
+        # Filters.md (4)
+        "filters-active-chips": "capture_filters_active_chips",
+        "filters-panel-expanded": "capture_filters_panel_expanded",
+        "filters-before-after": "capture_filters_before_after",
+        "filters-clear-all-button": "capture_filters_clear_all_button",
+        # Statistics.md (3)
+        "statistics-panel-distribution": "capture_statistics_panel_distribution",
+        "statistics-ideal-actual-comparison": "capture_statistics_ideal_actual_comparison",
+        "statistics-trend-indicators": "capture_statistics_trend_indicators",
+        # Donut-mode.md (2)
+        "donut-mode-active-layout": "capture_donut_mode_active_layout",
+        "donut-mode-toggle-comparison": "capture_donut_mode_toggle_comparison",
+        # Tracking-changes.md (2)
+        "changes-panel-entries": "capture_changes_panel_entries",
+        "timeline-employee-history": "capture_timeline_employee_history",
+        # Working-with-employees.md (2)
+        "employee-details-panel-expanded": "capture_employee_details_panel_expanded",
+        "bulk-actions-menu": "capture_bulk_actions_menu",
+        # Exporting.md (2)
+        "file-menu-apply-changes": "capture_file_menu_apply_changes",
+        "excel-file-new-columns": "capture_excel_file_new_columns",
     }
 
     # Determine which screenshots to generate

@@ -2,6 +2,31 @@
 
 The Settings dialog allows you to customize your 9Boxer experience with various preferences and configuration options.
 
+## When to Use This
+
+### Common Scenarios
+
+You'll want to use Settings when:
+
+- **Adjusting for your environment** - Switch to dark mode for extended work sessions or light mode when presenting
+- **Reducing eye strain** - Enable dark mode for low-light conditions or late-night calibration prep
+- **Screen sharing** - Switch to light mode for better visibility during video calls and presentations
+- **Following your preferences** - Set Auto mode to automatically match your system theme throughout the day
+- **First-time setup** - Configure your preferred theme when you first start using 9Boxer
+
+### Related Workflows
+
+- [Getting Started](getting-started.md) - Initial setup and configuration when you first use 9Boxer
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Consider using light mode when sharing your screen during meetings
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> Marcus prefers dark mode for his daily work to reduce eye strain. But when he's about to share his screen in a calibration meeting with 8 participants, he switches to light mode in Settings for better visibility. After the meeting, he switches back to dark mode for his afternoon work session.
+
+---
+
 ## Accessing Settings
 
 To open the Settings dialog:
@@ -23,6 +48,10 @@ The gear icon is located in the top-right area of the application bar, next to o
     The application defaults to **Auto (Follow System)** mode, which automatically matches your operating system's theme preference.
 
 ### Theme Options
+
+> 📋 **Real-World Scenario**
+>
+> Alex works from home and uses Auto mode to match her system theme. During the day, 9Boxer displays in light mode for comfortable viewing. When the sun sets at 6 PM, her MacOS automatically switches to dark mode, and 9Boxer instantly adjusts too, reducing eye strain during her evening calibration prep work.
 
 **Light Mode**
 : Always use the light theme

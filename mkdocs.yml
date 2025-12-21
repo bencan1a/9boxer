@@ -130,8 +130,18 @@ nav:
   - Statistics: statistics.md
   - Exporting: exporting.md
   - Settings: settings.md
-  - Tips & Best Practices: tips.md
+  - Best Practices: best-practices.md
   - Troubleshooting: troubleshooting.md
+  - Workflows:
+    - Preparing for Talent Calibration: workflows/talent-calibration.md
+    - Making Your First Changes: workflows/making-changes.md
+    - Adding Notes & Documentation: workflows/adding-notes.md
+  - Decision Aids:
+    - Choosing Your Workflow: workflows/workflow-decision-tree.md
+    - Feature Comparison: feature-comparison.md
+    - Common Decisions: common-decisions.md
+  - Help:
+    - Frequently Asked Questions: faq.md
 
 # Extra CSS/JS (optional for future customization)
 # extra_css:
