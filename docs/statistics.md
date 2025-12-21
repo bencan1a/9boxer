@@ -4,6 +4,60 @@ View comprehensive data analysis and insights about your employee distribution u
 
 ---
 
+<details>
+<summary>📋 Quick Reference (Click to expand)</summary>
+
+**Accessing Statistics:**
+- Click any employee (or click outside) → Statistics tab (third tab)
+- Shows distribution table + visual chart
+- Displays count and percentage for each grid box
+
+**Reading Distribution:**
+- Ideal: 10-15% Stars (top-right), 50-60% in middle boxes
+- Red flags: Too many in bottom-left, too few in top row, heavy clustering
+- Use chart to spot imbalances at a glance
+
+**Using Intelligence:**
+- Intelligence tab (fourth tab) shows anomalies and quality score
+- Red/yellow highlights indicate rating inconsistencies
+- Compare expected vs. actual employee counts by manager, department, job level
+
+**Common Patterns to Watch:**
+- Manager rates everyone high = leniency bias
+- Department has no stars = under-rating or talent gap
+- Uneven distribution = calibration needed
+
+[See detailed analysis below ↓](#statistics-tab)
+
+</details>
+
+---
+
+## When to Use This
+
+### Common Scenarios
+
+You'll want to use Statistics and Intelligence when:
+
+- **Checking distribution health** - See if you have too many "High" ratings or too few Stars before calibration ([see Preparing for Talent Calibration](workflows/talent-calibration.md))
+- **Identifying rating bias** - Spot managers who rate everyone high or departments with skewed distributions
+- **Preparing reports** - Generate data for quarterly talent reviews or board presentations
+- **Validating calibration results** - After making changes, verify your distribution improved and anomalies resolved
+- **Succession planning analysis** - Check if you have enough high-potential employees in your pipeline
+
+### Related Workflows
+
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Use Statistics to validate distribution and Intelligence to spot anomalies requiring discussion
+- [Understanding the Grid](understanding-grid.md) - Learn what healthy distributions look like for your organization
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> Before the calibration meeting, Rachel checks Statistics and sees 35% of employees are rated "High Performance" (target is 20%). Intelligence highlights that Manager Tom rates 80% of his team as High while other managers average 15%. This becomes her top discussion topic for the meeting.
+
+---
+
 ## Accessing Statistics and Intelligence
 
 To view statistics and intelligence data:
@@ -19,6 +73,10 @@ The Statistics tab shows distribution data, while the Intelligence tab provides 
 ## Statistics Tab
 
 The Statistics tab displays a comprehensive overview of how your employees are distributed across the 9-box grid.
+
+> 📋 **Real-World Scenario**
+>
+> Before her calibration meeting, Sarah checks Statistics and sees 35% of employees are rated "High Performance" (her target is 20%). This becomes her top discussion topic for the meeting - identifying which employees are truly high performers versus those rated too generously.
 
 ### Distribution Table
 
@@ -102,6 +160,10 @@ Use the statistics to assess the health of your talent pipeline and identify pot
 ## Intelligence Tab
 
 The Intelligence tab provides advanced statistical analysis that identifies patterns, anomalies, and potential biases in your employee data.
+
+> 📋 **Real-World Scenario**
+>
+> Priya opens Intelligence and discovers that the Engineering department has 80% of employees in the "Core Talent" box while Sales has only 40%. She uses filters to review Engineering employees individually, finding 12 who are actually high-potential but were rated conservatively. She adds notes and recalibrates their ratings.
 
 ### What the Intelligence Tab Analyzes
 

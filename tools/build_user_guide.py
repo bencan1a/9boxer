@@ -26,7 +26,7 @@ Exit Codes:
     1 - Error (mkdocs not found, config missing, or build failed)
 """
 
-import subprocess
+import subprocess  # nosec B404 - controlled subprocess call
 import sys
 from pathlib import Path
 
@@ -74,7 +74,8 @@ def main() -> int:
     print()
 
     try:
-        result = subprocess.run(
+        # Run mkdocs build - controlled subprocess call with validated inputs
+        result = subprocess.run(  # nosec B603 B607
             ["mkdocs", "build", "--site-dir", str(output_dir)],
             cwd=project_root,
             check=True,

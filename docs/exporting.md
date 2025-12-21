@@ -2,8 +2,73 @@
 
 Export your modified employee data to Excel to save your work and share updated talent ratings.
 
+!!! info "Apply Button = Export Action"
+    When you click the **"Apply"** button (in the top application bar), it exports your changes to a new Excel file. The terms "apply changes" and "export" refer to the same action - saving your work by creating a modified Excel file.
+
 !!! danger "Critical: No Auto-Save"
     The application does **NOT** auto-save your changes. You **MUST** export to save your work before closing the app, or all changes will be lost.
+
+---
+
+<details>
+<summary>📋 Quick Reference (Click to expand)</summary>
+
+**How to Export:**
+- Make changes → Review Changes tab → Click "Apply" button (top bar)
+- File downloads as `modified_[original_filename].xlsx`
+- Original file remains unchanged
+
+**Finding Your File:**
+- Check browser's default download folder
+- Search for files starting with "modified_"
+- File name format: `modified_employee_data_2024.xlsx`
+
+**What's Included:**
+- All original columns + updated Performance/Potential ratings
+- Added columns: Modified in Session, Modification Date, Change Description, Change Notes
+- Donut columns (if Donut Mode used): Position, Label, Change Description, Notes
+- ALL employees included (even excluded ones with flag)
+
+**Common Issues:**
+- No modifications to export = Haven't moved any employees yet
+- Can't find file = Check downloads folder and browser download history
+- Missing columns = Donut columns only appear if Donut Mode used
+
+**Best Practices:**
+- Export frequently (no auto-save!)
+- Add notes before exporting
+- Review Changes tab first
+- Use exported file as input for future sessions
+
+[See detailed export process below ↓](#export-process)
+
+</details>
+
+---
+
+## When to Use This
+
+### Common Scenarios
+
+You'll want to export when:
+
+- **Saving your work** - Export after every major set of changes to avoid losing progress (the app does NOT auto-save!)
+- **After calibration meetings** - Export final ratings with notes to share with HR and leadership ([see Preparing for Talent Calibration](workflows/talent-calibration.md))
+- **Creating backups** - Export milestone versions before making more changes (e.g., pre-calibration, post-calibration)
+- **Sharing results** - Generate Excel files with updated ratings and notes to send to stakeholders
+- **Continuing later** - Export your work so you can re-import and continue in a future session
+
+### Related Workflows
+
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Export both pre-meeting baseline and post-meeting results
+- [Making Your First Changes](workflows/making-changes.md) - Save your work after making rating adjustments
+- [Adding Notes & Documentation](workflows/adding-notes.md) - Export includes all your documented notes in the Excel file
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> After a 90-minute calibration meeting, Amanda has made 34 rating changes with detailed notes. She clicks "Apply" to export `talent-ratings-post-calibration-2024-Q4.xlsx` with all changes and notes included. She shares this file with HR to update the HRIS system and with managers so they can communicate changes to their teams.
 
 ---
 
@@ -22,6 +87,10 @@ Export your changes when you:
 ---
 
 ## Export Process
+
+> 📋 **Real-World Scenario**
+>
+> After a 90-minute calibration meeting, Sarah has made 34 rating changes with detailed notes. She clicks "Apply" to export the file as `talent-ratings-post-calibration-2024-Q4.xlsx`. She shares this file with HR to update the HRIS system and with managers so they can communicate changes to their teams. The exported file includes all changes and notes for complete transparency.
 
 Follow these steps to export your changes:
 
@@ -70,6 +139,10 @@ All data from your original file is preserved:
     Your original Excel file is never modified. The export creates a new file with updated ratings.
 
 ### Regular Change Tracking Columns
+
+> 📋 **Real-World Scenario**
+>
+> Priya exports her talent review results to create a development plan. In the Excel file, she filters for all rows where "Modified in Session" = "Yes" to see only the 18 employees who changed ratings. The "9Boxer Change Notes" column shows her detailed rationale for each change, which she uses to explain decisions to department heads.
 
 These columns are added to track regular employee movements:
 

@@ -272,7 +272,7 @@ If the minimal file uploads successfully, the issue is with your original file d
 
 **Symptoms:**
 
-- Export button clicked but file doesn't download
+- File menu "Apply Changes to Excel" clicked but file doesn't download
 - Error message "Export failed"
 
 **Possible causes:**

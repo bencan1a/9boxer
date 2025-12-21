@@ -4,6 +4,32 @@ Learn how the 9-box talent grid is organized, what each position means, and how 
 
 ---
 
+## When to Use This
+
+### Common Scenarios
+
+You'll want to reference this guide when:
+
+- **First-time users** - Learn what the 9-box methodology is and what each position means
+- **Explaining to stakeholders** - Share grid definitions when presenting talent data to leadership
+- **Training others** - Help new managers understand how to interpret the grid and place employees
+- **Making placement decisions** - Reference position definitions to decide where an employee truly belongs ([see Making Your First Changes](workflows/making-changes.md))
+- **Calibrating with peers** - Use shared definitions to ensure consistent ratings across teams
+
+### Related Workflows
+
+- [Getting Started](getting-started.md) - Start here after uploading your data to understand what you're looking at
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Reference position meanings during calibration discussions
+- [Donut Mode](donut-mode.md) - Validate that Position 5 (Core Talent) employees truly belong there
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> New manager Priya has 15 employees to rate for the first time. She reads Understanding the Grid to learn that Position 9 (Stars) should be 10-15% of workforce (not 50%) and that Position 5 (Core Talent) is for solid, reliable performers - not everyone who's "just okay." This helps her avoid grade inflation and make accurate placements.
+
+---
+
 ## Grid Layout
 
 The 9-box grid is a 3×3 matrix that plots employees based on two dimensions:
@@ -49,6 +75,10 @@ POTENTIAL     Problem             Performer        Performer
 ---
 
 ## The 9 Grid Positions
+
+> 📋 **Real-World Scenario**
+>
+> James is reviewing his leadership team and sees 8 out of 15 employees in Position 9 (Stars). He refers to the grid position definitions and realizes that 53% in the top box indicates grade inflation. Using the position definitions, he recalibrates by asking "Who truly has High Potential for the next level?" and moves 4 employees to Position 6 (High Performers without high potential), creating a more realistic distribution.
 
 Each position on the grid has a specific meaning and strategic implications. Here's a detailed breakdown of all 9 positions:
 
@@ -158,6 +188,10 @@ Each position on the grid has a specific meaning and strategic implications. Her
 ### Position 5: Core Performer [Medium Performance, Medium Potential]
 
 **Center - The backbone of your organization**
+
+> 📋 **Real-World Scenario**
+>
+> Marcus runs a Donut Mode exercise and discovers that 30 of his 45 "Core Talent" employees are actually mis-placed. 12 are high-performers who should be in Position 6 or 8, while 8 are really just meeting minimums and belong in Position 2. The remaining 25 truly are solid, reliable Core Talent. This validates his center box and helps him recalibrate ratings accurately.
 
 **Characteristics:**
 
@@ -289,7 +323,7 @@ Each position on the grid has a specific meaning and strategic implications. Her
 **Employee Tile Colors:**
 
 - **Blue tiles** - Default appearance for all employees
-- **Yellow highlight** - Employee has been moved (modified in current session)
+- **Orange left border** - Employee has been moved (modified in current session)
 - **Purple border + ghostly** - Employee has been placed in Donut Mode
 
 ---

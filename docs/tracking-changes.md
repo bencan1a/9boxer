@@ -2,7 +2,73 @@
 
 The **Changes** tab provides a comprehensive tracking system for all employee movements with the ability to add notes explaining your decisions.
 
+---
+
+<details>
+<summary>📋 Quick Reference (Click to expand)</summary>
+
+**Accessing Change Tracker:**
+- Click Changes tab (second tab) in right panel
+- Shows table of all employee movements
+- Separate tabs for Regular Changes and Donut Changes (when applicable)
+
+**What's Tracked:**
+- Employee name and movement (from → to positions)
+- Net change only (multiple moves show overall change)
+- Automatically added when you drag employees
+- Automatically removed if moved back to original position
+
+**Adding Notes:**
+- Click in Notes field for employee → Type explanation → Click outside to save
+- Notes save automatically (no button needed)
+- Include notes in Excel export for audit trail
+
+**Understanding Changes:**
+- Regular Changes = actual rating adjustments (affect Performance/Potential)
+- Donut Changes = exercise placements only (separate columns in export)
+- Badge shows count of changes in each tab
+
+**Export Includes:**
+- Modified in Session, Modification Date, Change Description, Change Notes
+- All changes and notes included in Excel export
+
+[See detailed tracking below ↓](#accessing-the-change-tracker)
+
+</details>
+
+---
+
+## When to Use This
+
+### Common Scenarios
+
+You'll want to use the Changes tab when:
+
+- **During calibration meetings** - Track all rating adjustments made during group discussions in real-time ([see Preparing for Talent Calibration](workflows/talent-calibration.md))
+- **Creating audit trails** - Document why each employee was moved for HR compliance and future reference
+- **Reviewing your work** - Check all movements before exporting to ensure they're correct
+- **Adding context** - Explain the rationale behind each rating change so you remember 6 months from now ([see Adding Notes](workflows/adding-notes.md))
+- **Preparing for export** - Verify all changes have notes before sharing results with stakeholders
+
+### Related Workflows
+
+- [Adding Notes & Documentation](workflows/adding-notes.md) - Learn best practices for documenting rating decisions with clear, specific notes
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Track calibration decisions in real-time during meetings
+- [Exporting Your Changes](exporting.md) - Understand how change notes appear in your Excel export
+
+### Real-World Example
+
+> 📋 **Scenario**
+>
+> During a 2-hour calibration meeting, Kim moves 23 employees. She adds notes to each one in the Changes tab like "Calibration 2024-Q4: Moved to Star - consensus on leadership demonstrated in Q3 project." Six months later, when reviewing decisions, these notes help her remember exactly why each change was made.
+
+---
+
 ## Accessing the Change Tracker
+
+> 📋 **Real-World Scenario**
+>
+> During a 2-hour calibration meeting, Sarah moves 23 employees. She adds notes to each one in the Changes tab like "Calibration 2024-Q4: Moved to Star - consensus on leadership demonstrated in Q3 project." Six months later, when reviewing decisions, these notes help her remember exactly why each change was made.
 
 1. **Click the "Changes" tab** in the right panel (second tab after Details)
 2. The change tracker displays a table of all employee movements
@@ -79,6 +145,10 @@ Changes are saved automatically:
 
 ## Adding Notes to Track Your Rationale
 
+> 📋 **Real-World Scenario**
+>
+> Marcus is reviewing his engineering team and moves an employee from Core Talent to High Potential. He immediately clicks in the Notes field and types "Promoted to tech lead Q4 2024, successfully delivered critical migration project, demonstrated strong mentoring skills with junior developers." This specific note helps justify the rating change to HR.
+
 Notes help you document why each change was made, which is valuable for:
 
 - Calibration meetings and performance discussions
@@ -104,6 +174,10 @@ Notes help you document why each change was made, which is valuable for:
     - **Support multiple lines** for longer explanations if needed
 
 ## Regular Changes vs. Donut Changes
+
+> 📋 **Real-World Scenario**
+>
+> James is using Donut Mode to validate his center box. He places 12 employees in exploratory positions to see where they "really" belong. These show up in the "Donut Changes" tab with purple badges. Later, he switches to the "Regular Changes" tab to review the 8 actual rating adjustments he made during calibration. The separate tabs keep his exploratory work distinct from real decisions.
 
 The change tracker separates regular employee movements from donut exercise placements to maintain data integrity.
 
