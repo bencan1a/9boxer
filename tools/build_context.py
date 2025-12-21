@@ -32,7 +32,7 @@ CLEAN_TMP_AGE_DAYS = int(os.getenv("CLEAN_TMP_AGE_DAYS", "7"))
 REPO_ROOT = Path(__file__).parent.parent
 DOCS_DIR = REPO_ROOT / "docs"
 GENERATED_DIR = DOCS_DIR / "_generated"
-AGENT_PLANS_DIR = REPO_ROOT / "agent-plans"
+AGENT_PLANS_DIR = REPO_ROOT / "agent-projects"
 AGENT_TMP_DIR = REPO_ROOT / "agent-tmp"
 SRC_DIR = REPO_ROOT / "src"
 
