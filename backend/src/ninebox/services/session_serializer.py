@@ -50,10 +50,10 @@ class SessionSerializer:
         # Add updated_at timestamp
         session_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
 
-        return session_dict  # type: ignore[no-any-return]
+        return session_dict
 
     @staticmethod
-    def deserialize(row: dict[str, Any]) -> SessionState:  # noqa: PLR0912
+    def deserialize(row: dict[str, Any]) -> SessionState:
         """Convert database row to SessionState.
 
         Reconstructs SessionState from database dict, including:
@@ -146,7 +146,7 @@ class SessionSerializer:
             ]
 
         # Use Pydantic's model_validate to reconstruct SessionState
-        return SessionState.model_validate(data)  # type: ignore[no-any-return]
+        return SessionState.model_validate(data)
 
     @staticmethod
     def _deserialize_employee(emp_data: dict[str, Any]) -> Employee:
@@ -200,7 +200,7 @@ class SessionSerializer:
             ]
 
         # Use Pydantic's model_validate to reconstruct Employee
-        return Employee.model_validate(data)  # type: ignore[no-any-return]
+        return Employee.model_validate(data)
 
     @staticmethod
     def _deserialize_employee_move(move_data: dict[str, Any]) -> EmployeeMove:
@@ -237,4 +237,4 @@ class SessionSerializer:
             data["new_potential"] = PotentialLevel(data["new_potential"])
 
         # Use Pydantic's model_validate to reconstruct EmployeeMove
-        return EmployeeMove.model_validate(data)  # type: ignore[no-any-return]
+        return EmployeeMove.model_validate(data)

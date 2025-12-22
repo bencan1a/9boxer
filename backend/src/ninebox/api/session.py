@@ -38,8 +38,8 @@ class ToggleDonutModeRequest(BaseModel):
 
 @router.post("/upload")
 async def upload_file(
-    file: UploadFile = File(...),  # noqa: B008
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    file: UploadFile = File(...),
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Upload Excel file and create session."""
     # Validate file type
@@ -130,7 +130,7 @@ async def upload_file(
 
 @router.get("/status")
 async def get_session_status(
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Get current session status."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -154,7 +154,7 @@ async def get_session_status(
 
 @router.delete("/clear")
 async def clear_session(
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Clear current session."""
 
@@ -190,7 +190,7 @@ async def clear_session(
 
 @router.post("/export")
 async def export_session(
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> FileResponse:
     """Export current session data to Excel."""
     session = session_mgr.get_session(LOCAL_USER_ID)
@@ -236,7 +236,7 @@ async def export_session(
 async def update_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> EmployeeMove:
     """Update notes for an employee's change entry."""
     try:
@@ -254,7 +254,7 @@ async def update_change_notes(
 async def update_donut_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> EmployeeMove:
     """Update notes for an employee's donut change entry."""
     try:
@@ -271,7 +271,7 @@ async def update_donut_change_notes(
 @router.post("/toggle-donut-mode")
 async def toggle_donut_mode(
     request: ToggleDonutModeRequest,
-    session_mgr: SessionManager = Depends(get_session_manager),  # noqa: B008
+    session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Toggle donut mode on or off for the current session.
 

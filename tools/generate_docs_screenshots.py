@@ -1451,7 +1451,7 @@ class ScreenshotGenerator:
         return Path()  # Sentinel value for manual screenshots
 
 
-async def main() -> int:  # noqa: PLR0912 - Complex CLI arg handling, refactor would reduce readability
+async def main() -> int:
     """Main entry point"""
     parser = argparse.ArgumentParser(description="Generate documentation screenshots")
     parser.add_argument(
@@ -1539,24 +1539,24 @@ async def main() -> int:  # noqa: PLR0912 - Complex CLI arg handling, refactor w
         "notes-export-excel": "capture_notes_export_excel",
         "notes-donut-mode": "capture_notes_donut_mode",
         # Feature Page Screenshots (15) - Task 3.3
-        # Filters.md (4)  # noqa: ERA001
+        # Filters.md (4)
         "filters-active-chips": "capture_filters_active_chips",
         "filters-panel-expanded": "capture_filters_panel_expanded",
         "filters-before-after": "capture_filters_before_after",
         "filters-clear-all-button": "capture_filters_clear_all_button",
-        # Statistics.md (3)  # noqa: ERA001
+        # Statistics.md (3)
         "statistics-panel-distribution": "capture_statistics_panel_distribution",
         "statistics-ideal-actual-comparison": "capture_statistics_ideal_actual_comparison",
         "statistics-trend-indicators": "capture_statistics_trend_indicators",
-        # Donut-mode.md (2)  # noqa: ERA001
+        # Donut-mode.md (2)
         "donut-mode-active-layout": "capture_donut_mode_active_layout",
         "donut-mode-toggle-comparison": "capture_donut_mode_toggle_comparison",
-        # Tracking-changes.md (2)  # noqa: ERA001
+        # Tracking-changes.md (2)
         "changes-panel-entries": "capture_changes_panel_entries",
         "timeline-employee-history": "capture_timeline_employee_history",
         # Working-with-employees.md (1)
         "employee-details-panel-expanded": "capture_employee_details_panel_expanded",
-        # Exporting.md (2)  # noqa: ERA001
+        # Exporting.md (2)
         "file-menu-apply-changes": "capture_file_menu_apply_changes",
         "excel-file-new-columns": "capture_excel_file_new_columns",
     }

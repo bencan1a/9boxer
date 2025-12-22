@@ -125,7 +125,7 @@ def get_changed_files(base_ref: str = "origin/main") -> list[str]:
         return []
 
 
-def map_source_to_tests(source_files: list[str]) -> set[str]:  # noqa: PLR0912 - Test file mapping requires multiple path checks
+def map_source_to_tests(source_files: list[str]) -> set[str]:
     """Map source files to their corresponding test files.
 
     Args:
@@ -297,7 +297,7 @@ def map_files_to_e2e_tests(changed_files: list[str]) -> set[str]:
     return e2e_tests
 
 
-def main() -> int:  # noqa: PLR0912
+def main() -> int:
     """Main entry point for smart test selection."""
     parser = argparse.ArgumentParser(description="Smart test selection based on changed files")
     parser.add_argument(

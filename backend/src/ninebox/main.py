@@ -21,7 +21,7 @@ app = FastAPI(
 # 3. Not exposed to external network
 # 4. Desktop app deployment model (single-user, local-only)
 # WARNING: If backend becomes network-accessible, restrict origins to:
-# ["http://localhost:3000", "http://localhost:5173"]  # noqa: ERA001 (documentation example, not commented code)
+# ["http://localhost:3000", "http://localhost:5173"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Safe for desktop app, see comment above

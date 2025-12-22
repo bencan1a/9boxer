@@ -6,7 +6,7 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from ninebox.core.database import (  # noqa: E402 - Path modification required before import
+from ninebox.core.database import (
     create_user,
     init_db,
 )

@@ -309,7 +309,7 @@ class SheetDetector:
         return score
 
     @staticmethod
-    def find_best_sheet(file_path: str | Path) -> tuple[pd.DataFrame, str, int]:  # noqa: PLR0912 - Excel sheet detection requires multiple heuristic checks
+    def find_best_sheet(file_path: str | Path) -> tuple[pd.DataFrame, str, int]:
         """
         Find the best sheet in the Excel file to parse.
 
@@ -498,7 +498,7 @@ class ExcelParser:
 
         return ParsingResult(employees=employees, metadata=metadata)
 
-    def _parse_employee_row(self, row: pd.Series) -> Employee:  # noqa: PLR0912
+    def _parse_employee_row(self, row: pd.Series) -> Employee:
         """Parse a single employee row."""
         # Extract historical ratings
         history = []
@@ -580,7 +580,7 @@ class ExcelParser:
             if isinstance(hire_date_val, pd.Timestamp):
                 hire_date = hire_date_val.date()
             else:
-                hire_date = pd.to_datetime(hire_date_val).date()  # type: ignore[arg-type]
+                hire_date = pd.to_datetime(hire_date_val).date()  # type: ignore[arg-type]  # pandas type inference
         else:
             hire_date = date.today()
 

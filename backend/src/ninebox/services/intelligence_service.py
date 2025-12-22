@@ -81,7 +81,7 @@ def _get_status(
     p_value: float,
     effect_size: float,
     deviations: list[dict[str, Any]],
-    is_uniformity_test: bool = False,  # noqa: ARG001
+    is_uniformity_test: bool = False,
 ) -> str:
     """Determine traffic light status based on p-value, effect size, and individual deviations.
 
@@ -193,7 +193,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
         return _empty_analysis(f"Statistical test failed: {e!s}")
 
     # Check if chi-square test is valid
-    if not _safe_sample_size_check(expected):  # noqa: SIM102
+    if not _safe_sample_size_check(expected):
         # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
             from scipy.stats import fisher_exact
@@ -245,7 +245,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     }
 
 
-def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:  # noqa: PLR0911, PLR0912
+def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
     """Analyze grid position distribution across job functions.
 
     Tests whether the 9-box distribution differs significantly across job functions.

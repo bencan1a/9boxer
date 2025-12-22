@@ -8,14 +8,13 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-try:
+if TYPE_CHECKING:
     from coverage import Coverage
-except ImportError:
-    Coverage = None
 
 
-def load_coverage_data(coverage_file: str = ".coverage") -> Coverage:
+def load_coverage_data(coverage_file: str = ".coverage") -> "Coverage":
     """Load coverage data from coverage.py data file.
 
     Args:
@@ -24,7 +23,9 @@ def load_coverage_data(coverage_file: str = ".coverage") -> Coverage:
     Returns:
         Coverage object loaded from the specified file
     """
-    if Coverage is None:
+    try:
+        from coverage import Coverage
+    except ImportError:
         print("Error: coverage package not installed", file=sys.stderr)
         sys.exit(1)
 
@@ -37,7 +38,7 @@ def load_coverage_data(coverage_file: str = ".coverage") -> Coverage:
         sys.exit(1)
 
 
-def get_file_coverage(cov: Coverage, file_path: str) -> float:
+def get_file_coverage(cov: "Coverage", file_path: str) -> float:
     """Get coverage percentage for a specific file.
 
     Args:
