@@ -187,8 +187,8 @@ class ServerManager:
 
         raise TimeoutError(f"URL {url} failed to respond within {timeout} seconds")
 
-    def stop_servers(self) -> None:
-        """Stop both servers"""
+    async def stop_servers(self) -> None:
+        """Stop both servers with proper cleanup"""
         if self.backend_process:
             print(f"{Colors.YELLOW}[Backend]{Colors.RESET} Stopping server...")
             self.backend_process.terminate()
@@ -196,6 +196,15 @@ class ServerManager:
                 self.backend_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self.backend_process.kill()
+                self.backend_process.wait()
+
+            # Close all pipes explicitly to avoid ResourceWarning
+            if self.backend_process.stdin:
+                self.backend_process.stdin.close()
+            if self.backend_process.stdout:
+                self.backend_process.stdout.close()
+            if self.backend_process.stderr:
+                self.backend_process.stderr.close()
 
         if self.frontend_process:
             print(f"{Colors.YELLOW}[Frontend]{Colors.RESET} Stopping server...")
@@ -204,6 +213,18 @@ class ServerManager:
                 self.frontend_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self.frontend_process.kill()
+                self.frontend_process.wait()
+
+            # Close all pipes explicitly to avoid ResourceWarning
+            if self.frontend_process.stdin:
+                self.frontend_process.stdin.close()
+            if self.frontend_process.stdout:
+                self.frontend_process.stdout.close()
+            if self.frontend_process.stderr:
+                self.frontend_process.stderr.close()
+
+        # Give processes time to fully clean up
+        await asyncio.sleep(1.0)
 
 
 class ScreenshotGenerator:
@@ -225,8 +246,22 @@ class ScreenshotGenerator:
         self.browser: Browser | None = None
         self.page: Page  # Will be initialized in setup_browser
 
+        # Screenshot tracking
+        self.manual_screenshots: list[dict[str, str]] = []
+        self.skipped_screenshots: list[dict[str, str]] = []
+
         # Ensure output directory exists
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+    def mark_manual(self, name: str, reason: str) -> None:
+        """Mark a screenshot as requiring manual creation"""
+        self.manual_screenshots.append({"name": name, "reason": reason})
+        print(f"{Colors.YELLOW}[Manual]{Colors.RESET} {name}: {reason}")
+
+    def mark_skipped(self, name: str, reason: str) -> None:
+        """Mark a screenshot as skipped"""
+        self.skipped_screenshots.append({"name": name, "reason": reason})
+        print(f"{Colors.YELLOW}[Skipped]{Colors.RESET} {name}: {reason}")
 
     async def setup_browser(self) -> None:
         """Initialize Playwright browser"""
@@ -251,14 +286,76 @@ class ScreenshotGenerator:
             await self.browser.close()
 
     async def close_dialogs(self) -> None:
-        """Close any open dialogs"""
+        """Close all dialogs, menus, popovers, and modals using multiple strategies"""
         try:
-            dialog = self.page.locator('[data-testid="file-upload-dialog"]')
-            if await dialog.is_visible():
-                await self.page.keyboard.press("Escape")
-                await asyncio.sleep(0.5)
-        except Exception:
-            pass
+            # Strategy 1: Close file menu specifically by clicking outside
+            file_menu = self.page.locator('[data-testid="file-menu"]')
+            if await file_menu.count() > 0:
+                try:
+                    is_visible = await file_menu.is_visible()
+                    if is_visible:
+                        # Click far outside the menu to close it
+                        await self.page.mouse.click(10, 10)
+                        await asyncio.sleep(0.5)
+                except Exception:
+                    pass
+
+            # Strategy 2: Force remove all MUI backdrops via JavaScript
+            await self.page.evaluate(
+                """
+                () => {
+                    const backdrops = document.querySelectorAll('.MuiBackdrop-root');
+                    backdrops.forEach(backdrop => {
+                        backdrop.remove();
+                    });
+                }
+            """
+            )
+            await asyncio.sleep(0.3)
+
+            # Strategy 3: Force close all MUI menus via JavaScript
+            await self.page.evaluate(
+                """
+                () => {
+                    const menus = document.querySelectorAll('[role="presentation"]');
+                    menus.forEach(menu => {
+                        if (menu.classList.contains('MuiPopover-root') ||
+                            menu.classList.contains('MuiMenu-root')) {
+                            menu.style.display = 'none';
+                        }
+                    });
+                }
+            """
+            )
+            await asyncio.sleep(0.3)
+
+            # Strategy 4: Press Escape as fallback for other dialogs
+            await self.page.keyboard.press("Escape")
+            await asyncio.sleep(0.2)
+
+            # Strategy 5: Close any remaining dialogs with close buttons
+            close_buttons = self.page.locator('[aria-label="close"]')
+            count = await close_buttons.count()
+            for i in range(count):
+                try:
+                    await close_buttons.nth(i).click(timeout=1000)
+                    await asyncio.sleep(0.2)
+                except Exception:
+                    pass
+
+            # Final wait for DOM to settle
+            await asyncio.sleep(0.5)
+
+            # Verify no backdrops remain
+            remaining_backdrops = await self.page.locator(".MuiBackdrop-root").count()
+            if remaining_backdrops > 0:
+                print(
+                    f"[Debug] Warning: {remaining_backdrops} backdrop(s) still present after cleanup"
+                )
+
+        except Exception as e:
+            # Don't fail if cleanup fails
+            print(f"[Debug] Dialog cleanup warning: {e}")
 
     async def upload_sample_data(self) -> None:
         """Upload sample employee data"""
@@ -395,6 +492,16 @@ class ScreenshotGenerator:
         await self.page.goto("http://localhost:5173")
         await asyncio.sleep(1)  # Wait for app to load
 
+        # Wait for app bar to be present with fallback
+        try:
+            app_bar = self.page.locator('[data-testid="app-bar"]')
+            await app_bar.wait_for(state="attached", timeout=10000)
+        except Exception:
+            # Fallback to MUI AppBar class selector
+            print("[Debug] app-bar data-testid not found, using fallback selector")
+            app_bar = self.page.locator('header[class*="MuiAppBar"]')
+            await app_bar.wait_for(state="attached", timeout=10000)
+
         # Capture the toolbar/app bar area with file menu
         return await self.capture_screenshot(
             "quickstart/quickstart-file-menu-button",
@@ -510,8 +617,8 @@ class ScreenshotGenerator:
             source = self.page.locator('[data-testid^="employee-card-"]')
 
             if await source.count() > 0:
-                # Get the grid boxes
-                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                # Get the grid boxes (exclude Badge count elements with -count suffix)
+                boxes = self.page.locator('[data-testid^="grid-box-"]:not([data-testid$="-count"])')
                 box_count = await boxes.count()
 
                 if box_count > 1:
@@ -554,13 +661,17 @@ class ScreenshotGenerator:
                 await employee.first.click()
                 await asyncio.sleep(0.5)
 
-                # Capture the details panel
-                details = self.page.locator('[data-testid="employee-details"]')
-                if await details.count() > 0:
-                    return await self.capture_screenshot(
-                        "workflow/workflow-employee-timeline",
-                        element_selector='[data-testid="employee-details"]',
-                    )
+                # Make sure Details tab is active
+                details_tab = self.page.locator('[data-testid="details-tab"]')
+                if await details_tab.count() > 0:
+                    await details_tab.click()
+                    await asyncio.sleep(0.3)
+
+                # Capture the right panel with employee details
+                return await self.capture_screenshot(
+                    "workflow/workflow-employee-timeline",
+                    element_selector='[data-testid="right-panel"]',
+                )
         except Exception as e:
             print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Timeline capture failed: {e}")
         return None
@@ -589,6 +700,16 @@ class ScreenshotGenerator:
     async def capture_workflow_apply_button(self) -> Path | None:
         """Capture Apply/Export button with badge showing change count"""
         try:
+            # Wait for app bar to be present with fallback
+            try:
+                app_bar = self.page.locator('[data-testid="app-bar"]')
+                await app_bar.wait_for(state="attached", timeout=10000)
+            except Exception:
+                # Fallback to MUI AppBar class selector
+                print("[Debug] app-bar data-testid not found, using fallback selector")
+                app_bar = self.page.locator('header[class*="MuiAppBar"]')
+                await app_bar.wait_for(state="attached", timeout=10000)
+
             # Capture the toolbar area with export button
             return await self.capture_screenshot(
                 "workflow/workflow-apply-button",
@@ -600,32 +721,18 @@ class ScreenshotGenerator:
 
     async def capture_workflow_export_excel_1(self) -> Path | None:
         """Capture export dialog (if exists) or export action"""
-        try:
-            # Click export button
-            export_btn = self.page.locator('[data-testid="export-button"]')
-            if await export_btn.count() > 0:
-                await export_btn.click()
-                await asyncio.sleep(0.5)
-
-                # Check if dialog appears
-                dialog = self.page.locator('[role="dialog"]')
-                if await dialog.count() > 0:
-                    return await self.capture_screenshot(
-                        "workflow/workflow-export-excel-1",
-                        element_selector='[role="dialog"]',
-                    )
-        except Exception as e:
-            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Export dialog capture failed: {e}")
-        return None
+        # No export dialog exists - export happens directly from File menu Apply button
+        # This screenshot is covered by workflow-apply-button
+        self.mark_skipped(
+            "workflow-export-excel-1", "no export dialog - covered by apply button screenshot"
+        )
+        return Path()  # Sentinel value for skipped screenshots
 
     async def capture_workflow_export_excel_2(self) -> Path | None:
         """Placeholder for exported Excel file screenshot (manual capture needed)"""
         # This requires opening the actual Excel file - manual capture needed
-        # Return None to indicate manual work required
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} workflow-export-excel-2 requires manual Excel screenshot"
-        )
-        return None
+        self.mark_manual("workflow-export-excel-2", "requires manual Excel screenshot")
+        return Path()  # Sentinel value for manual screenshots
 
     # ========================================
     # Index/Home Page Screenshots
@@ -722,9 +829,7 @@ class ScreenshotGenerator:
                     element_selector='[data-testid="right-panel"]',
                 )
         except Exception as e:
-            print(
-                f"{Colors.YELLOW}[Warning]{Colors.RESET} Intelligence tab capture failed: {e}"
-            )
+            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Intelligence tab capture failed: {e}")
         return None
 
     async def capture_calibration_filters_panel(self) -> Path | None:
@@ -734,12 +839,12 @@ class ScreenshotGenerator:
 
         try:
             # Open filters drawer
-            filters_button = self.page.locator('[data-testid="filters-button"]')
+            filters_button = self.page.locator('[data-testid="filter-button"]')
             if await filters_button.count() > 0:
                 await filters_button.click()
                 await asyncio.sleep(0.5)
 
-                # The exact structure may vary - capture current state
+                # Capture the filter drawer
                 return await self.capture_screenshot(
                     "workflow/calibration-filters-panel",
                     element_selector='[data-testid="filter-drawer"]',
@@ -754,16 +859,16 @@ class ScreenshotGenerator:
         await self.close_dialogs()
 
         try:
-            # Find and click the donut mode toggle
-            donut_toggle = self.page.locator('[data-testid="donut-mode-toggle"]')
+            # Find and click the donut view button
+            donut_toggle = self.page.locator('[data-testid="donut-view-button"]')
             if await donut_toggle.count() > 0:
                 await donut_toggle.click()
                 await asyncio.sleep(0.5)
 
-                # Capture the toolbar area showing active toggle
+                # Capture the grid area showing active donut mode toggle
                 return await self.capture_screenshot(
                     "workflow/calibration-donut-mode-toggle",
-                    element_selector='[data-testid="app-bar"]',
+                    element_selector='[data-testid="nine-box-grid"]',
                 )
         except Exception as e:
             print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Donut toggle capture failed: {e}")
@@ -799,10 +904,8 @@ class ScreenshotGenerator:
     async def capture_calibration_export_results(self) -> Path | None:
         """Placeholder for Excel export screenshot (manual capture required)"""
         # This requires exporting and opening Excel - manual capture needed
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} calibration-export-results requires manual Excel screenshot"
-        )
-        return None
+        self.mark_manual("calibration-export-results", "requires manual Excel screenshot")
+        return Path()  # Sentinel value for manual screenshots
 
     # ========================================
     # Making Changes Screenshots (Task 2.2)
@@ -812,9 +915,7 @@ class ScreenshotGenerator:
         """Capture 3-panel drag sequence composite (or individual panels)"""
         # This is complex - capture base grid state
         # Manual composition of 3 panels will be needed
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} changes-drag-sequence requires manual 3-panel composition"
-        )
+        self.mark_manual("changes-drag-sequence", "requires manual 3-panel composition")
 
         # Capture base grid as starting point
         await self.close_dialogs()
@@ -832,7 +933,8 @@ class ScreenshotGenerator:
             # First, make a change by dragging an employee
             source = self.page.locator('[data-testid^="employee-card-"]')
             if await source.count() > 0:
-                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                # Get the grid boxes (exclude Badge count elements with -count suffix)
+                boxes = self.page.locator('[data-testid^="grid-box-"]:not([data-testid$="-count"])')
                 if await boxes.count() > 1:
                     # Drag first employee to different box
                     await source.first.drag_to(boxes.nth(1))
@@ -978,10 +1080,9 @@ class ScreenshotGenerator:
     async def capture_notes_export_excel(self) -> Path | None:
         """Placeholder for Excel export with notes column (manual capture required)"""
         # This requires exporting and opening Excel - manual capture needed
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} export-excel-notes-column requires manual Excel screenshot"
-        )
-        return None
+        self.mark_manual("export-excel-notes-column", "requires manual Excel screenshot")
+        # Return empty Path to indicate success (manual screenshot)
+        return Path()  # Sentinel value for manual screenshots
 
     async def capture_notes_donut_mode(self) -> Path | None:
         """Capture Donut Changes tab with notes (optional)"""
@@ -1076,9 +1177,7 @@ class ScreenshotGenerator:
     async def capture_filters_before_after(self) -> Path | None:
         """Capture before/after filtering comparison (requires manual 2-panel composition)"""
         # This requires manual composition - capture base state
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} filters-before-after requires manual 2-panel composition"
-        )
+        self.mark_manual("filters-before-after", "requires manual 2-panel composition")
 
         # Capture grid without filters (before state)
         await self.close_dialogs()
@@ -1204,9 +1303,7 @@ class ScreenshotGenerator:
     async def capture_donut_mode_toggle_comparison(self) -> Path | None:
         """Capture toggle between grid and donut views (requires manual 2-panel composition)"""
         # This requires manual composition - capture both states
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} donut-mode-toggle-comparison requires manual 2-panel composition"
-        )
+        self.mark_manual("donut-mode-toggle-comparison", "requires manual 2-panel composition")
 
         await self.close_dialogs()
 
@@ -1311,35 +1408,6 @@ class ScreenshotGenerator:
             print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Employee details capture failed: {e}")
         return None
 
-    async def capture_bulk_actions_menu(self) -> Path | None:
-        """Capture bulk actions menu (if exists, otherwise note manual creation needed)"""
-        # Check if bulk actions exist in current UI
-        print(
-            f"{Colors.YELLOW}[Note]{Colors.RESET} Checking for bulk actions menu..."
-        )
-
-        await self.close_dialogs()
-
-        try:
-            # Look for bulk actions button (may not exist)
-            bulk_actions = self.page.locator('[data-testid="bulk-actions-button"]')
-            if await bulk_actions.count() > 0:
-                await bulk_actions.click()
-                await asyncio.sleep(0.3)
-
-                return await self.capture_screenshot(
-                    "working-with-employees/bulk-actions-menu",
-                    element_selector='[role="menu"]',
-                )
-            else:
-                print(
-                    f"{Colors.YELLOW}[Manual]{Colors.RESET} Bulk actions menu not found - may need mockup or skip"
-                )
-                return None
-        except Exception as e:
-            print(f"{Colors.YELLOW}[Warning]{Colors.RESET} Bulk actions capture failed: {e}")
-        return None
-
     # Exporting.md screenshots (2)
     async def capture_file_menu_apply_changes(self) -> Path | None:
         """Capture File menu with Apply Changes option highlighted"""
@@ -1349,7 +1417,8 @@ class ScreenshotGenerator:
             # First make a change to enable Apply button
             source = self.page.locator('[data-testid^="employee-card-"]')
             if await source.count() > 0:
-                boxes = self.page.locator('[data-testid^="grid-box-"]')
+                # Get the grid boxes (exclude Badge count elements with -count suffix)
+                boxes = self.page.locator('[data-testid^="grid-box-"]:not([data-testid$="-count"])')
                 if await boxes.count() > 1:
                     await source.first.drag_to(boxes.nth(1))
                     await asyncio.sleep(1)
@@ -1378,13 +1447,11 @@ class ScreenshotGenerator:
     async def capture_excel_file_new_columns(self) -> Path | None:
         """Placeholder for Excel file screenshot (manual capture required)"""
         # This requires exporting and opening Excel - manual capture needed
-        print(
-            f"{Colors.YELLOW}[Manual]{Colors.RESET} excel-file-new-columns requires manual Excel screenshot"
-        )
-        return None
+        self.mark_manual("excel-file-new-columns", "requires manual Excel screenshot")
+        return Path()  # Sentinel value for manual screenshots
 
 
-async def main() -> int:
+async def main() -> int:  # noqa: PLR0912 - Complex CLI arg handling, refactor would reduce readability
     """Main entry point"""
     parser = argparse.ArgumentParser(description="Generate documentation screenshots")
     parser.add_argument(
@@ -1412,8 +1479,8 @@ async def main() -> int:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=PROJECT_ROOT / "docs" / "images" / "screenshots",
-        help="Output directory (default: docs/images/screenshots/)",
+        default=PROJECT_ROOT / "resources" / "user-guide" / "docs" / "images" / "screenshots",
+        help="Output directory (default: resources/user-guide/docs/images/screenshots/)",
     )
 
     args = parser.parse_args()
@@ -1472,25 +1539,24 @@ async def main() -> int:
         "notes-export-excel": "capture_notes_export_excel",
         "notes-donut-mode": "capture_notes_donut_mode",
         # Feature Page Screenshots (15) - Task 3.3
-        # Filters.md (4)
+        # Filters.md (4)  # noqa: ERA001
         "filters-active-chips": "capture_filters_active_chips",
         "filters-panel-expanded": "capture_filters_panel_expanded",
         "filters-before-after": "capture_filters_before_after",
         "filters-clear-all-button": "capture_filters_clear_all_button",
-        # Statistics.md (3)
+        # Statistics.md (3)  # noqa: ERA001
         "statistics-panel-distribution": "capture_statistics_panel_distribution",
         "statistics-ideal-actual-comparison": "capture_statistics_ideal_actual_comparison",
         "statistics-trend-indicators": "capture_statistics_trend_indicators",
-        # Donut-mode.md (2)
+        # Donut-mode.md (2)  # noqa: ERA001
         "donut-mode-active-layout": "capture_donut_mode_active_layout",
         "donut-mode-toggle-comparison": "capture_donut_mode_toggle_comparison",
-        # Tracking-changes.md (2)
+        # Tracking-changes.md (2)  # noqa: ERA001
         "changes-panel-entries": "capture_changes_panel_entries",
         "timeline-employee-history": "capture_timeline_employee_history",
-        # Working-with-employees.md (2)
+        # Working-with-employees.md (1)
         "employee-details-panel-expanded": "capture_employee_details_panel_expanded",
-        "bulk-actions-menu": "capture_bulk_actions_menu",
-        # Exporting.md (2)
+        # Exporting.md (2)  # noqa: ERA001
         "file-menu-apply-changes": "capture_file_menu_apply_changes",
         "excel-file-new-columns": "capture_excel_file_new_columns",
     }
@@ -1545,14 +1611,28 @@ async def main() -> int:
         successful = 0
         failed = 0
 
-        for screenshot_name in screenshots_to_generate:
+        for i, screenshot_name in enumerate(screenshots_to_generate, 1):
             method_name = all_screenshots[screenshot_name]
+            print(f"[{i}/{len(screenshots_to_generate)}] {screenshot_name}...")
             try:
                 method = getattr(generator, method_name)
                 result = await method()
-                if result:
+
+                # Check if this was marked as manual or skipped first
+                is_manual = any(
+                    item["name"] == screenshot_name for item in generator.manual_screenshots
+                )
+                is_skipped = any(
+                    item["name"] == screenshot_name for item in generator.skipped_screenshots
+                )
+
+                # Don't count manual/skipped in successful or failed
+                if is_manual or is_skipped:
+                    pass  # Already logged by mark_manual/mark_skipped
+                elif result:
                     successful += 1
                 else:
+                    print(f"{Colors.RED}[Failed]{Colors.RESET} {screenshot_name} returned None")
                     failed += 1
             except Exception as e:
                 print(f"{Colors.RED}[Error]{Colors.RESET} {screenshot_name}: {e}")
@@ -1564,7 +1644,20 @@ async def main() -> int:
         print(f"{Colors.BOLD}{'=' * 60}{Colors.RESET}\n")
         print(f"{Colors.GREEN}Successful:{Colors.RESET} {successful}")
         print(f"{Colors.RED}Failed:{Colors.RESET} {failed}")
-        print(f"Total: {successful + failed}\n")
+        print(f"{Colors.YELLOW}Manual:{Colors.RESET} {len(generator.manual_screenshots)}")
+        if len(generator.skipped_screenshots) > 0:
+            print(f"{Colors.YELLOW}Skipped:{Colors.RESET} {len(generator.skipped_screenshots)}")
+        print(
+            f"Total: {successful + failed + len(generator.manual_screenshots) + len(generator.skipped_screenshots)}"
+        )
+
+        # List manual screenshots if any
+        if generator.manual_screenshots:
+            print(f"\n{Colors.YELLOW}Manual screenshots required:{Colors.RESET}")
+            for item in generator.manual_screenshots:
+                print(f"  - {item['name']}: {item['reason']}")
+
+        print()  # Extra newline
 
         return 0 if failed == 0 else 1
 
@@ -1576,7 +1669,7 @@ async def main() -> int:
     finally:
         # Cleanup
         await generator.close_browser()
-        server_manager.stop_servers()
+        await server_manager.stop_servers()
 
 
 if __name__ == "__main__":

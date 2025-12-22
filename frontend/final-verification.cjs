@@ -21,7 +21,7 @@ if (fs.existsSync(mainFile)) {
   const hasDialogOpen = content.includes("'dialog:openFile'");
   const hasDialogSave = content.includes("'dialog:saveFile'");
   const hasSetupCall = content.includes('setupIpcHandlers()');
-  
+
   results.files.push({
     file: mainFile,
     exists: true,
@@ -43,7 +43,7 @@ if (fs.existsSync(preloadFile)) {
   const hasOpenFile = content.includes('openFileDialog');
   const hasSaveFile = content.includes('saveFileDialog');
   const hasInvoke = content.includes('invoke');
-  
+
   results.files.push({
     file: preloadFile,
     exists: true,
@@ -64,7 +64,7 @@ if (fs.existsSync(typeFile)) {
   const hasOpenFile = content.includes('openFileDialog');
   const hasSaveFile = content.includes('saveFileDialog');
   const hasPromise = content.includes('Promise<string | null>');
-  
+
   results.files.push({
     file: typeFile,
     exists: true,
@@ -116,7 +116,7 @@ results.checks.forEach(c => {
 });
 
 // Summary
-const allPassed = results.files.every(f => 
+const allPassed = results.files.every(f =>
   Object.values(f.checks).every(v => typeof v !== 'object' || v)
 ) && results.checks.every(c => c.result);
 

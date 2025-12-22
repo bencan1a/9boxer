@@ -139,10 +139,10 @@ def test_calculator_add_positive_numbers():
     """Test that calculator correctly adds positive numbers."""
     # Arrange
     calc = Calculator()
-    
+
     # Act
     result = calc.add(2, 3)
-    
+
     # Assert
     assert result == 5
 ```

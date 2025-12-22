@@ -85,7 +85,7 @@ export const AppBar: React.FC = () => {
 
   return (
     <>
-      <MuiAppBar position="static" elevation={2}>
+      <MuiAppBar position="static" elevation={2} data-testid="app-bar">
         <Toolbar>
           {/* Left: App title with logo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

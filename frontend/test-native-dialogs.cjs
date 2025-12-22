@@ -16,7 +16,7 @@ const checks = [];
 const mainPath = path.join(__dirname, 'dist-electron/main/index.js');
 if (fs.existsSync(mainPath)) {
   const mainContent = fs.readFileSync(mainPath, 'utf-8');
-  
+
   // Check for ipcMain import
   if (mainContent.includes('ipcMain')) {
     checks.push({ name: 'ipcMain imported in main process', pass: true });

@@ -36,13 +36,13 @@ permissions:
 jobs:
   build-docs:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for git SHA
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -77,16 +77,16 @@ jobs:
           if [ -f pyproject.toml ]; then
             uv pip install --system -e .
           fi
-      
+
       - name: Build documentation
         run: |
           python tools/build_context.py
-      
+
       - name: Check for changes
         id: check_changes
         run: |
           git diff --quiet docs/ || echo "changed=true" >> $GITHUB_OUTPUT
-      
+
       - name: Validate generated files
         if: steps.check_changes.outputs.changed == 'true'
         run: |
@@ -95,13 +95,13 @@ jobs:
             echo "Error: CONTEXT.md not generated"
             exit 1
           fi
-          
+
           # Check file size isn't too large
           CONTEXT_SIZE=$(wc -c < docs/CONTEXT.md)
           if [ "$CONTEXT_SIZE" -gt "$CONTEXT_MAX_CHARS" ]; then
             echo "Warning: CONTEXT.md is larger than ${CONTEXT_MAX_CHARS} characters (${CONTEXT_SIZE})"
           fi
-      
+
       - name: Commit and push if changed
         if: steps.check_changes.outputs.changed == 'true'
         run: |
@@ -110,7 +110,7 @@ jobs:
           git add docs/
           git commit -m "chore: auto-update documentation [skip ci]"
           git push
-      
+
       - name: Upload documentation artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -119,20 +119,20 @@ jobs:
             docs/
             !docs/.git
           retention-days: 30
-      
+
       - name: Summary
         run: |
           echo "### Documentation Build Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.check_changes.outputs.changed }}" = "true" ]; then
             echo "📝 Documentation updated" >> $GITHUB_STEP_SUMMARY
           else
             echo "✅ Documentation up to date" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ -f docs/CONTEXT.md ]; then
             CONTEXT_SIZE=$(wc -c < docs/CONTEXT.md)
             echo "✅ CONTEXT.md generated (${CONTEXT_SIZE} bytes)" >> $GITHUB_STEP_SUMMARY

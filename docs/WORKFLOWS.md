@@ -23,7 +23,7 @@ The following enhancements have been implemented:
 - **Smart Change Detection**: Automatically detects if only documentation files changed and skips unnecessary tests
 - **Pre-commit Cache**: Caches pre-commit hooks to speed up lint jobs
 - **Pytest Cache**: Caches pytest results for faster test execution
-- **Enhanced Security Scanning**: 
+- **Enhanced Security Scanning**:
   - Generates JSON security reports for artifacts
   - Uploads security reports as artifacts for later review
 - **Improved Artifact Management**: Uploads coverage reports, test results, and selection metadata
@@ -48,10 +48,10 @@ The following enhancements have been implemented:
 - **Parameterized Manual Triggers**: Can select specific OS or Python version to test
 - **Enhanced Security Scanning**: Generates JSON security reports
 - **SBOM Generation**: Creates Software Bill of Materials using CycloneDX
-- **Improved Dependency Auditing**: 
+- **Improved Dependency Auditing**:
   - Uses both `pip-audit` and `safety` for comprehensive scanning
   - Generates JSON reports for programmatic analysis
-- **Smart Issue Management**: 
+- **Smart Issue Management**:
   - Checks for existing regression issues before creating new ones
   - Adds comments to existing issues instead of spam
   - Includes detailed job status in notifications
@@ -121,11 +121,11 @@ The following enhancements have been implemented:
 **Purpose:** Automated release process with validation
 
 **Features:**
-- **Validation Stage**: 
+- **Validation Stage**:
   - Runs full test suite before release
   - Security and type checking
   - Verifies version consistency between tag and package
-- **Build Stage**: 
+- **Build Stage**:
   - Creates distribution packages (wheel + sdist)
   - Validates packages with twine
 - **Release Stage**:
@@ -267,11 +267,11 @@ None. All changes are backward compatible.
 
 To test the enhanced workflows:
 
-1. **CI Workflow**: 
+1. **CI Workflow**:
    ```bash
    # Create a PR with code changes
    # Check that all jobs run
-   
+
    # Create a PR with only docs changes
    # Verify jobs are skipped
    ```

@@ -12,7 +12,7 @@ from pathlib import Path
 try:
     from coverage import Coverage
 except ImportError:
-    Coverage = None  # type: ignore
+    Coverage = None
 
 
 def load_coverage_data(coverage_file: str = ".coverage") -> Coverage:

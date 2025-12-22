@@ -74,16 +74,16 @@ from module import function_to_test
 
 class TestClassName:
     """Test suite for ClassName functionality."""
-    
+
     def test_specific_behavior(self):
         """Test that specific behavior works correctly."""
         # Arrange
         input_data = ...
         expected_output = ...
-        
+
         # Act
         result = function_to_test(input_data)
-        
+
         # Assert
         assert result == expected_output
 ```
@@ -203,4 +203,3 @@ Always ensure:
 - Tests are stable and reproducible
 
 Always write tests that are clear, maintainable, and provide confidence in the code's correctness.
-

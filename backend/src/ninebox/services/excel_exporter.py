@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path  # noqa: TC003
+from pathlib import Path  # noqa: TCH003
 from typing import TYPE_CHECKING
 
-from ninebox.models.employee import Employee  # noqa: TC001
+from ninebox.models.employee import Employee  # noqa: TCH001
 from ninebox.models.grid_positions import get_position_label
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class ExcelExporter:
             session: Optional session state for accessing change notes
         """
         # Lazy import openpyxl to reduce startup time
-        import openpyxl  # noqa: PLC0415
+        import openpyxl
 
         # Read original file to preserve formatting
         workbook = openpyxl.load_workbook(original_file)
@@ -84,9 +84,9 @@ class ExcelExporter:
                 # Create movement description
                 old_label = get_position_label(change.old_performance, change.old_potential)
                 new_label = get_position_label(change.new_performance, change.new_potential)
-                change_description_map[change.employee_id] = (
-                    f"Moved from {old_label} to {new_label}"
-                )
+                change_description_map[
+                    change.employee_id
+                ] = f"Moved from {old_label} to {new_label}"
 
         # Create donut change descriptions lookup by employee ID
         donut_change_description_map = {}
@@ -95,9 +95,9 @@ class ExcelExporter:
                 # Create donut movement description
                 old_label = get_position_label(change.old_performance, change.old_potential)
                 new_label = get_position_label(change.new_performance, change.new_potential)
-                donut_change_description_map[change.employee_id] = (
-                    f"Donut: Moved from {old_label} to {new_label}"
-                )
+                donut_change_description_map[
+                    change.employee_id
+                ] = f"Donut: Moved from {old_label} to {new_label}"
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):

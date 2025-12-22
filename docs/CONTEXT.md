@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-21T11:25:30.862131+00:00
-**Source SHA**: b296f3d60e038e79fb1c7c1af20c56da9bd94104
+**Generated**: 2025-12-21T21:47:54.838683+00:00
+**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -213,6 +213,19 @@ This file provides comprehensive context about the project for AI agents and dev
   }
 }
 ```
+
+## Active Plans
+
+There are 1 active plan(s):
+
+### ninebox-expand-collapse
+- Owner: Claude Code
+- Created: 2025-12-10
+- Summary:
+  - Add expand/collapse functionality to nine box grid boxes
+  - Expanded box fills grid area while other boxes remain as small drop targets
+  - Preserve drag-and-drop functionality across all boxes
+  - Implement smooth animations and keyboard controls
 
 ## API Documentation
 
