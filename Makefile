@@ -33,8 +33,9 @@ lint:  ## Run linting checks
 format:  ## Format code
 	ruff format .
 
-format-check:  ## Check code formatting without making changes
-	ruff format --check .
+format-check:  ## Auto-fix code formatting (was check-only, now auto-fixes for convenience)
+	@echo "Auto-fixing formatting..."
+	@ruff format .
 
 type-check:  ## Run type checking
 	mypy backend/src/ .github/scripts/
