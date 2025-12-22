@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path  # noqa: TCH003
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ninebox.models.employee import Employee  # noqa: TCH001
+from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import get_position_label
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class ExcelExporter:
     """Export modified employee data back to Excel."""
 
-    def export(  # noqa: PLR0912  # Complexity acceptable for data export logic
+    def export(  # Complexity acceptable for data export logic
         self,
         original_file: str | Path,
         employees: list[Employee],

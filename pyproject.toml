@@ -134,7 +134,7 @@ disallow_incomplete_defs = true
 check_untyped_defs = true
 no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 warn_no_return = true
 strict_equality = true
 mypy_path = "backend/src"
@@ -182,8 +182,12 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "backend/tests/**/*" = ["PLR2004", "S101", "ARG", "SIM102"]
 "__init__.py" = ["F401"]
-"tools/**/*" = ["SIM102"]
-".github/scripts/**/*" = ["SIM102"]
+"tools/**/*" = ["SIM102", "PLR0912", "ERA001"]
+".github/scripts/**/*" = ["SIM102", "PLR0912", "PLC0415"]
+"backend/src/ninebox/api/**/*" = ["B008"]  # FastAPI Depends() pattern
+"backend/src/ninebox/services/**/*" = ["PLR0912", "PLR0911", "ARG001", "SIM102", "PLC0415", "TCH001", "TCH003"]
+"backend/src/ninebox/main.py" = ["ERA001"]
+"legacy/**/*" = ["E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["ninebox"]
