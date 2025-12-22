@@ -94,14 +94,14 @@ def get_changed_files(base_ref: str = "origin/main") -> list[str]:
     """
     try:
         # First, fetch the base ref to ensure it's up to date
-        subprocess.run(
+        subprocess.run(  # nosec B603, B607 - Safe: git with literal args
             ["git", "fetch", "origin", base_ref.replace("origin/", "")],
             check=False,
             capture_output=True,
         )
 
         # Get the list of changed files
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603, B607 - Safe: git with literal args
             ["git", "diff", "--name-only", f"{base_ref}...HEAD"],
             capture_output=True,
             text=True,
@@ -111,7 +111,7 @@ def get_changed_files(base_ref: str = "origin/main") -> list[str]:
         # If the diff command failed, try fallback
         if result.returncode != 0:
             # Fallback: try to get all changed files in the current commit
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603, B607 - Safe: git with literal args
                 ["git", "diff", "--name-only", "HEAD^", "HEAD"],
                 capture_output=True,
                 text=True,
@@ -125,7 +125,7 @@ def get_changed_files(base_ref: str = "origin/main") -> list[str]:
         return []
 
 
-def map_source_to_tests(source_files: list[str]) -> set[str]:
+def map_source_to_tests(source_files: list[str]) -> set[str]:  # noqa: PLR0912 - Test file mapping requires multiple path checks
     """Map source files to their corresponding test files.
 
     Args:

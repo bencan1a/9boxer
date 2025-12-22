@@ -93,7 +93,7 @@ All agents follow a consistent file organization rubric:
 - **Purpose**: Ephemeral outputs, debug scripts, analysis files
 - **Usage**: Agents place temporary files here during work
 - **Lifecycle**: Files are gitignored and should be cleaned periodically
-- **Examples**: 
+- **Examples**:
   - `debug_script_2024-11-09.py`
   - `performance_analysis.txt`
   - `test_data_sample.json`
@@ -146,7 +146,7 @@ make check-all  # Runs all quality checks
 
 For unavoidable warnings:
 - Add `# noqa: <code>` for linting with justification
-- Add `# type: ignore[<error>]` for typing with justification  
+- Add `# type: ignore[<error>]` for typing with justification
 - Add `# nosec` for security false positives with explanation
 
 ## Creating New Agents

@@ -225,4 +225,3 @@ When writing documentation:
 5. Test all code examples
 6. Review for clarity and accuracy
 7. Get feedback from others
-

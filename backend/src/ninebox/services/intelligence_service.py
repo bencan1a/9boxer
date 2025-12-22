@@ -21,7 +21,7 @@ def _chi_square_test(contingency_table: np.ndarray) -> tuple[float, float, int, 
     Returns:
         Tuple of (chi2_statistic, p_value, degrees_of_freedom, expected_frequencies)
     """
-    from scipy.stats import chi2_contingency  # noqa: PLC0415
+    from scipy.stats import chi2_contingency
 
     chi2, p_value, dof, expected = chi2_contingency(contingency_table)
     return float(chi2), float(p_value), int(dof), expected
@@ -196,7 +196,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     if not _safe_sample_size_check(expected):  # noqa: SIM102
         # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
-            from scipy.stats import fisher_exact  # noqa: PLC0415
+            from scipy.stats import fisher_exact
 
             _, p_value = fisher_exact(contingency)
             chi2 = 0.0  # Fisher's exact doesn't have chi2 statistic

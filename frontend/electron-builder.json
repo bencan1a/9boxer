@@ -30,7 +30,7 @@
       "to": "splash.html"
     },
     {
-      "from": "../resources/user-guide/",
+      "from": "../resources/user-guide/site/",
       "to": "user-guide/",
       "filter": ["**/*"]
     },

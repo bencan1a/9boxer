@@ -7,8 +7,8 @@ site_description: Complete guide to using the 9Boxer desktop application for tal
 site_author: 9Boxer Team
 
 # Directory Configuration
-docs_dir: docs  # Documentation source is in the docs/ directory
-site_dir: site  # Build output directory (in project root)
+docs_dir: resources/user-guide/docs  # User guide documentation source
+site_dir: resources/user-guide/site  # Build output directory
 
 # URL Configuration
 # CRITICAL: Use flat file structure for file:// protocol compatibility
@@ -120,6 +120,7 @@ markdown_extensions:
 # This will be populated by content migration agents
 nav:
   - Home: index.md
+  - Quickstart: quickstart.md
   - Getting Started: getting-started.md
   - Uploading Data: uploading-data.md
   - Understanding the Grid: understanding-grid.md
@@ -130,6 +131,7 @@ nav:
   - Statistics: statistics.md
   - Exporting: exporting.md
   - Settings: settings.md
+  - Tips & Best Practices: tips.md
   - Best Practices: best-practices.md
   - Troubleshooting: troubleshooting.md
   - Workflows:
@@ -142,11 +144,6 @@ nav:
     - Common Decisions: common-decisions.md
   - Help:
     - Frequently Asked Questions: faq.md
-  - Contributing:
-    - Documentation Guidelines: contributing/README.md
-    - Voice & Tone Guide: contributing/voice-and-tone-guide.md
-    - Documentation Writing Guide: contributing/documentation-writing-guide.md
-    - Screenshot Guide: contributing/screenshot-guide.md
 
 # Extra CSS/JS (optional for future customization)
 # extra_css:

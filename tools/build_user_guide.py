@@ -33,10 +33,11 @@ from pathlib import Path
 # Set UTF-8 encoding for Windows console output
 if sys.platform == "win32":
     import io
-    if sys.stdout.encoding != 'utf-8':
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    if sys.stderr.encoding != 'utf-8':
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+    if sys.stdout.encoding != "utf-8":
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    if sys.stderr.encoding != "utf-8":
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
 # Color codes for terminal output
 GREEN = "\033[92m"
@@ -50,7 +51,7 @@ def main() -> int:
     """Build the user guide documentation using MkDocs."""
     # Get project root (parent of tools/)
     project_root = Path(__file__).parent.parent.resolve()
-    output_dir = project_root / "resources" / "user-guide"
+    output_dir = project_root / "resources" / "user-guide" / "site"
 
     # Verify mkdocs.yml exists
     mkdocs_config = project_root / "mkdocs.yml"
@@ -60,9 +61,9 @@ def main() -> int:
         return 1
 
     # Verify docs directory exists
-    docs_dir = project_root / "docs"
+    docs_dir = project_root / "resources" / "user-guide" / "docs"
     if not docs_dir.exists():
-        print(f"{RED}ERROR: docs/ directory not found at {docs_dir}{RESET}")
+        print(f"{RED}ERROR: User guide source directory not found at {docs_dir}{RESET}")
         print(f"{YELLOW}Please ensure the documentation source directory exists.{RESET}")
         return 1
 

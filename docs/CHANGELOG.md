@@ -10,6 +10,37 @@ Each entry includes:
 
 ---
 
+## Build at 2025-12-21T21:47:54.852259+00:00
+**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
+
+### Changes
+- Updated plans index (1 active plans)
+- Rebuilt CONTEXT.md (10,801 chars)
+- Updated SUMMARY.md
+
+## Build at 2025-12-21T21:17:58.593128+00:00
+**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
+
+### Changes
+- Updated plans index (2 active plans)
+- Rebuilt CONTEXT.md (11,233 chars)
+- Updated SUMMARY.md
+
+## Build at 2025-12-21T20:24:42.737439+00:00
+**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
+
+### Changes
+- Updated plans index (6 active plans)
+- Rebuilt CONTEXT.md (12,406 chars)
+- Updated SUMMARY.md
+
+## Build at 2025-12-21T20:16:41.725713+00:00
+**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
+
+### Changes
+- Rebuilt CONTEXT.md (10,419 chars)
+- Updated SUMMARY.md
+
 ## Build at 2025-12-21T11:25:30.863420+00:00
 **Source SHA**: b296f3d60e038e79fb1c7c1af20c56da9bd94104
 

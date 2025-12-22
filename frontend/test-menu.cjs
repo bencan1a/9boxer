@@ -76,7 +76,7 @@ if (mainTs.includes('Menu.setApplicationMenu(menu)')) {
 const mainJsPath = path.join(__dirname, 'dist-electron/main/index.js');
 if (fs.existsSync(mainJsPath)) {
   console.log('✅ main index.js compiled');
-  
+
   const mainJs = fs.readFileSync(mainJsPath, 'utf8');
   if (mainJs.includes("createMenu") && mainJs.includes("setApplicationMenu")) {
     console.log('✅ Menu setup in compiled main process');

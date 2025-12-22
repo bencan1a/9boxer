@@ -277,7 +277,9 @@ class SessionManager:
             raise ValueError("No active session")
 
         # Find donut change entry for this employee
-        change_entry = next((c for c in session.donut_changes if c.employee_id == employee_id), None)
+        change_entry = next(
+            (c for c in session.donut_changes if c.employee_id == employee_id), None
+        )
         if not change_entry:
             raise ValueError(f"No donut change entry found for employee {employee_id}")
 
