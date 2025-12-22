@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-21T21:47:54.838683+00:00
-**Source SHA**: a751b4cdf1187b23c73cb1dcf96270fe58e3376d
+**Generated**: 2025-12-22T18:23:23.468605+00:00
+**Source SHA**: 7905eecb9aabec659f67171a10ecca271c0f6559
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -216,7 +216,16 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 1 active plan(s):
+There are 2 active plan(s):
+
+### big-movers-feature
+- Owner: Claude
+- Created: 2025-12-21
+- Summary:
+  - Add "big mover" detection for employees who moved significantly between positions
+  - Display badge on employee tiles for big movers
+  - Add filtering capability to show only big movers
+  - Ensure dynamic updates when employees are moved via drag-and-drop
 
 ### ninebox-expand-collapse
 - Owner: Claude Code
