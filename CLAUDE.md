@@ -289,6 +289,79 @@ bandit -r backend/src/         # Security scan
 make fix                       # Auto-fix formatting and linting
 ```
 
+### 🚨 Pre-Commit Hooks (REQUIRED FOR ALL COMMITS) 🚨
+
+**CRITICAL: All code changes MUST pass pre-commit hooks before being committed.**
+
+Pre-commit hooks are configured to run the exact same checks as CI pipeline to prevent CI failures.
+
+#### For Claude Code Agents
+
+**MANDATORY WORKFLOW:**
+1. **BEFORE running `git add`**, ALWAYS run pre-commit checks first
+2. Fix any issues found by pre-commit
+3. Only after pre-commit passes, proceed with `git add` and `git commit`
+
+```bash
+# REQUIRED before any git operations
+.venv/Scripts/activate              # Windows (activate venv first!)
+# or
+. .venv/bin/activate                # Linux/macOS
+
+# Run pre-commit on files you're about to commit
+pre-commit run --files <file1> <file2> ...
+
+# Or run on all files (slower but comprehensive)
+pre-commit run --all-files
+
+# If checks pass, proceed with git operations
+git add <files>
+git commit -m "message"
+```
+
+#### What Pre-Commit Checks
+
+The pre-commit hooks run the same checks as CI:
+- **Ruff format**: Code formatting (matches `make format-check`)
+- **Ruff lint**: Code linting (matches `make lint`)
+- **Mypy**: Type checking (matches `make type-check`)
+- **Bandit**: Security scanning (matches `make security`)
+- **YAML/JSON validation**: File syntax checks
+- **Basic checks**: Trailing whitespace, end-of-file fixers, merge conflicts
+
+#### Fixing Pre-Commit Failures
+
+```bash
+# Auto-fix formatting and linting issues
+make fix
+
+# Re-run pre-commit to verify
+pre-commit run --all-files
+
+# If still failing, manually fix remaining issues
+# Then proceed with git add/commit
+```
+
+#### Installation (One-Time Setup)
+
+Pre-commit hooks should already be installed. If not:
+```bash
+.venv/Scripts/activate              # Windows
+# or
+. .venv/bin/activate                # Linux/macOS
+
+pre-commit install
+```
+
+#### Why This Matters
+
+- **Prevents CI failures**: Pre-commit runs the exact same checks as CI
+- **Faster feedback**: Catch issues locally before pushing
+- **Saves time**: No need to wait for CI to fail and fix later
+- **Better code quality**: Enforces consistent standards
+
+**REMEMBER: No commit should ever bypass pre-commit checks!**
+
 ### Frontend Commands
 ```bash
 cd frontend
@@ -626,10 +699,37 @@ The `tools/build_context.py` script automatically:
     - another bullet point
   ```
 
+**When updating plan status:**
+- **Mark as `done`** when:
+  - All planned work is complete
+  - Feature is merged and deployed
+  - No further work is planned for this project
+- **Mark as `paused`** when:
+  - Work is blocked or waiting for external dependencies
+  - Temporarily deprioritized but will resume later
+- **Keep as `active`** only when:
+  - Actively working on the project
+  - Ready to work and unblocked
+- **Note**: Plans older than 21 days are automatically excluded from documentation, regardless of status
+
 **When doing temporary work:**
 - Use `agent-tmp/` for all scratch work
 - Files auto-deleted after 7 days
 - Never commit these files (gitignored)
+
+**Choosing between agent-projects/ and agent-tmp/:**
+- **Use `agent-projects/`** for:
+  - Long-running features (multi-day/week efforts)
+  - Significant refactors that change architecture
+  - Work that needs to be tracked and referenced by multiple agents
+  - Projects with multiple phases or milestones
+  - Examples: New major features, architectural changes, large-scale refactors
+- **Use `agent-tmp/`** for:
+  - Quick bug fixes and small improvements
+  - Exploratory analysis and debugging
+  - One-off scripts and temporary utilities
+  - Work that doesn't change core architecture
+  - Examples: Bug investigations, performance profiling, code cleanup
 
 **When writing or revising user documentation:**
 - Follow the comprehensive writing standards in `docs/contributing/`
