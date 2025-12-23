@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-22T22:33:39.460202+00:00
+**Updated**: 2025-12-23T02:42:25.722660+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## big-movers-feature
