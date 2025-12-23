@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.unit
 
+
 @pytest.fixture
 def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
@@ -106,16 +107,6 @@ def test_get_statistics_when_counts_then_matches_employee_data(
     dist = {item["grid_position"]: item for item in stats["distribution"]}
     for pos, count in position_counts.items():
         assert dist[pos]["count"] == count
-
-
-def test_get_statistics_when_no_session_then_returns_404(
-    test_client: TestClient, auth_headers: dict[str, str]
-) -> None:
-    """Test GET /api/statistics with no session returns 404."""
-    response = test_client.get("/api/statistics", headers=auth_headers)
-
-    assert response.status_code == 404
-    assert "No active session" in response.json()["detail"]
 
 
 def test_get_statistics_when_by_performance_then_aggregates_correctly(

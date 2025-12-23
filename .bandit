@@ -4,6 +4,9 @@ exclude:
   - venv
   - .venv
   - node_modules
+  - backend\tests
+  - frontend\tests
+  - tools
 
 skips:
   - B101

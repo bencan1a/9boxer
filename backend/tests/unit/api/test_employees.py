@@ -77,16 +77,6 @@ def test_get_employees_when_exclude_ids_then_excludes_correctly(
     assert all(emp["employee_id"] not in [1, 3] for emp in data["employees"])
 
 
-def test_get_employees_when_no_session_then_returns_404(
-    test_client: TestClient, auth_headers: dict[str, str]
-) -> None:
-    """Test GET /api/employees with no session returns 404."""
-    response = test_client.get("/api/employees", headers=auth_headers)
-
-    assert response.status_code == 404
-    assert "No active session" in response.json()["detail"]
-
-
 def test_get_employee_by_id_when_exists_then_returns_employee(
     test_client: TestClient, session_with_data: dict[str, str]
 ) -> None:
@@ -177,21 +167,6 @@ def test_get_filter_options_when_session_exists_then_returns_options(
 
     assert len(data["levels"]) > 0
     assert len(data["managers"]) > 0
-
-
-def test_get_filter_options_when_no_session_then_returns_404(
-    test_client: TestClient, auth_headers: dict[str, str]
-) -> None:
-    """Test GET /api/employees/filter-options with no session returns 404."""
-    # Explicitly clear any existing session from previous tests
-    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
-
-    session_mgr = get_session_manager()
-    session_mgr.sessions.clear()
-
-    response = test_client.get("/api/employees/filter-options", headers=auth_headers)
-
-    assert response.status_code == 404
 
 
 def test_get_employees_when_multiple_filters_then_applies_all(

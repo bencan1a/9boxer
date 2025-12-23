@@ -57,8 +57,9 @@ def test_get_connection_when_query_executes_then_commits(db_manager: DatabaseMan
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                current_employees, changes, updated_at,
+                donut_changes, donut_mode_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 "test_user",
@@ -73,6 +74,8 @@ def test_get_connection_when_query_executes_then_commits(db_manager: DatabaseMan
                 "[]",
                 "[]",
                 "2025-12-18T10:00:00",
+                "[]",
+                0,
             ),
         )
 
@@ -97,8 +100,9 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                current_employees, changes, updated_at,
+                donut_changes, donut_mode_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 "rollback_test",
@@ -113,6 +117,8 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 "[]",
                 "[]",
                 "2025-12-18T10:00:00",
+                "[]",
+                0,
             ),
         )
 
@@ -125,8 +131,9 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                current_employees, changes, updated_at,
+                donut_changes, donut_mode_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 "rollback_test",  # Duplicate user_id
@@ -141,6 +148,8 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 "[]",
                 "[]",
                 "2025-12-18T11:00:00",
+                "[]",
+                0,
             ),
         )
 
@@ -201,8 +210,9 @@ def test_multiple_connections_when_opened_then_work_independently(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                current_employees, changes, updated_at,
+                donut_changes, donut_mode_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 "multi_test",
@@ -217,6 +227,8 @@ def test_multiple_connections_when_opened_then_work_independently(
                 "[]",
                 "[]",
                 "2025-12-18T10:00:00",
+                "[]",
+                0,
             ),
         )
 

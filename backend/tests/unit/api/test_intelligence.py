@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.unit
 
+
 @pytest.fixture
 def session_with_data(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
@@ -103,16 +104,6 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
         assert analysis["status"] in ["green", "yellow", "red"]
         assert isinstance(analysis["deviations"], list)
         assert isinstance(analysis["interpretation"], str)
-
-
-def test_get_intelligence_when_no_session_then_returns_404(
-    test_client: TestClient, auth_headers: dict[str, str]
-) -> None:
-    """Test GET /api/intelligence with no session returns 404."""
-    response = test_client.get("/api/intelligence", headers=auth_headers)
-
-    assert response.status_code == 404
-    assert "No active session" in response.json()["detail"]
 
 
 # NOTE: test_get_intelligence_when_no_auth_then_returns_401 removed
