@@ -22,24 +22,52 @@ def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
     # Get worker ID for parallel test execution (pytest-xdist)
     worker_id = getattr(request.config, 'workerinput', {}).get('workerid', 'master')
 
-    # Create a temporary database with worker-specific name
-    suffix = f"_{worker_id}.db" if worker_id != 'master' else ".db"
-    with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
-        db_path = f.name
+    # Create a temporary directory for this worker's database
+    temp_dir = tempfile.mkdtemp(suffix=f"_{worker_id}_ninebox_test")
+    db_path = os.path.join(temp_dir, "ninebox.db")
 
-    # Set environment variable for tests
+    # Save original environment variables so we can restore them
+    # This is critical for VSCode pytest extension communication
+    original_app_data_dir = os.environ.get("APP_DATA_DIR")
+    original_database_path = os.environ.get("DATABASE_PATH")
+
+    # Set APP_DATA_DIR so get_user_data_dir() returns our test directory
+    # This ensures DatabaseManager uses the test database
+    os.environ["APP_DATA_DIR"] = temp_dir
+    # Also set DATABASE_PATH for any legacy code that might use it
     os.environ["DATABASE_PATH"] = db_path
 
     yield db_path
 
-    # Cleanup
-    if os.path.exists(db_path):  # noqa: PTH110
-        os.unlink(db_path)  # noqa: PTH108
+    # Restore original environment variables FIRST (important for VSCode extension)
+    if original_app_data_dir is None:
+        os.environ.pop("APP_DATA_DIR", None)
+    else:
+        os.environ["APP_DATA_DIR"] = original_app_data_dir
+
+    if original_database_path is None:
+        os.environ.pop("DATABASE_PATH", None)
+    else:
+        os.environ["DATABASE_PATH"] = original_database_path
+
+    # Then cleanup files
+    try:
+        if os.path.exists(db_path):  # noqa: PTH110
+            os.unlink(db_path)  # noqa: PTH108
+    except Exception:
+        pass  # Ignore cleanup errors
+
+    try:
+        if os.path.exists(temp_dir):  # noqa: PTH110
+            import shutil  # noqa: PLC0415
+            shutil.rmtree(temp_dir)  # Remove directory and any remaining contents
+    except Exception:
+        pass  # Ignore cleanup errors
 
 
 @pytest.fixture(autouse=True)
 def setup_test_db() -> Generator[None, None, None]:
-    """Clean up in-memory state and database after each test.
+    """Clean up in-memory state and database before and after each test.
 
     This fixture clears dependency injection caches, in-memory state,
     and database sessions to ensure tests start with a clean slate.
@@ -47,11 +75,19 @@ def setup_test_db() -> Generator[None, None, None]:
     Note: Integration tests use transaction-based isolation (see integration/conftest.py),
     so this database cleanup only affects unit tests.
     """
-    yield
-
-    # Clear in-memory state from dependency injection cache
+    # BEFORE test: ensure clean state for xdist robustness
     from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
 
+    try:
+        mgr = get_session_manager()
+        mgr._sessions_loaded = False
+        mgr._sessions.clear()
+    except Exception:
+        pass
+
+    yield
+
+    # AFTER test: Clean up in-memory state from dependency injection cache
     # Reset session manager's in-memory state
     try:
         mgr = get_session_manager()

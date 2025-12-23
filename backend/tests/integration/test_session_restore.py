@@ -352,8 +352,9 @@ class TestErrorHandling:
                     user_id, session_id, created_at, original_filename,
                     original_file_path, sheet_name, sheet_index,
                     job_function_config, original_employees,
-                    current_employees, changes, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    current_employees, changes, updated_at,
+                    donut_changes, donut_mode_active
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     "corrupt_user",
@@ -368,6 +369,8 @@ class TestErrorHandling:
                     "[]",
                     "[]",
                     datetime.now(timezone.utc).isoformat(),
+                    "[]",
+                    0,
                 ),
             )
 
@@ -394,8 +397,9 @@ class TestErrorHandling:
                     user_id, session_id, created_at, original_filename,
                     original_file_path, sheet_name, sheet_index,
                     job_function_config, original_employees,
-                    current_employees, changes, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    current_employees, changes, updated_at,
+                    donut_changes, donut_mode_active
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     "error_user",
@@ -410,6 +414,8 @@ class TestErrorHandling:
                     "[]",
                     "[]",
                     datetime.now(timezone.utc).isoformat(),
+                    "[]",
+                    0,
                 ),
             )
 

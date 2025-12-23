@@ -377,8 +377,9 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
             user_id, session_id, created_at, original_filename,
             original_file_path, sheet_name, sheet_index,
             job_function_config, original_employees,
-            current_employees, changes, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            current_employees, changes, updated_at,
+            donut_changes, donut_mode_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             "corrupt_user",
@@ -393,6 +394,8 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
             "[]",
             "[]",
             datetime.utcnow().isoformat(),
+            "[]",
+            0,
         ),
     )
     conn.commit()
