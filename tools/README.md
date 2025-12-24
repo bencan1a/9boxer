@@ -67,6 +67,35 @@ Generates application icons from source SVG.
 python tools/generate_icon.py
 ```
 
+### `validate-translations.py`
+Validates i18n translation JSON files for consistency and correctness.
+
+**Purpose**: Pre-commit hook that catches translation file errors before they reach the codebase.
+
+**Validations**:
+- JSON syntax correctness
+- Key parity between language files (no missing translations)
+- Structure consistency (nested objects match)
+- Placeholder consistency (e.g., `{{count}}`, `{{name}}`)
+
+**Usage**:
+```bash
+# Validate specific files
+python tools/validate-translations.py en/translation.json es/translation.json
+
+# Validate all translation files
+python tools/validate-translations.py frontend/src/i18n/locales/*/translation.json
+
+# Runs automatically via pre-commit hook when translation files are changed
+git commit -m "Update translations"
+```
+
+**Exit codes**:
+- `0`: All validations passed
+- `1`: Validation errors found (with detailed error messages)
+
+**Integration**: Configured as a pre-commit hook in `.pre-commit-config.yaml` to run automatically on staged translation files.
+
 ## Deprecated Tools
 
 ### ~~`generate_docs_screenshots.py`~~ (DELETED)
