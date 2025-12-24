@@ -202,7 +202,13 @@ npx playwright install --with-deps chromium
 
 ### Why `uv pip install --system`?
 
-We use `uv` for faster package installation. The `--system` flag is used because we want to install packages into the virtual environment (not user site-packages), and `uv` defaults to user-level installs when in a venv.
+We use `uv` for faster package installation and `--system` to install packages directly into the system Python provided by GitHub Actions. This approach:
+- Eliminates the need for virtual environment management in CI
+- Matches the pattern used in existing CI workflows (`.github/workflows/ci.yml`)
+- Simplifies the workflow by avoiding venv activation in each step
+- Works reliably in GitHub Actions' isolated runner environment
+
+Each GitHub Actions job runs in an isolated environment, so system-level installations don't conflict with other jobs.
 
 ### Why `npm ci` instead of `npm install`?
 
