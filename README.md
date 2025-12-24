@@ -326,12 +326,21 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 
 ## Contributing
 
+**For AI Agents/Developers**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for comprehensive onboarding and development workflow.
+
 1. Create a feature branch: `git checkout -b feature/your-feature`
 2. Make your changes
 3. Run tests: `pytest` (backend), `npm test` (frontend)
 4. Commit: `git commit -m "feat: Add feature"`
 5. Push: `git push origin feature/your-feature`
 6. Create a Pull Request
+
+**Development Guides:**
+- [GITHUB_AGENT.md](GITHUB_AGENT.md) - Quick start for AI agents and developers
+- [AGENTS.md](AGENTS.md) - Development workflow and best practices
+- [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+- [docs/QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md) - Command quick reference
 
 ## License
 
