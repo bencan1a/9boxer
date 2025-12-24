@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "9Boxer logo"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "Filter employees",
+      "activeFilters": "Active filters:",
+      "levels": "Levels",
+      "functions": "Functions",
+      "locations": "Locations",
+      "managers": "Managers",
+      "excluded": "Excluded",
+      "employees": "employee(s)",
+      "help": "Help",
+      "settings": "Settings",
+      "userGuideError": "Failed to open user guide",
+      "userGuideOnlyDesktop": "User guide is only available in the desktop application"
+    },
+    "fileMenu": {
+      "noFileSelected": "No file selected",
+      "fileMenuAriaLabel": "File menu: {{filename}}, {{count}} pending changes",
+      "fileMenuAriaLabelNoFile": "File menu: No file selected",
+      "importData": "Import Data",
+      "exportChanges": "Apply {{count}} Change to Excel",
+      "exportChanges_other": "Apply {{count}} Changes to Excel",
+      "exporting": "Exporting...",
+      "openRecentFile": "Open Recent File",
+      "comingSoon": "(Coming Soon)",
+      "noActiveSession": "No active session",
+      "exportSuccess": "Successfully exported {{count}} change to {{filename}}",
+      "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}"
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "retry": "Retry",
+    "quit": "Quit"
+  },
+  "messages": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}
