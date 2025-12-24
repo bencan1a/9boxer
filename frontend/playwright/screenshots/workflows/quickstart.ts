@@ -89,6 +89,9 @@ export async function generateUploadDialog(
 
   // Capture the dialog
   await dialog.screenshot({ path: outputPath });
+
+  // Close dialog after capturing to prevent blocking subsequent screenshots
+  await closeAllDialogsAndOverlays(page);
 }
 
 /**

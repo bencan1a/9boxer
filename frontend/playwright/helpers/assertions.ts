@@ -85,13 +85,11 @@ export async function ensureChangesExist(
   page: Page,
   minChanges: number = 1,
 ): Promise<number> {
-  const currentCount = await getBadgeCount(page, "changes-tab-badge");
+  let currentCount = await getBadgeCount(page, "changes-tab-badge");
 
   if (currentCount >= minChanges) {
     return 0;
   }
-
-  const needed = minChanges - currentCount;
 
   // Get available employees to move
   const employees = page.locator('[data-testid^="employee-card-"]');
@@ -105,21 +103,58 @@ export async function ensureChangesExist(
   // Define target positions to use (cycling through positions 1-9)
   const targetPositions = [1, 2, 3, 4, 6, 7, 8, 9]; // Skip 5 (center)
 
-  for (let i = 0; i < needed && i < count; i++) {
-    const employeeCard = employees.nth(i);
+  let successfulMoves = 0;
+  let attemptIndex = 0;
+  const maxAttempts = Math.min(count, minChanges * 2); // Try up to 2x employees needed
+
+  while (successfulMoves < minChanges && attemptIndex < maxAttempts) {
+    // Re-query employees and current count on each iteration
+    const freshEmployees = page.locator('[data-testid^="employee-card-"]');
+    const employeeCard = freshEmployees.nth(attemptIndex);
     const employeeId = await getEmployeeIdFromCard(employeeCard);
-    const targetPosition = targetPositions[i % targetPositions.length];
+
+    // Get current position to avoid moving to same position
+    const currentPosition = await employeeCard.getAttribute("data-position");
+    const currentPosNum = parseInt(currentPosition || "0", 10);
+
+    // Find a target position different from current
+    let targetPosition = targetPositions[attemptIndex % targetPositions.length];
+    if (targetPosition === currentPosNum) {
+      // If target matches current, use next position in array
+      targetPosition = targetPositions[(attemptIndex + 1) % targetPositions.length];
+    }
 
     try {
       await dragEmployeeToPosition(page, employeeId, targetPosition, {
+        maxRetries: 5, // Increased from default 2 (per issue #29)
         skipApiWait: false,
         expectModified: true,
       });
+
+      successfulMoves++;
+
+      // Add longer stabilization between consecutive drags (per issue #29)
+      // This prevents race conditions when creating multiple changes
+      await page.waitForTimeout(1000);
+
+      // Check if we've reached the goal
+      currentCount = await getBadgeCount(page, "changes-tab-badge");
+      if (currentCount >= minChanges) {
+        console.log(`✓ Successfully created ${successfulMoves} changes (total: ${currentCount})`);
+        return successfulMoves;
+      }
     } catch (error) {
-      console.warn(`Failed to move employee ${employeeId}: ${error}`);
-      break;
+      console.warn(`Failed to move employee ${employeeId} (attempt ${attemptIndex + 1}): ${error}`);
+      // Continue trying other employees
     }
+
+    attemptIndex++;
   }
 
-  return needed;
+  console.log(`Created ${successfulMoves} successful moves (needed ${minChanges})`);
+
+  // Wait for final UI updates and badge to appear
+  await waitForUiSettle(page, 1.0);
+
+  return successfulMoves;
 }
