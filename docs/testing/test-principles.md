@@ -415,6 +415,113 @@ test('sets state correctly', () => {
 });
 ```
 
+### Internationalization (i18n) Testing
+
+**Principle:** Tests should use translation keys instead of hardcoded strings to remain valid when translations change.
+
+**Rules:**
+- ✓ **Use `getTranslatedText()` helper** for assertions in component tests
+- ✓ **Use `data-testid` selectors** for E2E tests instead of text
+- ❌ **NO hardcoded English strings** in test assertions
+- ✓ **Test pluralization** with multiple count values
+- ✓ **Validate translation keys exist** (tests fail if keys are missing)
+
+**Setup:**
+```typescript
+// Test infrastructure automatically includes I18nTestWrapper
+// Import the helper function:
+import { getTranslatedText } from '@/test/i18nTestUtils';
+```
+
+**Component Test Examples:**
+
+```typescript
+// ✓ GOOD: Use translation keys via helper
+test('displays employee count with proper pluralization', () => {
+  const count = 5;
+  render(<EmployeeCount totalCount={count} />);
+  
+  const expectedText = `${count} ${getTranslatedText('grid.employeeCount.employee', { count })}`;
+  expect(screen.getByText(expectedText)).toBeInTheDocument();
+});
+
+// ✓ GOOD: Test pluralization with different counts
+test('uses singular form for 1 employee', () => {
+  render(<EmployeeCount totalCount={1} />);
+  
+  expect(screen.getByText(
+    `1 ${getTranslatedText('grid.employeeCount.employee', { count: 1 })}`
+  )).toBeInTheDocument();
+});
+
+// ✓ GOOD: Test aria-labels with translations
+test('has correct accessibility labels', () => {
+  render(<ViewModeToggle />);
+  
+  const toggleGroup = screen.getByTestId('view-mode-toggle');
+  expect(toggleGroup).toHaveAttribute(
+    'aria-label', 
+    getTranslatedText('grid.viewModeToggle.ariaLabelToggle')
+  );
+});
+
+// ❌ BAD: Hardcoded English strings
+test('displays employee count', () => {
+  render(<EmployeeCount totalCount={5} />);
+  expect(screen.getByText('5 employees')).toBeInTheDocument(); // Will break when translations change!
+});
+```
+
+**E2E Test Examples:**
+
+```typescript
+// ✓ GOOD: Use data-testid for stable selectors
+test('uploads file successfully', async ({ page }) => {
+  await page.getByTestId('upload-button').click();
+  await page.getByTestId('file-input').setInputFiles('test.xlsx');
+  await page.getByTestId('submit-button').click();
+  
+  await expect(page.getByTestId('success-message')).toBeVisible();
+});
+
+// ✓ GOOD: Use text selectors only for language-switching tests
+test('switches language from English to Spanish', async ({ page }) => {
+  await expect(page.getByText('Details')).toBeVisible(); // English
+  await page.getByRole('combobox').click();
+  await page.getByRole('option', { name: /Español/i }).click();
+  await expect(page.getByText('Detalles')).toBeVisible(); // Spanish
+});
+
+// ❌ BAD: Text selectors for non-language tests (brittle!)
+test('opens filter drawer', async ({ page }) => {
+  await page.getByText('Filter employees').click(); // Will break with translations!
+});
+```
+
+**Benefits:**
+- ✅ Tests remain valid when translations change
+- ✅ Easier to add new languages without breaking tests
+- ✅ Tests validate that i18n keys exist (catch missing translations early)
+- ✅ Consistent with production code patterns
+- ✅ Language-switching tests gain more value
+
+**Common Patterns:**
+
+```typescript
+// Pattern 1: Simple translation
+const text = getTranslatedText('common.ok');
+
+// Pattern 2: With interpolation
+const text = getTranslatedText('dashboard.fileMenu.exportChanges', { count: 3 });
+
+// Pattern 3: Pluralization
+const text = getTranslatedText('grid.employeeCount.employee', { count: 1 }); // "employee"
+const text = getTranslatedText('grid.employeeCount.employee', { count: 5 }); // "employees"
+
+// Pattern 4: Complex string with multiple translations
+const expectedText = `${filteredCount} ${getTranslatedText('grid.employeeCount.of')} ${totalCount} ${getTranslatedText('grid.employeeCount.employee', { count: totalCount })}`;
+```
+
 ### E2E Tests (Playwright)
 
 ```typescript

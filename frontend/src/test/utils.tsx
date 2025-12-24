@@ -3,6 +3,7 @@ import { render, RenderOptions } from '@testing-library/react'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { getTheme } from '../theme/theme'
+import { I18nTestWrapper } from './i18nTestUtils'
 
 // Create a default theme for testing (light mode)
 const theme = getTheme('light')
@@ -14,10 +15,12 @@ interface AllTheProvidersProps {
 
 const AllTheProviders: React.FC<AllTheProvidersProps> = ({ children }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
+    <I18nTestWrapper>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </I18nTestWrapper>
   )
 }
 
