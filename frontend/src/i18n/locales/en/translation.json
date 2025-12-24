@@ -29,7 +29,8 @@
       "openRecentFile": "Open Recent File",
       "comingSoon": "(Coming Soon)",
       "noActiveSession": "No active session",
-      "exportSuccess": "Successfully exported {{count}} change(s) to {{filename}}"
+      "exportSuccess": "Successfully exported {{count}} change to {{filename}}",
+      "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}"
     }
   },
   "common": {

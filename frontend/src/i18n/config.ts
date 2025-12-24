@@ -30,6 +30,7 @@ i18n
         translation: esTranslation,
       },
     },
+    supportedLngs: ['en', 'es'], // Restrict to supported languages only
     fallbackLng: 'en', // Use English if detected language is not available
     debug: import.meta.env.DEV, // Enable debug in development
     interpolation: {
@@ -40,6 +41,9 @@ i18n
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
       lookupLocalStorage: '9boxer-language',
+    },
+    react: {
+      useSuspense: false, // Disable suspense since resources are loaded synchronously
     },
   });
 

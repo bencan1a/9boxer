@@ -186,7 +186,7 @@ The `LanguageSelector` component is integrated into the AppBar and allows users 
 
 ## For Translators
 
-See [translation-workflow.md](./translation-workflow.md) for details on how to contribute translations.
+Translation workflow documentation is planned for future phases. For now, translations can be added directly to the JSON files in `frontend/src/i18n/locales/`.
 
 ## Best Practices
 

@@ -23,15 +23,20 @@ export const LanguageSelector: React.FC = () => {
     i18n.changeLanguage(newLanguage);
   };
 
+  // Normalize language code to handle variants (e.g., 'en-US' -> 'en')
+  const getCurrentLanguage = (): SupportedLanguage => {
+    const baseLang = i18n.language.split('-')[0];
+    return (baseLang in SUPPORTED_LANGUAGES) ? baseLang as SupportedLanguage : 'en';
+  };
+
   return (
     <FormControl size="small" sx={{ minWidth: 120 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <LanguageIcon fontSize="small" />
         <Select
-          value={i18n.language}
+          value={getCurrentLanguage()}
           onChange={handleLanguageChange}
           displayEmpty
-          inputProps={{ 'aria-label': 'Language selector' }}
           sx={{
             '& .MuiSelect-select': {
               py: 0.5,

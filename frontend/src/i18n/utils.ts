@@ -34,12 +34,21 @@ export const isSupportedLanguage = (language: string): boolean => {
 };
 
 /**
+ * Escape special regex characters in a string
+ */
+const escapeRegExp = (str: string): string =>
+  str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
  * Format a string with interpolation
  * Useful for dynamic messages
+ * Note: This duplicates i18next's built-in interpolation.
+ * Prefer using i18next's t() function with variables when possible.
  */
 export const interpolate = (template: string, values: Record<string, string | number>): string => {
   return Object.entries(values).reduce(
-    (result, [key, value]) => result.replace(new RegExp(`{{${key}}}`, 'g'), String(value)),
+    (result, [key, value]) =>
+      result.replace(new RegExp(`{{${escapeRegExp(key)}}}`, 'g'), String(value)),
     template
   );
 };

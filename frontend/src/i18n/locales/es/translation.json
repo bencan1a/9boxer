@@ -29,7 +29,8 @@
       "openRecentFile": "Abrir Archivo Reciente",
       "comingSoon": "(Próximamente)",
       "noActiveSession": "No hay sesión activa",
-      "exportSuccess": "Se exportaron exitosamente {{count}} cambio(s) a {{filename}}"
+      "exportSuccess": "Se exportó exitosamente {{count}} cambio a {{filename}}",
+      "exportSuccess_other": "Se exportaron exitosamente {{count}} cambios a {{filename}}"
     }
   },
   "common": {
