@@ -2,6 +2,9 @@
 
 This file provides critical guidance for all agents (human and AI) working on this project.
 
+> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.  
+> **For Claude Code**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance with platform-specific constraints.
+
 ## 📱 PROJECT OVERVIEW
 
 **9Boxer is a standalone desktop application** built with Electron that embeds a FastAPI backend bundled with PyInstaller.

@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.  
+> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for development workflow essentials.
+
 ## Project Overview
 
 **9Boxer is a standalone desktop application** built with Electron that embeds a FastAPI backend bundled with PyInstaller. It visualizes and manages employee performance using the 9-box talent grid methodology.

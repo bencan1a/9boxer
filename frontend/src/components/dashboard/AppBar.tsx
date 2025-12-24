@@ -12,7 +12,6 @@ import {
   Tooltip,
   Badge,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -22,9 +21,11 @@ import { FileMenu } from "./FileMenu";
 import { SettingsDialog } from "../settings/SettingsDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { logger } from "../../utils/logger";
+import { LanguageSelector } from "../common/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 export const AppBar: React.FC = () => {
-  const theme = useTheme();
+  const { t } = useTranslation();
   const { sessionId } = useSessionStore();
   const {
     toggleDrawer,
@@ -44,43 +45,43 @@ export const AppBar: React.FC = () => {
       if (window.electronAPI?.openUserGuide) {
         const result = await window.electronAPI.openUserGuide();
         if (!result.success) {
-          showError(result.error || "Failed to open user guide");
+          showError(result.error || t('dashboard.appBar.userGuideError'));
         }
       } else {
         // Fallback for web browser (not typically used)
-        showError("User guide is only available in the desktop application");
+        showError(t('dashboard.appBar.userGuideOnlyDesktop'));
       }
     } catch (error: unknown) {
       logger.error('Failed to open user guide', error);
-      showError("Failed to open user guide");
+      showError(t('dashboard.appBar.userGuideError'));
     }
   };
 
   // Build filter tooltip message
   const getFilterTooltip = (): string => {
     if (!hasActiveFilters) {
-      return "Filter employees";
+      return t('dashboard.appBar.filterEmployees');
     }
 
     const filterParts: string[] = [];
 
     if (selectedLevels.length > 0) {
-      filterParts.push(`Levels: ${selectedLevels.join(", ")}`);
+      filterParts.push(`${t('dashboard.appBar.levels')}: ${selectedLevels.join(", ")}`);
     }
     if (selectedJobFunctions.length > 0) {
-      filterParts.push(`Functions: ${selectedJobFunctions.join(", ")}`);
+      filterParts.push(`${t('dashboard.appBar.functions')}: ${selectedJobFunctions.join(", ")}`);
     }
     if (selectedLocations.length > 0) {
-      filterParts.push(`Locations: ${selectedLocations.join(", ")}`);
+      filterParts.push(`${t('dashboard.appBar.locations')}: ${selectedLocations.join(", ")}`);
     }
     if (selectedManagers.length > 0) {
-      filterParts.push(`Managers: ${selectedManagers.join(", ")}`);
+      filterParts.push(`${t('dashboard.appBar.managers')}: ${selectedManagers.join(", ")}`);
     }
     if (excludedEmployeeIds.length > 0) {
-      filterParts.push(`Excluded: ${excludedEmployeeIds.length} employee(s)`);
+      filterParts.push(`${t('dashboard.appBar.excluded')}: ${excludedEmployeeIds.length} ${t('dashboard.appBar.employees')}`);
     }
 
-    return `Active filters:\n${filterParts.join("\n")}`;
+    return `${t('dashboard.appBar.activeFilters')}\n${filterParts.join("\n")}`;
   };
 
   return (
@@ -91,11 +92,11 @@ export const AppBar: React.FC = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <img
               src="/build/icon_32x32.png"
-              alt="9Boxer logo"
+              alt={t('app.logoAlt')}
               style={{ width: 28, height: 28 }}
             />
             <Typography variant="h6" component="div">
-              9Boxer
+              {t('app.title')}
             </Typography>
           </Box>
 
@@ -135,7 +136,7 @@ export const AppBar: React.FC = () => {
               </span>
             </Tooltip>
 
-            <Tooltip title="Settings">
+            <Tooltip title={t('dashboard.appBar.settings')}>
               <IconButton
                 color="inherit"
                 onClick={() => setSettingsDialogOpen(true)}
@@ -145,7 +146,7 @@ export const AppBar: React.FC = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Open User Guide">
+            <Tooltip title={t('dashboard.appBar.help')}>
               <IconButton
                 color="inherit"
                 onClick={handleOpenHelp}
@@ -154,6 +155,10 @@ export const AppBar: React.FC = () => {
                 <HelpOutlineIcon />
               </IconButton>
             </Tooltip>
+
+            <Box sx={{ ml: 2 }}>
+              <LanguageSelector />
+            </Box>
           </Box>
         </Toolbar>
       </MuiAppBar>

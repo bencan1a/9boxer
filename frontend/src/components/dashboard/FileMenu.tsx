@@ -26,12 +26,14 @@ import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
 import { extractErrorMessage } from "../../types/errors";
 import { logger } from "../../utils/logger";
+import { useTranslation } from "react-i18next";
 
 /**
  * FileMenu component that provides file operations in a dropdown
  */
 export const FileMenu: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { sessionId, filename, changes } = useSessionStore();
   const { showSuccess, showError } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -58,7 +60,7 @@ export const FileMenu: React.FC = () => {
     handleClose();
 
     if (!sessionId) {
-      showError("No active session");
+      showError(t('dashboard.fileMenu.noActiveSession'));
       return;
     }
 
@@ -79,7 +81,7 @@ export const FileMenu: React.FC = () => {
       document.body.removeChild(a);
 
       showSuccess(
-        `Successfully exported ${changes.length} change(s) to ${filename}`
+        t('dashboard.fileMenu.exportSuccess', { count: changes.length, filename })
       );
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
@@ -96,12 +98,12 @@ export const FileMenu: React.FC = () => {
   };
 
   // Button label based on session state
-  const buttonLabel = sessionId && filename ? filename : "No file selected";
+  const buttonLabel = sessionId && filename ? filename : t('dashboard.fileMenu.noFileSelected');
 
   // Build ARIA label
   const ariaLabel = sessionId
-    ? `File menu: ${filename}, ${changes.length} pending changes`
-    : "File menu: No file selected";
+    ? t('dashboard.fileMenu.fileMenuAriaLabel', { filename, count: changes.length })
+    : t('dashboard.fileMenu.fileMenuAriaLabelNoFile');
 
   return (
     <>
@@ -164,7 +166,7 @@ export const FileMenu: React.FC = () => {
           data-testid="import-data-menu-item"
         >
           <UploadFileIcon sx={{ mr: 1 }} fontSize="small" />
-          Import Data
+          {t('dashboard.fileMenu.importData')}
         </MenuItem>
 
         <Divider />
@@ -180,8 +182,8 @@ export const FileMenu: React.FC = () => {
             <DownloadIcon sx={{ mr: 1 }} fontSize="small" />
           )}
           {isExporting
-            ? "Exporting..."
-            : `Apply ${changes.length} Change${changes.length !== 1 ? "s" : ""} to Excel`}
+            ? t('dashboard.fileMenu.exporting')
+            : t('dashboard.fileMenu.exportChanges', { count: changes.length })}
         </MenuItem>
 
         <Divider />
@@ -192,12 +194,12 @@ export const FileMenu: React.FC = () => {
           data-testid="recent-file-menu-item"
         >
           <HistoryIcon sx={{ mr: 1 }} fontSize="small" />
-          Open Recent File
+          {t('dashboard.fileMenu.openRecentFile')}
           <Typography
             variant="caption"
             sx={{ ml: 1, fontStyle: "italic", opacity: 0.6 }}
           >
-            (Coming Soon)
+            {t('dashboard.fileMenu.comingSoon')}
           </Typography>
         </MenuItem>
       </Menu>
