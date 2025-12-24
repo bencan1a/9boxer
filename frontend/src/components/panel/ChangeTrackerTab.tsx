@@ -103,7 +103,7 @@ export const ChangeTrackerTab: React.FC = () => {
         <TableHead>
           <TableRow>
             <TableCell>{t('panel.changeTrackerTab.employee')}</TableCell>
-            <TableCell>Movement</TableCell>
+            <TableCell>{t('panel.changeTrackerTab.movement')}</TableCell>
             <TableCell>{t('panel.changeTrackerTab.notes')}</TableCell>
           </TableRow>
         </TableHead>
