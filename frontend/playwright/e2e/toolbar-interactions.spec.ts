@@ -10,8 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { uploadExcelFile, dragEmployeeToPosition } from '../helpers';
-import * as path from 'path';
+import { uploadExcelFile, dragEmployeeToPosition, openFileMenu, openFilterDrawer, getEmployeeIdFromCard } from '../helpers';
 
 test.describe('FileMenu Component', () => {
   test.beforeEach(async ({ page }) => {
@@ -44,8 +43,7 @@ test.describe('FileMenu Component', () => {
     // Find an employee in grid box 9
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const firstEmployee = gridBox9.locator('[data-testid^="employee-card-"]').first();
-    const employeeCardTestId = await firstEmployee.getAttribute('data-testid');
-    const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
+    const employeeId = await getEmployeeIdFromCard(firstEmployee);
 
     // Move employee to different position
     await dragEmployeeToPosition(page, employeeId, 6);
@@ -63,9 +61,8 @@ test.describe('FileMenu Component', () => {
     // Upload file first
     await uploadExcelFile(page, 'sample-employees.xlsx');
 
-    // Click FileMenu button to open dropdown
-    const fileMenuButton = page.getByTestId('file-menu-button');
-    await fileMenuButton.click();
+    // Open FileMenu dropdown
+    await openFileMenu(page);
 
     // Verify menu appears
     const menu = page.getByTestId('file-menu');
@@ -94,13 +91,12 @@ test.describe('FileMenu Component', () => {
     // Make a change by moving an employee
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const firstEmployee = gridBox9.locator('[data-testid^="employee-card-"]').first();
-    const employeeCardTestId = await firstEmployee.getAttribute('data-testid');
-    const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
+    const employeeId = await getEmployeeIdFromCard(firstEmployee);
     await dragEmployeeToPosition(page, employeeId, 6);
     await page.waitForTimeout(500);
 
     // Open FileMenu
-    await page.getByTestId('file-menu-button').click();
+    await openFileMenu(page);
 
     // Verify Apply Changes is now enabled
     const applyChangesItem = page.getByTestId('export-changes-menu-item');
@@ -125,7 +121,7 @@ test.describe('FileMenu Component', () => {
     await uploadExcelFile(page, 'sample-employees.xlsx');
 
     // Open FileMenu
-    await page.getByTestId('file-menu-button').click();
+    await openFileMenu(page);
 
     // Click Import Data
     await page.getByTestId('import-data-menu-item').click();
@@ -259,11 +255,7 @@ test.describe('EmployeeCount in Grid', () => {
     expect(totalCount).toBeGreaterThan(0);
 
     // Open filter drawer
-    await page.getByTestId('filter-button').click();
-
-    // Wait for drawer to open and be visible
-    const filterDrawer = page.locator('[role="presentation"]').last();
-    await expect(filterDrawer).toBeVisible({ timeout: 10000 });
+    await openFilterDrawer(page);
 
     // Wait a bit more for content to load
     await page.waitForTimeout(1000);
@@ -445,8 +437,7 @@ test.describe('FileMenu Integration with Changes', () => {
 
     if (box9Count > 0 && box8Count > 0) {
       // Move first employee from box 9
-      const emp1TestId = await box9Employees.first().getAttribute('data-testid');
-      const emp1Id = parseInt(emp1TestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
+      const emp1Id = await getEmployeeIdFromCard(box9Employees.first());
       await dragEmployeeToPosition(page, emp1Id, 6);
       await page.waitForTimeout(500);
 
@@ -455,8 +446,7 @@ test.describe('FileMenu Integration with Changes', () => {
       await expect(badge).toContainText('1');
 
       // Move second employee from box 8
-      const emp2TestId = await box8Employees.first().getAttribute('data-testid');
-      const emp2Id = parseInt(emp2TestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
+      const emp2Id = await getEmployeeIdFromCard(box8Employees.first());
       await dragEmployeeToPosition(page, emp2Id, 3);
       await page.waitForTimeout(500);
 
@@ -465,7 +455,7 @@ test.describe('FileMenu Integration with Changes', () => {
       await expect(badge).toContainText('2');
 
       // Open FileMenu and verify Apply Changes text
-      await page.getByTestId('file-menu-button').click();
+      await openFileMenu(page);
       const applyItem = page.getByTestId('export-changes-menu-item');
       await expect(applyItem).toContainText('Apply 2 Changes to Excel');
     }
@@ -477,8 +467,7 @@ test.describe('FileMenu Integration with Changes', () => {
     // Make a change
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const firstEmployee = gridBox9.locator('[data-testid^="employee-card-"]').first();
-    const employeeCardTestId = await firstEmployee.getAttribute('data-testid');
-    const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
+    const employeeId = await getEmployeeIdFromCard(firstEmployee);
     await dragEmployeeToPosition(page, employeeId, 6);
     await page.waitForTimeout(500);
 
@@ -487,7 +476,7 @@ test.describe('FileMenu Integration with Changes', () => {
     await expect(fileMenuContainer.locator('.MuiBadge-badge')).toBeVisible();
 
     // Apply changes
-    await page.getByTestId('file-menu-button').click();
+    await openFileMenu(page);
     const downloadPromise = page.waitForEvent('download');
     await page.getByTestId('export-changes-menu-item').click();
     await downloadPromise;
@@ -499,7 +488,7 @@ test.describe('FileMenu Integration with Changes', () => {
     // It just exports the current state to Excel
     // The badge will remain visible showing the changes that were applied
     // Verify Apply Changes button is still enabled (changes persist after export)
-    await page.getByTestId('file-menu-button').click();
+    await openFileMenu(page);
     const applyItem = page.getByTestId('export-changes-menu-item');
     // The button should still show the change count (export doesn't clear changes)
     await expect(applyItem).toBeEnabled();

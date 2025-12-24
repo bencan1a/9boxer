@@ -1,0 +1,334 @@
+/**
+ * Screenshot metadata registry for documentation screenshot generation
+ *
+ * This file maps screenshot identifiers to their workflow modules, functions,
+ * output paths, and descriptions. Each screenshot is defined by metadata that
+ * tells the generator which function to call and where to save the output.
+ */
+
+export interface ScreenshotMetadata {
+  /** Module name in workflows/ directory (e.g., 'quickstart', 'changes') */
+  workflow: string;
+  /** Function name within the workflow module (e.g., 'generateChangesTab') */
+  function: string;
+  /** Output path for the screenshot file */
+  path: string;
+  /** Human-readable description of what this screenshot shows */
+  description: string;
+  /** True if requires manual capture/composition (not automated) */
+  manual?: boolean;
+}
+
+/**
+ * Screenshot registry
+ *
+ * Maps screenshot identifiers to their metadata. Screenshot identifiers are used
+ * for filtering when running the generator (e.g., npm run screenshots:generate changes-tab).
+ */
+export const screenshotConfig: Record<string, ScreenshotMetadata> = {
+  // Changes workflow screenshots (5 screenshots)
+  'changes-drag-sequence': {
+    workflow: 'changes',
+    function: 'generateDragSequence',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png',
+    description: 'Base grid for 3-panel drag sequence (requires manual composition)',
+    manual: true,
+  },
+  'changes-orange-border': {
+    workflow: 'changes',
+    function: 'generateOrangeBorder',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png',
+    description: 'Employee tile with orange modified border and badge',
+  },
+  'changes-employee-details': {
+    workflow: 'changes',
+    function: 'generateEmployeeDetails',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png',
+    description: 'Employee details panel showing updated ratings',
+  },
+  'changes-timeline-view': {
+    workflow: 'changes',
+    function: 'generateTimelineView',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png',
+    description: 'Performance History timeline in employee details',
+  },
+  'changes-tab': {
+    workflow: 'changes',
+    function: 'generateChangesTab',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png',
+    description: 'Changes tab with employee movements',
+  },
+
+  // Notes workflow screenshots (3 screenshots)
+  'notes-changes-tab-field': {
+    workflow: 'notes',
+    function: 'generateChangesTabField',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png',
+    description: 'Changes tab with note field highlighted',
+  },
+  'notes-good-example': {
+    workflow: 'notes',
+    function: 'generateGoodExample',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png',
+    description: 'Changes tab with well-written note example',
+  },
+  'notes-export-excel': {
+    workflow: 'notes',
+    function: 'generateExportExcel',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-notes-in-excel.png',
+    description: 'Excel export with notes column (manual capture required)',
+    manual: true,
+  },
+
+  // Filters workflow screenshots (4 screenshots)
+  'filters-active-chips': {
+    workflow: 'filters',
+    function: 'generateActiveChips',
+    path: 'resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png',
+    description: 'Grid view with active filter chips and orange dot indicator',
+  },
+  'filters-panel-expanded': {
+    workflow: 'filters',
+    function: 'generatePanelExpanded',
+    path: 'resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png',
+    description: 'Filter panel expanded showing all filter options',
+  },
+  'filters-before-after': {
+    workflow: 'filters',
+    function: 'generateBeforeAfter',
+    path: 'resources/user-guide/docs/images/screenshots/filters/filters-before-state.png',
+    description: 'Before/after filtering comparison (requires manual 2-panel composition)',
+    manual: true,
+  },
+  'filters-clear-all-button': {
+    workflow: 'filters',
+    function: 'generateClearAllButton',
+    path: 'resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png',
+    description: 'Filter drawer with Clear All button highlighted',
+  },
+
+  // Quickstart workflow screenshots (4 screenshots)
+  'quickstart-file-menu-button': {
+    workflow: 'quickstart',
+    function: 'generateFileMenuButton',
+    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png',
+    description: 'File menu button in toolbar showing "No file selected" empty state',
+  },
+  'quickstart-upload-dialog': {
+    workflow: 'quickstart',
+    function: 'generateUploadDialog',
+    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png',
+    description: 'File upload dialog with file selection input and upload button',
+  },
+  'quickstart-grid-populated': {
+    workflow: 'quickstart',
+    function: 'generateGridPopulated',
+    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png',
+    description: 'Populated 9-box grid after successful file upload',
+  },
+  'quickstart-success-annotated': {
+    workflow: 'quickstart',
+    function: 'generateSuccessAnnotated',
+    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png',
+    description:
+      'Full application view showing populated grid and employee count (requires manual annotation)',
+    manual: true,
+  },
+
+  // Calibration workflow screenshots (6 screenshots)
+  'calibration-file-import': {
+    workflow: 'calibration',
+    function: 'generateFileImport',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png',
+    description: 'File menu open with Import Data menu item highlighted',
+  },
+  'calibration-statistics-red-flags': {
+    workflow: 'calibration',
+    function: 'generateStatisticsRedFlags',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png',
+    description: 'Statistics tab showing distribution table with problematic patterns',
+  },
+  'calibration-intelligence-anomalies': {
+    workflow: 'calibration',
+    function: 'generateIntelligenceAnomalies',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-intelligence-anomalies.png',
+    description: 'Intelligence tab showing AI-powered anomaly detection results',
+  },
+  'calibration-filters-panel': {
+    workflow: 'calibration',
+    function: 'generateFiltersPanel',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png',
+    description: 'Filters panel with active filter selections applied',
+  },
+  'calibration-donut-mode-toggle': {
+    workflow: 'calibration',
+    function: 'generateDonutModeToggle',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png',
+    description: 'View mode toggle button in active donut mode state',
+  },
+  'calibration-donut-mode-grid': {
+    workflow: 'calibration',
+    function: 'generateDonutModeGrid',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png',
+    description:
+      'Grid in donut mode showing ghostly purple-bordered employees moved from position-5',
+  },
+  'calibration-export-results': {
+    workflow: 'calibration',
+    function: 'generateExportResults',
+    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png',
+    description: 'Exported Excel file with changes applied',
+    manual: true,
+  },
+
+  // Statistics workflow screenshots (3 screenshots)
+  'statistics-panel-distribution': {
+    workflow: 'statistics',
+    function: 'generatePanelDistribution',
+    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png',
+    description: 'Statistics panel showing employee distribution across boxes',
+  },
+  'statistics-ideal-actual-comparison': {
+    workflow: 'statistics',
+    function: 'generateIdealActualComparison',
+    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png',
+    description: 'Ideal vs actual distribution comparison chart',
+  },
+  'statistics-trend-indicators': {
+    workflow: 'statistics',
+    function: 'generateTrendIndicators',
+    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png',
+    description: 'Trend indicators showing distribution changes over time',
+  },
+
+  // Donut mode screenshots (2 screenshots)
+  'donut-mode-active-layout': {
+    workflow: 'donut',
+    function: 'generateActiveLayout',
+    path: 'resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png',
+    description: 'Active donut mode layout with concentric circles',
+  },
+  'donut-mode-toggle-comparison': {
+    workflow: 'donut',
+    function: 'generateToggleComparison',
+    path: 'resources/user-guide/docs/images/screenshots/donut/donut-mode-toggle-comparison.png',
+    description: 'Side-by-side normal vs donut mode comparison',
+    manual: true,
+  },
+
+  // Grid and basic UI screenshots (2 screenshots)
+  'grid-normal': {
+    workflow: 'grid',
+    function: 'generateGridNormal',
+    path: 'resources/user-guide/docs/images/screenshots/grid-normal.png',
+    description: 'Standard 9-box grid with employee tiles',
+  },
+  'employee-tile-normal': {
+    workflow: 'grid',
+    function: 'generateEmployeeTileNormal',
+    path: 'resources/user-guide/docs/images/screenshots/employee-tile-normal.png',
+    description: 'Individual employee tile showing name and role',
+  },
+
+  // Hero and index images (2 screenshots)
+  'hero-grid-sample': {
+    workflow: 'hero',
+    function: 'generateHeroGrid',
+    path: 'resources/user-guide/docs/images/screenshots/hero-grid-sample.png',
+    description: 'Hero image showing full grid with sample data',
+  },
+  'index-quick-win-preview': {
+    workflow: 'hero',
+    function: 'generateQuickWinPreview',
+    path: 'resources/user-guide/docs/images/screenshots/index-quick-win-preview.png',
+    description: 'Quick win preview for index page',
+  },
+
+  // Additional features screenshots (5 screenshots)
+  'changes-panel-entries': {
+    workflow: 'changes',
+    function: 'generatePanelEntries',
+    path: 'resources/user-guide/docs/images/screenshots/changes-panel-entries.png',
+    description: 'Changes panel with multiple employee movement entries',
+  },
+  'timeline-employee-history': {
+    workflow: 'timeline',
+    function: 'generateEmployeeHistory',
+    path: 'resources/user-guide/docs/images/screenshots/timeline-employee-history.png',
+    description: 'Employee movement timeline showing historical positions',
+  },
+  'employee-details-panel-expanded': {
+    workflow: 'employees',
+    function: 'generateDetailsPanelExpanded',
+    path: 'resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png',
+    description: 'Expanded employee details panel with all information',
+  },
+  'file-menu-apply-changes': {
+    workflow: 'exporting',
+    function: 'generateFileMenuApplyChanges',
+    path: 'resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png',
+    description: 'File menu with Apply Changes option highlighted',
+  },
+  'excel-file-new-columns': {
+    workflow: 'exporting',
+    function: 'generateExcelFileNewColumns',
+    path: 'resources/user-guide/docs/images/screenshots/excel-file-new-columns.png',
+    description: 'Excel file showing new columns after export',
+    manual: true,
+  },
+
+  // Notes donut mode (1 screenshot)
+  'notes-donut-mode': {
+    workflow: 'notes',
+    function: 'generateDonutMode',
+    path: 'resources/user-guide/docs/images/screenshots/notes/notes-donut-mode.png',
+    description: 'Notes visible in donut mode employee hover tooltip',
+  },
+
+  // Quickstart Excel sample (already defined above but adding here for completeness)
+  'quickstart-excel-sample': {
+    workflow: 'quickstart',
+    function: 'generateExcelSample',
+    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png',
+    description: 'Sample Excel file format showing required columns',
+    manual: true,
+  },
+};
+
+/**
+ * Get all screenshot names
+ */
+export function getAllScreenshotNames(): string[] {
+  return Object.keys(screenshotConfig);
+}
+
+/**
+ * Get screenshots by workflow
+ */
+export function getScreenshotsByWorkflow(workflow: string): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(([_, meta]) => meta.workflow === workflow)
+  );
+}
+
+/**
+ * Get automated screenshots (those that can be generated by workflow functions)
+ *
+ * @returns Record of automated screenshot configurations
+ */
+export function getAutomatedScreenshots(): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(([_, metadata]) => !metadata.manual)
+  );
+}
+
+/**
+ * Get manual screenshots (those requiring manual creation/annotation)
+ *
+ * @returns Record of manual screenshot configurations
+ */
+export function getManualScreenshots(): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(([_, metadata]) => metadata.manual === true)
+  );
+}

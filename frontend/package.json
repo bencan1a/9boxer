@@ -32,7 +32,8 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e:pw": "playwright test",
     "test:e2e:pw:ui": "playwright test --ui",
-    "test:e2e:pw:debug": "playwright test --debug"
+    "test:e2e:pw:debug": "playwright test --debug",
+    "screenshots:generate": "npx tsx playwright/screenshots/generate.ts"
   },
   "build": {
     "extends": "electron-builder.json"
@@ -80,6 +81,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "jsdom": "^27.3.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.2.2",
     "vite": "^7.2.7",
     "vitest": "^4.0.16",

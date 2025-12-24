@@ -207,10 +207,29 @@ npm test                # Watch mode
 npm run test:run        # Run once
 npm run test:coverage   # With coverage
 
-# E2E tests (Cypress)
-npm run cy:open         # Interactive mode
-npm run cy:run          # Headless mode
+# E2E tests (Playwright)
+npm run test:e2e:pw     # Run all E2E tests
+npm run test:e2e:pw:ui  # Run with UI mode
 ```
+
+### Screenshot Generation
+
+Documentation screenshots are generated automatically using TypeScript and Playwright:
+
+```bash
+cd frontend
+
+# Generate all automated screenshots
+npm run screenshots:generate
+
+# Generate specific screenshots
+npm run screenshots:generate grid-normal quickstart-file-menu-button
+
+# Run in headed mode (show browser)
+HEADLESS=false npm run screenshots:generate
+```
+
+Screenshots are automatically regenerated weekly via GitHub Actions. See `frontend/playwright/screenshots/` for implementation details and `frontend/playwright/screenshots/MANUAL_SCREENSHOTS.md` for the 8 screenshots that require manual creation.
 
 ### Code Quality
 
