@@ -4,7 +4,7 @@ name: "Copilot Setup Steps"
 # See: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
 #
 # IMPORTANT: This workflow should NOT include:
-# - actions/checkout@v4 (Copilot automatically clones the repo before running this)
+# - actions/checkout@v4 (Copilot automatically clones the repo before running this.)
 # - on: triggers (Custom setup workflows don't need explicit triggers)
 
 jobs:
