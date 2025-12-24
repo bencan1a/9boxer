@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-24T22:21:00.505015+00:00
+**Updated**: 2025-12-24T22:21:43.113986+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## i18n-implementation
