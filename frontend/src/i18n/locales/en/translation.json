@@ -64,6 +64,36 @@
       "hidePanel": "Hide panel"
     }
   },
+  "grid": {
+    "employeeCount": {
+      "employee": "employee",
+      "employee_other": "employees",
+      "of": "of",
+      "noEmployees": "No employees",
+      "totalEmployeesInSession": "Total employees in session",
+      "showingCount": "Showing {{filteredCount}} of {{totalCount}} employees",
+      "activeFilters": "Active filters:",
+      "jobLevel": "Job Level",
+      "jobFunction": "Job Function",
+      "location": "Location",
+      "manager": "Manager",
+      "excluded": "Excluded",
+      "ariaLabel": "{{count}} total employees",
+      "ariaLabelFiltered": "Showing {{filteredCount}} of {{totalCount}} employees with active filters",
+      "ariaLabelNoEmployees": "No employees in session"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Grid view active (Press D for Donut view)",
+      "donutViewActive": "Donut view active (Press D for Grid view)",
+      "ariaLabelToggle": "View mode toggle",
+      "ariaLabelGrid": "Grid view",
+      "ariaLabelDonut": "Donut view"
+    },
+    "gridBox": {
+      "collapseBox": "Collapse box",
+      "expandBox": "Expand box"
+    }
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancel",

@@ -64,6 +64,36 @@
       "hidePanel": "Ocultar panel"
     }
   },
+  "grid": {
+    "employeeCount": {
+      "employee": "empleado",
+      "employee_other": "empleados",
+      "of": "de",
+      "noEmployees": "Ningún empleado",
+      "totalEmployeesInSession": "Total de empleados en la sesión",
+      "showingCount": "Mostrando {{filteredCount}} de {{totalCount}} empleados",
+      "activeFilters": "Filtros activos:",
+      "jobLevel": "Nivel de Trabajo",
+      "jobFunction": "Función de Trabajo",
+      "location": "Ubicación",
+      "manager": "Gerente",
+      "excluded": "Excluidos",
+      "ariaLabel": "{{count}} empleados totales",
+      "ariaLabelFiltered": "Mostrando {{filteredCount}} de {{totalCount}} empleados con filtros activos",
+      "ariaLabelNoEmployees": "Ningún empleado en la sesión"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Vista de cuadrícula activa (Presiona D para vista de dona)",
+      "donutViewActive": "Vista de dona activa (Presiona D para vista de cuadrícula)",
+      "ariaLabelToggle": "Alternar modo de vista",
+      "ariaLabelGrid": "Vista de cuadrícula",
+      "ariaLabelDonut": "Vista de dona"
+    },
+    "gridBox": {
+      "collapseBox": "Colapsar caja",
+      "expandBox": "Expandir caja"
+    }
+  },
   "common": {
     "ok": "Aceptar",
     "cancel": "Cancelar",
