@@ -96,6 +96,17 @@ git commit -m "Update translations"
 
 **Integration**: Configured as a pre-commit hook in `.pre-commit-config.yaml` to run automatically on staged translation files.
 
+**Testing**:
+- Comprehensive unit tests: `backend/tests/unit/tools/test_validate_translations.py` (requires pytest)
+- Standalone test runner: `tools/test_validation.py` (can run without pytest)
+  ```bash
+  # Run standalone tests
+  python tools/test_validation.py
+  
+  # Run with pytest (requires dev dependencies)
+  pytest backend/tests/unit/tools/test_validate_translations.py -v
+  ```
+
 ## Deprecated Tools
 
 ### ~~`generate_docs_screenshots.py`~~ (DELETED)
