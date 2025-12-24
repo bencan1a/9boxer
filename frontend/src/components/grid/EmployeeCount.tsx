@@ -46,8 +46,8 @@ export const EmployeeCount: React.FC = () => {
     }
 
     const filterParts: string[] = [
-      t('grid.employeeCount.showingCount', { filteredCount, totalCount }), 
-      "", 
+      t('grid.employeeCount.showingCount', { filteredCount, totalCount }),
+      "",
       t('grid.employeeCount.activeFilters')
     ];
 

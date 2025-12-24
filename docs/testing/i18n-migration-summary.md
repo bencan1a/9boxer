@@ -254,6 +254,6 @@ All component tests that check translatable UI strings have been migrated to use
 
 ---
 
-**Date Completed**: 2025-12-24  
-**Issue**: #17  
+**Date Completed**: 2025-12-24
+**Issue**: #17
 **PR Branch**: copilot/work-on-issue-17
