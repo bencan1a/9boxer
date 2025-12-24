@@ -15,6 +15,8 @@ This file provides GitHub Copilot with context about the 9Boxer repository.
 
 **You do NOT need to manually run setup commands** - Copilot handles this automatically in its ephemeral environment.
 
+> **Note:** The custom setup workflow does NOT include `actions/checkout@v4` because Copilot automatically clones the repository before running the setup. Including a checkout step causes "repository not found" errors due to permissions conflicts.
+
 ## Project Overview
 
 9Boxer is a **standalone Electron desktop application** (NOT a web app) for employee performance visualization using the 9-box talent grid methodology.
