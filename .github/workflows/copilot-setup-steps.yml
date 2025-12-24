@@ -81,10 +81,7 @@ jobs:
         id: playwright-cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/ms-playwright
-            ~/Library/Caches/ms-playwright
-            ~/AppData/Local/ms-playwright
+          path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
@@ -120,7 +117,14 @@ jobs:
           echo "=== Environment Setup Complete ==="
           echo "Python virtual environment: $(ls -d .venv 2>/dev/null && echo '✓' || echo '✗')"
           echo "Frontend node_modules: $(ls -d frontend/node_modules 2>/dev/null && echo '✓' || echo '✗')"
-          echo "Playwright browsers: $(ls -d ~/.cache/ms-playwright 2>/dev/null && echo '✓' || ls -d ~/Library/Caches/ms-playwright 2>/dev/null && echo '✓' || ls -d ~/AppData/Local/ms-playwright 2>/dev/null && echo '✓' || echo '✗')"
+          
+          # Check Playwright browsers (Linux path)
+          if [ -d ~/.cache/ms-playwright ]; then
+            echo "Playwright browsers: ✓"
+          else
+            echo "Playwright browsers: ✗"
+          fi
+          
           echo ""
           source .venv/bin/activate
           echo "Python version: $(python --version)"
