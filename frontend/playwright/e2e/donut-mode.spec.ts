@@ -192,15 +192,32 @@ test.describe('Donut Mode Workflow', () => {
     await waitForUiSettle(page, 1.0);
 
     // 5. Make a regular modification to enable export
-    // Find a different employee and move them
+    // Find a different employee in a different position (not position 5 where first employee is)
     await page.waitForTimeout(500);
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const anotherEmployee = gridBox9.locator('[data-testid^="employee-card-"]').first();
-    const anotherEmployeeId = await getEmployeeIdFromCard(anotherEmployee);
 
-    // Only move if it's a different employee
-    if (anotherEmployeeId !== employeeId) {
+    // Try to find an employee in position 1, 2, or 3 (more likely to have employees)
+    let anotherEmployeeId: number | null = null;
+    for (const pos of [1, 2, 3, 6, 9]) {
+      const gridBox = page.locator(`[data-testid="grid-box-${pos}"]`);
+      const employees = gridBox.locator('[data-testid^="employee-card-"]');
+      const count = await employees.count();
+
+      if (count > 0) {
+        const firstEmp = employees.first();
+        const empId = await getEmployeeIdFromCard(firstEmp);
+        if (empId !== employeeId) {
+          anotherEmployeeId = empId;
+          break;
+        }
+      }
+    }
+
+    // Only proceed if we found a different employee
+    if (anotherEmployeeId !== null) {
       await dragEmployeeToPosition(page, anotherEmployeeId, 6);
+    } else {
+      // If no other employee found, move the first employee again (regular move this time)
+      await dragEmployeeToPosition(page, employeeId, 6);
     }
 
     // 6. Verify file menu badge shows changes
@@ -336,8 +353,15 @@ test.describe('Donut Mode Workflow', () => {
     // 4. Toggle donut mode OFF
     await toggleDonutMode(page, false);
 
+    // Wait for all employees to be shown again (donut filter removed)
+    // The employee count should increase from position-5-only to all employees
+    await expect(async () => {
+      const totalCount = await page.locator('[data-testid^="employee-card-"]').count();
+      // Sample data has 15 employees, so we should see significantly more than 3
+      expect(totalCount).toBeGreaterThan(10);
+    }).toPass({ timeout: 5000 });
+
     // 5. Verify employee shows in original position with regular label
-    await page.waitForTimeout(500);
     const employeeInNormalMode = gridBox5.locator(`[data-testid="employee-card-${employeeId}"]`);
     await expect(employeeInNormalMode).toBeVisible();
 

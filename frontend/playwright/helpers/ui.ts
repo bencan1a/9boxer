@@ -106,15 +106,15 @@ export async function resetToEmptyState(page: Page): Promise<void> {
 /**
  * Toggle donut mode on/off (idempotent)
  *
- * Checks the current aria-pressed state before toggling to ensure the
- * desired state is achieved. This prevents double-toggle issues and makes
- * the function safe to call multiple times with the same desired state.
+ * Clicks the appropriate view mode button (grid or donut) to achieve the desired state.
+ * The view mode toggle has two separate buttons - click grid button for grid mode,
+ * click donut button for donut mode.
  *
  * @param page - Playwright Page object
  * @param enabled - Target state (true = donut mode on, false = donut mode off)
  * @example
- * await toggleDonutMode(page, true);  // Enable donut mode
- * await toggleDonutMode(page, false); // Disable donut mode
+ * await toggleDonutMode(page, true);  // Enable donut mode - clicks donut button
+ * await toggleDonutMode(page, false); // Disable donut mode - clicks grid button
  * await toggleDonutMode(page, true);  // Safe to call again - no-op if already enabled
  */
 export async function toggleDonutMode(
@@ -122,15 +122,23 @@ export async function toggleDonutMode(
   enabled: boolean,
 ): Promise<void> {
   const donutButton = page.locator('[data-testid="donut-view-button"]');
+  const gridButton = page.locator('[data-testid="grid-view-button"]');
+
+  // Check current state using donut button's aria-pressed
   const isPressed = await donutButton.getAttribute("aria-pressed");
+  const isDonutModeActive = isPressed === "true";
 
-  const needsToggle =
-    (enabled && isPressed !== "true") || (!enabled && isPressed === "true");
-
-  if (needsToggle) {
+  // Click the appropriate button to achieve desired state
+  if (enabled && !isDonutModeActive) {
+    // Want donut mode ON, currently OFF -> click donut button
     await donutButton.click();
     await waitForUiSettle(page, 0.5);
+  } else if (!enabled && isDonutModeActive) {
+    // Want donut mode OFF, currently ON -> click grid button
+    await gridButton.click();
+    await waitForUiSettle(page, 0.5);
   }
+  // else: already in desired state, no action needed
 }
 
 /**
