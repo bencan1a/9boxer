@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-23T02:42:25.722877+00:00
-**Source SHA**: 322b5eb28fe30f20d4e500f27b4f5426ef4a2458
+**Generated**: 2025-12-24T01:34:20.929789+00:00
+**Source SHA**: 01e910fb55c2f580c79f14d4054104360fbad04e
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -216,7 +216,24 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 2 active plan(s):
+There are 4 active plan(s):
+
+### i18n-implementation
+- Owner: bencan1a
+- Created: 2025-12-23
+- Summary:
+  - Implement react-i18next for internationalization across entire frontend
+  - Externalize 400-500 hardcoded strings from 42 React components
+  - Support English + Spanish (minimum 2 languages)
+  - Break work into 10 agent-sized tasks (24-34 hours total)
+
+### backend-robustness
+- Owner: Claude Code
+- Created: 2025-12-22
+- Summary:
+  - Implement dynamic port selection for backend to handle port conflicts
+  - Add connection monitoring and automatic recovery from backend crashes
+  - Improve error messages and user experience during failures
 
 ### big-movers-feature
 - Owner: Claude
