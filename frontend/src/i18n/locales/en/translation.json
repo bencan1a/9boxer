@@ -31,6 +31,37 @@
       "noActiveSession": "No active session",
       "exportSuccess": "Successfully exported {{count}} change to {{filename}}",
       "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filters",
+      "jobLevels": "Job Levels",
+      "jobFunctions": "Job Functions",
+      "locations": "Locations",
+      "managers": "Managers",
+      "exclusions": "Exclusions",
+      "excludeEmployees": "Exclude Employees",
+      "clearAllFilters": "Clear All Filters"
+    },
+    "exclusionDialog": {
+      "title": "Exclude Employees",
+      "quickFilters": "Quick Filters",
+      "excludeVPs": "Exclude VPs",
+      "excludeDirectorsPlus": "Exclude Directors+",
+      "excludeManagers": "Exclude Managers",
+      "clearAll": "Clear All",
+      "searchPlaceholder": "Search employees...",
+      "selectAll": "Select All ({{count}} employees)",
+      "selectedCount": "{{count}} selected",
+      "cancel": "Cancel",
+      "applyExclusions": "Apply Exclusions"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "No File Loaded",
+      "emptyStateDescription": "Drop an Excel file here or click Import Data to get started",
+      "importData": "Import Data",
+      "sampleFileHint": "New to 9Boxer? Try importing the sample file from Help → User Guide",
+      "showPanel": "Show panel",
+      "hidePanel": "Hide panel"
     }
   },
   "common": {

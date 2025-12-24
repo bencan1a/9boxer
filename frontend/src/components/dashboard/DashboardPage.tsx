@@ -8,6 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { useTranslation } from "react-i18next";
 import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from "react-resizable-panels";
 import { AppBar } from "./AppBar";
 import { FilterDrawer } from "./FilterDrawer";
@@ -22,6 +23,7 @@ const PANEL_COLLAPSE_BREAKPOINT = 1024; // Collapse panel below this width
 
 export const DashboardPage: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { sessionId } = useSession();
   const restoreSession = useSessionStore((state) => state.restoreSession);
   const {
@@ -152,12 +154,12 @@ export const DashboardPage: React.FC = () => {
 
                 {/* Heading */}
                 <Typography variant="h4" fontWeight="500" textAlign="center">
-                  No File Loaded
+                  {t('dashboard.dashboardPage.noFileLoaded')}
                 </Typography>
 
                 {/* Description */}
                 <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ maxWidth: 500 }}>
-                  Drop an Excel file here or click Import Data to get started
+                  {t('dashboard.dashboardPage.emptyStateDescription')}
                 </Typography>
 
                 {/* Import Button */}
@@ -169,12 +171,12 @@ export const DashboardPage: React.FC = () => {
                   data-testid="empty-state-import-button"
                   sx={{ mt: 2 }}
                 >
-                  Import Data
+                  {t('dashboard.dashboardPage.importData')}
                 </Button>
 
                 {/* Optional: Sample data hint */}
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 2 }}>
-                  New to 9Boxer? Try importing the sample file from Help → User Guide
+                  {t('dashboard.dashboardPage.sampleFileHint')}
                 </Typography>
               </Box>
 
@@ -258,7 +260,7 @@ export const DashboardPage: React.FC = () => {
               </PanelGroup>
 
               {/* Toggle button */}
-              <Tooltip title={isRightPanelCollapsed ? "Show panel" : "Hide panel"} placement="left">
+              <Tooltip title={isRightPanelCollapsed ? t('dashboard.dashboardPage.showPanel') : t('dashboard.dashboardPage.hidePanel')} placement="left">
                 <IconButton
                   onClick={toggleRightPanel}
                   data-testid="panel-toggle-button"
