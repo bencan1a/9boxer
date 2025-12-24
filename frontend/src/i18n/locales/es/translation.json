@@ -31,6 +31,37 @@
       "noActiveSession": "No hay sesión activa",
       "exportSuccess": "Se exportó exitosamente {{count}} cambio a {{filename}}",
       "exportSuccess_other": "Se exportaron exitosamente {{count}} cambios a {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filtros",
+      "jobLevels": "Niveles de Trabajo",
+      "jobFunctions": "Funciones de Trabajo",
+      "locations": "Ubicaciones",
+      "managers": "Gerentes",
+      "exclusions": "Exclusiones",
+      "excludeEmployees": "Excluir Empleados",
+      "clearAllFilters": "Limpiar Todos los Filtros"
+    },
+    "exclusionDialog": {
+      "title": "Excluir Empleados",
+      "quickFilters": "Filtros Rápidos",
+      "excludeVPs": "Excluir VPs",
+      "excludeDirectorsPlus": "Excluir Directores+",
+      "excludeManagers": "Excluir Gerentes",
+      "clearAll": "Limpiar Todo",
+      "searchPlaceholder": "Buscar empleados...",
+      "selectAll": "Seleccionar Todo ({{count}} empleados)",
+      "selectedCount": "{{count}} seleccionados",
+      "cancel": "Cancelar",
+      "applyExclusions": "Aplicar Exclusiones"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "Ningún Archivo Cargado",
+      "emptyStateDescription": "Arrastra un archivo de Excel aquí o haz clic en Importar Datos para comenzar",
+      "importData": "Importar Datos",
+      "sampleFileHint": "¿Nuevo en 9Boxer? Prueba importar el archivo de muestra desde Ayuda → Guía del Usuario",
+      "showPanel": "Mostrar panel",
+      "hidePanel": "Ocultar panel"
     }
   },
   "common": {
