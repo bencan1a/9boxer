@@ -49,7 +49,6 @@ Prepare the 9Boxer repository to work exceptionally well with GitHub Agent by:
 
 This onboarding focuses on creating documentation that enables GitHub Agent to:
 - Quickly understand the project architecture
-- Quickly understand the project architecture
 - Execute common development tasks without errors
 - Navigate the monorepo structure effectively
 - Work within platform constraints (Windows environment)
