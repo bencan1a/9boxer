@@ -69,21 +69,21 @@ This workflow is automatically executed by GitHub Copilot's coding agent in its 
 ### Frontend Dependencies
 
 **Production Dependencies:**
-- React 18.2.0
-- React DOM 18.2.0
-- Electron 35.7.5
-- Material-UI 5.14.20
-- Axios 1.13.2
-- Zustand 4.4.7 (state management)
-- React Router DOM 6.20.0
+- React ^18.2.0
+- React DOM ^18.2.0
+- Electron ^35.7.5
+- Material-UI ^5.14.20
+- Axios ^1.13.2
+- Zustand ^4.4.7 (state management)
+- React Router DOM ^6.20.0
 
 **Development Dependencies:**
-- TypeScript 5.2.2
-- Vite 7.2.7
-- Vitest 4.0.16 (testing)
-- Playwright 1.57.0 (E2E testing)
-- ESLint 8.55.0
-- Electron Builder 26.0.12
+- TypeScript ^5.2.2
+- Vite ^7.2.7
+- Vitest ^4.0.16 (testing)
+- Playwright ^1.57.0 (E2E testing)
+- ESLint ^8.55.0
+- Electron Builder ^26.0.12
 
 ## Benefits of Automated Setup
 
