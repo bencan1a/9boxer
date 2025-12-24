@@ -13,10 +13,6 @@ from typing import Any
 
 import pytest
 
-# Import the functions from the validate-translations.py script
-import sys
-import importlib.util
-
 # Add tools directory to path and import the validation script
 # Note: The script has a dash in the name, so we need to use importlib
 tools_path = Path(__file__).parent.parent.parent.parent.parent / "tools"
