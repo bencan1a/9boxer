@@ -97,12 +97,12 @@ export const ChangeTrackerTab: React.FC = () => {
     }
 
     return (
-      <Table size="small" data-testid={`${testIdPrefix}-table`}>
+      <Table size="small" data-testid={`${testIdPrefix}-table`} sx={{ minWidth: 650, tableLayout: 'auto' }}>
         <TableHead>
           <TableRow>
-            <TableCell>Employee</TableCell>
-            <TableCell>Movement</TableCell>
-            <TableCell>Notes</TableCell>
+            <TableCell sx={{ width: '25%', minWidth: 120 }}>Employee</TableCell>
+            <TableCell sx={{ width: '35%', minWidth: 200 }}>Movement</TableCell>
+            <TableCell sx={{ width: '40%', minWidth: 200 }}>Notes</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -118,7 +118,7 @@ export const ChangeTrackerTab: React.FC = () => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 200 }}>
                   <Chip
                     label={`${getPositionName(change.old_position)} ${getShortPositionLabel(change.old_position)}`}
                     size="small"
@@ -133,7 +133,7 @@ export const ChangeTrackerTab: React.FC = () => {
                   />
                 </Stack>
               </TableCell>
-              <TableCell sx={{ minWidth: 200 }}>
+              <TableCell>
                 <TextField
                   fullWidth
                   size="small"
@@ -200,7 +200,7 @@ export const ChangeTrackerTab: React.FC = () => {
               iconPosition="start"
             />
           </Tabs>
-          <Box sx={{ flex: 1, overflow: "auto", mt: 2 }}>
+          <Box sx={{ flex: 1, overflowX: "auto", overflowY: "auto", mt: 2 }}>
             <Paper variant="outlined">
               {activeTab === 0 && renderChangesTable(sortedChanges, false, "change")}
               {activeTab === 1 && renderChangesTable(sortedDonutChanges, true, "donut-change")}
@@ -209,7 +209,7 @@ export const ChangeTrackerTab: React.FC = () => {
         </Box>
       ) : (
         /* Show only regular changes when donut mode is not active */
-        <Box sx={{ overflow: "auto" }}>
+        <Box sx={{ overflowX: "auto", overflowY: "auto" }}>
           <Paper variant="outlined">
             {renderChangesTable(sortedChanges, false, "change")}
           </Paper>
