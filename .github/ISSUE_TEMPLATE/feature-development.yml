@@ -1,0 +1,161 @@
+name: Feature Development
+description: Standard workflow for new features (single developer + AI agents)
+title: "[Feature]: "
+labels: ["feature", "needs-planning"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Development Workflow
+        This template ensures consistent feature development across agent sessions.
+
+        **For AI Agents**: Follow the workflow in `.github/agents/feature-development.md`
+
+  - type: textarea
+    id: user-goal
+    attributes:
+      label: User Goal
+      description: What are you trying to achieve? What problem does this solve?
+      placeholder: "As a user, I want to... so that I can..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will you know this feature is complete and working correctly?
+      placeholder: |
+        - [ ] User can do X
+        - [ ] System handles edge case Y
+        - [ ] Performance meets threshold Z
+    validations:
+      required: true
+
+  - type: textarea
+    id: conversation-summary
+    attributes:
+      label: Agent Conversation Summary
+      description: Key decisions, constraints, and rationale from discovery phase (filled by agent)
+      placeholder: |
+        **Decisions Made:**
+        - Chose approach X because Y
+        - User prefers Z over W
+
+        **Constraints Discovered:**
+        - Cannot use library A due to B
+        - Must maintain compatibility with C
+
+        **Related Context:**
+        - Related to issue #123
+        - Builds on work in PR #456
+    validations:
+      required: false
+
+  - type: dropdown
+    id: feature-area
+    attributes:
+      label: Feature Area
+      description: Which part of the application does this affect?
+      options:
+        - Backend (FastAPI/Python)
+        - Frontend (React/TypeScript)
+        - Electron (Desktop integration)
+        - Database (SQLite schema)
+        - Build/Deploy (PyInstaller/Electron Builder)
+        - Documentation
+        - Multiple areas
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: security-performance
+    attributes:
+      label: Security & Performance Considerations
+      description: Does this feature require special attention? (Check all that apply)
+      options:
+        - label: Handles user file uploads (security risk)
+        - label: Processes large datasets (performance critical)
+        - label: Changes database schema (migration required)
+        - label: Adds new dependencies (review required)
+        - label: Exposes new API endpoints (security review)
+        - label: Breaking change (migration guide needed)
+
+  - type: textarea
+    id: implementation-plan
+    attributes:
+      label: Implementation Plan
+      description: High-level approach and task breakdown (filled by agent)
+      placeholder: |
+        **Architecture Approach:**
+        Brief description of solution...
+
+        **Sub-Tasks:**
+        1. [ ] Task 1 description
+        2. [ ] Task 2 description
+        3. [ ] Task 3 description
+
+        **Agent Project Plan:** See `agent-projects/<feature-name>/plan.md`
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: implementation-checklist
+    attributes:
+      label: Implementation Checklist
+      description: Mark items as complete during development
+      options:
+        - label: "Tests written (unit, integration, e2e as needed)"
+        - label: "Pre-commit checks passing (ruff, mypy, pyright, bandit)"
+        - label: "Code coverage >80% (or no regression)"
+        - label: "User documentation updated (if user-facing change)"
+        - label: "Screenshots updated (if UI change)"
+        - label: "Architecture docs updated (if significant change)"
+        - label: "Manual smoke test completed by user"
+        - label: "Automated code review completed"
+        - label: "All CI checks passing"
+        - label: "Agent project plan marked as 'done'"
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes & Learnings
+      description: Document progress, blockers, and key learnings for agent continuity
+      placeholder: |
+        **Progress Log:**
+        - 2024-01-15: Implemented core functionality
+        - 2024-01-16: Added tests, discovered issue with X
+
+        **Blockers/Issues:**
+        - Waiting on user decision about Y
+
+        **Key Learnings:**
+        - Approach Z worked better than expected
+        - Library A had limitation B, used workaround C
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-notes
+    attributes:
+      label: Testing Notes
+      description: Test coverage details and manual testing results
+      placeholder: |
+        **Automated Tests:**
+        - Unit tests: backend/tests/unit/...
+        - Integration tests: backend/tests/integration/...
+        - E2E tests: frontend/playwright/e2e/...
+
+        **Manual Testing:**
+        - Tested on Windows/macOS/Linux
+        - Edge cases verified: X, Y, Z
+        - Performance: handles N records in M seconds
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **For AI Agents**: Update this issue throughout development to maintain context for future agent sessions.
+        Use the "Implementation Notes" section as a project log so other agents can pick up where you left off.

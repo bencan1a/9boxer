@@ -1,0 +1,268 @@
+name: Feature Development Checklist
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main]
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  validate-feature-checklist:
+    name: Validate Feature Development Checklist
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && github.event.issue.pull_request)
+    steps:
+      - name: Get PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get linked issues
+        id: linked-issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ steps.pr.outputs.number }}
+            });
+
+            // Extract issue numbers from PR body using various patterns
+            const body = pr.data.body || '';
+            const patterns = [
+              /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi,
+              /(?:related to|see|ref)\s+#(\d+)/gi,
+              /#(\d+)/g
+            ];
+
+            const issueNumbers = new Set();
+            for (const pattern of patterns) {
+              const matches = body.matchAll(pattern);
+              for (const match of matches) {
+                issueNumbers.add(match[1]);
+              }
+            }
+
+            if (issueNumbers.size === 0) {
+              core.setOutput('has_linked_issue', 'false');
+              core.setOutput('issue_number', '');
+              return;
+            }
+
+            // Get the first linked issue
+            const issueNumber = Array.from(issueNumbers)[0];
+            core.setOutput('has_linked_issue', 'true');
+            core.setOutput('issue_number', issueNumber);
+
+      - name: Validate feature development issue
+        if: steps.linked-issues.outputs.has_linked_issue == 'true'
+        id: validate-issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = ${{ steps.linked-issues.outputs.issue_number }};
+
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
+
+            const body = issue.data.body || '';
+            const labels = issue.data.labels.map(l => l.name);
+
+            // Check if it's a feature development issue
+            const isFeatureIssue = labels.includes('feature') || body.includes('## Feature Development Workflow');
+
+            if (!isFeatureIssue) {
+              console.log('Not a feature development issue, skipping validation');
+              core.setOutput('is_feature_issue', 'false');
+              return;
+            }
+
+            core.setOutput('is_feature_issue', 'true');
+
+            // Validate required sections are present
+            const requiredSections = [
+              'User Goal',
+              'Acceptance Criteria',
+              'Implementation Checklist'
+            ];
+
+            const missingSections = [];
+            for (const section of requiredSections) {
+              if (!body.includes(section)) {
+                missingSections.push(section);
+              }
+            }
+
+            // Check checklist completion
+            const checklistItems = {
+              'Tests written': /- \[x\].*Tests written/i.test(body),
+              'Pre-commit checks passing': /- \[x\].*Pre-commit checks passing/i.test(body),
+              'Code coverage': /- \[x\].*Code coverage/i.test(body),
+              'Documentation updated': /- \[x\].*documentation updated/i.test(body),
+              'Manual smoke test': /- \[x\].*smoke test/i.test(body),
+              'CI checks passing': /- \[x\].*CI checks passing/i.test(body)
+            };
+
+            const incompleteItems = [];
+            for (const [item, completed] of Object.entries(checklistItems)) {
+              if (!completed) {
+                incompleteItems.push(item);
+              }
+            }
+
+            // Calculate completion percentage
+            const totalItems = Object.keys(checklistItems).length;
+            const completedItems = totalItems - incompleteItems.length;
+            const completionPercentage = Math.round((completedItems / totalItems) * 100);
+
+            core.setOutput('missing_sections', JSON.stringify(missingSections));
+            core.setOutput('incomplete_items', JSON.stringify(incompleteItems));
+            core.setOutput('completion_percentage', completionPercentage);
+            core.setOutput('all_complete', incompleteItems.length === 0 ? 'true' : 'false');
+
+      - name: Post validation summary
+        if: steps.linked-issues.outputs.has_linked_issue == 'true' && steps.validate-issue.outputs.is_feature_issue == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = ${{ steps.linked-issues.outputs.issue_number }};
+            const completionPercentage = ${{ steps.validate-issue.outputs.completion_percentage }};
+            const allComplete = '${{ steps.validate-issue.outputs.all_complete }}' === 'true';
+            const incompleteItems = JSON.parse('${{ steps.validate-issue.outputs.incomplete_items }}');
+            const missingSections = JSON.parse('${{ steps.validate-issue.outputs.missing_sections }}');
+
+            let body = `## 🔍 Feature Development Checklist Validation\n\n`;
+            body += `**Linked Issue:** #${issueNumber}\n`;
+            body += `**Completion:** ${completionPercentage}% `;
+
+            if (allComplete) {
+              body += `✅ All checklist items complete!\n\n`;
+            } else {
+              body += `⚠️ Some items incomplete\n\n`;
+            }
+
+            if (missingSections.length > 0) {
+              body += `### ❌ Missing Required Sections\n\n`;
+              for (const section of missingSections) {
+                body += `- ${section}\n`;
+              }
+              body += `\n`;
+            }
+
+            if (incompleteItems.length > 0) {
+              body += `### 📋 Incomplete Checklist Items\n\n`;
+              for (const item of incompleteItems) {
+                body += `- [ ] ${item}\n`;
+              }
+              body += `\n**Reminder:** Mark items complete in issue #${issueNumber} as you finish them.\n\n`;
+            }
+
+            if (allComplete && missingSections.length === 0) {
+              body += `### 🎉 Great job!\n\n`;
+              body += `All feature development requirements are complete. This PR is ready for final review.\n\n`;
+            } else {
+              body += `### 📚 Resources\n\n`;
+              body += `- [Feature Development Guide](.github/agents/feature-development.md)\n`;
+              body += `- [Testing Guide](docs/testing/)\n`;
+              body += `- [Documentation Guide](docs/contributing/documentation-writing-guide.md)\n\n`;
+            }
+
+            body += `---\n`;
+            body += `*This validation runs automatically on PR updates. For more info, see [\`/new-feature\`](.claude/commands/new-feature.md)*`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Feature Development Checklist Validation')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: Check for PR without linked issue
+        if: steps.linked-issues.outputs.has_linked_issue == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ℹ️ Feature Development Workflow\n\n` +
+              `This PR doesn't appear to be linked to a GitHub issue.\n\n` +
+              `**For feature development**, it's recommended to:\n` +
+              `1. Create an issue using the [Feature Development template](.github/ISSUE_TEMPLATE/feature-development.yml)\n` +
+              `2. Link it in the PR description with \`Fixes #123\` or \`Closes #123\`\n\n` +
+              `**Benefits:**\n` +
+              `- Structured planning and decision tracking\n` +
+              `- Better agent continuity across sessions\n` +
+              `- Clear definition of done\n\n` +
+              `**Quick start:** Use the \`/new-feature\` slash command in Claude Code to automatically follow this workflow.\n\n` +
+              `---\n` +
+              `*Skip this if it's a simple bug fix or documentation update.*`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Feature Development Workflow')
+            );
+
+            if (!botComment) {
+              // Only create comment if it doesn't exist (don't spam)
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: Set check status
+        if: steps.validate-issue.outputs.is_feature_issue == 'true'
+        run: |
+          if [ "${{ steps.validate-issue.outputs.all_complete }}" = "true" ]; then
+            echo "✅ Feature development checklist complete"
+            exit 0
+          else
+            echo "⚠️ Feature development checklist incomplete (not blocking)"
+            echo "See PR comment for details"
+            # Don't fail - this is informational only
+            exit 0
+          fi
