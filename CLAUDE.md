@@ -370,6 +370,7 @@ npm run dev                    # Vite dev server (for web development)
 npm run electron:dev           # Run Electron in dev mode (full app)
 npm test                       # Run Vitest component tests
 npm run test:e2e:pw            # Run Playwright E2E tests
+npm run screenshots:generate   # Generate documentation screenshots
 ```
 
 ### Build Commands (Standalone Application)
@@ -414,6 +415,53 @@ npm run electron:build         # Generates USER_GUIDE.html, validates backend, t
 # Or from frontend directory
 npm run generate:guide
 ```
+
+### Documentation Screenshot Generation
+
+Documentation screenshots are generated using TypeScript and Playwright, sharing the same helpers as E2E tests for consistency.
+
+**Generate Screenshots:**
+```bash
+cd frontend
+
+# Generate all automated screenshots (31 automated + 8 manual)
+npm run screenshots:generate
+
+# Generate specific screenshots
+npm run screenshots:generate grid-normal changes-tab
+
+# Run in headed mode (show browser)
+HEADLESS=false npm run screenshots:generate
+```
+
+**Architecture:**
+- **Implementation**: `frontend/playwright/screenshots/`
+  - `generate.ts` - Main CLI entry point
+  - `config.ts` - Screenshot registry with metadata
+  - `workflows/` - Screenshot generation functions by feature area
+  - `MANUAL_SCREENSHOTS.md` - Documentation for 8 manual screenshots
+- **Reuses E2E helpers**: Same helper functions from `frontend/playwright/helpers/`
+- **Output**: `resources/user-guide/docs/images/screenshots/`
+
+**Adding New Screenshots:**
+1. Add entry to `config.ts` with metadata (workflow, function, path, description)
+2. Create workflow function in `workflows/<workflow>.ts`
+3. Use shared helpers from E2E tests (uploadFile, clickTab, etc.)
+4. Test with `npm run screenshots:generate <screenshot-name>`
+
+**Automation:**
+- GitHub Actions workflow `.github/workflows/screenshots.yml`
+- Runs weekly on Mondays at 2 AM UTC
+- Manual trigger via workflow_dispatch
+- Auto-commits updated screenshots with [skip ci]
+
+**Manual Screenshots (8 total):**
+Some screenshots require manual creation due to:
+- Excel file views (requires Excel/LibreOffice)
+- Multi-panel compositions (requires image editing)
+- Annotations and callouts (requires image editing)
+
+See `frontend/playwright/screenshots/MANUAL_SCREENSHOTS.md` for complete list and instructions.
 
 ### Makefile Targets
 - `make test` - Run tests

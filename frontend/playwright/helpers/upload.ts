@@ -1,5 +1,5 @@
-import { Page, expect } from '@playwright/test';
-import * as path from 'path';
+import { Page, expect } from "@playwright/test";
+import * as path from "path";
 
 /**
  * Upload an Excel file through the file upload dialog
@@ -16,9 +16,14 @@ import * as path from 'path';
  * @example
  * await uploadExcelFile(page, 'sample-employees.xlsx');
  */
-export async function uploadExcelFile(page: Page, fileName: string): Promise<void> {
+export async function uploadExcelFile(
+  page: Page,
+  fileName: string,
+): Promise<void> {
   // Try to click the empty state import button first (if no file loaded)
-  const emptyStateButton = page.locator('[data-testid="empty-state-import-button"]');
+  const emptyStateButton = page.locator(
+    '[data-testid="empty-state-import-button"]',
+  );
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
 
   // Check which button is visible and click it
@@ -37,17 +42,21 @@ export async function uploadExcelFile(page: Page, fileName: string): Promise<voi
   }
 
   // Wait for the dialog to open
-  await expect(page.locator('[data-testid="file-upload-dialog"]')).toBeVisible();
+  await expect(
+    page.locator('[data-testid="file-upload-dialog"]'),
+  ).toBeVisible();
 
   // Construct the path to the fixture file
-  const fixturePath = path.join(__dirname, '..', 'fixtures', fileName);
+  const fixturePath = path.join(__dirname, "..", "fixtures", fileName);
 
   // Select the file using the file input
-  await page.locator('#file-upload-input').setInputFiles(fixturePath);
+  await page.locator("#file-upload-input").setInputFiles(fixturePath);
 
   // Click the upload button in the dialog
   await page.locator('[data-testid="upload-submit-button"]').click();
 
   // Wait for upload to complete (dialog should close)
-  await expect(page.locator('[data-testid="file-upload-dialog"]')).not.toBeVisible({ timeout: 10000 });
+  await expect(
+    page.locator('[data-testid="file-upload-dialog"]'),
+  ).not.toBeVisible({ timeout: 10000 });
 }

@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page, expect } from "@playwright/test";
 
 /**
  * Helper function to drag and drop an employee to a different grid position
@@ -27,15 +27,22 @@ export async function dragEmployeeToPosition(
     isDonutMode?: boolean;
     expectModified?: boolean;
     skipApiWait?: boolean;
-  } = {}
+  } = {},
 ): Promise<void> {
-  const { maxRetries = 2, waitForModifiedIndicator = true, isDonutMode = false, skipApiWait = false } = options;
+  const {
+    maxRetries = 2,
+    waitForModifiedIndicator = true,
+    isDonutMode = false,
+    skipApiWait = false,
+  } = options;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       // Find the employee card
-      const employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
-      await employeeCard.waitFor({ state: 'visible', timeout: 5000 });
+      const employeeCard = page.locator(
+        `[data-testid="employee-card-${employeeId}"]`,
+      );
+      await employeeCard.waitFor({ state: "visible", timeout: 5000 });
 
       // Get the bounding box of the employee card
       const cardBox = await employeeCard.boundingBox();
@@ -44,8 +51,10 @@ export async function dragEmployeeToPosition(
       }
 
       // Find the target grid box
-      const targetBox = page.locator(`[data-testid="grid-box-${targetPosition}"]`);
-      await targetBox.waitFor({ state: 'visible', timeout: 5000 });
+      const targetBox = page.locator(
+        `[data-testid="grid-box-${targetPosition}"]`,
+      );
+      await targetBox.waitFor({ state: "visible", timeout: 5000 });
 
       // Get the bounding box of the target
       const targetBoxBounds = await targetBox.boundingBox();
@@ -59,7 +68,8 @@ export async function dragEmployeeToPosition(
 
       // For positions 1, 4, 7 (leftmost column), aim more to the left to avoid ambiguous hit detection
       // This is needed because dnd-kit's collision detection can favor later DOM elements in edge cases
-      const isLeftColumn = targetPosition === 1 || targetPosition === 4 || targetPosition === 7;
+      const isLeftColumn =
+        targetPosition === 1 || targetPosition === 4 || targetPosition === 7;
       const horizontalOffset = isLeftColumn ? 0.3 : 0.5; // 30% from left edge instead of 50% (center)
 
       const endX = targetBoxBounds.x + targetBoxBounds.width * horizontalOffset;
@@ -70,22 +80,28 @@ export async function dragEmployeeToPosition(
 
       if (!skipApiWait) {
         // Wait for the appropriate endpoint based on mode
-        const moveEndpoint = isDonutMode ? '/move-donut' : '/move';
-        console.log(`Setting up listener for endpoint: ${moveEndpoint}, employee: ${employeeId}, target: ${targetPosition}`);
+        const moveEndpoint = isDonutMode ? "/move-donut" : "/move";
+        console.log(
+          `Setting up listener for endpoint: ${moveEndpoint}, employee: ${employeeId}, target: ${targetPosition}`,
+        );
 
         moveEmployeePromise = page.waitForResponse(
           (response) => {
             const matchesEndpoint = response.url().includes(moveEndpoint);
             const is200 = response.status() === 200;
             if (matchesEndpoint) {
-              console.log(`  Response received: ${response.url()}, status: ${response.status()}`);
+              console.log(
+                `  Response received: ${response.url()}, status: ${response.status()}`,
+              );
             }
             return matchesEndpoint && is200;
           },
-          { timeout: 15000 } // Increased timeout for donut mode
+          { timeout: 15000 }, // Increased timeout for donut mode
         );
       } else {
-        console.log(`Skipping API wait for employee: ${employeeId}, target: ${targetPosition} (validating UX state only)`);
+        console.log(
+          `Skipping API wait for employee: ${employeeId}, target: ${targetPosition} (validating UX state only)`,
+        );
       }
 
       // Perform drag operation with mouse events
@@ -115,10 +131,12 @@ export async function dragEmployeeToPosition(
         try {
           await moveEmployeePromise;
         } catch (error) {
-          console.log(`Attempt ${attempt + 1}: API call did not complete, retrying...`);
+          console.log(
+            `Attempt ${attempt + 1}: API call did not complete, retrying...`,
+          );
           if (attempt === maxRetries) {
             throw new Error(
-              `Failed to move employee ${employeeId} to position ${targetPosition}: API call timeout`
+              `Failed to move employee ${employeeId} to position ${targetPosition}: API call timeout`,
             );
           }
           continue;
@@ -126,39 +144,51 @@ export async function dragEmployeeToPosition(
       }
 
       // 7. Wait for UI to update (network idle + buffer for React re-render)
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
       await page.waitForTimeout(500); // Additional buffer for React state updates
 
       // 8. Verify the employee moved by checking its data attribute (not DOM structure)
-      const positionAttr = isDonutMode ? 'data-donut-position' : 'data-position';
+      const positionAttr = isDonutMode
+        ? "data-donut-position"
+        : "data-position";
 
       try {
         // Wait for the employee card to have the correct position attribute
         // Increased timeout to allow for React re-rendering
-        await expect(employeeCard).toHaveAttribute(positionAttr, targetPosition.toString(), {
-          timeout: 3000
-        });
-        console.log(`  ✓ Position attribute updated: ${positionAttr}=${targetPosition}`);
+        await expect(employeeCard).toHaveAttribute(
+          positionAttr,
+          targetPosition.toString(),
+          {
+            timeout: 3000,
+          },
+        );
+        console.log(
+          `  ✓ Position attribute updated: ${positionAttr}=${targetPosition}`,
+        );
       } catch (error) {
         const currentValue = await employeeCard.getAttribute(positionAttr);
         console.log(
-          `Attempt ${attempt + 1}: Position attribute not updated (expected ${targetPosition}, got ${currentValue}), retrying...`
+          `Attempt ${attempt + 1}: Position attribute not updated (expected ${targetPosition}, got ${currentValue}), retrying...`,
         );
         if (attempt === maxRetries) {
           throw new Error(
-            `Failed to move employee ${employeeId} to position ${targetPosition}: Position attribute not updated after drag (got ${currentValue})`
+            `Failed to move employee ${employeeId} to position ${targetPosition}: Position attribute not updated after drag (got ${currentValue})`,
           );
         }
         continue;
       }
 
       // 9. Check for visual indicator based on mode
-      const expectModified = options.expectModified ?? true;  // Default: expect it
+      const expectModified = options.expectModified ?? true; // Default: expect it
 
       if (expectModified) {
         // In donut mode, check for donut-indicator; otherwise check for modified-indicator
-        const indicatorTestId = isDonutMode ? 'donut-indicator' : 'modified-indicator';
-        const indicator = employeeCard.locator(`[data-testid="${indicatorTestId}"]`);
+        const indicatorTestId = isDonutMode
+          ? "donut-indicator"
+          : "modified-indicator";
+        const indicator = employeeCard.locator(
+          `[data-testid="${indicatorTestId}"]`,
+        );
         await expect(indicator).toBeVisible({ timeout: 2000 });
       }
       // If expectModified is false, skip the check entirely
