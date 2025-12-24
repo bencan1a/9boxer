@@ -13,9 +13,11 @@ import {
 } from "@mui/material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
+import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
 
 export const ViewModeToggle: React.FC = () => {
+  const { t } = useTranslation();
   const { sessionId, donutModeActive, toggleDonutMode } = useSessionStore();
 
   const handleViewModeChange = async (
@@ -80,8 +82,8 @@ export const ViewModeToggle: React.FC = () => {
 
   // Dynamic tooltip showing active mode
   const tooltipTitle = donutModeActive
-    ? "Donut view active (Press D for Grid view)"
-    : "Grid view active (Press D for Donut view)";
+    ? t('grid.viewModeToggle.donutViewActive')
+    : t('grid.viewModeToggle.gridViewActive');
 
   return (
     <Tooltip
@@ -96,7 +98,7 @@ export const ViewModeToggle: React.FC = () => {
           size="small"
           disabled={!sessionId}
           data-testid="view-mode-toggle"
-          aria-label="View mode toggle"
+          aria-label={t('grid.viewModeToggle.ariaLabelToggle')}
           sx={{
             '& .MuiToggleButton-root': {
               '&.Mui-selected': {
@@ -111,7 +113,7 @@ export const ViewModeToggle: React.FC = () => {
         >
           <ToggleButton
             value="grid"
-            aria-label="Grid view"
+            aria-label={t('grid.viewModeToggle.ariaLabelGrid')}
             aria-pressed={!donutModeActive}
             data-testid="grid-view-button"
           >
@@ -119,7 +121,7 @@ export const ViewModeToggle: React.FC = () => {
           </ToggleButton>
           <ToggleButton
             value="donut"
-            aria-label="Donut view"
+            aria-label={t('grid.viewModeToggle.ariaLabelDonut')}
             aria-pressed={donutModeActive}
             data-testid="donut-view-button"
           >

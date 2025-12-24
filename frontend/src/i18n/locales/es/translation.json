@@ -31,6 +31,132 @@
       "noActiveSession": "No hay sesión activa",
       "exportSuccess": "Se exportó exitosamente {{count}} cambio a {{filename}}",
       "exportSuccess_other": "Se exportaron exitosamente {{count}} cambios a {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filtros",
+      "jobLevels": "Niveles de Trabajo",
+      "jobFunctions": "Funciones de Trabajo",
+      "locations": "Ubicaciones",
+      "managers": "Gerentes",
+      "exclusions": "Exclusiones",
+      "excludeEmployees": "Excluir Empleados",
+      "clearAllFilters": "Limpiar Todos los Filtros"
+    },
+    "exclusionDialog": {
+      "title": "Excluir Empleados",
+      "quickFilters": "Filtros Rápidos",
+      "excludeVPs": "Excluir VPs",
+      "excludeDirectorsPlus": "Excluir Directores+",
+      "excludeManagers": "Excluir Gerentes",
+      "clearAll": "Limpiar Todo",
+      "searchPlaceholder": "Buscar empleados...",
+      "selectAll": "Seleccionar Todo ({{count}} empleados)",
+      "selectedCount": "{{count}} seleccionados",
+      "cancel": "Cancelar",
+      "applyExclusions": "Aplicar Exclusiones"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "Ningún Archivo Cargado",
+      "emptyStateDescription": "Arrastra un archivo de Excel aquí o haz clic en Importar Datos para comenzar",
+      "importData": "Importar Datos",
+      "sampleFileHint": "¿Nuevo en 9Boxer? Prueba importar el archivo de muestra desde Ayuda → Guía del Usuario",
+      "showPanel": "Mostrar panel",
+      "hidePanel": "Ocultar panel"
+    }
+  },
+  "grid": {
+    "employeeCount": {
+      "employee": "empleado",
+      "employee_other": "empleados",
+      "of": "de",
+      "noEmployees": "Ningún empleado",
+      "totalEmployeesInSession": "Total de empleados en la sesión",
+      "showingCount": "Mostrando {{filteredCount}} de {{totalCount}} empleados",
+      "activeFilters": "Filtros activos:",
+      "jobLevel": "Nivel de Trabajo",
+      "jobFunction": "Función de Trabajo",
+      "location": "Ubicación",
+      "manager": "Gerente",
+      "excluded": "Excluidos",
+      "ariaLabel": "{{count}} empleados totales",
+      "ariaLabelFiltered": "Mostrando {{filteredCount}} de {{totalCount}} empleados con filtros activos",
+      "ariaLabelNoEmployees": "Ningún empleado en la sesión"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Vista de cuadrícula activa (Presiona D para vista de dona)",
+      "donutViewActive": "Vista de dona activa (Presiona D para vista de cuadrícula)",
+      "ariaLabelToggle": "Alternar modo de vista",
+      "ariaLabelGrid": "Vista de cuadrícula",
+      "ariaLabelDonut": "Vista de dona"
+    },
+    "gridBox": {
+      "collapseBox": "Colapsar caja",
+      "expandBox": "Expandir caja"
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "Detalles",
+      "changes": "Cambios",
+      "statistics": "Estadísticas",
+      "intelligence": "Inteligencia"
+    },
+    "detailsTab": {
+      "selectEmployee": "Seleccione un empleado para ver los detalles",
+      "reportingChain": "Cadena de Reportes",
+      "employeeInformation": "Información del Empleado",
+      "jobFunction": "Función de Trabajo",
+      "location": "Ubicación",
+      "jobLevel": "Nivel de Trabajo",
+      "tenure": "Antigüedad",
+      "timeInLevel": "Tiempo en el Nivel",
+      "promotionReady": "Listo para Promoción",
+      "currentAssessment": "Evaluación Actual",
+      "potential": "Potencial:",
+      "position": "Posición:",
+      "modifiedInSession": "Modificado en la Sesión"
+    },
+    "changeTrackerTab": {
+      "noChanges": "Ningún cambio aún",
+      "noDonutChanges": "Ningún cambio de dona aún",
+      "moveEmployeesHint": "Mueva empleados para rastrear cambios aquí",
+      "moveEmployeesDonutHint": "Mueva empleados en modo dona para rastrear cambios",
+      "addNotesPlaceholder": "Agregar notas...",
+      "employee": "Empleado",
+      "movement": "Movimiento",
+      "from": "De",
+      "to": "A",
+      "notes": "Notas",
+      "gridChanges": "Cambios de Cuadrícula",
+      "donutChanges": "Cambios de Dona"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Total de Empleados",
+      "modified": "Modificados",
+      "highPerformers": "Alto Desempeño",
+      "solidPerformers": "Desempeño Sólido",
+      "needsAttention": "Necesita Atención",
+      "distributionByPosition": "Distribución por Posición",
+      "position": "Posición",
+      "count": "Cantidad",
+      "percentage": "Porcentaje",
+      "groupPercentage": "% del Grupo",
+      "noStatisticsAvailable": "No hay estadísticas disponibles"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Sesión No Encontrada",
+      "sessionLostMessage": "Su sesión de datos se perdió (probablemente debido al reinicio de la aplicación). Por favor, vuelva a cargar su archivo de Excel para continuar.",
+      "failedToLoad": "Error al cargar los datos de inteligencia",
+      "retry": "Reintentar",
+      "noIntelligenceData": "No hay datos de inteligencia disponibles",
+      "locationAnalysis": "Análisis por Ubicación",
+      "highPerformerByLocation": "% de Alto Desempeño por Ubicación",
+      "functionAnalysis": "Análisis por Función",
+      "highPerformerByFunction": "% de Alto Desempeño por Función",
+      "levelAnalysis": "Análisis por Nivel",
+      "performanceDistributionByLevel": "Distribución de Desempeño por Nivel",
+      "tenureAnalysis": "Análisis por Antigüedad",
+      "highPerformerByTenure": "% de Alto Desempeño por Antigüedad"
     }
   },
   "common": {

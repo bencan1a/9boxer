@@ -5,12 +5,14 @@
 import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
 import { EmployeeDetails } from "./EmployeeDetails";
 import { RatingsTimeline } from "./RatingsTimeline";
 import { ManagementChain } from "./ManagementChain";
 
 export const DetailsTab: React.FC = () => {
+  const { t } = useTranslation();
   const selectedEmployeeId = useSessionStore((state) => state.selectedEmployeeId);
   const employees = useSessionStore((state) => state.employees);
 
@@ -32,7 +34,7 @@ export const DetailsTab: React.FC = () => {
       >
         <PersonOutlineIcon sx={{ fontSize: 64, color: "text.disabled" }} />
         <Typography variant="h6" color="text.secondary">
-          Select an employee to view details
+          {t('panel.detailsTab.selectEmployee')}
         </Typography>
       </Box>
     );
@@ -53,7 +55,7 @@ export const DetailsTab: React.FC = () => {
       <Card variant="outlined">
         <CardContent>
           <Typography variant="subtitle2" color="primary" gutterBottom>
-            Reporting Chain
+            {t('panel.detailsTab.reportingChain')}
           </Typography>
           <Box sx={{ mt: 2 }}>
             <ManagementChain employee={selectedEmployee} />
