@@ -102,7 +102,7 @@ git commit -m "Update translations"
   ```bash
   # Run standalone tests
   python tools/test_validation.py
-  
+
   # Run with pytest (requires dev dependencies)
   pytest backend/tests/unit/tools/test_validate_translations.py -v
   ```

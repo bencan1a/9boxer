@@ -2,11 +2,11 @@
 
 **Welcome to 9Boxer!** This guide helps GitHub Agent (and GitHub Copilot) work efficiently with this repository.
 
-> **Quick Links:**  
-> 🤖 [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)  
-> 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance  
-> 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices  
-> 📚 [docs/CONTEXT.md](docs/CONTEXT.md) - Comprehensive project context  
+> **Quick Links:**
+> 🤖 [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)
+> 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
+> 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices
+> 📚 [docs/CONTEXT.md](docs/CONTEXT.md) - Comprehensive project context
 > 🎯 [docs/facts.json](docs/facts.json) - Source of truth (highest authority)
 
 ---
@@ -480,11 +480,11 @@ git commit -m "message"
 ## 🔍 Common Issues & Solutions
 
 ### "Module not found" Error (Python)
-**Cause**: Virtual environment not activated  
+**Cause**: Virtual environment not activated
 **Solution**: `. .venv/bin/activate` from project root
 
 ### Tests Failing on Import
-**Cause**: Package not installed in development mode  
+**Cause**: Package not installed in development mode
 **Solution**:
 ```bash
 . .venv/bin/activate
@@ -492,23 +492,23 @@ pip install -e '.[dev]'
 ```
 
 ### Type Checking Errors
-**Cause**: Missing type annotations  
+**Cause**: Missing type annotations
 **Solution**: Add type hints to all function parameters and returns
 
 ### Backend Executable Won't Run
-**Cause**: Missing hidden imports in PyInstaller spec  
+**Cause**: Missing hidden imports in PyInstaller spec
 **Solution**: Add missing modules to `backend/build_config/ninebox.spec` hiddenimports
 
 ### Electron App Won't Start
-**Cause**: Backend executable not found or not built  
+**Cause**: Backend executable not found or not built
 **Solution**: Build backend first with `backend/scripts/build_executable.{sh,bat}`
 
 ### Frontend Can't Connect to Backend
-**Cause**: Backend not running or wrong port  
+**Cause**: Backend not running or wrong port
 **Solution**: Check backend is running on port 8000, check logs
 
 ### Pre-commit Hooks Failing
-**Cause**: Code quality issues  
+**Cause**: Code quality issues
 **Solution**:
 ```bash
 make fix                    # Auto-fix format/lint
@@ -516,7 +516,7 @@ pre-commit run --all-files  # Re-check
 ```
 
 ### Git Tracking Unexpected Files
-**Cause**: Created files in wrong location or used wrong commands  
+**Cause**: Created files in wrong location or used wrong commands
 **Solution**: Use `.gitignore`, clean up with `git rm`, use proper file tools
 
 ---

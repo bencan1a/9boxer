@@ -17,7 +17,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 
 export const LanguageSelector: React.FC = () => {
   const { i18n } = useTranslation();
-  
+
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {
     const newLanguage = event.target.value as SupportedLanguage;
     i18n.changeLanguage(newLanguage);
