@@ -125,6 +125,32 @@ assert result  # Too generic
 - [ ] **Queries by role/testid** - Using accessible selectors
 - [ ] **Avoids testing types** - No type annotation tests
 - [ ] **Mocks callbacks** - Uses `vi.fn()` for handlers
+- [ ] **Uses translation keys** - NO hardcoded English strings in assertions
+
+### Internationalization (i18n)
+- [ ] **Uses getTranslatedText()** - Import from `@/test/i18nTestUtils`
+- [ ] **No hardcoded strings** - All UI strings use translation keys
+- [ ] **Tests pluralization** - Tests with different count values (1, 2, 5, 0)
+- [ ] **Tests aria-labels** - Uses translated aria-label values
+- [ ] **Validates keys exist** - Test fails if translation key is missing
+
+Example:
+```typescript
+// ✓ GOOD: Uses translation helper
+import { getTranslatedText } from '@/test/i18nTestUtils';
+
+test('displays employee count', () => {
+  render(<EmployeeCount totalCount={5} />);
+  const expected = `5 ${getTranslatedText('grid.employeeCount.employee', { count: 5 })}`;
+  expect(screen.getByText(expected)).toBeInTheDocument();
+});
+
+// ❌ BAD: Hardcoded English string
+test('displays employee count', () => {
+  render(<EmployeeCount totalCount={5} />);
+  expect(screen.getByText('5 employees')).toBeInTheDocument(); // Will break!
+});
+```
 
 ### User Interaction
 - [ ] **Tests user perspective** - How users see the component
@@ -170,17 +196,26 @@ expect(mockCallback).toHaveBeenCalled();
 - [ ] **Uses getByTestId()** - Primary selector method (preferred)
 - [ ] **Avoids brittle selectors** - Not CSS classes (likely to change)
 - [ ] **Accessible selectors** - Uses getByRole() when appropriate
-- [ ] **Searches by text** - getByText() for labels and buttons (if stable)
+- [ ] **NO text selectors for structure** - Don't use getByText() for buttons/navigation (breaks with i18n)
+- [ ] **Text selectors ONLY for language tests** - Exception: testing language switching
 
 Example:
 ```typescript
-// Good: Uses getByTestId
+// ✓ GOOD: Uses data-testid (stable across languages)
 await page.getByTestId('upload-button').click();
+await page.getByTestId('file-input').setInputFiles('test.xlsx');
 
-// Alternative: Uses locator with data-testid
-await page.locator('[data-testid="upload-button"]').click();
+// ✓ GOOD: Text selector for language-switching test
+test('switches to Spanish', async ({ page }) => {
+  await expect(page.getByText('Details')).toBeVisible(); // English
+  await switchLanguage(page, 'es');
+  await expect(page.getByText('Detalles')).toBeVisible(); // Spanish
+});
 
-// Avoid: Brittle CSS selectors
+// ❌ BAD: Text selector for structural element
+await page.getByText('Filter employees').click(); // Breaks with translations!
+
+// ❌ BAD: Brittle CSS selectors
 await page.locator('.btn.btn-primary.mt-3').click();
 ```
 

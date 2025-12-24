@@ -59,6 +59,9 @@ export async function generateFileImport(
       // Capture the menu area showing highlighted Import Data option
       const menu = page.locator('[role="menu"]');
       await menu.screenshot({ path: outputPath });
+
+      // Close menu after capturing to prevent blocking subsequent screenshots
+      await closeAllDialogsAndOverlays(page);
     }
   }
 }
@@ -182,34 +185,35 @@ export async function generateFiltersPanel(
     // SELECT filters to show active state
     // This makes the screenshot useful for documentation
     // Try to select a location filter if available
-    const locationFilters = page.locator(
-      '[data-testid^="location-filter-"]',
-    ).first;
-    if (
-      (await locationFilters.count()) > 0 &&
-      (await locationFilters.isVisible())
-    ) {
-      await locationFilters.click();
-      await page.waitForTimeout(300);
+    const locationFilters = page.locator('[data-testid^="location-filter-"]');
+    if ((await locationFilters.count()) > 0) {
+      const firstLocationFilter = locationFilters.first();
+      if (await firstLocationFilter.isVisible()) {
+        await firstLocationFilter.click();
+        await waitForUiSettle(page, 0.3);
+      }
     }
 
     // Try to select a function filter if available
-    const functionFilters = page.locator(
-      '[data-testid^="function-filter-"]',
-    ).first;
-    if (
-      (await functionFilters.count()) > 0 &&
-      (await functionFilters.isVisible())
-    ) {
-      await functionFilters.click();
-      await page.waitForTimeout(300);
+    const functionFilters = page.locator('[data-testid^="function-filter-"]');
+    if ((await functionFilters.count()) > 0) {
+      const firstFunctionFilter = functionFilters.first();
+      if (await firstFunctionFilter.isVisible()) {
+        await firstFunctionFilter.click();
+        await waitForUiSettle(page, 0.3);
+      }
     }
 
     // Capture the filter drawer
     const filterDrawer = page.locator('[data-testid="filter-drawer"]');
     await filterDrawer.screenshot({ path: outputPath });
+
+    // Close drawer after capturing to prevent blocking subsequent screenshots
+    await closeAllDialogsAndOverlays(page);
   } catch (error) {
     console.warn("[Warning] Filters panel capture failed:", error);
+    // Close drawer even on error to prevent blocking subsequent screenshots
+    await closeAllDialogsAndOverlays(page);
     throw error;
   }
 }

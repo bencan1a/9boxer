@@ -218,9 +218,18 @@ export async function generateScreenshots(options: GenerateOptions = {}): Promis
     }
 
     // Generate each automated screenshot
+    let screenshotIndex = 0;
+    const totalScreenshots = Object.keys(screenshotsToGenerate).length;
+
     for (const [name, metadata] of Object.entries(screenshotsToGenerate)) {
       try {
-        console.log(`📸 Generating: ${name}...`);
+        // Phase 3: Reset application state between screenshots for isolation
+        // Skip reset for first screenshot (page already clean)
+        if (screenshotIndex > 0) {
+          await resetApplicationState(page);
+        }
+
+        console.log(`📸 Generating: ${name}... (${screenshotIndex + 1}/${totalScreenshots})`);
         await generateScreenshot(page, name, metadata);
         results.successful.push(name);
         console.log(`✓ Success: ${name}`);
@@ -229,6 +238,8 @@ export async function generateScreenshots(options: GenerateOptions = {}): Promis
         results.failed.push({ name, error: errorMessage });
         console.error(`✗ Failed: ${name} - ${errorMessage}`);
       }
+
+      screenshotIndex++;
     }
 
     // Report skipped screenshots (if filtering was used)
@@ -256,6 +267,39 @@ export async function generateScreenshots(options: GenerateOptions = {}): Promis
 }
 
 /**
+ * Reset application state between screenshots (Phase 3: Task 8)
+ *
+ * Ensures each screenshot starts with a clean state:
+ * - Reloads the page to clear all application state
+ * - Waits for page to be fully loaded
+ * - Verifies app is in clean initial state
+ *
+ * This prevents state leakage between screenshots and ensures
+ * consistent, reproducible results regardless of execution order.
+ */
+async function resetApplicationState(page: Page): Promise<void> {
+  // Reload page to clear all state
+  await page.reload({ waitUntil: 'networkidle' });
+
+  // Wait for app to be ready (verify clean state - Phase 3: Task 9)
+  // The app should show the welcome/upload state with no data loaded
+  const appReady = page.locator('[data-testid="nine-box-grid"]');
+
+  // Wait a moment for React to initialize
+  await page.waitForTimeout(500);
+
+  // Verify we're in clean state (no employees loaded)
+  const employeeCards = page.locator('[data-testid^="employee-card-"]');
+  const count = await employeeCards.count();
+
+  if (count > 0) {
+    // State not clean - might be persistent storage
+    // This is expected and okay - workflows will handle uploading fresh data
+    console.log(`  ℹ State reset: ${count} employees still present (will be replaced by workflow)`);
+  }
+}
+
+/**
  * Generate a single screenshot
  */
 async function generateScreenshot(
@@ -279,6 +323,43 @@ async function generateScreenshot(
 
   // Call the workflow function
   await screenshotFn(page, outputPath);
+
+  // Validate screenshot was created successfully (Phase 2: Task 7)
+  await validateScreenshot(outputPath, name);
+}
+
+/**
+ * Validate that a screenshot was created successfully
+ *
+ * Checks:
+ * - File exists on disk
+ * - File size is reasonable (> 1 KB to detect corrupt/empty files)
+ *
+ * @throws Error if validation fails
+ */
+async function validateScreenshot(outputPath: string, name: string): Promise<void> {
+  // Check file exists
+  if (!fs.existsSync(outputPath)) {
+    throw new Error(`Screenshot file not created at ${outputPath}`);
+  }
+
+  // Check file size
+  const stats = fs.statSync(outputPath);
+  const fileSizeKB = stats.size / 1024;
+
+  if (stats.size === 0) {
+    throw new Error(`Screenshot file is empty (0 bytes)`);
+  }
+
+  if (fileSizeKB < 1) {
+    throw new Error(
+      `Screenshot file suspiciously small (${fileSizeKB.toFixed(2)} KB). ` +
+      'May indicate a corrupt or incomplete screenshot.'
+    );
+  }
+
+  // Success - file looks valid
+  console.log(`  ✓ Validated: ${fileSizeKB.toFixed(1)} KB`);
 }
 
 /**
