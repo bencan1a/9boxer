@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "Logo de 9Boxer"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "Filtrar empleados",
+      "activeFilters": "Filtros activos:",
+      "levels": "Niveles",
+      "functions": "Funciones",
+      "locations": "Ubicaciones",
+      "managers": "Gerentes",
+      "excluded": "Excluidos",
+      "employees": "empleado(s)",
+      "help": "Ayuda",
+      "settings": "Configuración",
+      "userGuideError": "Error al abrir la guía del usuario",
+      "userGuideOnlyDesktop": "La guía del usuario solo está disponible en la aplicación de escritorio"
+    },
+    "fileMenu": {
+      "noFileSelected": "Ningún archivo seleccionado",
+      "fileMenuAriaLabel": "Menú de archivo: {{filename}}, {{count}} cambios pendientes",
+      "fileMenuAriaLabelNoFile": "Menú de archivo: Ningún archivo seleccionado",
+      "importData": "Importar Datos",
+      "exportChanges": "Aplicar {{count}} Cambio a Excel",
+      "exportChanges_other": "Aplicar {{count}} Cambios a Excel",
+      "exporting": "Exportando...",
+      "openRecentFile": "Abrir Archivo Reciente",
+      "comingSoon": "(Próximamente)",
+      "noActiveSession": "No hay sesión activa",
+      "exportSuccess": "Se exportaron exitosamente {{count}} cambio(s) a {{filename}}"
+    }
+  },
+  "common": {
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "retry": "Reintentar",
+    "quit": "Salir"
+  },
+  "messages": {
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información"
+  }
+}

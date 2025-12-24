@@ -22,6 +22,7 @@ import { FileMenu } from "./FileMenu";
 import { SettingsDialog } from "../settings/SettingsDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { logger } from "../../utils/logger";
+import { LanguageSelector } from "../common/LanguageSelector";
 
 export const AppBar: React.FC = () => {
   const theme = useTheme();
@@ -154,6 +155,10 @@ export const AppBar: React.FC = () => {
                 <HelpOutlineIcon />
               </IconButton>
             </Tooltip>
+
+            <Box sx={{ ml: 2 }}>
+              <LanguageSelector />
+            </Box>
           </Box>
         </Toolbar>
       </MuiAppBar>
