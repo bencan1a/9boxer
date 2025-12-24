@@ -78,9 +78,14 @@ export const ViewModeToggle: React.FC = () => {
   // Determine current view mode
   const currentMode: 'grid' | 'donut' = donutModeActive ? 'donut' : 'grid';
 
+  // Dynamic tooltip showing active mode
+  const tooltipTitle = donutModeActive
+    ? "Donut view active (Press D for Grid view)"
+    : "Grid view active (Press D for Donut view)";
+
   return (
     <Tooltip
-      title="Toggle between Grid and Donut visualization (D)"
+      title={tooltipTitle}
       placement="top"
     >
       <span>

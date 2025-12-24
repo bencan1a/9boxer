@@ -63,15 +63,18 @@ test.describe('Export Excel Content Validation', () => {
     // Wait for the state to be fully updated
     await page.waitForTimeout(1000);
 
-    // Export button should be enabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
+    // File menu badge should show changes
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    await expect(fileMenuBadge).not.toHaveAttribute('class', /invisible/);
 
     // Set up download listener
     const downloadPromise = page.waitForEvent('download');
 
-    // Click export button
-    await exportButton.click();
+    // Open file menu and click export menu item
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
 
     // Wait for download to complete
     const download = await downloadPromise;
@@ -115,11 +118,11 @@ test.describe('Export Excel Content Validation', () => {
     await page.waitForTimeout(500);
 
     // Export file
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
-
     const downloadPromise = page.waitForEvent('download');
-    await exportButton.click();
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
     const download = await downloadPromise;
 
     // Create tmp directory if it doesn't exist
@@ -162,11 +165,11 @@ test.describe('Export Excel Content Validation', () => {
     // Move an employee and export
     await dragEmployeeToPosition(page, 1, 6);
 
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
-
     const downloadPromise = page.waitForEvent('download');
-    await exportButton.click();
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
     const download = await downloadPromise;
 
     // Create tmp directory if it doesn't exist
@@ -203,11 +206,11 @@ test.describe('Export Excel Content Validation', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Export file
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
-
     const downloadPromise = page.waitForEvent('download');
-    await exportButton.click();
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
     const download = await downloadPromise;
 
     // Verify filename pattern matches modified_<original-name>.xlsx
@@ -235,9 +238,11 @@ test.describe('Export Excel Content Validation', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Export file
-    const exportButton = page.locator('[data-testid="export-button"]');
     const downloadPromise = page.waitForEvent('download');
-    await exportButton.click();
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
     const download = await downloadPromise;
 
     // Create tmp directory if it doesn't exist

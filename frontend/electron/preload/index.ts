@@ -30,6 +30,7 @@ interface ElectronAPI {
     error?: string;
   }>;
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
+  showLogs: () => Promise<{ success: boolean }>;
   theme: {
     /**
      * Get the current system theme preference.
@@ -43,6 +44,43 @@ interface ElectronAPI {
      * @returns Cleanup function to remove the listener
      */
     onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
+  };
+  backend: {
+    /**
+     * Get the actual port the backend is running on.
+     * This may differ from the default port 8000 if there was a port conflict.
+     * @returns Promise resolving to the backend port number
+     */
+    getPort: () => Promise<number>;
+    /**
+     * Get the full backend URL (e.g., "http://localhost:8001").
+     * Use this to initialize the API client with the correct port.
+     * @returns Promise resolving to the backend URL
+     */
+    getUrl: () => Promise<string>;
+    /**
+     * Listen for backend connection status changes.
+     * The callback will be invoked whenever the backend connection status changes.
+     *
+     * @param callback - Function to call with new status and optional port
+     * @returns Cleanup function to remove the listener
+     *
+     * @example
+     * ```typescript
+     * const cleanup = window.electronAPI.backend.onConnectionStatusChange((data) => {
+     *   console.log('Backend status:', data.status);
+     *   if (data.port) {
+     *     console.log('Backend port:', data.port);
+     *   }
+     * });
+     *
+     * // Later, when component unmounts:
+     * cleanup();
+     * ```
+     */
+    onConnectionStatusChange: (
+      callback: (data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }) => void
+    ) => () => void;
   };
 }
 
@@ -63,6 +101,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Help & Documentation
   openUserGuide: () => ipcRenderer.invoke('app:openUserGuide'),
+
+  /**
+   * Open the backend logs in the default text editor or file explorer.
+   * Useful for troubleshooting backend issues.
+   *
+   * @returns Promise resolving to success status
+   *
+   * @example
+   * ```typescript
+   * await window.electronAPI.showLogs();
+   * ```
+   */
+  showLogs: (): Promise<{ success: boolean }> => ipcRenderer.invoke('app:showLogs'),
 
   // OS Theme Detection
   theme: {
@@ -101,6 +152,77 @@ contextBridge.exposeInMainWorld('electronAPI', {
       // Return cleanup function
       return () => {
         ipcRenderer.removeListener('theme:systemThemeChanged', listener);
+      };
+    },
+  },
+
+  // Backend Configuration
+  backend: {
+    /**
+     * Get the actual port the backend is running on.
+     * This may differ from the default port 8000 if there was a port conflict.
+     *
+     * @returns Promise resolving to the backend port number
+     *
+     * @example
+     * ```typescript
+     * const port = await window.electronAPI.backend.getPort();
+     * console.log('Backend is running on port:', port);
+     * ```
+     */
+    getPort: (): Promise<number> => ipcRenderer.invoke('backend:getPort'),
+
+    /**
+     * Get the full backend URL (e.g., "http://localhost:8001").
+     * Use this to initialize the API client with the correct port.
+     *
+     * @returns Promise resolving to the backend URL
+     *
+     * @example
+     * ```typescript
+     * const url = await window.electronAPI.backend.getUrl();
+     * console.log('Backend URL:', url);
+     * // Use this URL to configure API client
+     * axios.defaults.baseURL = url;
+     * ```
+     */
+    getUrl: (): Promise<string> => ipcRenderer.invoke('backend:getUrl'),
+
+    /**
+     * Register a callback for backend connection status changes.
+     * The callback will be invoked whenever the backend connection status changes.
+     *
+     * @param callback - Function to call with new status and optional port
+     * @returns Cleanup function to remove the listener
+     *
+     * @example
+     * ```typescript
+     * const cleanup = window.electronAPI.backend.onConnectionStatusChange((data) => {
+     *   console.log('Backend status:', data.status);
+     *   if (data.port) {
+     *     console.log('Backend port changed to:', data.port);
+     *   }
+     * });
+     *
+     * // Later, when component unmounts:
+     * cleanup();
+     * ```
+     */
+    onConnectionStatusChange: (
+      callback: (data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }) => void
+    ): (() => void) => {
+      const listener = (
+        _event: Electron.IpcRendererEvent,
+        data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }
+      ) => {
+        callback(data);
+      };
+
+      ipcRenderer.on('backend:connection-status', listener);
+
+      // Return cleanup function
+      return () => {
+        ipcRenderer.removeListener('backend:connection-status', listener);
       };
     },
   },

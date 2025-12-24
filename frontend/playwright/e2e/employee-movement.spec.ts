@@ -17,19 +17,16 @@ test.describe('Employee Movement Flow', () => {
   });
 
   test('should allow dragging employee to a new grid position and show modified indicator', async ({ page }) => {
-    // Find an employee in position 9 (Alice Smith)
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    await expect(gridBox9.getByText('Alice Smith')).toBeVisible();
+    // Find Alice's employee card and verify she's in position 9
+    const aliceCard = page.locator('[data-testid="employee-card-1"]');
+    await expect(aliceCard).toHaveAttribute('data-position', '9');
+    await expect(aliceCard).toBeVisible();
 
     // Get initial count of employees in position 9
     const count9Before = await page.locator('[data-testid="grid-box-9-count"]').textContent();
 
     // Get initial count of employees in position 8
     const count8Before = await page.locator('[data-testid="grid-box-8-count"]').textContent();
-
-    // Find Alice's employee card - verify it exists and has the correct structure
-    const aliceCard = page.locator('[data-testid="grid-box-9"]').locator('[data-testid="employee-card-1"]');
-    await expect(aliceCard).toBeVisible();
 
     // Note: Drag and drop in E2E tests is complex and can be flaky
     // The actual drag functionality is better tested through backend API tests
@@ -52,8 +49,10 @@ test.describe('Employee Movement Flow', () => {
     const count = await employeeCardsInBox9.count();
     expect(count).toBeGreaterThanOrEqual(1);
 
-    // Check that the export button is initially disabled (no modifications)
-    await expect(page.locator('[data-testid="export-button"]')).toBeDisabled();
+    // Check that the file menu badge is not visible (no modifications)
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    const badgePill = fileMenuBadge.locator('.MuiBadge-badge');
+    await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
     // Note: Since drag and drop is complex in E2E tests, we verify the structure is correct
     // In a real scenario, the backend API would handle the movement and be tested separately

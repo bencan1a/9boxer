@@ -84,7 +84,6 @@ export interface FilterOptionsResponse {
 // Statistics types
 export interface PositionDistribution {
   grid_position: number;
-  position_label: string;
   count: number;
   percentage: number;
 }

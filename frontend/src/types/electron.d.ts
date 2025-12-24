@@ -96,6 +96,68 @@ export interface ElectronAPI {
     onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
   };
 
+  /**
+   * Backend configuration and connection APIs.
+   */
+  backend: {
+    /**
+     * Get the actual port the backend is running on.
+     * This may differ from the default port 8000 if there was a port conflict.
+     *
+     * @returns Promise resolving to the backend port number
+     *
+     * @example
+     * ```typescript
+     * const port = await window.electronAPI.backend.getPort();
+     * console.log('Backend is running on port:', port);
+     * ```
+     */
+    getPort: () => Promise<number>;
+
+    /**
+     * Get the full backend URL (e.g., "http://localhost:8001").
+     * Use this to initialize the API client with the correct port.
+     *
+     * @returns Promise resolving to the backend URL
+     *
+     * @example
+     * ```typescript
+     * const url = await window.electronAPI.backend.getUrl();
+     * console.log('Backend URL:', url);
+     * // Use this URL to configure API client
+     * ```
+     */
+    getUrl: () => Promise<string>;
+
+    /**
+     * Register a callback for backend connection status changes.
+     * The callback will be invoked whenever the backend connection status changes.
+     * Returns a cleanup function to remove the listener.
+     *
+     * @param callback - Function to call with connection status data
+     * @returns Cleanup function to remove the listener
+     *
+     * @example
+     * ```typescript
+     * // In a React component
+     * useEffect(() => {
+     *   const cleanup = window.electronAPI?.backend.onConnectionStatusChange((data) => {
+     *     console.log('Connection status:', data.status);
+     *     if (data.port) console.log('Backend port:', data.port);
+     *   });
+     *
+     *   return cleanup; // Cleanup on unmount
+     * }, []);
+     * ```
+     */
+    onConnectionStatusChange: (
+      callback: (data: {
+        status: 'connected' | 'reconnecting' | 'disconnected';
+        port?: number;
+      }) => void
+    ) => () => void;
+  };
+
   // Future APIs that could be added:
   // showNotification(title: string, options?: NotificationOptions): void;
   // getClipboardText(): Promise<string>;

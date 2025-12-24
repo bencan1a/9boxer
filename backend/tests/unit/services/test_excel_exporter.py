@@ -311,7 +311,6 @@ def test_export_when_donut_data_exists_then_includes_columns(
     # Mark employee with donut placement
     sample_employees[0].donut_modified = True
     sample_employees[0].donut_position = 6
-    sample_employees[0].donut_position_label = "High Impact [H,M]"
     sample_employees[0].donut_notes = "Testing hypothetical placement"
 
     output_path = tmp_path / "output.xlsx"
@@ -358,7 +357,6 @@ def test_export_when_donut_data_exists_then_populates_correctly(
     # Mark employee with donut placement (employee 1: moved from H,H to H,M)
     sample_employees[0].donut_modified = True
     sample_employees[0].donut_position = 6
-    sample_employees[0].donut_position_label = "High Impact [H,M]"
     sample_employees[0].donut_performance = PerformanceLevel.HIGH
     sample_employees[0].donut_potential = PotentialLevel.MEDIUM
     sample_employees[0].donut_notes = "Exploring management track"

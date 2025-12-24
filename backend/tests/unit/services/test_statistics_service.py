@@ -151,24 +151,6 @@ def test_calculate_distribution_when_single_employee_then_returns_100_percent(
     assert dist[9]["percentage"] == 100.0
 
 
-def test_calculate_distribution_when_called_then_includes_box_labels(
-    statistics_service: StatisticsService, sample_employees: list[Employee]
-) -> None:
-    """Test that box labels are included."""
-    stats = statistics_service.calculate_distribution(sample_employees)
-
-    dist = {item["grid_position"]: item for item in stats["distribution"]}
-
-    assert dist[9]["position_label"] == "Star [H,H]"
-    assert dist[6]["position_label"] == "High Impact [H,M]"
-    assert dist[3]["position_label"] == "Workhorse [H,L]"
-    assert dist[8]["position_label"] == "Growth [M,H]"
-    assert dist[5]["position_label"] == "Core Talent [M,M]"
-    assert dist[2]["position_label"] == "Effective Pro [M,L]"
-    assert dist[7]["position_label"] == "Enigma [L,H]"
-    assert dist[4]["position_label"] == "Inconsistent [L,M]"
-    assert dist[1]["position_label"] == "Underperformer [L,L]"
-
 
 def test_calculate_distribution_when_called_then_includes_total_count(
     statistics_service: StatisticsService, sample_employees: list[Employee]

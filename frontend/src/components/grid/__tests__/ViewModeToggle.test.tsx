@@ -174,7 +174,8 @@ describe('ViewModeToggle', () => {
     expect(donutButton).not.toBeDisabled()
   })
 
-  it('shows correct tooltip', () => {
+  it('shows Grid mode active tooltip when in Grid mode', async () => {
+    const user = userEvent.setup()
     vi.mocked(useSessionStore).mockReturnValue({
       sessionId: 'test-session',
       donutModeActive: false,
@@ -187,12 +188,42 @@ describe('ViewModeToggle', () => {
       </TestWrapper>
     )
 
-    // Tooltip is wrapped around the toggle group
     const toggleGroup = screen.getByTestId('view-mode-toggle')
-    const tooltipWrapper = toggleGroup.parentElement
 
-    // Check for tooltip title attribute or aria-label
-    expect(tooltipWrapper).toBeTruthy()
+    // Hover to trigger tooltip
+    await user.hover(toggleGroup)
+
+    // Check for dynamic tooltip text showing Grid mode is active
+    await waitFor(() => {
+      const tooltip = screen.queryByText('Grid view active (Press D for Donut view)')
+      expect(tooltip).toBeInTheDocument()
+    })
+  })
+
+  it('shows Donut mode active tooltip when in Donut mode', async () => {
+    const user = userEvent.setup()
+    vi.mocked(useSessionStore).mockReturnValue({
+      sessionId: 'test-session',
+      donutModeActive: true,
+      toggleDonutMode: mockToggleDonutMode,
+    } as any)
+
+    render(
+      <TestWrapper>
+        <ViewModeToggle />
+      </TestWrapper>
+    )
+
+    const toggleGroup = screen.getByTestId('view-mode-toggle')
+
+    // Hover to trigger tooltip
+    await user.hover(toggleGroup)
+
+    // Check for dynamic tooltip text showing Donut mode is active
+    await waitFor(() => {
+      const tooltip = screen.queryByText('Donut view active (Press D for Grid view)')
+      expect(tooltip).toBeInTheDocument()
+    })
   })
 
   it('does not change mode when clicking the already selected button', async () => {

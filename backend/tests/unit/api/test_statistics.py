@@ -64,7 +64,6 @@ def test_get_statistics_when_called_then_distribution_has_all_boxes(
     # Check each item has required fields
     for item in data["distribution"]:
         assert "grid_position" in item
-        assert "position_label" in item
         assert "count" in item
         assert "percentage" in item
 

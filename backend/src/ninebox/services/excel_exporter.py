@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ninebox.models.employee import Employee
-from ninebox.models.grid_positions import get_position_label
+from ninebox.models.grid_positions import get_position_label, get_position_label_by_number
 
 if TYPE_CHECKING:
     from openpyxl.worksheet.worksheet import Worksheet
@@ -122,7 +122,7 @@ class ExcelExporter:
                 if box_col:
                     sheet.cell(row_idx, box_col, emp.grid_position)
                 if label_col:
-                    sheet.cell(row_idx, label_col, emp.position_label)
+                    sheet.cell(row_idx, label_col, get_position_label_by_number(emp.grid_position))
 
                 # Update promotion readiness
                 if promotion_readiness_col and emp.promotion_readiness is not None:
@@ -148,7 +148,13 @@ class ExcelExporter:
                     # Donut Exercise Position
                     sheet.cell(row_idx, modified_col + 4, emp.donut_position)
                     # Donut Exercise Label
-                    sheet.cell(row_idx, modified_col + 5, emp.donut_position_label or "")
+                    sheet.cell(
+                        row_idx,
+                        modified_col + 5,
+                        get_position_label_by_number(emp.donut_position)
+                        if emp.donut_position
+                        else "",
+                    )
                     # Donut Exercise Change Description
                     donut_description = donut_change_description_map.get(emp_id, "")
                     sheet.cell(row_idx, modified_col + 6, donut_description)

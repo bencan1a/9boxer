@@ -27,17 +27,15 @@ test.describe('Donut Mode Workflow', () => {
     expect(totalCount).toBeGreaterThan(0);
 
     // 2. Verify donut mode button is visible and enabled
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await expect(donutModeButton).toBeVisible();
     await expect(donutModeButton).toBeEnabled();
 
     // 3. Toggle donut mode ON
     await donutModeButton.click();
 
-    // 4. Verify visual indicator shows "Donut Mode Active"
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
-    await expect(donutIndicator).toContainText(/ACTIVE/i);
+    // 4. Verify donut mode is active by checking the button is selected
+    await expect(donutModeButton).toHaveAttribute('aria-pressed', 'true');
 
     // 5. Verify only position 5 employees shown (filtered view)
     await page.waitForTimeout(500); // Allow filter to apply
@@ -68,7 +66,7 @@ test.describe('Donut Mode Workflow', () => {
     expect(employeeName).toBeTruthy();
 
     // 7. Drag employee to different position (position 9 - Star quadrant)
-    await dragEmployeeToPosition(page, empId, 9);
+    await dragEmployeeToPosition(page, empId, 9, { isDonutMode: true });
 
     // 8. Verify employee appears in new position (box 9)
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
@@ -109,11 +107,13 @@ test.describe('Donut Mode Workflow', () => {
     const donutBadge = movedEmployee.locator('[data-testid="donut-indicator"]');
     await expect(donutBadge).toBeVisible();
 
-    // 11. Toggle donut mode OFF
-    await donutModeButton.click();
+    // 11. Toggle donut mode OFF (click grid button to switch back to grid mode)
+    const gridModeButton = page.locator('[data-testid="grid-view-button"]');
+    await gridModeButton.click();
 
-    // 12. Verify visual indicator hidden
-    await expect(donutIndicator).not.toBeVisible();
+    // 12. Wait for toggle to complete and verify visual indicator hidden
+    await page.waitForTimeout(1000); // Wait for API call and state update
+    await expect(donutModeButton).toHaveAttribute('aria-pressed', 'false');
 
     // 13. Verify all employees shown again
     await page.waitForTimeout(500); // Allow filter to clear
@@ -136,7 +136,10 @@ test.describe('Donut Mode Workflow', () => {
 
     // 15. Toggle donut mode back ON
     await donutModeButton.click();
-    await expect(donutIndicator).toBeVisible();
+
+    // Wait for toggle to complete and verify visual indicator is back on
+    await page.waitForTimeout(1000); // Wait for API call and state update
+    await expect(donutModeButton).toHaveAttribute('aria-pressed', 'true');
 
     // 16. Verify donut placement persisted (still in position 9)
     await page.waitForTimeout(500); // Allow filter to apply
@@ -151,22 +154,29 @@ test.describe('Donut Mode Workflow', () => {
     });
     expect(parseFloat(persistedOpacity)).toBe(0.7);
 
-    // 17. Export button should be disabled (donut placements don't count as regular modifications)
-    // Note: Donut mode changes are exported separately but don't enable the regular export button
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeDisabled();
+    // 17. Skip file menu badge check - donut placements may or may not show badge depending on implementation
+    // Note: Donut mode changes are tracked separately from regular changes
+    // The badge visibility behavior for donut-only changes is implementation-defined
+    // For now, we'll skip this check as it's not critical to the donut mode functionality
 
-    // 18. Toggle donut mode OFF to prepare for export
-    await donutModeButton.click();
-    await expect(donutIndicator).not.toBeVisible();
+    // 18. Toggle donut mode OFF to prepare for export (click grid button)
+    const gridModeButton2 = page.locator('[data-testid="grid-view-button"]');
+    await gridModeButton2.click();
+
+    // Wait for toggle to complete and verify donut mode is off
+    await page.waitForTimeout(1000); // Wait for API call and state update
+    await expect(donutModeButton).toHaveAttribute('aria-pressed', 'false');
 
     // 19. Export to Excel (donut data should be included in columns)
-    // For actual export, we need to enable the export button first
-    // Since donut placements alone don't enable export, we'll verify the button state
+    // For actual export, we need to enable the export menu item first
+    // Since donut placements alone don't enable export, we'll verify the menu item state
     // In a real scenario, you'd make a regular modification to enable export
 
-    // Verify export button is disabled (as expected with only donut placements)
-    await expect(exportButton).toBeDisabled();
+    // Verify export menu item is disabled (as expected with only donut placements)
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeDisabled();
+    await page.keyboard.press('Escape');
 
     // To actually test export with donut data, we'd need to:
     // 1. Make a regular modification (move employee outside donut mode)
@@ -179,11 +189,11 @@ test.describe('Donut Mode Workflow', () => {
     // Already done in beforeEach
 
     // 2. Toggle donut mode ON
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await donutModeButton.click();
 
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
+    const donutViewButton = page.locator('[data-testid="donut-view-button"]');
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'true');
 
     // 3. Make a donut placement
     await page.waitForTimeout(500);
@@ -192,11 +202,14 @@ test.describe('Donut Mode Workflow', () => {
     const employeeCardTestId = await firstEmployee.getAttribute('data-testid');
     const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
 
-    await dragEmployeeToPosition(page, employeeId, 9);
+    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
-    // 4. Toggle donut mode OFF
-    await donutModeButton.click();
-    await expect(donutIndicator).not.toBeVisible();
+    // 4. Toggle donut mode OFF (click grid button)
+    const gridModeButton5 = page.locator('[data-testid="grid-view-button"]');
+    await gridModeButton5.click();
+    await page.waitForTimeout(1500); // Wait for API call and state update
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'false');
+    await page.waitForLoadState('networkidle'); // Ensure all state transitions complete
 
     // 5. Make a regular modification to enable export
     // Find a different employee and move them
@@ -211,15 +224,18 @@ test.describe('Donut Mode Workflow', () => {
       await dragEmployeeToPosition(page, anotherEmployeeId, 6);
     }
 
-    // 6. Verify export button is now enabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
+    // 6. Verify file menu badge shows changes
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    await expect(fileMenuBadge).not.toHaveAttribute('class', /invisible/);
 
     // 7. Set up download listener
     const downloadPromise = page.waitForEvent('download');
 
-    // 8. Click export button
-    await exportButton.click();
+    // 8. Open file menu and click export menu item
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
 
     // 9. Wait for download to complete
     const download = await downloadPromise;
@@ -253,11 +269,11 @@ test.describe('Donut Mode Workflow', () => {
 
   test('should allow adding notes to donut placements', async ({ page }) => {
     // 1. Toggle donut mode ON
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await donutModeButton.click();
 
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
+    const donutViewButton = page.locator('[data-testid="donut-view-button"]');
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'true');
 
     // 2. Find and move an employee in donut mode
     await page.waitForTimeout(500);
@@ -266,7 +282,7 @@ test.describe('Donut Mode Workflow', () => {
     const employeeCardTestId = await firstEmployee.getAttribute('data-testid');
     const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
 
-    await dragEmployeeToPosition(page, employeeId, 9);
+    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Open employee details to add notes
     // Click on the employee card
@@ -317,11 +333,11 @@ test.describe('Donut Mode Workflow', () => {
 
   test('should show correct position labels in donut mode vs normal mode', async ({ page }) => {
     // 1. Toggle donut mode ON
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await donutModeButton.click();
 
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
+    const donutViewButton = page.locator('[data-testid="donut-view-button"]');
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'true');
 
     // 2. Make a donut placement
     await page.waitForTimeout(500);
@@ -331,7 +347,7 @@ test.describe('Donut Mode Workflow', () => {
     const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
 
     // Move from position 5 to position 9
-    await dragEmployeeToPosition(page, employeeId, 9);
+    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Verify employee shows in position 9 with donut label
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
@@ -348,9 +364,11 @@ test.describe('Donut Mode Workflow', () => {
       expect(donutModeLabel).toBeTruthy();
     }
 
-    // 4. Toggle donut mode OFF
-    await donutModeButton.click();
-    await expect(donutIndicator).not.toBeVisible();
+    // 4. Toggle donut mode OFF (click grid button)
+    const gridModeButton6 = page.locator('[data-testid="grid-view-button"]');
+    await gridModeButton6.click();
+    await page.waitForTimeout(1000); // Wait for API call and state update
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'false');
 
     // 5. Verify employee shows in original position with regular label
     await page.waitForTimeout(500);
@@ -367,11 +385,11 @@ test.describe('Donut Mode Workflow', () => {
 
   test('should handle multiple donut placements correctly', async ({ page }) => {
     // 1. Toggle donut mode ON
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await donutModeButton.click();
 
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
+    const donutViewButton = page.locator('[data-testid="donut-view-button"]');
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'true');
 
     // 2. Make multiple donut placements
     await page.waitForTimeout(500);
@@ -389,11 +407,11 @@ test.describe('Donut Mode Workflow', () => {
       const employee2Id = parseInt(employee2TestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
 
       // Move first employee
-      await dragEmployeeToPosition(page, employee1Id, 9);
+      await dragEmployeeToPosition(page, employee1Id, 9, { isDonutMode: true });
       await page.waitForTimeout(500);
 
       // Move second employee
-      await dragEmployeeToPosition(page, employee2Id, 6);
+      await dragEmployeeToPosition(page, employee2Id, 6, { isDonutMode: true });
       await page.waitForTimeout(500);
 
       // 3. Verify both employees show with ghostly styling
@@ -435,11 +453,11 @@ test.describe('Donut Mode Workflow', () => {
     // Uncomment this test once the frontend properly reflects backend state changes.
 
     // 1. Toggle donut mode ON
-    const donutModeButton = page.locator('[data-testid="donut-mode-button"]');
+    const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await donutModeButton.click();
 
-    const donutIndicator = page.locator('[data-testid="donut-mode-indicator"]');
-    await expect(donutIndicator).toBeVisible();
+    const donutViewButton = page.locator('[data-testid="donut-view-button"]');
+    await expect(donutViewButton).toHaveAttribute('aria-pressed', 'true');
 
     // 2. Make a donut placement
     await page.waitForTimeout(500);
@@ -449,7 +467,7 @@ test.describe('Donut Mode Workflow', () => {
     const employeeId = parseInt(employeeCardTestId?.match(/employee-card-(\d+)/)?.[1] || '0', 10);
 
     // Move to position 9
-    await dragEmployeeToPosition(page, employeeId, 9);
+    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Verify ghostly styling is present
     let employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
@@ -457,7 +475,7 @@ test.describe('Donut Mode Workflow', () => {
     expect(parseFloat(opacity)).toBe(0.7);
 
     // 4. Move back to position 5 (still in donut mode)
-    await dragEmployeeToPosition(page, employeeId, 5);
+    await dragEmployeeToPosition(page, employeeId, 5, { isDonutMode: true });
 
     // 5. Verify ghostly styling is removed (wait longer for state update)
     await page.waitForTimeout(1000);

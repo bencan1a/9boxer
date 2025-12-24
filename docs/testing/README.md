@@ -50,6 +50,35 @@ This directory contains comprehensive testing guidance, templates, and best prac
 
 **Follow this** when writing new tests to ensure completeness.
 
+### Playwright Architecture & Best Practices
+
+**[PLAYWRIGHT_REVIEW_SUMMARY.md](PLAYWRIGHT_REVIEW_SUMMARY.md)** - Executive summary and action items
+- Current test suite health scorecard (7/10)
+- Immediate fixes for 5 failing tests (~20 min)
+- Week 1 improvements (config, helpers, test splitting)
+- Long-term best practices and principles
+
+**Start here** for Playwright-specific guidance and quick wins.
+
+**[playwright-architecture-review.md](playwright-architecture-review.md)** - Comprehensive architectural analysis
+- Detailed analysis of test design patterns
+- Anti-patterns to avoid (with code examples)
+- Async handling best practices
+- Helper function design guidelines
+- Configuration recommendations
+- Before/after refactoring examples
+
+**Reference this** for deep understanding of Playwright testing patterns.
+
+**[playwright-best-practices-checklist.md](playwright-best-practices-checklist.md)** - Quick reference for daily use
+- Pre-commit checklist
+- Test design decision tree
+- Selector strategy guide
+- Common failure patterns and fixes
+- Debugging checklist
+
+**Use this** as your daily Playwright testing companion.
+
 ## Test Templates
 
 The [templates/](templates/) directory contains starter templates for all test types:
