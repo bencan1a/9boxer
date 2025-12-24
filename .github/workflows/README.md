@@ -24,21 +24,21 @@ This workflow is **automatically invoked by GitHub Copilot** when its coding age
 ### Important Notes
 
 ⚠️ **This workflow should NOT include:**
-- `actions/checkout@v4` - Copilot automatically clones the repository before running the setup
-- `on:` trigger section - Custom setup workflows don't need explicit triggers
+- `actions/checkout@v4` - Copilot automatically clones the repository before running the setup.
+- `on:` trigger section - Custom setup workflows don't need explicit triggers.
 
 Including these causes "fatal: repository not found" errors due to permissions conflicts with Copilot's automatic checkout process.
 
 ### Troubleshooting
 
 **Copilot agent fails with "repository not found":**
-- Verify the workflow does NOT contain `actions/checkout@v4`
+- Verify the workflow does NOT contain `actions/checkout@v4`.
 - Verify the workflow does NOT have an `on:` trigger section.
 - Check that the workflow file is named exactly `copilot-setup-steps.yml`.
 
 **Environment setup takes too long:**
-- Cache keys are used for uv, npm, and Playwright to speed up installation
-- First run may take 5-10 minutes; subsequent runs should be faster
+- Cache keys are used for uv, npm, and Playwright to speed up installation.
+- First run may take 5-10 minutes; subsequent runs should be faster.
 
 ## Build Electron App
 

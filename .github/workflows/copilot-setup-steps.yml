@@ -5,7 +5,7 @@ name: "Copilot Setup Steps"
 #
 # IMPORTANT: This workflow should NOT include:
 # - actions/checkout@v4 (Copilot automatically clones the repo before running this.)
-# - on: triggers (Custom setup workflows don't need explicit triggers)
+# - on: triggers (Custom setup workflows don't need explicit triggers).
 
 jobs:
   copilot-setup-steps:
