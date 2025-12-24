@@ -155,10 +155,10 @@ if (selectedLevels.length > 0) {
 **After:**
 ```tsx
 const { t } = useTranslation();
-t('changeTracker.moveDescription', { 
-  name: employeeName, 
-  oldPosition, 
-  newPosition 
+t('changeTracker.moveDescription', {
+  name: employeeName,
+  oldPosition,
+  newPosition
 })
 ```
 
