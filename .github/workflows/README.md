@@ -34,7 +34,7 @@ Including these causes "fatal: repository not found" errors due to permissions c
 **Copilot agent fails with "repository not found":**
 - Verify the workflow does NOT contain `actions/checkout@v4`
 - Verify the workflow does NOT have an `on:` trigger section.
-- Check that the workflow file is named exactly `copilot-setup-steps.yml`
+- Check that the workflow file is named exactly `copilot-setup-steps.yml`.
 
 **Environment setup takes too long:**
 - Cache keys are used for uv, npm, and Playwright to speed up installation
