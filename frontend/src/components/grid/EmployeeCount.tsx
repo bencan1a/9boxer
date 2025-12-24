@@ -8,12 +8,14 @@
 import React, { useMemo } from "react";
 import { Typography, Tooltip, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 
 export const EmployeeCount: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { employees: filteredEmployees } = useEmployees();
   const { employees: allEmployees } = useSessionStore();
   const {
@@ -32,33 +34,37 @@ export const EmployeeCount: React.FC = () => {
   // Build display text
   const displayText = useMemo(() => {
     if (!hasActiveFilters || filteredCount === totalCount) {
-      return `${totalCount} employee${totalCount === 1 ? "" : "s"}`;
+      return `${totalCount} ${t('grid.employeeCount.employee', { count: totalCount })}`;
     }
-    return `${filteredCount} of ${totalCount} employee${totalCount === 1 ? "" : "s"}`;
-  }, [hasActiveFilters, filteredCount, totalCount]);
+    return `${filteredCount} ${t('grid.employeeCount.of')} ${totalCount} ${t('grid.employeeCount.employee', { count: totalCount })}`;
+  }, [hasActiveFilters, filteredCount, totalCount, t]);
 
   // Build tooltip content
   const tooltipContent = useMemo(() => {
     if (!hasActiveFilters) {
-      return "Total employees in session";
+      return t('grid.employeeCount.totalEmployeesInSession');
     }
 
-    const filterParts: string[] = [`Showing ${filteredCount} of ${totalCount} employees`, "", "Active filters:"];
+    const filterParts: string[] = [
+      t('grid.employeeCount.showingCount', { filteredCount, totalCount }), 
+      "", 
+      t('grid.employeeCount.activeFilters')
+    ];
 
     if (selectedLevels.length > 0) {
-      filterParts.push(`  • Job Level: ${selectedLevels.join(", ")}`);
+      filterParts.push(`  • ${t('grid.employeeCount.jobLevel')}: ${selectedLevels.join(", ")}`);
     }
     if (selectedJobFunctions.length > 0) {
-      filterParts.push(`  • Job Function: ${selectedJobFunctions.join(", ")}`);
+      filterParts.push(`  • ${t('grid.employeeCount.jobFunction')}: ${selectedJobFunctions.join(", ")}`);
     }
     if (selectedLocations.length > 0) {
-      filterParts.push(`  • Location: ${selectedLocations.join(", ")}`);
+      filterParts.push(`  • ${t('grid.employeeCount.location')}: ${selectedLocations.join(", ")}`);
     }
     if (selectedManagers.length > 0) {
-      filterParts.push(`  • Manager: ${selectedManagers.join(", ")}`);
+      filterParts.push(`  • ${t('grid.employeeCount.manager')}: ${selectedManagers.join(", ")}`);
     }
     if (excludedEmployeeIds.length > 0) {
-      filterParts.push(`  • Excluded: ${excludedEmployeeIds.length} employee(s)`);
+      filterParts.push(`  • ${t('grid.employeeCount.excluded')}: ${excludedEmployeeIds.length} ${t('grid.employeeCount.employee', { count: excludedEmployeeIds.length })}`);
     }
 
     return filterParts.join("\n");
@@ -71,6 +77,7 @@ export const EmployeeCount: React.FC = () => {
     selectedLocations,
     selectedManagers,
     excludedEmployeeIds,
+    t,
   ]);
 
   // Handle edge case: no employees
@@ -82,10 +89,10 @@ export const EmployeeCount: React.FC = () => {
           color: theme.palette.text.secondary,
           userSelect: "none",
         }}
-        aria-label="No employees in session"
+        aria-label={t('grid.employeeCount.ariaLabelNoEmployees')}
         data-testid="employee-count"
       >
-        No employees
+        {t('grid.employeeCount.noEmployees')}
       </Typography>
     );
   }
@@ -108,8 +115,8 @@ export const EmployeeCount: React.FC = () => {
         }}
         aria-label={
           hasActiveFilters
-            ? `Showing ${filteredCount} of ${totalCount} employees with active filters`
-            : `${totalCount} total employees`
+            ? t('grid.employeeCount.ariaLabelFiltered', { filteredCount, totalCount })
+            : t('grid.employeeCount.ariaLabel', { count: totalCount })
         }
         data-testid="employee-count"
       >
