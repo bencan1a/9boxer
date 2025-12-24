@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
+import { useTranslation } from 'react-i18next';
 import { useUiStore, type ThemeMode } from '../../store/uiStore';
 
 export interface SettingsDialogProps {
@@ -27,6 +28,7 @@ export interface SettingsDialogProps {
 }
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose }) => {
+  const { t } = useTranslation();
   // Get theme state from store
   const themeMode = useUiStore((state) => state.themeMode);
   const effectiveTheme = useUiStore((state) => state.effectiveTheme);
@@ -40,20 +42,20 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
   const themeOptions = [
     {
       value: 'light' as ThemeMode,
-      label: 'Light Mode',
-      description: 'Always use light theme',
+      label: t('dialogs.settings.lightMode'),
+      description: t('dialogs.settings.lightModeDescription'),
       icon: <LightModeIcon />,
     },
     {
       value: 'dark' as ThemeMode,
-      label: 'Dark Mode',
-      description: 'Always use dark theme',
+      label: t('dialogs.settings.darkMode'),
+      description: t('dialogs.settings.darkModeDescription'),
       icon: <DarkModeIcon />,
     },
     {
       value: 'auto' as ThemeMode,
-      label: 'Auto (Follow System)',
-      description: 'Automatically match your system theme',
+      label: t('dialogs.settings.autoMode'),
+      description: t('dialogs.settings.autoModeDescription'),
       icon: <SettingsBrightnessIcon />,
     },
   ];
@@ -79,10 +81,10 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
         }}
       >
         <Typography variant="h6" component="span">
-          Settings
+          {t('dialogs.settings.title')}
         </Typography>
         <IconButton
-          aria-label="close settings"
+          aria-label={t('dialogs.settings.closeAriaLabel')}
           onClick={onClose}
           size="small"
           sx={{
@@ -105,13 +107,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
               color: 'text.primary',
             }}
           >
-            Appearance
+            {t('dialogs.settings.appearance')}
           </Typography>
 
           <RadioGroup
             value={themeMode}
             onChange={handleThemeChange}
-            aria-label="theme mode selection"
+            aria-label={t('dialogs.settings.themeModeAriaLabel')}
           >
             {themeOptions.map((option) => (
               <FormControlLabel
@@ -193,7 +195,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                 mb: 0.5,
               }}
             >
-              Current Selection:
+              {t('dialogs.settings.currentSelection')}
             </Typography>
             <Box
               sx={{
@@ -225,7 +227,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                 }}
               >
                 {effectiveTheme === 'light' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
-                Currently using {effectiveTheme} theme (from system)
+                {t('dialogs.settings.currentThemeStatus', { theme: t(`dialogs.settings.${effectiveTheme}`) })}
               </Typography>
             )}
           </Box>

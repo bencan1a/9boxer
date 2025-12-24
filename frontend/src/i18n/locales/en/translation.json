@@ -169,10 +169,53 @@
     "retry": "Retry",
     "quit": "Quit"
   },
+  "dialogs": {
+    "fileUpload": {
+      "title": "Import Excel File",
+      "description": "Import a 9-Box talent mapping Excel file (.xlsx or .xls)",
+      "selectFile": "Select File",
+      "selectedFile": "Selected: <strong>{{filename}}</strong>",
+      "import": "Import",
+      "importing": "Importing...",
+      "importSuccess": "File imported successfully!",
+      "cancel": "Cancel"
+    },
+    "settings": {
+      "title": "Settings",
+      "closeAriaLabel": "close settings",
+      "appearance": "Appearance",
+      "themeModeAriaLabel": "theme mode selection",
+      "currentSelection": "Current Selection:",
+      "currentThemeStatus": "Currently using {{theme}} theme (from system)",
+      "lightMode": "Light Mode",
+      "lightModeDescription": "Always use light theme",
+      "darkMode": "Dark Mode",
+      "darkModeDescription": "Always use dark theme",
+      "autoMode": "Auto (Follow System)",
+      "autoModeDescription": "Automatically match your system theme",
+      "light": "light",
+      "dark": "dark"
+    },
+    "errorBoundary": {
+      "title": "Oops! Something went wrong",
+      "message": "An unexpected error occurred. Please try reloading the page.",
+      "returnHome": "Return to Home"
+    }
+  },
+  "forms": {
+    "validation": {
+      "fileSizeExceeded": "File size must be less than 10MB",
+      "invalidFileType": "Please select an Excel file (.xlsx or .xls)",
+      "fileReadError": "Failed to read file",
+      "fileRequired": "Please select a file first",
+      "importError": "Failed to import file"
+    }
+  },
   "messages": {
     "success": "Success",
     "error": "Error",
     "warning": "Warning",
-    "info": "Info"
+    "info": "Info",
+    "fileImported": "Successfully imported {{filename}}"
   }
 }

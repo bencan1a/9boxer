@@ -169,10 +169,53 @@
     "retry": "Reintentar",
     "quit": "Salir"
   },
+  "dialogs": {
+    "fileUpload": {
+      "title": "Importar Archivo de Excel",
+      "description": "Importar un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",
+      "selectFile": "Seleccionar Archivo",
+      "selectedFile": "Seleccionado: <strong>{{filename}}</strong>",
+      "import": "Importar",
+      "importing": "Importando...",
+      "importSuccess": "¡Archivo importado exitosamente!",
+      "cancel": "Cancelar"
+    },
+    "settings": {
+      "title": "Configuración",
+      "closeAriaLabel": "cerrar configuración",
+      "appearance": "Apariencia",
+      "themeModeAriaLabel": "selección de modo de tema",
+      "currentSelection": "Selección Actual:",
+      "currentThemeStatus": "Usando actualmente el tema {{theme}} (del sistema)",
+      "lightMode": "Modo Claro",
+      "lightModeDescription": "Usar siempre el tema claro",
+      "darkMode": "Modo Oscuro",
+      "darkModeDescription": "Usar siempre el tema oscuro",
+      "autoMode": "Auto (Seguir Sistema)",
+      "autoModeDescription": "Coincidir automáticamente con el tema de su sistema",
+      "light": "claro",
+      "dark": "oscuro"
+    },
+    "errorBoundary": {
+      "title": "¡Ups! Algo salió mal",
+      "message": "Ocurrió un error inesperado. Por favor, intente recargar la página.",
+      "returnHome": "Volver al Inicio"
+    }
+  },
+  "forms": {
+    "validation": {
+      "fileSizeExceeded": "El tamaño del archivo debe ser menor a 10MB",
+      "invalidFileType": "Por favor, seleccione un archivo de Excel (.xlsx o .xls)",
+      "fileReadError": "Error al leer el archivo",
+      "fileRequired": "Por favor, seleccione un archivo primero",
+      "importError": "Error al importar el archivo"
+    }
+  },
   "messages": {
     "success": "Éxito",
     "error": "Error",
     "warning": "Advertencia",
-    "info": "Información"
+    "info": "Información",
+    "fileImported": "Se importó exitosamente {{filename}}"
   }
 }

@@ -10,7 +10,7 @@ import type { TranslationKeys, TranslationOptions } from './types';
  */
 export const useTypedTranslation = () => {
   const { t, i18n } = useTranslation();
-  
+
   return {
     t: (key: TranslationKeys, options?: TranslationOptions) => t(key, options),
     i18n,
@@ -23,7 +23,7 @@ export const useTypedTranslation = () => {
  */
 export const useTranslatedError = () => {
   const { t } = useTypedTranslation();
-  
+
   return {
     translateError: (key: TranslationKeys, errorDetails?: string) => {
       const message = t(key);
@@ -38,7 +38,7 @@ export const useTranslatedError = () => {
  */
 export const useTranslatedPlural = () => {
   const { t } = useTypedTranslation();
-  
+
   return {
     translatePlural: (key: TranslationKeys, count: number, options?: TranslationOptions) => {
       return t(key, { count, ...options });

@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.  
+> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
 > **For Quick Reference**: See [AGENTS.md](AGENTS.md) for development workflow essentials.
 
 ## Project Overview
@@ -683,6 +683,50 @@ test.describe('Employee Upload Flow', () => {
   - `templates/` - Test templates for backend, component, and E2E tests
 
 See `docs/testing/` for comprehensive testing principles and best practices.
+
+### Internationalization (i18n)
+
+The frontend uses **react-i18next** for internationalization and currently supports English and Spanish.
+
+**Key Conventions:**
+- **Never hardcode user-facing strings** - Always use translation keys via `useTranslation()` hook
+- **ESLint enforcement** - The `react/jsx-no-literals` rule prevents hardcoded strings in JSX
+- **Translation files** - Located in `frontend/src/i18n/locales/{en,es}/translation.json`
+- **Namespace organization** - Group strings by feature area (e.g., `dashboard.fileMenu.*`, `grid.*`, `panel.*`)
+
+**Adding New Strings:**
+1. Add English translation to `frontend/src/i18n/locales/en/translation.json`
+2. Add Spanish translation to `frontend/src/i18n/locales/es/translation.json`
+3. Use in component: `const { t } = useTranslation(); return <div>{t('my.key')}</div>;`
+4. Test in both languages via Settings dialog
+
+**Usage in Components:**
+```tsx
+import { useTranslation } from 'react-i18next';
+
+function MyComponent() {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <h1>{t('myFeature.title')}</h1>
+      <p>{t('myFeature.description')}</p>
+      {/* With variables */}
+      <span>{t('myFeature.count', { count: 5 })}</span>
+    </div>
+  );
+}
+```
+
+**Best Practices:**
+- Use namespaced keys: `dashboard.fileMenu.importData` (not just `import`)
+- Include both `_one` and `_other` suffixes for pluralization
+- Test with Spanish early (typically 20-30% longer than English)
+- Translate all user-facing content (labels, tooltips, aria-labels, error messages)
+
+For complete documentation, see:
+- **[i18n Developer Guide](docs/i18n/README.md)** - Main documentation
+- **[Adding New Strings](docs/i18n/adding-new-strings.md)** - Step-by-step guide with examples
 
 ### CI/CD Pipeline
 GitHub Actions workflows in `.github/workflows/`:

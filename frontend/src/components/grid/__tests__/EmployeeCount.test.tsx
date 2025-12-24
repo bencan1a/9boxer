@@ -1,23 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '../../../test/utils'
 import { EmployeeCount } from '../EmployeeCount'
 import { useEmployees } from '../../../hooks/useEmployees'
 import { useSessionStore } from '../../../store/sessionStore'
 import { useFilters } from '../../../hooks/useFilters'
-import { ThemeProvider } from '@mui/material/styles'
-import { getTheme } from '../../../theme/theme'
 import { mockEmployees } from '../../../test/mockData'
 
 // Mock dependencies
 vi.mock('../../../hooks/useEmployees')
 vi.mock('../../../store/sessionStore')
 vi.mock('../../../hooks/useFilters')
-
-// Wrapper with theme provider
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const theme = getTheme('light')
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
 
 describe('EmployeeCount', () => {
   beforeEach(() => {
@@ -40,11 +32,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveTextContent('5 employees')
@@ -68,11 +56,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveTextContent('2 of 5 employees')
@@ -96,11 +80,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveTextContent('1 employee')
@@ -123,11 +103,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveTextContent('employees')
@@ -149,11 +125,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveTextContent('No employees')
@@ -175,11 +147,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     // When filtered count equals total, show total only
@@ -204,17 +172,13 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toBeInTheDocument()
 
     // Tooltip should contain filter information (verified via aria-label)
-    expect(count).toHaveAttribute('aria-label', expect.stringContaining('Showing 2 of 5 employees with active filters'))
+    expect(count).toHaveAttribute('aria-label', 'Showing 2 of 5 employees with active filters')
   })
 
   it('displays simple tooltip when no filters are active', () => {
@@ -233,11 +197,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveAttribute('aria-label', '5 total employees')
@@ -261,11 +221,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [1, 2], // 2 excluded
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     // Verify the component renders (detailed tooltip content is in the component's internal state)
@@ -291,11 +247,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [5],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toBeInTheDocument()
@@ -318,11 +270,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveAttribute('aria-label')

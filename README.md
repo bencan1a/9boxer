@@ -16,6 +16,7 @@ A standalone desktop application for visualizing and managing employee performan
 - **Statistics Dashboard**: Visual analytics and distribution charts
 - **Native File Dialogs**: OS-native file pickers for better UX
 - **Offline First**: Works completely offline, no internet required
+- **Multi-Language Support**: Available in English and Spanish with language switching in Settings
 
 ### Technical Stack
 - **Desktop**: Electron 35 (cross-platform desktop wrapper)
@@ -25,6 +26,24 @@ A standalone desktop application for visualizing and managing employee performan
 - **Database**: SQLite (stored in user's app data directory)
 - **Excel Processing**: openpyxl
 - **Communication**: HTTP over localhost (backend runs as subprocess)
+
+### Language Support
+
+9Boxer is fully internationalized and supports multiple languages:
+
+- **Supported Languages**:
+  - English (en) - Default
+  - Spanish (es)
+
+- **How to Switch Languages**:
+  1. Click the Settings icon in the top-right corner of the application
+  2. Select your preferred language from the Language dropdown
+  3. The interface updates immediately and your preference is saved
+
+- **For Developers**:
+  - All user-facing strings are internationalized using react-i18next
+  - Adding new languages requires adding translation files to `frontend/src/i18n/locales/`
+  - See [i18n Developer Guide](docs/i18n/README.md) for detailed instructions
 
 ## Quick Start
 

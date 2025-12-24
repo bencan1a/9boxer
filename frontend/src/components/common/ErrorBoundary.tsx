@@ -5,6 +5,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import i18n from "../../i18n";
 import { logger } from "../../utils/logger";
 
 interface Props {
@@ -79,10 +80,10 @@ export class ErrorBoundary extends Component<Props, State> {
               }}
             />
             <Typography variant="h4" gutterBottom>
-              Oops! Something went wrong
+              {i18n.t('dialogs.errorBoundary.title')}
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph>
-              An unexpected error occurred. Please try reloading the page.
+              {i18n.t('dialogs.errorBoundary.message')}
             </Typography>
 
             {this.state.error && (
@@ -116,7 +117,7 @@ export class ErrorBoundary extends Component<Props, State> {
               onClick={this.handleReset}
               sx={{ mt: 3 }}
             >
-              Return to Home
+              {i18n.t('dialogs.errorBoundary.returnHome')}
             </Button>
           </Paper>
         </Box>

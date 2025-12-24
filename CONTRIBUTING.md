@@ -48,11 +48,19 @@ For cloud-based or containerized development:
 
 ### Code Style
 
+**Backend (Python):**
 - Follow PEP 8 style guide
 - Use type hints for all function signatures
 - Maximum line length: 100 characters
 - Use meaningful variable and function names
 - Write docstrings for all public modules, functions, classes, and methods
+
+**Frontend (TypeScript/React):**
+- Follow the project's ESLint configuration
+- Use TypeScript types for all function signatures and props
+- Maximum line length: 100 characters
+- Use meaningful component and variable names
+- **Internationalization (i18n)**: Never hardcode user-facing strings in JSX (see below)
 
 ### Commit Messages
 
@@ -146,6 +154,85 @@ def test_calculator_add_positive_numbers():
     # Assert
     assert result == 5
 ```
+
+## 🌍 Internationalization (i18n)
+
+All user-facing strings in the frontend must be internationalized to support multiple languages (currently English and Spanish).
+
+### Requirements
+
+1. **Never hardcode user-facing strings in JSX**:
+   ```tsx
+   // ❌ WRONG - Hardcoded string
+   <Button>Click Me</Button>
+
+   // ✅ CORRECT - Translated string
+   const { t } = useTranslation();
+   <Button>{t('common.clickMe')}</Button>
+   ```
+
+2. **ESLint enforcement**: The `react/jsx-no-literals` rule will flag hardcoded strings
+   - Exception: Technical strings like className, data-testid, variant, etc. are allowed
+   - See `frontend/src/i18n/eslint-exceptions.md` for complete exception list
+
+3. **Add translations in both languages**:
+   - English: `frontend/src/i18n/locales/en/translation.json`
+   - Spanish: `frontend/src/i18n/locales/es/translation.json`
+
+### Adding New Strings
+
+Follow this workflow for all new user-facing text:
+
+1. **Add to English translation file** (`locales/en/translation.json`):
+   ```json
+   {
+     "myFeature": {
+       "title": "My Feature",
+       "description": "This is what my feature does"
+     }
+   }
+   ```
+
+2. **Add to Spanish translation file** (`locales/es/translation.json`):
+   ```json
+   {
+     "myFeature": {
+       "title": "Mi Función",
+       "description": "Esto es lo que hace mi función"
+     }
+   }
+   ```
+
+3. **Use in component**:
+   ```tsx
+   import { useTranslation } from 'react-i18next';
+
+   function MyFeature() {
+     const { t } = useTranslation();
+     return (
+       <div>
+         <h1>{t('myFeature.title')}</h1>
+         <p>{t('myFeature.description')}</p>
+       </div>
+     );
+   }
+   ```
+
+4. **Test in both languages**: Use Settings dialog to switch languages and verify
+
+### Best Practices
+
+- Use namespaced keys: `dashboard.fileMenu.importData` (not just `import`)
+- Group related strings together in the JSON structure
+- Include `_one` and `_other` suffixes for pluralization
+- Test with Spanish early (typically 20-30% longer than English)
+- Translate ALL user-facing content (labels, tooltips, aria-labels, error messages)
+
+### Resources
+
+- **[i18n Developer Guide](docs/i18n/README.md)** - Complete i18n documentation
+- **[Adding New Strings](docs/i18n/adding-new-strings.md)** - Step-by-step guide with examples
+- **[Migration Patterns](docs/i18n/migration-patterns.md)** - Code patterns for common scenarios
 
 ## 🔍 Code Quality
 

@@ -1,19 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '../../../test/utils'
 import userEvent from '@testing-library/user-event'
 import { ViewModeToggle } from '../ViewModeToggle'
 import { useSessionStore } from '../../../store/sessionStore'
-import { ThemeProvider } from '@mui/material/styles'
-import { getTheme } from '../../../theme/theme'
 
 // Mock dependencies
 vi.mock('../../../store/sessionStore')
-
-// Wrapper with theme provider
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const theme = getTheme('light')
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
 
 describe('ViewModeToggle', () => {
   const mockToggleDonutMode = vi.fn()
@@ -29,11 +21,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     // Check for toggle button group
     const toggleGroup = screen.getByTestId('view-mode-toggle')
@@ -53,11 +41,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     const donutButton = screen.getByTestId('donut-view-button')
@@ -74,11 +58,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     const donutButton = screen.getByTestId('donut-view-button')
@@ -96,11 +76,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const donutButton = screen.getByTestId('donut-view-button')
     await user.click(donutButton)
@@ -118,11 +94,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     await user.click(gridButton)
@@ -139,11 +111,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     const donutButton = screen.getByTestId('donut-view-button')
@@ -160,11 +128,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     const donutButton = screen.getByTestId('donut-view-button')
@@ -182,11 +146,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const toggleGroup = screen.getByTestId('view-mode-toggle')
 
@@ -208,11 +168,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const toggleGroup = screen.getByTestId('view-mode-toggle')
 
@@ -234,11 +190,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const gridButton = screen.getByTestId('grid-view-button')
     await user.click(gridButton)
@@ -254,11 +206,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     // Simulate pressing 'D' key
     fireEvent.keyDown(window, { key: 'd', code: 'KeyD' })
@@ -275,11 +223,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     // Simulate pressing 'D' key
     fireEvent.keyDown(window, { key: 'd', code: 'KeyD' })
@@ -295,11 +239,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     // Simulate pressing 'Ctrl+D'
     fireEvent.keyDown(window, { key: 'd', code: 'KeyD', ctrlKey: true })
@@ -315,11 +255,7 @@ describe('ViewModeToggle', () => {
       toggleDonutMode: mockToggleDonutMode,
     } as any)
 
-    render(
-      <TestWrapper>
-        <ViewModeToggle />
-      </TestWrapper>
-    )
+    render(<ViewModeToggle />)
 
     const toggleGroup = screen.getByTestId('view-mode-toggle')
     expect(toggleGroup).toHaveAttribute('aria-label', 'View mode toggle')

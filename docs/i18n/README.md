@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
   const { t } = useTranslation();
-  
+
   return (
     <div>
       <h1>{t('app.title')}</h1>
@@ -31,9 +31,9 @@ function MyComponent() {
 
 ```tsx
 const { t } = useTranslation();
-const message = t('messages.exportSuccess', { 
-  count: 5, 
-  filename: 'data.xlsx' 
+const message = t('messages.exportSuccess', {
+  count: 5,
+  filename: 'data.xlsx'
 });
 // "Successfully exported 5 change(s) to data.xlsx"
 ```
@@ -137,7 +137,7 @@ it('renders translated text', () => {
       <MyComponent />
     </I18nTestWrapper>
   );
-  
+
   expect(screen.getByText('Import Data')).toBeInTheDocument();
 });
 ```
@@ -149,15 +149,15 @@ import { changeTestLanguage, resetTestLanguage } from '../../test/i18nTestUtils'
 
 it('displays text in Spanish', async () => {
   await changeTestLanguage('es');
-  
+
   render(
     <I18nTestWrapper>
       <MyComponent />
     </I18nTestWrapper>
   );
-  
+
   expect(screen.getByText('Importar Datos')).toBeInTheDocument();
-  
+
   await resetTestLanguage(); // Clean up for other tests
 });
 ```
@@ -186,7 +186,7 @@ The `LanguageSelector` component is integrated into the AppBar and allows users 
 
 ## For Translators
 
-Translation workflow documentation is planned for future phases. For now, translations can be added directly to the JSON files in `frontend/src/i18n/locales/`.
+See the [Translation Workflow Guide](./translation-workflow.md) for detailed instructions on adding and updating translations.
 
 ## Best Practices
 
@@ -198,10 +198,12 @@ Translation workflow documentation is planned for future phases. For now, transl
 6. **Accessibility**: Don't forget to translate aria-labels, alt text, tooltips
 7. **Type safety**: Use `useTypedTranslation` for autocomplete and validation
 
-## Migration Guide
+## Additional Guides
 
-For detailed examples of how to migrate existing components, see:
-- [Migration Patterns](./migration-patterns.md)
+- [Migration Patterns](./migration-patterns.md) - Code patterns for migrating existing components to i18n
+- [Adding New Strings](./adding-new-strings.md) - Developer guide for adding translatable strings
+- [Translation Workflow](./translation-workflow.md) - Guide for professional translators
+- [Testing Guide](./testing-guide.md) - How to test i18n in components and E2E tests
 
 ## Troubleshooting
 

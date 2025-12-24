@@ -409,7 +409,7 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByText('Regular Changes (2)')).toBeInTheDocument()
+    expect(screen.getByText('Grid Changes (2)')).toBeInTheDocument()
     expect(screen.getByText('Donut Changes (1)')).toBeInTheDocument()
   })
 

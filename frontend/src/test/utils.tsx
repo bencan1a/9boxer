@@ -2,7 +2,9 @@ import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
+import { I18nextProvider } from 'react-i18next'
 import { getTheme } from '../theme/theme'
+import i18n from '../i18n'
 
 // Create a default theme for testing (light mode)
 const theme = getTheme('light')
@@ -14,10 +16,12 @@ interface AllTheProvidersProps {
 
 const AllTheProviders: React.FC<AllTheProvidersProps> = ({ children }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </I18nextProvider>
   )
 }
 

@@ -34,6 +34,9 @@
 - `frontend/src/test/i18nTestUtils.tsx` - Test utilities
 - `docs/i18n/migration-patterns.md` - Developer migration guide (6.8KB)
 - `docs/i18n/README.md` - Comprehensive i18n developer guide (6.2KB)
+- `docs/i18n/adding-new-strings.md` - Developer guide for adding translatable strings (7.2KB)
+- `docs/i18n/translation-workflow.md` - Guide for professional translators (13KB)
+- `docs/i18n/testing-guide.md` - Comprehensive i18n testing guide (23KB)
 
 ### ✅ Phase 3: Dashboard Components (40% Complete)
 **Migrated Components:**
@@ -102,7 +105,7 @@ render(
 
 ### Medium Priority (Phase 8-9)
 - **Phase 8**: Accessibility audit, ESLint rules, final polish
-- **Phase 9**: E2E tests, translator workflow guide, CLAUDE.md updates
+- **Phase 9**: E2E tests (completed), ~~translator workflow guide~~ (completed), CLAUDE.md updates
 
 ### Low Priority (Phase 10)
 - **Phase 10**: Complete Spanish translations review, layout testing, QA
@@ -124,7 +127,7 @@ Each component migration follows this pattern:
 5. Update tests to use `I18nTestWrapper`
 6. Verify functionality
 
-**Estimated Time**: 
+**Estimated Time**:
 - Dashboard completion: 2 hours
 - Grid components: 2-3 hours
 - Panel components: 4-5 hours
@@ -154,10 +157,13 @@ Each component migration follows this pattern:
 
 ## Resources Created
 
-- Migration guide with 15+ code examples
-- Test utilities for easy component testing
-- Type-safe hooks for common patterns
-- Comprehensive README with troubleshooting
-- Working language selector in UI
+- **Migration Patterns** - 15+ code examples for migrating components
+- **Adding New Strings Guide** - Developer workflow for adding translatable strings
+- **Translation Workflow Guide** - Complete guide for professional translators (non-developers)
+- **Testing Guide** - Comprehensive i18n testing patterns for component and E2E tests
+- **Test Utilities** - Easy component testing with I18nTestWrapper
+- **Type-Safe Hooks** - Custom hooks for common i18n patterns
+- **Comprehensive README** - Main documentation with troubleshooting
+- **Working Language Selector** - UI component integrated into AppBar
 
-The foundation is solid and the path forward is clear!
+The foundation is solid, documentation is complete, and the path forward is clear!
