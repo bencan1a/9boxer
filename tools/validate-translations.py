@@ -55,7 +55,7 @@ def get_structure_paths(data: dict[str, Any], parent_key: str = "") -> set[str]:
 def validate_json_syntax(file_path: Path) -> tuple[bool, str | None, dict[str, Any] | None]:
     """Validate JSON syntax of a file."""
     try:
-        with open(file_path, encoding="utf-8") as f:
+        with file_path.open(encoding="utf-8") as f:
             data = json.load(f)
         return True, None, data
     except json.JSONDecodeError as e:
