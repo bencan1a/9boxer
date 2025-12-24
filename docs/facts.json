@@ -199,5 +199,59 @@
       "file:readFile - Read file from filesystem",
       "app:openUserGuide - Open USER_GUIDE.html in browser"
     ]
+  },
+  "agent_onboarding": {
+    "primary_guides": {
+      "github_agent": "GITHUB_AGENT.md (streamlined onboarding for GitHub Agent/Copilot)",
+      "claude_code": "CLAUDE.md (detailed technical guidance with platform constraints)",
+      "general_agents": "AGENTS.md (development workflow and best practices)",
+      "copilot_workspace": ".github/copilot-instructions.md (GitHub Copilot Workspace config)"
+    },
+    "critical_first_steps": [
+      "Activate Python virtual environment: . .venv/bin/activate",
+      "Run existing tests to establish baseline: pytest",
+      "Understand monorepo structure (Python backend + Node.js frontend)",
+      "Review platform constraints (Windows development)",
+      "Check docs/facts.json for source of truth (highest authority)"
+    ],
+    "common_pitfalls": {
+      "forgot_venv_activation": {
+        "symptom": "Module not found errors in Python",
+        "solution": "Always activate venv first: . .venv/bin/activate"
+      },
+      "windows_file_operations": {
+        "symptom": "Phantom files, path mangling, or file operation failures",
+        "solution": "Use git commands or View/Edit/Create tools, never rm/touch/cp/mv in Bash"
+      },
+      "wrong_build_order": {
+        "symptom": "Electron app won't start or backend not found",
+        "solution": "Build backend FIRST with PyInstaller, then frontend with Electron Builder"
+      },
+      "missing_type_annotations": {
+        "symptom": "Type checking errors from mypy/pyright",
+        "solution": "Add type hints to ALL function parameters and returns"
+      },
+      "testing_in_web_mode_only": {
+        "symptom": "Features work in browser but not in Electron",
+        "solution": "Always test in Electron app: npm run electron:dev"
+      }
+    },
+    "documentation_hierarchy": {
+      "highest_authority": "docs/facts.json (this file)",
+      "permanent_docs": "docs/ directory",
+      "active_plans": "agent-projects/ (hints only, <21 days old)",
+      "auto_generated": "docs/_generated/ (regenerated automatically)"
+    },
+    "quick_commands": {
+      "activate_venv": ". .venv/bin/activate",
+      "run_all_tests": "pytest",
+      "run_fast_tests": "pytest backend/tests/unit",
+      "quality_check": "make check-all",
+      "auto_fix": "make fix",
+      "build_backend": "cd backend && ./scripts/build_executable.sh",
+      "run_electron": "cd frontend && npm run electron:dev",
+      "frontend_tests": "cd frontend && npm test",
+      "e2e_tests": "cd frontend && npm run test:e2e:pw"
+    }
   }
 }
