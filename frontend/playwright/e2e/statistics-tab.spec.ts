@@ -84,7 +84,7 @@ test.describe('Statistics Tab Display', () => {
     const tabPanel = page.locator('[role="tabpanel"][id="panel-tabpanel-2"]');
     await expect(tabPanel).toBeVisible();
 
-    // Get initial count of employees in box 9 (Top Talent)
+    // Get initial count of employees in box 9 (Star)
     // Box 9 has Alice Smith (ID 1) and Bob Johnson (ID 2) - 2 employees
     const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Star [H,H]' }) });
     await expect(box9Row).toBeVisible();
@@ -93,9 +93,9 @@ test.describe('Statistics Tab Display', () => {
     const initialBox9Count = await box9Row.locator('td').nth(0).textContent();
     expect(initialBox9Count?.trim()).toBe('2');
 
-    // Get initial count of employees in box 6 (Growth Talent)
+    // Get initial count of employees in box 6 (High Impact)
     // Box 6 has Frank Martinez (ID 6) and Grace Taylor (ID 7) - 2 employees
-    const box6Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Growth [M,H]' }) });
+    const box6Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'High Impact [H,M]' }) });
     await expect(box6Row).toBeVisible();
 
     const initialBox6Count = await box6Row.locator('td').nth(0).textContent();
@@ -117,7 +117,7 @@ test.describe('Statistics Tab Display', () => {
     const updatedBox9Count = await box9Row.locator('td').nth(0).textContent();
     expect(updatedBox9Count?.trim()).toBe('1');
 
-    // Verify box 6 count increased by 1 (from 2 to 3)
+    // Verify box 6 (High Impact) count increased by 1 (from 2 to 3)
     const updatedBox6Count = await box6Row.locator('td').nth(0).textContent();
     expect(updatedBox6Count?.trim()).toBe('3');
 
@@ -172,13 +172,13 @@ test.describe('Statistics Tab Display', () => {
     // Looking at the sample data: all boxes have at least 1 employee
     // This test verifies the distribution matches expectations
 
-    // Box 9 (Top Talent): 2 employees
+    // Box 9 (Star): 2 employees
     const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Star [H,H]' }) });
     const box9Count = await box9Row.locator('td').nth(0).textContent();
     expect(box9Count?.trim()).toBe('2');
 
-    // Box 7 (High/Low): 1 employee
-    const box7Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Workhorse [H,L]' }) });
+    // Box 7 (Enigma): 1 employee
+    const box7Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Enigma [L,H]' }) });
     const box7Count = await box7Row.locator('td').nth(0).textContent();
     expect(box7Count?.trim()).toBe('1');
 
