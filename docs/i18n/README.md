@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
   const { t } = useTranslation();
-  
+
   return (
     <div>
       <h1>{t('app.title')}</h1>
@@ -31,9 +31,9 @@ function MyComponent() {
 
 ```tsx
 const { t } = useTranslation();
-const message = t('messages.exportSuccess', { 
-  count: 5, 
-  filename: 'data.xlsx' 
+const message = t('messages.exportSuccess', {
+  count: 5,
+  filename: 'data.xlsx'
 });
 // "Successfully exported 5 change(s) to data.xlsx"
 ```
@@ -137,7 +137,7 @@ it('renders translated text', () => {
       <MyComponent />
     </I18nTestWrapper>
   );
-  
+
   expect(screen.getByText('Import Data')).toBeInTheDocument();
 });
 ```
@@ -149,15 +149,15 @@ import { changeTestLanguage, resetTestLanguage } from '../../test/i18nTestUtils'
 
 it('displays text in Spanish', async () => {
   await changeTestLanguage('es');
-  
+
   render(
     <I18nTestWrapper>
       <MyComponent />
     </I18nTestWrapper>
   );
-  
+
   expect(screen.getByText('Importar Datos')).toBeInTheDocument();
-  
+
   await resetTestLanguage(); // Clean up for other tests
 });
 ```
