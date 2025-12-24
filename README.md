@@ -318,6 +318,7 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 
 **Development Guides:**
 - [GITHUB_AGENT.md](GITHUB_AGENT.md) - Quick start for AI agents and developers
+- [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - GitHub Copilot environment setup (automated)
 - [AGENTS.md](AGENTS.md) - Development workflow and best practices
 - [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
