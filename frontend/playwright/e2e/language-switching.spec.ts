@@ -34,9 +34,9 @@ test.describe('Language Switching', () => {
     await uploadExcelFile(page, 'sample-employees.xlsx');
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Verify initial language is English - check for English text
-    await expect(page.getByText('Import Data', { exact: false })).toBeVisible();
-    
+    // Verify initial language is English - check for visible English tab text
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Details');
+
     // Find and open language selector (MUI Select component)
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
@@ -57,10 +57,10 @@ test.describe('Language Switching', () => {
 
     // Check filter button
     await page.locator('[data-testid="filter-button"]').click();
-    
-    // Wait for filter drawer to open by checking for Spanish filter text
-    await expect(page.getByText('Filtros')).toBeVisible();
-    
+
+    // Wait for filter drawer to open by checking for Spanish filter title heading
+    await expect(page.getByRole('heading', { name: 'Filtros' })).toBeVisible();
+
     // Check filter sections
     await expect(page.getByText('Niveles de Trabajo')).toBeVisible();
     await expect(page.getByText('Funciones de Trabajo')).toBeVisible();
@@ -69,9 +69,9 @@ test.describe('Language Switching', () => {
 
     // Close filter drawer
     await page.keyboard.press('Escape');
-    
+
     // Wait for drawer to close
-    await expect(page.getByText('Filtros')).not.toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Filtros' })).not.toBeVisible();
   });
 
   test('should switch from Spanish back to English', async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe('Language Switching', () => {
     // Switch to Spanish first
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    
+
     const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
@@ -92,7 +92,7 @@ test.describe('Language Switching', () => {
 
     // Switch back to English
     await languageSelect.click();
-    
+
     const englishOption = page.getByRole('option', { name: /English|Inglés/i });
     await expect(englishOption).toBeVisible();
     await englishOption.click();
@@ -113,7 +113,7 @@ test.describe('Language Switching', () => {
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    
+
     const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
@@ -144,7 +144,7 @@ test.describe('Language Switching', () => {
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    
+
     const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
