@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '../../../test/utils'
 import { ChangeTrackerTab } from '../ChangeTrackerTab'
 import { mockChanges } from '../../../test/mockData'
 import { useSessionStore } from '../../../store/sessionStore'
+import { getTranslatedText } from '../../../test/i18nTestUtils'
 
 // Mock date-fns to have consistent timestamps
 vi.mock('date-fns', () => ({
@@ -409,8 +410,10 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByText('Regular Changes (2)')).toBeInTheDocument()
-    expect(screen.getByText('Donut Changes (1)')).toBeInTheDocument()
+    const gridChangesLabel = `${getTranslatedText('panel.changeTrackerTab.gridChanges')} (2)`
+    const donutChangesLabel = `${getTranslatedText('panel.changeTrackerTab.donutChanges')} (1)`
+    expect(screen.getByText(gridChangesLabel)).toBeInTheDocument()
+    expect(screen.getByText(donutChangesLabel)).toBeInTheDocument()
   })
 
   it('switches between regular and donut changes tabs correctly', () => {
