@@ -122,15 +122,15 @@ For local development without Copilot, follow the manual setup instructions in [
 python3 -m venv .venv
 . .venv/bin/activate
 
-# 2. Install dependencies
+# 2. Install backend dependencies into the virtual environment
 pip install uv
-uv pip install --system -e '.[dev]'
+uv pip install -e '.[dev]'
 
 # 3. Install frontend dependencies
 cd frontend
 npm install
 
-# 4. Install pre-commit hooks
+# 4. Install pre-commit hooks (from project root, venv still active)
 cd ..
 pre-commit install
 ```
