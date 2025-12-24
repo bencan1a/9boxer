@@ -20,18 +20,14 @@ import {
 } from "../../helpers/ui";
 
 /**
- * Helper: Select a filter option by its visible text
+ * Helper: Select first available filter checkbox
  *
- * Common pattern for selecting filters in the filter drawer.
- * Uses .first() to handle multiple matches (e.g., "High" might appear
- * in both Performance and Potential sections).
+ * Matches E2E test pattern from filter-flow.spec.ts
+ * Uses checkbox selector instead of text-based selector for reliability.
  */
-async function selectFilterByText(
-  page: Page,
-  filterText: string,
-): Promise<void> {
-  const filterOption = page.locator(`text="${filterText}"`).first();
-  await filterOption.click();
+async function selectFirstAvailableFilter(page: Page): Promise<void> {
+  const firstCheckbox = page.locator('input[type="checkbox"]').first();
+  await firstCheckbox.check();
   await waitForUiSettle(page, 0.3);
 }
 
@@ -70,27 +66,31 @@ export async function generateActiveChips(
   // ACTUALLY SELECT FILTERS (this was the critical missing piece!)
   // Previous versions showed empty filter panel which was useless
 
-  // Select "High" performance filter
-  await selectFilterByText(page, "High");
+  // Select first available filter checkbox (matches E2E pattern)
+  await selectFirstAvailableFilter(page);
 
-  // Select "Star" potential filter (optional - depends on sample data)
-  // This creates multiple active chips for better demonstration
+  // Try to select a second filter for multiple chips demonstration
   try {
-    await selectFilterByText(page, "Star");
+    const secondCheckbox = page.locator('input[type="checkbox"]').nth(1);
+    if (await secondCheckbox.isVisible()) {
+      await secondCheckbox.check();
+      await waitForUiSettle(page, 0.3);
+    }
   } catch {
-    // If "Star" not available, continue with just "High"
+    // If second filter not available, continue with just one
   }
 
   // Close filter drawer to show active chips
-  const closeButton = page.locator('[data-testid="close-filter-drawer"]');
+  // Use data-testid from E2E tests
+  const closeButton = page.locator('[data-testid="filter-close-button"]');
   if ((await closeButton.count()) > 0) {
     await closeButton.click();
+    await waitForUiSettle(page, 0.5);
   } else {
-    // Alternative: click backdrop or press Escape
+    // Alternative: press Escape
     await page.keyboard.press("Escape");
+    await waitForUiSettle(page, 0.5);
   }
-
-  await waitForUiSettle(page, 0.5);
 
   // Verify orange dot indicator is visible
   const filterButton = page.locator('[data-testid="filter-button"]');
@@ -197,13 +197,21 @@ export async function generateClearAllButton(
   await openFilterDrawer(page);
 
   // Apply some filters first so Clear All button is visible/enabled
-  await selectFilterByText(page, "High");
+  // Use checkbox selector to match E2E test pattern
+  await selectFirstAvailableFilter(page);
 
   // Wait for Clear All button to appear/enable
   await waitForUiSettle(page, 0.3);
+
+  // Verify Clear All button is visible (using data-testid like E2E tests)
+  const clearButton = page.locator('[data-testid="clear-filter-button"]');
+  await expect(clearButton).toBeVisible();
 
   // Capture drawer showing Clear All button
   await page.locator('[data-testid="filter-drawer"]').screenshot({
     path: outputPath,
   });
+
+  // Close drawer after capturing to prevent blocking subsequent screenshots
+  await closeAllDialogsAndOverlays(page);
 }
