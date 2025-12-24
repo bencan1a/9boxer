@@ -9,6 +9,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import get_position_label_by_number
 
 
 def create_test_employee(
@@ -32,18 +33,6 @@ def create_test_employee(
     pot_val = {"Low": 1, "Medium": 2, "High": 3}[pot.value]
     grid_position = (pot_val - 1) * 3 + perf_val
 
-    position_labels = {
-        1: "Underperformer [L,L]",
-        2: "Effective Pro [M,L]",
-        3: "Workhorse [H,L]",
-        4: "Inconsistent [L,M]",
-        5: "Core Talent [M,M]",
-        6: "High Impact [H,M]",
-        7: "Enigma [L,H]",
-        8: "Growth [M,H]",
-        9: "Star [H,H]",
-    }
-
     return Employee(
         employee_id=employee_id,
         name=f"Employee {employee_id}",
@@ -63,7 +52,6 @@ def create_test_employee(
         performance=perf,
         potential=pot,
         grid_position=grid_position,
-        position_label=position_labels[grid_position],
         talent_indicator="High Potential" if pot == PotentialLevel.HIGH else "Solid Contributor",
         ratings_history=[
             HistoricalRating(year=2023, rating="Solid"),
@@ -139,7 +127,7 @@ def create_excel_file(employees: list[Employee], file_path: Path) -> None:
         data_sheet.cell(row_idx, 14, emp.performance.value)
         data_sheet.cell(row_idx, 15, emp.potential.value)
         data_sheet.cell(row_idx, 16, emp.grid_position)
-        data_sheet.cell(row_idx, 17, emp.position_label)
+        data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
         data_sheet.cell(row_idx, 18, emp.talent_indicator)
 
         # Historical ratings

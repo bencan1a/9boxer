@@ -14,9 +14,42 @@ let windowStateManager: WindowStateManager | null = null;
 const getIsDev = () => !app.isPackaged;
 
 // Backend configuration
-const BACKEND_PORT = 8000;
-const BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
+let BACKEND_PORT = 8000; // Default, will be updated by backend
+let BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 const BACKEND_STARTUP_TIMEOUT = 30; // seconds
+const PORT_DISCOVERY_TIMEOUT = 5; // seconds
+const HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
+const HEALTH_CHECK_TIMEOUT = 5000; // 5 seconds
+
+// Connection monitoring state
+let healthCheckInterval: NodeJS.Timeout | null = null;
+let connectionStatus: 'connected' | 'reconnecting' | 'disconnected' = 'connected';
+let restartAttempts = 0;
+const MAX_RESTART_ATTEMPTS = 1;
+
+/**
+ * Show logs in the default text editor or open the logs folder.
+ * Used by error dialogs to help users troubleshoot issues.
+ */
+async function showLogs(): Promise<void> {
+  const { shell } = require('electron');
+  const appDataPath = app.getPath('userData');
+  const logFilePath = path.join(appDataPath, 'backend.log');
+
+  try {
+    // Try to open the log file directly
+    const result = await shell.openPath(logFilePath);
+    if (result) {
+      // If opening file failed, fall back to opening the folder
+      console.log('Failed to open log file, opening folder instead:', result);
+      await shell.openPath(appDataPath);
+    }
+  } catch (error) {
+    console.error('Failed to show logs:', error);
+    // Fall back to opening the folder
+    await shell.openPath(appDataPath);
+  }
+}
 
 /**
  * Get the path to the backend executable.
@@ -137,8 +170,9 @@ async function waitForBackend(maxAttempts = BACKEND_STARTUP_TIMEOUT): Promise<bo
 /**
  * Start the backend executable as a subprocess.
  * Waits for backend to be ready before resolving.
+ * Returns the actual port the backend is using.
  */
-async function startBackend(): Promise<void> {
+async function startBackend(): Promise<number> {
   const backendPath = getBackendPath();
   const appDataPath = app.getPath('userData');
 
@@ -150,57 +184,145 @@ async function startBackend(): Promise<void> {
     throw new Error(`Backend executable not found at: ${backendPath}`);
   }
 
-  backendProcess = spawn(backendPath, [], {
-    env: {
-      ...process.env,
-      APP_DATA_DIR: appDataPath,
-      PORT: BACKEND_PORT.toString(),
-    },
-    stdio: getIsDev() ? 'inherit' : ['ignore', 'pipe', 'pipe'], // Pipe output in production
-    windowsHide: true, // Hide console window on Windows
-  });
+  // Return a promise that resolves with the discovered port
+  return new Promise<number>((resolve, reject) => {
+    let portDiscovered = false;
+    let discoveredPort: number | null = null;
 
-  // Create log file for backend output (production mode only)
-  if (!getIsDev() && backendProcess.stdout && backendProcess.stderr) {
-    const fs = require('fs');
-    const logPath = path.join(appDataPath, 'backend.log');
-    const logStream = fs.createWriteStream(logPath, { flags: 'a' });
+    backendProcess = spawn(backendPath, [], {
+      env: {
+        ...process.env,
+        APP_DATA_DIR: appDataPath,
+        PORT: BACKEND_PORT.toString(), // Request port, backend may use alternative
+      },
+      stdio: ['ignore', 'pipe', 'pipe'], // Always pipe stdout/stderr for port discovery
+      windowsHide: true, // Hide console window on Windows
+    });
 
-    console.log(`📝 Backend logs will be written to: ${logPath}`);
-    logStream.write(`\n\n=== Backend started at ${new Date().toISOString()} ===\n`);
+    // Set up port discovery timeout
+    const portTimeout = setTimeout(() => {
+      if (!portDiscovered) {
+        console.error('❌ Port discovery timeout: Backend did not report port within 5 seconds');
+        reject(new Error('Backend did not report port within timeout'));
+      }
+    }, PORT_DISCOVERY_TIMEOUT * 1000);
 
-    // Pipe stdout and stderr to log file
-    backendProcess.stdout.pipe(logStream);
-    backendProcess.stderr.pipe(logStream);
-  }
+    // Capture stdout for port discovery AND logging
+    if (backendProcess.stdout) {
+      const fs = require('fs');
+      const logPath = path.join(appDataPath, 'backend.log');
+      let logStream: any = null;
 
-  backendProcess.on('error', (error) => {
-    console.error('❌ Backend process error:', error);
-    closeSplashScreen();
-    dialog.showErrorBox(
-      'Backend Failed to Start',
-      `The backend process could not be started.\n\nError: ${error.message}\n\nPlease check that the backend executable exists and has proper permissions.`
-    );
-  });
+      // Create log stream for production mode
+      if (!getIsDev()) {
+        logStream = fs.createWriteStream(logPath, { flags: 'a' });
+        console.log(`📝 Backend logs will be written to: ${logPath}`);
+        logStream.write(`\n\n=== Backend started at ${new Date().toISOString()} ===\n`);
+      }
 
-  backendProcess.on('exit', (code) => {
-    console.log(`Backend exited with code ${code}`);
-    if (code !== 0 && code !== null) {
-      // Backend crashed
-      closeSplashScreen();
-      dialog.showErrorBox(
-        'Backend Crashed',
-        `The backend process crashed with exit code ${code}.\n\nThe application will now close.\n\nPlease check the logs for more information.`
-      );
-      app.quit();
+      backendProcess.stdout.on('data', (data: Buffer) => {
+        const output = data.toString();
+
+        // Log output for debugging (dev mode)
+        if (getIsDev()) {
+          console.log('Backend stdout:', output);
+        }
+
+        // Write to log file (production mode)
+        if (logStream) {
+          logStream.write(output);
+        }
+
+        // Parse JSON port message (only once)
+        if (!portDiscovered) {
+          try {
+            // Match JSON object with "port" and "status" fields
+            const match = output.match(/\{.*"port".*"status".*\}/);
+            if (match) {
+              const message = JSON.parse(match[0]);
+              if (message.port && message.status === 'ready') {
+                discoveredPort = message.port as number;
+                portDiscovered = true;
+                clearTimeout(portTimeout);
+                console.log(`✅ Backend port discovered: ${discoveredPort}`);
+                resolve(discoveredPort); // discoveredPort is guaranteed to be number here
+              }
+            }
+          } catch (e) {
+            // Not a valid JSON message, ignore
+          }
+        }
+      });
     }
-  });
 
-  // Wait for backend to be ready
-  const ready = await waitForBackend();
-  if (!ready) {
-    throw new Error('Backend failed to start within timeout');
-  }
+    // Capture stderr for logging
+    if (backendProcess.stderr) {
+      const fs = require('fs');
+      const logPath = path.join(appDataPath, 'backend.log');
+      let errorLogStream: any = null;
+
+      if (!getIsDev()) {
+        errorLogStream = fs.createWriteStream(logPath, { flags: 'a' });
+      }
+
+      backendProcess.stderr.on('data', (data: Buffer) => {
+        const output = data.toString();
+
+        // Log errors for debugging (dev mode)
+        if (getIsDev()) {
+          console.error('Backend stderr:', output);
+        }
+
+        // Write to log file (production mode)
+        if (errorLogStream) {
+          errorLogStream.write(output);
+        }
+      });
+    }
+
+    backendProcess.on('error', (error) => {
+      clearTimeout(portTimeout);
+      console.error('❌ Backend process spawn error:', error);
+      reject(new Error(`Backend failed to start: ${error.message}`));
+    });
+
+    backendProcess.on('exit', async (code) => {
+      clearTimeout(portTimeout);
+      console.log(`Backend exited with code ${code}`);
+
+      // If backend exits before port discovery, reject the startup promise
+      if (!portDiscovered) {
+        if (code !== 0 && code !== null) {
+          reject(new Error(`Backend exited with code ${code} before reporting port`));
+        }
+      } else {
+        // Backend crashed during runtime (after successful startup)
+        if (code !== 0 && code !== null) {
+          console.error(`❌ Backend crashed with code ${code} during runtime`);
+          connectionStatus = 'reconnecting';
+          broadcastConnectionStatus('reconnecting');
+
+          // Attempt automatic restart if within limits
+          if (restartAttempts < MAX_RESTART_ATTEMPTS) {
+            restartAttempts++;
+            console.log(`🔄 Attempting automatic restart (attempt ${restartAttempts}/${MAX_RESTART_ATTEMPTS})...`);
+            const restarted = await attemptBackendRestart();
+
+            if (!restarted) {
+              connectionStatus = 'disconnected';
+              broadcastConnectionStatus('disconnected');
+              await showBackendDisconnectedDialog();
+            }
+          } else {
+            console.error('❌ Max restart attempts exceeded');
+            connectionStatus = 'disconnected';
+            broadcastConnectionStatus('disconnected');
+            await showBackendDisconnectedDialog();
+          }
+        }
+      }
+    });
+  });
 }
 
 /**
@@ -224,6 +346,227 @@ function getWindowUrl(): string {
     const devBuildPath = path.join(__dirname, '../../dist/index.html');
     console.log('📦 Using development build:', devBuildPath);
     return devBuildPath;
+  }
+}
+
+/**
+ * Broadcast connection status to all renderer windows.
+ * Notifies the frontend about backend connection state changes.
+ */
+function broadcastConnectionStatus(
+  status: 'connected' | 'reconnecting' | 'disconnected',
+  port?: number
+): void {
+  console.log(`📡 Broadcasting connection status: ${status}${port ? ` (port ${port})` : ''}`);
+  BrowserWindow.getAllWindows().forEach((window) => {
+    window.webContents.send('backend:connection-status', { status, port });
+  });
+}
+
+/**
+ * Attempt to restart the backend process.
+ * Returns true if restart succeeded, false otherwise.
+ */
+async function attemptBackendRestart(): Promise<boolean> {
+  try {
+    console.log('🔄 Attempting to restart backend...');
+
+    // Kill existing process if still running
+    if (backendProcess && !backendProcess.killed) {
+      console.log('🛑 Killing existing backend process...');
+      backendProcess.kill();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+
+    // Attempt restart
+    const discoveredPort = await startBackend();
+    BACKEND_PORT = discoveredPort;
+    BACKEND_URL = `http://localhost:${discoveredPort}`;
+    console.log(`✅ Backend restarted on port ${discoveredPort}`);
+
+    // Wait for backend health check
+    const ready = await waitForBackend();
+    if (ready) {
+      connectionStatus = 'connected';
+      restartAttempts = 0; // Reset attempts on success
+      broadcastConnectionStatus('connected', discoveredPort);
+      return true;
+    } else {
+      console.error('❌ Backend restart failed: health check failed');
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Backend restart failed:', error);
+    return false;
+  }
+}
+
+/**
+ * Perform a health check on the backend.
+ * Returns true if backend is healthy, false otherwise.
+ */
+async function performHealthCheck(): Promise<boolean> {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/health`, {
+      timeout: HEALTH_CHECK_TIMEOUT,
+    });
+    return response.status === 200;
+  } catch (error) {
+    console.warn('⚠️ Health check failed:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
+/**
+ * Start periodic health monitoring of the backend.
+ * Runs every 30 seconds after initial startup.
+ */
+function startHealthMonitoring(): void {
+  console.log('🏥 Starting health monitoring (every 30 seconds)...');
+
+  healthCheckInterval = setInterval(async () => {
+    const healthy = await performHealthCheck();
+
+    if (healthy) {
+      // Backend is healthy
+      if (connectionStatus !== 'connected') {
+        console.log('✅ Backend recovered');
+        connectionStatus = 'connected';
+        restartAttempts = 0;
+        broadcastConnectionStatus('connected', BACKEND_PORT);
+      }
+    } else {
+      // Backend is unhealthy
+      if (connectionStatus === 'connected') {
+        console.warn('⚠️ Backend health check failed, attempting restart...');
+        connectionStatus = 'reconnecting';
+        broadcastConnectionStatus('reconnecting');
+
+        // Attempt restart if we haven't exceeded max attempts
+        if (restartAttempts < MAX_RESTART_ATTEMPTS) {
+          restartAttempts++;
+          const restarted = await attemptBackendRestart();
+
+          if (!restarted) {
+            connectionStatus = 'disconnected';
+            broadcastConnectionStatus('disconnected');
+            await showBackendDisconnectedDialog();
+          }
+        } else {
+          console.error('❌ Max restart attempts exceeded');
+          connectionStatus = 'disconnected';
+          broadcastConnectionStatus('disconnected');
+          await showBackendDisconnectedDialog();
+        }
+      }
+    }
+  }, HEALTH_CHECK_INTERVAL);
+}
+
+/**
+ * Stop health monitoring.
+ */
+function stopHealthMonitoring(): void {
+  if (healthCheckInterval) {
+    clearInterval(healthCheckInterval);
+    healthCheckInterval = null;
+    console.log('🏥 Health monitoring stopped');
+  }
+}
+
+/**
+ * Show dialog when backend disconnects and cannot be recovered.
+ * Provides user-friendly error message with retry option.
+ */
+async function showBackendDisconnectedDialog(): Promise<void> {
+  const choice = await dialog.showMessageBox({
+    type: 'error',
+    title: 'Backend Disconnected',
+    message: 'The backend process has stopped.',
+    detail: 'Your work has been saved. Click Retry to reconnect, or Close to exit.',
+    buttons: ['Retry', 'Close'],
+    defaultId: 0,
+    cancelId: 1,
+  });
+
+  if (choice.response === 0) {
+    // Retry
+    console.log('🔄 User requested retry...');
+    connectionStatus = 'reconnecting';
+    broadcastConnectionStatus('reconnecting');
+    restartAttempts = 0; // Reset attempts for manual retry
+    const restarted = await attemptBackendRestart();
+
+    if (!restarted) {
+      connectionStatus = 'disconnected';
+      broadcastConnectionStatus('disconnected');
+      // Show failed restart dialog
+      await showRestartFailedDialog();
+    }
+  } else {
+    // Close
+    console.log('🛑 User chose to close application');
+    app.quit();
+  }
+}
+
+/**
+ * Show dialog when backend restart fails.
+ * Provides Show Logs option for troubleshooting.
+ */
+async function showRestartFailedDialog(): Promise<void> {
+  const choice = await dialog.showMessageBox({
+    type: 'error',
+    title: 'Reconnection Failed',
+    message: 'Unable to reconnect to the backend.',
+    detail: 'Please restart the application manually. Your work has been saved.',
+    buttons: ['Show Logs', 'Close'],
+    defaultId: 1,
+    cancelId: 1,
+  });
+
+  if (choice.response === 0) {
+    // Show Logs
+    await showLogs();
+  }
+
+  // Always quit after showing this dialog
+  app.quit();
+}
+
+/**
+ * Show error dialog for startup failures.
+ * Provides user-friendly error messages with optional Show Logs button.
+ *
+ * @param title - Short error title (3-5 words)
+ * @param message - What happened in plain language
+ * @param detail - Why it happened + what user should do
+ * @param errorMessage - Technical error details
+ * @param showLogsButton - Whether to show the Show Logs button
+ */
+async function showStartupErrorDialog(
+  title: string,
+  message: string,
+  detail: string,
+  errorMessage: string,
+  showLogsButton: boolean
+): Promise<void> {
+  const fullDetail = `${detail}\n\nError: ${errorMessage}`;
+  const buttons = showLogsButton ? ['Show Logs', 'Quit'] : ['Quit'];
+
+  const choice = await dialog.showMessageBox({
+    type: 'error',
+    title,
+    message,
+    detail: fullDetail,
+    buttons,
+    defaultId: buttons.length - 1, // Default to Quit
+    cancelId: buttons.length - 1,
+  });
+
+  if (showLogsButton && choice.response === 0) {
+    // Show Logs
+    await showLogs();
   }
 }
 
@@ -287,6 +630,29 @@ function setupIpcHandlers(): void {
     await shell.openPath(appDataPath);
   });
 
+  // Handle showing logs (opens log file or folder)
+  ipcMain.handle('app:showLogs', async () => {
+    const { shell } = require('electron');
+    const appDataPath = app.getPath('userData');
+    const logFilePath = path.join(appDataPath, 'backend.log');
+
+    try {
+      // Try to open the log file directly (opens in default text editor)
+      const result = await shell.openPath(logFilePath);
+      if (result) {
+        // If opening file failed, fall back to opening the folder
+        console.log('Failed to open log file, opening folder instead:', result);
+        await shell.openPath(appDataPath);
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to show logs:', error);
+      // Fall back to opening the folder
+      await shell.openPath(appDataPath);
+      return { success: true }; // Still return success since we opened the folder
+    }
+  });
+
   // Handle getting app paths for debugging
   ipcMain.handle('app:getPaths', async () => {
     return {
@@ -343,6 +709,18 @@ function setupIpcHandlers(): void {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  });
+
+  // Handle getting backend port (for dynamic API client)
+  ipcMain.handle('backend:getPort', () => {
+    console.log('🔌 Renderer requested backend port:', BACKEND_PORT);
+    return BACKEND_PORT;
+  });
+
+  // Handle getting backend URL (for dynamic API client)
+  ipcMain.handle('backend:getUrl', () => {
+    console.log('🔌 Renderer requested backend URL:', BACKEND_URL);
+    return BACKEND_URL;
   });
 }
 
@@ -442,8 +820,19 @@ app.on('ready', async () => {
     // Show splash screen first
     createSplashScreen();
 
-    // Start backend while splash is visible
-    await startBackend();
+    // Start backend while splash is visible and capture the port
+    const discoveredPort = await startBackend();
+
+    // Update global port and URL with discovered values
+    BACKEND_PORT = discoveredPort;
+    BACKEND_URL = `http://localhost:${discoveredPort}`;
+    console.log(`🔌 Backend URL updated to: ${BACKEND_URL}`);
+
+    // Wait for backend health check
+    const ready = await waitForBackend();
+    if (!ready) {
+      throw new Error('Backend health check failed');
+    }
 
     // Create main window
     createWindow();
@@ -467,21 +856,76 @@ app.on('ready', async () => {
       mainWindow?.focus();
       mainWindow?.moveTop();
       console.log('✅ Main window shown and focused');
+
+      // Start health monitoring after app is fully loaded
+      startHealthMonitoring();
     });
   } catch (error) {
     console.error('❌ Failed to start app:', error);
     closeSplashScreen();
 
     const errorMessage = error instanceof Error ? error.message : String(error);
-    dialog.showErrorBox(
-      'Startup Error',
-      `Failed to start the application:\n\n${errorMessage}\n\nPlease check the logs and try again.`
-    );
+
+    // Categorize error and show appropriate dialog
+    if (errorMessage.includes('not found')) {
+      await showStartupErrorDialog(
+        'Backend Executable Not Found',
+        'The backend executable could not be found.',
+        'Please ensure the application is properly installed.',
+        errorMessage,
+        false // No logs button - installation issue
+      );
+    } else if (errorMessage.includes('timeout') || errorMessage.includes('did not report port')) {
+      await showStartupErrorDialog(
+        'Backend Not Responding',
+        'The backend is not responding to health checks.',
+        'This may be a configuration issue. Click Show Logs for details.',
+        errorMessage,
+        true // Show logs button
+      );
+    } else if (errorMessage.includes('exited with code')) {
+      await showStartupErrorDialog(
+        'Backend Crashed on Startup',
+        'The backend process crashed during startup.',
+        'Please check the logs for more details.',
+        errorMessage,
+        true // Show logs button
+      );
+    } else if (errorMessage.includes('health check failed')) {
+      await showStartupErrorDialog(
+        'Backend Not Responding',
+        'The backend is not responding to health checks.',
+        'This may be a configuration issue. Click Show Logs for details.',
+        errorMessage,
+        true // Show logs button
+      );
+    } else if (errorMessage.includes('failed to start')) {
+      await showStartupErrorDialog(
+        'Cannot Start Backend',
+        'The backend executable could not be started.',
+        'Please check that the application is properly installed.',
+        errorMessage,
+        true // Show logs button
+      );
+    } else {
+      // Generic error
+      await showStartupErrorDialog(
+        'Startup Error',
+        'Failed to start the application.',
+        'An unexpected error occurred.',
+        errorMessage,
+        true // Show logs button
+      );
+    }
+
     app.quit();
   }
 });
 
 app.on('window-all-closed', () => {
+  // Stop health monitoring
+  stopHealthMonitoring();
+
   // Kill backend before quitting
   if (backendProcess) {
     console.log('🛑 Stopping backend...');
@@ -496,10 +940,37 @@ app.on('activate', () => {
   }
 });
 
-// Handle app quit - ensure backend is killed
-app.on('before-quit', () => {
-  if (backendProcess) {
-    console.log('🛑 Cleaning up backend process...');
-    backendProcess.kill();
-  }
+// Handle app quit - graceful shutdown with session preservation
+app.on('before-quit', async (event) => {
+  event.preventDefault();
+  await gracefulShutdown();
+  app.exit(0);
 });
+
+/**
+ * Perform graceful shutdown of the application.
+ * Ensures backend has time to save session data before terminating.
+ */
+async function gracefulShutdown(): Promise<void> {
+  console.log('🛑 Performing graceful shutdown...');
+
+  // Stop health monitoring first
+  stopHealthMonitoring();
+
+  // Give backend time to save session data
+  if (backendProcess && !backendProcess.killed) {
+    console.log('🛑 Sending SIGTERM to backend (polite shutdown)...');
+    backendProcess.kill('SIGTERM'); // Polite kill - allows cleanup
+
+    // Wait 2 seconds for backend to save session
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Force kill if still running
+    if (backendProcess && !backendProcess.killed) {
+      console.log('🛑 Force killing backend process...');
+      backendProcess.kill('SIGKILL');
+    }
+  }
+
+  console.log('✅ Graceful shutdown complete');
+}

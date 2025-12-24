@@ -11,7 +11,7 @@ from typing import Any, ClassVar
 import pandas as pd
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
-from ninebox.models.grid_positions import calculate_grid_position, get_position_label
+from ninebox.models.grid_positions import calculate_grid_position
 
 logger = logging.getLogger(__name__)
 
@@ -558,22 +558,6 @@ class ExcelParser:
         # Calculate grid position
         grid_position = calculate_grid_position(performance, potential)
 
-        # Get position label
-        position_label_col = self._find_column(
-            row,
-            [
-                "Talent Mapping Position [Performance vs Potential]",
-                "Position Label",
-                "9-Box Position",
-            ],
-        )
-        if position_label_col is None or pd.isna(row.get(position_label_col)):
-            if position_label_col is None:
-                self.defaulted_fields["Position Label"] += 1
-            position_label = get_position_label(performance, potential)
-        else:
-            position_label = str(row.get(position_label_col))
-
         # Parse hire date
         hire_date_val = row.get("Hire Date")
         if pd.notna(hire_date_val):
@@ -650,7 +634,6 @@ class ExcelParser:
             performance=performance,
             potential=potential,
             grid_position=grid_position,
-            position_label=position_label,
             talent_indicator=str(
                 row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))
             ).strip()

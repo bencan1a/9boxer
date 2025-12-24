@@ -38,15 +38,15 @@ test.describe('Statistics Tab Display', () => {
     await expect(page.getByRole('columnheader', { name: 'Percentage' })).toBeVisible();
 
     // Verify all position labels are shown in the table (use first() to avoid duplicate in chart)
-    await expect(page.getByRole('rowheader', { name: 'Top Talent [H,H]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'High Impact Talent [H,M]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'High/Low [H,L]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'Growth Talent [M,H]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Star [H,H]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'High Impact [H,M]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Workhorse [H,L]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Growth [M,H]' })).toBeVisible();
     await expect(page.getByRole('rowheader', { name: 'Core Talent [M,M]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'Med/Low [M,L]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'Emerging Talent [L,H]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'Inconsistent Talent [L,M]' })).toBeVisible();
-    await expect(page.getByRole('rowheader', { name: 'Low/Low [L,L]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Effective Pro [M,L]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Enigma [L,H]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Inconsistent [L,M]' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Underperformer [L,L]' })).toBeVisible();
 
     // Verify chart is visible
     await expect(page.getByText('Visual Distribution')).toBeVisible();
@@ -86,7 +86,7 @@ test.describe('Statistics Tab Display', () => {
 
     // Get initial count of employees in box 9 (Top Talent)
     // Box 9 has Alice Smith (ID 1) and Bob Johnson (ID 2) - 2 employees
-    const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Top Talent [H,H]' }) });
+    const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Star [H,H]' }) });
     await expect(box9Row).toBeVisible();
 
     // Column 0 is Position, Column 1 is Count, Column 2 is Percentage (with bar), Column 3 is Group %
@@ -95,7 +95,7 @@ test.describe('Statistics Tab Display', () => {
 
     // Get initial count of employees in box 6 (Growth Talent)
     // Box 6 has Frank Martinez (ID 6) and Grace Taylor (ID 7) - 2 employees
-    const box6Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Growth Talent [M,H]' }) });
+    const box6Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Growth [M,H]' }) });
     await expect(box6Row).toBeVisible();
 
     const initialBox6Count = await box6Row.locator('td').nth(0).textContent();
@@ -173,12 +173,12 @@ test.describe('Statistics Tab Display', () => {
     // This test verifies the distribution matches expectations
 
     // Box 9 (Top Talent): 2 employees
-    const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Top Talent [H,H]' }) });
+    const box9Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Star [H,H]' }) });
     const box9Count = await box9Row.locator('td').nth(0).textContent();
     expect(box9Count?.trim()).toBe('2');
 
     // Box 7 (High/Low): 1 employee
-    const box7Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'High/Low [H,L]' }) });
+    const box7Row = page.locator('tr', { has: page.getByRole('rowheader', { name: 'Workhorse [H,L]' }) });
     const box7Count = await box7Row.locator('td').nth(0).textContent();
     expect(box7Count?.trim()).toBe('1');
 

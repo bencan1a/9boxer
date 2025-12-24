@@ -11,6 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+from ninebox.models.grid_positions import get_position_label_by_number
 
 
 @pytest.fixture(scope="session")
@@ -331,7 +332,7 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
         data_sheet.cell(row_idx, 14, emp.performance.value)
         data_sheet.cell(row_idx, 15, emp.potential.value)
         data_sheet.cell(row_idx, 16, emp.grid_position)
-        data_sheet.cell(row_idx, 17, emp.position_label)
+        data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
         data_sheet.cell(row_idx, 18, emp.talent_indicator)
 
         # Historical ratings

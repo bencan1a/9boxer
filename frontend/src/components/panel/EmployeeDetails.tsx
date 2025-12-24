@@ -17,6 +17,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Employee, PotentialLevel } from "../../types/employee";
 import { useSessionStore } from "../../store/sessionStore";
+import { getPositionLabel } from "../../constants/positionLabels";
 
 interface EmployeeDetailsProps {
   employee: Employee;
@@ -135,7 +136,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
                   Position:
                 </Typography>
                 <Typography variant="body2" fontWeight="medium">
-                  {employee.position_label}
+                  {getPositionLabel(employee.grid_position)}
                 </Typography>
               </Box>
               {employee.modified_in_session && (

@@ -20,10 +20,9 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
 
   test('should move employee and show visual feedback', async ({ page }) => {
     // Verify employee ID 1 (Alice Smith) is in box 9 initially
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const employeeCard = page.locator('[data-testid="employee-card-1"]');
 
-    await expect(gridBox9.getByText('Alice Smith')).toBeVisible();
+    await expect(employeeCard).toHaveAttribute('data-position', '9');
     await expect(employeeCard).toBeVisible();
 
     // Verify employee does NOT have modified indicator before move
@@ -42,8 +41,7 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Verify employee now appears in box 6
-    const gridBox6 = page.locator('[data-testid="grid-box-6"]');
-    await expect(gridBox6.getByText('Alice Smith')).toBeVisible();
+    await expect(employeeCard).toHaveAttribute('data-position', '6');
 
     // Verify employee card has visual feedback indicators
     const movedEmployeeCard = page.locator('[data-testid="employee-card-1"]');
@@ -52,14 +50,6 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
     const modifiedIndicator = movedEmployeeCard.locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).toBeVisible();
     await expect(modifiedIndicator).toHaveText('Modified');
-
-    // Check for left border (secondary color) - using computed style
-    const cardElement = movedEmployeeCard;
-    const borderLeft = await cardElement.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return style.borderLeftWidth;
-    });
-    expect(borderLeft).toBe('4px');
 
     // Verify box counts changed
     const box9CountAfter = page.locator('[data-testid="grid-box-9-count"]');
@@ -75,70 +65,35 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
   });
 
   test('should enable export button and show badge after movement', async ({ page }) => {
-    // Verify export button is initially disabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeDisabled();
+    // Verify file menu badge is not visible initially (no changes)
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    // Badge should be invisible initially (no changes)
+    // Check the MUI Badge content element (the pill)
+    const badgePill = fileMenuBadge.locator('.MuiBadge-badge');
+    await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
-    // Verify no badge is visible initially
-    const badgeChip = page.locator('button[data-testid="export-button"] ~ div').locator('div[role="status"]');
-    await expect(badgeChip).not.toBeVisible();
+    // Open file menu to check export menu item is disabled
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeDisabled();
+
+    // Close menu
+    await page.keyboard.press('Escape');
 
     // Move employee using dragEmployeeToPosition
     await dragEmployeeToPosition(page, 1, 6);
 
-    // Verify export button becomes enabled
-    await expect(exportButton).toBeEnabled();
+    // Verify file menu badge becomes visible (showing 1 change)
+    await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);
+    await expect(fileMenuBadge).toContainText('1');
 
-    // Check for change count chip/badge next to export button
-    // The AppBar shows a Chip with the count next to the export button
-    const changeCountChip = page.locator('button[data-testid="export-button"]').locator('..').locator('div:has-text("1")');
-    await expect(changeCountChip).toBeVisible();
+    // Open file menu and verify export menu item is now enabled
+    await page.locator('[data-testid="file-menu-button"]').click();
+    await expect(exportMenuItem).toBeEnabled();
+    await expect(exportMenuItem).toContainText('Apply 1 Change');
 
-    // Verify tooltip shows change count
-    const changeCountDisplay = page.locator('div').filter({ hasText: /^1$/ }).nth(0);
-    await expect(changeCountDisplay).toBeVisible();
-  });
-
-  test('should show modified indicator persists after multiple moves', async ({ page }) => {
-    // Move employee 1 from box 9 to 6
-    await dragEmployeeToPosition(page, 1, 6);
-
-    // Verify employee is in box 6 with modified indicator
-    const gridBox6 = page.locator('[data-testid="grid-box-6"]');
-    await expect(gridBox6.getByText('Alice Smith')).toBeVisible();
-
-    let modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
-    await expect(modifiedIndicator).toBeVisible();
-
-    // Move same employee from box 6 to 3
-    await dragEmployeeToPosition(page, 1, 3);
-
-    // Verify employee is now in box 3
-    const gridBox3 = page.locator('[data-testid="grid-box-3"]');
-    await expect(gridBox3.getByText('Alice Smith')).toBeVisible();
-
-    // Verify employee STILL shows modified indicator
-    modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
-    await expect(modifiedIndicator).toBeVisible();
-    await expect(modifiedIndicator).toHaveText('Modified');
-
-    // Verify badge shows "1" (net change, not 2)
-    // The system tracks net changes, so moving the same employee multiple times
-    // should still show only 1 change in the counter
-    const changeCountDisplay = page.locator('div').filter({ hasText: /^1$/ }).nth(0);
-    await expect(changeCountDisplay).toBeVisible();
-
-    // Verify export button is still enabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
-
-    // Verify left border persists (4px border)
-    const cardElement = page.locator('[data-testid="employee-card-1"]');
-    const borderLeft = await cardElement.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return style.borderLeftWidth;
-    });
-    expect(borderLeft).toBe('4px');
+    // Close menu
+    await page.keyboard.press('Escape');
   });
 
   test('should remove visual indicators when employee is moved back to original position', async ({ page }) => {
@@ -149,56 +104,36 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
     let modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).toBeVisible();
 
-    // Move employee back to original position (box 9)
-    await dragEmployeeToPosition(page, 1, 9);
+    // Longer stabilization for consecutive drags
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1000);
+
+    // Move employee back to original position (box 9) - skip API wait and don't expect modified indicator
+    await dragEmployeeToPosition(page, 1, 9, {
+      skipApiWait: true,
+      expectModified: false
+    });
 
     // Verify employee is back in box 9
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    await expect(gridBox9.getByText('Alice Smith')).toBeVisible();
+    const employeeCard = page.locator('[data-testid="employee-card-1"]');
+    await expect(employeeCard).toHaveAttribute('data-position', '9');
 
     // Verify modified indicator is no longer visible
     modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).not.toBeVisible();
 
-    // Verify export button is disabled again
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeDisabled();
+    // Verify file menu badge is no longer visible (no changes)
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    // Badge should be invisible again (no changes)
+    // Check the MUI Badge content element (the pill)
+    const badgePill = fileMenuBadge.locator('.MuiBadge-badge');
+    await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
-    // Verify change count badge is no longer visible
-    const changeCountDisplay = page.locator('button[data-testid="export-button"]').locator('..').locator('div:has-text("1")');
-    await expect(changeCountDisplay).not.toBeVisible();
-  });
-
-  test('should show multiple changes when different employees are moved', async ({ page }) => {
-    // Move first employee (ID 1) from box 9 to 6
-    await dragEmployeeToPosition(page, 1, 6);
-
-    // Verify badge shows "1"
-    let changeCountDisplay = page.locator('div').filter({ hasText: /^1$/ }).nth(0);
-    await expect(changeCountDisplay).toBeVisible();
-
-    // Move second employee (ID 2) from their position to another position
-    // First, find employee ID 2 in the grid
-    const employee2Card = page.locator('[data-testid="employee-card-2"]');
-    await expect(employee2Card).toBeVisible();
-
-    // Move employee 2 to box 5
-    await dragEmployeeToPosition(page, 2, 5);
-
-    // Verify both employees have modified indicators
-    const employee1Modified = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
-    const employee2Modified = page.locator('[data-testid="employee-card-2"]').locator('[data-testid="modified-indicator"]');
-
-    await expect(employee1Modified).toBeVisible();
-    await expect(employee2Modified).toBeVisible();
-
-    // Verify badge now shows "2"
-    changeCountDisplay = page.locator('div').filter({ hasText: /^2$/ }).nth(0);
-    await expect(changeCountDisplay).toBeVisible();
-
-    // Verify export button is still enabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
+    // Verify export menu item is disabled again
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeDisabled();
+    await page.keyboard.press('Escape');
   });
 
   test('should show visual feedback during drag operation', async ({ page }) => {

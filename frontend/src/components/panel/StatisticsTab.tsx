@@ -25,6 +25,7 @@ import { useStatistics } from "../../hooks/useStatistics";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { DistributionChart } from "./DistributionChart";
+import { getPositionLabel } from "../../constants/positionLabels";
 
 // SVG Curly Brace Component (opening to the left like })
 const CurlyBrace: React.FC<{
@@ -116,9 +117,11 @@ export const StatisticsTab: React.FC = () => {
 
   // Sort distribution with custom grouping order: 9,8,6, 7,5,3, 4,2,1
   const customOrder = [9, 8, 6, 7, 5, 3, 4, 2, 1];
-  const sortedDistribution = [...statistics.distribution].sort(
-    (a, b) => customOrder.indexOf(a.grid_position) - customOrder.indexOf(b.grid_position)
-  );
+  const sortedDistribution = [...statistics.distribution]
+    .map(row => ({ ...row, position_label: getPositionLabel(row.grid_position) }))
+    .sort(
+      (a, b) => customOrder.indexOf(a.grid_position) - customOrder.indexOf(b.grid_position)
+    );
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -201,7 +204,7 @@ export const StatisticsTab: React.FC = () => {
                     }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.position_label}
+                      {getPositionLabel(row.grid_position)}
                     </TableCell>
                     <TableCell align="right">
                       <Typography

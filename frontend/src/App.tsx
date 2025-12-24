@@ -2,7 +2,7 @@
  * Main App component with routing
  */
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, Box } from "@mui/material";
@@ -12,13 +12,34 @@ import { DashboardPage } from "./components/dashboard/DashboardPage";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
 import { logger } from "./utils/logger";
+import { initializeConfig } from "./config";
+import { LoadingSpinner } from "./components/common/LoadingSpinner";
 
 const App: React.FC = () => {
+  // Track configuration initialization state
+  const [configReady, setConfigReady] = useState(false);
+
   // Get effective theme from store
   const effectiveTheme = useUiStore((state) => state.effectiveTheme);
 
   // Create dynamic theme based on effective theme
   const theme = useMemo(() => getTheme(effectiveTheme), [effectiveTheme]);
+
+  // Initialize configuration before rendering main app
+  useEffect(() => {
+    async function init() {
+      try {
+        await initializeConfig();
+        logger.info('[App] Configuration initialized successfully');
+      } catch (error) {
+        logger.error('[App] Failed to initialize configuration:', error);
+        // Continue anyway with default configuration
+      } finally {
+        setConfigReady(true);
+      }
+    }
+    init();
+  }, []);
 
   // Initialize theme detection and listen for OS theme changes
   useEffect(() => {
@@ -74,6 +95,26 @@ const App: React.FC = () => {
       window.removeEventListener("unhandledrejection", handleRejection);
     };
   }, []);
+
+  // Show loading screen while initializing configuration
+  if (!configReady) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh',
+            backgroundColor: 'background.default',
+          }}
+        >
+          <LoadingSpinner size={60} message="Connecting to backend..." overlay={false} />
+        </Box>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ErrorBoundary>

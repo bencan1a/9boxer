@@ -8,6 +8,7 @@ import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
+import { getPositionLabel } from "../../constants/positionLabels";
 
 interface EmployeeTileProps {
   employee: Employee;
@@ -35,9 +36,9 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   const isDonutModified = donutModeActive && employee.donut_modified;
 
   // Determine which position label to show
-  const displayLabel = donutModeActive && employee.donut_position_label
-    ? employee.donut_position_label
-    : employee.position_label;
+  const displayLabel = donutModeActive && employee.donut_position
+    ? getPositionLabel(employee.donut_position)
+    : getPositionLabel(employee.grid_position);
 
   return (
     <Card
@@ -62,6 +63,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         },
       }}
       data-testid={`employee-card-${employee.employee_id}`}
+      data-position={employee.grid_position}
+      data-donut-position={employee.donut_position || ''}
     >
       {/* Drag Handle */}
       <Box
@@ -119,7 +122,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
             />
           )}
         </Box>
-        {isDonutModified && employee.donut_position_label && (
+        {isDonutModified && employee.donut_position && (
           <Typography
             variant="caption"
             color="text.secondary"

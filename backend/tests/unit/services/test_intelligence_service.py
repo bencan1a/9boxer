@@ -115,7 +115,6 @@ def create_employee(
         performance=performance,
         potential=potential,
         grid_position=grid_position,
-        position_label="Test Label",
         talent_indicator="Test Indicator",
     )
 

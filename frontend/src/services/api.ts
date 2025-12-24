@@ -1,5 +1,9 @@
 /**
  * API client service using Axios
+ *
+ * This client uses a dynamic base URL that is initialized at runtime.
+ * In Electron mode, the base URL is obtained from the main process to support
+ * dynamic port selection when there are port conflicts.
  */
 
 import axios, { AxiosInstance, AxiosError } from "axios";
@@ -17,7 +21,7 @@ import {
 } from "../types/api";
 import { Employee } from "../types/employee";
 import { EmployeeMove } from "../types/session";
-import { API_BASE_URL } from "../config";
+import { getApiBaseUrl } from "../config";
 
 /**
  * Custom error class that preserves backend error details
@@ -33,12 +37,70 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Retry an operation with exponential backoff.
+ * Only retries on connection errors (not HTTP 4xx/5xx errors).
+ *
+ * @param operation - The async operation to retry
+ * @param maxRetries - Maximum number of retry attempts (default: 3)
+ * @param baseDelay - Base delay in milliseconds for exponential backoff (default: 1000ms)
+ * @returns Result of the operation
+ * @throws The last error if all retries are exhausted
+ */
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  baseDelay = 1000
+): Promise<T> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error as Error;
+
+      // Only retry on connection errors (no response), not on HTTP errors (4xx/5xx)
+      const isAxiosError = axios.isAxiosError(error);
+      const hasResponse = isAxiosError && error.response !== undefined;
+
+      if (hasResponse) {
+        // Don't retry on HTTP errors (client/server errors)
+        throw error;
+      }
+
+      // This is a connection error (network issue, timeout, etc.)
+      // Calculate delay with exponential backoff: 1s, 2s, 4s
+      const delay = baseDelay * Math.pow(2, attempt);
+      const isLastAttempt = attempt === maxRetries - 1;
+
+      if (!isLastAttempt) {
+        console.log(
+          `[API Retry] Attempt ${attempt + 1}/${maxRetries} failed, retrying in ${delay}ms...`,
+          error instanceof Error ? error.message : String(error)
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        console.error(
+          `[API Retry] All ${maxRetries} attempts failed`,
+          error instanceof Error ? error.message : String(error)
+        );
+      }
+    }
+  }
+
+  // All retries exhausted, throw the last error
+  throw lastError!;
+}
+
 class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
+    // Initialize with dynamic base URL from config
+    // The base URL is set by initializeConfig() before the API client is used
     this.client = axios.create({
-      baseURL: API_BASE_URL,
+      baseURL: getApiBaseUrl(),
       headers: {
         "Content-Type": "application/json",
       },
@@ -65,6 +127,19 @@ class ApiClient {
     );
   }
 
+  /**
+   * Update the API client's base URL
+   *
+   * This method allows updating the base URL after initialization,
+   * which is useful when the backend restarts on a different port.
+   *
+   * @param baseURL - The new base URL to use
+   */
+  updateBaseUrl(baseURL: string): void {
+    this.client.defaults.baseURL = baseURL;
+    console.log(`[ApiClient] Base URL updated to: ${baseURL}`);
+  }
+
   // ==================== Session Methods ====================
 
   async upload(file: File): Promise<UploadResponse> {
@@ -84,10 +159,12 @@ class ApiClient {
   }
 
   async getSessionStatus(): Promise<SessionStatusResponse> {
-    const response = await this.client.get<SessionStatusResponse>(
-      "/api/session/status"
-    );
-    return response.data;
+    return withRetry(async () => {
+      const response = await this.client.get<SessionStatusResponse>(
+        "/api/session/status"
+      );
+      return response.data;
+    });
   }
 
   async clearSession(): Promise<{ success: boolean }> {
@@ -139,39 +216,43 @@ class ApiClient {
     performance?: string[];
     potential?: string[];
   }): Promise<EmployeesResponse> {
-    const params = new URLSearchParams();
+    return withRetry(async () => {
+      const params = new URLSearchParams();
 
-    if (filters?.levels?.length) {
-      params.append("levels", filters.levels.join(","));
-    }
-    if (filters?.job_profiles?.length) {
-      params.append("job_profiles", filters.job_profiles.join(","));
-    }
-    if (filters?.managers?.length) {
-      params.append("managers", filters.managers.join(","));
-    }
-    if (filters?.chain_levels?.length) {
-      params.append("chain_levels", filters.chain_levels.join(","));
-    }
-    if (filters?.exclude_ids?.length) {
-      params.append("exclude_ids", filters.exclude_ids.join(","));
-    }
-    if (filters?.performance?.length) {
-      params.append("performance", filters.performance.join(","));
-    }
-    if (filters?.potential?.length) {
-      params.append("potential", filters.potential.join(","));
-    }
+      if (filters?.levels?.length) {
+        params.append("levels", filters.levels.join(","));
+      }
+      if (filters?.job_profiles?.length) {
+        params.append("job_profiles", filters.job_profiles.join(","));
+      }
+      if (filters?.managers?.length) {
+        params.append("managers", filters.managers.join(","));
+      }
+      if (filters?.chain_levels?.length) {
+        params.append("chain_levels", filters.chain_levels.join(","));
+      }
+      if (filters?.exclude_ids?.length) {
+        params.append("exclude_ids", filters.exclude_ids.join(","));
+      }
+      if (filters?.performance?.length) {
+        params.append("performance", filters.performance.join(","));
+      }
+      if (filters?.potential?.length) {
+        params.append("potential", filters.potential.join(","));
+      }
 
-    const response = await this.client.get<EmployeesResponse>("/api/employees", {
-      params,
+      const response = await this.client.get<EmployeesResponse>("/api/employees", {
+        params,
+      });
+      return response.data;
     });
-    return response.data;
   }
 
   async getEmployeeById(id: number): Promise<Employee> {
-    const response = await this.client.get<Employee>(`/api/employees/${id}`);
-    return response.data;
+    return withRetry(async () => {
+      const response = await this.client.get<Employee>(`/api/employees/${id}`);
+      return response.data;
+    });
   }
 
   async moveEmployee(
@@ -218,24 +299,30 @@ class ApiClient {
   }
 
   async getFilterOptions(): Promise<FilterOptionsResponse> {
-    const response = await this.client.get<FilterOptionsResponse>(
-      "/api/employees/filter-options"
-    );
-    return response.data;
+    return withRetry(async () => {
+      const response = await this.client.get<FilterOptionsResponse>(
+        "/api/employees/filter-options"
+      );
+      return response.data;
+    });
   }
 
   // ==================== Statistics Methods ====================
 
   async getStatistics(): Promise<StatisticsResponse> {
-    const response = await this.client.get<StatisticsResponse>("/api/statistics");
-    return response.data;
+    return withRetry(async () => {
+      const response = await this.client.get<StatisticsResponse>("/api/statistics");
+      return response.data;
+    });
   }
 
   // ==================== Intelligence Methods ====================
 
   async getIntelligence(): Promise<IntelligenceData> {
-    const response = await this.client.get<IntelligenceData>("/api/intelligence");
-    return response.data;
+    return withRetry(async () => {
+      const response = await this.client.get<IntelligenceData>("/api/intelligence");
+      return response.data;
+    });
   }
 }
 

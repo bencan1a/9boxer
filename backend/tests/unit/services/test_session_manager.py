@@ -725,7 +725,6 @@ def test_move_employee_donut_when_called_then_updates_employee(
     assert emp.donut_performance == PerformanceLevel.HIGH
     assert emp.donut_potential == PotentialLevel.MEDIUM
     assert emp.donut_position == 6
-    assert emp.donut_position_label == "High Impact [H,M]"
     assert emp.donut_modified is True
     assert emp.donut_last_modified is not None
 
@@ -830,7 +829,6 @@ def test_move_employee_donut_when_return_to_5_then_clears_data(
     assert emp.donut_performance is None
     assert emp.donut_potential is None
     assert emp.donut_position is None
-    assert emp.donut_position_label is None
     assert emp.donut_last_modified is None
     assert emp.donut_notes is None
 

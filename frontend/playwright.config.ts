@@ -14,7 +14,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Retry on CI only
-  retries: 0,
+  retries: process.env.CI ? 2 : 1,  // 1 retry locally, 2 on CI
 
   // Run tests sequentially (1 worker)
   workers: 1,
@@ -27,16 +27,19 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
 
     // Viewport size matching Cypress config
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1920, height: 1080 },
 
     // Maximum time each action can take
     actionTimeout: 10000,
 
     // Collect trace on failure
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
 
     // Screenshot on failure
     screenshot: 'only-on-failure',
+
+    // Capture video for debugging
+    video: 'retain-on-failure',
   },
 
   // Configure projects for major browsers

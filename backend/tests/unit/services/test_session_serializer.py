@@ -370,7 +370,6 @@ def test_round_trip_serialization_when_real_employee_data_then_identical(
         assert emp.performance == original_emp.performance
         assert emp.potential == original_emp.potential
         assert emp.grid_position == original_emp.grid_position
-        assert emp.position_label == original_emp.position_label
         assert emp.talent_indicator == original_emp.talent_indicator
         assert emp.development_focus == original_emp.development_focus
         assert emp.development_action == original_emp.development_action
@@ -551,7 +550,6 @@ def test_serialize_when_employee_with_last_modified_then_serializes_datetime() -
         performance=PerformanceLevel.MEDIUM,
         potential=PotentialLevel.MEDIUM,
         grid_position=5,
-        position_label="Core Talent [M,M]",
         talent_indicator="Solid",
         ratings_history=[],
         modified_in_session=True,
@@ -600,7 +598,6 @@ def test_deserialize_when_employee_without_last_modified_then_handles_none() -> 
         performance=PerformanceLevel.HIGH,
         potential=PotentialLevel.MEDIUM,
         grid_position=6,
-        position_label="High Impact [H,M]",
         talent_indicator="High Impact",
         ratings_history=[],
         modified_in_session=False,
@@ -653,8 +650,7 @@ def test_serialize_deserialize_when_large_dataset_then_preserves_all() -> None:
                 performance=PerformanceLevel.MEDIUM,
                 potential=PotentialLevel.MEDIUM,
                 grid_position=5,
-                position_label="Core Talent [M,M]",
-                talent_indicator="Solid",
+                talent_indicator="Test",
                 ratings_history=[],
                 modified_in_session=False,
             )

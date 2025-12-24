@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
-from ninebox.models.grid_positions import calculate_grid_position, get_position_label
+from ninebox.models.grid_positions import calculate_grid_position
 from ninebox.models.session import EmployeeMove, SessionState
 from ninebox.services.database import db_manager
 from ninebox.services.excel_parser import JobFunctionConfig
@@ -198,7 +198,6 @@ class SessionManager:
         employee.performance = new_performance
         employee.potential = new_potential
         employee.grid_position = new_position
-        employee.position_label = get_position_label(new_performance, new_potential)
         employee.last_modified = now
 
         # Check if employee is back to original position - if so, remove from changes
@@ -349,7 +348,6 @@ class SessionManager:
             employee.donut_performance = None
             employee.donut_potential = None
             employee.donut_position = None
-            employee.donut_position_label = None
             employee.donut_modified = False
             employee.donut_last_modified = None
             employee.donut_notes = None
@@ -412,7 +410,6 @@ class SessionManager:
             employee.donut_performance = new_performance
             employee.donut_potential = new_potential
             employee.donut_position = new_position
-            employee.donut_position_label = get_position_label(new_performance, new_potential)
             employee.donut_modified = True
             employee.donut_last_modified = now
 

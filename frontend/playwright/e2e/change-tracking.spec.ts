@@ -29,9 +29,9 @@ test.describe('Change Tracking Flow', () => {
   });
 
   test('should display change in Changes tab after moving employee', async ({ page }) => {
-    // Get the first employee from grid box 9 (Alice Smith, employee_id: 1)
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    await expect(gridBox9.getByText('Alice Smith')).toBeVisible();
+    // Verify Alice Smith (employee_id: 1) is in position 9
+    const aliceCard = page.locator('[data-testid="employee-card-1"]');
+    await expect(aliceCard).toHaveAttribute('data-position', '9');
 
     // Move employee from position 9 to position 6 using drag and drop
     await dragEmployeeToPosition(page, 1, 6);
@@ -40,7 +40,7 @@ test.describe('Change Tracking Flow', () => {
     await page.locator('[data-testid="changes-tab"]').click();
 
     // Verify change appears in table
-    await expect(page.locator('[data-testid="change-tracker-table"]')).toBeVisible();
+    await expect(page.locator('[data-testid="change-table"]')).toBeVisible();
     await expect(page.locator('[data-testid="change-tracker-view"]')).toBeVisible();
 
     // Verify the change row exists for employee ID 1
@@ -76,7 +76,7 @@ test.describe('Change Tracking Flow', () => {
     await notesField.fill(testNotes);
 
     // Blur the field to trigger save
-    await page.locator('[data-testid="change-tracker-table"]').click();
+    await page.locator('[data-testid="change-table"]').click();
 
     // Wait a moment for the save to complete
     await page.waitForTimeout(500);
@@ -95,7 +95,16 @@ test.describe('Change Tracking Flow', () => {
 
     // Go back to grid and move employee back to original position (9)
     await page.locator('[data-testid="details-tab"]').click();
-    await dragEmployeeToPosition(page, 1, 9);
+
+    // Longer stabilization for consecutive drags
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1000);
+
+    // Move back to original position - skip API wait and don't expect modified indicator
+    await dragEmployeeToPosition(page, 1, 9, {
+      skipApiWait: true,
+      expectModified: false
+    });
 
     // Verify change is removed
     await page.locator('[data-testid="changes-tab"]').click();
@@ -137,21 +146,24 @@ test.describe('Change Tracking Flow', () => {
     const notesField = page.locator('[data-testid="change-notes-1"] textarea:not([readonly])');
     await notesField.click();
     await notesField.fill(testNotes);
-    await page.locator('[data-testid="change-tracker-table"]').click(); // Blur to save
+    await page.locator('[data-testid="change-table"]').click(); // Blur to save
     await page.waitForTimeout(500);
 
     // Navigate back to grid
     await page.locator('[data-testid="details-tab"]').click();
 
-    // Export button should now be enabled
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
+    // Verify file menu badge shows changes
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    await expect(fileMenuBadge).toContainText('1');
 
     // Set up download listener
     const downloadPromise = page.waitForEvent('download');
 
-    // Click export button
-    await exportButton.click();
+    // Open file menu and click export menu item
+    await page.locator('[data-testid="file-menu-button"]').click();
+    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
 
     // Wait for download to complete
     const download = await downloadPromise;

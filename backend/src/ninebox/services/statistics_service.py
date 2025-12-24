@@ -44,7 +44,6 @@ class StatisticsService:
         distribution = [
             {
                 "grid_position": int(pos),
-                "position_label": data["label"],
                 "count": data["count"],
                 "percentage": data["percentage"],
             }

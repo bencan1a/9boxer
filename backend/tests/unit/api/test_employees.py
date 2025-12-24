@@ -236,7 +236,6 @@ def test_move_employee_when_updates_grid_position_then_position_correct(
     assert response.status_code == 200
     data = response.json()
     assert data["employee"]["grid_position"] == 5
-    assert "Core Talent" in data["employee"]["position_label"]
 
 
 # ========== Donut Mode Tests ==========
@@ -261,7 +260,6 @@ def test_move_employee_donut_when_valid_request_then_updates_donut_position(
     assert data["employee"]["donut_performance"] == "High"
     assert data["employee"]["donut_potential"] == "Medium"
     assert data["employee"]["donut_modified"] is True
-    assert data["employee"]["donut_position_label"] == "High Impact [H,M]"
     assert data["employee"]["donut_last_modified"] is not None
 
     # Original grid position should be unchanged

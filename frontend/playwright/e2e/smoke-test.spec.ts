@@ -24,8 +24,8 @@ test.describe('Smoke Test - Critical Workflows', () => {
     // Reload to ensure clean state
     await page.reload();
 
-    // Verify we start with no data
-    await expect(page.getByText('Upload an Excel file to begin')).toBeVisible();
+    // Wait for app to be ready
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should complete full user workflow: upload, view, move, filter, and export', async ({ page }) => {
@@ -59,9 +59,9 @@ test.describe('Smoke Test - Critical Workflows', () => {
     const movedCard = page.locator('[data-testid="employee-card-1"]');
     await expect(movedCard.locator('[data-testid="modified-indicator"]')).toBeVisible();
 
-    // Verify export button enabled with change count
-    const exportButton = page.locator('[data-testid="export-button"]');
-    await expect(exportButton).toBeEnabled();
+    // Verify file menu badge shows change count
+    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
+    await expect(fileMenuBadge).toContainText('1');
 
     // 4. FILTER - Apply filter and verify grid updates
     const filterButton = page.locator('[data-testid="filter-button"]');
@@ -97,7 +97,12 @@ test.describe('Smoke Test - Critical Workflows', () => {
 
     // 5. EXPORT - Export to Excel and verify file
     const downloadPromise = page.waitForEvent('download');
-    await exportButton.click();
+
+    // Open file menu and click export
+    await page.locator('[data-testid="file-menu-button"]').click();
+    await page.waitForTimeout(300); // Wait for menu to open
+    await page.locator('[data-testid="export-changes-menu-item"]').click();
+
     const download = await downloadPromise;
 
     // Verify filename pattern
@@ -143,7 +148,7 @@ test.describe('Smoke Test - Critical Workflows', () => {
     await notesField.fill('Smoke test - verified change tracking');
 
     // Blur to save (click table header to trigger blur)
-    await page.locator('[data-testid="change-tracker-table"]').click();
+    await page.locator('[data-testid="change-table"]').click();
 
     // Verify notes saved - use auto-retry with longer timeout for async save
     await expect(notesField).toHaveValue('Smoke test - verified change tracking', { timeout: 10000 });
