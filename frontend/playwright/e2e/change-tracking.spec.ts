@@ -4,7 +4,13 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { uploadExcelFile, dragEmployeeToPosition } from '../helpers';
+import {
+  uploadExcelFile,
+  dragEmployeeToPosition,
+  clickTabAndWait,
+  getBadgeCount,
+  waitForUiSettle
+} from '../helpers';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -19,8 +25,8 @@ test.describe('Change Tracking Flow', () => {
   });
 
   test('should show empty state when no changes have been made', async ({ page }) => {
-    // Click Changes tab
-    await page.locator('[data-testid="changes-tab"]').click();
+    // Navigate to Changes tab
+    await clickTabAndWait(page, 'changes-tab');
 
     // Verify empty state is visible
     await expect(page.locator('[data-testid="change-tracker-empty"]')).toBeVisible();
@@ -36,8 +42,8 @@ test.describe('Change Tracking Flow', () => {
     // Move employee from position 9 to position 6 using drag and drop
     await dragEmployeeToPosition(page, 1, 6);
 
-    // Click Changes tab
-    await page.locator('[data-testid="changes-tab"]').click();
+    // Navigate to Changes tab
+    await clickTabAndWait(page, 'changes-tab');
 
     // Verify change appears in table
     await expect(page.locator('[data-testid="change-table"]')).toBeVisible();
@@ -60,7 +66,7 @@ test.describe('Change Tracking Flow', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Navigate to Changes tab
-    await page.locator('[data-testid="changes-tab"]').click();
+    await clickTabAndWait(page, 'changes-tab');
 
     // Verify change row exists
     const changeRow = page.locator('[data-testid="change-row-1"]');
@@ -90,15 +96,11 @@ test.describe('Change Tracking Flow', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Verify change appears
-    await page.locator('[data-testid="changes-tab"]').click();
+    await clickTabAndWait(page, 'changes-tab');
     await expect(page.locator('[data-testid="change-row-1"]')).toBeVisible();
 
     // Go back to grid and move employee back to original position (9)
-    await page.locator('[data-testid="details-tab"]').click();
-
-    // Longer stabilization for consecutive drags
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+    await clickTabAndWait(page, 'details-tab', 1.0);
 
     // Move back to original position - skip API wait and don't expect modified indicator
     await dragEmployeeToPosition(page, 1, 9, {
@@ -107,7 +109,7 @@ test.describe('Change Tracking Flow', () => {
     });
 
     // Verify change is removed
-    await page.locator('[data-testid="changes-tab"]').click();
+    await clickTabAndWait(page, 'changes-tab');
 
     // Should show empty state again
     await expect(page.locator('[data-testid="change-tracker-empty"]')).toBeVisible();
@@ -123,7 +125,7 @@ test.describe('Change Tracking Flow', () => {
     await dragEmployeeToPosition(page, 1, 3);
 
     // Verify only one change entry exists (net change: 9 -> 3)
-    await page.locator('[data-testid="changes-tab"]').click();
+    await clickTabAndWait(page, 'changes-tab');
 
     // Should only have one change row for this employee
     const changeRows = page.locator('[data-testid^="change-row-1"]');
@@ -140,21 +142,20 @@ test.describe('Change Tracking Flow', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Add notes
-    await page.locator('[data-testid="changes-tab"]').click();
+    await clickTabAndWait(page, 'changes-tab');
 
     const testNotes = 'Ready for leadership development program';
     const notesField = page.locator('[data-testid="change-notes-1"] textarea:not([readonly])');
     await notesField.click();
     await notesField.fill(testNotes);
     await page.locator('[data-testid="change-table"]').click(); // Blur to save
-    await page.waitForTimeout(500);
+    await waitForUiSettle(page, 0.5);
 
     // Navigate back to grid
-    await page.locator('[data-testid="details-tab"]').click();
+    await clickTabAndWait(page, 'details-tab');
 
-    // Verify file menu badge shows changes
-    const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
-    await expect(fileMenuBadge).toContainText('1');
+    // Verify file menu badge shows changes (use Playwright's retry logic)
+    await expect(page.locator('[data-testid="file-menu-badge"]')).toContainText('1');
 
     // Set up download listener
     const downloadPromise = page.waitForEvent('download');

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Developer-facing**: Migrated screenshot generation from Python to TypeScript
+- Screenshot generation now shares helpers with E2E tests (zero duplication)
+- Use `npm run screenshots:generate` (from frontend/) instead of `python tools/generate_docs_screenshots.py`
+- Screenshots organized by workflow modules (quickstart, calibration, changes, etc.)
+
+### Added
+- GitHub Actions workflow for automated screenshot regeneration (`.github/workflows/screenshots.yml`)
+- Weekly automated screenshot updates (Mondays at 2 AM UTC)
+- 12 Playwright helper functions shared between E2E tests and screenshot generation
+- TypeScript screenshot generation infrastructure in `frontend/playwright/screenshots/`
+- 31 automated screenshot workflows with type-safe configuration
+- 8 manual screenshots documented with detailed creation instructions (`MANUAL_SCREENSHOTS.md`)
+- Comprehensive documentation in `frontend/playwright/screenshots/README.md` and tools/README.md
+- Migration guide in `tools/README.md`
+
+### Removed
+- Python screenshot tool (`tools/generate_docs_screenshots.py`) - replaced by TypeScript implementation
+- All screenshot generation now uses TypeScript workflow in `frontend/playwright/screenshots/`
+
 ## [0.1.0] - 2025-11-09
 
 ### Added
