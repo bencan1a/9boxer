@@ -1,23 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '../../../test/utils'
 import { EmployeeCount } from '../EmployeeCount'
 import { useEmployees } from '../../../hooks/useEmployees'
 import { useSessionStore } from '../../../store/sessionStore'
 import { useFilters } from '../../../hooks/useFilters'
-import { ThemeProvider } from '@mui/material/styles'
-import { getTheme } from '../../../theme/theme'
 import { mockEmployees } from '../../../test/mockData'
+import { getTranslatedText } from '../../../test/i18nTestUtils'
 
 // Mock dependencies
 vi.mock('../../../hooks/useEmployees')
 vi.mock('../../../store/sessionStore')
 vi.mock('../../../hooks/useFilters')
-
-// Wrapper with theme provider
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const theme = getTheme('light')
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
 
 describe('EmployeeCount', () => {
   beforeEach(() => {
@@ -40,14 +33,11 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveTextContent('5 employees')
+    const expectedText = `5 ${getTranslatedText('grid.employeeCount.employee', { count: 5 })}`
+    expect(count).toHaveTextContent(expectedText)
   })
 
   it('shows filtered count when filters are active', () => {
@@ -68,14 +58,11 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveTextContent('2 of 5 employees')
+    const expectedText = `2 ${getTranslatedText('grid.employeeCount.of')} 5 ${getTranslatedText('grid.employeeCount.employee', { count: 5 })}`
+    expect(count).toHaveTextContent(expectedText)
   })
 
   it('uses correct singular pluralization for 1 employee', () => {
@@ -96,15 +83,12 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveTextContent('1 employee')
-    expect(count).not.toHaveTextContent('employees')
+    const expectedText = `1 ${getTranslatedText('grid.employeeCount.employee', { count: 1 })}`
+    expect(count).toHaveTextContent(expectedText)
+    expect(count).not.toHaveTextContent(getTranslatedText('grid.employeeCount.employee', { count: 2 }))
   })
 
   it('uses correct plural pluralization for multiple employees', () => {
@@ -123,14 +107,10 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveTextContent('employees')
+    expect(count).toHaveTextContent(getTranslatedText('grid.employeeCount.employee', { count: 5 }))
   })
 
   it('handles zero employees edge case', () => {
@@ -149,14 +129,10 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveTextContent('No employees')
+    expect(count).toHaveTextContent(getTranslatedText('grid.employeeCount.noEmployees'))
   })
 
   it('shows total count when all filters match (filtered count equals total)', () => {
@@ -175,15 +151,12 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     // When filtered count equals total, show total only
-    expect(count).toHaveTextContent('5 employees')
+    const expectedText = `5 ${getTranslatedText('grid.employeeCount.employee', { count: 5 })}`
+    expect(count).toHaveTextContent(expectedText)
   })
 
   it('displays tooltip with filter breakdown when filters are active', () => {
@@ -204,17 +177,17 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toBeInTheDocument()
 
     // Tooltip should contain filter information (verified via aria-label)
-    expect(count).toHaveAttribute('aria-label', expect.stringContaining('Showing 2 of 5 employees with active filters'))
+    const expectedAriaLabel = getTranslatedText('grid.employeeCount.ariaLabelFiltered', { 
+      filteredCount: 2, 
+      totalCount: 5 
+    })
+    expect(count).toHaveAttribute('aria-label', expect.stringContaining(expectedAriaLabel))
   })
 
   it('displays simple tooltip when no filters are active', () => {
@@ -233,14 +206,11 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
-    expect(count).toHaveAttribute('aria-label', '5 total employees')
+    const expectedAriaLabel = getTranslatedText('grid.employeeCount.ariaLabel', { count: 5 })
+    expect(count).toHaveAttribute('aria-label', expectedAriaLabel)
   })
 
   it('includes excluded employees count in tooltip when present', () => {
@@ -261,16 +231,13 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [1, 2], // 2 excluded
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     // Verify the component renders (detailed tooltip content is in the component's internal state)
     expect(count).toBeInTheDocument()
-    expect(count).toHaveTextContent('3 of 5 employees')
+    const expectedText = `3 ${getTranslatedText('grid.employeeCount.of')} 5 ${getTranslatedText('grid.employeeCount.employee', { count: 5 })}`
+    expect(count).toHaveTextContent(expectedText)
   })
 
   it('includes multiple filter types in tooltip', () => {
@@ -291,15 +258,12 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [5],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toBeInTheDocument()
-    expect(count).toHaveTextContent('1 of 5 employee') // singular
+    const expectedText = `1 ${getTranslatedText('grid.employeeCount.of')} 5 ${getTranslatedText('grid.employeeCount.employee', { count: 1 })}`
+    expect(count).toHaveTextContent(expectedText)
   })
 
   it('has correct accessibility labels', () => {
@@ -318,11 +282,7 @@ describe('EmployeeCount', () => {
       excludedEmployeeIds: [],
     } as any)
 
-    render(
-      <TestWrapper>
-        <EmployeeCount />
-      </TestWrapper>
-    )
+    render(<EmployeeCount />)
 
     const count = screen.getByTestId('employee-count')
     expect(count).toHaveAttribute('aria-label')
