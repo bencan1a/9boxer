@@ -131,6 +131,7 @@
     },
     "statisticsTab": {
       "totalEmployees": "Total Employees",
+      "modified": "Modified",
       "highPerformers": "High Performers",
       "solidPerformers": "Solid Performers",
       "needsAttention": "Needs Attention",
@@ -138,6 +139,7 @@
       "position": "Position",
       "count": "Count",
       "percentage": "Percentage",
+      "groupPercentage": "Group %",
       "noStatisticsAvailable": "No statistics available"
     },
     "intelligenceTab": {

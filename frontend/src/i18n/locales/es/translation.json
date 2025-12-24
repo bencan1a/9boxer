@@ -131,6 +131,7 @@
     },
     "statisticsTab": {
       "totalEmployees": "Total de Empleados",
+      "modified": "Modificados",
       "highPerformers": "Alto Desempeño",
       "solidPerformers": "Desempeño Sólido",
       "needsAttention": "Necesita Atención",
@@ -138,6 +139,7 @@
       "position": "Posición",
       "count": "Cantidad",
       "percentage": "Porcentaje",
+      "groupPercentage": "% del Grupo",
       "noStatisticsAvailable": "No hay estadísticas disponibles"
     },
     "intelligenceTab": {

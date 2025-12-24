@@ -21,6 +21,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import { useStatistics } from "../../hooks/useStatistics";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
@@ -71,6 +72,7 @@ const CurlyBrace: React.FC<{
 
 export const StatisticsTab: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { employees } = useEmployees(); // Get filtered employees
   const donutModeActive = useSessionStore((state) => state.donutModeActive);
   const { statistics, isLoading, error } = useStatistics(employees, donutModeActive);
@@ -109,7 +111,7 @@ export const StatisticsTab: React.FC = () => {
         }}
       >
         <Typography variant="body1" color="text.secondary">
-          No statistics available
+          {t('panel.statisticsTab.noStatisticsAvailable')}
         </Typography>
       </Box>
     );
@@ -134,7 +136,7 @@ export const StatisticsTab: React.FC = () => {
                 {statistics.total_employees}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Total Employees
+                {t('panel.statisticsTab.totalEmployees')}
               </Typography>
             </CardContent>
           </Card>
@@ -147,7 +149,7 @@ export const StatisticsTab: React.FC = () => {
                 {statistics.modified_employees}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Modified
+                {t('panel.statisticsTab.modified')}
               </Typography>
             </CardContent>
           </Card>
@@ -160,7 +162,7 @@ export const StatisticsTab: React.FC = () => {
                 {statistics.high_performers}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                High Performers
+                {t('panel.statisticsTab.highPerformers')}
               </Typography>
             </CardContent>
           </Card>
@@ -170,19 +172,19 @@ export const StatisticsTab: React.FC = () => {
       {/* Distribution Table */}
       <Box>
         <Typography variant="subtitle2" color="primary" gutterBottom>
-          Distribution by Position
+          {t('panel.statisticsTab.distributionByPosition')}
         </Typography>
         <TableContainer component={Paper} variant="outlined">
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Position</TableCell>
-                <TableCell align="right">Count</TableCell>
+                <TableCell>{t('panel.statisticsTab.position')}</TableCell>
+                <TableCell align="right">{t('panel.statisticsTab.count')}</TableCell>
                 <TableCell align="left" sx={{ minWidth: 200 }}>
-                  Percentage
+                  {t('panel.statisticsTab.percentage')}
                 </TableCell>
                 <TableCell align="center" sx={{ width: 120 }}>
-                  Group %
+                  {t('panel.statisticsTab.groupPercentage')}
                 </TableCell>
               </TableRow>
             </TableHead>
