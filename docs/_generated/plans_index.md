@@ -1,7 +1,28 @@
 # Active Plans
 
-**Updated**: 2025-12-23T02:42:25.722660+00:00
+**Updated**: 2025-12-24T01:34:20.929565+00:00
 **Showing**: Plans with status=active created within 21 days
+
+## i18n-implementation
+- **Status**: active
+- **Owner**: bencan1a
+- **Created**: 2025-12-23
+- **Path**: `agent-projects/i18n-implementation/plan.md`
+- **Summary**:
+  - Implement react-i18next for internationalization across entire frontend
+  - Externalize 400-500 hardcoded strings from 42 React components
+  - Support English + Spanish (minimum 2 languages)
+  - Break work into 10 agent-sized tasks (24-34 hours total)
+
+## backend-robustness
+- **Status**: active
+- **Owner**: Claude Code
+- **Created**: 2025-12-22
+- **Path**: `agent-projects/backend-robustness/plan.md`
+- **Summary**:
+  - Implement dynamic port selection for backend to handle port conflicts
+  - Add connection monitoring and automatic recovery from backend crashes
+  - Improve error messages and user experience during failures
 
 ## big-movers-feature
 - **Status**: active
