@@ -65,3 +65,30 @@ export const changeTestLanguage = async (language: string): Promise<void> => {
 export const resetTestLanguage = async (): Promise<void> => {
   await testI18nInstance.changeLanguage('en');
 };
+
+/**
+ * Get translated text using a translation key
+ * This helper function is designed for use in test assertions to get the translated
+ * text for a given key. It uses the same i18n instance as the test components.
+ * 
+ * @param key - Translation key (e.g., 'dashboard.fileMenu.importData')
+ * @param options - Optional interpolation values and other options
+ * @returns Translated string
+ * 
+ * @example
+ * // Simple translation
+ * expect(screen.getByText(getTranslatedText('common.ok'))).toBeInTheDocument();
+ * 
+ * @example
+ * // With interpolation
+ * const text = getTranslatedText('dashboard.fileMenu.exportChanges', { count: 3 });
+ * expect(screen.getByText(text)).toBeInTheDocument();
+ * 
+ * @example
+ * // Test pluralization
+ * expect(screen.getByText(getTranslatedText('grid.employeeCount.employee', { count: 1 }))).toBeInTheDocument();
+ * expect(screen.getByText(getTranslatedText('grid.employeeCount.employee', { count: 5 }))).toBeInTheDocument();
+ */
+export const getTranslatedText = (key: string, options?: Record<string, any>): string => {
+  return testI18nInstance.t(key, options);
+};

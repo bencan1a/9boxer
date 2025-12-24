@@ -6,7 +6,7 @@ import { useSessionStore } from '../../../store/sessionStore';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme } from '../../../theme/theme';
 import { apiClient } from '../../../services/api';
-import { I18nTestWrapper } from '../../../test/i18nTestUtils';
+import { I18nTestWrapper, getTranslatedText } from '../../../test/i18nTestUtils';
 
 // Mock dependencies
 vi.mock('../../../store/sessionStore');
@@ -50,7 +50,7 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('No file selected')).toBeInTheDocument();
+    expect(screen.getByText(getTranslatedText('dashboard.fileMenu.noFileSelected'))).toBeInTheDocument();
   });
 
   it('displays filename when session is active', () => {
@@ -110,7 +110,7 @@ describe('FileMenu', () => {
       expect(screen.getByTestId('file-menu')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Import Data')).toBeInTheDocument();
+    expect(screen.getByText(getTranslatedText('dashboard.fileMenu.importData'))).toBeInTheDocument();
   });
 
   it('displays "Apply 0 Changes to Excel" when no changes exist', async () => {
@@ -131,7 +131,7 @@ describe('FileMenu', () => {
     await user.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Apply 0 Changes to Excel')).toBeInTheDocument();
+      expect(screen.getByText(getTranslatedText('dashboard.fileMenu.exportChanges', { count: 0 }))).toBeInTheDocument();
     });
   });
 
@@ -157,7 +157,7 @@ describe('FileMenu', () => {
     await user.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Apply 3 Changes to Excel')).toBeInTheDocument();
+      expect(screen.getByText(getTranslatedText('dashboard.fileMenu.exportChanges', { count: 3 }))).toBeInTheDocument();
     });
   });
 

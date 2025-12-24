@@ -3,6 +3,7 @@ import { render, screen } from '../../../test/utils'
 import { GridBox } from '../GridBox'
 import { mockEmployees } from '../../../test/mockData'
 import { DndContext } from '@dnd-kit/core'
+import { getTranslatedText } from '../../../test/i18nTestUtils'
 
 // Wrapper for drag-and-drop context
 const DndWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -91,7 +92,7 @@ describe('GridBox', () => {
       </DndWrapper>
     )
 
-    const expandButton = screen.getByLabelText('Expand box')
+    const expandButton = screen.getByLabelText(getTranslatedText('grid.gridBox.expandBox'))
     expect(expandButton).toBeInTheDocument()
   })
 
@@ -102,7 +103,7 @@ describe('GridBox', () => {
       </DndWrapper>
     )
 
-    const collapseButton = screen.getByLabelText('Collapse box')
+    const collapseButton = screen.getByLabelText(getTranslatedText('grid.gridBox.collapseBox'))
     expect(collapseButton).toBeInTheDocument()
   })
 

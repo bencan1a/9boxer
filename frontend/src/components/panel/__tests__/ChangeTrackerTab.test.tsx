@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '../../../test/utils'
 import { ChangeTrackerTab } from '../ChangeTrackerTab'
 import { mockChanges } from '../../../test/mockData'
 import { useSessionStore } from '../../../store/sessionStore'
+import { getTranslatedText } from '../../../test/i18nTestUtils'
 
 // Mock date-fns to have consistent timestamps
 vi.mock('date-fns', () => ({
@@ -49,8 +50,8 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByText('No changes yet')).toBeInTheDocument()
-    expect(screen.getByText('Move employees to track changes here')).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.noChanges'))).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.moveEmployeesHint'))).toBeInTheDocument()
   })
 
   it('displays change tracker heading when changes exist', () => {
@@ -66,9 +67,9 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByText('Employee')).toBeInTheDocument()
-    expect(screen.getByText('Movement')).toBeInTheDocument()
-    expect(screen.getByText('Notes')).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.employee'))).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.movement'))).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.notes'))).toBeInTheDocument()
   })
 
   it('displays employee name correctly', () => {
@@ -116,7 +117,7 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    const notesField = screen.getByPlaceholderText('Add notes...')
+    const notesField = screen.getByPlaceholderText(getTranslatedText('panel.changeTrackerTab.addNotesPlaceholder'))
     expect(notesField).toBeInTheDocument()
     expect(notesField).toHaveValue('')
   })
@@ -126,7 +127,7 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByPlaceholderText('Add notes...')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(getTranslatedText('panel.changeTrackerTab.addNotesPlaceholder'))).toBeInTheDocument()
   })
 
   it('calls updateChangeNotes when notes field is blurred after editing', async () => {
@@ -361,8 +362,8 @@ describe('ChangeTrackerTab', () => {
     // Switch to donut changes tab
     fireEvent.click(screen.getByTestId('donut-changes-tab'))
 
-    expect(screen.getByText('No donut changes yet')).toBeInTheDocument()
-    expect(screen.getByText('Move employees in donut mode to track changes')).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.noDonutChanges'))).toBeInTheDocument()
+    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.moveEmployeesDonutHint'))).toBeInTheDocument()
   })
 
   it('calls updateDonutChangeNotes when donut change notes are edited', async () => {
@@ -409,8 +410,10 @@ describe('ChangeTrackerTab', () => {
 
     render(<ChangeTrackerTab />)
 
-    expect(screen.getByText('Regular Changes (2)')).toBeInTheDocument()
-    expect(screen.getByText('Donut Changes (1)')).toBeInTheDocument()
+    const gridChangesLabel = `${getTranslatedText('panel.changeTrackerTab.gridChanges')} (2)`
+    const donutChangesLabel = `${getTranslatedText('panel.changeTrackerTab.donutChanges')} (1)`
+    expect(screen.getByText(gridChangesLabel)).toBeInTheDocument()
+    expect(screen.getByText(donutChangesLabel)).toBeInTheDocument()
   })
 
   it('switches between regular and donut changes tabs correctly', () => {
