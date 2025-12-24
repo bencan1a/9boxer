@@ -3,10 +3,27 @@
 **Welcome to 9Boxer!** This guide helps GitHub Agent (and GitHub Copilot) work efficiently with this repository.
 
 > **Quick Links:**  
+> 🤖 [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)  
 > 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance  
 > 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices  
 > 📚 [docs/CONTEXT.md](docs/CONTEXT.md) - Comprehensive project context  
 > 🎯 [docs/facts.json](docs/facts.json) - Source of truth (highest authority)
+
+---
+
+## 🤖 Automated Setup (GitHub Copilot)
+
+**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! See [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) for details.
+
+The automated setup includes:
+- ✅ Python 3.13 virtual environment at `.venv/`
+- ✅ All backend dependencies installed
+- ✅ Node.js 20 with all frontend dependencies
+- ✅ Playwright browsers for E2E testing
+- ✅ Pre-commit hooks configured
+- ✅ Environment validated and ready
+
+**Skip to [Common Tasks](#-common-tasks)** if using Copilot.
 
 ---
 
