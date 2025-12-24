@@ -5,6 +5,7 @@ import { AppBar } from '../AppBar'
 import { useSessionStore } from '../../../store/sessionStore'
 import { ThemeProvider } from '@mui/material/styles'
 import { getTheme } from '../../../theme/theme'
+import { I18nTestWrapper } from '../../../test/i18nTestUtils'
 
 // Mock dependencies
 vi.mock('../../../store/sessionStore')
@@ -27,10 +28,14 @@ vi.mock('../../../contexts/SnackbarContext', () => ({
   }),
 }))
 
-// Wrapper with theme provider
+// Wrapper with theme and i18n providers
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
   const theme = getTheme('light')
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
+  return (
+    <I18nTestWrapper>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </I18nTestWrapper>
+  )
 }
 
 describe('AppBar', () => {
