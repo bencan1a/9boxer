@@ -22,6 +22,7 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useTranslation } from "react-i18next";
 import { useFilters } from "../../hooks/useFilters";
 import { useSession } from "../../hooks/useSession";
 import { ExclusionDialog } from "./ExclusionDialog";
@@ -35,6 +36,7 @@ const sanitizeTestId = (value: string): string => {
 
 export const FilterDrawer: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { employees } = useSession();
   const {
     selectedLevels,
@@ -86,7 +88,7 @@ export const FilterDrawer: React.FC = () => {
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <FilterListIcon sx={{ mr: 1, color: theme.palette.text.primary }} />
             <Typography variant="h6" sx={{ flexGrow: 1, color: theme.palette.text.primary }}>
-              Filters
+              {t('dashboard.filterDrawer.title')}
             </Typography>
             <IconButton size="small" onClick={toggleDrawer} data-testid="filter-close-button">
               <CloseIcon />
@@ -110,7 +112,7 @@ export const FilterDrawer: React.FC = () => {
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  Job Levels
+                  {t('dashboard.filterDrawer.jobLevels')}
                   {selectedLevels.length > 0 && (
                     <Chip label={selectedLevels.length} size="small" sx={{ ml: 1 }} />
                   )}
@@ -149,7 +151,7 @@ export const FilterDrawer: React.FC = () => {
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  Job Functions
+                  {t('dashboard.filterDrawer.jobFunctions')}
                   {selectedJobFunctions.length > 0 && (
                     <Chip label={selectedJobFunctions.length} size="small" sx={{ ml: 1 }} />
                   )}
@@ -192,7 +194,7 @@ export const FilterDrawer: React.FC = () => {
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  Locations
+                  {t('dashboard.filterDrawer.locations')}
                   {selectedLocations.length > 0 && (
                     <Chip label={selectedLocations.length} size="small" sx={{ ml: 1 }} />
                   )}
@@ -234,7 +236,7 @@ export const FilterDrawer: React.FC = () => {
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  Managers
+                  {t('dashboard.filterDrawer.managers')}
                   {selectedManagers.length > 0 && (
                     <Chip label={selectedManagers.length} size="small" sx={{ ml: 1 }} />
                   )}
@@ -278,7 +280,7 @@ export const FilterDrawer: React.FC = () => {
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  Exclusions
+                  {t('dashboard.filterDrawer.exclusions')}
                   {excludedEmployeeIds.length > 0 && (
                     <Chip label={excludedEmployeeIds.length} size="small" color="warning" sx={{ ml: 1 }} />
                   )}
@@ -293,7 +295,7 @@ export const FilterDrawer: React.FC = () => {
                     onClick={() => setExclusionDialogOpen(true)}
                     data-testid="exclude-employees-button"
                   >
-                    Exclude Employees
+                    {t('dashboard.filterDrawer.excludeEmployees')}
                   </Button>
                 </Box>
               </AccordionDetails>
@@ -309,7 +311,7 @@ export const FilterDrawer: React.FC = () => {
               onClick={clearAllFilters}
               data-testid="clear-filter-button"
             >
-              Clear All Filters
+              {t('dashboard.filterDrawer.clearAllFilters')}
             </Button>
           </Box>
         </Box>

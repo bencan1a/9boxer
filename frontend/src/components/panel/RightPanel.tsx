@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, Paper } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import { DetailsTab } from "./DetailsTab";
 import { ChangeTrackerTab } from "./ChangeTrackerTab";
 import { StatisticsTab } from "./StatisticsTab";
@@ -35,6 +36,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 
 export const RightPanel: React.FC = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -68,10 +70,10 @@ export const RightPanel: React.FC = () => {
             },
           }}
         >
-          <Tab label="Details" id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
-          <Tab label="Changes" id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="changes-tab" />
-          <Tab label="Statistics" id="panel-tab-2" aria-controls="panel-tabpanel-2" data-testid="statistics-tab" />
-          <Tab label="Intelligence" id="panel-tab-3" aria-controls="panel-tabpanel-3" data-testid="intelligence-tab" />
+          <Tab label={t('panel.tabs.details')} id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
+          <Tab label={t('panel.tabs.changes')} id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="changes-tab" />
+          <Tab label={t('panel.tabs.statistics')} id="panel-tab-2" aria-controls="panel-tabpanel-2" data-testid="statistics-tab" />
+          <Tab label={t('panel.tabs.intelligence')} id="panel-tab-3" aria-controls="panel-tabpanel-3" data-testid="intelligence-tab" />
         </Tabs>
       </Box>
 

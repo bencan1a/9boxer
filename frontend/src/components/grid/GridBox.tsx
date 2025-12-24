@@ -8,6 +8,7 @@ import { Box, Typography, Badge, IconButton, alpha, Tooltip } from "@mui/materia
 import { useTheme } from "@mui/material/styles";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
+import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
 import { getPositionName, getPositionGuidance } from "../../constants/positionLabels";
@@ -53,6 +54,8 @@ export const GridBox: React.FC<GridBoxProps> = ({
   onCollapse,
   donutModeActive = false,
 }) => {
+  const { t } = useTranslation();
+  
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
     logger.error(
@@ -186,7 +189,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
           <IconButton
             size="small"
             onClick={onCollapse}
-            aria-label="Collapse box"
+            aria-label={t('grid.gridBox.collapseBox')}
             sx={{ ml: 1 }}
           >
             <CloseFullscreenIcon fontSize="small" />
@@ -195,7 +198,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
           <IconButton
             size="small"
             onClick={onExpand}
-            aria-label="Expand box"
+            aria-label={t('grid.gridBox.expandBox')}
             sx={{
               ml: 1,
               opacity: isCollapsed ? OPACITY.EXPAND_BUTTON_ACTIVE : OPACITY.EXPAND_BUTTON_IDLE,

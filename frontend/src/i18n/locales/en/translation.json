@@ -31,6 +31,132 @@
       "noActiveSession": "No active session",
       "exportSuccess": "Successfully exported {{count}} change to {{filename}}",
       "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filters",
+      "jobLevels": "Job Levels",
+      "jobFunctions": "Job Functions",
+      "locations": "Locations",
+      "managers": "Managers",
+      "exclusions": "Exclusions",
+      "excludeEmployees": "Exclude Employees",
+      "clearAllFilters": "Clear All Filters"
+    },
+    "exclusionDialog": {
+      "title": "Exclude Employees",
+      "quickFilters": "Quick Filters",
+      "excludeVPs": "Exclude VPs",
+      "excludeDirectorsPlus": "Exclude Directors+",
+      "excludeManagers": "Exclude Managers",
+      "clearAll": "Clear All",
+      "searchPlaceholder": "Search employees...",
+      "selectAll": "Select All ({{count}} employees)",
+      "selectedCount": "{{count}} selected",
+      "cancel": "Cancel",
+      "applyExclusions": "Apply Exclusions"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "No File Loaded",
+      "emptyStateDescription": "Drop an Excel file here or click Import Data to get started",
+      "importData": "Import Data",
+      "sampleFileHint": "New to 9Boxer? Try importing the sample file from Help → User Guide",
+      "showPanel": "Show panel",
+      "hidePanel": "Hide panel"
+    }
+  },
+  "grid": {
+    "employeeCount": {
+      "employee": "employee",
+      "employee_other": "employees",
+      "of": "of",
+      "noEmployees": "No employees",
+      "totalEmployeesInSession": "Total employees in session",
+      "showingCount": "Showing {{filteredCount}} of {{totalCount}} employees",
+      "activeFilters": "Active filters:",
+      "jobLevel": "Job Level",
+      "jobFunction": "Job Function",
+      "location": "Location",
+      "manager": "Manager",
+      "excluded": "Excluded",
+      "ariaLabel": "{{count}} total employees",
+      "ariaLabelFiltered": "Showing {{filteredCount}} of {{totalCount}} employees with active filters",
+      "ariaLabelNoEmployees": "No employees in session"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Grid view active (Press D for Donut view)",
+      "donutViewActive": "Donut view active (Press D for Grid view)",
+      "ariaLabelToggle": "View mode toggle",
+      "ariaLabelGrid": "Grid view",
+      "ariaLabelDonut": "Donut view"
+    },
+    "gridBox": {
+      "collapseBox": "Collapse box",
+      "expandBox": "Expand box"
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "Details",
+      "changes": "Changes",
+      "statistics": "Statistics",
+      "intelligence": "Intelligence"
+    },
+    "detailsTab": {
+      "selectEmployee": "Select an employee to view details",
+      "reportingChain": "Reporting Chain",
+      "employeeInformation": "Employee Information",
+      "jobFunction": "Job Function",
+      "location": "Location",
+      "jobLevel": "Job Level",
+      "tenure": "Tenure",
+      "timeInLevel": "Time in Level",
+      "promotionReady": "Promotion Ready",
+      "currentAssessment": "Current Assessment",
+      "potential": "Potential:",
+      "position": "Position:",
+      "modifiedInSession": "Modified in Session"
+    },
+    "changeTrackerTab": {
+      "noChanges": "No changes yet",
+      "noDonutChanges": "No donut changes yet",
+      "moveEmployeesHint": "Move employees to track changes here",
+      "moveEmployeesDonutHint": "Move employees in donut mode to track changes",
+      "addNotesPlaceholder": "Add notes...",
+      "employee": "Employee",
+      "movement": "Movement",
+      "from": "From",
+      "to": "To",
+      "notes": "Notes",
+      "gridChanges": "Grid Changes",
+      "donutChanges": "Donut Changes"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Total Employees",
+      "modified": "Modified",
+      "highPerformers": "High Performers",
+      "solidPerformers": "Solid Performers",
+      "needsAttention": "Needs Attention",
+      "distributionByPosition": "Distribution by Position",
+      "position": "Position",
+      "count": "Count",
+      "percentage": "Percentage",
+      "groupPercentage": "Group %",
+      "noStatisticsAvailable": "No statistics available"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Session Not Found",
+      "sessionLostMessage": "Your data session was lost (likely due to the application restarting). Please re-upload your Excel file to continue.",
+      "failedToLoad": "Failed to load intelligence data",
+      "retry": "Retry",
+      "noIntelligenceData": "No intelligence data available",
+      "locationAnalysis": "Location Analysis",
+      "highPerformerByLocation": "High Performer % by Location",
+      "functionAnalysis": "Function Analysis",
+      "highPerformerByFunction": "High Performer % by Function",
+      "levelAnalysis": "Level Analysis",
+      "performanceDistributionByLevel": "Performance Distribution by Level",
+      "tenureAnalysis": "Tenure Analysis",
+      "highPerformerByTenure": "High Performer % by Tenure"
     }
   },
   "common": {

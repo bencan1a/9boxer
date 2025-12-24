@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Box, CircularProgress, Alert, Button, AlertTitle } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
 import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
 import { AnomalySection } from "../intelligence/AnomalySection";
@@ -12,6 +13,7 @@ import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
 import { ApiError } from "../../services/api";
 
 export const IntelligenceTab: React.FC = () => {
+  const { t } = useTranslation();
   const { data, isLoading, error, refetch } = useIntelligence();
 
   // Loading state
@@ -42,18 +44,17 @@ export const IntelligenceTab: React.FC = () => {
           severity={isSessionNotFound ? "warning" : "error"}
           action={
             <Button color="inherit" size="small" onClick={refetch}>
-              Retry
+              {t('panel.intelligenceTab.retry')}
             </Button>
           }
         >
           {isSessionNotFound ? (
             <>
-              <AlertTitle>Session Not Found</AlertTitle>
-              Your data session was lost (likely due to the application
-              restarting). Please re-upload your Excel file to continue.
+              <AlertTitle>{t('panel.intelligenceTab.sessionNotFound')}</AlertTitle>
+              {t('panel.intelligenceTab.sessionLostMessage')}
             </>
           ) : (
-            error.message || "Failed to load intelligence data"
+            error.message || t('panel.intelligenceTab.failedToLoad')
           )}
         </Alert>
       </Box>
@@ -71,7 +72,7 @@ export const IntelligenceTab: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Alert severity="info">No intelligence data available</Alert>
+        <Alert severity="info">{t('panel.intelligenceTab.noIntelligenceData')}</Alert>
       </Box>
     );
   }

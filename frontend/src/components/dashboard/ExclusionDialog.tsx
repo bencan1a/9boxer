@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
+import { useTranslation } from "react-i18next";
 import { useSession } from "../../hooks/useSession";
 import { useFilters } from "../../hooks/useFilters";
 
@@ -33,6 +34,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   open,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { employees } = useSession();
   const { excludedEmployeeIds, setExcludedIds } = useFilters();
 
@@ -157,7 +159,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
       <DialogTitle>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Exclude Employees
+            {t('dashboard.exclusionDialog.title')}
           </Typography>
           <IconButton size="small" onClick={handleCancel}>
             <CloseIcon />
@@ -168,14 +170,14 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
       <DialogContent>
         {/* Quick Filters */}
         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-          Quick Filters
+          {t('dashboard.exclusionDialog.quickFilters')}
         </Typography>
         <ButtonGroup variant="outlined" size="small" sx={{ mb: 2, flexWrap: "wrap" }}>
-          <Button onClick={excludeVPs} data-testid="exclude-vps-button">Exclude VPs</Button>
-          <Button onClick={excludeDirectorsPlus} data-testid="exclude-directors-plus-button">Exclude Directors+</Button>
-          <Button onClick={excludeManagers} data-testid="exclude-managers-button">Exclude Managers</Button>
+          <Button onClick={excludeVPs} data-testid="exclude-vps-button">{t('dashboard.exclusionDialog.excludeVPs')}</Button>
+          <Button onClick={excludeDirectorsPlus} data-testid="exclude-directors-plus-button">{t('dashboard.exclusionDialog.excludeDirectorsPlus')}</Button>
+          <Button onClick={excludeManagers} data-testid="exclude-managers-button">{t('dashboard.exclusionDialog.excludeManagers')}</Button>
           <Button onClick={clearSelections} color="secondary" data-testid="clear-selections-button">
-            Clear All
+            {t('dashboard.exclusionDialog.clearAll')}
           </Button>
         </ButtonGroup>
 
@@ -185,7 +187,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
         <TextField
           fullWidth
           size="small"
-          placeholder="Search employees..."
+          placeholder={t('dashboard.exclusionDialog.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -211,7 +213,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
           }
           label={
             <Typography variant="body2" fontWeight="bold">
-              Select All ({filteredEmployees.length} employees)
+              {t('dashboard.exclusionDialog.selectAll', { count: filteredEmployees.length })}
             </Typography>
           }
         />
@@ -250,11 +252,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
       {/* Footer */}
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }} data-testid="selected-count">
-          {selectedIds.length} selected
+          {t('dashboard.exclusionDialog.selectedCount', { count: selectedIds.length })}
         </Typography>
-        <Button onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleCancel}>{t('dashboard.exclusionDialog.cancel')}</Button>
         <Button variant="contained" onClick={handleApply} data-testid="apply-exclusions-button">
-          Apply Exclusions
+          {t('dashboard.exclusionDialog.applyExclusions')}
         </Button>
       </DialogActions>
     </Dialog>
