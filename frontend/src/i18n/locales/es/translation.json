@@ -94,6 +94,68 @@
       "expandBox": "Expandir caja"
     }
   },
+  "panel": {
+    "tabs": {
+      "details": "Detalles",
+      "changes": "Cambios",
+      "statistics": "Estadísticas",
+      "intelligence": "Inteligencia"
+    },
+    "detailsTab": {
+      "selectEmployee": "Seleccione un empleado para ver los detalles",
+      "reportingChain": "Cadena de Reportes",
+      "employeeInformation": "Información del Empleado",
+      "jobFunction": "Función de Trabajo",
+      "location": "Ubicación",
+      "jobLevel": "Nivel de Trabajo",
+      "tenure": "Antigüedad",
+      "timeInLevel": "Tiempo en el Nivel",
+      "promotionReady": "Listo para Promoción",
+      "currentAssessment": "Evaluación Actual",
+      "potential": "Potencial:",
+      "position": "Posición:",
+      "modifiedInSession": "Modificado en la Sesión"
+    },
+    "changeTrackerTab": {
+      "noChanges": "Ningún cambio aún",
+      "noDonutChanges": "Ningún cambio de dona aún",
+      "moveEmployeesHint": "Mueva empleados para rastrear cambios aquí",
+      "moveEmployeesDonutHint": "Mueva empleados en modo dona para rastrear cambios",
+      "addNotesPlaceholder": "Agregar notas...",
+      "employee": "Empleado",
+      "from": "De",
+      "to": "A",
+      "notes": "Notas",
+      "gridChanges": "Cambios de Cuadrícula",
+      "donutChanges": "Cambios de Dona"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Total de Empleados",
+      "highPerformers": "Alto Desempeño",
+      "solidPerformers": "Desempeño Sólido",
+      "needsAttention": "Necesita Atención",
+      "distributionByPosition": "Distribución por Posición",
+      "position": "Posición",
+      "count": "Cantidad",
+      "percentage": "Porcentaje",
+      "noStatisticsAvailable": "No hay estadísticas disponibles"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Sesión No Encontrada",
+      "sessionLostMessage": "Su sesión de datos se perdió (probablemente debido al reinicio de la aplicación). Por favor, vuelva a cargar su archivo de Excel para continuar.",
+      "failedToLoad": "Error al cargar los datos de inteligencia",
+      "retry": "Reintentar",
+      "noIntelligenceData": "No hay datos de inteligencia disponibles",
+      "locationAnalysis": "Análisis por Ubicación",
+      "highPerformerByLocation": "% de Alto Desempeño por Ubicación",
+      "functionAnalysis": "Análisis por Función",
+      "highPerformerByFunction": "% de Alto Desempeño por Función",
+      "levelAnalysis": "Análisis por Nivel",
+      "performanceDistributionByLevel": "Distribución de Desempeño por Nivel",
+      "tenureAnalysis": "Análisis por Antigüedad",
+      "highPerformerByTenure": "% de Alto Desempeño por Antigüedad"
+    }
+  },
   "common": {
     "ok": "Aceptar",
     "cancel": "Cancelar",

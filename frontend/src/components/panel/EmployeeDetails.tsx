@@ -15,6 +15,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import { Employee, PotentialLevel } from "../../types/employee";
 import { useSessionStore } from "../../store/sessionStore";
 import { getPositionLabel } from "../../constants/positionLabels";
@@ -59,6 +60,7 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, value }) => {
 };
 
 export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) => {
+  const { t } = useTranslation();
   const updateEmployee = useSessionStore((state) => state.updateEmployee);
 
   const handlePromotionReadinessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +107,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
               }
               label={
                 <Typography variant="body2" color="text.secondary">
-                  Promotion Ready
+                  {t('panel.detailsTab.promotionReady')}
                 </Typography>
               }
             />
@@ -117,13 +119,13 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
         {/* Current Assessment */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" color="primary" gutterBottom>
-            Current Assessment
+            {t('panel.detailsTab.currentAssessment')}
           </Typography>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Potential:
+                  {t('panel.detailsTab.potential')}
                 </Typography>
                 <Chip
                   label={employee.potential}
@@ -133,7 +135,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Position:
+                  {t('panel.detailsTab.position')}
                 </Typography>
                 <Typography variant="body2" fontWeight="medium">
                   {getPositionLabel(employee.grid_position)}
@@ -142,7 +144,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
               {employee.modified_in_session && (
                 <Box sx={{ mt: 2 }}>
                   <Chip
-                    label="Modified in Session"
+                    label={t('panel.detailsTab.modifiedInSession')}
                     color="warning"
                     size="small"
                     variant="outlined"

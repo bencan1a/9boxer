@@ -94,6 +94,68 @@
       "expandBox": "Expand box"
     }
   },
+  "panel": {
+    "tabs": {
+      "details": "Details",
+      "changes": "Changes",
+      "statistics": "Statistics",
+      "intelligence": "Intelligence"
+    },
+    "detailsTab": {
+      "selectEmployee": "Select an employee to view details",
+      "reportingChain": "Reporting Chain",
+      "employeeInformation": "Employee Information",
+      "jobFunction": "Job Function",
+      "location": "Location",
+      "jobLevel": "Job Level",
+      "tenure": "Tenure",
+      "timeInLevel": "Time in Level",
+      "promotionReady": "Promotion Ready",
+      "currentAssessment": "Current Assessment",
+      "potential": "Potential:",
+      "position": "Position:",
+      "modifiedInSession": "Modified in Session"
+    },
+    "changeTrackerTab": {
+      "noChanges": "No changes yet",
+      "noDonutChanges": "No donut changes yet",
+      "moveEmployeesHint": "Move employees to track changes here",
+      "moveEmployeesDonutHint": "Move employees in donut mode to track changes",
+      "addNotesPlaceholder": "Add notes...",
+      "employee": "Employee",
+      "from": "From",
+      "to": "To",
+      "notes": "Notes",
+      "gridChanges": "Grid Changes",
+      "donutChanges": "Donut Changes"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Total Employees",
+      "highPerformers": "High Performers",
+      "solidPerformers": "Solid Performers",
+      "needsAttention": "Needs Attention",
+      "distributionByPosition": "Distribution by Position",
+      "position": "Position",
+      "count": "Count",
+      "percentage": "Percentage",
+      "noStatisticsAvailable": "No statistics available"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Session Not Found",
+      "sessionLostMessage": "Your data session was lost (likely due to the application restarting). Please re-upload your Excel file to continue.",
+      "failedToLoad": "Failed to load intelligence data",
+      "retry": "Retry",
+      "noIntelligenceData": "No intelligence data available",
+      "locationAnalysis": "Location Analysis",
+      "highPerformerByLocation": "High Performer % by Location",
+      "functionAnalysis": "Function Analysis",
+      "highPerformerByFunction": "High Performer % by Function",
+      "levelAnalysis": "Level Analysis",
+      "performanceDistributionByLevel": "Performance Distribution by Level",
+      "tenureAnalysis": "Tenure Analysis",
+      "highPerformerByTenure": "High Performer % by Tenure"
+    }
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancel",

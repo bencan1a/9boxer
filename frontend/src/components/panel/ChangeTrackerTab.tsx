@@ -20,11 +20,13 @@ import {
 } from "@mui/material";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
+import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
 import { getPositionName, getShortPositionLabel } from "../../constants/positionLabels";
 import { logger } from "../../utils/logger";
 
 export const ChangeTrackerTab: React.FC = () => {
+  const { t } = useTranslation();
   const changes = useSessionStore((state) => state.changes);
   const donutChanges = useSessionStore((state) => state.donutChanges);
   const donutModeActive = useSessionStore((state) => state.donutModeActive);
@@ -87,10 +89,10 @@ export const ChangeTrackerTab: React.FC = () => {
             <TrendingFlatIcon sx={{ fontSize: 48, color: "text.disabled" }} />
           )}
           <Typography variant="body2" color="text.secondary">
-            {isDonut ? "No donut changes yet" : "No changes yet"}
+            {isDonut ? t('panel.changeTrackerTab.noDonutChanges') : t('panel.changeTrackerTab.noChanges')}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {isDonut ? "Move employees in donut mode to track changes" : "Move employees to track changes here"}
+            {isDonut ? t('panel.changeTrackerTab.moveEmployeesDonutHint') : t('panel.changeTrackerTab.moveEmployeesHint')}
           </Typography>
         </Box>
       );
@@ -100,9 +102,9 @@ export const ChangeTrackerTab: React.FC = () => {
       <Table size="small" data-testid={`${testIdPrefix}-table`}>
         <TableHead>
           <TableRow>
-            <TableCell>Employee</TableCell>
+            <TableCell>{t('panel.changeTrackerTab.employee')}</TableCell>
             <TableCell>Movement</TableCell>
-            <TableCell>Notes</TableCell>
+            <TableCell>{t('panel.changeTrackerTab.notes')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -137,7 +139,7 @@ export const ChangeTrackerTab: React.FC = () => {
                 <TextField
                   fullWidth
                   size="small"
-                  placeholder="Add notes..."
+                  placeholder={t('panel.changeTrackerTab.addNotesPlaceholder')}
                   value={editingId === change.employee_id ? notesValue : (change.notes || "")}
                   onFocus={() => handleNotesFocus(change.employee_id, change.notes)}
                   onChange={handleNotesChange}
@@ -170,10 +172,10 @@ export const ChangeTrackerTab: React.FC = () => {
       >
         <TrendingFlatIcon sx={{ fontSize: 64, color: "text.disabled" }} />
         <Typography variant="h6" color="text.secondary">
-          No changes yet
+          {t('panel.changeTrackerTab.noChanges')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Move employees to track changes here
+          {t('panel.changeTrackerTab.moveEmployeesHint')}
         </Typography>
       </Box>
     );
@@ -190,11 +192,11 @@ export const ChangeTrackerTab: React.FC = () => {
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
           <Tabs value={activeTab} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tab
-              label={`Regular Changes (${changes.length})`}
+              label={`${t('panel.changeTrackerTab.gridChanges')} (${changes.length})`}
               data-testid="regular-changes-tab"
             />
             <Tab
-              label={`Donut Changes (${donutChanges.length})`}
+              label={`${t('panel.changeTrackerTab.donutChanges')} (${donutChanges.length})`}
               data-testid="donut-changes-tab"
               icon={<DonutSmallIcon fontSize="small" />}
               iconPosition="start"
