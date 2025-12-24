@@ -55,7 +55,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   donutModeActive = false,
 }) => {
   const { t } = useTranslation();
-  
+
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
     logger.error(

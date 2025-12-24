@@ -183,9 +183,9 @@ describe('EmployeeCount', () => {
     expect(count).toBeInTheDocument()
 
     // Tooltip should contain filter information (verified via aria-label)
-    const expectedAriaLabel = getTranslatedText('grid.employeeCount.ariaLabelFiltered', { 
-      filteredCount: 2, 
-      totalCount: 5 
+    const expectedAriaLabel = getTranslatedText('grid.employeeCount.ariaLabelFiltered', {
+      filteredCount: 2,
+      totalCount: 5
     })
     expect(count).toHaveAttribute('aria-label', expect.stringContaining(expectedAriaLabel))
   })

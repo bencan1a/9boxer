@@ -440,7 +440,7 @@ import { getTranslatedText } from '@/test/i18nTestUtils';
 test('displays employee count with proper pluralization', () => {
   const count = 5;
   render(<EmployeeCount totalCount={count} />);
-  
+
   const expectedText = `${count} ${getTranslatedText('grid.employeeCount.employee', { count })}`;
   expect(screen.getByText(expectedText)).toBeInTheDocument();
 });
@@ -448,7 +448,7 @@ test('displays employee count with proper pluralization', () => {
 // ✓ GOOD: Test pluralization with different counts
 test('uses singular form for 1 employee', () => {
   render(<EmployeeCount totalCount={1} />);
-  
+
   expect(screen.getByText(
     `1 ${getTranslatedText('grid.employeeCount.employee', { count: 1 })}`
   )).toBeInTheDocument();
@@ -457,10 +457,10 @@ test('uses singular form for 1 employee', () => {
 // ✓ GOOD: Test aria-labels with translations
 test('has correct accessibility labels', () => {
   render(<ViewModeToggle />);
-  
+
   const toggleGroup = screen.getByTestId('view-mode-toggle');
   expect(toggleGroup).toHaveAttribute(
-    'aria-label', 
+    'aria-label',
     getTranslatedText('grid.viewModeToggle.ariaLabelToggle')
   );
 });
@@ -480,7 +480,7 @@ test('uploads file successfully', async ({ page }) => {
   await page.getByTestId('upload-button').click();
   await page.getByTestId('file-input').setInputFiles('test.xlsx');
   await page.getByTestId('submit-button').click();
-  
+
   await expect(page.getByTestId('success-message')).toBeVisible();
 });
 
