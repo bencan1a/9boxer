@@ -2,6 +2,19 @@
 
 This file provides GitHub Copilot with context about the 9Boxer repository.
 
+## Automated Environment Setup
+
+**GitHub Copilot will automatically set up your environment** using `.github/workflows/copilot-setup-steps.yml`, which:
+
+1. ✅ Sets up Python 3.13 with system-wide dependencies via `uv`
+2. ✅ Installs all Python backend dependencies
+3. ✅ Installs all Node.js frontend dependencies
+4. ✅ Installs Playwright browsers for E2E testing
+5. ✅ Configures pre-commit hooks
+6. ✅ Validates the complete environment
+
+**You do NOT need to manually run setup commands** - Copilot handles this automatically in its ephemeral environment.
+
 ## Project Overview
 
 9Boxer is a **standalone Electron desktop application** (NOT a web app) for employee performance visualization using the 9-box talent grid methodology.
