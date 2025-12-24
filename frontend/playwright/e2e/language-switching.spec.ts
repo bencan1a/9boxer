@@ -24,8 +24,8 @@ test.describe('Language Switching', () => {
     await uploadExcelFile(page, 'sample-employees.xlsx');
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Check for language selector icon/button
-    const languageSelector = page.locator('svg').filter({ hasText: /^$/ }).first(); // Language icon
+    // Check for language selector (MUI Select with combobox role)
+    const languageSelector = page.locator('[role="combobox"]').first();
     await expect(languageSelector).toBeVisible();
   });
 
@@ -40,24 +40,25 @@ test.describe('Language Switching', () => {
     // Find and open language selector (MUI Select component)
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    await page.waitForTimeout(300);
 
     // Select Spanish option
     const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
-    await page.waitForTimeout(500);
+
+    // Wait for language change to complete by checking for Spanish text
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
 
     // Verify UI text has changed to Spanish
     // Check tab labels
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
     await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Cambios');
     await expect(page.locator('[data-testid="statistics-tab"]')).toContainText('Estadísticas');
     await expect(page.locator('[data-testid="intelligence-tab"]')).toContainText('Inteligencia');
 
     // Check filter button
     await page.locator('[data-testid="filter-button"]').click();
-    await page.waitForTimeout(500);
+    
+    // Wait for filter drawer to open by checking for Spanish filter text
     await expect(page.getByText('Filtros')).toBeVisible();
     
     // Check filter sections
@@ -68,7 +69,9 @@ test.describe('Language Switching', () => {
 
     // Close filter drawer
     await page.keyboard.press('Escape');
-    await page.waitForTimeout(300);
+    
+    // Wait for drawer to close
+    await expect(page.getByText('Filtros')).not.toBeVisible();
   });
 
   test('should switch from Spanish back to English', async ({ page }) => {
@@ -79,21 +82,25 @@ test.describe('Language Switching', () => {
     // Switch to Spanish first
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('option', { name: /Español|Spanish/i }).click();
-    await page.waitForTimeout(500);
+    
+    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    await expect(spanishOption).toBeVisible();
+    await spanishOption.click();
 
-    // Verify Spanish
+    // Wait for Spanish to be active
     await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
 
     // Switch back to English
     await languageSelect.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('option', { name: /English|Inglés/i }).click();
-    await page.waitForTimeout(500);
+    
+    const englishOption = page.getByRole('option', { name: /English|Inglés/i });
+    await expect(englishOption).toBeVisible();
+    await englishOption.click();
+
+    // Wait for English to be active
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Details');
 
     // Verify English is back
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Details');
     await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Changes');
     await expect(page.locator('[data-testid="statistics-tab"]')).toContainText('Statistics');
   });
@@ -106,19 +113,19 @@ test.describe('Language Switching', () => {
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('option', { name: /Español|Spanish/i }).click();
-    await page.waitForTimeout(500);
+    
+    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    await expect(spanishOption).toBeVisible();
+    await spanishOption.click();
 
-    // Verify Spanish
+    // Wait for Spanish to be active
     await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
 
     // Reload page
     await page.reload();
-    await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
-    // Verify Spanish is still active
+    // Verify Spanish is still active after reload
     await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
     await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Cambios');
   });
@@ -137,11 +144,15 @@ test.describe('Language Switching', () => {
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('option', { name: /Español|Spanish/i }).click();
-    await page.waitForTimeout(500);
+    
+    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    await expect(spanishOption).toBeVisible();
+    await spanishOption.click();
 
-    // Check Spanish employee count
+    // Wait for Spanish text to appear in employee count
+    await expect(employeeCount).toContainText(/empleado/);
+
+    // Verify Spanish employee count text
     const spanishText = await employeeCount.textContent();
     expect(spanishText).toContain('empleado');
   });

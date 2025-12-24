@@ -123,6 +123,7 @@
       "moveEmployeesDonutHint": "Move employees in donut mode to track changes",
       "addNotesPlaceholder": "Add notes...",
       "employee": "Employee",
+      "movement": "Movement",
       "from": "From",
       "to": "To",
       "notes": "Notes",
