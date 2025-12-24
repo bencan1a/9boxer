@@ -74,6 +74,34 @@ jobs:
           npm --version
       
       # ========================================
+      # Playwright Setup (for E2E tests)
+      # ========================================
+      
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            ~/AppData/Local/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        working-directory: frontend
+        run: |
+          npx playwright install --with-deps chromium
+          echo "Playwright browsers installed"
+      
+      - name: Verify Playwright installation
+        working-directory: frontend
+        run: |
+          npx playwright --version
+      
+      # ========================================
       # Pre-commit hooks setup
       # ========================================
       
@@ -92,6 +120,7 @@ jobs:
           echo "=== Environment Setup Complete ==="
           echo "Python virtual environment: $(ls -d .venv 2>/dev/null && echo '✓' || echo '✗')"
           echo "Frontend node_modules: $(ls -d frontend/node_modules 2>/dev/null && echo '✓' || echo '✗')"
+          echo "Playwright browsers: $(ls -d ~/.cache/ms-playwright 2>/dev/null && echo '✓' || ls -d ~/Library/Caches/ms-playwright 2>/dev/null && echo '✓' || ls -d ~/AppData/Local/ms-playwright 2>/dev/null && echo '✓' || echo '✗')"
           echo ""
           source .venv/bin/activate
           echo "Python version: $(python --version)"
@@ -100,5 +129,8 @@ jobs:
           echo ""
           echo "Key Python packages:"
           pip list | grep -E "fastapi|pytest|ruff|mypy" || echo "No key packages found"
+          echo ""
+          echo "Playwright version:"
+          cd frontend && npx playwright --version
           echo ""
           echo "Environment is ready for GitHub Copilot coding agent!"

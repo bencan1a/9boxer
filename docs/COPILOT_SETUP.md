@@ -39,6 +39,11 @@ This workflow is automatically executed by GitHub Copilot's coding agent in its 
 2. Installs all frontend dependencies from `frontend/package.json`
 3. Verifies the Node.js installation
 
+#### Playwright Setup
+1. Caches Playwright browsers for performance
+2. Installs Chromium browser with system dependencies
+3. Verifies Playwright installation
+
 #### Pre-commit Hooks
 1. Installs pre-commit hooks for code quality checks
 
@@ -84,6 +89,11 @@ This workflow is automatically executed by GitHub Copilot's coding agent in its 
 - Playwright ^1.57.0 (E2E testing)
 - ESLint ^8.55.0
 - Electron Builder ^26.0.12
+
+**Playwright Browsers:**
+- Chromium (with system dependencies)
+- Installed via `npx playwright install --with-deps chromium`
+- Cached for faster subsequent runs
 
 ## Benefits of Automated Setup
 
@@ -164,6 +174,22 @@ npm ci  # Use npm ci for clean install
 ```bash
 python --version  # Should be 3.13+
 ```
+
+### Issue: Playwright browsers not found
+
+**Cause**: Playwright browsers not installed or cache corrupted
+
+**Solution**: The workflow handles this automatically with caching. For manual setup:
+```bash
+cd frontend
+npx playwright install --with-deps chromium
+```
+
+### Issue: E2E tests fail in Copilot environment
+
+**Cause**: Playwright browsers not preinstalled
+
+**Solution**: The workflow now automatically installs and caches Playwright browsers. If issues persist, the cache may need to be cleared and rebuilt.
 
 ## Related Documentation
 

@@ -9,8 +9,9 @@ This file provides GitHub Copilot with context about the 9Boxer repository.
 1. ✅ Creates Python virtual environment at `.venv/`
 2. ✅ Installs all Python backend dependencies
 3. ✅ Installs all Node.js frontend dependencies
-4. ✅ Configures pre-commit hooks
-5. ✅ Validates the complete environment
+4. ✅ Installs Playwright browsers for E2E testing
+5. ✅ Configures pre-commit hooks
+6. ✅ Validates the complete environment
 
 **You do NOT need to manually run setup commands** - Copilot handles this automatically in its ephemeral environment.
 

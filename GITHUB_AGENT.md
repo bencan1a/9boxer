@@ -19,6 +19,7 @@ The automated setup includes:
 - ✅ Python 3.13 virtual environment at `.venv/`
 - ✅ All backend dependencies installed
 - ✅ Node.js 20 with all frontend dependencies
+- ✅ Playwright browsers for E2E testing
 - ✅ Pre-commit hooks configured
 - ✅ Environment validated and ready
 
