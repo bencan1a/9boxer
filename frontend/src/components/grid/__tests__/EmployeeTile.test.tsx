@@ -109,7 +109,7 @@ describe('EmployeeTile - Donut Mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'Top Talent [H,H]',
+      donut_position: 9,
     })
 
     render(
@@ -123,14 +123,14 @@ describe('EmployeeTile - Donut Mode', () => {
     )
 
     // Should show donut position label
-    expect(screen.getByText(/Donut: Top Talent \[H,H\]/)).toBeInTheDocument()
+    expect(screen.getByText(/Donut: Star \[H,H\]/)).toBeInTheDocument()
   })
 
   it('applies ghostly opacity styling when donut-modified and in donut mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'High Impact [H,M]',
+      donut_position: 6,
     })
 
     render(
@@ -155,7 +155,7 @@ describe('EmployeeTile - Donut Mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'High Impact [H,M]',
+      donut_position: 6,
     })
 
     render(
@@ -177,7 +177,7 @@ describe('EmployeeTile - Donut Mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'Star [H,H]',
+      donut_position: 9,
     })
 
     render(
@@ -199,7 +199,7 @@ describe('EmployeeTile - Donut Mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'Star [H,H]',
+      donut_position: 9,
     })
 
     render(
@@ -220,7 +220,7 @@ describe('EmployeeTile - Donut Mode', () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
-      donut_position_label: 'Growth [M,H]',
+      donut_position: 8,
     })
 
     render(
@@ -243,7 +243,7 @@ describe('EmployeeTile - Donut Mode', () => {
       ...position5Employee,
       modified_in_session: true,
       donut_modified: true,
-      donut_position_label: 'Top Talent [H,H]',
+      donut_position: 9,
     })
 
     render(
