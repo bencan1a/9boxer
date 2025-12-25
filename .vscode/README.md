@@ -1,6 +1,68 @@
 # VS Code Test Suite Configuration
 
-## Running Test Suites in VS Code
+## Overview
+
+This workspace supports two types of tests:
+1. **Backend Tests** (Python/pytest) - API, services, and business logic
+2. **Frontend Tests** (Playwright) - E2E tests and visual regression tests
+
+## Frontend Tests (Playwright)
+
+### Setup
+
+1. **Install the Playwright Test for VSCode extension:**
+   - Press `Ctrl+Shift+X` to open Extensions
+   - Search for "Playwright Test for VSCode"
+   - Install the official extension by Microsoft
+
+2. **Reload VSCode window** (`Ctrl+Shift+P` → "Reload Window")
+
+3. **The Test Explorer will automatically discover both test suites:**
+   - **e2e** - End-to-end functional tests (164 tests)
+   - **visual** - Visual regression tests (58 tests)
+
+**Configuration:** `frontend/playwright.config.ts` includes both E2E and Visual projects in one unified config.
+
+### Running Playwright Tests in VSCode
+
+**Via Test Explorer:**
+1. Open Test Explorer (Testing icon in sidebar)
+2. Expand "playwright.all.config.ts" > Select a project:
+   - **e2e** - Run all E2E tests
+   - **visual** - Run all visual regression tests
+3. Click the play button to run tests
+4. Click the debug icon to debug with breakpoints
+
+**Important Notes:**
+- **All servers auto-start automatically!** No need to manually start anything
+  - Backend server: Auto-started by globalSetup
+  - Frontend dev server: Auto-started on http://localhost:5173 (for E2E tests)
+  - Storybook: Auto-started on http://localhost:6006 (for visual tests)
+- Just click the play button and everything spins up automatically
+- Servers reuse existing instances if already running (`reuseExistingServer: true`)
+
+### Running via npm Scripts (Alternative)
+
+You can also run tests from the command line:
+
+```bash
+cd frontend
+
+# Run all E2E tests (auto-starts all servers)
+npm run test:e2e:pw
+npm run test:e2e:pw:ui  # With Playwright UI
+
+# Run all visual tests (auto-starts all servers)
+npm run test:visual
+npm run test:visual:ui  # With Playwright UI
+
+# Update visual baselines when UI changes are intentional
+npm run test:visual:update
+```
+
+## Backend Tests (Python/pytest)
+
+### Running Test Suites in VS Code
 
 VS Code's Test Explorer shows tests by **folder structure**, not by pytest markers. However, you can still run specific test suites using the configurations provided.
 

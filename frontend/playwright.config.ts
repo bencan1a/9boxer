@@ -1,66 +1,91 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Playwright configuration for E2E testing
+ * Playwright configuration for E2E and Visual Regression testing
+ * This config includes both E2E and Visual projects so VSCode can discover both
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './playwright/e2e',
-
-  // Maximum time one test can run
-  timeout: 30000,
-
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 1,  // 1 retry locally, 2 on CI
 
   // Run tests sequentially (1 worker)
   workers: 1,
 
   // Reporter to use
-  reporter: 'html',
+  reporter: "html",
 
-  use: {
-    // Base URL to use in actions like `await page.goto('/')`
-    baseURL: 'http://localhost:5173',
-
-    // Viewport size matching Cypress config
-    viewport: { width: 1920, height: 1080 },
-
-    // Maximum time each action can take
-    actionTimeout: 10000,
-
-    // Collect trace on failure
-    trace: 'retain-on-failure',
-
-    // Screenshot on failure
-    screenshot: 'only-on-failure',
-
-    // Capture video for debugging
-    video: 'retain-on-failure',
-  },
-
-  // Configure projects for major browsers
+  // Configure projects for different test suites
   projects: [
+    // ===== E2E Tests =====
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "e2e",
+      testDir: "./playwright/e2e",
+      timeout: 30000,
+      retries: process.env.CI ? 2 : 1,
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:5173",
+        viewport: { width: 1920, height: 1080 },
+        actionTimeout: 10000,
+        trace: "retain-on-failure",
+        screenshot: "only-on-failure",
+        video: "retain-on-failure",
+      },
+    },
+
+    // ===== Visual Regression Tests =====
+    {
+      name: "visual",
+      testDir: "./playwright/visual",
+      timeout: 30000,
+      retries: process.env.CI ? 2 : 0,
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:6006",
+        viewport: { width: 1280, height: 720 },
+        actionTimeout: 15000,
+        trace: "on",
+        screenshot: "only-on-failure",
+        video: "off",
+        deviceScaleFactor: 1,
+        hasTouch: false,
+      },
     },
   ],
 
   // Global setup/teardown for backend server
   // Backend is started once before all tests and stopped after all tests
-  globalSetup: require.resolve('./playwright/global-setup.ts'),
-  globalTeardown: require.resolve('./playwright/global-teardown.ts'),
+  globalSetup: require.resolve("./playwright/global-setup.ts"),
+  globalTeardown: require.resolve("./playwright/global-teardown.ts"),
 
-  // Auto-start frontend dev server before running tests
+  // Auto-start both dev server and Storybook before running tests
   // Backend is handled by globalSetup
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+  // Both servers will start automatically and stop when tests complete
+  webServer: [
+    // Frontend dev server for E2E tests
+    {
+      command: "npm run dev",
+      url: "http://localhost:5173",
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+    // Storybook server for visual regression tests
+    {
+      command: "npm run storybook",
+      url: "http://localhost:6006",
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+  ],
+
+  // Visual comparison configuration (for visual regression tests)
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 100,
+      maxDiffPixelRatio: 0.01,
+      animations: "disabled",
+      scale: "css",
+    },
   },
 });

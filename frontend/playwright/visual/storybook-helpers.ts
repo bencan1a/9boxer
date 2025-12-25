@@ -1,7 +1,7 @@
 /**
  * Helper functions for visual regression testing of Storybook components
  */
-import { Page, expect } from '@playwright/test';
+import { Page, expect } from "@playwright/test";
 
 /**
  * Navigate to a specific Storybook story in iframe mode (component only, no UI chrome)
@@ -13,16 +13,16 @@ import { Page, expect } from '@playwright/test';
 export async function navigateToStory(
   page: Page,
   storyId: string,
-  theme?: 'light' | 'dark'
+  theme?: "light" | "dark"
 ): Promise<void> {
-  const baseUrl = 'http://localhost:6006/iframe.html';
-  const url = `${baseUrl}?id=${storyId}&viewMode=story${theme ? `&globals=theme:${theme}` : ''}`;
+  const baseUrl = "http://localhost:6006/iframe.html";
+  const url = `${baseUrl}?id=${storyId}&viewMode=story${theme ? `&globals=theme:${theme}` : ""}`;
 
-  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.goto(url, { waitUntil: "networkidle" });
 
   // Wait for Storybook to render the component
   // Look for the story root element
-  await page.waitForSelector('#storybook-root', { state: 'visible' });
+  await page.waitForSelector("#storybook-root", { state: "visible" });
 
   // Additional wait to ensure all animations/transitions complete
   await page.waitForTimeout(500);
@@ -41,7 +41,7 @@ export async function snapshotStory(
   storyId: string,
   snapshotName?: string,
   options?: {
-    theme?: 'light' | 'dark';
+    theme?: "light" | "dark";
     fullPage?: boolean;
     mask?: string[]; // CSS selectors to mask
     maxDiffPixels?: number;
@@ -52,17 +52,23 @@ export async function snapshotStory(
   await navigateToStory(page, storyId, options?.theme);
 
   // Generate snapshot name if not provided
-  const finalSnapshotName = snapshotName || `${storyId}${options?.theme ? `-${options.theme}` : ''}.png`;
+  const finalSnapshotName =
+    snapshotName ||
+    `${storyId}${options?.theme ? `-${options.theme}` : ""}.png`;
 
   // Build mask locators if provided
-  const maskLocators = options?.mask?.map((selector) => page.locator(selector)) || [];
+  const maskLocators =
+    options?.mask?.map((selector) => page.locator(selector)) || [];
 
   // Take the snapshot with Playwright's built-in visual comparison
+  // Use config defaults (100 pixels, 1% ratio) if not explicitly provided
   await expect(page).toHaveScreenshot(finalSnapshotName, {
     fullPage: options?.fullPage ?? false,
     mask: maskLocators,
-    maxDiffPixels: options?.maxDiffPixels,
-    maxDiffPixelRatio: options?.maxDiffPixelRatio,
+    maxDiffPixels: options?.maxDiffPixels ?? 100,
+    maxDiffPixelRatio: options?.maxDiffPixelRatio ?? 0.01,
+    animations: "disabled",
+    scale: "css",
   });
 }
 
@@ -81,10 +87,10 @@ export async function snapshotStoryBothThemes(
   const base = baseName || storyId;
 
   // Test light theme
-  await snapshotStory(page, storyId, `${base}-light.png`, { theme: 'light' });
+  await snapshotStory(page, storyId, `${base}-light.png`, { theme: "light" });
 
   // Test dark theme
-  await snapshotStory(page, storyId, `${base}-dark.png`, { theme: 'dark' });
+  await snapshotStory(page, storyId, `${base}-dark.png`, { theme: "dark" });
 }
 
 /**
@@ -93,14 +99,17 @@ export async function snapshotStoryBothThemes(
  * @param page - Playwright page object
  * @param timeout - Maximum time to wait in milliseconds
  */
-export async function waitForStoryReady(page: Page, timeout = 2000): Promise<void> {
+export async function waitForStoryReady(
+  page: Page,
+  timeout = 2000
+): Promise<void> {
   // Wait for the story root
-  await page.waitForSelector('#storybook-root', { state: 'visible' });
+  await page.waitForSelector("#storybook-root", { state: "visible" });
 
   // Wait for any loading spinners to disappear
   const loadingSpinner = page.locator('[data-testid="loading-spinner"]');
   if (await loadingSpinner.isVisible()) {
-    await loadingSpinner.waitFor({ state: 'hidden', timeout });
+    await loadingSpinner.waitFor({ state: "hidden", timeout });
   }
 
   // Small buffer for animations

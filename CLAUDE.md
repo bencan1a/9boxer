@@ -557,6 +557,18 @@ const theme = useTheme();
 - **GridBox**: Position label, count badge, employee list, expand/collapse button
 - **Right Panel Tabs**: Header, scrollable content, actions
 
+**Design Governance & Quality Assurance:**
+- **Linting Rules:** `frontend/.eslintrc.cjs` enforces accessibility (WCAG 2.1 AA) and design token usage
+  - Run `npm run lint` to check for violations
+  - See [docs/design-system/linting-rules.md](docs/design-system/linting-rules.md) for complete rule documentation
+- **Visual Regression Testing:** Storybook + Playwright visual tests catch unintended UI changes
+  - All components have Storybook stories at `localhost:6006`
+  - Visual tests automatically compare screenshots against baselines
+  - Run `npm run test:visual` to validate visual consistency
+- **Design Review Checklist:** Use `.github/PULL_REQUEST_TEMPLATE/design-review.md` for UI PRs
+  - Ensures accessibility, theme support, and design token compliance
+  - Mandatory for all PRs with visual changes
+
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete UI zone definitions and component patterns.
 
 ### File Organization Conventions
