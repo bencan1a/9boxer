@@ -18,6 +18,12 @@ import {
   openFilterDrawer,
   waitForUiSettle,
 } from "../../helpers/ui";
+import {
+  verifyFilterActive,
+  verifyFilterChips,
+  waitForCssTransition,
+  CSS_TRANSITION_DURATIONS,
+} from "../../helpers/visualValidation";
 
 /**
  * Helper: Select first available filter checkbox
@@ -85,16 +91,26 @@ export async function generateActiveChips(
   const closeButton = page.locator('[data-testid="filter-close-button"]');
   if ((await closeButton.count()) > 0) {
     await closeButton.click();
-    await waitForUiSettle(page, 0.5);
+    // Wait for drawer close animation to complete
+    await waitForCssTransition(
+      page.locator('[data-testid="filter-drawer"]'),
+      CSS_TRANSITION_DURATIONS.leavingScreen
+    );
   } else {
     // Alternative: press Escape
     await page.keyboard.press("Escape");
     await waitForUiSettle(page, 0.5);
   }
 
-  // Verify orange dot indicator is visible
-  const filterButton = page.locator('[data-testid="filter-button"]');
-  await expect(filterButton).toBeVisible();
+  // CRITICAL: Verify orange dot indicator is visible on filter button
+  // This is the key visual element that shows filters are active
+  await verifyFilterActive(page);
+  console.log("✓ Filter button orange dot indicator verified");
+
+  // CRITICAL: Verify filter chips are displayed
+  // These chips show which filters are currently active
+  const chipCount = await verifyFilterChips(page, 1);
+  console.log(`✓ ${chipCount} active filter chip(s) verified`);
 
   // Capture the main grid area showing:
   // - Filter button with orange dot
@@ -127,8 +143,13 @@ export async function generatePanelExpanded(
   // Open filters drawer
   await openFilterDrawer(page);
 
+  // Wait for drawer open animation to complete
+  const filterDrawer = page.locator('[data-testid="filter-drawer"]');
+  await filterDrawer.waitFor({ state: "visible" });
+  await waitForCssTransition(filterDrawer, CSS_TRANSITION_DURATIONS.enteringScreen);
+
   // Capture the filter drawer
-  await page.locator('[data-testid="filter-drawer"]').screenshot({
+  await filterDrawer.screenshot({
     path: outputPath,
   });
 }
@@ -196,6 +217,10 @@ export async function generateClearAllButton(
   // Open filters drawer
   await openFilterDrawer(page);
 
+  // Wait for drawer open animation
+  const filterDrawer = page.locator('[data-testid="filter-drawer"]');
+  await waitForCssTransition(filterDrawer, CSS_TRANSITION_DURATIONS.enteringScreen);
+
   // Apply some filters first so Clear All button is visible/enabled
   // Use checkbox selector to match E2E test pattern
   await selectFirstAvailableFilter(page);
@@ -203,12 +228,20 @@ export async function generateClearAllButton(
   // Wait for Clear All button to appear/enable
   await waitForUiSettle(page, 0.3);
 
-  // Verify Clear All button is visible (using data-testid like E2E tests)
+  // Verify Clear All button is visible and enabled
   const clearButton = page.locator('[data-testid="clear-filter-button"]');
   await expect(clearButton).toBeVisible();
+  const isEnabled = await clearButton.isEnabled();
+  if (!isEnabled) {
+    throw new Error(
+      "Clear All button is not enabled. " +
+        "Screenshot may not show the intended state."
+    );
+  }
+  console.log("✓ Clear All button verified (visible and enabled)");
 
   // Capture drawer showing Clear All button
-  await page.locator('[data-testid="filter-drawer"]').screenshot({
+  await filterDrawer.screenshot({
     path: outputPath,
   });
 

@@ -12,6 +12,12 @@ import {
   waitForUiSettle,
 } from "../../helpers/ui";
 import { loadSampleData } from "../../helpers/fixtures";
+import {
+  verifyDialogVisible,
+  verifyGridPopulated,
+  waitForCssTransition,
+  CSS_TRANSITION_DURATIONS,
+} from "../../helpers/visualValidation";
 
 /**
  * Generate File Menu Button screenshot
@@ -75,19 +81,21 @@ export async function generateUploadDialog(
     // Use file menu if no empty state (fallback path)
     await page.locator('[data-testid="file-menu-button"]').click();
     // Wait for menu animation (Material-UI Popover: ~300ms)
-    await page.waitForTimeout(300);
+    await waitForCssTransition(
+      page.locator('[data-testid="file-menu"]'),
+      CSS_TRANSITION_DURATIONS.short
+    );
     // Click Import Data menu item
     await page.locator('[data-testid="import-data-menu-item"]').click();
   }
 
-  // Wait for dialog to be visible
-  const dialog = page.locator('[data-testid="file-upload-dialog"]');
-  await dialog.waitFor({ state: "visible" });
-
-  // Wait for dialog animation to complete
-  await page.waitForTimeout(300);
+  // CRITICAL: Verify dialog is fully visible and animation complete
+  // This prevents capturing mid-animation state
+  await verifyDialogVisible(page, "file-upload-dialog");
+  console.log("✓ File upload dialog verified (visible and settled)");
 
   // Capture the dialog
+  const dialog = page.locator('[data-testid="file-upload-dialog"]');
   await dialog.screenshot({ path: outputPath });
 
   // Close dialog after capturing to prevent blocking subsequent screenshots
@@ -125,10 +133,10 @@ export async function generateGridPopulated(
   // Grid uses virtualization which may take extra time to stabilize
   await waitForUiSettle(page, 0.5);
 
-  // Verify grid has employees before capturing
-  // This is a safety check to ensure we don't capture empty grid
-  const employeeCards = page.locator('[data-testid^="employee-card-"]');
-  await employeeCards.first().waitFor({ state: "visible", timeout: 5000 });
+  // CRITICAL: Verify grid has minimum employees before capturing
+  // This ensures we don't capture empty or sparsely populated grid
+  const employeeCount = await verifyGridPopulated(page, 5);
+  console.log(`✓ Grid verified with ${employeeCount} employees`);
 
   // Capture the populated grid (no dialog overlay)
   const grid = page.locator('[data-testid="nine-box-grid"]');
@@ -171,6 +179,10 @@ export async function generateSuccessAnnotated(
 
   // Wait for UI to settle
   await waitForUiSettle(page, 0.5);
+
+  // Verify grid is populated before capturing base image
+  const employeeCount = await verifyGridPopulated(page, 5);
+  console.log(`✓ Success state verified with ${employeeCount} employees`);
 
   // Capture full page view showing grid and employee count
   // Manual annotations will be added to highlight:

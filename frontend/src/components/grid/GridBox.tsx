@@ -4,14 +4,24 @@
 
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { Box, Typography, Badge, IconButton, alpha, Tooltip } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Badge,
+  IconButton,
+  alpha,
+  Tooltip,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
-import { getPositionName, getPositionGuidance } from "../../constants/positionLabels";
+import {
+  getPositionName,
+  getPositionGuidance,
+} from "../../constants/positionLabels";
 import { logger } from "../../utils/logger";
 
 // Styling constants
@@ -59,7 +69,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
     logger.error(
-      `GridBox (position ${position}): Cannot be both expanded and collapsed. Using expanded state.`
+      `GridBox (position ${position}): Cannot be both expanded and collapsed. Using expanded state.`,
     );
   }
 
@@ -103,11 +113,13 @@ export const GridBox: React.FC<GridBoxProps> = ({
       borderColor: isOver ? "primary.main" : "divider",
       borderRadius: 1,
       p: 1.5,
-      backgroundColor: isOver ? alpha(theme.palette.primary.main, 0.15) : bgColor,
+      backgroundColor: isOver
+        ? alpha(theme.palette.primary.main, 0.15)
+        : bgColor,
       transition:
         "min-height 0.3s ease-in-out, max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, border-style 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
       userSelect: "none",
-      overflowY: "auto" as const,
+      overflowY: (isCollapsed ? "hidden" : "auto") as const,
     };
 
     // Collapsed state takes precedence if both are true (though validation warns about this)
@@ -145,71 +157,115 @@ export const GridBox: React.FC<GridBoxProps> = ({
   };
 
   return (
-    <Box ref={setNodeRef} sx={getBoxStyling()} aria-expanded={isExpanded} data-testid={`grid-box-${position}`}>
+    <Box
+      ref={setNodeRef}
+      sx={getBoxStyling()}
+      aria-expanded={isExpanded}
+      data-testid={`grid-box-${position}`}
+    >
       {/* Header */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: isCollapsed ? 0 : 1,
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
-          <Tooltip
-            title={getPositionGuidance(position)}
-            arrow
-            placement="top"
-            enterDelay={300}
+      {isCollapsed ? (
+        // Collapsed: Centered column layout with expand button prominent
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 0.5,
+          }}
+        >
+          <Typography
+            variant="caption"
+            fontWeight="bold"
+            sx={{
+              fontSize: "0.7rem",
+              display: "block",
+              textAlign: "center",
+            }}
           >
-            <Typography
-              variant="caption"
-              fontWeight="bold"
-              sx={{
-                fontSize: isExpanded ? "0.85rem" : "0.7rem",
-                display: "block",
-                cursor: "help",
-              }}
+            {getPositionName(position)} {shortLabel}
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={onExpand}
+            aria-label={t("grid.gridBox.expandBox")}
+            sx={{
+              opacity: OPACITY.EXPAND_BUTTON_ACTIVE,
+              transition: "opacity 0.3s ease-in-out",
+              "&:hover": {
+                opacity: OPACITY.EXPAND_BUTTON_ACTIVE,
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              },
+            }}
+          >
+            <OpenInFullIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      ) : (
+        // Normal/Expanded: Horizontal layout with badge and button
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+            <Tooltip
+              title={getPositionGuidance(position)}
+              arrow
+              placement="top"
+              enterDelay={300}
             >
-              {getPositionName(position)} {shortLabel}
-            </Typography>
-          </Tooltip>
-          {!isCollapsed && (
+              <Typography
+                variant="caption"
+                fontWeight="bold"
+                sx={{
+                  fontSize: isExpanded ? "0.85rem" : "0.7rem",
+                  display: "block",
+                  cursor: "help",
+                }}
+              >
+                {getPositionName(position)} {shortLabel}
+              </Typography>
+            </Tooltip>
             <Badge
               badgeContent={employees.length}
               color="primary"
               sx={{ "& .MuiBadge-badge": { fontSize: "0.65rem", height: 16 } }}
               data-testid={`grid-box-${position}-count`}
             />
+          </Box>
+
+          {/* Expand/Collapse Button */}
+          {isExpanded ? (
+            <IconButton
+              size="small"
+              onClick={onCollapse}
+              aria-label={t("grid.gridBox.collapseBox")}
+              sx={{ ml: 1 }}
+            >
+              <CloseFullscreenIcon fontSize="small" />
+            </IconButton>
+          ) : (
+            <IconButton
+              size="small"
+              onClick={onExpand}
+              aria-label={t("grid.gridBox.expandBox")}
+              sx={{
+                ml: 1,
+                opacity: OPACITY.EXPAND_BUTTON_IDLE,
+                transition: "opacity 0.3s ease-in-out",
+                "&:hover": { opacity: OPACITY.EXPAND_BUTTON_ACTIVE },
+              }}
+            >
+              <OpenInFullIcon fontSize="small" />
+            </IconButton>
           )}
         </Box>
-
-        {/* Expand/Collapse Button */}
-        {isExpanded ? (
-          <IconButton
-            size="small"
-            onClick={onCollapse}
-            aria-label={t('grid.gridBox.collapseBox')}
-            sx={{ ml: 1 }}
-          >
-            <CloseFullscreenIcon fontSize="small" />
-          </IconButton>
-        ) : (
-          <IconButton
-            size="small"
-            onClick={onExpand}
-            aria-label={t('grid.gridBox.expandBox')}
-            sx={{
-              ml: 1,
-              opacity: isCollapsed ? OPACITY.EXPAND_BUTTON_ACTIVE : OPACITY.EXPAND_BUTTON_IDLE,
-              transition: "opacity 0.3s ease-in-out",
-              "&:hover": { opacity: OPACITY.EXPAND_BUTTON_ACTIVE },
-            }}
-          >
-            <OpenInFullIcon fontSize="small" />
-          </IconButton>
-        )}
-      </Box>
+      )}
 
       {/* Employees - hidden when collapsed */}
       {!isCollapsed && (
@@ -217,7 +273,9 @@ export const GridBox: React.FC<GridBoxProps> = ({
           sx={{
             // Multi-column grid layout when expanded for better space utilization
             display: isExpanded ? "grid" : "block",
-            gridTemplateColumns: isExpanded ? "repeat(auto-fill, minmax(280px, 1fr))" : undefined,
+            gridTemplateColumns: isExpanded
+              ? "repeat(auto-fill, minmax(280px, 1fr))"
+              : undefined,
             gap: isExpanded ? 1.5 : 0, // 12px gap between cards in grid mode
           }}
         >

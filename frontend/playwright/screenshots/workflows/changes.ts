@@ -12,7 +12,7 @@
  * to ensure consistency with E2E tests.
  */
 
-import { Page, expect } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { uploadExcelFile } from "../../helpers/upload";
 import {
   closeAllDialogsAndOverlays,
@@ -24,6 +24,13 @@ import {
   getEmployeeIdFromCard,
 } from "../../helpers/assertions";
 import { dragEmployeeToPosition } from "../../helpers/dragAndDrop";
+import {
+  verifyModifiedIndicator,
+  verifyBadgeCount,
+  verifyGridPopulated,
+  waitForCssTransition,
+  CSS_TRANSITION_DURATIONS,
+} from "../../helpers/visualValidation";
 
 /**
  * Generate base grid for 3-panel drag sequence (requires manual composition)
@@ -46,6 +53,9 @@ export async function generateDragSequence(
 
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
+
+  // Verify grid is populated before capture
+  await verifyGridPopulated(page, 5);
 
   // Capture the grid
   await page.locator('[data-testid="nine-box-grid"]').screenshot({
@@ -95,12 +105,20 @@ export async function generateOrangeBorder(
     expectModified: true,
   });
 
-  // Wait for visual indicators to appear
-  await waitForUiSettle(page, 0.5);
+  // Get the moved card reference
+  const movedCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
+
+  // Wait for CSS transition to complete (orange border animation)
+  await waitForCssTransition(movedCard, CSS_TRANSITION_DURATIONS.standard);
+
+  // CRITICAL: Verify orange border and badge are visible before capture
+  // This ensures screenshot actually shows the visual indicators
+  await verifyModifiedIndicator(movedCard);
+
+  console.log(`✓ Orange border and badge verified on employee ${employeeId}`);
 
   // Capture close-up of the employee card
-  // Should show orange left border and modified badge
-  const movedCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
+  // Now guaranteed to show orange left border and modified badge
   await movedCard.screenshot({
     path: outputPath,
   });
@@ -211,28 +229,14 @@ export async function generateChangesTab(
   // Click Changes tab to show populated table
   await clickTabAndWait(page, "changes-tab", 0.8);
 
-  // Try to verify badge is visible (optional check for screenshot quality)
+  // CRITICAL: Verify badge shows minimum change count before capture
+  // This ensures screenshot shows populated state, not empty "No changes yet"
   const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
-  try {
-    await expect(changesBadge).toBeVisible({ timeout: 5000 });
-    const badgeText = await changesBadge.textContent();
-    const changeCount = parseInt(badgeText?.trim() || "0", 10);
-    console.log(`✓ Changes badge shows: ${changeCount} changes`);
-
-    if (changeCount < 3) {
-      console.warn(
-        `Warning: Badge shows ${changeCount} changes (expected >= 3). ` +
-          "Screenshot may not show ideal state.",
-      );
-    }
-  } catch (error) {
-    console.warn(
-      "Warning: Changes badge not found. Proceeding with screenshot anyway.",
-    );
-  }
+  const changeCount = await verifyBadgeCount(changesBadge, 3);
+  console.log(`✓ Changes tab verified with ${changeCount} changes`);
 
   // Capture right panel showing changes
-  // The changes should be visible even if badge verification failed
+  // Now guaranteed to show populated changes table
   await page.locator('[data-testid="right-panel"]').screenshot({
     path: outputPath,
   });
@@ -267,9 +271,10 @@ export async function generatePanelEntries(
   // Click Changes tab
   await clickTabAndWait(page, "changes-tab", 0.8);
 
-  // Verify we have change entries
+  // Verify we have sufficient change entries for good screenshot
   const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
-  await expect(changesBadge).toBeVisible({ timeout: 3000 });
+  const changeCount = await verifyBadgeCount(changesBadge, 5);
+  console.log(`✓ Changes panel verified with ${changeCount} entries`);
 
   // Capture the right panel showing changes list
   await page.locator('[data-testid="right-panel"]').screenshot({
