@@ -140,14 +140,15 @@ import { MockDataDemo } from "./components/intelligence/MockDataDemo";
 ## Color Scheme
 
 ### Traffic Light System
-- **Green** (`#4caf50`): No significant anomaly
-- **Yellow/Orange** (`#ff9800`): Moderate anomaly (p < 0.05)
-- **Red** (`#f44336`): Severe anomaly (p < 0.01)
+Uses semantic colors from design tokens (`theme.tokens.colors.semantic`):
+- **Green** (`theme.tokens.colors.semantic.success`): No significant anomaly
+- **Yellow/Orange** (`theme.tokens.colors.semantic.warning`): Moderate anomaly (p < 0.05)
+- **Red** (`theme.tokens.colors.semantic.error`): Severe anomaly (p < 0.01)
 
 ### Performance Categories
-- **High Performance**: Green (`#4caf50`)
-- **Medium Performance**: Yellow/Orange (`#ff9800`)
-- **Low Performance**: Red (`#f44336`)
+- **High Performance**: Green (`theme.tokens.colors.semantic.success`)
+- **Medium Performance**: Yellow/Orange (`theme.tokens.colors.semantic.warning`)
+- **Low Performance**: Red (`theme.tokens.colors.semantic.error`)
 
 ### Heatmap
 - **Low intensity**: Light blue

@@ -342,6 +342,7 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 - [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [docs/QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md) - Command quick reference
+- [docs/design-system/](docs/design-system/) - **Design system documentation** (UI components, patterns, accessibility)
 
 ## License
 

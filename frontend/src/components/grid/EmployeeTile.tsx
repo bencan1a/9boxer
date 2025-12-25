@@ -4,12 +4,14 @@
 
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
+import { Card, CardContent, Typography, Chip, Box, useTheme, Tooltip } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { getPositionLabel } from "../../constants/positionLabels";
+import { getFlagDisplayName } from "../../constants/flags";
 
 interface EmployeeTileProps {
   employee: Employee;
@@ -23,6 +25,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   donutModeActive = false,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
       id: `employee-${employee.employee_id}`,
@@ -42,6 +45,13 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     ? getPositionLabel(employee.donut_position)
     : getPositionLabel(employee.grid_position);
 
+  // Get flags count and display names
+  const flags = employee.flags || [];
+  const flagCount = flags.length;
+  const flagTooltip = flags.length > 0
+    ? flags.map((flag) => getFlagDisplayName(flag)).join(", ")
+    : "";
+
   return (
     <Card
       ref={setNodeRef}
@@ -58,7 +68,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         userSelect: "none",
         border: isDonutModified ? 2 : 0,
         borderStyle: isDonutModified ? "solid" : "none",
-        borderColor: isDonutModified ? "#9c27b0" : undefined,
+        borderColor: isDonutModified ? theme.tokens.colors.semantic.donutMode : undefined,
         boxShadow: isDonutModified ? 2 : 1,
         "&:hover": {
           boxShadow: 3,
@@ -116,12 +126,31 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               size="small"
               sx={{
                 height: 18,
-                backgroundColor: "#9c27b0",
+                backgroundColor: theme.tokens.colors.semantic.donutMode,
                 color: "white",
                 fontWeight: "bold",
               }}
               data-testid="donut-indicator"
             />
+          )}
+          {flagCount > 0 && (
+            <Tooltip title={flagTooltip} arrow>
+              <Chip
+                icon={<LocalOfferIcon sx={{ fontSize: 12 }} />}
+                label={flagCount}
+                size="small"
+                sx={{
+                  height: 18,
+                  backgroundColor: theme.palette.info.main,
+                  color: "white",
+                  fontWeight: "medium",
+                  "& .MuiChip-icon": {
+                    color: "white",
+                  },
+                }}
+                data-testid="flag-badge"
+              />
+            </Tooltip>
           )}
         </Box>
         {isDonutModified && employee.donut_position && (

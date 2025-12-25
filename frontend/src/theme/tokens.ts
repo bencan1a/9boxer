@@ -78,6 +78,7 @@ export const colors = {
     warning: "#ff9800", // Orange - caution/attention needed
     error: "#f44336", // Red - errors/issues
     info: "#1976d2", // Blue - informational
+    donutMode: "#9c27b0", // Purple - donut mode modification indicator
   },
 
   // Grid box colors (9-box grid positions)
