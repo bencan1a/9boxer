@@ -28,11 +28,12 @@ import {
 /**
  * Helper: Select first available filter checkbox
  *
- * Matches E2E test pattern from filter-flow.spec.ts
- * Uses checkbox selector instead of text-based selector for reliability.
+ * Uses specific testid selector to target actual filter checkboxes,
+ * not accordion expand icons or other checkboxes in the drawer.
+ * Fixed per Phase 3 debugging findings.
  */
 async function selectFirstAvailableFilter(page: Page): Promise<void> {
-  const firstCheckbox = page.locator('input[type="checkbox"]').first();
+  const firstCheckbox = page.locator('[data-testid^="filter-checkbox-job-levels-"]').first();
   await firstCheckbox.check();
   await waitForUiSettle(page, 0.3);
 }
@@ -69,18 +70,28 @@ export async function generateActiveChips(
   // Open filters drawer
   await openFilterDrawer(page);
 
+  // CRITICAL: Wait for drawer open animation to complete before clicking
+  // Otherwise backdrop intercepts pointer events
+  await waitForCssTransition(
+    page.locator('[data-testid="filter-drawer"]'),
+    CSS_TRANSITION_DURATIONS.enteringScreen
+  );
+
   // ACTUALLY SELECT FILTERS (this was the critical missing piece!)
   // Previous versions showed empty filter panel which was useless
 
-  // Select first available filter checkbox (matches E2E pattern)
+  // Select first available filter checkbox (uses specific testid per Phase 3 fix)
   await selectFirstAvailableFilter(page);
+
+  // Wait longer for filter state to update
+  await waitForUiSettle(page, 0.8);
 
   // Try to select a second filter for multiple chips demonstration
   try {
-    const secondCheckbox = page.locator('input[type="checkbox"]').nth(1);
+    const secondCheckbox = page.locator('[data-testid^="filter-checkbox-job-levels-"]').nth(1);
     if (await secondCheckbox.isVisible()) {
       await secondCheckbox.check();
-      await waitForUiSettle(page, 0.3);
+      await waitForUiSettle(page, 0.5);
     }
   } catch {
     // If second filter not available, continue with just one

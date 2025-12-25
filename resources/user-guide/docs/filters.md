@@ -45,7 +45,7 @@ Filters let you display only employees who match specific criteria. All other em
 ### Opening the Filter Drawer
 
 1. Click the **"Filters"** button in the top application bar
-2. The filter drawer opens on the right side of the screen
+2. The filter drawer opens on the left side of the screen
 3. Filter options appear organized by category
 
 ### Available Filter Categories
