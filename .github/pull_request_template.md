@@ -53,8 +53,25 @@ Related to #
 - [ ] Code is properly commented where necessary
 - [ ] Documentation has been updated (if needed)
 
-## Screenshots (if applicable)
-<!-- Add screenshots to help explain your changes -->
+## Screenshots
+<!-- For UI changes, automated screenshots are required -->
+
+### For UI Changes (New Features or Visual Modifications)
+
+- [ ] Screenshot workflows added/updated in `frontend/playwright/screenshots/workflows/`
+- [ ] Screenshot IDs registered in `frontend/playwright/screenshots/config.ts`
+- [ ] Screenshots generated: `cd frontend && npm run screenshots:generate <screenshot-ids>`
+- [ ] Generated screenshots committed in `resources/user-guide/docs/images/screenshots/`
+- [ ] Documentation references screenshots with correct paths
+
+### Visual Verification
+<!-- Attach before/after screenshots for visual changes -->
+
+**Before:**
+<!-- Screenshot of UI before changes -->
+
+**After:**
+<!-- Screenshot of UI after changes -->
 
 ## Deployment Notes
 <!-- Any special deployment considerations or migration steps -->

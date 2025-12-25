@@ -82,17 +82,91 @@ cd frontend && npm run test:e2e:pw  # E2E tests
 - Cross-platform testing if applicable
 
 ### Phase 5: Documentation & Handoff
-**Update documentation**:
-- User documentation (if user-facing): `resources/user-guide/docs/*.md`
-- Screenshots (if UI change): `npm run screenshots:generate`
+
+**For user-facing features, follow documentation-first approach**:
+
+1. **Write user documentation first** (`resources/user-guide/docs/*.md`):
+   ```markdown
+   ## My New Feature
+
+   Description of what users can do...
+
+   ![Feature overview](../images/screenshots/my-feature-overview.png)
+   ![Feature in action](../images/screenshots/my-feature-action.png)
+   ```
+
+2. **Create screenshot workflows** (for UI changes):
+   ```bash
+   # Create workflow file
+   # frontend/playwright/screenshots/workflows/my-feature.ts
+
+   # Follow the pattern:
+   import { Page } from "@playwright/test";
+   import { uploadExcelFile } from "../../helpers/upload";
+   import { waitForUiSettle } from "../../helpers/ui";
+
+   export async function generateFeatureOverview(
+     page: Page,
+     outputPath: string
+   ): Promise<void> {
+     await uploadExcelFile(page, "sample-employees.xlsx");
+     await page.locator('[data-testid="my-feature"]').click();
+     await waitForUiSettle(page, 0.5);
+     await page.screenshot({ path: outputPath });
+   }
+   ```
+
+3. **Register screenshots** in `frontend/playwright/screenshots/config.ts`:
+   ```typescript
+   {
+     'my-feature-overview': {
+       workflow: 'my-feature',
+       function: 'generateFeatureOverview',
+       path: 'resources/user-guide/docs/images/screenshots/my-feature-overview.png',
+       description: 'Overview of new feature UI',
+       cropping: 'full-page',
+     },
+   }
+   ```
+
+4. **Generate and validate screenshots**:
+   ```bash
+   cd frontend
+   npm run screenshots:generate my-feature-overview my-feature-action
+
+   # Visually verify screenshots match documentation
+   # Screenshots should show populated states, not empty states
+   # Ensure all visual elements (badges, borders) are visible
+   ```
+
+5. **Commit everything together**:
+   - Feature code + tests
+   - Documentation markdown files
+   - Screenshot workflow code
+   - Generated screenshot images
+
+**Other documentation updates**:
 - Architecture docs (if significant change): `docs/`
-- API docs (auto-generated from docstrings)
+- API docs (auto-generated from docstrings via `tools/build_context.py`)
+- CHANGELOG.md entries
+
+**Screenshot workflow best practices**:
+- ✅ Use `data-testid` selectors (same as E2E tests)
+- ✅ Reuse helpers from `frontend/playwright/helpers/`
+- ✅ Add visual validation before capture
+- ✅ Wait for CSS transitions to complete
+- ✅ Ensure screenshots show populated states
+- ❌ Don't create manual screenshots (use workflows)
+- ❌ Don't use arbitrary timeouts
+
+See CONTRIBUTING.md → Screenshot Workflow for complete guidance.
 
 **Update GitHub issue** with:
 - Decisions made and rationale
 - Constraints discovered
 - Implementation progress and learnings
 - Testing notes
+- Screenshot workflow status
 - Any blockers or open questions
 
 This ensures future agents can pick up where you left off.

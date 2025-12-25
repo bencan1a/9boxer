@@ -88,6 +88,7 @@ Prefixes:
    - [ ] All tests pass
    - [ ] Test coverage maintained or improved
    - [ ] Documentation updated (see [Documentation Checklist](#documentation-checklist))
+   - [ ] Screenshots added/updated for UI changes (see [Screenshot Workflow](#screenshot-workflow-typescriptplaywright))
    - [ ] Commit messages are clear
    - [ ] PR description explains changes
    - [ ] Breaking changes are documented
@@ -285,6 +286,179 @@ The user guide uses **MkDocs Material** for professional multi-page documentatio
 - `/site` - Build output (don't commit, git-ignored)
 - `tools/generate_docs_screenshots.py` - Screenshot generator
 - `frontend/scripts/generate-user-guide.cjs` - Build wrapper script
+
+### Screenshot Workflow (TypeScript/Playwright)
+
+Screenshots are **first-class artifacts** generated from TypeScript/Playwright workflows, not manual captures. This ensures consistency, maintainability, and alignment with actual application behavior.
+
+#### Architecture
+
+**Location**: `frontend/playwright/screenshots/`
+- `config.ts` - Central registry mapping screenshot IDs to workflows
+- `workflows/` - Feature-specific screenshot generation functions
+- `MANUAL_SCREENSHOTS.md` - Documentation for 8 manual screenshots
+
+**Shared Infrastructure**:
+- Reuses E2E test helpers from `frontend/playwright/helpers/`
+- Same selectors, same timing, same validation logic
+- Guarantees screenshots match tested behavior
+
+#### Adding Screenshots for New Features
+
+**Follow documentation-first approach**:
+
+1. **Write Documentation First** (in `resources/user-guide/docs/`):
+   ```markdown
+   ## My New Feature
+
+   Description of feature...
+
+   ![Feature overview](../images/screenshots/my-feature-overview.png)
+   ![Feature in action](../images/screenshots/my-feature-action.png)
+   ```
+
+2. **Create Screenshot Workflow** (`frontend/playwright/screenshots/workflows/my-feature.ts`):
+   ```typescript
+   import { Page } from "@playwright/test";
+   import { uploadExcelFile } from "../../helpers/upload";
+   import { waitForUiSettle } from "../../helpers/ui";
+
+   export async function generateFeatureOverview(
+     page: Page,
+     outputPath: string
+   ): Promise<void> {
+     // Use shared helpers
+     await uploadExcelFile(page, "sample-employees.xlsx");
+     await page.locator('[data-testid="my-feature-button"]').click();
+     await waitForUiSettle(page, 0.5);
+
+     // Capture screenshot
+     await page.locator('[data-testid="feature-panel"]').screenshot({
+       path: outputPath,
+     });
+   }
+   ```
+
+3. **Register in Config** (`frontend/playwright/screenshots/config.ts`):
+   ```typescript
+   {
+     'my-feature-overview': {
+       workflow: 'my-feature',
+       function: 'generateFeatureOverview',
+       path: 'resources/user-guide/docs/images/screenshots/my-feature-overview.png',
+       description: 'Overview of new feature UI',
+       cropping: 'element', // or 'full-page', 'panel', 'grid'
+     },
+   }
+   ```
+
+4. **Generate and Validate**:
+   ```bash
+   cd frontend
+   npm run screenshots:generate my-feature-overview
+
+   # Verify screenshot matches documentation
+   # Check image in resources/user-guide/docs/images/screenshots/
+   ```
+
+5. **Commit Together**:
+   ```bash
+   git add \
+     frontend/playwright/screenshots/workflows/my-feature.ts \
+     frontend/playwright/screenshots/config.ts \
+     resources/user-guide/docs/my-feature.md \
+     resources/user-guide/docs/images/screenshots/my-feature-*.png
+
+   git commit -m "feat: add my feature with documentation and screenshots"
+   ```
+
+#### Updating Screenshots After UX Changes
+
+When you modify UI components, update affected screenshots:
+
+**Automatic Detection** (coming soon):
+- CI will detect visual changes and flag outdated screenshots
+- PR comments will show screenshot diffs
+
+**Manual Regeneration**:
+```bash
+# Regenerate specific screenshots
+cd frontend
+npm run screenshots:generate my-feature-overview another-screenshot
+
+# Regenerate all screenshots (use sparingly)
+npm run screenshots:generate
+```
+
+**Weekly Automation**:
+- GitHub Actions regenerates all screenshots every Monday 2 AM UTC
+- Auto-commits changes if detected
+- Catches gradual styling drift
+
+#### Screenshot Workflow Best Practices
+
+**DO**:
+- ✅ Use `data-testid` selectors (same as E2E tests)
+- ✅ Reuse helpers from `frontend/playwright/helpers/`
+- ✅ Add visual validation before capture (`verifyModifiedIndicator`, etc.)
+- ✅ Wait for CSS transitions (`waitForCssTransition`)
+- ✅ Ensure screenshots show populated states, not empty states
+- ✅ Document manual screenshots in `MANUAL_SCREENSHOTS.md`
+- ✅ Commit screenshots with feature code
+
+**DON'T**:
+- ❌ Create manual screenshots (except the 8 documented exceptions)
+- ❌ Use arbitrary timeouts (`page.waitForTimeout(5000)`)
+- ❌ Skip validation steps
+- ❌ Commit screenshots without corresponding workflow code
+- ❌ Use hardcoded window sizes (use config from `playwright.config.ts`)
+
+#### Debugging Screenshot Workflows
+
+If a screenshot workflow fails:
+
+1. **Use the debug test file**:
+   ```bash
+   # Create debug test (or use existing one)
+   # frontend/playwright/e2e/debug-screenshot-workflow.spec.ts
+
+   # Run in VS Code Testing panel with breakpoints
+   # Or run with Playwright UI:
+   cd frontend
+   npx playwright test debug-screenshot-workflow.spec.ts --ui
+   ```
+
+2. **Check common issues**:
+   - Element not visible (use `await locator.waitFor()`)
+   - CSS transition not complete (use `waitForCssTransition`)
+   - Wrong selector (check `data-testid` in component)
+   - Empty state captured (ensure data is loaded first)
+
+3. **Validate before capture**:
+   ```typescript
+   // Use visual validation helpers
+   import { verifyModifiedIndicator, verifyBadgeCount } from "../../helpers/visualValidation";
+
+   await verifyModifiedIndicator(employeeCard);
+   await verifyBadgeCount(changesBadge, 3);
+   ```
+
+#### Screenshot Coverage
+
+**Current Status**: 32 automated + 8 manual = 40 total screenshots
+
+**Automated screenshots** should cover:
+- All major features and workflows
+- Common user interactions
+- Visual feedback elements (badges, borders, states)
+- Different view modes (grid, donut, timeline)
+
+**Manual screenshots** required for:
+- Excel file formats (requires Office software)
+- Multi-panel compositions (requires image editing)
+- Annotated diagrams (requires callouts/arrows)
+
+See `frontend/playwright/screenshots/MANUAL_SCREENSHOTS.md` for the complete list.
 
 ## 🐛 Reporting Bugs
 
