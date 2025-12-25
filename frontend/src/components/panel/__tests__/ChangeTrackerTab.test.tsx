@@ -69,7 +69,8 @@ describe('ChangeTrackerTab', () => {
 
     expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.employee'))).toBeInTheDocument()
     expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.movement'))).toBeInTheDocument()
-    expect(screen.getByText(getTranslatedText('panel.changeTrackerTab.notes'))).toBeInTheDocument()
+    // Notes is now a label inline with each notes field, not a column header
+    expect(screen.getByText(/Notes:/i)).toBeInTheDocument()
   })
 
   it('displays employee name correctly', () => {
@@ -174,16 +175,17 @@ describe('ChangeTrackerTab', () => {
 
     const rows = screen.getAllByRole('row')
     // Skip header row (index 0), check data rows
+    // Each change now has 2 rows: main row and notes row
     const firstDataRow = rows[1]
-    const secondDataRow = rows[2]
     const thirdDataRow = rows[3]
+    const fifthDataRow = rows[5]
 
     // Most recent: Carol White (14:20)
     expect(firstDataRow).toHaveTextContent('Carol White')
     // Second: Bob Smith (11:45)
-    expect(secondDataRow).toHaveTextContent('Bob Smith')
+    expect(thirdDataRow).toHaveTextContent('Bob Smith')
     // Third: Alice Johnson (10:30)
-    expect(thirdDataRow).toHaveTextContent('Alice Johnson')
+    expect(fifthDataRow).toHaveTextContent('Alice Johnson')
   })
 
   it('displays multiple changes correctly', () => {
