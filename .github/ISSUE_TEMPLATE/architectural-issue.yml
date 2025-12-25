@@ -1,0 +1,149 @@
+name: 🏗️ Architectural Issue
+description: Report an architectural concern or drift from established patterns
+title: "[ARCH] "
+labels: ["architectural-issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Architectural Issue Report
+        
+        Use this template to report architectural concerns, drift from established patterns, or violations of design principles.
+        
+        For guidance, see:
+        - [Architectural Guidelines](docs/architecture/GUIDELINES.md)
+        - [Source of Truth (facts.json)](docs/facts.json)
+        - [Architecture Review Board Agent](.github/agents/architecture-review-board.md)
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How critical is this architectural issue?
+      options:
+        - 🔴 CRITICAL - Blocks release, security risk, or data corruption risk
+        - 🟠 HIGH - Significant drift, quality gate failure, or technical debt
+        - 🟡 MEDIUM - Minor deviation, inconsistency, or missing documentation
+        - 🟢 LOW - Suggestion for improvement or optimization
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What type of architectural concern is this?
+      options:
+        - Architecture - System structure, boundaries, or integration
+        - Design Pattern - Pattern usage or anti-patterns
+        - Quality - Code quality, type safety, or testing
+        - Security - Security patterns or vulnerabilities
+        - Performance - Performance concerns or optimizations
+        - Documentation - Missing or outdated documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clear description of the architectural concern
+      placeholder: Describe what the current implementation does that violates architectural principles...
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is this issue located?
+      placeholder: |
+        Commit: abc123
+        Files:
+        - backend/src/module/file.py
+        - frontend/src/component/Component.tsx
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Current State
+      description: What the code currently does
+      placeholder: Describe the current implementation...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-state
+    attributes:
+      label: Expected State
+      description: What the code should do to align with architecture
+      placeholder: Describe how it should be implemented...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How does this affect the system?
+      placeholder: |
+        - Maintainability: ...
+        - Scalability: ...
+        - Security: ...
+        - Performance: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended Actions
+      description: Step-by-step remediation guidance
+      placeholder: |
+        1. Refactor X to follow pattern Y
+        2. Add type annotations to functions
+        3. Update tests to cover new behavior
+        4. Update documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: principles-violated
+    attributes:
+      label: Architectural Principles Violated
+      description: Which principles from docs/architecture/GUIDELINES.md are violated?
+      placeholder: |
+        - Clean Separation of Concerns
+        - Type Safety Everywhere
+        - Security by Default
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to relevant documentation, commits, PRs, or issues
+      placeholder: |
+        - [Architectural Guidelines](docs/architecture/GUIDELINES.md)
+        - Commit: abc123
+        - Related Issue: #123
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Resolution Checklist
+      description: Steps to resolve this issue
+      options:
+        - label: Code changes made following architectural guidelines
+        - label: Type annotations added (if applicable)
+        - label: Tests added/updated
+        - label: Quality gates pass (ruff, mypy, eslint)
+        - label: Security scan passes (bandit)
+        - label: Documentation updated
+        - label: Peer review completed
+        - label: Architecture review board consulted (if needed)

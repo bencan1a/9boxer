@@ -1,0 +1,279 @@
+name: Architectural Review
+
+on:
+  schedule:
+    # Run every Sunday at 3 AM UTC (after weekly tests)
+    - cron: '0 3 * * 0'
+  workflow_dispatch: # Allow manual trigger
+    inputs:
+      days:
+        description: 'Number of days to review (leave empty for 7)'
+        required: false
+        default: '7'
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  architectural-review:
+    name: Architectural Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for complete analysis
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Run architectural review
+        id: review
+        run: |
+          DAYS="${{ github.event.inputs.days || '7' }}"
+          python tools/architecture_review.py --days "$DAYS" --output review-report.md --json > review-summary.json
+          
+          # Store exit code but don't fail the workflow
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          
+          # Parse key metrics from JSON
+          FINDINGS_COUNT=$(jq -r '.findings_count' review-summary.json)
+          CRITICAL_COUNT=$(jq -r '.severity_breakdown.CRITICAL // 0' review-summary.json)
+          HIGH_COUNT=$(jq -r '.severity_breakdown.HIGH // 0' review-summary.json)
+          
+          echo "findings_count=$FINDINGS_COUNT" >> $GITHUB_OUTPUT
+          echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          echo "high_count=$HIGH_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Upload review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: architectural-review-report
+          path: |
+            review-report.md
+            review-summary.json
+          retention-days: 90
+
+      - name: Create or update issue for findings
+        if: steps.review.outputs.findings_count > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read the review report
+            const report = fs.readFileSync('review-report.md', 'utf8');
+            const summary = JSON.parse(fs.readFileSync('review-summary.json', 'utf8'));
+            
+            // Check if an open architectural review issue already exists
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'architectural-drift',
+              per_page: 100
+            });
+            
+            const weeklyIssue = existingIssues.data.find(issue =>
+              issue.title.includes('🏗️ Weekly Architectural Review')
+            );
+            
+            const reviewDate = new Date().toISOString().split('T')[0];
+            const criticalCount = summary.severity_breakdown.CRITICAL || 0;
+            const highCount = summary.severity_breakdown.HIGH || 0;
+            const mediumCount = summary.severity_breakdown.MEDIUM || 0;
+            const lowCount = summary.severity_breakdown.LOW || 0;
+            
+            // Determine severity icon based on findings
+            let severityIcon = '🟢';
+            if (criticalCount > 0) severityIcon = '🔴';
+            else if (highCount > 0) severityIcon = '🟠';
+            else if (mediumCount > 0) severityIcon = '🟡';
+            
+            const issueTitle = `🏗️ Weekly Architectural Review - ${reviewDate}`;
+            
+            // Create issue body with executive summary at top
+            const issueBody = `## ${severityIcon} Architectural Review Summary
+            
+**Review Period**: Last ${{ github.event.inputs.days || '7' }} days
+**Review Date**: ${reviewDate}
+**Total Findings**: ${summary.findings_count}
+
+### Severity Breakdown
+- 🔴 **CRITICAL**: ${criticalCount}
+- 🟠 **HIGH**: ${highCount}
+- 🟡 **MEDIUM**: ${mediumCount}
+- 🟢 **LOW**: ${lowCount}
+
+### Category Breakdown
+${Object.entries(summary.category_breakdown || {}).map(([cat, count]) => `- **${cat}**: ${count}`).join('\n')}
+
+---
+
+## Action Required
+
+${criticalCount > 0 ? '🚨 **IMMEDIATE ACTION REQUIRED**: Critical architectural issues found!\n\n' : ''}
+${highCount > 0 ? '⚠️ **HIGH PRIORITY**: Significant architectural concerns need attention.\n\n' : ''}
+${criticalCount === 0 && highCount === 0 && mediumCount > 0 ? '📋 **MEDIUM PRIORITY**: Review recommended changes when convenient.\n\n' : ''}
+${criticalCount === 0 && highCount === 0 && mediumCount === 0 ? '✅ **LOW/NO PRIORITY**: Suggestions for continuous improvement.\n\n' : ''}
+
+## Full Report
+
+<details>
+<summary>Click to expand full architectural review report</summary>
+
+${report}
+
+</details>
+
+## Workflow Run
+
+- **Run ID**: ${{ github.run_id }}
+- **Run URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+- **Artifacts**: Review report and JSON summary available in workflow artifacts
+
+## Next Steps
+
+1. **Review Findings**: Examine each finding, starting with CRITICAL and HIGH priority items
+2. **Create Issues**: For findings that need remediation, create individual issues with the \`architectural-issue\` label
+3. **Update Guidelines**: If patterns emerge, update [docs/architecture/GUIDELINES.md](docs/architecture/GUIDELINES.md)
+4. **Close This Issue**: Once all findings are addressed or tracked in separate issues
+
+## References
+
+- [Architectural Guidelines](docs/architecture/GUIDELINES.md)
+- [Architecture Review Board Agent](.github/agents/architecture-review-board.md)
+- [Source of Truth (facts.json)](docs/facts.json)
+`;
+
+            if (weeklyIssue) {
+              // Update existing issue with new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: weeklyIssue.number,
+                body: `## New Review: ${reviewDate}\n\n${issueBody}`
+              });
+              
+              // Update labels based on severity
+              const labels = ['architectural-drift', 'automated'];
+              if (criticalCount > 0) labels.push('priority: critical');
+              else if (highCount > 0) labels.push('priority: high');
+              
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: weeklyIssue.number,
+                labels: labels
+              });
+              
+              console.log(`Updated existing issue #${weeklyIssue.number}`);
+            } else {
+              // Create new issue
+              const labels = ['architectural-drift', 'automated'];
+              if (criticalCount > 0) labels.push('priority: critical');
+              else if (highCount > 0) labels.push('priority: high');
+              
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: labels
+              });
+              
+              console.log(`Created new issue #${issue.data.number}`);
+            }
+
+      - name: Create individual issues for critical findings
+        if: steps.review.outputs.critical_count > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = JSON.parse(fs.readFileSync('review-summary.json', 'utf8'));
+            
+            // Get critical findings
+            const criticalFindings = summary.findings.filter(f => f.severity === 'CRITICAL');
+            
+            for (const finding of criticalFindings) {
+              // Check if an issue already exists for this finding
+              const searchQuery = `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open "${finding.title}" label:architectural-issue`;
+              const existingIssues = await github.rest.search.issuesAndPullRequests({
+                q: searchQuery
+              });
+              
+              if (existingIssues.data.total_count === 0) {
+                // Create new issue for critical finding
+                const issueBody = `## 🔴 CRITICAL Architectural Issue
+
+**Category**: ${finding.category}
+**Detected In**: Commit \`${finding.commit}\`
+**Review Date**: ${new Date().toISOString().split('T')[0]}
+
+### Description
+${finding.description}
+
+### Files Affected
+${finding.files.map(f => `- \`${f}\``).join('\n')}
+
+### Recommended Actions
+${finding.recommendation}
+
+${finding.principles_violated.length > 0 ? `### Architectural Principles Violated\n${finding.principles_violated.map(p => `- ${p}`).join('\n')}\n` : ''}
+
+### References
+- [Architectural Guidelines](docs/architecture/GUIDELINES.md)
+- [Source of Truth (facts.json)](docs/facts.json)
+- Commit: \`${finding.commit}\`
+
+---
+
+*This issue was automatically created by the Architectural Review workflow. Please review and address as soon as possible.*
+`;
+
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `[ARCH-CRITICAL] ${finding.title}`,
+                  body: issueBody,
+                  labels: ['architectural-issue', 'priority: critical', 'automated']
+                });
+              }
+            }
+
+      - name: Generate workflow summary
+        if: always()
+        run: |
+          echo "## 🏗️ Architectural Review Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Review Period**: Last ${{ github.event.inputs.days || '7' }} days" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Findings**: ${{ steps.review.outputs.findings_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Severity Breakdown" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔴 CRITICAL | ${{ steps.review.outputs.critical_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🟠 HIGH | ${{ steps.review.outputs.high_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Actions Taken" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Review report generated and uploaded as artifact" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.review.outputs.findings_count }}" -gt "0" ]; then
+            echo "- ✅ Created/updated architectural review issue" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ steps.review.outputs.critical_count }}" -gt "0" ]; then
+            echo "- ✅ Created individual issues for critical findings" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the architectural review issue" >> $GITHUB_STEP_SUMMARY
+          echo "2. Address critical and high priority findings" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update architectural guidelines if needed" >> $GITHUB_STEP_SUMMARY

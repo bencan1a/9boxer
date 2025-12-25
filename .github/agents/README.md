@@ -21,6 +21,24 @@ Expert in software architecture and system design.
 @workspace /agent architecture.md Design a plugin system for the application
 ```
 
+### 🏛️ Architecture Review Board Agent (`architecture-review-board.md`)
+Expert architectural review board specializing in preventing architectural drift and ensuring adherence to system design principles.
+
+**Use for:**
+- Reviewing commits and PRs for architectural concerns
+- Identifying architectural drift
+- Validating design decisions against established patterns
+- Enforcing quality standards and best practices
+- Creating actionable architectural issues
+- Conducting weekly architectural health reviews
+
+**Example usage:**
+```
+@workspace /agent architecture-review-board.md Review the last week's commits for architectural issues
+```
+
+**Note:** This agent is automatically invoked weekly via GitHub Actions to review recent changes and create issues for significant findings.
+
 ### 🧪 Test Agent (`test.md`)
 Expert in testing strategies and test implementation.
 
