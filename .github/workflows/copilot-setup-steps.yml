@@ -2,9 +2,6 @@ name: "Copilot Setup Steps"
 
 # This workflow is used by GitHub Copilot's coding agent to set up the environment
 # See: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
-#
-# IMPORTANT: This workflow should NOT include:
-# - actions/checkout@v4 (Copilot automatically clones the repo before running this.)
 
 on:
   workflow_dispatch:  # Allow manual triggering
@@ -20,8 +17,16 @@ on:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Required for actions/checkout
 
     steps:
+      # ========================================
+      # Repository Checkout
+      # ========================================
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
       # ========================================
       # Python Backend Setup
       # ========================================
