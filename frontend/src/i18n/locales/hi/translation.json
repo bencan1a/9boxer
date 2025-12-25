@@ -1,0 +1,384 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "9Boxer लोगो"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "कर्मचारियों को फ़िल्टर करें",
+      "activeFilters": "सक्रिय फ़िल्टर:",
+      "levels": "स्तर",
+      "functions": "विभाग",
+      "locations": "स्थान",
+      "managers": "प्रबंधक",
+      "excluded": "बाहर किए गए",
+      "employees": "कर्मचारी",
+      "help": "सहायता",
+      "settings": "सेटिंग्स",
+      "userGuideError": "उपयोगकर्ता गाइड खोलने में विफल",
+      "userGuideOnlyDesktop": "उपयोगकर्ता गाइड केवल डेस्कटॉप एप्लिकेशन में उपलब्ध है"
+    },
+    "fileMenu": {
+      "noFileSelected": "कोई फ़ाइल चयनित नहीं",
+      "fileMenuAriaLabel": "फ़ाइल मेनू: {{filename}}, {{count}} लंबित परिवर्तन",
+      "fileMenuAriaLabelNoFile": "फ़ाइल मेनू: कोई फ़ाइल चयनित नहीं",
+      "importData": "डेटा आयात करें",
+      "exportChanges": "{{count}} परिवर्तन Excel में लागू करें",
+      "exportChanges_other": "{{count}} परिवर्तन Excel में लागू करें",
+      "exporting": "निर्यात हो रहा है...",
+      "openRecentFile": "हाल की फ़ाइल खोलें",
+      "comingSoon": "(जल्द आ रहा है)",
+      "noActiveSession": "कोई सक्रिय सत्र नहीं",
+      "exportSuccess": "{{filename}} में {{count}} परिवर्तन सफलतापूर्वक निर्यात किया गया",
+      "exportSuccess_other": "{{filename}} में {{count}} परिवर्तन सफलतापूर्वक निर्यात किए गए"
+    },
+    "filterDrawer": {
+      "title": "फ़िल्टर",
+      "jobLevels": "नौकरी के स्तर",
+      "jobFunctions": "नौकरी के विभाग",
+      "locations": "स्थान",
+      "managers": "प्रबंधक",
+      "exclusions": "बहिष्करण",
+      "excludeEmployees": "कर्मचारियों को बाहर करें",
+      "clearAllFilters": "सभी फ़िल्टर साफ़ करें"
+    },
+    "exclusionDialog": {
+      "title": "कर्मचारियों को बाहर करें",
+      "quickFilters": "त्वरित फ़िल्टर",
+      "excludeVPs": "VPs को बाहर करें",
+      "excludeDirectorsPlus": "Directors+ को बाहर करें",
+      "excludeManagers": "Managers को बाहर करें",
+      "clearAll": "सभी साफ़ करें",
+      "searchPlaceholder": "कर्मचारियों को खोजें...",
+      "selectAll": "सभी चुनें ({{count}} कर्मचारी)",
+      "selectedCount": "{{count}} चयनित",
+      "cancel": "रद्द करें",
+      "applyExclusions": "बहिष्करण लागू करें"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "कोई फ़ाइल लोड नहीं है",
+      "emptyStateDescription": "यहाँ एक Excel फ़ाइल छोड़ें या शुरू करने के लिए डेटा आयात करें पर क्लिक करें",
+      "importData": "डेटा आयात करें",
+      "sampleFileHint": "9Boxer में नए हैं? सहायता → उपयोगकर्ता गाइड से सैंपल फ़ाइल आयात करने का प्रयास करें",
+      "showPanel": "पैनल दिखाएं",
+      "hidePanel": "पैनल छुपाएं"
+    }
+  },
+  "grid": {
+    "axes": {
+      "performance": "प्रदर्शन (निम्न → उच्च)",
+      "potential": "क्षमता (निम्न → उच्च)"
+    },
+    "employeeCount": {
+      "employee": "कर्मचारी",
+      "employee_other": "कर्मचारी",
+      "of": "में से",
+      "noEmployees": "कोई कर्मचारी नहीं",
+      "totalEmployeesInSession": "सत्र में कुल कर्मचारी",
+      "showingCount": "{{totalCount}} में से {{filteredCount}} कर्मचारी दिखाए जा रहे हैं",
+      "activeFilters": "सक्रिय फ़िल्टर:",
+      "jobLevel": "नौकरी का स्तर",
+      "jobFunction": "नौकरी का विभाग",
+      "location": "स्थान",
+      "manager": "प्रबंधक",
+      "excluded": "बाहर किए गए",
+      "ariaLabel": "{{count}} कुल कर्मचारी",
+      "ariaLabelFiltered": "सक्रिय फ़िल्टर के साथ {{totalCount}} में से {{filteredCount}} कर्मचारी दिखाए जा रहे हैं",
+      "ariaLabelNoEmployees": "सत्र में कोई कर्मचारी नहीं"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "ग्रिड व्यू सक्रिय (डोनट व्यू के लिए D दबाएं)",
+      "donutViewActive": "डोनट व्यू सक्रिय (ग्रिड व्यू के लिए D दबाएं)",
+      "ariaLabelToggle": "व्यू मोड टॉगल",
+      "ariaLabelGrid": "ग्रिड व्यू",
+      "ariaLabelDonut": "डोनट व्यू"
+    },
+    "gridBox": {
+      "collapseBox": "बॉक्स संक्षिप्त करें",
+      "expandBox": "बॉक्स विस्तारित करें",
+      "modified": "संशोधित"
+    },
+    "employeeTile": {
+      "modified": "संशोधित",
+      "donut": "डोनट",
+      "donutLabel": "डोनट:"
+    },
+    "positions": {
+      "1": {
+        "name": "कम प्रदर्शक",
+        "shortLabel": "[न,न]",
+        "fullLabel": "कम प्रदर्शक [न,न]",
+        "guidance": "कम प्रदर्शन, कम क्षमता। कर्मचारी अपेक्षाओं को पूरा करने में संघर्षरत हैं और सीमित विकास क्षमता है। प्रदर्शन सुधार योजनाओं, अतिरिक्त सहायता, या भूमिका पुनर्नियुक्ति की आवश्यकता हो सकती है।"
+      },
+      "2": {
+        "name": "प्रभावी पेशेवर",
+        "shortLabel": "[मध्य,न]",
+        "fullLabel": "प्रभावी पेशेवर [मध्य,न]",
+        "guidance": "वर्तमान भूमिका में ठोस प्रदर्शन लेकिन सीमित उन्नति क्षमता। विश्वसनीय योगदानकर्ता जो अपने वर्तमान स्तर पर उत्कृष्ट हैं। वर्तमान भूमिका में मान्यता, सहभागिता, और प्रतिधारण पर ध्यान दें।"
+      },
+      "3": {
+        "name": "कार्यशील",
+        "shortLabel": "[उ,न]",
+        "fullLabel": "कार्यशील [उ,न]",
+        "guidance": "सीमित उन्नति क्षमता के साथ उच्च प्रदर्शक। अपनी वर्तमान भूमिका में अत्यधिक मूल्यवान, लगातार उत्कृष्ट परिणाम देते हैं। उन्हें प्रेरित रखने के लिए सहभागिता रणनीतियों, मान्यता, और प्रतिधारण में निवेश करें।"
+      },
+      "4": {
+        "name": "असंगत",
+        "shortLabel": "[न,मध्य]",
+        "fullLabel": "असंगत [न,मध्य]",
+        "guidance": "कम प्रदर्शन कर रहे हैं लेकिन विकास की क्षमता दिखा रहे हैं। गलत भूमिका में हो सकते हैं, विकास की आवश्यकता है, या बाधाओं का सामना कर रहे हैं। कोचिंग, मार्गदर्शन, स्पष्ट प्रदर्शन अपेक्षाएं प्रदान करें, और भूमिका समायोजन पर विचार करें।"
+      },
+      "5": {
+        "name": "मुख्य प्रतिभा",
+        "shortLabel": "[मध्य,मध्य]",
+        "fullLabel": "मुख्य प्रतिभा [मध्य,मध्य]",
+        "guidance": "मध्यम विकास क्षमता के साथ ठोस प्रदर्शनकर्ता। संगठन की रीढ़ जो लगातार परिणाम प्रदान करती है। विकास के अवसरों, पार्श्व विकास, और कौशल संवर्धन में निवेश करें।"
+      },
+      "6": {
+        "name": "उच्च प्रभाव",
+        "shortLabel": "[उ,मध्य]",
+        "fullLabel": "उच्च प्रभाव [उ,मध्य]",
+        "guidance": "मध्यम उन्नति क्षमता के साथ उच्च प्रदर्शक। मूल्यवान योगदानकर्ता जो उत्कृष्ट हैं और बढ़ी हुई जिम्मेदारी ले सकते हैं। चुनौतीपूर्ण कार्य, कौशल विकास, और विषय विशेषज्ञता पर ध्यान दें।"
+      },
+      "7": {
+        "name": "रहस्यमय",
+        "shortLabel": "[न,उ]",
+        "fullLabel": "रहस्यमय [न,उ]",
+        "guidance": "उच्च क्षमता लेकिन वर्तमान में कम प्रदर्शन कर रहे हैं। भूमिका में नए हो सकते हैं, गलत दिशा में हैं, या चुनौतियों का सामना कर रहे हैं। क्षमता को अनलॉक करने के लिए कोचिंग, भूमिका समायोजन, या लक्षित विकास योजनाओं के माध्यम से तत्काल ध्यान देने की आवश्यकता है।"
+      },
+      "8": {
+        "name": "विकासशील",
+        "shortLabel": "[मध्य,उ]",
+        "fullLabel": "विकासशील [मध्य,उ]",
+        "guidance": "उन्नति के लिए उच्च क्षमता के साथ ठोस प्रदर्शनकर्ता। विकास में भविष्य के नेता। मार्गदर्शन, नेतृत्व प्रशिक्षण, करियर पथ योजना, और बढ़ी हुई जिम्मेदारी के अवसर प्रदान करें।"
+      },
+      "9": {
+        "name": "सितारा",
+        "shortLabel": "[उ,उ]",
+        "fullLabel": "सितारा [उ,उ]",
+        "guidance": "उच्च क्षमता के साथ शीर्ष प्रदर्शक। नेतृत्व भूमिकाओं के लिए बनाए रखने और विकसित करने के लिए महत्वपूर्ण प्रतिभा। प्रतिधारण, उत्तराधिकार योजना, कार्यकारी विकास, और चुनौतीपूर्ण कार्यों पर ध्यान दें।"
+      }
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "विवरण",
+      "changes": "परिवर्तन",
+      "statistics": "आंकड़े",
+      "intelligence": "विश्लेषण"
+    },
+    "detailsTab": {
+      "selectEmployee": "विवरण देखने के लिए एक कर्मचारी चुनें",
+      "reportingChain": "रिपोर्टिंग श्रृंखला",
+      "employeeInformation": "कर्मचारी जानकारी",
+      "jobFunction": "नौकरी का विभाग",
+      "location": "स्थान",
+      "jobLevel": "नौकरी का स्तर",
+      "tenure": "कार्यकाल",
+      "timeInLevel": "स्तर में समय",
+      "promotionReady": "पदोन्नति के लिए तैयार",
+      "currentAssessment": "वर्तमान मूल्यांकन",
+      "potential": "क्षमता:",
+      "position": "स्थिति:",
+      "modifiedInSession": "सत्र में संशोधित",
+      "performanceHistory": "प्रदर्शन इतिहास",
+      "currentYear": "{{year}} (वर्तमान)",
+      "performance": "प्रदर्शन",
+      "potentialLabel": "क्षमता",
+      "rating": "रेटिंग",
+      "noHistoricalRatings": "कोई ऐतिहासिक रेटिंग उपलब्ध नहीं",
+      "managementChain": {
+        "employee": "कर्मचारी",
+        "manager": "प्रबंधक",
+        "noData": "कोई प्रबंधन श्रृंखला डेटा उपलब्ध नहीं",
+        "level01": "स्तर 01",
+        "level02": "स्तर 02",
+        "level03": "स्तर 03",
+        "level04": "स्तर 04 (VP)",
+        "level05": "स्तर 05",
+        "level06": "स्तर 06"
+      }
+    },
+    "changeTrackerTab": {
+      "noChanges": "अभी तक कोई परिवर्तन नहीं",
+      "noDonutChanges": "अभी तक कोई डोनट परिवर्तन नहीं",
+      "moveEmployeesHint": "यहां परिवर्तनों को ट्रैक करने के लिए कर्मचारियों को स्थानांतरित करें",
+      "moveEmployeesDonutHint": "परिवर्तनों को ट्रैक करने के लिए डोनट मोड में कर्मचारियों को स्थानांतरित करें",
+      "addNotesPlaceholder": "नोट्स जोड़ें...",
+      "employee": "कर्मचारी",
+      "movement": "स्थानांतरण",
+      "from": "से",
+      "to": "को",
+      "notes": "नोट्स",
+      "gridChanges": "ग्रिड परिवर्तन",
+      "donutChanges": "डोनट परिवर्तन"
+    },
+    "statisticsTab": {
+      "totalEmployees": "कुल कर्मचारी",
+      "modified": "संशोधित",
+      "highPerformers": "उच्च प्रदर्शक",
+      "solidPerformers": "ठोस प्रदर्शक",
+      "needsAttention": "ध्यान देने की आवश्यकता",
+      "distributionByPosition": "स्थिति के अनुसार वितरण",
+      "position": "स्थिति",
+      "count": "संख्या",
+      "percentage": "प्रतिशत",
+      "groupPercentage": "समूह %",
+      "noStatisticsAvailable": "कोई आंकड़े उपलब्ध नहीं",
+      "employeeCount": "कर्मचारी संख्या",
+      "employeesCount": "{{count}} कर्मचारी",
+      "countLabel": "संख्या"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "सत्र नहीं मिला",
+      "sessionLostMessage": "आपका डेटा सत्र खो गया (संभवतः एप्लिकेशन के पुनः आरंभ होने के कारण)। जारी रखने के लिए कृपया अपनी Excel फ़ाइल फिर से अपलोड करें।",
+      "failedToLoad": "विश्लेषण डेटा लोड करने में विफल",
+      "retry": "पुनः प्रयास करें",
+      "noIntelligenceData": "कोई विश्लेषण डेटा उपलब्ध नहीं",
+      "locationAnalysis": "स्थान विश्लेषण",
+      "highPerformerByLocation": "स्थान के अनुसार उच्च प्रदर्शक %",
+      "functionAnalysis": "विभाग विश्लेषण",
+      "highPerformerByFunction": "विभाग के अनुसार उच्च प्रदर्शक %",
+      "levelAnalysis": "स्तर विश्लेषण",
+      "performanceDistributionByLevel": "स्तर के अनुसार प्रदर्शन वितरण",
+      "tenureAnalysis": "कार्यकाल विश्लेषण",
+      "highPerformerByTenure": "कार्यकाल के अनुसार उच्च प्रदर्शक %",
+      "performanceLevel": {
+        "low": "निम्न प्रदर्शन",
+        "medium": "मध्यम प्रदर्शन",
+        "high": "उच्च प्रदर्शन"
+      },
+      "anomaly": {
+        "noIssues": "कोई समस्या नहीं",
+        "moderateAnomaly": "मध्यम विसंगति",
+        "severeAnomaly": "गंभीर विसंगति",
+        "unknown": "अज्ञात",
+        "statisticalSummary": "सांख्यिकीय सारांश",
+        "pValue": "P-मान",
+        "pValueTooltip": "प्रेक्षित अंतर संयोग से होने की संभावना। p < 0.05 महत्वपूर्ण विचलन को इंगित करता है।",
+        "effectSize": "प्रभाव आकार (Cramér's V)",
+        "effectSizeTooltip": "संबंध की शक्ति (0-1 स्केल)। 0.1=छोटा, 0.3=मध्यम, 0.5=बड़ा",
+        "sampleSize": "नमूना आकार",
+        "degreesOfFreedom": "स्वतंत्रता की डिग्री",
+        "interpretation": "व्याख्या",
+        "detailedDeviations": "विस्तृत विचलन",
+        "category": "श्रेणी",
+        "observedPercent": "प्रेक्षित %",
+        "expectedPercent": "अपेक्षित %",
+        "zScore": "Z-स्कोर",
+        "significant": "महत्वपूर्ण?",
+        "yes": "हाँ",
+        "no": "नहीं"
+      },
+      "chart": {
+        "noDataAvailable": "कोई डेटा उपलब्ध नहीं",
+        "actual": "वास्तविक",
+        "expected": "अपेक्षित",
+        "zScore": "Z-स्कोर",
+        "pValue": "P-मान",
+        "sampleSize": "N",
+        "percentage": "प्रतिशत (%)",
+        "expectedPercent": "अपेक्षित %",
+        "actualPercent": "वास्तविक %",
+        "level": "स्तर",
+        "high": "उच्च",
+        "medium": "मध्यम",
+        "low": "निम्न",
+        "total": "कुल",
+        "baseline": "आधार रेखा ({{percent}}%)",
+        "baselineNote": "नोट: आधार रेखा सभी स्तरों पर समग्र औसत उच्च प्रदर्शन प्रतिशत को दर्शाती है। महत्वपूर्ण विचलन अंशांकन मुद्दों का संकेत दे सकते हैं।",
+        "function": "विभाग",
+        "position": "स्थिति {{number}}",
+        "heatIntensity": "ताप तीव्रता:"
+      },
+      "summary": {
+        "excellent": "उत्कृष्ट",
+        "good": "अच्छा",
+        "needsAttention": "ध्यान देने की आवश्यकता",
+        "qualityScore": "गुणवत्ता स्कोर",
+        "qualityScoreDescription": "पता लगाई गई सांख्यिकीय विसंगतियों के आधार पर 0-100 स्केल",
+        "totalAnomalies": "कुल विसंगतियां",
+        "green": "हरा",
+        "yellow": "पीला",
+        "red": "लाल",
+        "overallHealth": "समग्र स्वास्थ्य",
+        "wellCalibrated": "रेटिंग वितरण सभी आयामों में अच्छी तरह से अंशांकित प्रतीत होता है।",
+        "someAnomalies": "कुछ विसंगतियां पाई गईं। विवरण के लिए नीचे दिए गए खंडों की समीक्षा करें।",
+        "significantAnomalies": "महत्वपूर्ण विसंगतियां पाई गईं। तत्काल समीक्षा की सिफारिश की जाती है।"
+      }
+    }
+  },
+  "common": {
+    "ok": "ठीक है",
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "retry": "पुनः प्रयास करें",
+    "quit": "बंद करें",
+    "retryConnection": "कनेक्शन पुनः प्रयास करें",
+    "fileUpload": {
+      "dialogTitle": "Excel फ़ाइल आयात करें",
+      "description": "9-Box प्रतिभा मैपिंग Excel फ़ाइल (.xlsx या .xls) आयात करें",
+      "successMessage": "फ़ाइल सफलतापूर्वक आयात की गई!",
+      "selectFile": "फ़ाइल चुनें",
+      "selected": "चयनित:",
+      "importing": "आयात हो रहा है...",
+      "import": "आयात करें",
+      "importSuccess": "{{filename}} सफलतापूर्वक आयात की गई",
+      "importFailed": "फ़ाइल आयात करने में विफल",
+      "failedToRead": "फ़ाइल पढ़ने में विफल",
+      "fileTooLarge": "फ़ाइल का आकार 10MB से कम होना चाहिए",
+      "invalidFileType": "कृपया एक Excel फ़ाइल (.xlsx या .xls) चुनें",
+      "noFileSelected": "कृपया पहले एक फ़ाइल चुनें"
+    },
+    "devMode": {
+      "webModeTooltip": "वेब ब्राउज़र मोड में चल रहा है",
+      "webModeLabel": "वेब मोड",
+      "fetchingBackendInfo": "बैकएंड जानकारी प्राप्त की जा रही है...",
+      "backendPort": "बैकएंड: पोर्ट {{port}}",
+      "backendLoading": "बैकएंड: लोड हो रहा है...",
+      "backendUrlTooltip": "बैकएंड URL: {{url}}\n\nयदि स्टार्टअप के दौरान पोर्ट विरोध था तो यह पोर्ट डिफ़ॉल्ट (8000) से भिन्न हो सकता है।"
+    },
+    "connectionStatus": {
+      "connected": "कनेक्ट किया गया",
+      "reconnecting": "पुनः कनेक्ट हो रहा है",
+      "reconnectingWithCount": "पुनः कनेक्ट हो रहा है ({{count}})",
+      "disconnected": "डिस्कनेक्ट किया गया"
+    },
+    "errorBoundary": {
+      "title": "ओह! कुछ गलत हो गया",
+      "message": "एक अप्रत्याशित त्रुटि हुई। कृपया पृष्ठ को पुनः लोड करने का प्रयास करें।",
+      "returnHome": "होम पर लौटें"
+    }
+  },
+  "messages": {
+    "success": "सफलता",
+    "error": "त्रुटि",
+    "warning": "चेतावनी",
+    "info": "जानकारी"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "closeAriaLabel": "सेटिंग्स बंद करें",
+    "appearance": "दिखावट",
+    "currentSelection": "वर्तमान चयन:",
+    "currentTheme": "वर्तमान में {{theme}} थीम का उपयोग कर रहे हैं (सिस्टम से)",
+    "theme": {
+      "lightMode": "लाइट मोड",
+      "lightModeDesc": "हमेशा लाइट थीम का उपयोग करें",
+      "darkMode": "डार्क मोड",
+      "darkModeDesc": "हमेशा डार्क थीम का उपयोग करें",
+      "auto": "स्वतः (सिस्टम का अनुसरण करें)",
+      "autoDesc": "स्वचालित रूप से अपनी सिस्टम थीम से मिलान करें"
+    }
+  },
+  "zoom": {
+    "zoomIn": "ज़ूम इन (Ctrl++)",
+    "zoomOut": "ज़ूम आउट (Ctrl+-)",
+    "resetZoom": "ज़ूम रीसेट करें (Ctrl+0)",
+    "enterFullScreen": "पूर्ण-स्क्रीन (F11)",
+    "exitFullScreen": "पूर्ण-स्क्रीन से बाहर निकलें (F11)"
+  }
+}
