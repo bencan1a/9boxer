@@ -1,7 +1,18 @@
 # Active Plans
 
-**Updated**: 2025-12-25T02:46:24.950385+00:00
+**Updated**: 2025-12-25T06:18:12.061512+00:00
 **Showing**: Plans with status=active created within 21 days
+
+## design-system
+- **Status**: active
+- **Owner**: Claude Code
+- **Created**: 2025-12-24
+- **Path**: `agent-projects/design-system/plan.md`
+- **Summary**:
+  - Implement comprehensive design system with tokens, documentation, and tooling
+  - Extract hardcoded values into centralized theme tokens
+  - Create Storybook for component discovery and validation
+  - Establish governance processes for design consistency
 
 ## i18n-implementation
 - **Status**: active
