@@ -65,6 +65,10 @@
     }
   },
   "grid": {
+    "axes": {
+      "performance": "Performance (Low → High)",
+      "potential": "Potential (Low → High)"
+    },
     "employeeCount": {
       "employee": "employee",
       "employee_other": "employees",
@@ -91,7 +95,69 @@
     },
     "gridBox": {
       "collapseBox": "Collapse box",
-      "expandBox": "Expand box"
+      "expandBox": "Expand box",
+      "modified": "Modified"
+    },
+    "employeeTile": {
+      "modified": "Modified",
+      "donut": "Donut",
+      "donutLabel": "Donut:"
+    },
+    "positions": {
+      "1": {
+        "name": "Underperformer",
+        "shortLabel": "[L,L]",
+        "fullLabel": "Underperformer [L,L]",
+        "guidance": "Low performance, low potential. Employees struggling to meet expectations with limited growth capacity. May require performance improvement plans, additional support, or role reassignment."
+      },
+      "2": {
+        "name": "Effective Pro",
+        "shortLabel": "[M,L]",
+        "fullLabel": "Effective Pro [M,L]",
+        "guidance": "Solid performance in current role but limited advancement potential. Reliable contributors who excel at their current level. Focus on recognition, engagement, and retention in current role."
+      },
+      "3": {
+        "name": "Workhorse",
+        "shortLabel": "[H,L]",
+        "fullLabel": "Workhorse [H,L]",
+        "guidance": "High performers with limited advancement potential. Highly valuable in their current role, delivering consistent excellent results. Invest in engagement strategies, recognition, and retention to keep them motivated."
+      },
+      "4": {
+        "name": "Inconsistent",
+        "shortLabel": "[L,M]",
+        "fullLabel": "Inconsistent [L,M]",
+        "guidance": "Underperforming but showing potential for growth. May be in wrong role, need development, or facing obstacles. Provide coaching, mentoring, clear performance expectations, and consider role adjustment."
+      },
+      "5": {
+        "name": "Core Talent",
+        "shortLabel": "[M,M]",
+        "fullLabel": "Core Talent [M,M]",
+        "guidance": "Solid performers with moderate growth potential. The backbone of the organization delivering consistent results. Invest in development opportunities, lateral growth, and skill enhancement."
+      },
+      "6": {
+        "name": "High Impact",
+        "shortLabel": "[H,M]",
+        "fullLabel": "High Impact [H,M]",
+        "guidance": "High performers with moderate advancement potential. Valuable contributors who excel and can take on increased responsibility. Focus on stretch assignments, skill development, and subject matter expertise."
+      },
+      "7": {
+        "name": "Enigma",
+        "shortLabel": "[L,H]",
+        "fullLabel": "Enigma [L,H]",
+        "guidance": "High potential but currently underperforming. May be new to role, misaligned, or facing challenges. Requires immediate attention through coaching, role adjustment, or targeted development plans to unlock potential."
+      },
+      "8": {
+        "name": "Growth",
+        "shortLabel": "[M,H]",
+        "fullLabel": "Growth [M,H]",
+        "guidance": "Solid performers with high potential for advancement. Future leaders in development. Provide mentoring, leadership training, career path planning, and opportunities for increased responsibility."
+      },
+      "9": {
+        "name": "Star",
+        "shortLabel": "[H,H]",
+        "fullLabel": "Star [H,H]",
+        "guidance": "Top performers with high potential. Critical talent to retain and develop for leadership roles. Focus on retention, succession planning, executive development, and challenging assignments."
+      }
     }
   },
   "panel": {
@@ -114,7 +180,24 @@
       "currentAssessment": "Current Assessment",
       "potential": "Potential:",
       "position": "Position:",
-      "modifiedInSession": "Modified in Session"
+      "modifiedInSession": "Modified in Session",
+      "performanceHistory": "Performance History",
+      "currentYear": "{{year}} (Current)",
+      "performance": "Performance",
+      "potentialLabel": "Potential",
+      "rating": "Rating",
+      "noHistoricalRatings": "No historical ratings available",
+      "managementChain": {
+        "employee": "Employee",
+        "manager": "Manager",
+        "noData": "No management chain data available",
+        "level01": "Level 01",
+        "level02": "Level 02",
+        "level03": "Level 03",
+        "level04": "Level 04 (VP)",
+        "level05": "Level 05",
+        "level06": "Level 06"
+      }
     },
     "changeTrackerTab": {
       "noChanges": "No changes yet",
@@ -141,7 +224,10 @@
       "count": "Count",
       "percentage": "Percentage",
       "groupPercentage": "Group %",
-      "noStatisticsAvailable": "No statistics available"
+      "noStatisticsAvailable": "No statistics available",
+      "employeeCount": "Employee Count",
+      "employeesCount": "{{count}} employees",
+      "countLabel": "Count"
     },
     "intelligenceTab": {
       "sessionNotFound": "Session Not Found",
@@ -156,7 +242,70 @@
       "levelAnalysis": "Level Analysis",
       "performanceDistributionByLevel": "Performance Distribution by Level",
       "tenureAnalysis": "Tenure Analysis",
-      "highPerformerByTenure": "High Performer % by Tenure"
+      "highPerformerByTenure": "High Performer % by Tenure",
+      "performanceLevel": {
+        "low": "Low Performance",
+        "medium": "Medium Performance",
+        "high": "High Performance"
+      },
+      "anomaly": {
+        "noIssues": "No Issues",
+        "moderateAnomaly": "Moderate Anomaly",
+        "severeAnomaly": "Severe Anomaly",
+        "unknown": "Unknown",
+        "statisticalSummary": "Statistical Summary",
+        "pValue": "P-value",
+        "pValueTooltip": "Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.",
+        "effectSize": "Effect Size (Cramér's V)",
+        "effectSizeTooltip": "Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large",
+        "sampleSize": "Sample Size",
+        "degreesOfFreedom": "Degrees of Freedom",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detailed Deviations",
+        "category": "Category",
+        "observedPercent": "Observed %",
+        "expectedPercent": "Expected %",
+        "zScore": "Z-Score",
+        "significant": "Significant?",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "chart": {
+        "noDataAvailable": "No data available",
+        "actual": "Actual",
+        "expected": "Expected",
+        "zScore": "Z-score",
+        "pValue": "P-value",
+        "sampleSize": "N",
+        "percentage": "Percentage (%)",
+        "expectedPercent": "Expected %",
+        "actualPercent": "Actual %",
+        "level": "Level",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "total": "Total",
+        "baseline": "Baseline ({{percent}}%)",
+        "baselineNote": "Note: Baseline represents overall average high performance percentage across all levels. Significant deviations may indicate calibration issues.",
+        "function": "Function",
+        "position": "Pos {{number}}",
+        "heatIntensity": "Heat intensity:"
+      },
+      "summary": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "needsAttention": "Needs Attention",
+        "qualityScore": "Quality Score",
+        "qualityScoreDescription": "0-100 scale based on statistical anomalies detected",
+        "totalAnomalies": "Total Anomalies",
+        "green": "Green",
+        "yellow": "Yellow",
+        "red": "Red",
+        "overallHealth": "Overall Health",
+        "wellCalibrated": "Rating distributions appear well-calibrated across all dimensions.",
+        "someAnomalies": "Some anomalies detected. Review sections below for details.",
+        "significantAnomalies": "Significant anomalies detected. Immediate review recommended."
+      }
     }
   },
   "common": {
@@ -167,12 +316,69 @@
     "delete": "Delete",
     "edit": "Edit",
     "retry": "Retry",
-    "quit": "Quit"
+    "quit": "Quit",
+    "retryConnection": "Retry connection",
+    "fileUpload": {
+      "dialogTitle": "Import Excel File",
+      "description": "Import a 9-Box talent mapping Excel file (.xlsx or .xls)",
+      "successMessage": "File imported successfully!",
+      "selectFile": "Select File",
+      "selected": "Selected:",
+      "importing": "Importing...",
+      "import": "Import",
+      "importSuccess": "Successfully imported {{filename}}",
+      "importFailed": "Failed to import file",
+      "failedToRead": "Failed to read file",
+      "fileTooLarge": "File size must be less than 10MB",
+      "invalidFileType": "Please select an Excel file (.xlsx or .xls)",
+      "noFileSelected": "Please select a file first"
+    },
+    "devMode": {
+      "webModeTooltip": "Running in web browser mode",
+      "webModeLabel": "Web Mode",
+      "fetchingBackendInfo": "Fetching backend information...",
+      "backendPort": "Backend: Port {{port}}",
+      "backendLoading": "Backend: Loading...",
+      "backendUrlTooltip": "Backend URL: {{url}}\n\nThis port may differ from the default (8000) if there was a port conflict during startup."
+    },
+    "connectionStatus": {
+      "connected": "Connected",
+      "reconnecting": "Reconnecting",
+      "reconnectingWithCount": "Reconnecting ({{count}})",
+      "disconnected": "Disconnected"
+    },
+    "errorBoundary": {
+      "title": "Oops! Something went wrong",
+      "message": "An unexpected error occurred. Please try reloading the page.",
+      "returnHome": "Return to Home"
+    }
   },
   "messages": {
     "success": "Success",
     "error": "Error",
     "warning": "Warning",
     "info": "Info"
+  },
+  "settings": {
+    "title": "Settings",
+    "closeAriaLabel": "close settings",
+    "appearance": "Appearance",
+    "currentSelection": "Current Selection:",
+    "currentTheme": "Currently using {{theme}} theme (from system)",
+    "theme": {
+      "lightMode": "Light Mode",
+      "lightModeDesc": "Always use light theme",
+      "darkMode": "Dark Mode",
+      "darkModeDesc": "Always use dark theme",
+      "auto": "Auto (Follow System)",
+      "autoDesc": "Automatically match your system theme"
+    }
+  },
+  "zoom": {
+    "zoomIn": "Zoom In (Ctrl++)",
+    "zoomOut": "Zoom Out (Ctrl+-)",
+    "resetZoom": "Reset Zoom (Ctrl+0)",
+    "enterFullScreen": "Full-Screen (F11)",
+    "exitFullScreen": "Exit Full-Screen (F11)"
   }
 }

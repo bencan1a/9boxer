@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from "react";
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from "@dnd-kit/core";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
 import { ViewModeToggle } from "./ViewModeToggle";
@@ -16,6 +17,7 @@ import { logger } from "../../utils/logger";
 const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 
 export const NineBoxGrid: React.FC = () => {
+  const { t } = useTranslation();
   const {
     employeesByPosition,
     getShortPositionLabel,
@@ -176,7 +178,7 @@ export const NineBoxGrid: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <Box sx={{ p: 3, height: "100%", width: "100%", userSelect: "none" }} data-testid="nine-box-grid">
+      <Box sx={{ p: 3, minHeight: "calc(100vh - 80px)", width: "100%", userSelect: "none", display: "flex", flexDirection: "column" }} data-testid="nine-box-grid">
         {/* Header row with Performance label, employee count, and view mode toggle */}
         <Box sx={{ display: "flex", mb: 2, width: "100%", alignItems: "center" }}>
           <Box sx={{ width: 80 }} /> {/* Spacer for left label alignment */}
@@ -199,7 +201,7 @@ export const NineBoxGrid: React.FC = () => {
               flexDirection: { xs: "column", sm: "row" }
             }}>
               <Typography variant="h6" fontWeight="bold">
-                Performance (Low → High)
+                {t('grid.axes.performance')}
               </Typography>
               <EmployeeCount />
             </Box>
@@ -211,7 +213,7 @@ export const NineBoxGrid: React.FC = () => {
           </Box>
         </Box>
 
-        <Box sx={{ display: "flex", height: "calc(100% - 60px)", width: "100%" }}>
+        <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
           {/* Left axis label */}
           <Box
             sx={{
@@ -224,7 +226,7 @@ export const NineBoxGrid: React.FC = () => {
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              Potential (Low → High)
+              {t('grid.axes.potential')}
             </Typography>
           </Box>
 
@@ -283,7 +285,7 @@ export const NineBoxGrid: React.FC = () => {
                 <Chip label={activeEmployee.job_level} size="small" sx={{ height: 18 }} />
                 {activeEmployee.modified_in_session && (
                   <Chip
-                    label="Modified"
+                    label={t('grid.gridBox.modified')}
                     size="small"
                     color="secondary"
                     sx={{ height: 18 }}

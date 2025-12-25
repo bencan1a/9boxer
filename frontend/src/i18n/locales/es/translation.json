@@ -65,6 +65,10 @@
     }
   },
   "grid": {
+    "axes": {
+      "performance": "Desempeño (Bajo → Alto)",
+      "potential": "Potencial (Bajo → Alto)"
+    },
     "employeeCount": {
       "employee": "empleado",
       "employee_other": "empleados",
@@ -91,7 +95,69 @@
     },
     "gridBox": {
       "collapseBox": "Colapsar caja",
-      "expandBox": "Expandir caja"
+      "expandBox": "Expandir caja",
+      "modified": "Modificado"
+    },
+    "employeeTile": {
+      "modified": "Modificado",
+      "donut": "Dona",
+      "donutLabel": "Dona:"
+    },
+    "positions": {
+      "1": {
+        "name": "Bajo Rendimiento",
+        "shortLabel": "[B,B]",
+        "fullLabel": "Bajo Rendimiento [B,B]",
+        "guidance": "Bajo desempeño, bajo potencial. Empleados que luchan por cumplir las expectativas con capacidad de crecimiento limitada. Pueden requerir planes de mejora de desempeño, apoyo adicional o reasignación de rol."
+      },
+      "2": {
+        "name": "Profesional Efectivo",
+        "shortLabel": "[M,B]",
+        "fullLabel": "Profesional Efectivo [M,B]",
+        "guidance": "Desempeño sólido en el rol actual pero potencial de avance limitado. Contribuidores confiables que sobresalen en su nivel actual. Enfocarse en reconocimiento, compromiso y retención en el rol actual."
+      },
+      "3": {
+        "name": "Caballo de Batalla",
+        "shortLabel": "[A,B]",
+        "fullLabel": "Caballo de Batalla [A,B]",
+        "guidance": "Alto desempeño con potencial de avance limitado. Altamente valiosos en su rol actual, entregando resultados excelentes consistentes. Invertir en estrategias de compromiso, reconocimiento y retención para mantenerlos motivados."
+      },
+      "4": {
+        "name": "Inconsistente",
+        "shortLabel": "[B,M]",
+        "fullLabel": "Inconsistente [B,M]",
+        "guidance": "Bajo desempeño pero mostrando potencial de crecimiento. Puede estar en el rol equivocado, necesitar desarrollo o enfrentar obstáculos. Proporcionar coaching, mentoría, expectativas de desempeño claras y considerar ajuste de rol."
+      },
+      "5": {
+        "name": "Talento Principal",
+        "shortLabel": "[M,M]",
+        "fullLabel": "Talento Principal [M,M]",
+        "guidance": "Desempeño sólido con potencial de crecimiento moderado. La columna vertebral de la organización entregando resultados consistentes. Invertir en oportunidades de desarrollo, crecimiento lateral y mejora de habilidades."
+      },
+      "6": {
+        "name": "Alto Impacto",
+        "shortLabel": "[A,M]",
+        "fullLabel": "Alto Impacto [A,M]",
+        "guidance": "Alto desempeño con potencial de avance moderado. Contribuidores valiosos que sobresalen y pueden asumir mayor responsabilidad. Enfocarse en asignaciones desafiantes, desarrollo de habilidades y experiencia en la materia."
+      },
+      "7": {
+        "name": "Enigma",
+        "shortLabel": "[B,A]",
+        "fullLabel": "Enigma [B,A]",
+        "guidance": "Alto potencial pero actualmente con bajo desempeño. Puede ser nuevo en el rol, desalineado o enfrentando desafíos. Requiere atención inmediata a través de coaching, ajuste de rol o planes de desarrollo específicos para desbloquear el potencial."
+      },
+      "8": {
+        "name": "Crecimiento",
+        "shortLabel": "[M,A]",
+        "fullLabel": "Crecimiento [M,A]",
+        "guidance": "Desempeño sólido con alto potencial de avance. Futuros líderes en desarrollo. Proporcionar mentoría, capacitación en liderazgo, planificación de carrera y oportunidades de mayor responsabilidad."
+      },
+      "9": {
+        "name": "Estrella",
+        "shortLabel": "[A,A]",
+        "fullLabel": "Estrella [A,A]",
+        "guidance": "Alto desempeño con alto potencial. Talento crítico para retener y desarrollar para roles de liderazgo. Enfocarse en retención, planificación de sucesión, desarrollo ejecutivo y asignaciones desafiantes."
+      }
     }
   },
   "panel": {
@@ -114,7 +180,24 @@
       "currentAssessment": "Evaluación Actual",
       "potential": "Potencial:",
       "position": "Posición:",
-      "modifiedInSession": "Modificado en la Sesión"
+      "modifiedInSession": "Modificado en la Sesión",
+      "performanceHistory": "Historial de Desempeño",
+      "currentYear": "{{year}} (Actual)",
+      "performance": "Desempeño",
+      "potentialLabel": "Potencial",
+      "rating": "Calificación",
+      "noHistoricalRatings": "No hay calificaciones históricas disponibles",
+      "managementChain": {
+        "employee": "Empleado",
+        "manager": "Gerente",
+        "noData": "No hay datos de cadena de gestión disponibles",
+        "level01": "Nivel 01",
+        "level02": "Nivel 02",
+        "level03": "Nivel 03",
+        "level04": "Nivel 04 (VP)",
+        "level05": "Nivel 05",
+        "level06": "Nivel 06"
+      }
     },
     "changeTrackerTab": {
       "noChanges": "Ningún cambio aún",
@@ -141,7 +224,10 @@
       "count": "Cantidad",
       "percentage": "Porcentaje",
       "groupPercentage": "% del Grupo",
-      "noStatisticsAvailable": "No hay estadísticas disponibles"
+      "noStatisticsAvailable": "No hay estadísticas disponibles",
+      "employeeCount": "Cantidad de Empleados",
+      "employeesCount": "{{count}} empleados",
+      "countLabel": "Cantidad"
     },
     "intelligenceTab": {
       "sessionNotFound": "Sesión No Encontrada",
@@ -156,7 +242,70 @@
       "levelAnalysis": "Análisis por Nivel",
       "performanceDistributionByLevel": "Distribución de Desempeño por Nivel",
       "tenureAnalysis": "Análisis por Antigüedad",
-      "highPerformerByTenure": "% de Alto Desempeño por Antigüedad"
+      "highPerformerByTenure": "% de Alto Desempeño por Antigüedad",
+      "performanceLevel": {
+        "low": "Bajo Desempeño",
+        "medium": "Desempeño Medio",
+        "high": "Alto Desempeño"
+      },
+      "anomaly": {
+        "noIssues": "Sin Problemas",
+        "moderateAnomaly": "Anomalía Moderada",
+        "severeAnomaly": "Anomalía Severa",
+        "unknown": "Desconocido",
+        "statisticalSummary": "Resumen Estadístico",
+        "pValue": "Valor P",
+        "pValueTooltip": "Probabilidad de que las diferencias observadas se deban al azar. p < 0.05 indica desviación significativa.",
+        "effectSize": "Tamaño del Efecto (V de Cramér)",
+        "effectSizeTooltip": "Fuerza de la asociación (escala 0-1). 0.1=pequeño, 0.3=mediano, 0.5=grande",
+        "sampleSize": "Tamaño de Muestra",
+        "degreesOfFreedom": "Grados de Libertad",
+        "interpretation": "Interpretación",
+        "detailedDeviations": "Desviaciones Detalladas",
+        "category": "Categoría",
+        "observedPercent": "% Observado",
+        "expectedPercent": "% Esperado",
+        "zScore": "Puntuación Z",
+        "significant": "¿Significativo?",
+        "yes": "Sí",
+        "no": "No"
+      },
+      "chart": {
+        "noDataAvailable": "No hay datos disponibles",
+        "actual": "Real",
+        "expected": "Esperado",
+        "zScore": "Puntuación Z",
+        "pValue": "Valor P",
+        "sampleSize": "N",
+        "percentage": "Porcentaje (%)",
+        "expectedPercent": "% Esperado",
+        "actualPercent": "% Real",
+        "function": "Función",
+        "position": "Pos {{number}}",
+        "level": "Nivel",
+        "high": "Alto",
+        "medium": "Medio",
+        "low": "Bajo",
+        "total": "Total",
+        "baseline": "Línea Base ({{percent}}%)",
+        "baselineNote": "Nota: La línea base representa el porcentaje promedio general de alto desempeño en todos los niveles. Las desviaciones significativas pueden indicar problemas de calibración.",
+        "heatIntensity": "Intensidad de calor:"
+      },
+      "summary": {
+        "excellent": "Excelente",
+        "good": "Bueno",
+        "needsAttention": "Necesita Atención",
+        "qualityScore": "Puntuación de Calidad",
+        "qualityScoreDescription": "Escala 0-100 basada en anomalías estadísticas detectadas",
+        "totalAnomalies": "Total de Anomalías",
+        "green": "Verde",
+        "yellow": "Amarillo",
+        "red": "Rojo",
+        "overallHealth": "Salud General",
+        "wellCalibrated": "Las distribuciones de calificación parecen bien calibradas en todas las dimensiones.",
+        "someAnomalies": "Se detectaron algunas anomalías. Revise las secciones a continuación para más detalles.",
+        "significantAnomalies": "Se detectaron anomalías significativas. Se recomienda revisión inmediata."
+      }
     }
   },
   "common": {
@@ -167,12 +316,69 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "retry": "Reintentar",
-    "quit": "Salir"
+    "quit": "Salir",
+    "retryConnection": "Reintentar conexión",
+    "fileUpload": {
+      "dialogTitle": "Importar Archivo de Excel",
+      "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",
+      "successMessage": "¡Archivo importado exitosamente!",
+      "selectFile": "Seleccionar Archivo",
+      "selected": "Seleccionado:",
+      "importing": "Importando...",
+      "import": "Importar",
+      "importSuccess": "Importado exitosamente {{filename}}",
+      "importFailed": "Error al importar archivo",
+      "failedToRead": "Error al leer el archivo",
+      "fileTooLarge": "El tamaño del archivo debe ser menor a 10MB",
+      "invalidFileType": "Por favor seleccione un archivo de Excel (.xlsx o .xls)",
+      "noFileSelected": "Por favor seleccione un archivo primero"
+    },
+    "devMode": {
+      "webModeTooltip": "Ejecutándose en modo navegador web",
+      "webModeLabel": "Modo Web",
+      "fetchingBackendInfo": "Obteniendo información del backend...",
+      "backendPort": "Backend: Puerto {{port}}",
+      "backendLoading": "Backend: Cargando...",
+      "backendUrlTooltip": "URL del Backend: {{url}}\n\nEste puerto puede diferir del predeterminado (8000) si hubo un conflicto de puertos durante el inicio."
+    },
+    "connectionStatus": {
+      "connected": "Conectado",
+      "reconnecting": "Reconectando",
+      "reconnectingWithCount": "Reconectando ({{count}})",
+      "disconnected": "Desconectado"
+    },
+    "errorBoundary": {
+      "title": "¡Ups! Algo salió mal",
+      "message": "Ocurrió un error inesperado. Por favor, recargue la página.",
+      "returnHome": "Volver al Inicio"
+    }
   },
   "messages": {
     "success": "Éxito",
     "error": "Error",
     "warning": "Advertencia",
     "info": "Información"
+  },
+  "settings": {
+    "title": "Configuración",
+    "closeAriaLabel": "cerrar configuración",
+    "appearance": "Apariencia",
+    "currentSelection": "Selección Actual:",
+    "currentTheme": "Usando actualmente tema {{theme}} (del sistema)",
+    "theme": {
+      "lightMode": "Modo Claro",
+      "lightModeDesc": "Usar siempre tema claro",
+      "darkMode": "Modo Oscuro",
+      "darkModeDesc": "Usar siempre tema oscuro",
+      "auto": "Automático (Seguir Sistema)",
+      "autoDesc": "Coincidir automáticamente con el tema del sistema"
+    }
+  },
+  "zoom": {
+    "zoomIn": "Ampliar (Ctrl++)",
+    "zoomOut": "Reducir (Ctrl+-)",
+    "resetZoom": "Restablecer Zoom (Ctrl+0)",
+    "enterFullScreen": "Pantalla Completa (F11)",
+    "exitFullScreen": "Salir de Pantalla Completa (F11)"
   }
 }
