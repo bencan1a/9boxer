@@ -4,9 +4,16 @@
  */
 
 import { createTheme, Theme, ThemeOptions } from "@mui/material/styles";
+import { tokens } from "./tokens";
 
-// Extend MUI theme types to include custom palette properties
+// Extend MUI theme types to include custom palette properties and design tokens
 declare module "@mui/material/styles" {
+  interface Theme {
+    tokens: typeof tokens;
+  }
+  interface ThemeOptions {
+    tokens?: typeof tokens;
+  }
   interface Palette {
     gridBox: {
       highPerformer: string;
@@ -44,135 +51,120 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
   const isLight = mode === "light";
 
   const themeOptions: ThemeOptions = {
+    // Include design tokens in theme for easy access
+    tokens,
     palette: {
       mode,
       // Primary colors: Blue in light mode, desaturated blue (200 shade) in dark mode
-      primary: {
-        main: isLight ? "#1976d2" : "#90caf9",
-        light: isLight ? "#42a5f5" : "#b3d9f7",
-        dark: isLight ? "#1565c0" : "#6ba6d6",
-      },
+      primary: isLight
+        ? tokens.colors.primary.light
+        : tokens.colors.primary.dark,
       // Secondary colors: Orange in light mode, desaturated orange (300 shade) in dark mode
-      secondary: {
-        main: isLight ? "#ff9800" : "#ffb74d",
-        light: isLight ? "#ffb74d" : "#ffd180",
-        dark: isLight ? "#f57c00" : "#ff9800",
-      },
+      secondary: isLight
+        ? tokens.colors.secondary.light
+        : tokens.colors.secondary.dark,
       // Surface colors: MD3 standard for dark mode (#121212), warm light for light mode
-      background: {
-        default: isLight ? "#fafafa" : "#121212",
-        paper: isLight ? "#ffffff" : "#1e1e1e",
-      },
+      background: isLight
+        ? tokens.colors.background.light
+        : tokens.colors.background.dark,
       // Text colors follow MUI standards for accessibility
-      text: {
-        primary: isLight
-          ? "rgba(0, 0, 0, 0.87)"
-          : "rgba(255, 255, 255, 0.87)",
-        secondary: isLight
-          ? "rgba(0, 0, 0, 0.60)"
-          : "rgba(255, 255, 255, 0.60)",
-        disabled: isLight
-          ? "rgba(0, 0, 0, 0.38)"
-          : "rgba(255, 255, 255, 0.38)",
-      },
+      text: isLight ? tokens.colors.text.light : tokens.colors.text.dark,
       // Custom semantic colors for 9-box grid boxes
       // High contrast versions for dark mode to maintain WCAG AA compliance
-      gridBox: {
-        highPerformer: isLight ? "#d4c4e8" : "#4a3a5c", // Purple tones for high performers
-        needsAttention: isLight ? "#ffc9c9" : "#5c3a3a", // Red tones for needs attention
-        solidPerformer: isLight ? "#c4e5d0" : "#3a5c4a", // Green tones for solid performers
-        development: isLight ? "#fff0c0" : "#5c5a3a", // Yellow-brown tones for development areas
-      },
+      gridBox: isLight
+        ? tokens.colors.gridBox.light
+        : tokens.colors.gridBox.dark,
       // Custom colors for chart components (Recharts)
-      charts: {
-        background: isLight ? "#ffffff" : "#1e1e1e",
-        gridLines: isLight ? "#e0e0e0" : "rgba(255, 255, 255, 0.12)",
-        tooltip: isLight ? "#ffffff" : "#2c2c2c",
-      },
+      charts: isLight ? tokens.colors.charts.light : tokens.colors.charts.dark,
     },
     typography: {
-      fontFamily: [
-        "Roboto",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Arial",
-        "sans-serif",
-      ].join(","),
+      fontFamily: tokens.typography.fontFamily,
       h1: {
-        fontSize: "2.5rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h1,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
       h2: {
-        fontSize: "2rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h2,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
       h3: {
-        fontSize: "1.75rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h3,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
       h4: {
-        fontSize: "1.5rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h4,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
       h5: {
-        fontSize: "1.25rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h5,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
       h6: {
-        fontSize: "1rem",
-        fontWeight: 500,
+        fontSize: tokens.typography.fontSize.h6,
+        fontWeight: tokens.typography.fontWeight.medium,
       },
     },
     shape: {
-      borderRadius: 8,
+      borderRadius: tokens.radius.md,
     },
     components: {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            // Custom scrollbar styling
+            // Custom scrollbar styling using design tokens
             scrollbarColor: isLight
-              ? "#bdbdbd #f5f5f5" // thumb track (light mode)
-              : "#424242 #1e1e1e", // thumb track (dark mode)
+              ? `${tokens.colors.scrollbar.light.thumb} ${tokens.colors.scrollbar.light.track}`
+              : `${tokens.colors.scrollbar.dark.thumb} ${tokens.colors.scrollbar.dark.track}`,
             "&::-webkit-scrollbar": {
-              width: "12px",
-              height: "12px",
+              width: `${tokens.dimensions.scrollbar.width}px`,
+              height: `${tokens.dimensions.scrollbar.height}px`,
             },
             "&::-webkit-scrollbar-track": {
-              background: isLight ? "#f5f5f5" : "#1e1e1e",
+              background: isLight
+                ? tokens.colors.scrollbar.light.track
+                : tokens.colors.scrollbar.dark.track,
             },
             "&::-webkit-scrollbar-thumb": {
-              background: isLight ? "#bdbdbd" : "#424242",
-              borderRadius: "6px",
+              background: isLight
+                ? tokens.colors.scrollbar.light.thumb
+                : tokens.colors.scrollbar.dark.thumb,
+              borderRadius: `${tokens.dimensions.scrollbar.thumbBorderRadius}px`,
               border: isLight
-                ? "3px solid #f5f5f5"
-                : "3px solid #1e1e1e",
+                ? `${tokens.dimensions.scrollbar.thumbBorderWidth}px solid ${tokens.colors.scrollbar.light.track}`
+                : `${tokens.dimensions.scrollbar.thumbBorderWidth}px solid ${tokens.colors.scrollbar.dark.track}`,
             },
             "&::-webkit-scrollbar-thumb:hover": {
-              background: isLight ? "#9e9e9e" : "#616161",
+              background: isLight
+                ? tokens.colors.scrollbar.light.thumbHover
+                : tokens.colors.scrollbar.dark.thumbHover,
             },
             // Apply to all scrollable elements
             "& *": {
               scrollbarColor: isLight
-                ? "#bdbdbd #f5f5f5"
-                : "#424242 #1e1e1e",
+                ? `${tokens.colors.scrollbar.light.thumb} ${tokens.colors.scrollbar.light.track}`
+                : `${tokens.colors.scrollbar.dark.thumb} ${tokens.colors.scrollbar.dark.track}`,
               "&::-webkit-scrollbar": {
-                width: "12px",
-                height: "12px",
+                width: `${tokens.dimensions.scrollbar.width}px`,
+                height: `${tokens.dimensions.scrollbar.height}px`,
               },
               "&::-webkit-scrollbar-track": {
-                background: isLight ? "#f5f5f5" : "#1e1e1e",
+                background: isLight
+                  ? tokens.colors.scrollbar.light.track
+                  : tokens.colors.scrollbar.dark.track,
               },
               "&::-webkit-scrollbar-thumb": {
-                background: isLight ? "#bdbdbd" : "#424242",
-                borderRadius: "6px",
+                background: isLight
+                  ? tokens.colors.scrollbar.light.thumb
+                  : tokens.colors.scrollbar.dark.thumb,
+                borderRadius: `${tokens.dimensions.scrollbar.thumbBorderRadius}px`,
                 border: isLight
-                  ? "3px solid #f5f5f5"
-                  : "3px solid #1e1e1e",
+                  ? `${tokens.dimensions.scrollbar.thumbBorderWidth}px solid ${tokens.colors.scrollbar.light.track}`
+                  : `${tokens.dimensions.scrollbar.thumbBorderWidth}px solid ${tokens.colors.scrollbar.dark.track}`,
               },
               "&::-webkit-scrollbar-thumb:hover": {
-                background: isLight ? "#9e9e9e" : "#616161",
+                background: isLight
+                  ? tokens.colors.scrollbar.light.thumbHover
+                  : tokens.colors.scrollbar.dark.thumbHover,
               },
             },
           },
@@ -182,7 +174,7 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
         styleOverrides: {
           root: {
             textTransform: "none", // Don't uppercase button text
-            fontWeight: 500,
+            fontWeight: tokens.typography.fontWeight.medium,
           },
         },
       },
@@ -191,8 +183,8 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
           root: {
             // Use lighter shadow in dark mode to avoid harsh contrast
             boxShadow: isLight
-              ? "0 2px 8px rgba(0,0,0,0.1)"
-              : "0 2px 8px rgba(0,0,0,0.3)",
+              ? tokens.shadows.card.light
+              : tokens.shadows.card.dark,
           },
         },
       },
