@@ -4,6 +4,48 @@ This directory contains build and utility scripts for the 9Boxer project.
 
 ## Active Tools
 
+### `architecture_review.py` 🏗️
+
+**Purpose**: Automated architectural review tool that analyzes recent commits and pull requests to identify potential architectural drift and quality issues.
+
+**Usage**:
+```bash
+# Basic usage - review last 7 days
+python tools/architecture_review.py
+
+# Review specific number of days
+python tools/architecture_review.py --days 14
+
+# Output to file
+python tools/architecture_review.py --days 7 --output review-report.md
+
+# JSON output for automation
+python tools/architecture_review.py --days 7 --json
+```
+
+**What it checks**:
+- Missing type annotations in Python code
+- Architectural boundary violations (backend/frontend mixing)
+- Quality standard violations (dependency changes, etc.)
+- Security anti-patterns (Electron security disabled, etc.)
+- Missing documentation for significant changes
+- New code without corresponding tests
+
+**Output**:
+- Markdown report with detailed findings
+- JSON output for automation/integration
+- Exit code 1 if critical or high severity issues found
+
+**Integration**:
+- Used by `.github/workflows/architecture-review.yml`
+- Runs automatically every Sunday at 3 AM UTC
+- Creates GitHub issues for findings
+- See `docs/architecture/README.md` for full documentation
+
+**Configuration**: None required - analyzes git history automatically
+
+---
+
 ### `build_context.py`
 Generates comprehensive project documentation for AI agents.
 

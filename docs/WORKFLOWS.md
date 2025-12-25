@@ -326,3 +326,88 @@ For issues or questions about these workflows:
 1. Check workflow run logs in Actions tab
 2. Review this documentation
 3. Open an issue with the `workflow` label
+
+## Architectural Review System
+
+### Overview
+
+The architectural review system provides automated oversight to prevent architectural drift and ensure code quality:
+
+**Key Components:**
+- **Weekly Workflow**: `architecture-review.yml` runs every Sunday at 3 AM UTC
+- **Review Tool**: `tools/architecture_review.py` analyzes git history for architectural issues
+- **Agent Profile**: `.github/agents/architecture-review-board.md` provides expert guidance
+- **Guidelines**: `docs/architecture/GUIDELINES.md` defines architectural standards
+- **Issue Template**: `.github/ISSUE_TEMPLATE/architectural-issue.yml` for reporting issues
+
+### What Gets Reviewed
+
+The automated review analyzes:
+1. **Type Annotations**: Ensures all Python functions have type hints
+2. **Architectural Boundaries**: Checks for clean separation between backend/frontend
+3. **Quality Standards**: Validates compliance with ruff, mypy, eslint standards
+4. **Security Patterns**: Detects security anti-patterns (e.g., disabled Electron security)
+5. **Documentation**: Checks if significant changes include doc updates
+6. **Test Coverage**: Ensures new code has corresponding tests
+
+### Review Process
+
+1. **Automated Run** (Every Sunday):
+   - Analyzes all commits from past 7 days
+   - Generates detailed review report (markdown + JSON)
+   - Creates GitHub issues for findings
+   - Uploads reports as artifacts (90 day retention)
+
+2. **Issue Classification**:
+   - **CRITICAL**: Security risks, data corruption, blocks release
+   - **HIGH**: Significant drift, quality failures, technical debt
+   - **MEDIUM**: Minor deviations, inconsistencies, missing docs
+   - **LOW**: Suggestions for improvement
+
+3. **Automated Actions**:
+   - Creates weekly summary issue with all findings
+   - Creates individual issues for CRITICAL findings
+   - Labels issues by severity and category
+   - Includes actionable recommendations
+
+### Using the Review System
+
+**As a Developer:**
+- Review `docs/architecture/GUIDELINES.md` before coding
+- Check for new `architectural-drift` issues weekly
+- Follow recommendations in issues
+- Use checklist in issue template for fixes
+
+**As a Reviewer:**
+- Reference guidelines during code reviews
+- Ensure changes align with architectural principles
+- Help enforce quality gates before merge
+
+**As the Architecture Review Board:**
+- Review weekly summary issues
+- Create tracking issues for recurring patterns
+- Update guidelines based on findings
+- Track metrics in `docs/architecture/metrics.md`
+
+### Manual Review
+
+Trigger manually via GitHub Actions:
+```bash
+# Via GitHub UI: Actions → Architectural Review → Run workflow
+# Specify days to review (default: 7)
+```
+
+Or run locally:
+```bash
+python tools/architecture_review.py --days 7 --output review.md
+```
+
+### Metrics Tracked
+
+- Total findings by severity and category
+- Commits reviewed per period
+- Issue resolution time
+- Common violation patterns
+- Quality trend over time
+
+See `docs/architecture/metrics.md` for detailed tracking.
