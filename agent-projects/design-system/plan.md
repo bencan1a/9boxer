@@ -123,10 +123,18 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Focus indicator standards
   - Testing checklist
 
-- [ ] **2.4 Document layout and interaction patterns**
-  - Files: `docs/design-system/layout-patterns.md` + `interaction-patterns.md`
-  - Grid system and responsive breakpoints
-  - Panel/drawer patterns, modal/dialog patterns
+- [x] **2.4a Document layout patterns** ✅ COMPLETED
+  - File: `docs/design-system/layout-patterns.md` (630 lines)
+  - Complete application hierarchy (visual component tree)
+  - Layout grid system (5-zone layout with dimensions)
+  - Detailed UI zone anatomy (Toolbar, FilterDrawer, GridArea, RightPanel)
+  - Panel & drawer patterns (collapsible, resizable)
+  - Modal & dialog patterns (overlay, sizing, spacing)
+  - Spacing rules and vertical rhythm
+  - Responsive considerations (auto-collapse behavior)
+
+- [ ] **2.4b Document interaction patterns**
+  - File: `docs/design-system/interaction-patterns.md`
   - Animation standards, transition patterns, feedback mechanisms
 
 **Acceptance Criteria:**
