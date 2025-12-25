@@ -21,7 +21,6 @@
     "fileMenu": {
       "noFileSelected": "Aucun fichier sélectionné",
       "fileMenuAriaLabel": "Menu fichier : {{filename}}, {{count}} modification en attente",
-      "fileMenuAriaLabel_other": "Menu fichier : {{filename}}, {{count}} modifications en attente",
       "fileMenuAriaLabelNoFile": "Menu fichier : Aucun fichier sélectionné",
       "importData": "Importer des données",
       "exportChanges": "Appliquer {{count}} modification à Excel",
