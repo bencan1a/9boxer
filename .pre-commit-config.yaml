@@ -85,4 +85,4 @@ repos:
         name: format i18n translation files
         files: ^frontend/src/i18n/locales/.*/translation\.json$
         additional_dependencies:
-          - prettier@3.1.0
+          - prettier@3.7.4
