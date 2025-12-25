@@ -10,12 +10,12 @@ on:
   workflow_dispatch:  # Allow manual triggering
   push:
     paths:
-      - .github/workflows/copilot-setup-steps.yml
+      - ".github/workflows/copilot-setup-steps.yml"
     branches:
       - main
   pull_request:
     paths:
-      - .github/workflows/copilot-setup-steps.yml
+      - ".github/workflows/copilot-setup-steps.yml"
 
 jobs:
   copilot-setup-steps:
