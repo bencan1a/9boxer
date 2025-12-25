@@ -516,3 +516,162 @@ export async function verifyGridPopulated(
 
   return count;
 }
+
+/**
+ * Screenshot dimensions for validation
+ */
+export interface ScreenshotDimensions {
+  width: number;
+  height: number;
+}
+
+/**
+ * Expected dimensions for screenshot validation
+ */
+export interface ExpectedDimensions {
+  /** Minimum width in pixels */
+  minWidth?: number;
+  /** Maximum width in pixels */
+  maxWidth?: number;
+  /** Minimum height in pixels */
+  minHeight?: number;
+  /** Maximum height in pixels */
+  maxHeight?: number;
+  /** Exact width (if screenshot should be precise width) */
+  exactWidth?: number;
+  /** Exact height (if screenshot should be precise height) */
+  exactHeight?: number;
+}
+
+/**
+ * Validate screenshot dimensions against expected values
+ *
+ * Checks if a screenshot's dimensions fall within expected ranges.
+ * Helps catch incorrect cropping or viewport issues.
+ *
+ * @param screenshotPath - Path to the screenshot file (for error messages)
+ * @param actual - Actual screenshot dimensions
+ * @param expected - Expected dimension constraints
+ * @param tolerance - Percentage tolerance for exact dimensions (default: 10%)
+ * @throws Error if dimensions don't match expectations
+ *
+ * @example
+ * ```typescript
+ * const buffer = await element.screenshot();
+ * const dimensions = await getImageDimensions(buffer);
+ * verifyScreenshotDimensions('changes-tab.png', dimensions, {
+ *   minWidth: 300,
+ *   maxWidth: 500,
+ *   minHeight: 400
+ * });
+ * ```
+ */
+export function verifyScreenshotDimensions(
+  screenshotPath: string,
+  actual: ScreenshotDimensions,
+  expected: ExpectedDimensions,
+  tolerance: number = 10
+): void {
+  const errors: string[] = [];
+
+  // Check exact width (with tolerance)
+  if (expected.exactWidth !== undefined) {
+    const minAllowed = expected.exactWidth * (1 - tolerance / 100);
+    const maxAllowed = expected.exactWidth * (1 + tolerance / 100);
+    if (actual.width < minAllowed || actual.width > maxAllowed) {
+      errors.push(
+        `Width ${actual.width}px outside tolerance range ${minAllowed.toFixed(0)}-${maxAllowed.toFixed(0)}px ` +
+          `(expected exactly ${expected.exactWidth}px ±${tolerance}%)`
+      );
+    }
+  }
+
+  // Check exact height (with tolerance)
+  if (expected.exactHeight !== undefined) {
+    const minAllowed = expected.exactHeight * (1 - tolerance / 100);
+    const maxAllowed = expected.exactHeight * (1 + tolerance / 100);
+    if (actual.height < minAllowed || actual.height > maxAllowed) {
+      errors.push(
+        `Height ${actual.height}px outside tolerance range ${minAllowed.toFixed(0)}-${maxAllowed.toFixed(0)}px ` +
+          `(expected exactly ${expected.exactHeight}px ±${tolerance}%)`
+      );
+    }
+  }
+
+  // Check minimum width
+  if (expected.minWidth !== undefined && actual.width < expected.minWidth) {
+    errors.push(
+      `Width ${actual.width}px below minimum ${expected.minWidth}px`
+    );
+  }
+
+  // Check maximum width
+  if (expected.maxWidth !== undefined && actual.width > expected.maxWidth) {
+    errors.push(
+      `Width ${actual.width}px exceeds maximum ${expected.maxWidth}px`
+    );
+  }
+
+  // Check minimum height
+  if (expected.minHeight !== undefined && actual.height < expected.minHeight) {
+    errors.push(
+      `Height ${actual.height}px below minimum ${expected.minHeight}px`
+    );
+  }
+
+  // Check maximum height
+  if (expected.maxHeight !== undefined && actual.height > expected.maxHeight) {
+    errors.push(
+      `Height ${actual.height}px exceeds maximum ${expected.maxHeight}px`
+    );
+  }
+
+  if (errors.length > 0) {
+    throw new Error(
+      `Screenshot dimension validation failed for "${screenshotPath}":\n` +
+        errors.map((e) => `  - ${e}`).join("\n") +
+        `\n\nActual: ${actual.width}x${actual.height}px`
+    );
+  }
+}
+
+/**
+ * Get dimensions from a screenshot buffer
+ *
+ * Extracts width and height from a PNG image buffer.
+ * This is a simple PNG header parser that reads dimensions without external dependencies.
+ *
+ * @param buffer - Screenshot image buffer
+ * @returns Screenshot dimensions
+ *
+ * @example
+ * ```typescript
+ * const buffer = await element.screenshot();
+ * const { width, height } = getImageDimensions(buffer);
+ * console.log(`Screenshot is ${width}x${height}px`);
+ * ```
+ */
+export function getImageDimensions(buffer: Buffer): ScreenshotDimensions {
+  // PNG format: width and height are at bytes 16-23 (big-endian 32-bit integers)
+  // PNG signature: 8 bytes
+  // IHDR chunk: 4 bytes length + 4 bytes "IHDR" + 4 bytes width + 4 bytes height
+  if (buffer.length < 24) {
+    throw new Error("Invalid PNG buffer: too small");
+  }
+
+  // Verify PNG signature
+  if (
+    buffer[0] !== 0x89 ||
+    buffer[1] !== 0x50 ||
+    buffer[2] !== 0x4e ||
+    buffer[3] !== 0x47
+  ) {
+    throw new Error("Invalid PNG buffer: incorrect signature");
+  }
+
+  // Read width and height (big-endian)
+  const width = buffer.readUInt32BE(16);
+  const height = buffer.readUInt32BE(20);
+
+  return { width, height };
+}
