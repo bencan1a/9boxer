@@ -99,57 +99,64 @@ export const ChangeTrackerTab: React.FC = () => {
     }
 
     return (
-      <Table size="small" data-testid={`${testIdPrefix}-table`} sx={{ minWidth: 650, tableLayout: 'auto' }}>
+      <Table size="small" data-testid={`${testIdPrefix}-table`} sx={{ tableLayout: 'auto', minWidth: 400 }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: '25%', minWidth: 120 }}>{t('panel.changeTrackerTab.employee')}</TableCell>
-            <TableCell sx={{ width: '35%', minWidth: 200 }}>{t('panel.changeTrackerTab.movement')}</TableCell>
-            <TableCell sx={{ width: '40%', minWidth: 200 }}>{t('panel.changeTrackerTab.notes')}</TableCell>
+            <TableCell>{t('panel.changeTrackerTab.employee')}</TableCell>
+            <TableCell>{t('panel.changeTrackerTab.movement')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {changesList.map((change) => (
-            <TableRow
-              key={`${change.employee_id}-${change.timestamp}`}
-              hover
-              data-testid={`${testIdPrefix}-row-${change.employee_id}`}
-            >
-              <TableCell>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  {change.employee_name}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 200 }}>
-                  <Chip
-                    label={`${getPositionName(change.old_position)} ${getShortPositionLabel(change.old_position)}`}
-                    size="small"
-                    variant="outlined"
-                    color="default"
-                  />
-                  <TrendingFlatIcon fontSize="small" color="action" />
-                  <Chip
-                    label={`${getPositionName(change.new_position)} ${getShortPositionLabel(change.new_position)}`}
-                    size="small"
-                    color={isDonut ? "secondary" : "primary"}
-                  />
-                </Stack>
-              </TableCell>
-              <TableCell>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder={t('panel.changeTrackerTab.addNotesPlaceholder')}
-                  value={editingId === change.employee_id ? notesValue : (change.notes || "")}
-                  onFocus={() => handleNotesFocus(change.employee_id, change.notes)}
-                  onChange={handleNotesChange}
-                  onBlur={() => handleNotesBlur(change.employee_id, isDonut)}
-                  multiline
-                  maxRows={3}
-                  data-testid={`${testIdPrefix}-notes-${change.employee_id}`}
-                />
-              </TableCell>
-            </TableRow>
+            <React.Fragment key={`${change.employee_id}-${change.timestamp}`}>
+              <TableRow
+                hover
+                data-testid={`${testIdPrefix}-row-${change.employee_id}`}
+              >
+                <TableCell sx={{ borderBottom: 0, pb: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {change.employee_name}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ borderBottom: 0, pb: 1 }}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Chip
+                      label={`${getPositionName(change.old_position)} ${getShortPositionLabel(change.old_position)}`}
+                      size="small"
+                      variant="outlined"
+                      color="default"
+                    />
+                    <TrendingFlatIcon fontSize="small" color="action" />
+                    <Chip
+                      label={`${getPositionName(change.new_position)} ${getShortPositionLabel(change.new_position)}`}
+                      size="small"
+                      color={isDonut ? "secondary" : "primary"}
+                    />
+                  </Stack>
+                </TableCell>
+              </TableRow>
+              <TableRow data-testid={`${testIdPrefix}-notes-row-${change.employee_id}`}>
+                <TableCell colSpan={2} sx={{ pt: 0, pb: 2 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
+                      {t('panel.changeTrackerTab.notes')}:
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder={t('panel.changeTrackerTab.addNotesPlaceholder')}
+                      value={editingId === change.employee_id ? notesValue : (change.notes || "")}
+                      onFocus={() => handleNotesFocus(change.employee_id, change.notes)}
+                      onChange={handleNotesChange}
+                      onBlur={() => handleNotesBlur(change.employee_id, isDonut)}
+                      multiline
+                      maxRows={3}
+                      data-testid={`${testIdPrefix}-notes-${change.employee_id}`}
+                    />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>
