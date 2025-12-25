@@ -12,10 +12,12 @@
 import React, { useEffect, useState } from "react";
 import { Chip, Tooltip } from "@mui/material";
 import { Code as CodeIcon } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import { isDevelopment, isElectron } from "../../config";
 import { logger } from "../../utils/logger";
 
 export const DevModeIndicator: React.FC = () => {
+  const { t } = useTranslation();
   const [backendPort, setBackendPort] = useState<number | null>(null);
   const [backendUrl, setBackendUrl] = useState<string | null>(null);
 
@@ -50,10 +52,10 @@ export const DevModeIndicator: React.FC = () => {
   // Only show in Electron mode
   if (!isElectron()) {
     return (
-      <Tooltip title="Running in web browser mode" placement="left">
+      <Tooltip title={t('common.devMode.webModeTooltip')} placement="left">
         <Chip
           icon={<CodeIcon />}
-          label="Web Mode"
+          label={t('common.devMode.webModeLabel')}
           size="small"
           color="info"
           sx={{
@@ -70,12 +72,12 @@ export const DevModeIndicator: React.FC = () => {
 
   // Show backend connection info
   const label = backendPort
-    ? `Backend: Port ${backendPort}`
-    : "Backend: Loading...";
+    ? t('common.devMode.backendPort', { port: backendPort })
+    : t('common.devMode.backendLoading');
 
   const tooltipText = backendUrl
-    ? `Backend URL: ${backendUrl}\n\nThis port may differ from the default (8000) if there was a port conflict during startup.`
-    : "Fetching backend information...";
+    ? t('common.devMode.backendUrlTooltip', { url: backendUrl })
+    : t('common.devMode.fetchingBackendInfo');
 
   return (
     <Tooltip title={tooltipText} placement="left">

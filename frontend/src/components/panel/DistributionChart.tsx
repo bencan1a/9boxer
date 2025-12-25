@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import { PositionDistribution } from "../../types/api";
 
 interface DistributionChartProps {
@@ -23,6 +24,7 @@ interface DistributionChartProps {
 
 export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   if (!data || data.length === 0) {
     return (
@@ -35,7 +37,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          No data available
+          {t('panel.intelligenceTab.chart.noDataAvailable')}
         </Typography>
       </Box>
     );
@@ -77,7 +79,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
             stroke={theme.palette.text.secondary}
           />
           <YAxis
-            label={{ value: "Employee Count", angle: -90, position: "insideLeft" }}
+            label={{ value: t('panel.statisticsTab.employeeCount'), angle: -90, position: "insideLeft" }}
             stroke={theme.palette.text.secondary}
           />
           <Tooltip
@@ -87,7 +89,10 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
               border: `1px solid ${theme.palette.divider}`,
               borderRadius: "4px",
             }}
-            formatter={(value: number) => [`${value} employees`, "Count"]}
+            formatter={(value: number) => [
+              t('panel.statisticsTab.employeesCount', { count: value }),
+              t('panel.statisticsTab.countLabel')
+            ]}
           />
           <Bar dataKey="count" radius={[8, 8, 0, 0]}>
             {sortedData.map((entry, index) => (

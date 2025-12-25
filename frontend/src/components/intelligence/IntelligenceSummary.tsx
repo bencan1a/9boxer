@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Box, Card, CardContent, Typography, Grid, Chip } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -14,6 +15,8 @@ interface IntelligenceSummaryProps {
 }
 
 export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }) => {
+  const { t } = useTranslation();
+
   // Determine quality score color and status
   const getQualityColor = (score: number): string => {
     if (score >= 80) return "success.main";
@@ -28,9 +31,9 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
   };
 
   const getQualityStatus = (score: number): string => {
-    if (score >= 80) return "Excellent";
-    if (score >= 50) return "Good";
-    return "Needs Attention";
+    if (score >= 80) return t('panel.intelligenceTab.summary.excellent');
+    if (score >= 50) return t('panel.intelligenceTab.summary.good');
+    return t('panel.intelligenceTab.summary.needsAttention');
   };
 
   const totalAnomalies = data.anomaly_count.green + data.anomaly_count.yellow + data.anomaly_count.red;
@@ -48,12 +51,12 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
                   {data.quality_score}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Quality Score
+                  {t('panel.intelligenceTab.summary.qualityScore')}
                 </Typography>
               </Box>
             </Box>
             <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-              0-100 scale based on statistical anomalies detected
+              {t('panel.intelligenceTab.summary.qualityScoreDescription')}
             </Typography>
           </CardContent>
         </Card>
@@ -67,26 +70,26 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
               {totalAnomalies}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              Total Anomalies
+              {t('panel.intelligenceTab.summary.totalAnomalies')}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 2, flexWrap: "wrap" }}>
               <Chip
                 icon={<CheckCircleIcon />}
-                label={`${data.anomaly_count.green} Green`}
+                label={`${data.anomaly_count.green} ${t('panel.intelligenceTab.summary.green')}`}
                 color="success"
                 size="small"
                 variant="outlined"
               />
               <Chip
                 icon={<WarningIcon />}
-                label={`${data.anomaly_count.yellow} Yellow`}
+                label={`${data.anomaly_count.yellow} ${t('panel.intelligenceTab.summary.yellow')}`}
                 color="warning"
                 size="small"
                 variant="outlined"
               />
               <Chip
                 icon={<ErrorIcon />}
-                label={`${data.anomaly_count.red} Red`}
+                label={`${data.anomaly_count.red} ${t('panel.intelligenceTab.summary.red')}`}
                 color="error"
                 size="small"
                 variant="outlined"
@@ -104,20 +107,20 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
               {getQualityStatus(data.quality_score)}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              Overall Health
+              {t('panel.intelligenceTab.summary.overallHealth')}
             </Typography>
             <Box sx={{ mt: 2 }}>
               {data.quality_score >= 80 ? (
                 <Typography variant="body2" color="success.main">
-                  Rating distributions appear well-calibrated across all dimensions.
+                  {t('panel.intelligenceTab.summary.wellCalibrated')}
                 </Typography>
               ) : data.quality_score >= 50 ? (
                 <Typography variant="body2" color="warning.main">
-                  Some anomalies detected. Review sections below for details.
+                  {t('panel.intelligenceTab.summary.someAnomalies')}
                 </Typography>
               ) : (
                 <Typography variant="body2" color="error.main">
-                  Significant anomalies detected. Immediate review recommended.
+                  {t('panel.intelligenceTab.summary.significantAnomalies')}
                 </Typography>
               )}
             </Box>

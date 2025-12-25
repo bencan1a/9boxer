@@ -135,36 +135,36 @@ export const IntelligenceTab: React.FC = () => {
 
       {/* Location Analysis */}
       <AnomalySection
-        title="Location Analysis"
+        title={t('panel.intelligenceTab.locationAnalysis')}
         analysis={data.location_analysis}
         chartComponent={
           <DeviationChart
             data={data.location_analysis.deviations}
-            title="High Performer % by Location"
+            title={t('panel.intelligenceTab.highPerformerByLocation')}
           />
         }
       />
 
       {/* Function Analysis */}
       <AnomalySection
-        title="Function Analysis"
+        title={t('panel.intelligenceTab.functionAnalysis')}
         analysis={data.function_analysis}
         chartComponent={
           <DeviationChart
             data={data.function_analysis.deviations}
-            title="High Performer % by Function"
+            title={t('panel.intelligenceTab.highPerformerByFunction')}
           />
         }
       />
 
       {/* Level Analysis */}
       <AnomalySection
-        title="Level Analysis"
+        title={t('panel.intelligenceTab.levelAnalysis')}
         analysis={data.level_analysis}
         chartComponent={
           <LevelDistributionChart
             data={levelDistributionData}
-            title="Performance Distribution by Level"
+            title={t('panel.intelligenceTab.performanceDistributionByLevel')}
             baselineHighPct={baselineHighPct}
           />
         }
@@ -172,12 +172,12 @@ export const IntelligenceTab: React.FC = () => {
 
       {/* Tenure Analysis */}
       <AnomalySection
-        title="Tenure Analysis"
+        title={t('panel.intelligenceTab.tenureAnalysis')}
         analysis={data.tenure_analysis}
         chartComponent={
           <DeviationChart
             data={data.tenure_analysis.deviations}
-            title="High Performer % by Tenure"
+            title={t('panel.intelligenceTab.highPerformerByTenure')}
           />
         }
       />

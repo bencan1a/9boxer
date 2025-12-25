@@ -5,10 +5,12 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { useTranslation } from "react-i18next";
 import { logger } from "../../utils/logger";
 
 interface Props {
   children: ReactNode;
+  t?: (key: string) => string;
 }
 
 interface State {
@@ -17,7 +19,7 @@ interface State {
   errorInfo: ErrorInfo | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryClass extends Component<Props, State> {
   public state: State = {
     hasError: false,
     error: null,
@@ -51,6 +53,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      const t = this.props.t || ((key: string) => key);
+
       return (
         <Box
           sx={{
@@ -79,10 +83,10 @@ export class ErrorBoundary extends Component<Props, State> {
               }}
             />
             <Typography variant="h4" gutterBottom>
-              Oops! Something went wrong
+              {t("common.errorBoundary.title")}
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph>
-              An unexpected error occurred. Please try reloading the page.
+              {t("common.errorBoundary.message")}
             </Typography>
 
             {this.state.error && (
@@ -116,7 +120,7 @@ export class ErrorBoundary extends Component<Props, State> {
               onClick={this.handleReset}
               sx={{ mt: 3 }}
             >
-              Return to Home
+              {t("common.errorBoundary.returnHome")}
             </Button>
           </Paper>
         </Box>
@@ -125,4 +129,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
+}
+
+// Wrapper component that provides the translation function to the class component
+export function ErrorBoundary({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
+  return <ErrorBoundaryClass t={t}>{children}</ErrorBoundaryClass>;
 }

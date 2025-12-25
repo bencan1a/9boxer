@@ -14,8 +14,9 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 interface LevelDistribution {
   level: string;
@@ -51,6 +52,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
   baselineHighPct = 25,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   if (!data || data.length === 0) {
     return (
@@ -63,7 +65,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          No data available
+          {t('panel.intelligenceTab.chart.noDataAvailable')}
         </Typography>
       </Box>
     );
@@ -101,19 +103,19 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
           }}
         >
           <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-            Level: {data.level}
+            {t('panel.intelligenceTab.chart.level')}: {data.level}
           </Typography>
           <Typography variant="body2" sx={{ color: colors.high }}>
-            High: {data.high}% ({data.high_count})
+            {t('panel.intelligenceTab.chart.high')}: {data.high}% ({data.high_count})
           </Typography>
           <Typography variant="body2" sx={{ color: colors.medium }}>
-            Medium: {data.medium}% ({data.medium_count})
+            {t('panel.intelligenceTab.chart.medium')}: {data.medium}% ({data.medium_count})
           </Typography>
           <Typography variant="body2" sx={{ color: colors.low }}>
-            Low: {data.low}% ({data.low_count})
+            {t('panel.intelligenceTab.chart.low')}: {data.low}% ({data.low_count})
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            Total: {data.total}
+            {t('panel.intelligenceTab.chart.total')}: {data.total}
           </Typography>
         </Paper>
       );
@@ -145,7 +147,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
             />
             <YAxis
               label={{
-                value: "Percentage (%)",
+                value: t('panel.intelligenceTab.chart.percentage'),
                 angle: -90,
                 position: "insideLeft",
               }}
@@ -165,7 +167,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               stroke={theme.palette.text.secondary}
               strokeDasharray="5 5"
               label={{
-                value: `Baseline (${baselineHighPct}%)`,
+                value: t('panel.intelligenceTab.chart.baseline', { percent: baselineHighPct }),
                 position: "right",
                 fontSize: 11,
                 fill: theme.palette.text.secondary,
@@ -177,21 +179,21 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               dataKey="low"
               stackId="a"
               fill={colors.low}
-              name="Low Performance"
+              name={t('panel.intelligenceTab.performanceLevel.low')}
               radius={[0, 0, 0, 0]}
             />
             <Bar
               dataKey="medium"
               stackId="a"
               fill={colors.medium}
-              name="Medium Performance"
+              name={t('panel.intelligenceTab.performanceLevel.medium')}
               radius={[0, 0, 0, 0]}
             />
             <Bar
               dataKey="high"
               stackId="a"
               fill={colors.high}
-              name="High Performance"
+              name={t('panel.intelligenceTab.performanceLevel.high')}
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
@@ -201,8 +203,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
       {/* Additional info */}
       <Box sx={{ mt: 1, px: 2 }}>
         <Typography variant="caption" color="text.secondary">
-          Note: Baseline represents overall average high performance percentage
-          across all levels. Significant deviations may indicate calibration issues.
+          {t('panel.intelligenceTab.chart.baselineNote')}
         </Typography>
       </Box>
     </Box>

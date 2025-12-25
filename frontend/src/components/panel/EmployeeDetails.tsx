@@ -87,14 +87,14 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
         {/* Employee Information */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" color="primary" gutterBottom>
-            Employee Information
+            {t('panel.detailsTab.employeeInformation')}
           </Typography>
           <Grid container spacing={1} sx={{ mt: 1 }}>
-            <InfoRow label="Job Function" value={employee.job_function} />
-            <InfoRow label="Location" value={employee.location} />
-            <InfoRow label="Job Level" value={employee.job_level} />
-            <InfoRow label="Tenure" value={employee.tenure_category} />
-            <InfoRow label="Time in Level" value={employee.time_in_job_profile} />
+            <InfoRow label={t('panel.detailsTab.jobFunction')} value={employee.job_function} />
+            <InfoRow label={t('panel.detailsTab.location')} value={employee.location} />
+            <InfoRow label={t('panel.detailsTab.jobLevel')} value={employee.job_level} />
+            <InfoRow label={t('panel.detailsTab.tenure')} value={employee.tenure_category} />
+            <InfoRow label={t('panel.detailsTab.timeInLevel')} value={employee.time_in_job_profile} />
           </Grid>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
