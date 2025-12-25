@@ -18,6 +18,11 @@ import {
   waitForUiSettle,
 } from "../../helpers/ui";
 import { ensureChangesExist } from "../../helpers/assertions";
+import {
+  verifyBadgeCount,
+  waitForCssTransition,
+  CSS_TRANSITION_DURATIONS,
+} from "../../helpers/visualValidation";
 
 /**
  * Generate Changes tab with note field highlighted
@@ -40,13 +45,19 @@ export async function generateChangesTabField(
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
 
-  // Ensure at least 1 change exists so we can show the Notes field
+  // CRITICAL: Ensure at least 1 change exists so we can show the Notes field
   // Without this, we capture empty state which is useless for documentation
   await ensureChangesExist(page, 1);
 
-  // Click Changes tab and capture
+  // Click Changes tab
   await clickTabAndWait(page, "changes-tab");
 
+  // Verify changes are visible before capturing
+  const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
+  const changeCount = await verifyBadgeCount(changesBadge, 1);
+  console.log(`✓ Changes tab verified with ${changeCount} change(s) showing note field`);
+
+  // Capture right panel with note field
   await page.locator('[data-testid="right-panel"]').screenshot({
     path: outputPath,
   });
@@ -73,11 +84,15 @@ export async function generateGoodExample(
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
 
-  // Ensure at least 1 change exists so note field will be available
+  // CRITICAL: Ensure at least 1 change exists so note field will be available
   await ensureChangesExist(page, 1);
 
   // Navigate to Changes tab
   await clickTabAndWait(page, "changes-tab", 0.5);
+
+  // Verify changes are visible
+  const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
+  await verifyBadgeCount(changesBadge, 1);
 
   // Try to find and fill a note field
   // The testid is on the FormControl wrapper, need to get the actual textarea inside
@@ -94,7 +109,10 @@ export async function generateGoodExample(
     // Find the textarea within the FormControl
     const noteField = noteFieldWrapper.locator("textarea").first();
     await noteField.fill(exampleNote);
-    await waitForUiSettle(page, 0.5);
+
+    // Wait for input to settle
+    await waitForUiSettle(page, 0.3);
+    console.log("✓ Good note example filled successfully");
 
     // Capture right panel showing note
     await page.locator('[data-testid="right-panel"]').screenshot({
@@ -173,18 +191,26 @@ export async function generateDonutMode(
   if ((await noteFieldWrapper.count()) > 0) {
     const noteField = noteFieldWrapper.locator("textarea").first();
     await noteField.fill("Example note for donut mode demonstration");
-    await waitForUiSettle(page, 0.5);
+    await waitForUiSettle(page, 0.3);
   }
 
   // Switch to donut mode
   const donutToggle = page.locator('[data-testid="donut-mode-toggle"]');
   await donutToggle.waitFor({ state: "visible", timeout: 5000 });
   await donutToggle.click();
-  await waitForUiSettle(page, 1.0);
+
+  // Wait for donut mode transition
+  await waitForCssTransition(
+    page.locator('[data-testid="nine-box-grid"]'),
+    CSS_TRANSITION_DURATIONS.complex
+  );
+  console.log("✓ Donut mode activated");
 
   // Hover over an employee to show tooltip with note
   const firstEmployee = page.locator('[data-testid^="employee-card-"]').first();
   await firstEmployee.hover();
+
+  // Wait for tooltip to appear
   await waitForUiSettle(page, 0.5);
 
   // Capture the grid with tooltip
