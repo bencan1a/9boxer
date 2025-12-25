@@ -23,6 +23,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Fix Windows console encoding for Unicode characters
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
+    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore
+
 
 def extract_placeholders(text: str) -> set[str]:
     """Extract placeholder variables from translation text (e.g., {{count}}, {{name}})."""

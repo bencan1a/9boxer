@@ -15,6 +15,7 @@ import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { FileUploadDialog } from "../common/FileUploadDialog";
+import { ZoomControls } from "../common/ZoomControls";
 import { useSession } from "../../hooks/useSession";
 import { useSessionStore } from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
@@ -200,7 +201,7 @@ export const DashboardPage: React.FC = () => {
                 }}
               >
                 <Panel defaultSize={100 - rightPanelSize} minSize={30}>
-                  <Box sx={{ height: "100%", width: "100%", overflow: "auto", pr: 1 }}>
+                  <Box sx={{ height: "100%", width: "100%", overflow: "auto", pr: 1, display: "flex", flexDirection: "column" }}>
                     <NineBoxGrid />
                   </Box>
                 </Panel>
@@ -279,6 +280,9 @@ export const DashboardPage: React.FC = () => {
                   {isRightPanelCollapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
               </Tooltip>
+
+              {/* Zoom Controls */}
+              <ZoomControls />
             </Box>
           )}
         </Box>

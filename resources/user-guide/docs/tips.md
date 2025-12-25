@@ -169,10 +169,50 @@ Use the Changes tab to ensure all rating changes are documented:
 
 ## Collaboration
 
+### Zoom and Full-Screen Controls
+
+Adjust the view for different scenarios using the zoom controls in the bottom-left corner:
+
+**Zoom In/Out:**
+
+- Click the **+** button to zoom in (makes everything larger)
+- Click the **−** button to zoom out (fits more on screen)
+- Click the **reset** button to return to 100%
+- Current zoom level displays next to the buttons (e.g., "125%")
+
+**Keyboard Shortcuts:**
+
+- `Ctrl` + `+` (or `Cmd` + `+` on Mac) - Zoom in
+- `Ctrl` + `-` (or `Cmd` + `-` on Mac) - Zoom out
+- `Ctrl` + `0` (or `Cmd` + `0` on Mac) - Reset to 100%
+- `Ctrl` + scroll wheel - Zoom in/out smoothly
+
+**Full-Screen Mode:**
+
+- Click the **full-screen** button for presentation mode
+- Press `F11` to toggle full-screen
+- Press `Esc` to exit full-screen
+- Perfect for large room calibration sessions with projectors
+
+**When to Use Zoom:**
+
+- **Zoom out (75%-90%)** - Review many employees at once, get overview of distribution
+- **Default (100%)** - Normal working view
+- **Zoom in (110%-150%)** - Focus on specific employees, easier to read in bright rooms
+- **Zoom in + Full-screen** - Large room presentations on big screens
+
+**Tips:**
+
+- Your zoom level persists between sessions
+- Zoom controls hide on small screens
+- Use full-screen for distraction-free calibration meetings
+- Combine zoom with filters to focus on specific groups
+
 ### Share Screen During Meetings
 
 Review the grid with managers during calibration sessions:
 
+- Use zoom and full-screen controls for better visibility
 - Use filters to focus on specific teams or levels
 - Discuss movements in real-time
 - Add notes collaboratively during the meeting
