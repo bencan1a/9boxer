@@ -1,0 +1,11 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "comment-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "function-name-case": null,
+    "no-descending-specificity": null,
+    "value-keyword-case": null
+  },
+  "ignoreFiles": ["**/*.tsx", "**/*.ts", "**/*.js", "**/*.jsx"]
+}
