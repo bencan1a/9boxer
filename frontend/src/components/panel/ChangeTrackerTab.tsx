@@ -99,7 +99,7 @@ export const ChangeTrackerTab: React.FC = () => {
     }
 
     return (
-      <Table size="small" data-testid={`${testIdPrefix}-table`} sx={{ tableLayout: 'auto' }}>
+      <Table size="small" data-testid={`${testIdPrefix}-table`} sx={{ tableLayout: 'auto', minWidth: 400 }}>
         <TableHead>
           <TableRow>
             <TableCell>{t('panel.changeTrackerTab.employee')}</TableCell>
@@ -138,7 +138,7 @@ export const ChangeTrackerTab: React.FC = () => {
               <TableRow data-testid={`${testIdPrefix}-notes-row-${change.employee_id}`}>
                 <TableCell colSpan={2} sx={{ pt: 0, pb: 2 }}>
                   <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ pt: 1, minWidth: 'fit-content' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ pt: 1, flexShrink: 0 }}>
                       {t('panel.changeTrackerTab.notes')}:
                     </Typography>
                     <TextField
