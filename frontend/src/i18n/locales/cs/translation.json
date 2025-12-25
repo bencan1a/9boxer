@@ -21,7 +21,6 @@
     "fileMenu": {
       "noFileSelected": "Není vybrán žádný soubor",
       "fileMenuAriaLabel": "Nabídka souboru: {{filename}}, {{count}} čekající změna",
-      "fileMenuAriaLabel_other": "Nabídka souboru: {{filename}}, {{count}} čekajících změn",
       "fileMenuAriaLabelNoFile": "Nabídka souboru: Není vybrán žádný soubor",
       "importData": "Importovat data",
       "exportChanges": "Aplikovat {{count}} změnu do Excelu",
