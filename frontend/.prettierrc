@@ -1,0 +1,21 @@
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "src/i18n/locales/**/translation.json",
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "parser": "json"
+      }
+    }
+  ]
+}

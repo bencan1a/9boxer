@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-electron/
+build/
+out/
+release/
+
+# Coverage
+coverage/
+
+# Caches
+.vite/
+.vitest/
+.playwright/
+
+# Electron
+electron-builder.yml
+
+# Config files that may have special formatting
+tsconfig*.json
+package-lock.json

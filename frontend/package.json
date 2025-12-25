@@ -33,7 +33,9 @@
     "test:e2e:pw": "playwright test",
     "test:e2e:pw:ui": "playwright test --ui",
     "test:e2e:pw:debug": "playwright test --debug",
-    "screenshots:generate": "npx tsx playwright/screenshots/generate.ts"
+    "screenshots:generate": "npx tsx playwright/screenshots/generate.ts",
+    "format:i18n": "prettier --write \"src/i18n/locales/**/translation.json\"",
+    "format:i18n:check": "prettier --check \"src/i18n/locales/**/translation.json\""
   },
   "build": {
     "extends": "electron-builder.json"
@@ -81,6 +83,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "jsdom": "^27.3.0",
+    "prettier": "^3.7.4",
     "tsx": "^4.7.0",
     "typescript": "^5.2.2",
     "vite": "^7.2.7",
