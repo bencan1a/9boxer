@@ -137,8 +137,8 @@ export const ChangeTrackerTab: React.FC = () => {
               </TableRow>
               <TableRow data-testid={`${testIdPrefix}-notes-row-${change.employee_id}`}>
                 <TableCell colSpan={2} sx={{ pt: 0, pb: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ pt: 1, flexShrink: 0 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
                       {t('panel.changeTrackerTab.notes')}:
                     </Typography>
                     <TextField
