@@ -1,0 +1,384 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "Logo 9Boxer"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "Filtrovat zaměstnance",
+      "activeFilters": "Aktivní filtry:",
+      "levels": "Úrovně",
+      "functions": "Funkce",
+      "locations": "Lokace",
+      "managers": "Manažeři",
+      "excluded": "Vyloučeno",
+      "employees": "zaměstnanec(ů)",
+      "help": "Nápověda",
+      "settings": "Nastavení",
+      "userGuideError": "Nepodařilo se otevřít uživatelskou příručku",
+      "userGuideOnlyDesktop": "Uživatelská příručka je dostupná pouze v desktopové aplikaci"
+    },
+    "fileMenu": {
+      "noFileSelected": "Není vybrán žádný soubor",
+      "fileMenuAriaLabel": "Nabídka souboru: {{filename}}, {{count}} čekající změna",
+      "fileMenuAriaLabelNoFile": "Nabídka souboru: Není vybrán žádný soubor",
+      "importData": "Importovat data",
+      "exportChanges": "Aplikovat {{count}} změnu do Excelu",
+      "exportChanges_other": "Aplikovat {{count}} změn do Excelu",
+      "exporting": "Exportuji...",
+      "openRecentFile": "Otevřít nedávný soubor",
+      "comingSoon": "(Již brzy)",
+      "noActiveSession": "Žádná aktivní relace",
+      "exportSuccess": "Úspěšně exportována {{count}} změna do {{filename}}",
+      "exportSuccess_other": "Úspěšně exportováno {{count}} změn do {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filtry",
+      "jobLevels": "Pracovní úrovně",
+      "jobFunctions": "Pracovní funkce",
+      "locations": "Lokace",
+      "managers": "Manažeři",
+      "exclusions": "Vyloučení",
+      "excludeEmployees": "Vyloučit zaměstnance",
+      "clearAllFilters": "Vymazat všechny filtry"
+    },
+    "exclusionDialog": {
+      "title": "Vyloučit zaměstnance",
+      "quickFilters": "Rychlé filtry",
+      "excludeVPs": "Vyloučit viceprezidenty",
+      "excludeDirectorsPlus": "Vyloučit ředitele+",
+      "excludeManagers": "Vyloučit manažery",
+      "clearAll": "Vymazat vše",
+      "searchPlaceholder": "Hledat zaměstnance...",
+      "selectAll": "Vybrat vše ({{count}} zaměstnanců)",
+      "selectedCount": "Vybráno: {{count}}",
+      "cancel": "Zrušit",
+      "applyExclusions": "Aplikovat vyloučení"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "Není načten žádný soubor",
+      "emptyStateDescription": "Přetáhněte sem soubor Excel nebo klikněte na Importovat data",
+      "importData": "Importovat data",
+      "sampleFileHint": "Jste v 9Boxeru poprvé? Zkuste importovat ukázkový soubor z nabídky Nápověda → Uživatelská příručka",
+      "showPanel": "Zobrazit panel",
+      "hidePanel": "Skrýt panel"
+    }
+  },
+  "grid": {
+    "axes": {
+      "performance": "Výkon (Nízký → Vysoký)",
+      "potential": "Potenciál (Nízký → Vysoký)"
+    },
+    "employeeCount": {
+      "employee": "zaměstnanec",
+      "employee_other": "zaměstnanců",
+      "of": "z",
+      "noEmployees": "Žádní zaměstnanci",
+      "totalEmployeesInSession": "Celkem zaměstnanců v relaci",
+      "showingCount": "Zobrazeno {{filteredCount}} z {{totalCount}} zaměstnanců",
+      "activeFilters": "Aktivní filtry:",
+      "jobLevel": "Pracovní úroveň",
+      "jobFunction": "Pracovní funkce",
+      "location": "Lokace",
+      "manager": "Manažer",
+      "excluded": "Vyloučeno",
+      "ariaLabel": "Celkem {{count}} zaměstnanců",
+      "ariaLabelFiltered": "Zobrazeno {{filteredCount}} z {{totalCount}} zaměstnanců s aktivními filtry",
+      "ariaLabelNoEmployees": "V relaci nejsou žádní zaměstnanci"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Aktivní zobrazení mřížky (Stiskněte D pro zobrazení koláčového grafu)",
+      "donutViewActive": "Aktivní zobrazení koláčového grafu (Stiskněte D pro zobrazení mřížky)",
+      "ariaLabelToggle": "Přepínač režimu zobrazení",
+      "ariaLabelGrid": "Zobrazení mřížky",
+      "ariaLabelDonut": "Zobrazení koláčového grafu"
+    },
+    "gridBox": {
+      "collapseBox": "Sbalit pole",
+      "expandBox": "Rozbalit pole",
+      "modified": "Změněno"
+    },
+    "employeeTile": {
+      "modified": "Změněno",
+      "donut": "Koláčový graf",
+      "donutLabel": "Koláčový graf:"
+    },
+    "positions": {
+      "1": {
+        "name": "Podprůměrný výkon",
+        "shortLabel": "[N,N]",
+        "fullLabel": "Podprůměrný výkon [N,N]",
+        "guidance": "Nízký výkon, nízký potenciál. Zaměstnanci s potížemi plnit očekávání s omezenou kapacitou růstu. Mohou vyžadovat plány zlepšení výkonu, dodatečnou podporu nebo přeřazení na jinou pozici."
+      },
+      "2": {
+        "name": "Spolehlivý profesionál",
+        "shortLabel": "[S,N]",
+        "fullLabel": "Spolehlivý profesionál [S,N]",
+        "guidance": "Solidní výkon v současné roli, ale omezený potenciál postupu. Spolehliví přispěvatelé, kteří vynikají na své současné úrovni. Zaměřte se na ocenění, zapojení a udržení v současné roli."
+      },
+      "3": {
+        "name": "Tahoun týmu",
+        "shortLabel": "[V,N]",
+        "fullLabel": "Tahoun týmu [V,N]",
+        "guidance": "Vysoce výkonní zaměstnanci s omezeným potenciálem postupu. Vysoce cenní ve své současné roli, dodávají konzistentně vynikající výsledky. Investujte do strategií zapojení, ocenění a udržení, aby zůstali motivováni."
+      },
+      "4": {
+        "name": "Nekonzistentní",
+        "shortLabel": "[N,S]",
+        "fullLabel": "Nekonzistentní [N,S]",
+        "guidance": "Podprůměrný výkon, ale prokazují potenciál růstu. Mohou být na špatné pozici, potřebovat rozvoj nebo čelit překážkám. Poskytněte koučink, mentoring, jasná očekávání výkonu a zvažte úpravu role."
+      },
+      "5": {
+        "name": "Klíčový talent",
+        "shortLabel": "[S,S]",
+        "fullLabel": "Klíčový talent [S,S]",
+        "guidance": "Solidní výkon se středním potenciálem růstu. Páteř organizace poskytující konzistentní výsledky. Investujte do rozvojových příležitostí, laterálního růstu a rozvoje dovedností."
+      },
+      "6": {
+        "name": "Vysoký přínos",
+        "shortLabel": "[V,S]",
+        "fullLabel": "Vysoký přínos [V,S]",
+        "guidance": "Vysoce výkonní zaměstnanci se středním potenciálem postupu. Cenní přispěvatelé, kteří vynikají a mohou převzít zvýšenou odpovědnost. Zaměřte se na náročnější úkoly, rozvoj dovedností a odbornou expertizu."
+      },
+      "7": {
+        "name": "Záhada",
+        "shortLabel": "[N,V]",
+        "fullLabel": "Záhada [N,V]",
+        "guidance": "Vysoký potenciál, ale aktuálně podprůměrný výkon. Mohou být noví v roli, špatně zařazení nebo čelit výzvám. Vyžadují okamžitou pozornost prostřednictvím koučinku, úpravy role nebo cílených rozvojových plánů k odemknutí potenciálu."
+      },
+      "8": {
+        "name": "Růstový talent",
+        "shortLabel": "[S,V]",
+        "fullLabel": "Růstový talent [S,V]",
+        "guidance": "Solidní výkon s vysokým potenciálem postupu. Budoucí lídři ve vývoji. Poskytněte mentoring, vedoucí školení, plánování kariérní cesty a příležitosti ke zvýšené odpovědnosti."
+      },
+      "9": {
+        "name": "Hvězda",
+        "shortLabel": "[V,V]",
+        "fullLabel": "Hvězda [V,V]",
+        "guidance": "Špičkoví pracovníci s vysokým potenciálem. Kritický talent k udržení a rozvoji pro vedoucí role. Zaměřte se na udržení, plánování nástupnictví, rozvoj vedoucích pracovníků a náročné úkoly."
+      }
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "Detaily",
+      "changes": "Změny",
+      "statistics": "Statistiky",
+      "intelligence": "Inteligence"
+    },
+    "detailsTab": {
+      "selectEmployee": "Vyberte zaměstnance pro zobrazení detailů",
+      "reportingChain": "Řetězec podřízenosti",
+      "employeeInformation": "Informace o zaměstnanci",
+      "jobFunction": "Pracovní funkce",
+      "location": "Lokace",
+      "jobLevel": "Pracovní úroveň",
+      "tenure": "Délka zaměstnání",
+      "timeInLevel": "Čas na úrovni",
+      "promotionReady": "Připraven na povýšení",
+      "currentAssessment": "Aktuální hodnocení",
+      "potential": "Potenciál:",
+      "position": "Pozice:",
+      "modifiedInSession": "Změněno v relaci",
+      "performanceHistory": "Historie výkonu",
+      "currentYear": "{{year}} (Aktuální)",
+      "performance": "Výkon",
+      "potentialLabel": "Potenciál",
+      "rating": "Hodnocení",
+      "noHistoricalRatings": "Nejsou k dispozici historická hodnocení",
+      "managementChain": {
+        "employee": "Zaměstnanec",
+        "manager": "Manažer",
+        "noData": "Nejsou k dispozici data o řetězci vedení",
+        "level01": "Úroveň 01",
+        "level02": "Úroveň 02",
+        "level03": "Úroveň 03",
+        "level04": "Úroveň 04 (VP)",
+        "level05": "Úroveň 05",
+        "level06": "Úroveň 06"
+      }
+    },
+    "changeTrackerTab": {
+      "noChanges": "Zatím žádné změny",
+      "noDonutChanges": "Zatím žádné změny v koláčovém grafu",
+      "moveEmployeesHint": "Přesuňte zaměstnance pro sledování změn",
+      "moveEmployeesDonutHint": "Přesuňte zaměstnance v režimu koláčového grafu pro sledování změn",
+      "addNotesPlaceholder": "Přidat poznámky...",
+      "employee": "Zaměstnanec",
+      "movement": "Pohyb",
+      "from": "Z",
+      "to": "Do",
+      "notes": "Poznámky",
+      "gridChanges": "Změny v mřížce",
+      "donutChanges": "Změny v koláčovém grafu"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Celkem zaměstnanců",
+      "modified": "Změněno",
+      "highPerformers": "Vysoce výkonní",
+      "solidPerformers": "Spolehliví pracovníci",
+      "needsAttention": "Vyžaduje pozornost",
+      "distributionByPosition": "Rozdělení podle pozice",
+      "position": "Pozice",
+      "count": "Počet",
+      "percentage": "Procento",
+      "groupPercentage": "Skupinové %",
+      "noStatisticsAvailable": "Nejsou k dispozici žádné statistiky",
+      "employeeCount": "Počet zaměstnanců",
+      "employeesCount": "{{count}} zaměstnanců",
+      "countLabel": "Počet"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Relace nenalezena",
+      "sessionLostMessage": "Vaše datová relace byla ztracena (pravděpodobně kvůli restartování aplikace). Prosím, znovu nahrajte svůj soubor Excel.",
+      "failedToLoad": "Nepodařilo se načíst data inteligence",
+      "retry": "Zkusit znovu",
+      "noIntelligenceData": "Nejsou k dispozici žádná data inteligence",
+      "locationAnalysis": "Analýza podle lokace",
+      "highPerformerByLocation": "% vysoce výkonných podle lokace",
+      "functionAnalysis": "Analýza podle funkce",
+      "highPerformerByFunction": "% vysoce výkonných podle funkce",
+      "levelAnalysis": "Analýza podle úrovně",
+      "performanceDistributionByLevel": "Rozdělení výkonu podle úrovně",
+      "tenureAnalysis": "Analýza podle délky zaměstnání",
+      "highPerformerByTenure": "% vysoce výkonných podle délky zaměstnání",
+      "performanceLevel": {
+        "low": "Nízký výkon",
+        "medium": "Střední výkon",
+        "high": "Vysoký výkon"
+      },
+      "anomaly": {
+        "noIssues": "Žádné problémy",
+        "moderateAnomaly": "Mírná anomálie",
+        "severeAnomaly": "Závažná anomálie",
+        "unknown": "Neznámé",
+        "statisticalSummary": "Statistické shrnutí",
+        "pValue": "P-hodnota",
+        "pValueTooltip": "Pravděpodobnost, že pozorované rozdíly jsou způsobeny náhodou. p < 0,05 indikuje významnou odchylku.",
+        "effectSize": "Velikost efektu (Cramérovo V)",
+        "effectSizeTooltip": "Síla asociace (škála 0-1). 0,1=malá, 0,3=střední, 0,5=velká",
+        "sampleSize": "Velikost vzorku",
+        "degreesOfFreedom": "Stupně volnosti",
+        "interpretation": "Interpretace",
+        "detailedDeviations": "Podrobné odchylky",
+        "category": "Kategorie",
+        "observedPercent": "Pozorované %",
+        "expectedPercent": "Očekávané %",
+        "zScore": "Z-skóre",
+        "significant": "Významné?",
+        "yes": "Ano",
+        "no": "Ne"
+      },
+      "chart": {
+        "noDataAvailable": "Nejsou k dispozici žádná data",
+        "actual": "Skutečné",
+        "expected": "Očekávané",
+        "zScore": "Z-skóre",
+        "pValue": "P-hodnota",
+        "sampleSize": "N",
+        "percentage": "Procento (%)",
+        "expectedPercent": "Očekávané %",
+        "actualPercent": "Skutečné %",
+        "level": "Úroveň",
+        "high": "Vysoký",
+        "medium": "Střední",
+        "low": "Nízký",
+        "total": "Celkem",
+        "baseline": "Základní linie ({{percent}}%)",
+        "baselineNote": "Poznámka: Základní linie představuje celkový průměrný procentní podíl vysokého výkonu napříč všemi úrovněmi. Významné odchylky mohou indikovat problémy s kalibrací.",
+        "function": "Funkce",
+        "position": "Poz {{number}}",
+        "heatIntensity": "Intenzita zabarvení:"
+      },
+      "summary": {
+        "excellent": "Vynikající",
+        "good": "Dobré",
+        "needsAttention": "Vyžaduje pozornost",
+        "qualityScore": "Skóre kvality",
+        "qualityScoreDescription": "Škála 0-100 založená na detekovaných statistických anomáliích",
+        "totalAnomalies": "Celkem anomálií",
+        "green": "Zelené",
+        "yellow": "Žluté",
+        "red": "Červené",
+        "overallHealth": "Celkový stav",
+        "wellCalibrated": "Rozdělení hodnocení se zdá být dobře kalibrované napříč všemi dimenzemi.",
+        "someAnomalies": "Detekovány některé anomálie. Zkontrolujte níže uvedené sekce pro podrobnosti.",
+        "significantAnomalies": "Detekovány významné anomálie. Doporučuje se okamžitá kontrola."
+      }
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Zrušit",
+    "close": "Zavřít",
+    "save": "Uložit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "retry": "Zkusit znovu",
+    "quit": "Ukončit",
+    "retryConnection": "Zkusit připojení znovu",
+    "fileUpload": {
+      "dialogTitle": "Importovat soubor Excel",
+      "description": "Importujte soubor Excel pro mapování talentů 9-box (.xlsx nebo .xls)",
+      "successMessage": "Soubor byl úspěšně importován!",
+      "selectFile": "Vybrat soubor",
+      "selected": "Vybráno:",
+      "importing": "Importuji...",
+      "import": "Importovat",
+      "importSuccess": "Úspěšně importován {{filename}}",
+      "importFailed": "Nepodařilo se importovat soubor",
+      "failedToRead": "Nepodařilo se přečíst soubor",
+      "fileTooLarge": "Velikost souboru musí být menší než 10MB",
+      "invalidFileType": "Prosím, vyberte soubor Excel (.xlsx nebo .xls)",
+      "noFileSelected": "Nejprve prosím vyberte soubor"
+    },
+    "devMode": {
+      "webModeTooltip": "Spuštěno v režimu webového prohlížeče",
+      "webModeLabel": "Webový režim",
+      "fetchingBackendInfo": "Získávám informace o backendu...",
+      "backendPort": "Backend: Port {{port}}",
+      "backendLoading": "Backend: Načítání...",
+      "backendUrlTooltip": "URL backendu: {{url}}\n\nTento port se může lišit od výchozího (8000), pokud došlo ke konfliktu portů během spouštění."
+    },
+    "connectionStatus": {
+      "connected": "Připojeno",
+      "reconnecting": "Znovu se připojuji",
+      "reconnectingWithCount": "Znovu se připojuji ({{count}})",
+      "disconnected": "Odpojeno"
+    },
+    "errorBoundary": {
+      "title": "Ajaj! Něco se pokazilo",
+      "message": "Došlo k neočekávané chybě. Prosím, zkuste stránku znovu načíst.",
+      "returnHome": "Vrátit se domů"
+    }
+  },
+  "messages": {
+    "success": "Úspěch",
+    "error": "Chyba",
+    "warning": "Varování",
+    "info": "Informace"
+  },
+  "settings": {
+    "title": "Nastavení",
+    "closeAriaLabel": "zavřít nastavení",
+    "appearance": "Vzhled",
+    "currentSelection": "Aktuální výběr:",
+    "currentTheme": "Aktuálně používáte motiv {{theme}} (ze systému)",
+    "theme": {
+      "lightMode": "Světlý režim",
+      "lightModeDesc": "Vždy použít světlý motiv",
+      "darkMode": "Tmavý režim",
+      "darkModeDesc": "Vždy použít tmavý motiv",
+      "auto": "Automaticky (Následovat systém)",
+      "autoDesc": "Automaticky přizpůsobit systémovému motivu"
+    }
+  },
+  "zoom": {
+    "zoomIn": "Přiblížit (Ctrl++)",
+    "zoomOut": "Oddálit (Ctrl+-)",
+    "resetZoom": "Resetovat přiblížení (Ctrl+0)",
+    "enterFullScreen": "Celá obrazovka (F11)",
+    "exitFullScreen": "Ukončit celou obrazovku (F11)"
+  }
+}

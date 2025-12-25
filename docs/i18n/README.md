@@ -7,6 +7,11 @@ This guide covers how to use internationalization in the 9Boxer application.
 9Boxer uses [react-i18next](https://react.i18next.com/) for internationalization. The application currently supports:
 - 🇺🇸 English (en) - Default
 - 🇪🇸 Spanish (es)
+- 🇫🇷 French (fr)
+- 🇩🇪 German (de)
+- 🇨🇿 Czech (cs)
+- 🇯🇵 Japanese (ja)
+- 🇮🇳 Hindi (hi)
 
 ## Quick Start
 
@@ -61,8 +66,18 @@ frontend/src/i18n/
 └── locales/
     ├── en/
     │   └── translation.json      # English translations
-    └── es/
-        └── translation.json      # Spanish translations
+    ├── es/
+    │   └── translation.json      # Spanish translations
+    ├── fr/
+    │   └── translation.json      # French translations
+    ├── de/
+    │   └── translation.json      # German translations
+    ├── cs/
+    │   └── translation.json      # Czech translations
+    ├── ja/
+    │   └── translation.json      # Japanese translations
+    └── hi/
+        └── translation.json      # Hindi translations
 ```
 
 ## Adding New Strings
@@ -77,7 +92,15 @@ frontend/src/i18n/
 }
 ```
 
-2. Add the Spanish translation to `frontend/src/i18n/locales/es/translation.json`:
+2. Add translations to all other language files:
+- `frontend/src/i18n/locales/es/translation.json` (Spanish)
+- `frontend/src/i18n/locales/fr/translation.json` (French)
+- `frontend/src/i18n/locales/de/translation.json` (German)
+- `frontend/src/i18n/locales/cs/translation.json` (Czech)
+- `frontend/src/i18n/locales/ja/translation.json` (Japanese)
+- `frontend/src/i18n/locales/hi/translation.json` (Hindi)
+
+Example for Spanish:
 ```json
 {
   "myComponent": {
