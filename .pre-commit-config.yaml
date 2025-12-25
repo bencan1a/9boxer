@@ -76,3 +76,13 @@ repos:
         language: system
         files: ^frontend/src/i18n/locales/.*/translation\.json$
         pass_filenames: true
+
+  # Prettier formatting for i18n translation files
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        name: format i18n translation files
+        files: ^frontend/src/i18n/locales/.*/translation\.json$
+        additional_dependencies:
+          - prettier@3.7.4

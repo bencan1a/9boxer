@@ -100,6 +100,12 @@ Prefixes:
    - [ ] All internal links verified
    - [ ] Cross-references updated in related pages
 
+3a. **Translation checklist** (for PRs modifying i18n translation files):
+   - [ ] Translation files formatted with `npm run format:i18n`
+   - [ ] All translations validated with `python tools/validate-translations.py frontend/src/i18n/locales/*/translation.json`
+   - [ ] Key parity maintained across all languages (en, es, etc.)
+   - [ ] Placeholder variables (e.g., `{{count}}`, `{{name}}`) consistent across translations
+
 4. **Review process**:
    - All CI checks must pass
    - At least one approval required
@@ -179,6 +185,28 @@ make security
 # All checks
 make check-all
 ```
+
+### Frontend i18n Translation Files
+
+Translation files in `frontend/src/i18n/locales/**/translation.json` are automatically formatted with Prettier:
+
+```bash
+# Format all i18n translation files
+cd frontend
+npm run format:i18n
+
+# Check formatting without modifying files (used in CI)
+npm run format:i18n:check
+```
+
+**Pre-commit hooks** automatically format translation files when you commit changes. If formatting changes are needed, the commit will fail with a message showing which files were modified. Simply re-stage the formatted files and commit again:
+
+```bash
+git add frontend/src/i18n/locales/*/translation.json
+git commit -m "Your commit message"
+```
+
+**Note**: Translation files are also validated for JSON syntax, key parity between languages, structure consistency, and placeholder consistency using `tools/validate-translations.py`.
 
 ## 📚 Documentation
 
