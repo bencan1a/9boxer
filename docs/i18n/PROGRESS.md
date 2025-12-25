@@ -154,6 +154,7 @@ Each component migration follows this pattern:
 
 ## Resources Created
 
+- **Translation Glossary** (`docs/i18n/glossary.md`) - Comprehensive terminology reference with 280+ terms
 - Migration guide with 15+ code examples
 - Test utilities for easy component testing
 - Type-safe hooks for common patterns
