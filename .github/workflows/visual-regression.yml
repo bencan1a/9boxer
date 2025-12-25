@@ -1,0 +1,118 @@
+name: Visual Regression Tests
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/.storybook/**'
+      - 'frontend/playwright/visual/**'
+      - 'frontend/playwright.visual.config.ts'
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/.storybook/**'
+      - 'frontend/playwright/visual/**'
+      - 'frontend/playwright.visual.config.ts'
+
+jobs:
+  visual-tests:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Run visual regression tests
+        working-directory: frontend
+        run: npm run test:visual
+        env:
+          CI: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-results
+          path: |
+            frontend/playwright-report-visual/
+            frontend/test-results/
+          retention-days: 30
+
+      - name: Upload visual diff images
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: frontend/test-results/**/*-diff.png
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Find all diff images
+            const testResultsDir = 'frontend/test-results';
+            let diffCount = 0;
+            let diffList = '';
+
+            if (fs.existsSync(testResultsDir)) {
+              const walk = (dir) => {
+                const files = fs.readdirSync(dir);
+                files.forEach(file => {
+                  const filePath = path.join(dir, file);
+                  const stat = fs.statSync(filePath);
+                  if (stat.isDirectory()) {
+                    walk(filePath);
+                  } else if (file.endsWith('-diff.png')) {
+                    diffCount++;
+                    diffList += `- ${file}\n`;
+                  }
+                });
+              };
+              walk(testResultsDir);
+            }
+
+            const body = `## Visual Regression Test Failed ⚠️
+
+            ${diffCount} visual difference(s) detected:
+
+            ${diffList}
+
+            **What to do:**
+            1. Download the \`visual-diffs\` artifact from this workflow run
+            2. Review the diff images to determine if changes are intentional
+            3. If intentional, update baselines: \`npm run test:visual:update\`
+            4. If unintentional, fix the UI bug causing the difference
+
+            [View full test report in artifacts](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

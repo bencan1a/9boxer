@@ -241,11 +241,14 @@ frontend/release/
 .claude/settings.local.json
 .vscode/settings.json
 frontend/playwright-report/
+frontend/playwright-report-visual/
 frontend/coverage/
 frontend/test-results/
-frontend/playwright-report/
 
 # Playwright global setup PID file
 frontend/playwright/.backend.pid
+
+# Storybook build output
+frontend/storybook-static/
 
 agent_tmp/toolbar-ux-redesign-plan.md
