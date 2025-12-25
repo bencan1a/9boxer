@@ -504,6 +504,61 @@ The backend uses the standard Python `src/` layout:
   - `preload/` - Preload scripts
   - `renderer/` - Renderer utilities
 
+### Design System
+
+**CRITICAL:** 9Boxer has a comprehensive design system to ensure visual consistency and guide feature development.
+
+**Before creating or modifying ANY UI component:**
+
+1. ✅ **Read DESIGN_SYSTEM.md** - Complete guidelines for UI development
+2. ✅ **Review design tokens** - `frontend/src/theme/tokens.ts`
+3. ✅ **Check UI zones** - Know where controls should live (toolbar vs grid vs panel)
+4. ✅ **Check existing components** - Don't recreate what exists
+
+**Key Design System Files:**
+- **[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)** - Complete UI guidelines (MUST READ for UI work)
+- **[frontend/src/theme/tokens.ts](frontend/src/theme/tokens.ts)** - All design constants
+- **[docs/design-system/design-tokens.md](docs/design-system/design-tokens.md)** - Token reference
+- **[docs/design-system/](docs/design-system/)** - Detailed design documentation
+
+**Critical Rules for UI Development:**
+- ❌ **NEVER hardcode colors** (use `theme.palette.*` or `theme.tokens.colors.*`)
+- ❌ **NEVER hardcode spacing** (use `theme.tokens.spacing.*` or `theme.spacing(n)`)
+- ❌ **NEVER hardcode dimensions** (use `theme.tokens.dimensions.*`)
+- ✅ **ALWAYS support light and dark modes** (test both)
+- ✅ **ALWAYS add data-testid** for testing
+- ✅ **ALWAYS use i18n** for user-visible text (`useTranslation()`)
+- ✅ **ALWAYS include ARIA labels** for accessibility
+
+**UI Zones - Where Controls Should Live:**
+- **Top Toolbar** → Global actions (File, Export, Settings, Help)
+- **Grid Area** → Employee manipulation (drag-drop, expand/collapse)
+- **Filter Drawer** → Search and filtering
+- **Right Panel** → Detailed information (Details, Changes, Stats, Intelligence tabs)
+- **Settings Dialog** → User preferences and configuration
+
+**Example - Correct Token Usage:**
+```tsx
+// ❌ Wrong - hardcoded values
+<Box sx={{ padding: '16px', color: '#1976d2' }} />
+
+// ✅ Correct - use design tokens
+import { useTheme } from '@mui/material/styles';
+const theme = useTheme();
+
+<Box sx={{
+  padding: theme.tokens.spacing.md,
+  color: theme.palette.primary.main,
+}} />
+```
+
+**Component Anatomy Standards:**
+- **EmployeeTile**: Drag handle, name, ID, quick actions (max 3 icons)
+- **GridBox**: Position label, count badge, employee list, expand/collapse button
+- **Right Panel Tabs**: Header, scrollable content, actions
+
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete UI zone definitions and component patterns.
+
 ### File Organization Conventions
 The project has strict conventions for where files belong (see [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)):
 
