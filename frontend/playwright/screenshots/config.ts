@@ -6,6 +6,35 @@
  * tells the generator which function to call and where to save the output.
  */
 
+/**
+ * Cropping strategy for screenshot capture
+ *
+ * - element: Capture specific UI element only (button, card, field)
+ * - container: Capture container with multiple elements (drawer, panel, dialog)
+ * - panel: Capture right/left panel area
+ * - grid: Capture the 9-box grid area
+ * - full-page: Capture entire viewport
+ */
+export type CroppingStrategy = 'element' | 'container' | 'panel' | 'grid' | 'full-page';
+
+/**
+ * Expected dimensions for screenshot validation
+ */
+export interface ExpectedDimensions {
+  /** Minimum width in pixels */
+  minWidth?: number;
+  /** Maximum width in pixels */
+  maxWidth?: number;
+  /** Minimum height in pixels */
+  minHeight?: number;
+  /** Maximum height in pixels */
+  maxHeight?: number;
+  /** Exact width (if screenshot should be precise width) */
+  exactWidth?: number;
+  /** Exact height (if screenshot should be precise height) */
+  exactHeight?: number;
+}
+
 export interface ScreenshotMetadata {
   /** Module name in workflows/ directory (e.g., 'quickstart', 'changes') */
   workflow: string;
@@ -17,6 +46,10 @@ export interface ScreenshotMetadata {
   description: string;
   /** True if requires manual capture/composition (not automated) */
   manual?: boolean;
+  /** Cropping strategy - what portion of the screen to capture */
+  cropping?: CroppingStrategy;
+  /** Expected dimensions for validation (helps catch incorrect captures) */
+  dimensions?: ExpectedDimensions;
 }
 
 /**
@@ -33,30 +66,40 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png',
     description: 'Base grid for 3-panel drag sequence (requires manual composition)',
     manual: true,
+    cropping: 'grid',
+    dimensions: { minWidth: 800, minHeight: 600 },
   },
   'changes-orange-border': {
     workflow: 'changes',
     function: 'generateOrangeBorder',
     path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png',
     description: 'Employee tile with orange modified border and badge',
+    cropping: 'element',
+    dimensions: { minWidth: 150, maxWidth: 250, minHeight: 80, maxHeight: 150 },
   },
   'changes-employee-details': {
     workflow: 'changes',
     function: 'generateEmployeeDetails',
     path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png',
     description: 'Employee details panel showing updated ratings',
+    cropping: 'panel',
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   'changes-timeline-view': {
     workflow: 'changes',
     function: 'generateTimelineView',
     path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png',
     description: 'Performance History timeline in employee details',
+    cropping: 'panel',
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   'changes-tab': {
     workflow: 'changes',
     function: 'generateChangesTab',
     path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png',
     description: 'Changes tab with employee movements',
+    cropping: 'panel',
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
   // Notes workflow screenshots (3 screenshots)
@@ -86,12 +129,16 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: 'generateActiveChips',
     path: 'resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png',
     description: 'Grid view with active filter chips and orange dot indicator',
+    cropping: 'full-page',
+    dimensions: { exactWidth: 1400, exactHeight: 900 },
   },
   'filters-panel-expanded': {
     workflow: 'filters',
     function: 'generatePanelExpanded',
     path: 'resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png',
     description: 'Filter panel expanded showing all filter options',
+    cropping: 'container',
+    dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
   'filters-before-after': {
     workflow: 'filters',
@@ -99,12 +146,16 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: 'resources/user-guide/docs/images/screenshots/filters/filters-before-state.png',
     description: 'Before/after filtering comparison (requires manual 2-panel composition)',
     manual: true,
+    cropping: 'grid',
+    dimensions: { minWidth: 800, minHeight: 600 },
   },
   'filters-clear-all-button': {
     workflow: 'filters',
     function: 'generateClearAllButton',
     path: 'resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png',
     description: 'Filter drawer with Clear All button highlighted',
+    cropping: 'container',
+    dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
 
   // Quickstart workflow screenshots (4 screenshots)
@@ -113,18 +164,24 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: 'generateFileMenuButton',
     path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png',
     description: 'File menu button in toolbar showing "No file selected" empty state',
+    cropping: 'element',
+    dimensions: { minWidth: 300, maxWidth: 1400, minHeight: 60, maxHeight: 80 },
   },
   'quickstart-upload-dialog': {
     workflow: 'quickstart',
     function: 'generateUploadDialog',
     path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png',
     description: 'File upload dialog with file selection input and upload button',
+    cropping: 'container',
+    dimensions: { minWidth: 400, maxWidth: 600, minHeight: 200, maxHeight: 400 },
   },
   'quickstart-grid-populated': {
     workflow: 'quickstart',
     function: 'generateGridPopulated',
     path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png',
     description: 'Populated 9-box grid after successful file upload',
+    cropping: 'grid',
+    dimensions: { minWidth: 800, minHeight: 600 },
   },
   'quickstart-success-annotated': {
     workflow: 'quickstart',
@@ -133,6 +190,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       'Full application view showing populated grid and employee count (requires manual annotation)',
     manual: true,
+    cropping: 'full-page',
+    dimensions: { exactWidth: 1400, exactHeight: 900 },
   },
 
   // Calibration workflow screenshots (6 screenshots)
@@ -292,6 +351,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png',
     description: 'Sample Excel file format showing required columns',
     manual: true,
+  },
+
+  // Zoom controls screenshot (1 screenshot)
+  'zoom-controls': {
+    workflow: 'zoom',
+    function: 'generateZoomControls',
+    path: 'resources/user-guide/docs/images/screenshots/zoom-controls.png',
+    description: 'Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle',
   },
 };
 

@@ -79,6 +79,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         localStorage.setItem("last_file_path", filePath);
       }
 
+      // Auto-select first employee in box 5 when uploading a new file
+      let selectedEmployeeId: number | null = null;
+      const box5Employees = employeesResponse.employees.filter(
+        (emp) => emp.grid_position === 5
+      );
+      if (box5Employees.length > 0) {
+        selectedEmployeeId = box5Employees[0].employee_id;
+      }
+
       set({
         sessionId: response.session_id,
         filename: response.filename,
@@ -86,6 +95,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         employees: employeesResponse.employees,
         originalEmployees: employeesResponse.employees,
         changes: [],
+        selectedEmployeeId,
         isLoading: false,
         error: null,
       });
@@ -308,6 +318,19 @@ export const useSessionStore = create<SessionState>((set, get) => ({
           const sessionStatus = await apiClient.getSessionStatus();
           const employeesResponse = await apiClient.getEmployees();
 
+          // Auto-select first employee in box 5 if no employee is selected
+          const currentSelectedId = get().selectedEmployeeId;
+          let selectedEmployeeId = currentSelectedId;
+
+          if (!currentSelectedId) {
+            const box5Employees = employeesResponse.employees.filter(
+              (emp) => emp.grid_position === 5
+            );
+            if (box5Employees.length > 0) {
+              selectedEmployeeId = box5Employees[0].employee_id;
+            }
+          }
+
           set({
             sessionId: sessionStatus.session_id,
             filename: sessionStatus.uploaded_filename,
@@ -315,6 +338,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             employees: employeesResponse.employees,
             originalEmployees: employeesResponse.employees,
             changes: sessionStatus.changes,
+            selectedEmployeeId,
             isLoading: false,
             error: null,
           });
