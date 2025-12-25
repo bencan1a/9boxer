@@ -57,6 +57,18 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
     )
   );
 
+  // Helper to convert hex to RGB
+  const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : { r: 0, g: 0, b: 0 };
+  };
+
   // Get color based on percentage (gradient from light to dark)
   const getHeatmapColor = (percentage: number): string => {
     if (percentage === 0) {
@@ -66,10 +78,11 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
     }
     const intensity = percentage / maxPercentage;
 
-    // Use theme primary color for gradient
-    const primaryRgb = theme.palette.mode === 'dark'
-      ? { r: 144, g: 202, b: 249 } // Light blue for dark mode
-      : { r: 25, g: 118, b: 210 }; // Primary blue for light mode
+    // Use theme primary color for gradient (from design tokens)
+    const primaryHex = theme.palette.mode === 'dark'
+      ? theme.tokens.colors.primary.dark.main
+      : theme.tokens.colors.primary.light.main;
+    const primaryRgb = hexToRgb(primaryHex);
 
     // Interpolate from light to primary color
     const r = Math.floor(primaryRgb.r + (255 - primaryRgb.r) * (1 - intensity));
