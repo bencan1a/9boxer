@@ -34,6 +34,8 @@
     "test:e2e:pw:ui": "playwright test --ui",
     "test:e2e:pw:debug": "playwright test --debug",
     "screenshots:generate": "npx tsx playwright/screenshots/generate.ts",
+    "screenshots:compare": "npx tsx playwright/screenshots/compare.ts",
+    "screenshots:validate": "npx tsx playwright/screenshots/compare.ts --fail-on-diff",
     "format:i18n": "prettier --write \"src/i18n/locales/**/translation.json\"",
     "format:i18n:check": "prettier --check \"src/i18n/locales/**/translation.json\""
   },

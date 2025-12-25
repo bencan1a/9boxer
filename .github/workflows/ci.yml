@@ -26,6 +26,7 @@ jobs:
       should-skip-tests: ${{ steps.skip-check.outputs.should_skip_tests }}
       python-files-changed: ${{ steps.skip-check.outputs.python_changed }}
       frontend-files-changed: ${{ steps.skip-check.outputs.frontend_changed }}
+      ui-files-changed: ${{ steps.skip-check.outputs.ui_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,6 +46,7 @@ jobs:
           WORKFLOW_CHANGED=$(echo "$FILES_CHANGED" | grep -E '\.github/workflows/.*\.yml$' || echo "")
           DEPS_CHANGED=$(echo "$FILES_CHANGED" | grep -E '(pyproject\.toml|requirements.*\.txt)$' || echo "")
           FRONTEND_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/(src/|package.*\.json|tsconfig\.json|vite\.config\.ts)' || echo "")
+          UI_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/src/(components/|pages/|App\.tsx)' || echo "")
 
           # Skip tests if only docs/README/markdown files changed
           DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt|ts|tsx|js|jsx|json)$' || echo "docs-only")
@@ -53,14 +55,17 @@ jobs:
             echo "should_skip_tests=false" >> $GITHUB_OUTPUT
             echo "python_changed=$([ -n "$PYTHON_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
             echo "frontend_changed=$([ -n "$FRONTEND_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+            echo "ui_changed=$([ -n "$UI_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           elif [ "$DOCS_ONLY" = "docs-only" ]; then
             echo "should_skip_tests=true" >> $GITHUB_OUTPUT
             echo "python_changed=false" >> $GITHUB_OUTPUT
             echo "frontend_changed=false" >> $GITHUB_OUTPUT
+            echo "ui_changed=false" >> $GITHUB_OUTPUT
           else
             echo "should_skip_tests=false" >> $GITHUB_OUTPUT
             echo "python_changed=false" >> $GITHUB_OUTPUT
             echo "frontend_changed=false" >> $GITHUB_OUTPUT
+            echo "ui_changed=false" >> $GITHUB_OUTPUT
           fi
 
   # ============================================================================
@@ -384,13 +389,48 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # Stage 4: Summary
+  # Stage 4: Screenshot Validation
+  # ============================================================================
+
+  screenshot-validation:
+    name: Screenshot Validation
+    runs-on: windows-latest
+    needs: [check-changes, frontend-tests]
+    if: needs.check-changes.outputs.ui-files-changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Validate screenshots are up to date
+        working-directory: frontend
+        run: npm run screenshots:validate
+
+      - name: Upload validation report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-validation-report
+          path: frontend/playwright/screenshots/
+          retention-days: 7
+
+  # ============================================================================
+  # Stage 5: Summary
   # ============================================================================
 
   ci-success:
     name: CI Summary
     runs-on: windows-latest
-    needs: [check-changes, lint, type-check, security, unit-tests, frontend-tests, smoke-test]
+    needs: [check-changes, lint, type-check, security, unit-tests, frontend-tests, smoke-test, screenshot-validation]
     if: always()
     steps:
       - name: Check results
@@ -402,6 +442,7 @@ jobs:
           echo "Unit Tests: ${{ needs.unit-tests.result }}"
           echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
           echo "Smoke Test: ${{ needs.smoke-test.result }}"
+          echo "Screenshot Validation: ${{ needs.screenshot-validation.result }}"
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
             echo "✅ Skipped tests for docs-only changes"
@@ -416,7 +457,8 @@ jobs:
                [[ "${{ needs.type-check.result }}" == "success" ]] && \
                [[ "${{ needs.security.result }}" == "success" ]] && \
                [[ "${{ needs.frontend-tests.result }}" == "success" || "${{ needs.frontend-tests.result }}" == "skipped" ]] && \
-               [[ "${{ needs.smoke-test.result }}" == "success" || "${{ needs.smoke-test.result }}" == "skipped" ]]; then
+               [[ "${{ needs.smoke-test.result }}" == "success" || "${{ needs.smoke-test.result }}" == "skipped" ]] && \
+               [[ "${{ needs.screenshot-validation.result }}" == "success" || "${{ needs.screenshot-validation.result }}" == "skipped" ]]; then
               echo "✅ All required CI checks passed"
               exit 0
             else
@@ -431,7 +473,8 @@ jobs:
              [[ "${{ needs.security.result }}" != "success" ]] || \
              [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
              [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
-             [[ "${{ needs.smoke-test.result }}" != "success" ]]; then
+             [[ "${{ needs.smoke-test.result }}" != "success" ]] || \
+             [[ "${{ needs.screenshot-validation.result }}" != "success" && "${{ needs.screenshot-validation.result }}" != "skipped" ]]; then
             echo "❌ CI Failed"
             exit 1
           fi
@@ -462,5 +505,10 @@ jobs:
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Smoke Test (Playwright) | ${{ needs.smoke-test.result == 'success' && '✅' || needs.smoke-test.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 4: Screenshot Validation**" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Screenshot Validation | ${{ needs.screenshot-validation.result == 'success' && '✅' || needs.screenshot-validation.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "_Note: Comprehensive testing (integration, performance, multi-platform) runs in PR workflow._" >> $GITHUB_STEP_SUMMARY
