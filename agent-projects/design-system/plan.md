@@ -108,12 +108,16 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Migration status tracking
   - Component index and statistics
 
-- [ ] **2.2 Document component patterns and guidelines**
-  - File: `docs/design-system/component-guidelines.md`
-  - Component composition patterns
-  - When to create new components
-  - Common patterns (loading states, error handling, notifications)
-  - Code examples for each pattern
+- [x] **2.2 Document component patterns and guidelines** ✅ COMPLETED
+  - File: `docs/design-system/component-guidelines.md` (850 lines)
+  - Component composition patterns (container/presentational, compound, provider)
+  - When to create new components (decision tree, size/complexity thresholds)
+  - Common UI patterns (empty states, loading, errors, notifications, dialogs, forms, drag-drop)
+  - Component API design (props naming, required vs optional, TypeScript patterns)
+  - Reusable hooks (data fetching, UI state)
+  - Best practices (performance, accessibility, i18n)
+  - Anti-patterns to avoid (prop drilling, too many states, missing keys)
+  - Testing patterns (unit testing with Vitest)
 
 - [ ] **2.3 Create accessibility standards guide**
   - File: `docs/design-system/accessibility-standards.md`
