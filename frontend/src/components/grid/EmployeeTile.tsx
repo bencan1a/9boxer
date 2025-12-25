@@ -6,6 +6,7 @@ import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { getPositionLabel } from "../../constants/positionLabels";
@@ -21,6 +22,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   onSelect,
   donutModeActive = false,
 }) => {
+  const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
       id: `employee-${employee.employee_id}`,
@@ -101,7 +103,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
           {employee.modified_in_session && (
             <Chip
-              label="Modified"
+              label={t("grid.employeeTile.modified")}
               size="small"
               color="secondary"
               sx={{ height: 18 }}
@@ -110,7 +112,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           )}
           {isDonutModified && (
             <Chip
-              label="Donut"
+              label={t("grid.employeeTile.donut")}
               size="small"
               sx={{
                 height: 18,
@@ -129,7 +131,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
             fontSize="0.65rem"
             sx={{ mt: 0.5, display: "block", fontStyle: "italic" }}
           >
-            Donut: {displayLabel}
+            {t("grid.employeeTile.donutLabel")} {displayLabel}
           </Typography>
         )}
       </CardContent>

@@ -7,6 +7,7 @@ import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 
 interface ManagementChainProps {
@@ -15,6 +16,7 @@ interface ManagementChainProps {
 
 export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // Build the management chain from bottom to top
   const chain: Array<{ name: string; level: string }> = [];
@@ -22,26 +24,26 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
   // Add the employee themselves
   chain.push({
     name: employee.name,
-    level: "Employee",
+    level: t('panel.detailsTab.managementChain.employee'),
   });
 
   // Add direct manager
   if (employee.manager) {
     chain.push({
       name: employee.manager,
-      level: "Manager",
+      level: t('panel.detailsTab.managementChain.manager'),
     });
   }
 
   // Add management chain levels (01-06)
   // According to requirements, the lowest non-empty level is manager's manager
   const chainLevels = [
-    { value: employee.management_chain_01, label: "Level 01" },
-    { value: employee.management_chain_02, label: "Level 02" },
-    { value: employee.management_chain_03, label: "Level 03" },
-    { value: employee.management_chain_04, label: "Level 04 (VP)" },
-    { value: employee.management_chain_05, label: "Level 05" },
-    { value: employee.management_chain_06, label: "Level 06" },
+    { value: employee.management_chain_01, label: t('panel.detailsTab.managementChain.level01') },
+    { value: employee.management_chain_02, label: t('panel.detailsTab.managementChain.level02') },
+    { value: employee.management_chain_03, label: t('panel.detailsTab.managementChain.level03') },
+    { value: employee.management_chain_04, label: t('panel.detailsTab.managementChain.level04') },
+    { value: employee.management_chain_05, label: t('panel.detailsTab.managementChain.level05') },
+    { value: employee.management_chain_06, label: t('panel.detailsTab.managementChain.level06') },
   ];
 
   chainLevels.forEach((level) => {
@@ -56,7 +58,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
   if (chain.length === 1) {
     return (
       <Typography variant="body2" color="text.secondary">
-        No management chain data available
+        {t('panel.detailsTab.managementChain.noData')}
       </Typography>
     );
   }

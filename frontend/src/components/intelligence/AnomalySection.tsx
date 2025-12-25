@@ -21,6 +21,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
@@ -39,6 +40,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
   analysis,
   chartComponent,
 }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
 
@@ -72,13 +74,13 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
   const getStatusLabel = (status: string): string => {
     switch (status) {
       case "green":
-        return "No Issues";
+        return t('panel.intelligenceTab.anomaly.noIssues');
       case "yellow":
-        return "Moderate Anomaly";
+        return t('panel.intelligenceTab.anomaly.moderateAnomaly');
       case "red":
-        return "Severe Anomaly";
+        return t('panel.intelligenceTab.anomaly.severeAnomaly');
       default:
-        return "Unknown";
+        return t('panel.intelligenceTab.anomaly.unknown');
     }
   };
 
@@ -112,13 +114,13 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
         {/* Statistical Summary */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" gutterBottom>
-            Statistical Summary
+            {t('panel.intelligenceTab.anomaly.statisticalSummary')}
           </Typography>
           <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                P-value
-                <Tooltip title="Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.">
+                {t('panel.intelligenceTab.anomaly.pValue')}
+                <Tooltip title={t('panel.intelligenceTab.anomaly.pValueTooltip')}>
                   <InfoIcon sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }} />
                 </Tooltip>
               </Typography>
@@ -128,8 +130,8 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                Effect Size (Cramér's V)
-                <Tooltip title="Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large">
+                {t('panel.intelligenceTab.anomaly.effectSize')}
+                <Tooltip title={t('panel.intelligenceTab.anomaly.effectSizeTooltip')}>
                   <InfoIcon sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }} />
                 </Tooltip>
               </Typography>
@@ -139,7 +141,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                Sample Size
+                {t('panel.intelligenceTab.anomaly.sampleSize')}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {analysis.sample_size}
@@ -147,7 +149,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                Degrees of Freedom
+                {t('panel.intelligenceTab.anomaly.degreesOfFreedom')}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {analysis.degrees_of_freedom}
@@ -159,7 +161,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
         {/* Interpretation */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" gutterBottom>
-            Interpretation
+            {t('panel.intelligenceTab.anomaly.interpretation')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {analysis.interpretation}
@@ -184,7 +186,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             onClick={() => setDetailsExpanded(!detailsExpanded)}
           >
             <Typography variant="subtitle2" sx={{ flex: 1 }}>
-              Detailed Deviations ({analysis.deviations.length})
+              {t('panel.intelligenceTab.anomaly.detailedDeviations')} ({analysis.deviations.length})
             </Typography>
             <IconButton
               size="small"
@@ -201,12 +203,12 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Category</TableCell>
-                    <TableCell align="right">Observed %</TableCell>
-                    <TableCell align="right">Expected %</TableCell>
-                    <TableCell align="right">Z-Score</TableCell>
-                    <TableCell align="right">Sample Size</TableCell>
-                    <TableCell align="center">Significant?</TableCell>
+                    <TableCell>{t('panel.intelligenceTab.anomaly.category')}</TableCell>
+                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.observedPercent')}</TableCell>
+                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.expectedPercent')}</TableCell>
+                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.zScore')}</TableCell>
+                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.sampleSize')}</TableCell>
+                    <TableCell align="center">{t('panel.intelligenceTab.anomaly.significant')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -240,9 +242,9 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
                       <TableCell align="right">{deviation.sample_size}</TableCell>
                       <TableCell align="center">
                         {deviation.is_significant ? (
-                          <Chip label="Yes" color="warning" size="small" />
+                          <Chip label={t('panel.intelligenceTab.anomaly.yes')} color="warning" size="small" />
                         ) : (
-                          <Chip label="No" color="success" size="small" variant="outlined" />
+                          <Chip label={t('panel.intelligenceTab.anomaly.no')} color="success" size="small" variant="outlined" />
                         )}
                       </TableCell>
                     </TableRow>

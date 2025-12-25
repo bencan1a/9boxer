@@ -5,6 +5,7 @@
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 interface FunctionDistribution {
   function: string;
@@ -27,6 +28,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
   title,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   if (!data || data.length === 0) {
     return (
@@ -39,7 +41,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          No data available
+          {t('panel.intelligenceTab.chart.noDataAvailable')}
         </Typography>
       </Box>
     );
@@ -105,7 +107,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 color: theme.palette.text.primary,
               }}
             >
-              Function
+              {t('panel.intelligenceTab.chart.function')}
             </Box>
             {gridPositions.map((pos) => (
               <Box
@@ -119,7 +121,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   px: 1,
                 }}
               >
-                Pos {pos}
+                {t('panel.intelligenceTab.chart.position', { number: pos })}
               </Box>
             ))}
             <Box
@@ -131,7 +133,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 px: 1,
               }}
             >
-              Total
+              {t('panel.intelligenceTab.chart.total')}
             </Box>
           </Box>
 
@@ -223,7 +225,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
         {/* Legend */}
         <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            Heat intensity:
+            {t('panel.intelligenceTab.chart.heatIntensity')}
           </Typography>
           <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
             {[0, 0.25, 0.5, 0.75, 1].map((intensity) => (

@@ -15,6 +15,7 @@ import {
   Alert,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { logger } from "../../utils/logger";
@@ -28,6 +29,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
   open,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { uploadFile, isLoading } = useSessionStore();
   const { showSuccess, showError } = useSnackbar();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,7 +53,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Read the file using Electron API
       const fileResult = await window.electronAPI!.readFile(filePath);
       if (!fileResult.success || !fileResult.buffer || !fileResult.fileName) {
-        setError(fileResult.error || "Failed to read file");
+        setError(fileResult.error || t('common.fileUpload.failedToRead'));
         return;
       }
 
@@ -67,7 +69,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Validate file size (< 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        setError("File size must be less than 10MB");
+        setError(t('common.fileUpload.fileTooLarge'));
         setSelectedFile(null);
         setSelectedFilePath(null);
         return;
@@ -75,7 +77,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
       // Validate file type
       if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
-        setError("Please select an Excel file (.xlsx or .xls)");
+        setError(t('common.fileUpload.invalidFileType'));
         setSelectedFile(null);
         setSelectedFilePath(null);
         return;
@@ -85,7 +87,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       setSelectedFilePath(filePath);
       setError(null);
     } catch (err) {
-      setError("Failed to read file");
+      setError(t('common.fileUpload.failedToRead'));
       logger.error('Error reading file', err);
     }
   };
@@ -96,14 +98,14 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Validate file size (< 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        setError("File size must be less than 10MB");
+        setError(t('common.fileUpload.fileTooLarge'));
         setSelectedFile(null);
         return;
       }
 
       // Validate file type
       if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
-        setError("Please select an Excel file (.xlsx or .xls)");
+        setError(t('common.fileUpload.invalidFileType'));
         setSelectedFile(null);
         return;
       }
@@ -115,7 +117,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
   const handleImport = async () => {
     if (!selectedFile) {
-      setError("Please select a file first");
+      setError(t('common.fileUpload.noFileSelected'));
       return;
     }
 
@@ -126,7 +128,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Pass the file path to uploadFile so it can be persisted
       await uploadFile(selectedFile, selectedFilePath || undefined);
       setSuccess(true);
-      showSuccess(`Successfully imported ${selectedFile.name}`);
+      showSuccess(t('common.fileUpload.importSuccess', { filename: selectedFile.name }));
       setTimeout(() => {
         onClose();
         setSelectedFile(null);
@@ -134,7 +136,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
         setSuccess(false);
       }, 1500);
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Failed to import file";
+      const errorMessage = err.response?.data?.detail || t('common.fileUpload.importFailed');
       setError(errorMessage);
       showError(errorMessage);
     }
@@ -152,11 +154,11 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth data-testid="file-upload-dialog">
-      <DialogTitle>Import Excel File</DialogTitle>
+      <DialogTitle>{t('common.fileUpload.dialogTitle')}</DialogTitle>
       <DialogContent>
         <Box sx={{ py: 2 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Import a 9-Box talent mapping Excel file (.xlsx or .xls)
+            {t('common.fileUpload.description')}
           </Typography>
 
           {error && (
@@ -167,7 +169,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
           {success && (
             <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-              File imported successfully!
+              {t('common.fileUpload.successMessage')}
             </Alert>
           )}
 
@@ -190,7 +192,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
                 disabled={isLoading}
                 onClick={handleSelectFileClick}
               >
-                Select File
+                {t('common.fileUpload.selectFile')}
               </Button>
             ) : (
               // Web: Use HTML file input
@@ -210,7 +212,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
                     startIcon={<CloudUploadIcon />}
                     disabled={isLoading}
                   >
-                    Select File
+                    {t('common.fileUpload.selectFile')}
                   </Button>
                 </label>
               </>
@@ -218,7 +220,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 
             {selectedFile && (
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Selected: <strong>{selectedFile.name}</strong>
+                {t('common.fileUpload.selected')} <strong>{selectedFile.name}</strong>
               </Typography>
             )}
           </Box>
@@ -226,7 +228,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disabled={isLoading}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button
           onClick={handleImport}
@@ -235,7 +237,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           startIcon={isLoading ? <CircularProgress size={16} /> : null}
           data-testid="upload-submit-button"
         >
-          {isLoading ? "Importing..." : "Import"}
+          {isLoading ? t('common.fileUpload.importing') : t('common.fileUpload.import')}
         </Button>
       </DialogActions>
     </Dialog>

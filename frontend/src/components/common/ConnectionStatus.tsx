@@ -10,26 +10,31 @@
 
 import { Chip, IconButton, Box } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { useConnectionStatus } from '../../hooks/useConnectionStatus';
 
 export function ConnectionStatus() {
+  const { t } = useTranslation();
   const { status, retryCount, manualRetry } = useConnectionStatus();
 
   // Configuration for each status
   const statusConfig = {
     connected: {
       color: 'success' as const,
-      label: 'Connected',
+      label: t('common.connectionStatus.connected'),
       icon: '🟢',
     },
     reconnecting: {
       color: 'warning' as const,
-      label: `Reconnecting${retryCount > 0 ? ` (${retryCount})` : ''}`,
+      label:
+        retryCount > 0
+          ? t('common.connectionStatus.reconnectingWithCount', { count: retryCount })
+          : t('common.connectionStatus.reconnecting'),
       icon: '🟡',
     },
     disconnected: {
       color: 'error' as const,
-      label: 'Disconnected',
+      label: t('common.connectionStatus.disconnected'),
       icon: '🔴',
     },
   };
@@ -64,7 +69,7 @@ export function ConnectionStatus() {
           size="small"
           color="error"
           onClick={manualRetry}
-          title="Retry connection"
+          title={t('common.retryConnection')}
           sx={{
             boxShadow: 2,
             bgcolor: 'background.paper',
