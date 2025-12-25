@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-25T06:18:12.061512+00:00
+**Updated**: 2025-12-25T09:35:37.849238+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## design-system
