@@ -33,7 +33,7 @@ import {
  */
 export async function generateChangesTabField(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -49,13 +49,18 @@ export async function generateChangesTabField(
   // Without this, we capture empty state which is useless for documentation
   await ensureChangesExist(page, 1);
 
+  // Additional wait for changes to register in UI state
+  await waitForUiSettle(page, 0.5);
+
   // Click Changes tab
-  await clickTabAndWait(page, "changes-tab");
+  await clickTabAndWait(page, "changes-tab", 0.8);
 
   // Verify changes are visible before capturing
   const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
   const changeCount = await verifyBadgeCount(changesBadge, 1);
-  console.log(`✓ Changes tab verified with ${changeCount} change(s) showing note field`);
+  console.log(
+    `✓ Changes tab verified with ${changeCount} change(s) showing note field`
+  );
 
   // Capture right panel with note field
   await page.locator('[data-testid="right-panel"]').screenshot({
@@ -72,7 +77,7 @@ export async function generateChangesTabField(
  */
 export async function generateGoodExample(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -87,8 +92,11 @@ export async function generateGoodExample(
   // CRITICAL: Ensure at least 1 change exists so note field will be available
   await ensureChangesExist(page, 1);
 
+  // Additional wait for changes to register in UI state
+  await waitForUiSettle(page, 0.5);
+
   // Navigate to Changes tab
-  await clickTabAndWait(page, "changes-tab", 0.5);
+  await clickTabAndWait(page, "changes-tab", 0.8);
 
   // Verify changes are visible
   const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
@@ -140,7 +148,7 @@ export async function generateGoodExample(
  */
 export async function generateExportExcel(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // This is a placeholder - actual screenshot must be captured manually
   // The function exists to maintain consistent interface with other workflows
@@ -150,7 +158,7 @@ export async function generateExportExcel(
       "   1. Load data and add notes to changes\n" +
       "   2. Export to Excel (File > Export Data)\n" +
       "   3. Open Excel file and screenshot Notes column\n" +
-      "   4. Save to output path",
+      "   4. Save to output path"
   );
 
   // Return without error to allow generator to continue
@@ -168,7 +176,7 @@ export async function generateExportExcel(
  */
 export async function generateDonutMode(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
