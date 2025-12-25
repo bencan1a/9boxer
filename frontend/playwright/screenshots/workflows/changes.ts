@@ -161,40 +161,41 @@ export async function generateEmployeeDetails(
 
 /**
  * Generate Performance History timeline in employee details
+ *
+ * Timeline shows STATIC historical ratings imported from Excel file,
+ * not dynamic changes from current session. The sample-employees.xlsx
+ * file includes historical ratings columns (2023, 2024) to populate the timeline.
  */
 export async function generateTimelineView(
   page: Page,
   outputPath: string,
 ): Promise<void> {
-  // Ensure data is loaded and employee is selected
+  // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "Sample_People_List.xlsx");
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await waitForUiSettle(page, 1.0);
-
-    // Select first employee
-    await page.locator('[data-testid^="employee-card-"]').first().click();
-    await waitForUiSettle(page, 0.5);
   }
 
-  // Scroll to timeline section if needed
-  const timeline = page.locator('[data-testid="performance-timeline"]');
+  // Close any dialogs
+  await closeAllDialogsAndOverlays(page);
 
-  // If timeline not found, try alternate selector
-  const timelineOrHeading =
-    (await timeline.count()) > 0
-      ? timeline
-      : page.locator('text="Performance History"');
+  // Click on any employee to open details panel
+  // Historical ratings come from imported Excel data, not session changes
+  const firstEmployee = page.locator('[data-testid^="employee-card-"]').first();
+  await firstEmployee.click();
+  await waitForUiSettle(page, 0.5);
 
-  if ((await timelineOrHeading.count()) > 0) {
-    await timelineOrHeading.first().scrollIntoViewIfNeeded();
+  // Scroll to Performance History section
+  const performanceHistory = page.locator('[data-testid="performance-history"]');
+  if ((await performanceHistory.count()) > 0) {
+    await performanceHistory.scrollIntoViewIfNeeded();
     await waitForUiSettle(page, 0.3);
   }
 
-  // Capture the timeline section
-  await page.locator('[data-testid="right-panel"]').screenshot({
-    path: outputPath,
-  });
+  // Capture right panel showing timeline
+  const rightPanel = page.locator('[data-testid="right-panel"]');
+  await rightPanel.screenshot({ path: outputPath });
 }
 
 /**
