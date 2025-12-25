@@ -210,6 +210,11 @@ npm run test:coverage   # With coverage
 # E2E tests (Playwright)
 npm run test:e2e:pw     # Run all E2E tests
 npm run test:e2e:pw:ui  # Run with UI mode
+
+# Visual regression tests (Playwright)
+npm run storybook       # Start Storybook (required for visual tests)
+npm run test:visual     # Run visual regression tests
+npm run test:visual:update  # Update baseline snapshots after intentional UI changes
 ```
 
 ### Screenshot Generation
