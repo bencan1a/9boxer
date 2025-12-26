@@ -17,7 +17,6 @@ import {
   TableRow,
   Paper,
   LinearProgress,
-  CircularProgress,
   Alert,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -25,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import { useStatistics } from "../../hooks/useStatistics";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
+import { LoadingSpinner } from "../common/LoadingSpinner";
+import { EmptyState } from "../common/EmptyState";
 import { DistributionChart } from "./DistributionChart";
 import { getPositionLabel } from "../../constants/positionLabels";
 
@@ -81,18 +82,7 @@ export const StatisticsTab: React.FC = () => {
   );
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -105,18 +95,10 @@ export const StatisticsTab: React.FC = () => {
 
   if (!statistics) {
     return (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="body1" color="text.secondary">
-          {t("panel.statisticsTab.noStatisticsAvailable")}
-        </Typography>
-      </Box>
+      <EmptyState
+        title={t("panel.statisticsTab.noStatisticsAvailable")}
+        iconSize="medium"
+      />
     );
   }
 

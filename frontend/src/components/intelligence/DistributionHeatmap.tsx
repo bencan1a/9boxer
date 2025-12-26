@@ -90,7 +90,6 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
     const g = Math.floor(primaryRgb.g + (255 - primaryRgb.g) * (1 - intensity));
     const b = Math.floor(primaryRgb.b + (255 - primaryRgb.b) * (1 - intensity));
 
-    // eslint-disable-next-line no-restricted-syntax -- Calculated gradient from design tokens
     return `rgb(${r}, ${g}, ${b})`;
   };
 

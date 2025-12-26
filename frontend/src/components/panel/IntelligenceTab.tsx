@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
+import { EmptyState } from "../common/EmptyState";
 import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
 import { AnomalySection } from "../intelligence/AnomalySection";
 import { DeviationChart } from "../intelligence/DeviationChart";
@@ -72,18 +73,10 @@ export const IntelligenceTab: React.FC = () => {
   // No data state
   if (!data) {
     return (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Alert severity="info">
-          {t("panel.intelligenceTab.noIntelligenceData")}
-        </Alert>
-      </Box>
+      <EmptyState
+        title={t("panel.intelligenceTab.noIntelligenceData")}
+        iconSize="medium"
+      />
     );
   }
 

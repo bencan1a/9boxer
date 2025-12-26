@@ -7,6 +7,7 @@ import { Box, Typography, Card, CardContent } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
+import { EmptyState } from "../common/EmptyState";
 import { EmployeeDetails } from "./EmployeeDetails";
 import { RatingsTimeline } from "./RatingsTimeline";
 import { ManagementChain } from "./ManagementChain";
@@ -24,21 +25,11 @@ export const DetailsTab: React.FC = () => {
 
   if (!selectedEmployee) {
     return (
-      <Box
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <PersonOutlineIcon sx={{ fontSize: 64, color: "text.disabled" }} />
-        <Typography variant="h6" color="text.secondary">
-          {t("panel.detailsTab.selectEmployee")}
-        </Typography>
-      </Box>
+      <EmptyState
+        icon={<PersonOutlineIcon />}
+        title={t("panel.detailsTab.selectEmployee")}
+        iconSize="medium"
+      />
     );
   }
 
