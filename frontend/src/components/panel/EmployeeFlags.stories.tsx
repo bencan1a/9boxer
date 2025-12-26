@@ -146,7 +146,11 @@ export const TalentDevelopmentFlags: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      flags: ["promotion_ready", "succession_candidate", "high_retention_priority"],
+      flags: [
+        "promotion_ready",
+        "succession_candidate",
+        "high_retention_priority",
+      ],
     } as Employee,
   },
 };
