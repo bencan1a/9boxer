@@ -406,6 +406,133 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle",
     storyId: "common-zoomcontrols--default",
   },
+
+  // ViewControls consolidation screenshots (6 screenshots)
+  "view-controls-main-interface": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateMainInterface",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/main-interface.png",
+    description:
+      "Main dashboard showing new simplified AppBar and floating ViewControls in top-right",
+    cropping: "full-page",
+    dimensions: { minWidth: 1200, minHeight: 800 },
+  },
+  "view-controls-grid-view": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateViewControlsGrid",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png",
+    description:
+      "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
+  },
+  "view-controls-donut-view": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateViewControlsDonut",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
+    description: "ViewControls toolbar with Donut view active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
+  },
+  "view-controls-settings-dialog": {
+    source: "storybook",
+    workflow: "view-controls",
+    function: "generateSettingsDialog",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png",
+    description:
+      "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
+    storyId: "settings-settingsdialog--default",
+    cropping: "container",
+    dimensions: { minWidth: 400, minHeight: 300 },
+  },
+  "view-controls-simplified-appbar": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateSimplifiedAppBar",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png",
+    description:
+      "Simplified AppBar showing only Logo, File menu, Help button, and Settings button",
+    cropping: "element",
+    dimensions: { minWidth: 800, minHeight: 64 },
+  },
+  "view-controls-fullscreen": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateFullscreenMode",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/fullscreen-mode.png",
+    description:
+      "Application in fullscreen mode (note: actual fullscreen requires F11, this shows pre-fullscreen view)",
+    cropping: "full-page",
+    dimensions: { minWidth: 1200, minHeight: 800 },
+  },
+
+  // Details Panel enhancements screenshots (6 screenshots)
+  "details-current-assessment": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateCurrentAssessmentEnhanced",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png",
+    description:
+      "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips",
+    storyId: "panel-employeedetails--default",
+    cropping: "element",
+    dimensions: { minWidth: 300, minHeight: 150 },
+  },
+  "details-flags-ui": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateFlagsUI",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flags-ui.png",
+    description:
+      "Flags section in Details panel with Add Flag picker and colored flag chips",
+    storyId: "panel-employeeflags--with-multiple-flags",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
+  },
+  "details-flag-badges": {
+    source: "full-app",
+    workflow: "details-panel-enhancements",
+    function: "generateFlagBadges",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
+    description:
+      "Employee tiles showing flag count badges (🏷️ icon + count) in top-right corner",
+    cropping: "container",
+    dimensions: { minWidth: 400, minHeight: 300 },
+  },
+  "details-flag-filtering": {
+    source: "full-app",
+    workflow: "details-panel-enhancements",
+    function: "generateFlagFiltering",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-filtering.png",
+    description:
+      "FilterDrawer showing Flags section with checkboxes, employee counts, and active selections",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+  "details-reporting-chain-clickable": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateReportingChainClickable",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-clickable.png",
+    description:
+      "Reporting Chain section with clickable manager names (blue underlined links)",
+    storyId: "panel-managementchain--with-manager",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
+  },
+  "details-reporting-chain-filter-active": {
+    source: "full-app",
+    workflow: "details-panel-enhancements",
+    function: "generateReportingChainFilterActive",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-filter-active.png",
+    description:
+      "Active reporting chain filter shown in FilterDrawer with filtered grid results",
+    cropping: "full-page",
+    dimensions: { minWidth: 1200, minHeight: 800 },
+  },
 };
 
 /**
