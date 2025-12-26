@@ -116,7 +116,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: theme.tokens.spacing.sm + theme.tokens.spacing.xs,
+                  height: `calc(${theme.tokens.spacing.sm}px + ${theme.tokens.spacing.xs}px)`,
                 }}
               >
                 <ArrowUpwardIcon
