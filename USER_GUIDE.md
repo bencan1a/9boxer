@@ -8,6 +8,8 @@ A simple guide to using the 9Boxer desktop application for talent management.
 - [Quick Tour](#quick-tour)
 - [Uploading Employee Data](#uploading-employee-data)
 - [Understanding the 9-Box Grid](#understanding-the-9-box-grid)
+- [View Controls](#view-controls)
+- [Settings and Preferences](#settings-and-preferences)
 - [Working with Employees](#working-with-employees)
 - [Donut Mode Exercise](#donut-mode-exercise)
 - [Tracking Changes and Adding Notes](#tracking-changes-and-adding-notes)
@@ -46,7 +48,7 @@ Here's a 5-minute overview of what you can do with 9-Box:
 
 ### 1. Import Your Data (2 minutes)
 
-**Click the "Upload" button** in the top bar and select your Excel file containing employee data. Your file needs these columns (case-sensitive):
+**Click the "Import Data" button** in the File menu (top-left) and select your Excel file containing employee data. Your file needs these columns (case-sensitive):
 - `Employee ID` - Unique ID for each person
 - `Worker` - Full name
 - `Performance` - Rating: Low, Medium, or High
@@ -78,7 +80,7 @@ The employee count updates to show how many are currently displayed.
 ### 4. View Insights (30 seconds)
 
 **Click any employee** to open the right panel with four tabs:
-- **Details** - Employee info and movement history
+- **Details** - Employee info, current assessment with color-coded performance/potential chips, flags, reporting chain, and movement history
 - **Changes** - Track all employee movements with notes on why changes were made
 - **Statistics** - Distribution charts showing your talent spread
 - **Intelligence** - Advanced analytics identifying patterns and anomalies
@@ -116,7 +118,7 @@ Your Excel file must contain these columns (column names are case-sensitive):
 
 ### Upload Process
 
-1. **Click "Upload" button** in the top application bar
+1. **Click "Import Data"** in the File menu (top-left of the application bar)
 2. **Select your file** using the file picker dialog
    - Only .xlsx or .xls formats supported
    - File must be less than 10MB
@@ -244,6 +246,136 @@ When you expand a box containing multiple employees:
 
 ---
 
+## View Controls
+
+The **View Controls** toolbar is a floating panel located in the top-right corner of the grid. It provides quick access to view options and zoom controls, helping you customize how you see your talent grid.
+
+### Accessing View Controls
+
+You'll find the View Controls toolbar floating in the top-right corner of the grid area. It contains:
+- View mode toggle (Grid/Donut)
+- Zoom controls
+- Fullscreen mode button
+
+**Note:** On small screens (tablets, mobile), the View Controls may be hidden to maximize screen space. Use a desktop or laptop for the best experience.
+
+### View Mode Toggle
+
+Switch between Grid view (normal 3×3 grid) and Donut view (validation exercise mode).
+
+**To toggle view modes:**
+- Click the Grid/Donut toggle button in the View Controls toolbar
+- Or press **D** on your keyboard for quick switching
+
+**Grid view:**
+- Shows all employees across the full 3×3 grid
+- Default view for working with your talent data
+- All positions visible at once
+
+**Donut view:**
+- Shows only employees in the center box (Core Talent)
+- Used for validation exercises
+- See [Donut Mode Exercise](#donut-mode-exercise) for details
+
+**Keyboard shortcut:** Press **D** to toggle between Grid and Donut views.
+
+### Zoom Controls
+
+Adjust the grid size to fit your screen and preferences.
+
+**Zoom in:** Click the **+** button to make employee tiles larger
+**Zoom out:** Click the **-** button to make employee tiles smaller
+**Reset zoom:** Click the reset button to return to default size
+
+**Keyboard shortcuts:**
+- **Ctrl + Plus (+)** or **Ctrl + Equals (=)** - Zoom in
+- **Ctrl + Minus (-)** - Zoom out
+- **Ctrl + 0** - Reset to default zoom
+- **Ctrl + Scroll** - Zoom with mouse wheel
+
+Zoom settings persist during your session, so you won't need to readjust each time you filter or change views.
+
+### Fullscreen Mode
+
+Maximize your workspace by entering fullscreen mode.
+
+**To enter fullscreen:**
+- Press **F11** on your keyboard
+- Your browser enters fullscreen mode, hiding toolbars and tabs
+
+**To exit fullscreen:**
+- Press **F11** again
+- Or press **Esc**
+
+Fullscreen mode is especially useful during calibration meetings when sharing your screen, as it removes distractions and maximizes the grid view.
+
+### When to Use View Controls
+
+**Use zoom controls when:**
+- You have many employees in one box and need to see more at once (zoom out)
+- You want to focus on specific employees and see more detail (zoom in)
+- Presenting on a large screen or projector (adjust for visibility)
+- Working on a high-resolution display (adjust for comfortable viewing)
+
+**Use fullscreen mode when:**
+- Conducting calibration meetings
+- Presenting to stakeholders
+- Maximizing screen real estate for large datasets
+- Reducing visual distractions during focused work
+
+---
+
+## Settings and Preferences
+
+Access application settings to customize your 9Boxer experience. Your preferences are saved automatically and persist across sessions.
+
+### Opening Settings
+
+Click the **⚙ Settings** button in the top-right corner of the application bar to open the Settings dialog.
+
+### Theme Settings
+
+Choose your preferred visual theme:
+
+**Light theme:**
+- Bright, high-contrast interface
+- Best for well-lit environments
+- Traditional look and feel
+
+**Dark theme:**
+- Dark, easy-on-the-eyes interface
+- Reduces eye strain in low-light environments
+- Modern aesthetic
+
+**Auto (System):**
+- Automatically matches your operating system's theme
+- Switches between light and dark based on system preferences
+- Recommended for most users
+
+Your theme choice is saved automatically and applies immediately when changed.
+
+### Language Settings
+
+Switch between supported languages using the dropdown menu in Settings:
+
+**Available languages:**
+- **English** - Default language
+- **Español** - Spanish translation
+
+Select your preferred language from the dropdown. The interface updates immediately, and your choice is saved for future sessions.
+
+### Settings Persistence
+
+All your settings persist across sessions:
+- Theme preference (Light, Dark, or Auto)
+- Language preference
+- These settings are stored locally on your computer
+- No need to reconfigure when you reopen the application
+
+**Note:** Settings are separate from your data. Uploading a new file doesn't reset your preferences.
+
+---
+
 ## Working with Employees
 
 ### Viewing Employee Details
@@ -252,9 +384,10 @@ When you expand a box containing multiple employees:
 
 **Details Tab:**
 - Employee name and ID
-- Current performance and potential ratings
+- **Enhanced Current Assessment** - Box name, grid coordinates, and color-coded performance/potential chips
+- **Flags** - Visual tags for categorizing employees
 - Job level, profile, and manager
-- Organizational chain hierarchy
+- **Reporting Chain** - Clickable management hierarchy for filtering
 - **Timeline** - Complete history of all position changes with timestamps
 
 **Changes Tab:**
@@ -267,6 +400,164 @@ When you expand a box containing multiple employees:
 
 **Intelligence Tab:**
 - Advanced analytics and anomaly detection (see [Intelligence Analysis](#intelligence-tab))
+
+### Enhanced Current Assessment
+
+When you click an employee and view the Details tab, the **Current Assessment** section provides a rich summary of their status:
+
+**Box Name with Grid Coordinates:**
+- Displays the position name (e.g., "Star", "Core Talent", "Enigma")
+- Shows grid coordinates in brackets (e.g., "[H,H]", "[M,M]", "[L,H]")
+- Example: "Star [H,H]" tells you they're in the top-right position
+
+**Color-Coded Performance Chip:**
+- Visual chip showing the employee's current performance level
+- Color-coded to match the grid position:
+  - Green for High performance
+  - Yellow for Medium performance
+  - Orange for Low performance
+- Makes it easy to see performance at a glance
+
+**Color-Coded Potential Chip:**
+- Visual chip showing the employee's current potential level
+- Color-coded to match the grid position:
+  - Green for High potential
+  - Yellow for Medium potential
+  - Orange for Low potential
+- Complements the performance chip for complete picture
+
+**Recent Changes Summary:**
+- Embedded summary of recent movements
+- Shows if the employee was modified in the current session
+- Links to full change history in the Changes tab
+
+This enhanced view gives you immediate context about an employee's current status without needing to switch tabs or reference the grid.
+
+### Flags System
+
+Flags let you tag employees with predefined categories for organization, tracking, and filtering. Think of flags as visual labels that help you manage discussions, track risks, and plan actions.
+
+**What are flags?**
+
+Flags are categorical tags you can apply to employees. 9Boxer provides 8 predefined flag categories:
+
+1. **Promotion Ready** - Employees ready for advancement
+2. **Flagged for Discussion** - Need to discuss in upcoming meetings
+3. **Flight Risk** - At risk of leaving the organization
+4. **New Hire** - Recently joined employees
+5. **Succession Candidate** - Potential successors for key roles
+6. **Performance Improvement Plan** - Currently on a PIP
+7. **High Retention Priority** - Critical employees to retain
+8. **Ready for Lateral Move** - Good candidates for role changes
+
+**How to add flags:**
+
+1. **Click an employee** to open the Details panel
+2. **Find the Flags section** in the Details tab
+3. **Click "Add flag..."** to open the flag picker
+4. **Select one or more flags** from the dropdown list
+5. Flags appear as colored chips below the picker
+
+Each flag has a distinct color to make it easy to identify at a glance.
+
+**How to remove flags:**
+
+- Click the **X** on any flag chip to remove it
+- Changes save automatically
+
+**Flag badges on employee tiles:**
+
+When an employee has flags:
+- A **🏷️ badge** appears on their tile with a count (e.g., "2" if they have 2 flags)
+- Hover over the tile to see which flags are applied
+- This makes it easy to spot flagged employees when viewing the grid
+
+**When to use flags:**
+
+**Use "Promotion Ready" when:**
+- Identifying employees for upcoming promotion cycles
+- Building succession plans
+- Preparing talent review discussions
+
+**Use "Flagged for Discussion" when:**
+- Marking employees to review in calibration meetings
+- Noting controversial or borderline ratings
+- Tracking open questions about placement
+
+**Use "Flight Risk" when:**
+- Identifying retention concerns
+- Prioritizing retention conversations
+- Planning counter-offers or engagement strategies
+
+**Use "New Hire" when:**
+- Tracking employees in onboarding
+- Separating new hires from tenured employees in analysis
+- Deferring final ratings until probation period ends
+
+**Use "Succession Candidate" when:**
+- Building succession plans for key roles
+- Identifying high-potential leaders
+- Planning leadership development programs
+
+**Use "Performance Improvement Plan" when:**
+- Tracking employees on formal PIPs
+- Monitoring performance improvement efforts
+- Ensuring follow-up discussions occur
+
+**Use "High Retention Priority" when:**
+- Marking critical employees who must be retained
+- Prioritizing retention efforts and budget
+- Ensuring key talent receives adequate attention
+
+**Use "Ready for Lateral Move" when:**
+- Identifying employees for role rotations
+- Building cross-functional experience
+- Addressing skill gaps through internal mobility
+
+Flags are included in your Excel export, making it easy to share and track these categories outside of 9Boxer.
+
+### Reporting Chain Filtering
+
+The **Reporting Chain** section in the Details tab shows an employee's management hierarchy. You can click on any manager name to instantly filter the grid to show only that manager's team.
+
+**How it works:**
+
+1. **Click an employee** to open the Details panel
+2. **Find the Reporting Chain** section showing their management hierarchy
+3. **Click any manager name** (displayed as a clickable link)
+4. The grid filters to show only employees reporting to that manager
+5. A filter chip appears in the FilterDrawer showing "Reporting Chain: [Manager Name]"
+
+**Visual feedback:**
+
+- Manager names appear as **blue underlined links** (clickable)
+- Hovering shows a **pointer cursor** indicating the link is interactive
+- When a manager is selected, their name is **highlighted** in the filter state
+- The filter chip shows which reporting chain is active
+
+**Clearing the filter:**
+
+- Click the **X** on the "Reporting Chain" chip in the FilterDrawer
+- Or click "Clear All Filters" to remove all active filters
+- The grid returns to showing all employees
+
+**When to use reporting chain filtering:**
+
+**Use when:**
+- Reviewing a specific team during calibration meetings
+- Comparing employees within one manager's organization
+- Investigating rating patterns by manager
+- Focusing discussion on one reporting line at a time
+
+**Example workflow:**
+1. Notice an interesting employee in the grid
+2. Click to see their details and reporting chain
+3. Click their manager's name to see the whole team
+4. Review how this manager rated their entire group
+5. Identify patterns or inconsistencies
+6. Clear filter and move to next team
+
+This makes it easy to drill down from individual employees to their full team context without manually setting up filters.
 
 ### Moving Employees
 
@@ -321,15 +612,17 @@ Use Donut Mode during:
 ### How to Activate Donut Mode
 
 1. **Upload your employee data** as normal
-2. **Click the "Donut Mode" button** in the top application bar
-   - Located next to the Filters button
-   - Has a donut icon
+2. **Click the Grid/Donut toggle** in the View Controls toolbar (top-right of the grid)
+   - Or press **D** on your keyboard for quick access
 3. **The grid changes** to show only employees currently in position 5 (Core Talent box)
-4. **An "ACTIVE" indicator** appears next to the button showing donut mode is on
+4. **The toggle updates** to show Donut view is active
 
 **To deactivate:**
-- Click the "Donut Mode" button again
+- Click the Grid/Donut toggle again
+- Or press **D** on your keyboard
 - The grid returns to normal view showing all employees
+
+**Keyboard shortcut:** Press **D** to toggle Donut Mode on/off.
 
 ### What Happens in Donut Mode
 
@@ -342,8 +635,7 @@ When you activate Donut Mode:
 - Drag-and-drop continues to work normally
 
 **Visual Indicators:**
-- "Donut Mode" button turns purple and shows "contained" style
-- "ACTIVE" chip appears next to the button
+- View toggle in View Controls shows "Donut" view is active
 - The employee count shows only position 5 employees
 
 **Key Principle:**
@@ -718,6 +1010,8 @@ Filters let you focus on specific groups of employees.
 - Job profiles/functions
 - Managers
 - Organizational chain levels
+- **Flags** - Filter by employee flags (see [Flags System](#flags-system))
+- **Reporting Chain** - Filter by specific manager's team (see [Reporting Chain Filtering](#reporting-chain-filtering))
 
 **How filtering works:**
 1. Check the boxes for criteria you want to see
@@ -732,8 +1026,77 @@ Filters let you focus on specific groups of employees.
 - Filtered-out employees are hidden from the grid
 
 **To clear filters:**
-- Uncheck all boxes
-- Or click "Clear All" if available
+- Click the **X** on individual filter chips
+- Or click "Clear All Filters" to remove all at once
+
+### Flag Filters
+
+The FilterDrawer includes a **Flags** section that lets you filter employees by their assigned flags.
+
+**How flag filtering works:**
+
+1. **Open the FilterDrawer** (click "Filters" button)
+2. **Scroll to the Flags section**
+3. **Check one or more flag categories:**
+   - Promotion Ready
+   - Flagged for Discussion
+   - Flight Risk
+   - New Hire
+   - Succession Candidate
+   - Performance Improvement Plan
+   - High Retention Priority
+   - Ready for Lateral Move
+4. The grid updates to show only employees with those flags
+
+**Employee counts:**
+- Each flag shows the count of employees with that flag (e.g., "Flight Risk (3)")
+- This makes it easy to see how many employees fall into each category
+- Counts update as you apply other filters
+
+**AND logic for multiple flags:**
+- When you select multiple flags, 9Boxer uses **AND logic**
+- Example: Selecting "Promotion Ready" AND "High Retention Priority" shows only employees with BOTH flags
+- This helps you find employees at the intersection of multiple categories
+
+**Flag filter chips:**
+- Active flag filters appear as chips in the filter bar
+- Click the **X** on a chip to remove that flag filter
+- Or use "Clear All Filters" to remove all filters at once
+
+**When to use flag filters:**
+
+**Use when:**
+- Preparing for calibration meetings: Filter to "Flagged for Discussion" to review questionable placements
+- Building retention plans: Filter to "Flight Risk" or "High Retention Priority" to focus on at-risk talent
+- Succession planning: Filter to "Succession Candidate" to review your leadership pipeline
+- Performance review cycles: Filter to "Performance Improvement Plan" to track employees on PIPs
+- Promotion planning: Filter to "Promotion Ready" to identify advancement candidates
+
+**Example workflow:**
+1. Tag employees during the year as you identify issues or opportunities
+2. When it's time to act, filter to the relevant flag category
+3. Review all employees in that category at once
+4. Make decisions and document actions
+5. Clear flags or update as situations resolve
+
+### Reporting Chain Filter Display
+
+When you click a manager name in an employee's Reporting Chain (see [Reporting Chain Filtering](#reporting-chain-filtering)), a filter chip appears in the FilterDrawer.
+
+**Filter chip displays:**
+- "Reporting Chain: [Manager Name]"
+- Shows which manager's team is currently displayed
+- Appears alongside other active filters
+
+**Clearing the reporting chain filter:**
+- Click the **X** on the "Reporting Chain" chip
+- Or click "Clear All Filters" to remove all filters
+- The grid returns to showing all employees
+
+**Combining with other filters:**
+- You can combine reporting chain filtering with other filters
+- Example: Show only "High Performers" (performance filter) in "Manager A's" team (reporting chain filter)
+- All filters use AND logic together
 
 ### Employee Exclusions
 
@@ -1090,10 +1453,13 @@ Your original file remains completely unchanged.
 9Boxer is a desktop application that helps you:
 - ✓ Visualize employee talent on a 3×3 grid
 - ✓ Easily move employees between boxes via drag-and-drop
+- ✓ Use View Controls to customize your grid view with zoom and view mode toggle
+- ✓ Tag employees with flags for tracking and organization
+- ✓ Filter by flags, reporting chains, and other criteria
 - ✓ Use Donut Mode to validate center box placements
 - ✓ Track all changes with the built-in change tracker
 - ✓ Add notes documenting why each change was made
-- ✓ Filter and focus on specific groups
+- ✓ View enhanced employee details with color-coded assessments
 - ✓ View statistics and advanced intelligence
 - ✓ Export updated ratings, donut exercise data, and notes back to Excel
 
@@ -1101,6 +1467,6 @@ All your data stays local and secure on your computer. Remember to export your c
 
 ---
 
-**Version**: 2.2
+**Version**: 2.3
 **Last Updated**: December 2024
 **Questions?** Review this guide or contact your system administrator
