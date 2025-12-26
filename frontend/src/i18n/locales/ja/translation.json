@@ -41,6 +41,10 @@
       "exclusions": "除外設定",
       "excludeEmployees": "従業員を除外",
       "clearAllFilters": "すべてのフィルターをクリア",
+      "clearSelection": "選択をクリア",
+      "noExclusions": "除外された従業員はいません",
+      "removeExclusion": "{{name}}を除外から解除",
+      "clearAllExclusions": "すべての除外をクリア",
       "flags": "Flags",
       "reportingChain": "Reporting Chain"
     },

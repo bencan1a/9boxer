@@ -28,11 +28,11 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:5173",
         viewport: { width: 1920, height: 1080 },
+        headless: true, // Explicitly force headless mode
         actionTimeout: 15000, // Increased to allow proper auto-waiting
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "retain-on-failure",
-        reducedMotion: "reduce", // Disable animations for faster, more reliable tests
       },
     },
 
@@ -42,10 +42,13 @@ export default defineConfig({
       testDir: "./playwright/visual",
       timeout: 30000,
       retries: process.env.CI ? 2 : 0,
+      // Run visual tests sequentially for consistency (reduces rendering variations)
+      fullyParallel: false,
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:6006",
         viewport: { width: 1280, height: 720 },
+        headless: true, // Explicitly force headless mode
         actionTimeout: 15000,
         trace: "on",
         screenshot: "only-on-failure",

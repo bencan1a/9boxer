@@ -41,6 +41,10 @@
       "exclusions": "Ausschlüsse",
       "excludeEmployees": "Mitarbeiter ausschließen",
       "clearAllFilters": "Alle Filter zurücksetzen",
+      "clearSelection": "Auswahl löschen",
+      "noExclusions": "Keine Mitarbeiter ausgeschlossen",
+      "removeExclusion": "{{name}} aus Ausschlüssen entfernen",
+      "clearAllExclusions": "Alle Ausschlüsse löschen",
       "flags": "Flags",
       "reportingChain": "Reporting Chain"
     },

@@ -1,6 +1,6 @@
 # Screenshot Requirements for Documentation Updates
 
-**Status:** Documented (Not Generated)  
+**Status:** Documented (Not Generated)
 **Date:** December 26, 2024
 
 ## Overview
