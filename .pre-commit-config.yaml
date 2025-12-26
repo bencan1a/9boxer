@@ -87,3 +87,13 @@ repos:
         files: ^frontend/.*\.(ts|tsx|js|jsx|json)$
         exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage|package-lock\.json|tsconfig.*\.json)/
         pass_filenames: true
+
+      # ESLint for frontend files
+      - id: eslint-frontend
+        name: lint frontend files with ESLint
+        entry: bash tools/run-eslint.sh
+        language: system
+        types: [file]
+        files: ^frontend/.*\.(ts|tsx|js|jsx)$
+        exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage)/
+        pass_filenames: false
