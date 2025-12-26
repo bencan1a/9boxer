@@ -1,13 +1,16 @@
 # View Controls Consolidation - Project Plan
 
 ```yaml
-status: active
+status: done
 owner: Claude
 created: 2025-12-24
+completed: 2025-12-26
 summary:
   - Consolidate floating view controls into single top-right toolbar
   - Move language selector from AppBar to Settings dialog
   - Improve UX by grouping related controls and reducing toolbar clutter
+completion_notes: |
+  View controls consolidation completed successfully.
 ```
 
 ## Problem Statement

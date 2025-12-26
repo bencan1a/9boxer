@@ -444,7 +444,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png",
     description:
       "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
-    storyId: "settings-settingsdialog--default",
+    storyId: "settings-settingsdialog--open",
     cropping: "container",
     dimensions: { minWidth: 400, minHeight: 300 },
   },
@@ -503,12 +503,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 400, minHeight: 300 },
   },
   "details-flag-filtering": {
-    source: "full-app",
-    workflow: "details-panel-enhancements",
-    function: "generateFlagFiltering",
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFlagsFiltering",
     path: "resources/user-guide/docs/images/screenshots/details-panel/flag-filtering.png",
     description:
       "FilterDrawer showing Flags section with checkboxes, employee counts, and active selections",
+    storyId: "dashboard-filterdrawer--flags-active",
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 400 },
   },
@@ -524,14 +525,61 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, minHeight: 200 },
   },
   "details-reporting-chain-filter-active": {
-    source: "full-app",
-    workflow: "details-panel-enhancements",
+    source: "storybook",
+    workflow: "filters-storybook",
     function: "generateReportingChainFilterActive",
     path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-filter-active.png",
     description:
-      "Active reporting chain filter shown in FilterDrawer with filtered grid results",
-    cropping: "full-page",
-    dimensions: { minWidth: 1200, minHeight: 800 },
+      "Active reporting chain filter shown in FilterDrawer with manager chip and dismiss button",
+    storyId: "dashboard-filterdrawer--reporting-chain-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+
+  // FilterDrawer screenshots (4 new screenshots)
+  "filters-overview": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterDrawerOverview",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-overview.png",
+    description:
+      "Complete FilterDrawer anatomy showing all filter sections: Job Levels, Job Functions, Locations, Managers, Flags, Reporting Chain, Exclusions",
+    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 600 },
+  },
+  "filters-multiple-active": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateMultipleFiltersActive",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-multiple-active.png",
+    description:
+      "FilterDrawer with multiple filter types active: Job Functions, Locations, Flags, and Reporting Chain filters with count badges",
+    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 600 },
+  },
+  "filters-flags-section": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFlagsFiltering",
+    path: "resources/user-guide/docs/images/screenshots/filters/flags-section.png",
+    description:
+      "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
+    storyId: "dashboard-filterdrawer--flags-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+  "filters-reporting-chain": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateReportingChainFilterActive",
+    path: "resources/user-guide/docs/images/screenshots/filters/reporting-chain-filter.png",
+    description:
+      "Reporting Chain section in FilterDrawer with active manager filter chip",
+    storyId: "dashboard-filterdrawer--reporting-chain-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
   },
 };
 
