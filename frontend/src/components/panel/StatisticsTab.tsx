@@ -327,7 +327,7 @@ export const StatisticsTab: React.FC = () => {
       {/* Distribution Chart */}
       <Box>
         <Typography variant="subtitle2" color="primary" gutterBottom>
-          Visual Distribution
+          {t("panel.statisticsTab.visualDistribution")}
         </Typography>
         <Paper variant="outlined" sx={{ p: 2 }}>
           <DistributionChart data={statistics.distribution} />

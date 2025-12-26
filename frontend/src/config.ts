@@ -27,22 +27,22 @@ export const isElectron = (): boolean => {
  * Dynamic API base URL - initialized at runtime
  *
  * In Electron mode: Gets the actual backend URL from the main process
- * In browser mode: Uses VITE_API_BASE_URL or defaults to localhost:8000
+ * In browser mode: Uses VITE_API_BASE_URL or defaults to localhost:38000
  *
  * This variable is set by initializeConfig() and should not be directly modified.
  */
-let API_BASE_URL = "http://localhost:8000"; // Default fallback
+let API_BASE_URL = "http://localhost:38000"; // Default fallback
 
 /**
  * Initialize configuration by detecting backend URL
  *
  * In Electron mode:
  * - Queries the main process for the actual backend URL via IPC
- * - Backend may use a different port than 8000 if there's a port conflict
+ * - Backend may use a different port than 38000 if there's a port conflict
  *
  * In browser mode:
  * - Uses VITE_API_BASE_URL environment variable if set
- * - Falls back to localhost:8000 for development
+ * - Falls back to localhost:38000 for development
  *
  * This function should be called once during app initialization,
  * before making any API requests.
@@ -71,18 +71,19 @@ export async function initializeConfig(): Promise<void> {
         "[Config] Failed to get backend URL from main process:",
         error
       );
-      console.warn("[Config] Using default URL: http://localhost:8000");
+      console.warn("[Config] Using default URL: http://localhost:38000");
       // Keep default URL as fallback
     }
   } else if (!isElectron()) {
     // Browser mode: use environment variable or default
-    API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+    API_BASE_URL =
+      import.meta.env.VITE_API_BASE_URL || "http://localhost:38000";
     console.log(`[Config] API initialized with browser URL: ${API_BASE_URL}`);
   } else {
     console.warn(
       "[Config] Running in Electron mode but backend IPC not available"
     );
-    console.warn("[Config] Using default URL: http://localhost:8000");
+    console.warn("[Config] Using default URL: http://localhost:38000");
   }
 }
 

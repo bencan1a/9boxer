@@ -21,6 +21,19 @@ const meta: Meta<typeof LoadingSpinner> = {
       control: "boolean",
       description: "Whether to display as a full-screen overlay",
     },
+    color: {
+      control: { type: "select" },
+      options: [
+        "primary",
+        "secondary",
+        "error",
+        "info",
+        "success",
+        "warning",
+        "inherit",
+      ],
+      description: "Color of the spinner",
+    },
   },
 };
 
@@ -59,6 +72,17 @@ export const LargeSize: Story = {
 export const SmallSize: Story = {
   args: {
     size: 24,
+  },
+};
+
+/**
+ * Spinner with custom color
+ */
+export const WithCustomColor: Story = {
+  args: {
+    size: 40,
+    color: "secondary",
+    message: "Loading with custom color...",
   },
 };
 

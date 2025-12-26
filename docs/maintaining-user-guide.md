@@ -172,7 +172,7 @@ To add a new documentation page:
    ```bash
    cd docs
    mkdocs serve
-   # Open http://localhost:8000
+   # Open http://localhost:38000
    ```
 
 ### Updating Existing Content
@@ -311,7 +311,7 @@ This will:
 **Expected output:**
 ```
 Generating documentation screenshots...
-✓ Backend server started (port 8000)
+✓ Backend server started (port 38000)
 ✓ Frontend server started (port 5173)
 ✓ Loaded sample data
 ✓ Captured grid-normal.png
@@ -391,7 +391,7 @@ cd docs
 # Start MkDocs development server
 mkdocs serve
 
-# Open browser to http://localhost:8000
+# Open browser to http://localhost:38000
 ```
 
 This provides:

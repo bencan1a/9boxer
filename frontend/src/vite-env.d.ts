@@ -11,7 +11,7 @@
 interface ImportMetaEnv {
   /**
    * API base URL for web browser mode
-   * Default: http://localhost:8000
+   * Default: http://localhost:38000
    *
    * This is used when running the app in a web browser (not Electron).
    * In Electron mode, the URL is obtained dynamically from the main process.

@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
+import { uploadExcelFile, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Statistics Tab Display", () => {
   test.beforeEach(async ({ page }) => {
@@ -27,12 +27,20 @@ test.describe("Statistics Tab Display", () => {
     await expect(tabPanel).toBeVisible();
 
     // Verify summary cards are visible
-    await expect(page.getByText("Total Employees")).toBeVisible();
-    await expect(page.getByText("Modified")).toBeVisible();
-    await expect(page.getByText("High Performers")).toBeVisible();
+    await expect(
+      page.getByText(t("panel.statisticsTab.totalEmployees"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("panel.statisticsTab.modified"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("panel.statisticsTab.highPerformers"))
+    ).toBeVisible();
 
     // Verify distribution table is visible
-    await expect(page.getByText("Distribution by Position")).toBeVisible();
+    await expect(
+      page.getByText(t("panel.statisticsTab.distributionByPosition"))
+    ).toBeVisible();
 
     // Verify table headers
     await expect(
@@ -75,7 +83,9 @@ test.describe("Statistics Tab Display", () => {
     ).toBeVisible();
 
     // Verify chart is visible
-    await expect(page.getByText("Visual Distribution")).toBeVisible();
+    await expect(
+      page.getByText(t("panel.statisticsTab.visualDistribution"))
+    ).toBeVisible();
   });
 
   test("should show correct employee counts in distribution", async ({
@@ -90,7 +100,7 @@ test.describe("Statistics Tab Display", () => {
 
     // Get the total employees from the summary card
     const totalEmployeesCard = page
-      .locator("text=Total Employees")
+      .locator(`text=${t("panel.statisticsTab.totalEmployees")}`)
       .locator("..")
       .locator("..");
     const totalEmployeesText = await totalEmployeesCard
@@ -160,7 +170,7 @@ test.describe("Statistics Tab Display", () => {
 
     // Verify total employees count remains the same (15)
     const totalEmployeesCard = page
-      .locator("text=Total Employees")
+      .locator(`text=${t("panel.statisticsTab.totalEmployees")}`)
       .locator("..")
       .locator("..");
     const totalEmployeesText = await totalEmployeesCard
@@ -171,7 +181,7 @@ test.describe("Statistics Tab Display", () => {
 
     // Verify modified employees count increased to 1
     const modifiedEmployeesCard = page
-      .locator("text=Modified")
+      .locator(`text=${t("panel.statisticsTab.modified")}`)
       .locator("..")
       .locator("..");
     const modifiedEmployeesText = await modifiedEmployeesCard

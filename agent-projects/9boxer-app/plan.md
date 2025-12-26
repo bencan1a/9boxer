@@ -76,7 +76,7 @@ Single-user web application for performance review discussions. Enables visual m
 └────────────────────────────────────────────────────────────┘
                         ↕ REST API (HTTPS)
 ┌────────────────────────────────────────────────────────────┐
-│  FastAPI Backend (localhost:8000/api)                      │
+│  FastAPI Backend (localhost:38000/api)                      │
 │  ┌──────────────────────────────────────────────────────┐ │
 │  │  API Routes                                          │ │
 │  │  /auth/login, /auth/logout                          │ │
@@ -1087,7 +1087,7 @@ docker-compose up --build
 
 # 4. Access application
 # - Frontend: http://localhost:3000
-# - API docs: http://localhost:8000/docs
+# - API docs: http://localhost:38000/docs
 
 # 5. Create initial user (run once)
 docker-compose exec backend python -c "

@@ -318,7 +318,7 @@ test.describe('Feature Name E2E Flow', () => {
  *   npx playwright test --grep "upload"      # Run tests matching pattern
  *
  * Servers auto-start:
- *   - Backend (FastAPI) starts on localhost:8000
+ *   - Backend (FastAPI) starts on localhost:38000
  *   - Frontend (Vite) starts on localhost:5173
  *   - No manual setup required
  */

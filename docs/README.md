@@ -19,7 +19,7 @@ The main user guide is built with **MkDocs Material** and bundled with the Elect
 # Preview documentation locally
 cd docs
 mkdocs serve
-# Open http://localhost:8000
+# Open http://localhost:38000
 
 # Build for production
 cd frontend

@@ -111,16 +111,12 @@ export async function dragEmployeeToPosition(
       // 2. Mouse down to start drag
       await page.mouse.down();
 
-      // 3. Small delay to ensure drag is initiated
-      await page.waitForTimeout(100);
-
-      // 4. Move to target in steps (more realistic)
+      // 3. Move to target in steps (more realistic, no arbitrary waits)
       const steps = 10;
       for (let i = 1; i <= steps; i++) {
         const x = startX + (endX - startX) * (i / steps);
         const y = startY + (endY - startY) * (i / steps);
         await page.mouse.move(x, y);
-        await page.waitForTimeout(10);
       }
 
       // 5. Mouse up to drop
@@ -143,9 +139,9 @@ export async function dragEmployeeToPosition(
         }
       }
 
-      // 7. Wait for UI to update (network idle + buffer for React re-render)
+      // 7. Wait for UI to update (network idle and DOM content loaded)
       await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(500); // Additional buffer for React state updates
+      await page.waitForLoadState("domcontentloaded");
 
       // 8. Verify the employee moved by checking its data attribute (not DOM structure)
       const positionAttr = isDonutMode
@@ -199,8 +195,7 @@ export async function dragEmployeeToPosition(
       if (attempt === maxRetries) {
         throw error;
       }
-      // Wait before retrying
-      await page.waitForTimeout(500);
+      // No arbitrary wait before retry - let's immediately try again
     }
   }
 }

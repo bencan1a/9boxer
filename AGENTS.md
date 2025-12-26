@@ -12,7 +12,7 @@ This file provides critical guidance for all agents (human and AI) working on th
 **Key Facts:**
 - **Deployment**: Electron desktop app (Windows/macOS/Linux installers)
 - **Architecture**: React frontend + Electron wrapper + embedded PyInstaller backend
-- **Communication**: Backend runs as subprocess, HTTP over localhost:8000
+- **Communication**: Backend runs as subprocess, HTTP over localhost:38000
 - **Database**: SQLite in user's app data directory
 - **No external dependencies**: Everything bundled in installer
 
@@ -78,7 +78,7 @@ This is a monorepo with **two separate ecosystems**:
 - Backend built FIRST with PyInstaller
 - Frontend packaging includes backend executable
 - Electron spawns backend as subprocess
-- Communication via HTTP (localhost:8000)
+- Communication via HTTP (localhost:38000)
 
 ### Build Flow
 
@@ -436,7 +436,7 @@ pip install -e '.[dev]'
 
 ### Frontend Can't Connect to Backend
 **Cause:** Backend not running or wrong port
-**Solution:** Check backend is running on port 8000, check logs
+**Solution:** Check backend is running on port 38000, check logs
 
 ## 📚 DOCUMENTATION SYSTEM
 

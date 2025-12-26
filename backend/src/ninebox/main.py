@@ -132,7 +132,8 @@ if __name__ == "__main__":
     import uvicorn
 
     # Allow port to be configured via environment variable (useful for testing)
-    requested_port = int(os.getenv("PORT", "8000"))
+    # Default to port 38000 to avoid conflicts with common services on 38000
+    requested_port = int(os.getenv("PORT", "38000"))
 
     # Check if requested port is available
     if is_port_in_use(requested_port):

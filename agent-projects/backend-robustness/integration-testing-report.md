@@ -346,8 +346,8 @@ backend: {
 The following scenarios require manual testing with the built application:
 
 #### Critical Scenarios (Must Test)
-1. ✅ **Normal Startup** - Port 8000 available
-2. ✅ **Port Conflict** - Port 8000 occupied
+1. ✅ **Normal Startup** - Port 38000 available
+2. ✅ **Port Conflict** - Port 38000 occupied
 3. ⏳ **Backend Crash** - Kill backend during operation
 4. ⏳ **Backend Restart** - Verify automatic restart
 5. ⏳ **IPC Communication** - Test from DevTools console

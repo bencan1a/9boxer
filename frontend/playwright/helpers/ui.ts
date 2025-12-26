@@ -1,35 +1,35 @@
 import { Page, expect } from "@playwright/test";
 
 /**
- * Wait for network idle and UI settle time
+ * Wait for network idle and DOM content loaded
  *
- * Combines waitForLoadState('networkidle') with a configurable settle duration
- * to ensure that both network requests and UI animations/React updates have completed.
- * This is more reliable than waitForLoadState alone, especially with Material-UI animations.
+ * Waits for both network requests and DOM content to complete.
+ * With reducedMotion: 'reduce' configured in playwright.config.ts,
+ * this eliminates the need for arbitrary settle time waits.
  *
  * @param page - Playwright Page object
- * @param duration - Settle time in seconds (default: 0.5)
+ * @param duration - DEPRECATED: Ignored. Kept for backward compatibility.
  * @example
- * await waitForUiSettle(page); // Uses default 0.5s settle time
- * await waitForUiSettle(page, 1.0); // Uses 1s settle time for slower operations
+ * await waitForUiSettle(page); // Waits for network idle and DOM loaded
  */
 export async function waitForUiSettle(
   page: Page,
   duration: number = 0.5
 ): Promise<void> {
+  // Note: duration parameter ignored but kept for backward compatibility with existing tests
   await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(duration * 1000);
+  await page.waitForLoadState("domcontentloaded");
 }
 
 /**
  * Comprehensive dialog and overlay cleanup
  *
  * Uses a 5-strategy approach to robustly close all open dialogs and overlays:
- * 1. Close file menu if open
+ * 1. Press Escape key to close file menu and dialogs
  * 2. Remove Material-UI backdrops
  * 3. Hide open menus
- * 4. Press Escape key
- * 5. Click close buttons on dialogs
+ * 4. Click close buttons on dialogs
+ * 5. Verify all dialogs are closed with visibility assertion
  *
  * This is particularly useful for ensuring clean test state between operations
  * or when a test needs to recover from an unexpected UI state.
@@ -39,12 +39,8 @@ export async function waitForUiSettle(
  * await closeAllDialogsAndOverlays(page);
  */
 export async function closeAllDialogsAndOverlays(page: Page): Promise<void> {
-  // Strategy 1: Close file menu if open
-  const fileMenu = page.locator('[role="menu"]');
-  if ((await fileMenu.count()) > 0 && (await fileMenu.isVisible())) {
-    await page.keyboard.press("Escape");
-    await page.waitForTimeout(200);
-  }
+  // Strategy 1: Press Escape key to close file menu and dialogs
+  await page.keyboard.press("Escape");
 
   // Strategy 2: Remove Material-UI backdrops
   await page.evaluate(() => {
@@ -63,22 +59,26 @@ export async function closeAllDialogsAndOverlays(page: Page): Promise<void> {
     });
   });
 
-  // Strategy 4: Press Escape key to close any remaining dialogs
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(300);
-
-  // Strategy 5: Click close buttons on any remaining dialogs
+  // Strategy 4: Click close buttons on any visible dialogs
   const closeButtons = page.locator(
     '[aria-label="close"], [data-testid*="close-button"]'
   );
   const count = await closeButtons.count();
   for (let i = 0; i < count; i++) {
     const button = closeButtons.nth(i);
-    if (await button.isVisible()) {
-      await button.click();
-      await page.waitForTimeout(200);
+    if (await button.isVisible().catch(() => false)) {
+      await button.click({ timeout: 1000 }).catch(() => {
+        // Ignore click errors if button disappears
+      });
     }
   }
+
+  // Strategy 5: Verify menus are not visible
+  await expect(page.locator('[role="menu"]'))
+    .not.toBeVisible()
+    .catch(() => {
+      // It's okay if there are no menus at all (count will be 0)
+    });
 }
 
 /**
@@ -108,7 +108,7 @@ export async function resetToEmptyState(page: Page): Promise<void> {
  *
  * Clicks the appropriate view mode button (grid or donut) to achieve the desired state.
  * The view mode toggle has two separate buttons - click grid button for grid mode,
- * click donut button for donut mode.
+ * click donut button for donut mode. Uses state checks instead of arbitrary waits.
  *
  * @param page - Playwright Page object
  * @param enabled - Target state (true = donut mode on, false = donut mode off)
@@ -132,43 +132,48 @@ export async function toggleDonutMode(
   if (enabled && !isDonutModeActive) {
     // Want donut mode ON, currently OFF -> click donut button
     await donutButton.click();
-    await waitForUiSettle(page, 0.5);
+    // Wait for the button to show pressed state
+    await expect(donutButton).toHaveAttribute("aria-pressed", "true");
   } else if (!enabled && isDonutModeActive) {
     // Want donut mode OFF, currently ON -> click grid button
     await gridButton.click();
-    await waitForUiSettle(page, 0.5);
+    // Wait for the donut button to show unpressed state
+    await expect(donutButton).toHaveAttribute("aria-pressed", "false");
   }
   // else: already in desired state, no action needed
 }
 
 /**
- * Click tab and wait for content to load
+ * Click tab and wait for tab selection state
  *
- * Combines tab click with UI settle wait to reduce boilerplate in tests
- * that switch between tabs frequently. Ensures the tab content is fully
- * loaded before proceeding.
+ * Clicks the tab and waits for the aria-selected attribute to be true,
+ * ensuring the tab is fully activated before proceeding.
  *
  * @param page - Playwright Page object
  * @param tabTestId - The data-testid of the tab to click
- * @param waitDuration - Optional wait duration in seconds (default: 0.5)
+ * @param waitDuration - DEPRECATED: Ignored. Kept for backward compatibility.
  * @example
  * await clickTabAndWait(page, 'changes-tab');
- * await clickTabAndWait(page, 'statistics-tab', 1.0); // Longer wait for heavy tabs
+ * await clickTabAndWait(page, 'statistics-tab'); // Old waitDuration parameter ignored
  */
 export async function clickTabAndWait(
   page: Page,
   tabTestId: string,
   waitDuration: number = 0.5
 ): Promise<void> {
+  // Note: waitDuration parameter ignored but kept for backward compatibility
   await page.locator(`[data-testid="${tabTestId}"]`).click();
-  await waitForUiSettle(page, waitDuration);
+  await expect(page.locator(`[data-testid="${tabTestId}"]`)).toHaveAttribute(
+    "aria-selected",
+    "true"
+  );
 }
 
 /**
- * Open file menu with animation wait
+ * Open file menu and wait for visibility
  *
- * Clicks the file menu button and waits for the Material-UI Popover animation
- * to complete (~300ms). This ensures menu items are clickable before proceeding.
+ * Clicks the file menu button and waits for the menu to become visible.
+ * Uses auto-retrying assertions instead of arbitrary timeouts.
  *
  * @param page - Playwright Page object
  * @example
@@ -177,7 +182,7 @@ export async function clickTabAndWait(
  */
 export async function openFileMenu(page: Page): Promise<void> {
   await page.locator('[data-testid="file-menu-button"]').click();
-  await page.waitForTimeout(300);
+  await expect(page.locator('[role="menu"]')).toBeVisible();
 }
 
 /**

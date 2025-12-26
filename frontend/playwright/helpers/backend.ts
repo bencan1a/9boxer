@@ -7,7 +7,7 @@ import { Page } from "@playwright/test";
  * It performs a health check request to ensure the backend server is running
  * and ready to accept requests before proceeding with tests.
  *
- * The backend health endpoint is expected to be at http://localhost:8000/health
+ * The backend health endpoint is expected to be at http://localhost:38000/health
  * and should return a 200 status code when healthy.
  *
  * @param page - Playwright Page object
@@ -19,7 +19,7 @@ export async function waitForBackend(page: Page): Promise<void> {
   await page.waitForResponse(
     (response) => {
       return (
-        response.url().includes("http://localhost:8000/health") &&
+        response.url().includes("http://localhost:38000/health") &&
         response.status() === 200
       );
     },
@@ -45,7 +45,7 @@ export async function checkBackendHealth(page: Page): Promise<void> {
   while (retries < maxRetries) {
     try {
       const response = await context.request.get(
-        "http://localhost:8000/health"
+        "http://localhost:38000/health"
       );
       if (response.status() === 200) {
         return;
@@ -136,7 +136,7 @@ export async function triggerSessionSave(page: Page): Promise<void> {
   // Trigger a session save by making a GET request to session status
   // This ensures the session is persisted to database
   try {
-    await context.request.get("http://localhost:8000/api/session/status");
+    await context.request.get("http://localhost:38000/api/session/status");
   } catch (error) {
     // Ignore errors - session might not exist yet
   }

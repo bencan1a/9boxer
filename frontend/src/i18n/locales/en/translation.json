@@ -233,6 +233,7 @@
       "solidPerformers": "Solid Performers",
       "needsAttention": "Needs Attention",
       "distributionByPosition": "Distribution by Position",
+      "visualDistribution": "Visual Distribution",
       "position": "Position",
       "count": "Count",
       "percentage": "Percentage",

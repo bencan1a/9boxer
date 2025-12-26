@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Deployment**: Standalone Electron desktop app (Windows/macOS/Linux installers)
 - **Frontend**: React 18 + TypeScript + Vite + Material-UI wrapped in Electron
 - **Backend**: FastAPI (Python 3.10+) bundled as executable with PyInstaller
-- **Communication**: Backend runs as subprocess, frontend communicates via HTTP (localhost:8000)
+- **Communication**: Backend runs as subprocess, frontend communicates via HTTP (localhost:38000)
 - **Database**: SQLite stored in user's app data directory
 - **No external dependencies**: Everything bundled, no Python/Node.js installation required for end users
 
@@ -224,7 +224,7 @@ This is a consolidated monorepo for a standalone Electron desktop application:
 
 **Backend Lifecycle (Electron Integration):**
 1. Electron main process spawns backend executable from `resources/backend/`
-2. Waits for health check at http://localhost:8000/health
+2. Waits for health check at http://localhost:38000/health
 3. Frontend loads and communicates with backend via HTTP
 4. Backend killed when app closes
 

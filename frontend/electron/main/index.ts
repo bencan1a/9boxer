@@ -21,7 +21,8 @@ let windowStateManager: WindowStateManager | null = null;
 const getIsDev = () => !app.isPackaged;
 
 // Backend configuration
-let BACKEND_PORT = 8000; // Default, will be updated by backend
+// Default to port 38000 to avoid conflicts with common services on 38000
+let BACKEND_PORT = 38000; // Default, will be updated by backend
 let BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 const BACKEND_STARTUP_TIMEOUT = 30; // seconds
 const PORT_DISCOVERY_TIMEOUT = 5; // seconds

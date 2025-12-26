@@ -283,7 +283,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 echo.
 echo Development server running at http://localhost:5173
 echo    Frontend changes will hot-reload automatically!
-echo    Backend API at http://localhost:8000
+echo    Backend API at http://localhost:38000
 echo    (Production build still at http://localhost:3000)
 goto end
 
@@ -292,7 +292,7 @@ echo Starting production environment...
 docker compose up -d
 echo.
 echo Production server running at http://localhost:3000
-echo    Backend API at http://localhost:8000
+echo    Backend API at http://localhost:38000
 goto end
 
 :docker-rebuild

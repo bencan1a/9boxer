@@ -43,8 +43,13 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 5. Verify only position 5 employees shown (filtered view)
-    await page.waitForTimeout(500); // Allow filter to apply
     const position5Employees = page.locator('[data-testid^="employee-card-"]');
+    // Filter applies when employee count changes from total
+    await expect(async () => {
+      const count = await position5Employees.count();
+      expect(count).toBeLessThan(totalCount);
+      expect(count).toBeGreaterThan(0);
+    }).toPass({ timeout: 5000 });
     const position5Count = await position5Employees.count();
 
     // Position 5 count should be less than total (filtering is working)
@@ -119,8 +124,12 @@ test.describe("Donut Mode Workflow", () => {
     await waitForUiSettle(page, 1.0);
 
     // 13. Verify all employees shown again
-    await page.waitForTimeout(500); // Allow filter to clear
     const allEmployeesAgain = page.locator('[data-testid^="employee-card-"]');
+    // Filter clears when switching back to grid mode - count returns to total
+    await expect(async () => {
+      const count = await allEmployeesAgain.count();
+      expect(count).toBe(totalCount);
+    }).toPass({ timeout: 5000 });
     const finalCount = await allEmployeesAgain.count();
     expect(finalCount).toBe(totalCount);
 
@@ -143,7 +152,7 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 16. Verify donut placement persisted (still in position 9)
-    await page.waitForTimeout(500); // Allow filter to apply
+    // Filter applies when donut mode toggles back ON
     const persistedEmployee = gridBox9.locator(
       `[data-testid="employee-card-${empId}"]`
     );
@@ -194,7 +203,6 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 3. Make a donut placement
-    await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const firstEmployee = gridBox5
       .locator('[data-testid^="employee-card-"]')
@@ -209,7 +217,6 @@ test.describe("Donut Mode Workflow", () => {
 
     // 5. Make a regular modification to enable export
     // Find a different employee in a different position (not position 5 where first employee is)
-    await page.waitForTimeout(500);
 
     // Try to find an employee in position 1, 2, or 3 (more likely to have employees)
     let anotherEmployeeId: number | null = null;
@@ -291,7 +298,6 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 2. Find and move an employee in donut mode
-    await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const firstEmployee = gridBox5
       .locator('[data-testid^="employee-card-"]')
@@ -311,7 +317,6 @@ test.describe("Donut Mode Workflow", () => {
     // Note: The actual UI might use a dialog or side panel
     // Adjust this based on your implementation
     // For now, we'll assume a dialog opens with note field
-    await page.waitForTimeout(500);
 
     // 5. Look for notes field (adjust selector based on actual implementation)
     // This is a placeholder - actual implementation may vary
@@ -336,12 +341,12 @@ test.describe("Donut Mode Workflow", () => {
       // 7. Save notes (might be auto-save or require button click)
       // Blur to trigger auto-save
       await page.keyboard.press("Escape"); // Or click outside to blur
-      await page.waitForTimeout(500);
+      // Wait for notes value to be set (state change)
+      await expect(notesField).toHaveValue(testNotes);
 
       // 8. Verify notes persisted
       // Re-open details to verify
       await movedEmployee.click();
-      await page.waitForTimeout(300);
 
       const notesFieldAfter = page
         .locator(
@@ -367,7 +372,6 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 2. Make a donut placement
-    await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const firstEmployee = gridBox5
       .locator('[data-testid^="employee-card-"]')
@@ -432,7 +436,6 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 2. Make multiple donut placements
-    await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const position5Employees = gridBox5.locator(
       '[data-testid^="employee-card-"]'
@@ -451,11 +454,17 @@ test.describe("Donut Mode Workflow", () => {
 
       // Move first employee
       await dragEmployeeToPosition(page, employee1Id, 9, { isDonutMode: true });
-      await page.waitForTimeout(500);
+      // Wait for first employee to appear in position 9
+      await expect(
+        page.locator(`[data-testid="employee-card-${employee1Id}"]`)
+      ).toBeVisible();
 
       // Move second employee
       await dragEmployeeToPosition(page, employee2Id, 6, { isDonutMode: true });
-      await page.waitForTimeout(500);
+      // Wait for second employee to appear in position 6
+      await expect(
+        page.locator(`[data-testid="employee-card-${employee2Id}"]`)
+      ).toBeVisible();
 
       // 3. Verify both employees show with ghostly styling
       const employee1Card = page.locator(
@@ -505,7 +514,6 @@ test.describe("Donut Mode Workflow", () => {
     await toggleDonutMode(page, true);
 
     // 2. Make a donut placement
-    await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const firstEmployee = gridBox5
       .locator('[data-testid^="employee-card-"]')
@@ -516,10 +524,10 @@ test.describe("Donut Mode Workflow", () => {
     await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Verify ghostly styling is present
-    let employeeCard = page.locator(
+    const employeeCard = page.locator(
       `[data-testid="employee-card-${employeeId}"]`
     );
-    let opacity = await employeeCard.evaluate(
+    const opacity = await employeeCard.evaluate(
       (el) => window.getComputedStyle(el).opacity
     );
     expect(parseFloat(opacity)).toBe(0.7);
@@ -527,21 +535,20 @@ test.describe("Donut Mode Workflow", () => {
     // 4. Move back to position 5 (still in donut mode)
     await dragEmployeeToPosition(page, employeeId, 5, { isDonutMode: true });
 
-    // 5. Verify ghostly styling is removed (wait longer for state update)
-    await page.waitForTimeout(1000);
+    // 5. Verify ghostly styling is removed (wait for state update via visual check)
+    // The opacity should return to 1 when moving back to position 5
+    await expect(async () => {
+      const finalOpacity = await employeeCard.evaluate(
+        (el) => window.getComputedStyle(el).opacity
+      );
+      expect(parseFloat(finalOpacity)).toBe(1);
+    }).toPass({ timeout: 5000 });
 
     // Verify employee is back in position 5
     const employeeInBox5 = gridBox5.locator(
       `[data-testid="employee-card-${employeeId}"]`
     );
     await expect(employeeInBox5).toBeVisible();
-
-    // Check opacity should be 1 (normal)
-    employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
-    opacity = await employeeCard.evaluate(
-      (el) => window.getComputedStyle(el).opacity
-    );
-    expect(parseFloat(opacity)).toBe(1);
 
     // 6. Donut indicator badge should not be visible
     const donutBadge = employeeCard.locator('[data-testid="donut-indicator"]');

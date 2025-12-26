@@ -180,7 +180,7 @@ All specifications were implemented according to the documented requirements.
 ### Running Automated Captures
 
 **Prerequisites:**
-1. Backend server running on localhost:8000
+1. Backend server running on localhost:38000
 2. Frontend server running on localhost:5173
 3. Virtual environment activated
 4. Playwright and dependencies installed

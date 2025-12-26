@@ -150,13 +150,13 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
         <Divider sx={{ my: 2 }} />
 
         {/* Current Assessment */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3 }} data-testid="current-assessment-section">
           <Typography variant="subtitle2" color="primary" gutterBottom>
             {t("panel.detailsTab.currentAssessment")}
           </Typography>
           <Box sx={{ mt: 1 }}>
             {/* Box Name and Coordinates */}
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 2 }} data-testid="box-position-label">
               <Typography variant="body2" fontWeight="medium">
                 {t("panel.detailsTab.box")}:{" "}
                 {getPositionName(employee.grid_position)}{" "}

@@ -2,9 +2,10 @@
  * Language Switching Test Suite
  *
  * Tests internationalization (i18n) functionality including:
- * - Language selector availability
- * - Switching between English and Spanish
+ * - Language selector availability in Settings dialog
+ * - Switching between English and Spanish via Settings
  * - UI text updates when language changes
+ * - Language preference persistence across reloads
  */
 
 import { test, expect } from "@playwright/test";
@@ -19,14 +20,22 @@ test.describe("Language Switching", () => {
     await page.waitForLoadState("domcontentloaded");
   });
 
-  test("should display language selector in app bar", async ({ page }) => {
+  test("should display language selector in settings dialog", async ({
+    page,
+  }) => {
     // Upload file to get to main interface
     await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Check for language selector (MUI Select with combobox role)
-    const languageSelector = page.locator('[role="combobox"]').first();
+    // Open settings dialog
+    await page.locator('[data-testid="settings-button"]').click();
+
+    // Check for language selector in settings dialog
+    const languageSelector = page.locator('[data-testid="language-select"]');
     await expect(languageSelector).toBeVisible();
+
+    // Close settings dialog
+    await page.keyboard.press("Escape");
   });
 
   test("should switch from English to Spanish and update UI text", async ({
@@ -41,8 +50,12 @@ test.describe("Language Switching", () => {
       "Details"
     );
 
-    // Find and open language selector (MUI Select component)
-    const languageSelect = page.locator('[role="combobox"]').first();
+    // Open settings dialog
+    await page.locator('[data-testid="settings-button"]').click();
+
+    // Find and click language selector in settings dialog
+    const languageSelect = page.locator('[data-testid="language-select"]');
+    await expect(languageSelect).toBeVisible();
     await languageSelect.click();
 
     // Select Spanish option
@@ -52,9 +65,13 @@ test.describe("Language Switching", () => {
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
+    // Close settings dialog
+    await page.keyboard.press("Escape");
+
     // Wait for language change to complete by checking for Spanish text
     await expect(page.locator('[data-testid="details-tab"]')).toContainText(
-      "Detalles"
+      "Detalles",
+      { timeout: 5000 }
     );
 
     // Verify UI text has changed to Spanish
@@ -95,8 +112,11 @@ test.describe("Language Switching", () => {
     await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Switch to Spanish first
-    const languageSelect = page.locator('[role="combobox"]').first();
+    // Open settings dialog and switch to Spanish first
+    await page.locator('[data-testid="settings-button"]').click();
+
+    const languageSelect = page.locator('[data-testid="language-select"]');
+    await expect(languageSelect).toBeVisible();
     await languageSelect.click();
 
     const spanishOption = page.getByRole("option", {
@@ -105,21 +125,30 @@ test.describe("Language Switching", () => {
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
+    // Close settings dialog
+    await page.keyboard.press("Escape");
+
     // Wait for Spanish to be active
     await expect(page.locator('[data-testid="details-tab"]')).toContainText(
-      "Detalles"
+      "Detalles",
+      { timeout: 5000 }
     );
 
-    // Switch back to English
+    // Open settings dialog again to switch back to English
+    await page.locator('[data-testid="settings-button"]').click();
     await languageSelect.click();
 
     const englishOption = page.getByRole("option", { name: /English|Inglés/i });
     await expect(englishOption).toBeVisible();
     await englishOption.click();
 
+    // Close settings dialog
+    await page.keyboard.press("Escape");
+
     // Wait for English to be active
     await expect(page.locator('[data-testid="details-tab"]')).toContainText(
-      "Details"
+      "Details",
+      { timeout: 5000 }
     );
 
     // Verify English is back
@@ -138,8 +167,11 @@ test.describe("Language Switching", () => {
     await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Switch to Spanish
-    const languageSelect = page.locator('[role="combobox"]').first();
+    // Open settings dialog and switch to Spanish
+    await page.locator('[data-testid="settings-button"]').click();
+
+    const languageSelect = page.locator('[data-testid="language-select"]');
+    await expect(languageSelect).toBeVisible();
     await languageSelect.click();
 
     const spanishOption = page.getByRole("option", {
@@ -148,9 +180,13 @@ test.describe("Language Switching", () => {
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
+    // Close settings dialog
+    await page.keyboard.press("Escape");
+
     // Wait for Spanish to be active
     await expect(page.locator('[data-testid="details-tab"]')).toContainText(
-      "Detalles"
+      "Detalles",
+      { timeout: 5000 }
     );
 
     // Reload page
@@ -159,7 +195,8 @@ test.describe("Language Switching", () => {
 
     // Verify Spanish is still active after reload
     await expect(page.locator('[data-testid="details-tab"]')).toContainText(
-      "Detalles"
+      "Detalles",
+      { timeout: 5000 }
     );
     await expect(page.locator('[data-testid="changes-tab"]')).toContainText(
       "Cambios"
@@ -179,8 +216,11 @@ test.describe("Language Switching", () => {
     const englishText = await employeeCount.textContent();
     expect(englishText).toContain("employee");
 
-    // Switch to Spanish
-    const languageSelect = page.locator('[role="combobox"]').first();
+    // Open settings dialog and switch to Spanish
+    await page.locator('[data-testid="settings-button"]').click();
+
+    const languageSelect = page.locator('[data-testid="language-select"]');
+    await expect(languageSelect).toBeVisible();
     await languageSelect.click();
 
     const spanishOption = page.getByRole("option", {
@@ -189,8 +229,11 @@ test.describe("Language Switching", () => {
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
+    // Close settings dialog
+    await page.keyboard.press("Escape");
+
     // Wait for Spanish text to appear in employee count
-    await expect(employeeCount).toContainText(/empleado/);
+    await expect(employeeCount).toContainText(/empleado/, { timeout: 5000 });
 
     // Verify Spanish employee count text
     const spanishText = await employeeCount.textContent();

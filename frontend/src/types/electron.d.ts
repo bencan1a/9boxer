@@ -104,7 +104,7 @@ export interface ElectronAPI {
   backend: {
     /**
      * Get the actual port the backend is running on.
-     * This may differ from the default port 8000 if there was a port conflict.
+     * This may differ from the default port 38000 if there was a port conflict.
      *
      * @returns Promise resolving to the backend port number
      *

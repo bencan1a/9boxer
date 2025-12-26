@@ -10,13 +10,9 @@ test.describe("FileUploadDialog Visual Tests", () => {
     await page.setViewportSize({ width: 600, height: 500 });
   });
 
-  test("default closed state", async ({ page }) => {
-    await snapshotStoryBothThemes(
-      page,
-      "common-fileuploaddialog--default",
-      "file-upload-dialog-closed"
-    );
-  });
+  // Note: Skipping "default closed state" test - Material-UI Dialogs with open={false}
+  // don't render any content to the DOM, so there's nothing to snapshot.
+  // The Default story is still useful in Storybook for API documentation.
 
   test("open dialog", async ({ page }) => {
     await snapshotStoryBothThemes(

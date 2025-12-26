@@ -24,10 +24,7 @@ test.describe("Intelligence Analysis Flow", () => {
     // Click on the Intelligence tab in the right panel
     await page.locator('[data-testid="intelligence-tab"]').click();
 
-    // Wait for tab content to load
-    await page.waitForTimeout(500);
-
-    // Verify intelligence content is visible
+    // Verify intelligence content is visible (auto-retrying)
     // The intelligence tab should show analysis and insights
     await expect(page.getByText(/intelligence/i)).toBeVisible();
 
@@ -40,10 +37,7 @@ test.describe("Intelligence Analysis Flow", () => {
     // Click on the Intelligence tab
     await page.locator('[data-testid="intelligence-tab"]').click();
 
-    // Wait for content to load
-    await page.waitForTimeout(500);
-
-    // Verify the tab panel is visible (Intelligence is tab index 3)
+    // Verify the tab panel is visible (Intelligence is tab index 3) (auto-retrying)
     await expect(page.locator("#panel-tabpanel-3")).toBeVisible();
 
     // The intelligence view should show various dimensions of analysis

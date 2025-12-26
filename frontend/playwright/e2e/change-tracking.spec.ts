@@ -10,6 +10,7 @@ import {
   clickTabAndWait,
   getBadgeCount,
   waitForUiSettle,
+  t,
 } from "../helpers";
 import * as path from "path";
 import * as fs from "fs";
@@ -34,9 +35,11 @@ test.describe("Change Tracking Flow", () => {
     await expect(
       page.locator('[data-testid="change-tracker-empty"]')
     ).toBeVisible();
-    await expect(page.getByText("No changes yet")).toBeVisible();
     await expect(
-      page.getByText("Move employees to track changes here")
+      page.getByText(t("panel.changeTrackerTab.noChanges"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("panel.changeTrackerTab.moveEmployeesHint"))
     ).toBeVisible();
   });
 
@@ -85,7 +88,7 @@ test.describe("Change Tracking Flow", () => {
 
     // Find the notes field (TextField contains the actual textarea, excluding the hidden auto-sizing one)
     const notesField = page.locator(
-      '[data-testid="change-notes-1"] textarea:not([readonly])'
+      'textarea[data-testid="change-notes-1"]:not([readonly])'
     );
     await expect(notesField).toBeVisible();
 
@@ -98,11 +101,8 @@ test.describe("Change Tracking Flow", () => {
     // Blur the field to trigger save
     await page.locator('[data-testid="change-tracker-view"]').click();
 
-    // Wait a moment for the save to complete
-    await page.waitForTimeout(500);
-
-    // Verify notes are visible in the field
-    await expect(notesField).toHaveValue(testNotes);
+    // Verify notes are saved (auto-retrying assertion)
+    await expect(notesField).toHaveValue(testNotes, { timeout: 5000 });
   });
 
   test("should remove change from tracker when employee is moved back to original position", async ({
@@ -170,7 +170,7 @@ test.describe("Change Tracking Flow", () => {
 
     const testNotes = "Ready for leadership development program";
     const notesField = page.locator(
-      '[data-testid="change-notes-1"] textarea:not([readonly])'
+      'textarea[data-testid="change-notes-1"]:not([readonly])'
     );
     await notesField.click();
     await notesField.fill(testNotes);

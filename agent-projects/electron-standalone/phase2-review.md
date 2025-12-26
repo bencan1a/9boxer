@@ -135,7 +135,7 @@ async function waitForBackend(maxAttempts = BACKEND_STARTUP_TIMEOUT): Promise<bo
 **Status**: ✅ **PASS**
 
 **Evidence**:
-- Window loads `BACKEND_URL` (http://localhost:8000) after backend ready
+- Window loads `BACKEND_URL` (http://localhost:38000) after backend ready
 - `show: false` - window hidden until backend ready
 - `ready-to-show` event used to display window
 - Window size: 1400x900 (min: 1024x768) - reasonable defaults
@@ -872,7 +872,7 @@ grep -n "spawn\|exec\|shell" electron/main/index.ts
 
 **Backend Communication**:
 ```typescript
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 38000;
 const BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 ```
 
@@ -993,7 +993,7 @@ export function createMenu(mainWindow: BrowserWindow): Menu { ... }
 **Inline Comments**:
 ```typescript
 // Backend configuration
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 38000;
 
 // Production: backend is in resources
 // Development: use built backend from Phase 1
@@ -1366,7 +1366,7 @@ Phase 2 is **APPROVED**. Proceed immediately to Phase 3 (Integration).
 ### Phase 3 Focus
 1. **Task 3.1**: Frontend Configuration Updates
    - Detect Electron environment
-   - Set API base URL to localhost:8000
+   - Set API base URL to localhost:38000
    - Test API communication
 
 2. **Task 3.2**: Native File Dialog Integration (Optional)

@@ -11,7 +11,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { uploadExcelFile } from "../helpers";
+import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Filter Application End-to-End", () => {
   test.beforeEach(async ({ page }) => {
@@ -40,7 +40,9 @@ test.describe("Filter Application End-to-End", () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Wait for filter drawer to open and verify Job Levels section is visible
-    await expect(page.getByText("Job Levels")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     // Find the first checkbox (should be a job level since Job Levels defaultExpanded)
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
@@ -49,10 +51,10 @@ test.describe("Filter Application End-to-End", () => {
     // Check the first job level filter
     await firstCheckbox.check();
 
-    // Wait for filter to apply
-    await page.waitForTimeout(800);
-
-    // Verify employee count updated in app bar to show "X of Y employees"
+    // Verify employee count updated in app bar to show "X of Y employees" (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
     const filteredCountText = await employeeCountChip.textContent();
     const filteredMatch = filteredCountText?.match(
       /(\d+)\s+of\s+(\d+)\s+employees/i
@@ -85,7 +87,9 @@ test.describe("Filter Application End-to-End", () => {
 
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Functions")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobFunctions"))
+    ).toBeVisible();
 
     // Find all checkboxes and select one (any checkbox will work for this test)
     const allCheckboxes = page.locator('input[type="checkbox"]');
@@ -98,9 +102,11 @@ test.describe("Filter Application End-to-End", () => {
 
     // Check the filter
     await checkbox.check();
-    await page.waitForTimeout(800);
 
-    // Verify filtered count is less than total
+    // Verify filtered count is less than total (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
     const filteredCountText = await employeeCountChip.textContent();
     const filteredMatch = filteredCountText?.match(
       /(\d+)\s+of\s+(\d+)\s+employees/i
@@ -122,14 +128,18 @@ test.describe("Filter Application End-to-End", () => {
 
     // Open filters and apply a filter
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Levels")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await expect(firstCheckbox).toBeVisible();
     await firstCheckbox.check();
-    await page.waitForTimeout(800);
 
-    // Verify filter is active (should show "X of Y employees")
+    // Verify filter is active (should show "X of Y employees") (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
     const filteredCountText = await employeeCountChip.textContent();
     const filteredMatch = filteredCountText?.match(
       /(\d+)\s+of\s+(\d+)\s+employees/i
@@ -144,9 +154,11 @@ test.describe("Filter Application End-to-End", () => {
     const clearButton = page.locator('[data-testid="clear-filter-button"]');
     await expect(clearButton).toBeVisible();
     await clearButton.click();
-    await page.waitForTimeout(800);
 
-    // Verify all employees restored (should show "X employees" again, not "X of Y")
+    // Verify all employees restored (should show "X employees" again, not "X of Y") (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/^(\d+)\s+employees$/i, {
+      timeout: 5000,
+    });
     const restoredCountText = await employeeCountChip.textContent();
     const restoredSimpleMatch =
       restoredCountText?.match(/^(\d+)\s+employees$/i);
@@ -166,16 +178,20 @@ test.describe("Filter Application End-to-End", () => {
 
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Levels")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     // Apply first filter
     const allCheckboxes = page.locator('input[type="checkbox"]');
     const firstCheckbox = allCheckboxes.first();
     await expect(firstCheckbox).toBeVisible();
     await firstCheckbox.check();
-    await page.waitForTimeout(800);
 
-    // Get count after first filter
+    // Get count after first filter (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
     const firstFilterCountText = await employeeCountChip.textContent();
     const firstFilterMatch = firstFilterCountText?.match(
       /(\d+)\s+of\s+(\d+)\s+employees/i
@@ -191,9 +207,11 @@ test.describe("Filter Application End-to-End", () => {
     const secondCheckbox = allCheckboxes.nth(Math.min(2, checkboxCount - 1));
     await expect(secondCheckbox).toBeVisible();
     await secondCheckbox.check();
-    await page.waitForTimeout(800);
 
-    // Get count after both filters
+    // Get count after both filters (auto-retrying)
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
     const combinedFilterCountText = await employeeCountChip.textContent();
     const combinedFilterMatch = combinedFilterCountText?.match(
       /(\d+)\s+of\s+(\d+)\s+employees/i
@@ -222,7 +240,9 @@ test.describe("Filter Application End-to-End", () => {
   }) => {
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Levels")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     // Get all checkboxes
     const allCheckboxes = page.locator('input[type="checkbox"]');
@@ -231,11 +251,12 @@ test.describe("Filter Application End-to-End", () => {
     const firstCheckbox = allCheckboxes.first();
     await expect(firstCheckbox).toBeVisible();
     await firstCheckbox.check();
-    await page.waitForTimeout(800);
 
-    // Verify count badge appears next to "Job Levels"
+    // Verify count badge appears next to "Job Levels" (auto-retrying)
     // The badge shows the number of active filters in that section
-    const jobLevelsSection = page.locator("text=Job Levels");
+    const jobLevelsSection = page.locator(
+      `text=${t("dashboard.filterDrawer.jobLevels")}`
+    );
     const sectionContainer = jobLevelsSection.locator("..");
 
     // Look for a chip/badge with "1"
@@ -247,9 +268,8 @@ test.describe("Filter Application End-to-End", () => {
     if (checkboxCount > 1) {
       const secondCheckbox = allCheckboxes.nth(1);
       await secondCheckbox.check();
-      await page.waitForTimeout(800);
 
-      // Verify count badge updates to "2"
+      // Verify count badge updates to "2" (auto-retrying)
       const badge2 = sectionContainer.locator('.MuiChip-label:has-text("2")');
       await expect(badge2).toBeVisible({ timeout: 10000 });
     }
@@ -260,26 +280,32 @@ test.describe("Filter Application End-to-End", () => {
   }) => {
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Levels")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     // Apply a filter
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await expect(firstCheckbox).toBeVisible();
     await firstCheckbox.check();
-    await page.waitForTimeout(800);
+
+    // Verify filter applied (auto-retrying)
+    const employeeCountChip = page.getByText(/\d+(\s+of\s+\d+)?\s+employees/i);
+    await expect(employeeCountChip).toHaveText(/\d+\s+of\s+\d+\s+employees/i, {
+      timeout: 5000,
+    });
 
     // Close the drawer (press Escape)
     await page.keyboard.press("Escape");
-    await page.waitForTimeout(500);
 
-    // Verify filters are still active (check employee count shows "X of Y")
-    const employeeCountChip = page.getByText(/\d+\s+of\s+\d+\s+employees/i);
+    // Verify filters are still active (check employee count shows "X of Y") (auto-retrying)
     await expect(employeeCountChip).toBeVisible({ timeout: 10000 });
 
     // Reopen the drawer
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText("Job Levels")).toBeVisible();
-    await page.waitForTimeout(300);
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
 
     // Verify the checkbox is still checked
     const sameCheckbox = page.locator('input[type="checkbox"]').first();

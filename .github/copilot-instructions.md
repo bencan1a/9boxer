@@ -26,7 +26,7 @@ This file provides GitHub Copilot with context about the 9Boxer repository.
 - **Frontend**: React 18 + Vite + Material-UI + Zustand
 - **Backend**: FastAPI (Python 3.10+) bundled with PyInstaller as executable
 - **Database**: SQLite in user's app data directory
-- **Communication**: Backend runs as subprocess, HTTP over localhost:8000
+- **Communication**: Backend runs as subprocess, HTTP over localhost:38000
 - **Deployment**: Windows/macOS/Linux installers (~300MB each)
 
 ## Critical: Monorepo Structure
@@ -250,7 +250,7 @@ pre-commit run --all-files       # Re-check
 → Build backend first: `cd backend && ./scripts/build_executable.sh`
 
 ### Frontend can't connect to backend
-→ Check backend running on port 8000
+→ Check backend running on port 38000
 
 ## Custom Agent Profiles
 

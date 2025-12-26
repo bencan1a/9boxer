@@ -6,7 +6,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { uploadExcelFile } from "../helpers";
+import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Filter Application Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -28,9 +28,15 @@ test.describe("Filter Application Flow", () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Wait for drawer to open and verify filter sections are visible
-    await expect(page.getByText("Job Functions")).toBeVisible();
-    await expect(page.getByText("Job Levels")).toBeVisible();
-    await expect(page.getByText("Locations")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobFunctions"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.locations"))
+    ).toBeVisible();
 
     // Verify that there are checkboxes in the filter drawer
     const checkboxes = page.locator('input[type="checkbox"]');
@@ -53,7 +59,9 @@ test.describe("Filter Application Flow", () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Verify filter drawer is open with sections
-    await expect(page.getByText("Job Functions")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobFunctions"))
+    ).toBeVisible();
 
     // Verify clear filter button is present
     await expect(
@@ -63,10 +71,7 @@ test.describe("Filter Application Flow", () => {
     // Click clear filters button (should work even if no filters applied)
     await page.locator('[data-testid="clear-filter-button"]').click();
 
-    // Wait for action to complete
-    await page.waitForTimeout(500);
-
-    // Verify count remains the same (no filters were applied)
+    // Verify action completed (auto-retrying assertion)
     const finalCount = await employeeCards.count();
     expect(finalCount).toBe(initialCount);
   });
@@ -83,8 +88,12 @@ test.describe("Filter Application Flow", () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Verify filter sections are present
-    await expect(page.getByText("Job Levels")).toBeVisible();
-    await expect(page.getByText("Job Functions")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+    ).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.filterDrawer.jobFunctions"))
+    ).toBeVisible();
 
     // The count display should still be visible with the drawer open
     await expect(page.getByText(employeeCountPattern)).toBeVisible();
@@ -105,11 +114,17 @@ test.describe("Filter Application Flow", () => {
     // Apply a filter by clicking any checkbox
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await firstCheckbox.check();
-    await page.waitForTimeout(300);
+
+    // Wait for filter to apply (auto-retrying assertion)
+    await expect(firstCheckbox).toBeChecked();
 
     // Close drawer
     await page.locator('[data-testid="filter-close-button"]').click();
-    await page.waitForTimeout(300);
+
+    // Wait for drawer to close (auto-retrying assertion)
+    await expect(
+      page.locator('[data-testid="filter-drawer"]')
+    ).not.toBeVisible();
 
     // Verify filter badge is visible (orange dot indicator)
     const filterBadge = page.locator('[data-testid="filter-badge"]');
@@ -132,9 +147,8 @@ test.describe("Filter Application Flow", () => {
 
     // Click close button
     await page.locator('[data-testid="filter-close-button"]').click();
-    await page.waitForTimeout(300);
 
-    // Verify drawer is closed
+    // Verify drawer is closed (auto-retrying assertion)
     await expect(filterDrawer).not.toBeVisible();
   });
 
@@ -170,16 +184,14 @@ test.describe("Filter Application Flow", () => {
     // Click accordion summary (header) to collapse Job Levels
     // AccordionSummary has role="button"
     await jobLevelsAccordion.locator('[role="button"]').click();
-    await page.waitForTimeout(300);
 
-    // Verify checkboxes are hidden (indicating accordion is collapsed)
+    // Verify checkboxes are hidden (auto-retrying assertion)
     await expect(jobLevelsCheckboxes.first()).toBeHidden();
 
     // Click to expand it again
     await jobLevelsAccordion.locator('[role="button"]').click();
-    await page.waitForTimeout(300);
 
-    // Verify checkboxes are visible again
+    // Verify checkboxes are visible again (auto-retrying assertion)
     await expect(jobLevelsCheckboxes.first()).toBeVisible();
   });
 
@@ -189,9 +201,6 @@ test.describe("Filter Application Flow", () => {
     // Open filter drawer
     await page.locator('[data-testid="filter-button"]').click();
     await expect(page.locator('[data-testid="filter-drawer"]')).toBeVisible();
-
-    // Wait for filter options to load
-    await page.waitForTimeout(300);
 
     // Try to find and interact with specific checkboxes
     // Note: The actual values depend on the test data, so we'll check if any exist
@@ -210,17 +219,18 @@ test.describe("Filter Application Flow", () => {
 
       // Click to toggle
       await firstCheckbox.click();
-      await page.waitForTimeout(200);
 
-      // Verify state changed
-      const newState = await firstCheckbox.isChecked();
-      expect(newState).toBe(!isChecked);
+      // Verify state changed (auto-retrying assertion)
+      if (isChecked) {
+        await expect(firstCheckbox).not.toBeChecked();
+      } else {
+        await expect(firstCheckbox).toBeChecked();
+      }
 
       // Click again to toggle back
       await firstCheckbox.click();
-      await page.waitForTimeout(200);
 
-      // Verify it returned to original state
+      // Verify it returned to original state (auto-retrying assertion)
       const finalState = await firstCheckbox.isChecked();
       expect(finalState).toBe(isChecked);
     }
@@ -234,7 +244,9 @@ test.describe("Filter Application Flow", () => {
     // Apply a filter
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await firstCheckbox.check();
-    await page.waitForTimeout(300);
+
+    // Wait for filter to apply (auto-retrying assertion)
+    await expect(firstCheckbox).toBeChecked();
 
     // Verify clear button is visible
     const clearButton = page.locator('[data-testid="clear-filter-button"]');
@@ -242,11 +254,17 @@ test.describe("Filter Application Flow", () => {
 
     // Click clear all filters
     await clearButton.click();
-    await page.waitForTimeout(300);
+
+    // Wait for filters to clear (auto-retrying assertion)
+    await expect(firstCheckbox).not.toBeChecked();
 
     // Close drawer
     await page.locator('[data-testid="filter-close-button"]').click();
-    await page.waitForTimeout(300);
+
+    // Wait for drawer to close (auto-retrying assertion)
+    await expect(
+      page.locator('[data-testid="filter-drawer"]')
+    ).not.toBeVisible();
 
     // Verify badge is not visible (no active filters)
     // MUI Badge uses visibility and display styles, not class names
@@ -269,8 +287,8 @@ test.describe("Filter Application Flow", () => {
     // Expand the exclusions accordion (it's collapsed by default)
     // AccordionSummary has role="button"
     await exclusionsAccordion.locator('[role="button"]').click();
-    await page.waitForTimeout(300);
 
+    // Wait for expansion (auto-retrying assertion)
     // Verify exclude employees button is now visible
     await expect(
       page.locator('[data-testid="exclude-employees-button"]')
@@ -285,11 +303,17 @@ test.describe("Filter Application Flow", () => {
     // Apply a filter
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await firstCheckbox.check();
-    await page.waitForTimeout(200);
+
+    // Wait for filter to apply (auto-retrying assertion)
+    await expect(firstCheckbox).toBeChecked();
 
     // Close drawer
     await page.locator('[data-testid="filter-close-button"]').click();
-    await page.waitForTimeout(300);
+
+    // Wait for drawer to close (auto-retrying assertion)
+    await expect(
+      page.locator('[data-testid="filter-drawer"]')
+    ).not.toBeVisible();
 
     // Open drawer again
     await page.locator('[data-testid="filter-button"]').click();

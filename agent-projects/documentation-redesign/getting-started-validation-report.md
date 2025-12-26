@@ -21,7 +21,7 @@ The revised Getting Started page successfully guides users through the complete 
 ## Validation Methodology
 
 ### Test Environment
-- **Backend:** FastAPI running on http://localhost:8000
+- **Backend:** FastAPI running on http://localhost:38000
 - **Frontend:** Vite dev server on http://localhost:5174
 - **Test Data:** `frontend/playwright/fixtures/sample-employees.xlsx` (15 employees)
 - **Browser:** Chromium (Playwright)

@@ -186,7 +186,7 @@ def process_employees(employee_ids, max_count=None):
 | Electron won't start | Build backend first: `cd backend && ./scripts/build_executable.sh` |
 | Type checking errors | Add type hints to all parameters and returns |
 | Pre-commit fails | Run `make fix` then `pre-commit run --all-files` |
-| Frontend can't connect | Check backend running on port 8000 |
+| Frontend can't connect | Check backend running on port 38000 |
 
 ---
 

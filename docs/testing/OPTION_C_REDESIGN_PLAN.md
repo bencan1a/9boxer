@@ -92,7 +92,7 @@ test('should show badge count after moving employee', async ({ page, request }) 
   }]);
 
   // ✅ FAST: Direct API call to move employee (50ms)
-  await request.patch(`http://localhost:8000/api/employees/1/move`, {
+  await request.patch(`http://localhost:38000/api/employees/1/move`, {
     data: { position: 6 },
   });
 
@@ -141,7 +141,7 @@ export async function createSessionWithEmployees(
   employees: Employee[]
 ): Promise<string> {
   // Convert to Excel-like structure or use direct API
-  const response = await request.post('http://localhost:8000/api/session/bulk-create', {
+  const response = await request.post('http://localhost:38000/api/session/bulk-create', {
     data: { employees },
   });
 
@@ -157,7 +157,7 @@ export async function moveEmployee(
   employeeId: number,
   position: number
 ): Promise<void> {
-  await request.patch(`http://localhost:8000/api/employees/${employeeId}/move`, {
+  await request.patch(`http://localhost:38000/api/employees/${employeeId}/move`, {
     data: { position },
   });
 }
@@ -367,7 +367,7 @@ export async function createSessionWithEmployees(
   const excelBuffer = generateExcelFromEmployees(employees);
 
   // Upload via existing endpoint
-  const response = await request.post('http://localhost:8000/api/session/upload', {
+  const response = await request.post('http://localhost:38000/api/session/upload', {
     multipart: {
       file: {
         name: 'employees.xlsx',

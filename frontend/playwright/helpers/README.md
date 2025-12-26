@@ -75,7 +75,7 @@ This helper replicates the complete file upload workflow:
 
 ### waitForBackend()
 
-Waits for a response from the backend health endpoint (`http://localhost:8000/health`) with status 200.
+Waits for a response from the backend health endpoint (`http://localhost:38000/health`) with status 200.
 
 ### checkBackendHealth()
 

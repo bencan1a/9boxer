@@ -165,7 +165,7 @@ The onboarding documentation comprehensively covers:
    - Electron desktop app (NOT web app)
    - Monorepo structure (Python + Node.js)
    - Build process (PyInstaller → Electron Builder)
-   - Communication (Backend subprocess, HTTP localhost:8000)
+   - Communication (Backend subprocess, HTTP localhost:38000)
 
 2. **Development Setup**: ✅
    - Virtual environment activation (critical!)

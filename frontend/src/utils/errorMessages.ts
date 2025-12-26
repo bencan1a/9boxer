@@ -27,7 +27,7 @@ export const ERROR_MESSAGES = {
    */
   portConflict: {
     title: "Trying Alternate Port",
-    message: "Port 8000 is already in use.",
+    message: "Port 38000 is already in use.",
     detail: "The application will use an alternate port automatically.",
     buttons: ["OK"],
     type: "info" as const,

@@ -220,7 +220,7 @@ test.afterEach(async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Could add explicit reset if needed
-  // await page.context().request.post('http://localhost:8000/api/session/reset');
+  // await page.context().request.post('http://localhost:38000/api/session/reset');
 });
 ```
 
@@ -1405,7 +1405,7 @@ test('should drag employee', async ({ page }) => {
 // In test setup
 test.beforeEach(async ({ page, request }) => {
   // ✅ Directly seed data via API
-  await request.post('http://localhost:8000/api/session/upload', {
+  await request.post('http://localhost:38000/api/session/upload', {
     data: sampleEmployeesData,  // JSON representation
   });
 
