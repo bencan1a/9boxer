@@ -4,20 +4,11 @@
 
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
-import {
-  Box,
-  Typography,
-  Badge,
-  IconButton,
-  alpha,
-  Tooltip,
-} from "@mui/material";
+import { Box, alpha } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
-import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
-import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
-import { EmployeeTile } from "./EmployeeTile";
+import { BoxHeader } from "./BoxHeader";
+import { EmployeeTileList } from "./EmployeeTileList";
 import {
   getPositionName,
   getPositionGuidance,
@@ -47,8 +38,6 @@ export const GridBox: React.FC<GridBoxProps> = ({
   onCollapse,
   donutModeActive = false,
 }) => {
-  const { t } = useTranslation();
-
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
     logger.error(
@@ -148,132 +137,26 @@ export const GridBox: React.FC<GridBoxProps> = ({
       data-testid={`grid-box-${position}`}
     >
       {/* Header */}
-      {isCollapsed ? (
-        // Collapsed: Centered column layout with expand button prominent
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-          }}
-        >
-          <Typography
-            variant="caption"
-            fontWeight="bold"
-            sx={{
-              fontSize: "0.7rem",
-              display: "block",
-              textAlign: "center",
-            }}
-          >
-            {getPositionName(position)} {shortLabel}
-          </Typography>
-          <IconButton
-            size="small"
-            onClick={onExpand}
-            aria-label={t("grid.gridBox.expandBox")}
-            sx={{
-              opacity: theme.tokens.opacity.gridExpandButtonActive,
-              transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
-              "&:hover": {
-                opacity: theme.tokens.opacity.gridExpandButtonActive,
-                backgroundColor: alpha(theme.palette.primary.main, 0.1),
-              },
-            }}
-          >
-            <OpenInFullIcon fontSize="small" />
-          </IconButton>
-        </Box>
-      ) : (
-        // Normal/Expanded: Horizontal layout with badge and button
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 1,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
-            <Tooltip
-              title={getPositionGuidance(position)}
-              arrow
-              placement="top"
-              enterDelay={300}
-            >
-              <Typography
-                variant="caption"
-                fontWeight="bold"
-                sx={{
-                  fontSize: isExpanded ? "0.85rem" : "0.7rem",
-                  display: "block",
-                  cursor: "help",
-                }}
-              >
-                {getPositionName(position)} {shortLabel}
-              </Typography>
-            </Tooltip>
-            <Badge
-              badgeContent={employees.length}
-              color="primary"
-              sx={{ "& .MuiBadge-badge": { fontSize: "0.65rem", height: 16 } }}
-              data-testid={`grid-box-${position}-count`}
-            />
-          </Box>
-
-          {/* Expand/Collapse Button */}
-          {isExpanded ? (
-            <IconButton
-              size="small"
-              onClick={onCollapse}
-              aria-label={t("grid.gridBox.collapseBox")}
-              sx={{ ml: 1 }}
-            >
-              <CloseFullscreenIcon fontSize="small" />
-            </IconButton>
-          ) : (
-            <IconButton
-              size="small"
-              onClick={onExpand}
-              aria-label={t("grid.gridBox.expandBox")}
-              sx={{
-                ml: 1,
-                opacity: theme.tokens.opacity.gridExpandButtonIdle,
-                transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
-                "&:hover": {
-                  opacity: theme.tokens.opacity.gridExpandButtonActive,
-                },
-              }}
-            >
-              <OpenInFullIcon fontSize="small" />
-            </IconButton>
-          )}
-        </Box>
-      )}
+      <BoxHeader
+        position={position}
+        positionName={getPositionName(position)}
+        shortLabel={shortLabel}
+        employeeCount={employees.length}
+        isExpanded={isExpanded}
+        isCollapsed={isCollapsed}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        positionGuidance={getPositionGuidance(position)}
+      />
 
       {/* Employees - hidden when collapsed */}
       {!isCollapsed && (
-        <Box
-          sx={{
-            // Multi-column grid layout when expanded for better space utilization
-            display: isExpanded ? "grid" : "block",
-            gridTemplateColumns: isExpanded
-              ? "repeat(auto-fill, minmax(280px, 1fr))"
-              : undefined,
-            gap: isExpanded ? 1.5 : 0, // 12px gap between cards in grid mode
-          }}
-        >
-          {employees.map((employee) => (
-            <EmployeeTile
-              key={employee.employee_id}
-              employee={employee}
-              onSelect={onSelectEmployee}
-              donutModeActive={donutModeActive}
-            />
-          ))}
-        </Box>
+        <EmployeeTileList
+          employees={employees}
+          isExpanded={isExpanded}
+          onSelectEmployee={onSelectEmployee}
+          donutModeActive={donutModeActive}
+        />
       )}
     </Box>
   );
