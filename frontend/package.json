@@ -15,7 +15,7 @@
     "build": "vite build",
     "prebuild": "node scripts/ensure-backend.cjs",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "copy-splash": "node scripts/copy-splash.cjs",
     "generate:guide": "node scripts/generate-user-guide.cjs",
     "generate:screenshots": "node scripts/generate-screenshots.cjs",

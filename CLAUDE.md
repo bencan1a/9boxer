@@ -344,6 +344,8 @@ make fix
 cd frontend
 npm run lint
 
+# Note: ESLint only blocks on errors, not warnings
+
 # Re-run pre-commit to verify
 pre-commit run --all-files
 
