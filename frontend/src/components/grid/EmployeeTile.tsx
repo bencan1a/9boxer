@@ -172,16 +172,16 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
                   alignItems: "center",
                   "& .MuiChip-icon": {
                     color: "white",
-                    fontSize: "20px",
-                    marginLeft: "4px",
-                    marginTop: "0px",
-                    marginBottom: "0px",
-                    paddingLeft: "4px",
-                    paddingRight: "4px",
+                    fontSize: theme.tokens.typography.fontSize.body2,
+                    marginLeft: theme.tokens.spacing.xs,
+                    marginTop: 0,
+                    marginBottom: 0,
+                    paddingLeft: theme.tokens.spacing.xs,
+                    paddingRight: theme.tokens.spacing.xs,
                   },
                   "& .MuiChip-label": {
-                    paddingLeft: "4px",
-                    paddingRight: "8px",
+                    paddingLeft: theme.tokens.spacing.xs,
+                    paddingRight: theme.tokens.spacing.sm,
                   },
                 }}
                 data-testid="flag-badge"
@@ -193,7 +193,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           <Typography
             variant="caption"
             color="text.secondary"
-            fontSize="0.65rem"
+            fontSize={theme.tokens.typography.fontSize.caption}
             sx={{ mt: 0.5, display: "block", fontStyle: "italic" }}
           >
             {t("grid.employeeTile.donutLabel")} {displayLabel}

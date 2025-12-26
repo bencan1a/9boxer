@@ -9,11 +9,13 @@
  */
 
 import { Chip, IconButton, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 
 export function ConnectionStatus() {
+  const theme = useTheme();
   const { t } = useTranslation();
   const { status, retryCount, manualRetry } = useConnectionStatus();
 
@@ -56,7 +58,7 @@ export function ConnectionStatus() {
       }}
     >
       <Chip
-        icon={<span style={{ fontSize: "14px" }}>{config.icon}</span>}
+        icon={<span style={{ fontSize: theme.tokens.typography.fontSize.body2 }}>{config.icon}</span>}
         label={config.label}
         color={config.color}
         size="small"

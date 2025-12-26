@@ -148,7 +148,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               textAnchor="end"
               height={80}
               interval={0}
-              style={{ fontSize: "12px" }}
+              style={{ fontSize: theme.tokens.typography.fontSize.caption }}
               stroke={theme.palette.text.secondary}
             />
             <YAxis

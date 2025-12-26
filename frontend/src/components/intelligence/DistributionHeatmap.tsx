@@ -90,6 +90,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
     const g = Math.floor(primaryRgb.g + (255 - primaryRgb.g) * (1 - intensity));
     const b = Math.floor(primaryRgb.b + (255 - primaryRgb.b) * (1 - intensity));
 
+    // eslint-disable-next-line no-restricted-syntax -- Calculated gradient from design tokens
     return `rgb(${r}, ${g}, ${b})`;
   };
 
@@ -114,7 +115,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
               sx={{
                 width: 150,
                 fontWeight: "bold",
-                fontSize: "12px",
+                fontSize: theme.tokens.typography.fontSize.caption,
                 display: "flex",
                 alignItems: "center",
                 px: 1,
@@ -131,7 +132,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   minWidth: 60,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "12px",
+                  fontSize: theme.tokens.typography.fontSize.caption,
                   px: 1,
                 }}
               >
@@ -143,7 +144,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 width: 60,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "12px",
+                fontSize: theme.tokens.typography.fontSize.caption,
                 px: 1,
               }}
             >
@@ -166,7 +167,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
               <Box
                 sx={{
                   width: 150,
-                  fontSize: "12px",
+                  fontSize: theme.tokens.typography.fontSize.caption,
                   display: "flex",
                   alignItems: "center",
                   px: 1,
@@ -194,7 +195,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                       flexDirection: "column",
                       justifyContent: "center",
                       alignItems: "center",
-                      fontSize: "11px",
+                      fontSize: theme.tokens.typography.fontSize.caption,
                       px: 0.5,
                       border: `1px solid ${theme.palette.divider}`,
                       cursor: "default",
@@ -214,7 +215,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                     </Typography>
                     <Typography
                       variant="caption"
-                      sx={{ fontSize: "10px", opacity: 0.8, lineHeight: 1 }}
+                      sx={{ fontSize: theme.tokens.typography.fontSize.caption, opacity: theme.tokens.opacity.hover, lineHeight: 1 }}
                     >
                       ({count})
                     </Typography>
@@ -227,7 +228,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "12px",
+                  fontSize: theme.tokens.typography.fontSize.caption,
                   fontWeight: "medium",
                   px: 1,
                 }}
