@@ -141,6 +141,10 @@ jobs:
         working-directory: frontend
         run: npm run format:i18n:check
 
+      - name: Lint frontend with ESLint
+        working-directory: frontend
+        run: npm run lint
+
   type-check:
     name: Type Check
     runs-on: windows-latest
