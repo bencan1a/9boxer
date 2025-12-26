@@ -181,10 +181,11 @@ export async function generateSettingsDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "settings-settingsdialog--default",
+    storyId: "settings-settingsdialog--open",
     outputPath,
     theme: "light",
-    waitTime: 500,
+    waitTime: 1000,
+    selector: '[role="dialog"]', // Dialog renders in portal, not in storybook root
   });
 }
 
