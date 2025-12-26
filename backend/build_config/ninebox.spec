@@ -32,8 +32,8 @@ a = Analysis(
     pathex=[str(src_dir)],  # Add src to path for module resolution
     binaries=scipy_binaries + numpy_binaries,
     datas=scipy_datas + numpy_datas + [
-        # Include database schema file
-        (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'src/ninebox/models'),
+        # Include database schema file (source, destination_folder_in_bundle)
+        (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'ninebox/models'),
     ],
     hiddenimports=[
         # FastAPI and dependencies

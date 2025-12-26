@@ -10,22 +10,22 @@
  * - Visual indicators (employee count)
  */
 
-import { test, expect } from '@playwright/test';
-import { uploadExcelFile } from '../helpers';
+import { test, expect } from "@playwright/test";
+import { uploadExcelFile } from "../helpers";
 
-test.describe('Filter Application End-to-End', () => {
+test.describe("Filter Application End-to-End", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to application
-    await page.goto('/');
+    await page.goto("/");
 
     // Upload sample employee data
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
 
     // Verify grid loaded successfully
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 
-  test('should filter employees by job level', async ({ page }) => {
+  test("should filter employees by job level", async ({ page }) => {
     // Get initial employee count from app bar
     // When no filters are active, it shows "X employees"
     const employeeCountChip = page.getByText(/\d+(\s+of\s+\d+)?\s+employees/i);
@@ -40,7 +40,7 @@ test.describe('Filter Application End-to-End', () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Wait for filter drawer to open and verify Job Levels section is visible
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
 
     // Find the first checkbox (should be a job level since Job Levels defaultExpanded)
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
@@ -54,7 +54,9 @@ test.describe('Filter Application End-to-End', () => {
 
     // Verify employee count updated in app bar to show "X of Y employees"
     const filteredCountText = await employeeCountChip.textContent();
-    const filteredMatch = filteredCountText?.match(/(\d+)\s+of\s+(\d+)\s+employees/i);
+    const filteredMatch = filteredCountText?.match(
+      /(\d+)\s+of\s+(\d+)\s+employees/i
+    );
 
     expect(filteredMatch).toBeTruthy();
     if (filteredMatch) {
@@ -66,13 +68,15 @@ test.describe('Filter Application End-to-End', () => {
       expect(filteredTotalCount).toBe(initialTotalCount);
 
       // Verify grid shows only filtered employees
-      const visibleEmployeeCards = page.locator('[data-testid^="employee-card-"]');
+      const visibleEmployeeCards = page.locator(
+        '[data-testid^="employee-card-"]'
+      );
       const visibleCount = await visibleEmployeeCards.count();
       expect(visibleCount).toBe(filteredDisplayedCount);
     }
   });
 
-  test('should filter by job function', async ({ page }) => {
+  test("should filter by job function", async ({ page }) => {
     // Get initial count
     const employeeCountChip = page.getByText(/\d+(\s+of\s+\d+)?\s+employees/i);
     const initialCountText = await employeeCountChip.textContent();
@@ -81,7 +85,7 @@ test.describe('Filter Application End-to-End', () => {
 
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Functions')).toBeVisible();
+    await expect(page.getByText("Job Functions")).toBeVisible();
 
     // Find all checkboxes and select one (any checkbox will work for this test)
     const allCheckboxes = page.locator('input[type="checkbox"]');
@@ -98,7 +102,9 @@ test.describe('Filter Application End-to-End', () => {
 
     // Verify filtered count is less than total
     const filteredCountText = await employeeCountChip.textContent();
-    const filteredMatch = filteredCountText?.match(/(\d+)\s+of\s+(\d+)\s+employees/i);
+    const filteredMatch = filteredCountText?.match(
+      /(\d+)\s+of\s+(\d+)\s+employees/i
+    );
 
     expect(filteredMatch).toBeTruthy();
     if (filteredMatch) {
@@ -107,7 +113,7 @@ test.describe('Filter Application End-to-End', () => {
     }
   });
 
-  test('should clear filters and restore all employees', async ({ page }) => {
+  test("should clear filters and restore all employees", async ({ page }) => {
     // Get initial count
     const employeeCountChip = page.getByText(/\d+(\s+of\s+\d+)?\s+employees/i);
     const initialCountText = await employeeCountChip.textContent();
@@ -116,7 +122,7 @@ test.describe('Filter Application End-to-End', () => {
 
     // Open filters and apply a filter
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
 
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
     await expect(firstCheckbox).toBeVisible();
@@ -125,7 +131,9 @@ test.describe('Filter Application End-to-End', () => {
 
     // Verify filter is active (should show "X of Y employees")
     const filteredCountText = await employeeCountChip.textContent();
-    const filteredMatch = filteredCountText?.match(/(\d+)\s+of\s+(\d+)\s+employees/i);
+    const filteredMatch = filteredCountText?.match(
+      /(\d+)\s+of\s+(\d+)\s+employees/i
+    );
     expect(filteredMatch).toBeTruthy();
     if (filteredMatch) {
       const filteredDisplayedCount = parseInt(filteredMatch[1], 10);
@@ -140,7 +148,8 @@ test.describe('Filter Application End-to-End', () => {
 
     // Verify all employees restored (should show "X employees" again, not "X of Y")
     const restoredCountText = await employeeCountChip.textContent();
-    const restoredSimpleMatch = restoredCountText?.match(/^(\d+)\s+employees$/i);
+    const restoredSimpleMatch =
+      restoredCountText?.match(/^(\d+)\s+employees$/i);
     expect(restoredSimpleMatch).toBeTruthy();
     if (restoredSimpleMatch) {
       const restoredTotalCount = parseInt(restoredSimpleMatch[1], 10);
@@ -148,7 +157,7 @@ test.describe('Filter Application End-to-End', () => {
     }
   });
 
-  test('should combine multiple filters with AND logic', async ({ page }) => {
+  test("should combine multiple filters with AND logic", async ({ page }) => {
     // Get initial count
     const employeeCountChip = page.getByText(/\d+(\s+of\s+\d+)?\s+employees/i);
     const initialCountText = await employeeCountChip.textContent();
@@ -157,7 +166,7 @@ test.describe('Filter Application End-to-End', () => {
 
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
 
     // Apply first filter
     const allCheckboxes = page.locator('input[type="checkbox"]');
@@ -168,9 +177,13 @@ test.describe('Filter Application End-to-End', () => {
 
     // Get count after first filter
     const firstFilterCountText = await employeeCountChip.textContent();
-    const firstFilterMatch = firstFilterCountText?.match(/(\d+)\s+of\s+(\d+)\s+employees/i);
+    const firstFilterMatch = firstFilterCountText?.match(
+      /(\d+)\s+of\s+(\d+)\s+employees/i
+    );
     expect(firstFilterMatch).toBeTruthy();
-    const firstFilterCount = firstFilterMatch ? parseInt(firstFilterMatch[1], 10) : 0;
+    const firstFilterCount = firstFilterMatch
+      ? parseInt(firstFilterMatch[1], 10)
+      : 0;
     expect(firstFilterCount).toBeLessThan(initialTotalCount);
 
     // Apply second filter
@@ -182,7 +195,9 @@ test.describe('Filter Application End-to-End', () => {
 
     // Get count after both filters
     const combinedFilterCountText = await employeeCountChip.textContent();
-    const combinedFilterMatch = combinedFilterCountText?.match(/(\d+)\s+of\s+(\d+)\s+employees/i);
+    const combinedFilterMatch = combinedFilterCountText?.match(
+      /(\d+)\s+of\s+(\d+)\s+employees/i
+    );
     expect(combinedFilterMatch).toBeTruthy();
 
     if (combinedFilterMatch) {
@@ -194,16 +209,20 @@ test.describe('Filter Application End-to-End', () => {
       expect(combinedFilterCount).toBeLessThan(initialTotalCount);
 
       // Verify the actual number of employee cards matches the displayed count
-      const visibleEmployeeCards = page.locator('[data-testid^="employee-card-"]');
+      const visibleEmployeeCards = page.locator(
+        '[data-testid^="employee-card-"]'
+      );
       const visibleCount = await visibleEmployeeCards.count();
       expect(visibleCount).toBe(combinedFilterCount);
     }
   });
 
-  test('should update filter count badges when filters are applied', async ({ page }) => {
+  test("should update filter count badges when filters are applied", async ({
+    page,
+  }) => {
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
 
     // Get all checkboxes
     const allCheckboxes = page.locator('input[type="checkbox"]');
@@ -216,8 +235,8 @@ test.describe('Filter Application End-to-End', () => {
 
     // Verify count badge appears next to "Job Levels"
     // The badge shows the number of active filters in that section
-    const jobLevelsSection = page.locator('text=Job Levels');
-    const sectionContainer = jobLevelsSection.locator('..');
+    const jobLevelsSection = page.locator("text=Job Levels");
+    const sectionContainer = jobLevelsSection.locator("..");
 
     // Look for a chip/badge with "1"
     const badge = sectionContainer.locator('.MuiChip-label:has-text("1")');
@@ -236,10 +255,12 @@ test.describe('Filter Application End-to-End', () => {
     }
   });
 
-  test('should persist filter state when drawer is closed and reopened', async ({ page }) => {
+  test("should persist filter state when drawer is closed and reopened", async ({
+    page,
+  }) => {
     // Open filters
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
 
     // Apply a filter
     const firstCheckbox = page.locator('input[type="checkbox"]').first();
@@ -248,7 +269,7 @@ test.describe('Filter Application End-to-End', () => {
     await page.waitForTimeout(800);
 
     // Close the drawer (press Escape)
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
 
     // Verify filters are still active (check employee count shows "X of Y")
@@ -257,7 +278,7 @@ test.describe('Filter Application End-to-End', () => {
 
     // Reopen the drawer
     await page.locator('[data-testid="filter-button"]').click();
-    await expect(page.getByText('Job Levels')).toBeVisible();
+    await expect(page.getByText("Job Levels")).toBeVisible();
     await page.waitForTimeout(300);
 
     // Verify the checkbox is still checked

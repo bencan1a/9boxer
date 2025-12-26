@@ -5,6 +5,7 @@ from datetime import datetime
 import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.events import GridMoveEvent
 from ninebox.models.grid_positions import calculate_grid_position, get_position_label
 from ninebox.services.session_manager import SessionManager
 
@@ -83,23 +84,25 @@ def test_move_employee_when_valid_then_updates_employee_position(
     )
 
     # Move first employee from H,H to M,M
-    change = session_manager.move_employee(
+    event = session_manager.move_employee(
         user_id="user1",
         employee_id=1,
         new_performance=PerformanceLevel.MEDIUM,
         new_potential=PotentialLevel.MEDIUM,
     )
 
-    assert change.employee_id == 1
-    assert change.old_performance == PerformanceLevel.HIGH
-    assert change.old_potential == PotentialLevel.HIGH
-    assert change.new_performance == PerformanceLevel.MEDIUM
-    assert change.new_potential == PotentialLevel.MEDIUM
-    assert change.old_position == 9
-    assert change.new_position == 5
+    # Verify event details
+    assert event.employee_id == 1
+    assert event.old_performance == PerformanceLevel.HIGH
+    assert event.old_potential == PotentialLevel.HIGH
+    assert event.new_performance == PerformanceLevel.MEDIUM
+    assert event.new_potential == PotentialLevel.MEDIUM
+    assert event.old_position == 9
+    assert event.new_position == 5
 
     # Verify employee was updated
     session = session_manager.get_session("user1")
+    assert session is not None
     emp = session.current_employees[0]
     assert emp.performance == PerformanceLevel.MEDIUM
     assert emp.potential == PotentialLevel.MEDIUM
@@ -136,9 +139,9 @@ def test_move_employee_when_valid_then_tracks_changes(
     )
 
     session = session_manager.get_session("user1")
-    assert len(session.changes) == 2
-    assert session.changes[0].employee_id == 1
-    assert session.changes[1].employee_id == 2
+    assert len(session.events) == 2
+    assert session.events[0].employee_id == 1
+    assert session.events[1].employee_id == 2
 
 
 def test_move_employee_when_moved_back_to_original_position_then_modified_status_removed(
@@ -314,7 +317,7 @@ def test_create_session_when_called_then_deep_copies_employees(
 def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that moving same employee twice results in single entry showing net change."""
+    """Test that moving same employee twice results in single entry (most recent move)."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -335,7 +338,8 @@ def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
 
     # Verify first change
     session = session_manager.get_session("user1")
-    assert len(session.changes) == 1
+    assert session is not None
+    assert len(session.events) == 1
     assert first_change.old_position == 9  # H,H
     assert first_change.new_position == 5  # M,M
 
@@ -347,13 +351,14 @@ def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
         new_potential=PotentialLevel.LOW,
     )
 
-    # Should still be only one entry, showing movement from original to final
+    # Should still be only one entry, showing the most recent move (M,M -> L,L)
     session = session_manager.get_session("user1")
-    assert len(session.changes) == 1
-    assert second_change.old_position == 9  # Still H,H (original position)
+    assert session is not None
+    assert len(session.events) == 1
+    assert second_change.old_position == 5  # M,M (position before this move)
     assert second_change.new_position == 1  # L,L (final position)
-    assert second_change.old_performance == PerformanceLevel.HIGH
-    assert second_change.old_potential == PotentialLevel.HIGH
+    assert second_change.old_performance == PerformanceLevel.MEDIUM
+    assert second_change.old_potential == PerformanceLevel.MEDIUM
     assert second_change.new_performance == PerformanceLevel.LOW
     assert second_change.new_potential == PotentialLevel.LOW
 
@@ -385,8 +390,8 @@ def test_move_employee_when_moved_back_to_original_then_entry_removed(
 
     # Verify change was tracked
     session = session_manager.get_session("user1")
-    assert len(session.changes) == 1
-    assert session.changes[0].employee_id == 1
+    assert len(session.events) == 1
+    assert session.events[0].employee_id == 1
 
     # Move back to original position
     session_manager.move_employee(
@@ -399,7 +404,7 @@ def test_move_employee_when_moved_back_to_original_then_entry_removed(
     # Change entry should be completely removed
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.changes) == 0
+    assert len(session.events) == 0
     assert session.current_employees[0].modified_in_session is False
 
 
@@ -438,17 +443,17 @@ def test_move_employee_when_multiple_employees_moved_then_tracks_all_changes(
 
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.changes) == 3
+    assert len(session.events) == 3
 
     # Verify each employee has exactly one entry
-    employee_ids = {c.employee_id for c in session.changes}
+    employee_ids = {c.employee_id for c in session.events}
     assert employee_ids == {1, 2, 3}
 
 
 def test_move_employee_when_moved_multiple_times_then_preserves_original_position(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that multiple moves preserve the original starting position."""
+    """Test that multiple moves result in single event showing most recent move."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -466,19 +471,20 @@ def test_move_employee_when_moved_multiple_times_then_preserves_original_positio
     session_manager.move_employee(
         user_id="user1", employee_id=2, new_performance=PerformanceLevel.LOW, new_potential=PotentialLevel.LOW
     )
-    session_manager.move_employee(
+    final_event = session_manager.move_employee(
         user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.MEDIUM
     )
 
-    # Verify entry always shows original starting position
+    # Verify only one event exists showing the most recent move (L,L -> H,M)
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.changes) == 1
-    change = session.changes[0]
+    assert len(session.events) == 1
+    change = session.events[0]
+    assert isinstance(change, GridMoveEvent)
     assert change.employee_id == 2
-    assert change.old_position == 5  # Original M,M
-    assert change.old_performance == PerformanceLevel.MEDIUM
-    assert change.old_potential == PotentialLevel.MEDIUM
+    assert change.old_position == 1  # L,L (position before final move)
+    assert change.old_performance == PerformanceLevel.LOW
+    assert change.old_potential == PotentialLevel.LOW
     assert change.new_position == 6  # Final H,M
     assert change.new_performance == PerformanceLevel.HIGH
     assert change.new_potential == PotentialLevel.MEDIUM
@@ -508,7 +514,7 @@ def test_update_change_notes_when_valid_employee_then_updates_notes(
     # Verify no notes initially
     session = session_manager.get_session("user1")
     assert session is not None
-    assert session.changes[0].notes is None
+    assert session.events[0].notes is None
 
     # Update notes
     test_notes = "Promoted to team lead due to excellent Q4 performance"
@@ -519,13 +525,14 @@ def test_update_change_notes_when_valid_employee_then_updates_notes(
     )
 
     # Verify notes were updated
+    assert updated_change is not None
     assert updated_change.notes == test_notes
     assert updated_change.employee_id == 1
 
     # Verify notes persist in session
     session = session_manager.get_session("user1")
     assert session is not None
-    assert session.changes[0].notes == test_notes
+    assert session.events[0].notes == test_notes
 
 
 def test_update_change_notes_when_notes_updated_multiple_times_then_overwrites(
@@ -559,10 +566,11 @@ def test_update_change_notes_when_notes_updated_multiple_times_then_overwrites(
     )
 
     # Verify only final notes are stored
+    assert updated_change is not None
     assert updated_change.notes == final_notes
     session = session_manager.get_session("user1")
     assert session is not None
-    assert session.changes[0].notes == final_notes
+    assert session.events[0].notes == final_notes
 
 
 def test_update_change_notes_when_no_session_then_raises_error(
@@ -580,7 +588,7 @@ def test_update_change_notes_when_no_session_then_raises_error(
 def test_update_change_notes_when_no_change_entry_then_raises_error(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test updating notes for employee without change entry raises error."""
+    """Test updating notes for employee without change entry returns None."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -591,18 +599,20 @@ def test_update_change_notes_when_no_change_entry_then_raises_error(
     )
 
     # Don't move employee (no change entry exists)
-    with pytest.raises(ValueError, match="No change entry found for employee 1"):
-        session_manager.update_change_notes(
-            user_id="user1",
-            employee_id=1,
-            notes="Some notes",
-        )
+    result = session_manager.update_change_notes(
+        user_id="user1",
+        employee_id=1,
+        notes="Some notes",
+    )
+
+    # Should return None when no grid move event exists
+    assert result is None
 
 
 def test_update_change_notes_when_employee_moved_back_then_raises_error(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test updating notes after employee moved back to original raises error."""
+    """Test updating notes after employee moved back to original returns None."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -629,19 +639,20 @@ def test_update_change_notes_when_employee_moved_back_then_raises_error(
         new_potential=original_potential,
     )
 
-    # Change entry should be removed, so updating notes should fail
-    with pytest.raises(ValueError, match="No change entry found for employee 1"):
-        session_manager.update_change_notes(
-            user_id="user1",
-            employee_id=1,
-            notes="Some notes",
-        )
+    # Change entry should be removed, so updating notes should return None
+    result = session_manager.update_change_notes(
+        user_id="user1",
+        employee_id=1,
+        notes="Some notes",
+    )
+
+    assert result is None
 
 
-def test_move_employee_when_notes_exist_then_preserves_notes(
+def test_move_employee_when_notes_exist_then_creates_new_event(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that moving employee again preserves existing notes."""
+    """Test that moving employee again creates new event without preserving notes."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -664,7 +675,7 @@ def test_move_employee_when_notes_exist_then_preserves_notes(
     # Verify notes were added
     session = session_manager.get_session("user1")
     assert session is not None
-    assert session.changes[0].notes == test_notes
+    assert session.events[0].notes == test_notes
 
     # Move employee again to a different position
     session_manager.move_employee(
@@ -674,14 +685,16 @@ def test_move_employee_when_notes_exist_then_preserves_notes(
         new_potential=PotentialLevel.LOW,
     )
 
-    # Verify notes are still present after second move
+    # New event is created without notes (notes are not preserved across moves)
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.changes) == 1
-    assert session.changes[0].notes == test_notes
-    # Verify the position was updated but notes preserved
-    assert session.changes[0].new_position == 1  # L,L
-    assert session.changes[0].old_position == 9  # Original H,H
+    assert len(session.events) == 1
+    change = session.events[0]
+    assert isinstance(change, GridMoveEvent)
+    assert change.notes is None  # Notes are NOT preserved when creating new event
+    # Verify this is a new event showing the most recent move (M,M -> L,L)
+    assert change.new_position == 1  # L,L
+    assert change.old_position == 5  # M,M (not original H,H)
 
 
 # ========== Donut Mode Tests ==========
@@ -737,7 +750,7 @@ def test_move_employee_donut_when_called_then_updates_employee(
 def test_move_employee_donut_when_multiple_moves_then_tracks_final(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that moving employee in donut mode multiple times tracks net change."""
+    """Test that moving employee in donut mode multiple times shows most recent move."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -759,7 +772,7 @@ def test_move_employee_donut_when_multiple_moves_then_tracks_final(
     # Verify first change
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.donut_changes) == 1
+    assert len(session.donut_events) == 1
     assert first_change.old_position == 9
     assert first_change.new_position == 6
 
@@ -774,11 +787,11 @@ def test_move_employee_donut_when_multiple_moves_then_tracks_final(
     # Should still be only one entry, showing movement from original to final
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.donut_changes) == 1
-    assert second_change.old_position == 9  # Still H,H (original position)
+    assert len(session.donut_events) == 1
+    assert second_change.old_position == 6  # H,M (position before this move)
     assert second_change.new_position == 1  # L,L (final position)
     assert second_change.old_performance == PerformanceLevel.HIGH
-    assert second_change.old_potential == PerformanceLevel.HIGH
+    assert second_change.old_potential == PotentialLevel.MEDIUM
     assert second_change.new_performance == PerformanceLevel.LOW
     assert second_change.new_potential == PerformanceLevel.LOW
 
@@ -807,7 +820,7 @@ def test_move_employee_donut_when_return_to_5_then_clears_data(
     # Verify change was tracked
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.donut_changes) == 1
+    assert len(session.donut_events) == 1
     assert session.current_employees[0].donut_modified is True
 
     # Move back to position 5 (M,M)
@@ -821,7 +834,7 @@ def test_move_employee_donut_when_return_to_5_then_clears_data(
     # Change entry should be completely removed
     session = session_manager.get_session("user1")
     assert session is not None
-    assert len(session.donut_changes) == 0
+    assert len(session.donut_events) == 0
 
     # Donut fields should be cleared
     emp = session.current_employees[0]

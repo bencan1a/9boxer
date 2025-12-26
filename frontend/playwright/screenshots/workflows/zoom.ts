@@ -19,7 +19,7 @@ import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
  */
 export async function generateZoomControls(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);
@@ -43,7 +43,7 @@ export async function generateZoomControls(
   const controlsBoundingBox = await zoomControls.boundingBox();
 
   if (!gridBoundingBox || !controlsBoundingBox) {
-    throw new Error('Could not get bounding boxes for grid or zoom controls');
+    throw new Error("Could not get bounding boxes for grid or zoom controls");
   }
 
   // Calculate clip area: show bottom-left portion of grid with controls

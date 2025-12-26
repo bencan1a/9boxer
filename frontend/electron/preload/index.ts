@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
 /**
  * Preload Script for Electron Renderer Process
@@ -36,14 +36,16 @@ interface ElectronAPI {
      * Get the current system theme preference.
      * Returns 'light' or 'dark' based on OS settings.
      */
-    getSystemTheme: () => Promise<'light' | 'dark'>;
+    getSystemTheme: () => Promise<"light" | "dark">;
     /**
      * Listen for system theme changes.
      * Returns a cleanup function to remove the listener.
      * @param callback - Function to call when theme changes
      * @returns Cleanup function to remove the listener
      */
-    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
+    onSystemThemeChange: (
+      callback: (theme: "light" | "dark") => void
+    ) => () => void;
   };
   backend: {
     /**
@@ -79,28 +81,31 @@ interface ElectronAPI {
      * ```
      */
     onConnectionStatusChange: (
-      callback: (data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }) => void
+      callback: (data: {
+        status: "connected" | "reconnecting" | "disconnected";
+        port?: number;
+      }) => void
     ) => () => void;
   };
 }
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   // Platform information (read-only, safe to expose)
   platform: process.platform,
   version: process.versions.electron,
 
   // File dialog APIs for Excel import/export
-  openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
+  openFileDialog: () => ipcRenderer.invoke("dialog:openFile"),
   saveFileDialog: (defaultName: string) =>
-    ipcRenderer.invoke('dialog:saveFile', defaultName),
+    ipcRenderer.invoke("dialog:saveFile", defaultName),
 
   // File system APIs for auto-reload functionality
-  readFile: (filePath: string) => ipcRenderer.invoke('file:readFile', filePath),
+  readFile: (filePath: string) => ipcRenderer.invoke("file:readFile", filePath),
 
   // Help & Documentation
-  openUserGuide: () => ipcRenderer.invoke('app:openUserGuide'),
+  openUserGuide: () => ipcRenderer.invoke("app:openUserGuide"),
 
   /**
    * Open the backend logs in the default text editor or file explorer.
@@ -113,7 +118,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
    * await window.electronAPI.showLogs();
    * ```
    */
-  showLogs: (): Promise<{ success: boolean }> => ipcRenderer.invoke('app:showLogs'),
+  showLogs: (): Promise<{ success: boolean }> =>
+    ipcRenderer.invoke("app:showLogs"),
 
   // OS Theme Detection
   theme: {
@@ -121,8 +127,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * Get the current system theme preference.
      * @returns Promise resolving to 'light' or 'dark'
      */
-    getSystemTheme: (): Promise<'light' | 'dark'> =>
-      ipcRenderer.invoke('theme:getSystemTheme'),
+    getSystemTheme: (): Promise<"light" | "dark"> =>
+      ipcRenderer.invoke("theme:getSystemTheme"),
 
     /**
      * Register a callback for system theme changes.
@@ -142,16 +148,21 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * cleanup();
      * ```
      */
-    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void): (() => void) => {
-      const listener = (_event: Electron.IpcRendererEvent, theme: 'light' | 'dark') => {
+    onSystemThemeChange: (
+      callback: (theme: "light" | "dark") => void
+    ): (() => void) => {
+      const listener = (
+        _event: Electron.IpcRendererEvent,
+        theme: "light" | "dark"
+      ) => {
         callback(theme);
       };
 
-      ipcRenderer.on('theme:systemThemeChanged', listener);
+      ipcRenderer.on("theme:systemThemeChanged", listener);
 
       // Return cleanup function
       return () => {
-        ipcRenderer.removeListener('theme:systemThemeChanged', listener);
+        ipcRenderer.removeListener("theme:systemThemeChanged", listener);
       };
     },
   },
@@ -170,7 +181,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * console.log('Backend is running on port:', port);
      * ```
      */
-    getPort: (): Promise<number> => ipcRenderer.invoke('backend:getPort'),
+    getPort: (): Promise<number> => ipcRenderer.invoke("backend:getPort"),
 
     /**
      * Get the full backend URL (e.g., "http://localhost:8001").
@@ -186,7 +197,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * axios.defaults.baseURL = url;
      * ```
      */
-    getUrl: (): Promise<string> => ipcRenderer.invoke('backend:getUrl'),
+    getUrl: (): Promise<string> => ipcRenderer.invoke("backend:getUrl"),
 
     /**
      * Register a callback for backend connection status changes.
@@ -209,20 +220,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * ```
      */
     onConnectionStatusChange: (
-      callback: (data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }) => void
+      callback: (data: {
+        status: "connected" | "reconnecting" | "disconnected";
+        port?: number;
+      }) => void
     ): (() => void) => {
       const listener = (
         _event: Electron.IpcRendererEvent,
-        data: { status: 'connected' | 'reconnecting' | 'disconnected'; port?: number }
+        data: {
+          status: "connected" | "reconnecting" | "disconnected";
+          port?: number;
+        }
       ) => {
         callback(data);
       };
 
-      ipcRenderer.on('backend:connection-status', listener);
+      ipcRenderer.on("backend:connection-status", listener);
 
       // Return cleanup function
       return () => {
-        ipcRenderer.removeListener('backend:connection-status', listener);
+        ipcRenderer.removeListener("backend:connection-status", listener);
       };
     },
   },
@@ -234,6 +251,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 } as ElectronAPI);
 
 // Log that preload script loaded successfully
-console.log('[Preload] Electron API initialized');
+console.log("[Preload] Electron API initialized");
 console.log(`[Preload] Platform: ${process.platform}`);
 console.log(`[Preload] Electron Version: ${process.versions.electron}`);

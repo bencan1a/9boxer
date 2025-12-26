@@ -505,6 +505,6 @@ This glossary should be updated when:
 - Additional languages are added
 - Domain terminology evolves
 
-**Last Updated**: December 2025  
-**Supported Languages**: English (en), Spanish (es)  
+**Last Updated**: December 2025
+**Supported Languages**: English (en), Spanish (es)
 **Maintained by**: 9Boxer Development Team

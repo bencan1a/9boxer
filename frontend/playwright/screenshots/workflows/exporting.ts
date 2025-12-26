@@ -21,7 +21,7 @@ import { ensureChangesExist } from "../../helpers/assertions";
  */
 export async function generateFileMenuApplyChanges(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);
@@ -45,7 +45,7 @@ export async function generateFileMenuApplyChanges(
 
   // Wait for Apply Changes menu item to be visible
   const applyChangesItem = page.locator(
-    '[data-testid="apply-changes-menu-item"]',
+    '[data-testid="apply-changes-menu-item"]'
   );
   await applyChangesItem.waitFor({ state: "visible", timeout: 3000 });
 
@@ -71,7 +71,7 @@ export async function generateFileMenuApplyChanges(
  */
 export async function generateExcelFileNewColumns(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // This is a placeholder for manual screenshot workflow
   // The actual screenshot must be captured manually in Excel
@@ -82,7 +82,7 @@ export async function generateExcelFileNewColumns(
       "2. Open exported Excel file\n" +
       "3. Highlight Performance, Potential, and Position columns\n" +
       "4. Capture screenshot\n" +
-      `5. Save to: ${outputPath}`,
+      `5. Save to: ${outputPath}`
   );
 
   // Create a placeholder file to indicate manual work needed

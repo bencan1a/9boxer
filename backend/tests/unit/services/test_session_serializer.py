@@ -5,7 +5,8 @@ from datetime import date, datetime
 import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
-from ninebox.models.session import EmployeeMove, SessionState
+from ninebox.models.events import GridMoveEvent
+from ninebox.models.session import SessionState
 from ninebox.services.excel_parser import JobFunctionConfig
 from ninebox.services.session_serializer import SessionSerializer
 
@@ -34,7 +35,7 @@ def test_serialize_when_complete_session_then_creates_valid_dict(
         sheet_index=1,
         job_function_config=job_function_config,
         current_employees=sample_employees[:3],
-        changes=[],
+        events=[],
     )
 
     # Serialize
@@ -71,8 +72,8 @@ def test_serialize_when_complete_session_then_creates_valid_dict(
     assert emp_data["performance"] == "High"  # Enum serialized as string
     assert emp_data["potential"] == "High"  # Enum serialized as string
 
-    # Verify changes list
-    assert data["changes"] == []
+    # Verify events list
+    assert data["events"] == []
 
     # Verify updated_at was added
     assert "updated_at" in data
@@ -94,8 +95,8 @@ def test_serialize_when_session_with_changes_then_includes_changes(
         sheet_index=1,
         job_function_config=None,
         current_employees=sample_employees[:2],
-        changes=[
-            EmployeeMove(
+        events=[
+            GridMoveEvent(
                 employee_id=1,
                 employee_name="Alice Smith",
                 timestamp=datetime(2025, 12, 18, 11, 0, 0),
@@ -113,19 +114,19 @@ def test_serialize_when_session_with_changes_then_includes_changes(
     # Serialize
     data = SessionSerializer.serialize(session)
 
-    # Verify changes
-    assert len(data["changes"]) == 1
-    change = data["changes"][0]
-    assert change["employee_id"] == 1
-    assert change["employee_name"] == "Alice Smith"
-    assert change["timestamp"] == "2025-12-18T11:00:00"
-    assert change["old_performance"] == "High"
-    assert change["old_potential"] == "High"
-    assert change["new_performance"] == "Medium"
-    assert change["new_potential"] == "Medium"
-    assert change["old_position"] == 9
-    assert change["new_position"] == 5
-    assert change["notes"] == "Performance review adjustment"
+    # Verify events
+    assert len(data["events"]) == 1
+    event = data["events"][0]
+    assert event["employee_id"] == 1
+    assert event["employee_name"] == "Alice Smith"
+    assert event["timestamp"] == "2025-12-18T11:00:00"
+    assert event["old_performance"] == "High"
+    assert event["old_potential"] == "High"
+    assert event["new_performance"] == "Medium"
+    assert event["new_potential"] == "Medium"
+    assert event["old_position"] == 9
+    assert event["new_position"] == 5
+    assert event["notes"] == "Performance review adjustment"
 
 
 def test_serialize_when_missing_optional_fields_then_serializes_null(
@@ -143,7 +144,7 @@ def test_serialize_when_missing_optional_fields_then_serializes_null(
         sheet_index=1,
         job_function_config=None,  # Optional field
         current_employees=sample_employees[:1],
-        changes=[],
+        events=[],
     )
 
     # Serialize
@@ -176,7 +177,7 @@ def test_deserialize_when_complete_data_then_reconstructs_session(
         sheet_index=0,
         job_function_config=job_function_config,
         current_employees=sample_employees[:2],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -215,8 +216,8 @@ def test_deserialize_when_complete_data_then_reconstructs_session(
     assert emp.potential == PotentialLevel.HIGH
     assert isinstance(emp.hire_date, date)
 
-    # Verify changes
-    assert reconstructed_session.changes == []
+    # Verify events
+    assert reconstructed_session.events == []
 
 
 def test_deserialize_when_session_with_changes_then_reconstructs_changes(
@@ -234,8 +235,8 @@ def test_deserialize_when_session_with_changes_then_reconstructs_changes(
         sheet_index=1,
         job_function_config=None,
         current_employees=sample_employees[:2],
-        changes=[
-            EmployeeMove(
+        events=[
+            GridMoveEvent(
                 employee_id=1,
                 employee_name="Alice Smith",
                 timestamp=datetime(2025, 12, 18, 16, 0, 0),
@@ -247,7 +248,7 @@ def test_deserialize_when_session_with_changes_then_reconstructs_changes(
                 new_position=2,
                 notes="Temporary reassignment",
             ),
-            EmployeeMove(
+            GridMoveEvent(
                 employee_id=2,
                 employee_name="Bob Jones",
                 timestamp=datetime(2025, 12, 18, 16, 15, 0),
@@ -266,28 +267,28 @@ def test_deserialize_when_session_with_changes_then_reconstructs_changes(
     data = SessionSerializer.serialize(original_session)
     reconstructed_session = SessionSerializer.deserialize(data)
 
-    # Verify changes
-    assert len(reconstructed_session.changes) == 2
+    # Verify events
+    assert len(reconstructed_session.events) == 2
 
-    # Verify first change
-    change1 = reconstructed_session.changes[0]
-    assert isinstance(change1, EmployeeMove)
-    assert change1.employee_id == 1
-    assert change1.employee_name == "Alice Smith"
-    assert change1.timestamp == datetime(2025, 12, 18, 16, 0, 0)
-    assert change1.old_performance == PerformanceLevel.HIGH
-    assert change1.old_potential == PotentialLevel.HIGH
-    assert change1.new_performance == PerformanceLevel.MEDIUM
-    assert change1.new_potential == PotentialLevel.LOW
-    assert change1.old_position == 9
-    assert change1.new_position == 2
-    assert change1.notes == "Temporary reassignment"
+    # Verify first event
+    event1 = reconstructed_session.events[0]
+    assert isinstance(event1, GridMoveEvent)
+    assert event1.employee_id == 1
+    assert event1.employee_name == "Alice Smith"
+    assert event1.timestamp == datetime(2025, 12, 18, 16, 0, 0)
+    assert event1.old_performance == PerformanceLevel.HIGH
+    assert event1.old_potential == PotentialLevel.HIGH
+    assert event1.new_performance == PerformanceLevel.MEDIUM
+    assert event1.new_potential == PotentialLevel.LOW
+    assert event1.old_position == 9
+    assert event1.new_position == 2
+    assert event1.notes == "Temporary reassignment"
 
-    # Verify second change
-    change2 = reconstructed_session.changes[1]
-    assert change2.employee_id == 2
-    assert change2.employee_name == "Bob Jones"
-    assert change2.notes is None
+    # Verify second event
+    event2 = reconstructed_session.events[1]
+    assert event2.employee_id == 2
+    assert event2.employee_name == "Bob Jones"
+    assert event2.notes is None
 
 
 def test_deserialize_when_missing_optional_fields_then_handles_gracefully(
@@ -305,7 +306,7 @@ def test_deserialize_when_missing_optional_fields_then_handles_gracefully(
         sheet_index=1,
         job_function_config=None,  # Optional
         current_employees=sample_employees[:1],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -337,7 +338,7 @@ def test_round_trip_serialization_when_real_employee_data_then_identical(
             other_count=20,
         ),
         current_employees=sample_employees,
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -402,7 +403,7 @@ def test_round_trip_serialization_when_employee_with_all_optional_fields_then_pr
         sheet_index=1,
         job_function_config=None,
         current_employees=[employee],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -440,7 +441,7 @@ def test_round_trip_serialization_when_employee_with_null_optional_fields_then_p
         sheet_index=1,
         job_function_config=None,
         current_employees=[employee],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -470,8 +471,8 @@ def test_round_trip_serialization_when_multiple_moves_then_preserves_all(
         sheet_index=1,
         job_function_config=None,
         current_employees=sample_employees[:3],
-        changes=[
-            EmployeeMove(
+        events=[
+            GridMoveEvent(
                 employee_id=1,
                 employee_name="Alice Smith",
                 timestamp=datetime(2025, 12, 18, 21, 15, 0),
@@ -483,7 +484,7 @@ def test_round_trip_serialization_when_multiple_moves_then_preserves_all(
                 new_position=5,
                 notes="Performance adjustment",
             ),
-            EmployeeMove(
+            GridMoveEvent(
                 employee_id=2,
                 employee_name="Bob Jones",
                 timestamp=datetime(2025, 12, 18, 21, 30, 0),
@@ -495,7 +496,7 @@ def test_round_trip_serialization_when_multiple_moves_then_preserves_all(
                 new_position=9,
                 notes="Promotion",
             ),
-            EmployeeMove(
+            GridMoveEvent(
                 employee_id=3,
                 employee_name="Carol Williams",
                 timestamp=datetime(2025, 12, 18, 21, 45, 0),
@@ -515,21 +516,24 @@ def test_round_trip_serialization_when_multiple_moves_then_preserves_all(
     reconstructed_session = SessionSerializer.deserialize(data)
 
     # Verify all moves
-    assert len(reconstructed_session.changes) == 3
+    assert len(reconstructed_session.events) == 3
 
     # Verify each move in detail
-    for i, change in enumerate(reconstructed_session.changes):
-        original_change = original_session.changes[i]
-        assert change.employee_id == original_change.employee_id
-        assert change.employee_name == original_change.employee_name
-        assert change.timestamp == original_change.timestamp
-        assert change.old_performance == original_change.old_performance
-        assert change.old_potential == original_change.old_potential
-        assert change.new_performance == original_change.new_performance
-        assert change.new_potential == original_change.new_potential
-        assert change.old_position == original_change.old_position
-        assert change.new_position == original_change.new_position
-        assert change.notes == original_change.notes
+    for i, event in enumerate(reconstructed_session.events):
+        original_event = original_session.events[i]
+        # Type narrow - we know these are GridMoveEvents in this test
+        assert isinstance(event, GridMoveEvent)
+        assert isinstance(original_event, GridMoveEvent)
+        assert event.employee_id == original_event.employee_id
+        assert event.employee_name == original_event.employee_name
+        assert event.timestamp == original_event.timestamp
+        assert event.old_performance == original_event.old_performance
+        assert event.old_potential == original_event.old_potential
+        assert event.new_performance == original_event.new_performance
+        assert event.new_potential == original_event.new_potential
+        assert event.old_position == original_event.old_position
+        assert event.new_position == original_event.new_position
+        assert event.notes == original_event.notes
 
 
 def test_serialize_when_employee_with_last_modified_then_serializes_datetime() -> None:
@@ -567,7 +571,7 @@ def test_serialize_when_employee_with_last_modified_then_serializes_datetime() -
         sheet_index=1,
         job_function_config=None,
         current_employees=[employee],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -615,7 +619,7 @@ def test_deserialize_when_employee_without_last_modified_then_handles_none() -> 
         sheet_index=1,
         job_function_config=None,
         current_employees=[employee],
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize
@@ -667,7 +671,7 @@ def test_serialize_deserialize_when_large_dataset_then_preserves_all() -> None:
         sheet_index=1,
         job_function_config=None,
         current_employees=employees,
-        changes=[],
+        events=[],
     )
 
     # Serialize then deserialize

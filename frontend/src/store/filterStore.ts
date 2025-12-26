@@ -10,7 +10,9 @@ interface FilterState {
   selectedJobFunctions: string[];
   selectedLocations: string[];
   selectedManagers: string[];
+  selectedFlags: string[];
   excludedEmployeeIds: number[];
+  reportingChainFilter: string | null;
 
   // UI state
   isDrawerOpen: boolean;
@@ -20,7 +22,10 @@ interface FilterState {
   toggleJobFunction: (jobFunction: string) => void;
   toggleLocation: (location: string) => void;
   toggleManager: (manager: string) => void;
+  toggleFlag: (flag: string) => void;
   setExcludedIds: (ids: number[]) => void;
+  setReportingChainFilter: (managerName: string | null) => void;
+  clearReportingChainFilter: () => void;
   clearAllFilters: () => void;
   toggleDrawer: () => void;
 
@@ -34,7 +39,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   selectedJobFunctions: [],
   selectedLocations: [],
   selectedManagers: [],
+  selectedFlags: [],
   excludedEmployeeIds: [],
+  reportingChainFilter: null,
   isDrawerOpen: false,
 
   // Actions
@@ -82,8 +89,27 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     });
   },
 
+  toggleFlag: (flag: string) => {
+    set((state) => {
+      const isSelected = state.selectedFlags.includes(flag);
+      return {
+        selectedFlags: isSelected
+          ? state.selectedFlags.filter((f) => f !== flag)
+          : [...state.selectedFlags, flag],
+      };
+    });
+  },
+
   setExcludedIds: (ids: number[]) => {
     set({ excludedEmployeeIds: ids });
+  },
+
+  setReportingChainFilter: (managerName: string | null) => {
+    set({ reportingChainFilter: managerName });
+  },
+
+  clearReportingChainFilter: () => {
+    set({ reportingChainFilter: null });
   },
 
   clearAllFilters: () => {
@@ -92,7 +118,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
+      selectedFlags: [],
       excludedEmployeeIds: [],
+      reportingChainFilter: null,
     });
   },
 
@@ -108,7 +136,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       state.selectedJobFunctions.length > 0 ||
       state.selectedLocations.length > 0 ||
       state.selectedManagers.length > 0 ||
-      state.excludedEmployeeIds.length > 0
+      state.selectedFlags.length > 0 ||
+      state.excludedEmployeeIds.length > 0 ||
+      state.reportingChainFilter !== null
     );
   },
 }));

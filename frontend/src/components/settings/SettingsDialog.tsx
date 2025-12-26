@@ -2,7 +2,7 @@
  * Settings dialog component for application preferences
  */
 
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -14,21 +14,30 @@ import {
   Typography,
   Box,
   Divider,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
-import { useTranslation } from 'react-i18next';
-import { useUiStore, type ThemeMode } from '../../store/uiStore';
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
+import LanguageIcon from "@mui/icons-material/Language";
+import { useTranslation } from "react-i18next";
+import { useUiStore, type ThemeMode } from "../../store/uiStore";
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../i18n";
 
 export interface SettingsDialogProps {
   open: boolean;
   onClose: () => void;
 }
 
-export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose }) => {
-  const { t } = useTranslation();
+export const SettingsDialog: React.FC<SettingsDialogProps> = ({
+  open,
+  onClose,
+}) => {
+  const { t, i18n } = useTranslation();
 
   // Get theme state from store
   const themeMode = useUiStore((state) => state.themeMode);
@@ -40,26 +49,51 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
     setThemeMode(newMode);
   };
 
+  const handleLanguageChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const newLanguage = event.target.value as SupportedLanguage;
+    i18n.changeLanguage(newLanguage);
+  };
+
+  // Normalize language code to handle variants (e.g., 'en-US' -> 'en')
+  const getCurrentLanguage = (): SupportedLanguage => {
+    const baseLang = i18n.language.split("-")[0];
+    return baseLang in SUPPORTED_LANGUAGES
+      ? (baseLang as SupportedLanguage)
+      : "en";
+  };
+
   const themeOptions = [
     {
-      value: 'light' as ThemeMode,
-      label: t('settings.theme.lightMode'),
-      description: t('settings.theme.lightModeDesc'),
+      value: "light" as ThemeMode,
+      label: t("settings.theme.lightMode"),
+      description: t("settings.theme.lightModeDesc"),
       icon: <LightModeIcon />,
     },
     {
-      value: 'dark' as ThemeMode,
-      label: t('settings.theme.darkMode'),
-      description: t('settings.theme.darkModeDesc'),
+      value: "dark" as ThemeMode,
+      label: t("settings.theme.darkMode"),
+      description: t("settings.theme.darkModeDesc"),
       icon: <DarkModeIcon />,
     },
     {
-      value: 'auto' as ThemeMode,
-      label: t('settings.theme.auto'),
-      description: t('settings.theme.autoDesc'),
+      value: "auto" as ThemeMode,
+      label: t("settings.theme.auto"),
+      description: t("settings.theme.autoDesc"),
       icon: <SettingsBrightnessIcon />,
     },
   ];
+
+  const languageOptions = Object.entries(SUPPORTED_LANGUAGES).map(
+    ([code, name]) => ({
+      value: code as SupportedLanguage,
+      label: name,
+      icon: <LanguageIcon />,
+    })
+  );
+
+  const currentLanguage = getCurrentLanguage();
 
   return (
     <Dialog
@@ -75,21 +109,21 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
     >
       <DialogTitle
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           pb: 1,
         }}
       >
         <Typography variant="h6" component="span">
-          {t('settings.title')}
+          {t("settings.title")}
         </Typography>
         <IconButton
-          aria-label={t('settings.closeAriaLabel')}
+          aria-label={t("settings.closeAriaLabel")}
           onClick={onClose}
           size="small"
           sx={{
-            color: 'text.secondary',
+            color: "text.secondary",
           }}
         >
           <CloseIcon />
@@ -99,16 +133,17 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
       <Divider />
 
       <DialogContent sx={{ pt: 3, pb: 3 }}>
-        <Box>
+        {/* Theme Section */}
+        <Box sx={{ mb: 4 }}>
           <Typography
             variant="subtitle1"
             sx={{
               fontWeight: 600,
               mb: 2,
-              color: 'text.primary',
+              color: "text.primary",
             }}
           >
-            {t('settings.appearance')}
+            {t("settings.appearance")}
           </Typography>
 
           <RadioGroup
@@ -124,17 +159,17 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                 label={
                   <Box
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1.5,
                       py: 0.5,
                     }}
                   >
                     <Box
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: 'text.secondary',
+                        display: "flex",
+                        alignItems: "center",
+                        color: "text.secondary",
                       }}
                     >
                       {option.icon}
@@ -144,7 +179,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                         variant="body1"
                         sx={{
                           fontWeight: 500,
-                          color: 'text.primary',
+                          color: "text.primary",
                         }}
                       >
                         {option.label}
@@ -152,8 +187,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                       <Typography
                         variant="body2"
                         sx={{
-                          color: 'text.secondary',
-                          fontSize: '0.875rem',
+                          color: "text.secondary",
+                          fontSize: "0.875rem",
                         }}
                       >
                         {option.description}
@@ -168,9 +203,9 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                   borderRadius: 1,
                   px: 1.5,
                   py: 1,
-                  transition: 'background-color 0.2s',
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
+                  transition: "background-color 0.2s",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
                   },
                 }}
               />
@@ -183,25 +218,25 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
               mt: 3,
               p: 2,
               borderRadius: 1,
-              backgroundColor: 'action.hover',
-              border: '1px solid',
-              borderColor: 'divider',
+              backgroundColor: "action.hover",
+              border: "1px solid",
+              borderColor: "divider",
             }}
           >
             <Typography
               variant="caption"
               sx={{
-                color: 'text.secondary',
-                display: 'block',
+                color: "text.secondary",
+                display: "block",
                 mb: 0.5,
               }}
             >
-              {t('settings.currentSelection')}
+              {t("settings.currentSelection")}
             </Typography>
             <Box
               sx={{
-                display: 'flex',
-                alignItems: 'center',
+                display: "flex",
+                alignItems: "center",
                 gap: 1,
                 mb: 1,
               }}
@@ -211,27 +246,76 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                 variant="body2"
                 sx={{
                   fontWeight: 600,
-                  color: 'text.primary',
+                  color: "text.primary",
                 }}
               >
                 {themeOptions.find((opt) => opt.value === themeMode)?.label}
               </Typography>
             </Box>
-            {themeMode === 'auto' && (
+            {themeMode === "auto" && (
               <Typography
                 variant="caption"
                 sx={{
-                  color: 'text.secondary',
-                  display: 'flex',
-                  alignItems: 'center',
+                  color: "text.secondary",
+                  display: "flex",
+                  alignItems: "center",
                   gap: 0.5,
                 }}
               >
-                {effectiveTheme === 'light' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
-                {t('settings.currentTheme', { theme: effectiveTheme })}
+                {effectiveTheme === "light" ? (
+                  <LightModeIcon fontSize="small" />
+                ) : (
+                  <DarkModeIcon fontSize="small" />
+                )}
+                {t("settings.currentTheme", { theme: effectiveTheme })}
               </Typography>
             )}
           </Box>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Language Section */}
+        <Box>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "text.primary",
+            }}
+          >
+            {t("settings.language")}
+          </Typography>
+
+          <FormControl fullWidth>
+            <InputLabel id="language-select-label">
+              {t("settings.selectLanguage", "Select Language")}
+            </InputLabel>
+            <Select
+              labelId="language-select-label"
+              id="language-select"
+              value={currentLanguage}
+              label={t("settings.selectLanguage", "Select Language")}
+              onChange={handleLanguageChange as any}
+              data-testid="language-select"
+              startAdornment={
+                <LanguageIcon sx={{ mr: 1, color: "text.secondary" }} />
+              }
+            >
+              {languageOptions.map((option) => (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  data-testid={`language-option-${option.value}`}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    {option.label}
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
       </DialogContent>
     </Dialog>

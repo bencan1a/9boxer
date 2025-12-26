@@ -5,28 +5,9 @@ from typing import ClassVar
 
 from pydantic import BaseModel
 
-from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.employee import Employee
+from ninebox.models.events import Event
 from ninebox.services.excel_parser import JobFunctionConfig
-
-
-class EmployeeMove(BaseModel):
-    """Track a single employee move.
-
-    This model maintains ONE entry per employee. When an employee is moved
-    multiple times, the existing entry is updated to preserve the original
-    old_position while updating the new_position.
-    """
-
-    employee_id: int
-    employee_name: str
-    timestamp: datetime
-    old_performance: PerformanceLevel
-    old_potential: PotentialLevel
-    new_performance: PerformanceLevel
-    new_potential: PotentialLevel
-    old_position: int
-    new_position: int
-    notes: str | None = None
 
 
 class SessionState(BaseModel):
@@ -51,11 +32,11 @@ class SessionState(BaseModel):
     # Current state (with modifications)
     current_employees: list[Employee]
 
-    # Change tracking
-    changes: list[EmployeeMove] = []
+    # Event tracking (unified for all property changes)
+    events: list[Event] = []
 
     # Donut Mode state
-    donut_changes: list[EmployeeMove] = []
+    donut_events: list[Event] = []
     donut_mode_active: bool = False
 
     class Config:

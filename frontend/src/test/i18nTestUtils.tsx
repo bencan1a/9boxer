@@ -2,33 +2,31 @@
  * Test utilities for components using i18n
  */
 
-import React, { ReactElement } from 'react';
-import { I18nextProvider } from 'react-i18next';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import enTranslation from '../i18n/locales/en/translation.json';
-import esTranslation from '../i18n/locales/es/translation.json';
+import React, { ReactElement } from "react";
+import { I18nextProvider } from "react-i18next";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import enTranslation from "../i18n/locales/en/translation.json";
+import esTranslation from "../i18n/locales/es/translation.json";
 
 // Create a separate i18n instance for testing to avoid test pollution
 const createTestI18n = () => {
   const testI18n = i18n.createInstance();
-  testI18n
-    .use(initReactI18next)
-    .init({
-      resources: {
-        en: {
-          translation: enTranslation,
-        },
-        es: {
-          translation: esTranslation,
-        },
+  testI18n.use(initReactI18next).init({
+    resources: {
+      en: {
+        translation: enTranslation,
       },
-      lng: 'en',
-      fallbackLng: 'en',
-      interpolation: {
-        escapeValue: false,
+      es: {
+        translation: esTranslation,
       },
-    });
+    },
+    lng: "en",
+    fallbackLng: "en",
+    interpolation: {
+      escapeValue: false,
+    },
+  });
   return testI18n;
 };
 
@@ -38,7 +36,9 @@ const testI18nInstance = createTestI18n();
  * Wrapper component for testing components that use i18n
  * Use this to wrap components in tests
  */
-export const I18nTestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const I18nTestWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return <I18nextProvider i18n={testI18nInstance}>{children}</I18nextProvider>;
 };
 
@@ -63,7 +63,7 @@ export const changeTestLanguage = async (language: string): Promise<void> => {
  * Reset language to default (English) for testing
  */
 export const resetTestLanguage = async (): Promise<void> => {
-  await testI18nInstance.changeLanguage('en');
+  await testI18nInstance.changeLanguage("en");
 };
 
 /**
@@ -89,6 +89,9 @@ export const resetTestLanguage = async (): Promise<void> => {
  * expect(screen.getByText(getTranslatedText('grid.employeeCount.employee', { count: 1 }))).toBeInTheDocument();
  * expect(screen.getByText(getTranslatedText('grid.employeeCount.employee', { count: 5 }))).toBeInTheDocument();
  */
-export const getTranslatedText = (key: string, options?: Record<string, any>): string => {
+export const getTranslatedText = (
+  key: string,
+  options?: Record<string, any>
+): string => {
   return testI18nInstance.t(key, options);
 };

@@ -2,13 +2,16 @@
  * Utility functions for i18n
  */
 
-import i18n from './config';
-import type { TranslationKeys, TranslationOptions } from './types';
+import i18n from "./config";
+import type { TranslationKeys, TranslationOptions } from "./types";
 
 /**
  * Get translation without using hooks (useful in non-component contexts)
  */
-export const translate = (key: TranslationKeys, options?: TranslationOptions): string => {
+export const translate = (
+  key: TranslationKeys,
+  options?: TranslationOptions
+): string => {
   return i18n.t(key, options);
 };
 
@@ -37,7 +40,7 @@ export const isSupportedLanguage = (language: string): boolean => {
  * Escape special regex characters in a string
  */
 const escapeRegExp = (str: string): string =>
-  str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
  * Format a string with interpolation
@@ -45,10 +48,16 @@ const escapeRegExp = (str: string): string =>
  * Note: This duplicates i18next's built-in interpolation.
  * Prefer using i18next's t() function with variables when possible.
  */
-export const interpolate = (template: string, values: Record<string, string | number>): string => {
+export const interpolate = (
+  template: string,
+  values: Record<string, string | number>
+): string => {
   return Object.entries(values).reduce(
     (result, [key, value]) =>
-      result.replace(new RegExp(`{{${escapeRegExp(key)}}}`, 'g'), String(value)),
+      result.replace(
+        new RegExp(`{{${escapeRegExp(key)}}}`, "g"),
+        String(value)
+      ),
     template
   );
 };

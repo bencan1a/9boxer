@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright configuration for Visual Regression Testing
@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-snapshots
  */
 export default defineConfig({
-  testDir: './playwright/visual',
+  testDir: "./playwright/visual",
 
   // Timeout for visual tests (Storybook can be slow to start)
   timeout: 30000,
@@ -21,14 +21,11 @@ export default defineConfig({
   workers: 1,
 
   // Reporter to use
-  reporter: [
-    ['html', { outputFolder: 'playwright-report-visual' }],
-    ['list'],
-  ],
+  reporter: [["html", { outputFolder: "playwright-report-visual" }], ["list"]],
 
   use: {
     // Base URL for Storybook
-    baseURL: 'http://localhost:6006',
+    baseURL: "http://localhost:6006",
 
     // Consistent viewport for visual tests
     viewport: { width: 1280, height: 720 },
@@ -37,22 +34,22 @@ export default defineConfig({
     actionTimeout: 15000,
 
     // Always capture trace for visual tests (helpful for debugging diffs)
-    trace: 'on',
+    trace: "on",
 
     // Always capture screenshot on failure to see what went wrong
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
 
     // Video not needed for visual tests (snapshots are the point)
-    video: 'off',
+    video: "off",
   },
 
   // Test against Chromium only for consistent visual baselines
   // Can add more browsers later if needed
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         // Force consistent rendering
         deviceScaleFactor: 1,
         hasTouch: false,
@@ -65,8 +62,8 @@ export default defineConfig({
   // For CI, we'll start it in the GitHub Actions workflow
   webServer: process.env.CI
     ? {
-        command: 'npm run storybook',
-        url: 'http://localhost:6006',
+        command: "npm run storybook",
+        url: "http://localhost:6006",
         reuseExistingServer: false,
         timeout: 120000,
       }
@@ -80,8 +77,8 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01, // 1% difference allowed
 
       // Consistent screenshot settings
-      animations: 'disabled',
-      scale: 'css',
+      animations: "disabled",
+      scale: "css",
     },
   },
 });

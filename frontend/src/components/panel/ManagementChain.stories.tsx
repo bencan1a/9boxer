@@ -1,6 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ManagementChain } from './ManagementChain';
-import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employee';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ManagementChain } from "./ManagementChain";
+import type {
+  Employee,
+  PerformanceLevel,
+  PotentialLevel,
+} from "@/types/employee";
 
 /**
  * ManagementChain displays the reporting hierarchy from an employee up to VP level.
@@ -28,11 +32,11 @@ import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employe
  * - `data-testid="manager-chain-button-{index}"` - Manager card buttons
  */
 const meta: Meta<typeof ManagementChain> = {
-  title: 'Panel/ManagementChain',
+  title: "Panel/ManagementChain",
   component: ManagementChain,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
   decorators: [
     (Story) => (
@@ -43,7 +47,8 @@ const meta: Meta<typeof ManagementChain> = {
   ],
   argTypes: {
     employee: {
-      description: 'Employee data object with manager and management chain information',
+      description:
+        "Employee data object with manager and management chain information",
     },
   },
 };
@@ -54,27 +59,27 @@ type Story = StoryObj<typeof ManagementChain>;
 // Base employee template
 const baseEmployee: Employee = {
   employee_id: 12345,
-  name: 'Alice Johnson',
-  business_title: 'Senior Software Engineer',
-  job_title: 'Software Engineer III',
-  job_profile: 'Engineering-USA',
-  job_level: 'MT5',
-  job_function: 'Engineering',
-  location: 'USA',
-  manager: 'Bob Smith',
+  name: "Alice Johnson",
+  business_title: "Senior Software Engineer",
+  job_title: "Software Engineer III",
+  job_profile: "Engineering-USA",
+  job_level: "MT5",
+  job_function: "Engineering",
+  location: "USA",
+  manager: "Bob Smith",
   management_chain_01: null,
   management_chain_02: null,
   management_chain_03: null,
   management_chain_04: null,
   management_chain_05: null,
   management_chain_06: null,
-  hire_date: '2020-01-15',
-  tenure_category: '3-5 years',
-  time_in_job_profile: '2 years',
-  performance: 'High' as PerformanceLevel,
-  potential: 'High' as PotentialLevel,
+  hire_date: "2020-01-15",
+  tenure_category: "3-5 years",
+  time_in_job_profile: "2 years",
+  performance: "High" as PerformanceLevel,
+  potential: "High" as PotentialLevel,
   grid_position: 9,
-  talent_indicator: 'Star',
+  talent_indicator: "Star",
   ratings_history: [],
   development_focus: null,
   development_action: null,
@@ -95,12 +100,12 @@ export const WithManager: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      manager: 'Bob Smith',
-      management_chain_01: 'Carol White',
-      management_chain_02: 'David Brown',
-      management_chain_03: 'Eve Davis',
-      management_chain_04: 'Frank Miller',
-      management_chain_05: 'Grace Wilson',
+      manager: "Bob Smith",
+      management_chain_01: "Carol White",
+      management_chain_02: "David Brown",
+      management_chain_03: "Eve Davis",
+      management_chain_04: "Frank Miller",
+      management_chain_05: "Grace Wilson",
       management_chain_06: null,
     },
   },
@@ -115,10 +120,10 @@ export const NoManager: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Sarah Williams',
-      business_title: 'Chief Executive Officer',
-      job_level: 'MT10',
-      manager: '',
+      name: "Sarah Williams",
+      business_title: "Chief Executive Officer",
+      job_level: "MT10",
+      manager: "",
       management_chain_01: null,
       management_chain_02: null,
       management_chain_03: null,
@@ -138,16 +143,16 @@ export const DeepHierarchy: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Junior Employee',
-      business_title: 'Associate Engineer',
-      job_level: 'MT2',
-      manager: 'Team Lead',
-      management_chain_01: 'Engineering Manager',
-      management_chain_02: 'Senior Engineering Manager',
-      management_chain_03: 'Director of Engineering',
-      management_chain_04: 'Senior Director',
-      management_chain_05: 'VP of Engineering',
-      management_chain_06: 'SVP of Technology',
+      name: "Junior Employee",
+      business_title: "Associate Engineer",
+      job_level: "MT2",
+      manager: "Team Lead",
+      management_chain_01: "Engineering Manager",
+      management_chain_02: "Senior Engineering Manager",
+      management_chain_03: "Director of Engineering",
+      management_chain_04: "Senior Director",
+      management_chain_05: "VP of Engineering",
+      management_chain_06: "SVP of Technology",
     },
   },
 };
@@ -161,10 +166,10 @@ export const ShallowHierarchy: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Senior Individual Contributor',
-      business_title: 'Principal Engineer',
-      job_level: 'MT8',
-      manager: 'VP of Engineering',
+      name: "Senior Individual Contributor",
+      business_title: "Principal Engineer",
+      job_level: "MT8",
+      manager: "VP of Engineering",
       management_chain_01: null,
       management_chain_02: null,
       management_chain_03: null,
@@ -184,10 +189,10 @@ export const WithDuplicates: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      manager: 'Bob Smith',
-      management_chain_01: 'Bob Smith', // Duplicate - should be filtered out
-      management_chain_02: 'Carol White',
-      management_chain_03: 'David Brown',
+      manager: "Bob Smith",
+      management_chain_01: "Bob Smith", // Duplicate - should be filtered out
+      management_chain_02: "Carol White",
+      management_chain_03: "David Brown",
       management_chain_04: null,
       management_chain_05: null,
       management_chain_06: null,
@@ -204,13 +209,13 @@ export const ManagerChain: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Emily Rodriguez',
-      business_title: 'Engineering Manager',
-      job_level: 'MT7',
-      manager: 'Director of Engineering',
-      management_chain_01: 'VP of Engineering',
-      management_chain_02: 'SVP of Technology',
-      management_chain_03: 'CTO',
+      name: "Emily Rodriguez",
+      business_title: "Engineering Manager",
+      job_level: "MT7",
+      manager: "Director of Engineering",
+      management_chain_01: "VP of Engineering",
+      management_chain_02: "SVP of Technology",
+      management_chain_03: "CTO",
       management_chain_04: null,
       management_chain_05: null,
       management_chain_06: null,
@@ -227,12 +232,12 @@ export const NewHire: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Chris Taylor',
-      business_title: 'Junior Developer',
-      job_level: 'MT2',
-      hire_date: '2024-11-01',
-      tenure_category: '0-1 years',
-      manager: 'Tech Lead',
+      name: "Chris Taylor",
+      business_title: "Junior Developer",
+      job_level: "MT2",
+      hire_date: "2024-11-01",
+      tenure_category: "0-1 years",
+      manager: "Tech Lead",
       management_chain_01: null,
       management_chain_02: null,
       management_chain_03: null,

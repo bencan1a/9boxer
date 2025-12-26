@@ -20,7 +20,7 @@ import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
  */
 export async function generateHeroGrid(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Load sample data with good distribution
   await loadSampleData(page);
@@ -50,7 +50,7 @@ export async function generateHeroGrid(
  */
 export async function generateQuickWinPreview(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Load sample data
   await loadSampleData(page);

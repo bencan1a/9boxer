@@ -34,14 +34,14 @@ import { useTranslation } from "react-i18next";
 export const FileMenu: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { sessionId, filename, changes } = useSessionStore();
+  const { sessionId, filename, events } = useSessionStore();
   const { showSuccess, showError } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
   const open = Boolean(anchorEl);
-  const hasChanges = changes.length > 0;
+  const hasChanges = events.length > 0;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +60,7 @@ export const FileMenu: React.FC = () => {
     handleClose();
 
     if (!sessionId) {
-      showError(t('dashboard.fileMenu.noActiveSession'));
+      showError(t("dashboard.fileMenu.noActiveSession"));
       return;
     }
 
@@ -81,7 +81,10 @@ export const FileMenu: React.FC = () => {
       document.body.removeChild(a);
 
       showSuccess(
-        t('dashboard.fileMenu.exportSuccess', { count: changes.length, filename })
+        t("dashboard.fileMenu.exportSuccess", {
+          count: events.length,
+          filename,
+        })
       );
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
@@ -98,18 +101,22 @@ export const FileMenu: React.FC = () => {
   };
 
   // Button label based on session state
-  const buttonLabel = sessionId && filename ? filename : t('dashboard.fileMenu.noFileSelected');
+  const buttonLabel =
+    sessionId && filename ? filename : t("dashboard.fileMenu.noFileSelected");
 
   // Build ARIA label
   const ariaLabel = sessionId
-    ? t('dashboard.fileMenu.fileMenuAriaLabel', { filename, count: changes.length })
-    : t('dashboard.fileMenu.fileMenuAriaLabelNoFile');
+    ? t("dashboard.fileMenu.fileMenuAriaLabel", {
+        filename,
+        count: events.length,
+      })
+    : t("dashboard.fileMenu.fileMenuAriaLabelNoFile");
 
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
         <Badge
-          badgeContent={hasChanges ? `${changes.length}` : 0}
+          badgeContent={hasChanges ? `${events.length}` : 0}
           color="success"
           invisible={!hasChanges}
           data-testid="file-menu-badge"
@@ -166,7 +173,7 @@ export const FileMenu: React.FC = () => {
           data-testid="import-data-menu-item"
         >
           <UploadFileIcon sx={{ mr: 1 }} fontSize="small" />
-          {t('dashboard.fileMenu.importData')}
+          {t("dashboard.fileMenu.importData")}
         </MenuItem>
 
         <Divider />
@@ -182,8 +189,8 @@ export const FileMenu: React.FC = () => {
             <DownloadIcon sx={{ mr: 1 }} fontSize="small" />
           )}
           {isExporting
-            ? t('dashboard.fileMenu.exporting')
-            : t('dashboard.fileMenu.exportChanges', { count: changes.length })}
+            ? t("dashboard.fileMenu.exporting")
+            : t("dashboard.fileMenu.exportChanges", { count: events.length })}
         </MenuItem>
 
         <Divider />
@@ -194,12 +201,12 @@ export const FileMenu: React.FC = () => {
           data-testid="recent-file-menu-item"
         >
           <HistoryIcon sx={{ mr: 1 }} fontSize="small" />
-          {t('dashboard.fileMenu.openRecentFile')}
+          {t("dashboard.fileMenu.openRecentFile")}
           <Typography
             variant="caption"
             sx={{ ml: 1, fontStyle: "italic", opacity: 0.6 }}
           >
-            {t('dashboard.fileMenu.comingSoon')}
+            {t("dashboard.fileMenu.comingSoon")}
           </Typography>
         </MenuItem>
       </Menu>

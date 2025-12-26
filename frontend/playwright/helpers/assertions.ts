@@ -21,13 +21,13 @@ import { dragEmployeeToPosition } from "./dragAndDrop";
  *
  * @example
  * ```typescript
- * const changesCount = await getBadgeCount(page, 'changes-tab-badge');
+ * const changesCount = await getBadgeCount(page, 'file-menu-badge');
  * expect(changesCount).toBeGreaterThan(0);
  * ```
  */
 export async function getBadgeCount(
   page: Page,
-  badgeSelector: string,
+  badgeSelector: string
 ): Promise<number> {
   try {
     const badge = page.locator(`[data-testid="${badgeSelector}"]`);
@@ -57,7 +57,7 @@ export async function getBadgeCount(
  * ```
  */
 export async function getEmployeeIdFromCard(
-  employeeCard: Locator,
+  employeeCard: Locator
 ): Promise<number> {
   const testId = await employeeCard.getAttribute("data-testid");
   const match = testId?.match(/employee-card-(\d+)/);
@@ -83,9 +83,9 @@ export async function getEmployeeIdFromCard(
  */
 export async function ensureChangesExist(
   page: Page,
-  minChanges: number = 1,
+  minChanges: number = 1
 ): Promise<number> {
-  let currentCount = await getBadgeCount(page, "changes-tab-badge");
+  let currentCount = await getBadgeCount(page, "file-menu-badge");
 
   if (currentCount >= minChanges) {
     return 0;
@@ -121,7 +121,8 @@ export async function ensureChangesExist(
     let targetPosition = targetPositions[attemptIndex % targetPositions.length];
     if (targetPosition === currentPosNum) {
       // If target matches current, use next position in array
-      targetPosition = targetPositions[(attemptIndex + 1) % targetPositions.length];
+      targetPosition =
+        targetPositions[(attemptIndex + 1) % targetPositions.length];
     }
 
     try {
@@ -138,20 +139,26 @@ export async function ensureChangesExist(
       await page.waitForTimeout(1000);
 
       // Check if we've reached the goal
-      currentCount = await getBadgeCount(page, "changes-tab-badge");
+      currentCount = await getBadgeCount(page, "file-menu-badge");
       if (currentCount >= minChanges) {
-        console.log(`✓ Successfully created ${successfulMoves} changes (total: ${currentCount})`);
+        console.log(
+          `✓ Successfully created ${successfulMoves} changes (total: ${currentCount})`
+        );
         return successfulMoves;
       }
     } catch (error) {
-      console.warn(`Failed to move employee ${employeeId} (attempt ${attemptIndex + 1}): ${error}`);
+      console.warn(
+        `Failed to move employee ${employeeId} (attempt ${attemptIndex + 1}): ${error}`
+      );
       // Continue trying other employees
     }
 
     attemptIndex++;
   }
 
-  console.log(`Created ${successfulMoves} successful moves (needed ${minChanges})`);
+  console.log(
+    `Created ${successfulMoves} successful moves (needed ${minChanges})`
+  );
 
   // Wait for final UI updates and badge to appear
   await waitForUiSettle(page, 1.0);

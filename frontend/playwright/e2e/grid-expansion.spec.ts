@@ -3,31 +3,33 @@
  * Tests the complete flow of expanding/collapsing grid boxes with keyboard shortcuts
  */
 
-import { test, expect } from '@playwright/test';
-import { uploadExcelFile, dragEmployeeToPosition } from '../helpers';
+import { test, expect } from "@playwright/test";
+import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 
-test.describe('Grid Box Expansion Flow', () => {
+test.describe("Grid Box Expansion Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Visit and upload sample data
-    await page.goto('/');
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await page.goto("/");
+    await uploadExcelFile(page, "sample-employees.xlsx");
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 
-  test('should expand grid box when clicking expand button', async ({ page }) => {
+  test("should expand grid box when clicking expand button", async ({
+    page,
+  }) => {
     // Target grid box 9 (Star - High Performance, High Potential)
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     await expect(gridBox9).toBeVisible();
 
     // Verify box is not expanded initially
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'false');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "false");
 
     // Get initial bounding box to compare size
     const initialBox = await gridBox9.boundingBox();
     if (!initialBox) {
-      throw new Error('Grid box 9 not found');
+      throw new Error("Grid box 9 not found");
     }
 
     // Find and click the expand button (OpenInFullIcon)
@@ -39,27 +41,31 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify box is now expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Verify box size increased
     const expandedBox = await gridBox9.boundingBox();
     if (!expandedBox) {
-      throw new Error('Grid box 9 not found after expansion');
+      throw new Error("Grid box 9 not found after expansion");
     }
 
     // Height should increase significantly (expanded has min-height 200px vs normal 150px)
     expect(expandedBox.height).toBeGreaterThan(initialBox.height);
 
     // Verify collapse button is now visible instead of expand button
-    const collapseButton = gridBox9.locator('button[aria-label="Collapse box"]');
+    const collapseButton = gridBox9.locator(
+      'button[aria-label="Collapse box"]'
+    );
     await expect(collapseButton).toBeVisible();
     await expect(expandButton).not.toBeVisible();
 
     // Verify employee cards are still visible and more detailed
-    await expect(gridBox9.getByText('Alice Smith')).toBeVisible();
+    await expect(gridBox9.getByText("Alice Smith")).toBeVisible();
   });
 
-  test('should collapse grid box when clicking collapse button', async ({ page }) => {
+  test("should collapse grid box when clicking collapse button", async ({
+    page,
+  }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // First, expand the box
@@ -68,26 +74,28 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Get expanded size
     const expandedBox = await gridBox9.boundingBox();
     if (!expandedBox) {
-      throw new Error('Grid box 9 not found when expanded');
+      throw new Error("Grid box 9 not found when expanded");
     }
 
     // Click collapse button
-    const collapseButton = gridBox9.locator('button[aria-label="Collapse box"]');
+    const collapseButton = gridBox9.locator(
+      'button[aria-label="Collapse box"]'
+    );
     await collapseButton.click();
     await page.waitForTimeout(400);
 
     // Verify box is now collapsed
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'false');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "false");
 
     // Verify size decreased
     const collapsedBox = await gridBox9.boundingBox();
     if (!collapsedBox) {
-      throw new Error('Grid box 9 not found after collapse');
+      throw new Error("Grid box 9 not found after collapse");
     }
 
     expect(collapsedBox.height).toBeLessThan(expandedBox.height);
@@ -97,7 +105,9 @@ test.describe('Grid Box Expansion Flow', () => {
     await expect(collapseButton).not.toBeVisible();
   });
 
-  test('should collapse expanded box when pressing ESC key', async ({ page }) => {
+  test("should collapse expanded box when pressing ESC key", async ({
+    page,
+  }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // Expand the box
@@ -106,20 +116,20 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Press ESC key
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
 
     // Verify box collapsed
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'false');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "false");
 
     // Verify expand button is visible again
     await expect(expandButton).toBeVisible();
   });
 
-  test('should maintain expansion state during session', async ({ page }) => {
+  test("should maintain expansion state during session", async ({ page }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // Expand box 9
@@ -128,7 +138,7 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Navigate to Changes tab to test expansion state persistence
     await page.locator('[data-testid="changes-tab"]').click();
@@ -139,14 +149,16 @@ test.describe('Grid Box Expansion Flow', () => {
 
     // Wait for grid to be visible and loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
     await page.waitForTimeout(500);
 
     // Verify box 9 is still expanded after tab navigation
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Verify employee cards remain visible after tab navigation
-    const employeeCardsInBox9 = gridBox9.locator('[data-testid^="employee-card-"]');
+    const employeeCardsInBox9 = gridBox9.locator(
+      '[data-testid^="employee-card-"]'
+    );
     await expect(employeeCardsInBox9.first()).toBeVisible({ timeout: 5000 });
 
     // Navigate to Statistics tab
@@ -158,10 +170,12 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(300);
 
     // Verify box 9 is still expanded after multiple tab navigations
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
   });
 
-  test('should allow dragging employee from expanded box to another box', async ({ page }) => {
+  test("should allow dragging employee from expanded box to another box", async ({
+    page,
+  }) => {
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const gridBox1 = page.locator('[data-testid="grid-box-1"]');
 
@@ -171,14 +185,16 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify box 5 is expanded
-    await expect(gridBox5).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox5).toHaveAttribute("aria-expanded", "true");
 
     // Stabilize after expansion
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
 
     // Verify there are employees in box 5
-    const employeeCardsInBox5 = gridBox5.locator('[data-testid^="employee-card-"]');
+    const employeeCardsInBox5 = gridBox5.locator(
+      '[data-testid^="employee-card-"]'
+    );
     const employeeCount = await employeeCardsInBox5.count();
 
     // Only proceed if there are employees in box 5
@@ -188,30 +204,35 @@ test.describe('Grid Box Expansion Flow', () => {
       await expect(firstEmployeeCard).toBeVisible();
 
       // Get employee ID
-      const employeeTestId = await firstEmployeeCard.getAttribute('data-testid');
-      const employeeId = employeeTestId ? parseInt(employeeTestId.replace('employee-card-', '')) : 0;
+      const employeeTestId =
+        await firstEmployeeCard.getAttribute("data-testid");
+      const employeeId = employeeTestId
+        ? parseInt(employeeTestId.replace("employee-card-", ""))
+        : 0;
 
       // Verify employee is in box 5 initially
-      await expect(firstEmployeeCard).toHaveAttribute('data-position', '5');
+      await expect(firstEmployeeCard).toHaveAttribute("data-position", "5");
 
       // Collapse box 5 before dragging so target box will show employees
       // (In expanded mode, other boxes are minimized and don't show employee cards)
-      await page.keyboard.press('Escape');
+      await page.keyboard.press("Escape");
       await page.waitForTimeout(400);
 
       // Verify box 5 is now collapsed
-      await expect(gridBox5).toHaveAttribute('aria-expanded', 'false');
+      await expect(gridBox5).toHaveAttribute("aria-expanded", "false");
 
       // Wait for grid to re-layout after collapsing
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1000);
 
       // Drag employee from box 5 to box 1
       await dragEmployeeToPosition(page, employeeId, 1);
 
       // Verify employee moved to box 1 (check data-position attribute)
-      const movedEmployeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
-      await expect(movedEmployeeCard).toHaveAttribute('data-position', '1');
+      const movedEmployeeCard = page.locator(
+        `[data-testid="employee-card-${employeeId}"]`
+      );
+      await expect(movedEmployeeCard).toHaveAttribute("data-position", "1");
 
       // Expand box 1 to verify employee is visible there
       const expandButton1 = gridBox1.locator('button[aria-label="Expand box"]');
@@ -219,37 +240,43 @@ test.describe('Grid Box Expansion Flow', () => {
       await page.waitForTimeout(400);
 
       // Verify box 1 is expanded
-      await expect(gridBox1).toHaveAttribute('aria-expanded', 'true');
+      await expect(gridBox1).toHaveAttribute("aria-expanded", "true");
 
       // Verify the moved employee is visible in box 1
-      const employeeInBox1 = gridBox1.locator(`[data-testid="employee-card-${employeeId}"]`);
+      const employeeInBox1 = gridBox1.locator(
+        `[data-testid="employee-card-${employeeId}"]`
+      );
       await expect(employeeInBox1).toBeVisible();
 
       // Verify it has the modified indicator
-      const modifiedIndicator = employeeInBox1.locator('[data-testid="modified-indicator"]');
+      const modifiedIndicator = employeeInBox1.locator(
+        '[data-testid="modified-indicator"]'
+      );
       await expect(modifiedIndicator).toBeVisible();
     }
   });
 
-  test('should collapse other boxes when one box is expanded', async ({ page }) => {
+  test("should collapse other boxes when one box is expanded", async ({
+    page,
+  }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
 
     // Initially, both boxes should not be expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'false');
-    await expect(gridBox5).toHaveAttribute('aria-expanded', 'false');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "false");
+    await expect(gridBox5).toHaveAttribute("aria-expanded", "false");
 
     // Expand box 9
     await gridBox9.locator('button[aria-label="Expand box"]').click();
     await page.waitForTimeout(400);
 
     // Verify box 9 is expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Get initial size of box 5
     const box5Initial = await gridBox5.boundingBox();
     if (!box5Initial) {
-      throw new Error('Grid box 5 not found');
+      throw new Error("Grid box 5 not found");
     }
 
     // Box 5 should now be in collapsed state (other boxes collapse when one expands)
@@ -257,7 +284,7 @@ test.describe('Grid Box Expansion Flow', () => {
     // Check that box 5 is smaller than it was initially
     const box5Collapsed = await gridBox5.boundingBox();
     if (!box5Collapsed) {
-      throw new Error('Grid box 5 not found after box 9 expansion');
+      throw new Error("Grid box 5 not found after box 9 expansion");
     }
 
     // Box 5 should be visually collapsed (smaller than normal)
@@ -266,7 +293,7 @@ test.describe('Grid Box Expansion Flow', () => {
     // The collapsed state is indicated by the grid template changing
   });
 
-  test('should restore expansion state after page reload', async ({ page }) => {
+  test("should restore expansion state after page reload", async ({ page }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // Expand box 9
@@ -275,7 +302,7 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Reload the page
     await page.reload();
@@ -284,14 +311,18 @@ test.describe('Grid Box Expansion Flow', () => {
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Verify box 9 is still expanded after reload (state persisted in localStorage)
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
     // Verify collapse button is visible
-    const collapseButton = gridBox9.locator('button[aria-label="Collapse box"]');
+    const collapseButton = gridBox9.locator(
+      'button[aria-label="Collapse box"]'
+    );
     await expect(collapseButton).toBeVisible();
   });
 
-  test('should clear expansion state from localStorage when collapsed', async ({ page }) => {
+  test("should clear expansion state from localStorage when collapsed", async ({
+    page,
+  }) => {
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // Expand box 9
@@ -300,9 +331,9 @@ test.describe('Grid Box Expansion Flow', () => {
 
     // Verify localStorage has the expanded position
     const expandedPosition = await page.evaluate(() => {
-      return localStorage.getItem('nineBoxExpandedPosition');
+      return localStorage.getItem("nineBoxExpandedPosition");
     });
-    expect(expandedPosition).toBe('9');
+    expect(expandedPosition).toBe("9");
 
     // Collapse the box
     await gridBox9.locator('button[aria-label="Collapse box"]').click();
@@ -310,7 +341,7 @@ test.describe('Grid Box Expansion Flow', () => {
 
     // Verify localStorage is cleared
     const clearedPosition = await page.evaluate(() => {
-      return localStorage.getItem('nineBoxExpandedPosition');
+      return localStorage.getItem("nineBoxExpandedPosition");
     });
     expect(clearedPosition).toBeNull();
 
@@ -319,10 +350,12 @@ test.describe('Grid Box Expansion Flow', () => {
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Box 9 should not be expanded after reload
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'false');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "false");
   });
 
-  test('should handle expanding boxes with different employee counts', async ({ page }) => {
+  test("should handle expanding boxes with different employee counts", async ({
+    page,
+  }) => {
     // Test expanding box 9 (likely has employees)
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const badge9 = page.locator('[data-testid="grid-box-9-count"]');
@@ -335,14 +368,16 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded and employees still visible
-    await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
     if (count9 && parseInt(count9) > 0) {
       // If there are employees, verify they're visible
-      await expect(gridBox9.locator('[data-testid^="employee-card-"]').first()).toBeVisible();
+      await expect(
+        gridBox9.locator('[data-testid^="employee-card-"]').first()
+      ).toBeVisible();
     }
 
     // Collapse it
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
 
     // Test expanding box 1 (Low Performance, Low Potential - may have fewer/no employees)
@@ -353,16 +388,18 @@ test.describe('Grid Box Expansion Flow', () => {
     await page.waitForTimeout(400);
 
     // Verify expanded (even if empty)
-    await expect(gridBox1).toHaveAttribute('aria-expanded', 'true');
+    await expect(gridBox1).toHaveAttribute("aria-expanded", "true");
   });
 
-  test('should display employee cards in multi-column grid when expanded with many employees', async ({ page }) => {
+  test("should display employee cards in multi-column grid when expanded with many employees", async ({
+    page,
+  }) => {
     // Use grid box 9 (Star - High Performance, High Potential) which typically has employees
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
 
     // Check if box 9 has employees
     const badge = gridBox9.locator('[data-testid="grid-box-9-count"]');
-    const badgeExists = await badge.count() > 0;
+    const badgeExists = (await badge.count()) > 0;
 
     // Only run test if there are employees in box 9
     if (badgeExists) {
@@ -376,7 +413,7 @@ test.describe('Grid Box Expansion Flow', () => {
       await page.waitForTimeout(500);
 
       // Verify box is expanded
-      await expect(gridBox9).toHaveAttribute('aria-expanded', 'true');
+      await expect(gridBox9).toHaveAttribute("aria-expanded", "true");
 
       // Verify all employee cards are visible
       const employeeCards = gridBox9.locator('[data-testid^="employee-card-"]');
@@ -403,8 +440,10 @@ test.describe('Grid Box Expansion Flow', () => {
 
       // Verify drag handles are present and functional
       const firstCard = employeeCards.first();
-      if (await firstCard.count() > 0) {
-        const dragHandle = firstCard.locator('[data-testid="DragIndicatorIcon"]');
+      if ((await firstCard.count()) > 0) {
+        const dragHandle = firstCard.locator(
+          '[data-testid="DragIndicatorIcon"]'
+        );
         await expect(dragHandle).toBeVisible();
       }
     }

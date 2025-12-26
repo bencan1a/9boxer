@@ -66,6 +66,9 @@ export interface Employee {
   modified_in_session: boolean;
   last_modified: string | null; // ISO datetime string
 
+  // Flags (tags for employee status)
+  flags?: string[];
+
   // Donut Mode (alternative positioning system)
   donut_performance?: PerformanceLevel;
   donut_potential?: PotentialLevel;

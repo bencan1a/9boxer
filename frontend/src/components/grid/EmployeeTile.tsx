@@ -4,7 +4,15 @@
 
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { Card, CardContent, Typography, Chip, Box, useTheme, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Chip,
+  Box,
+  useTheme,
+  Tooltip,
+} from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useTranslation } from "react-i18next";
@@ -33,7 +41,11 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     });
 
   const handleCardClick = () => {
-    logger.debug('Card clicked - selecting employee:', employee.employee_id, employee.name);
+    logger.debug(
+      "Card clicked - selecting employee:",
+      employee.employee_id,
+      employee.name
+    );
     onSelect(employee.employee_id);
   };
 
@@ -41,16 +53,18 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   const isDonutModified = donutModeActive && employee.donut_modified;
 
   // Determine which position label to show
-  const displayLabel = donutModeActive && employee.donut_position
-    ? getPositionLabel(employee.donut_position)
-    : getPositionLabel(employee.grid_position);
+  const displayLabel =
+    donutModeActive && employee.donut_position
+      ? getPositionLabel(employee.donut_position)
+      : getPositionLabel(employee.grid_position);
 
   // Get flags count and display names
   const flags = employee.flags || [];
   const flagCount = flags.length;
-  const flagTooltip = flags.length > 0
-    ? flags.map((flag) => getFlagDisplayName(flag)).join(", ")
-    : "";
+  const flagTooltip =
+    flags.length > 0
+      ? flags.map((flag) => getFlagDisplayName(flag)).join(", ")
+      : "";
 
   return (
     <Card
@@ -64,11 +78,13 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         borderLeftColor: "secondary.main",
         cursor: "pointer",
         display: "flex",
-        opacity: isDragging ? 0.5 : (isDonutModified ? 0.7 : 1),
+        opacity: isDragging ? 0.5 : isDonutModified ? 0.7 : 1,
         userSelect: "none",
         border: isDonutModified ? 2 : 0,
         borderStyle: isDonutModified ? "solid" : "none",
-        borderColor: isDonutModified ? theme.tokens.colors.semantic.donutMode : undefined,
+        borderColor: isDonutModified
+          ? theme.tokens.colors.semantic.donutMode
+          : undefined,
         boxShadow: isDonutModified ? 2 : 1,
         "&:hover": {
           boxShadow: 3,
@@ -76,7 +92,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       }}
       data-testid={`employee-card-${employee.employee_id}`}
       data-position={employee.grid_position}
-      data-donut-position={employee.donut_position || ''}
+      data-donut-position={employee.donut_position || ""}
     >
       {/* Drag Handle */}
       <Box
@@ -109,7 +125,15 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
           {employee.business_title}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5, flexWrap: "wrap" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            mt: 0.5,
+            flexWrap: "wrap",
+          }}
+        >
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
           {employee.modified_in_session && (
             <Chip
@@ -136,7 +160,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           {flagCount > 0 && (
             <Tooltip title={flagTooltip} arrow>
               <Chip
-                icon={<LocalOfferIcon sx={{ fontSize: 12 }} />}
+                icon={<LocalOfferIcon />}
                 label={flagCount}
                 size="small"
                 sx={{
@@ -144,8 +168,20 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
                   backgroundColor: theme.palette.info.main,
                   color: "white",
                   fontWeight: "medium",
+                  display: "flex",
+                  alignItems: "center",
                   "& .MuiChip-icon": {
                     color: "white",
+                    fontSize: "20px",
+                    marginLeft: "4px",
+                    marginTop: "0px",
+                    marginBottom: "0px",
+                    paddingLeft: "4px",
+                    paddingRight: "4px",
+                  },
+                  "& .MuiChip-label": {
+                    paddingLeft: "4px",
+                    paddingRight: "8px",
                   },
                 }}
                 data-testid="flag-badge"

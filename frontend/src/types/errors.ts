@@ -2,7 +2,7 @@
  * Error handling types and utilities
  */
 
-import type { AxiosError } from 'axios';
+import type { AxiosError } from "axios";
 
 /**
  * Backend error response structure
@@ -14,11 +14,13 @@ export interface BackendErrorResponse {
 /**
  * Type guard for Axios errors
  */
-function isAxiosError(error: unknown): error is AxiosError<BackendErrorResponse> {
+function isAxiosError(
+  error: unknown
+): error is AxiosError<BackendErrorResponse> {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'isAxiosError' in error &&
+    "isAxiosError" in error &&
     error.isAxiosError === true
   );
 }
@@ -59,7 +61,7 @@ export function extractErrorMessage(error: unknown): string {
 
     // Network error
     if (error.request) {
-      return 'Network error: Unable to reach server';
+      return "Network error: Unable to reach server";
     }
   }
 

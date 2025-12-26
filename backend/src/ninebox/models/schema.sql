@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS sessions (
     job_function_config TEXT,  -- JSON blob: JobFunctionConfig or NULL
     original_employees TEXT NOT NULL,  -- JSON blob: list[Employee]
     current_employees TEXT NOT NULL,   -- JSON blob: list[Employee]
-    changes TEXT NOT NULL,             -- JSON blob: list[EmployeeMove]
-    donut_changes TEXT NOT NULL,       -- JSON blob: list[EmployeeMove]
+    events TEXT NOT NULL,              -- JSON blob: list[Event]
+    donut_events TEXT NOT NULL,        -- JSON blob: list[Event]
     donut_mode_active INTEGER NOT NULL DEFAULT 0,  -- Boolean: 0=False, 1=True
     updated_at TIMESTAMP NOT NULL
 );

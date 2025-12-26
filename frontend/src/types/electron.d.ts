@@ -70,7 +70,7 @@ export interface ElectronAPI {
      * console.log('System theme:', theme); // 'light' or 'dark'
      * ```
      */
-    getSystemTheme: () => Promise<'light' | 'dark'>;
+    getSystemTheme: () => Promise<"light" | "dark">;
 
     /**
      * Register a callback for system theme changes.
@@ -93,7 +93,9 @@ export interface ElectronAPI {
      * }, []);
      * ```
      */
-    onSystemThemeChange: (callback: (theme: 'light' | 'dark') => void) => () => void;
+    onSystemThemeChange: (
+      callback: (theme: "light" | "dark") => void
+    ) => () => void;
   };
 
   /**
@@ -152,7 +154,7 @@ export interface ElectronAPI {
      */
     onConnectionStatusChange: (
       callback: (data: {
-        status: 'connected' | 'reconnecting' | 'disconnected';
+        status: "connected" | "reconnecting" | "disconnected";
         port?: number;
       }) => void
     ) => () => void;

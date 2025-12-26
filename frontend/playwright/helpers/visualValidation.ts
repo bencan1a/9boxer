@@ -72,8 +72,8 @@ export async function verifyModifiedIndicator(
   }
 
   // Verify orange left border using CSS
-  const borderLeftColor = await employeeCard.evaluate((el) =>
-    window.getComputedStyle(el).borderLeftColor
+  const borderLeftColor = await employeeCard.evaluate(
+    (el) => window.getComputedStyle(el).borderLeftColor
   );
 
   // MUI orange[500] = rgb(255, 152, 0)
@@ -110,7 +110,7 @@ export async function verifyModifiedIndicator(
  *
  * @example
  * ```typescript
- * const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
+ * const changesBadge = page.locator('[data-testid="file-menu-badge"]');
  * const count = await verifyBadgeCount(changesBadge, 3);
  * console.log(`Found ${count} changes`);
  * ```
@@ -184,8 +184,8 @@ export async function verifyFilterActive(page: Page): Promise<void> {
   }
 
   // Verify badge has orange color (optional but recommended)
-  const badgeColor = await badge.evaluate((el) =>
-    window.getComputedStyle(el).backgroundColor
+  const badgeColor = await badge.evaluate(
+    (el) => window.getComputedStyle(el).backgroundColor
   );
 
   // MUI orange[500] = rgb(255, 152, 0)
@@ -315,19 +315,19 @@ export async function waitForCssTransition(
 
   // If property specified, verify transition completed
   if (property) {
-    const transitionStatus = await element.evaluate(
-      (el, prop) => {
-        const style = window.getComputedStyle(el);
-        return {
-          property: prop,
-          value: style.getPropertyValue(prop || ""),
-          isTransitioning: style.getPropertyValue("transition-property") !== "none",
-        };
-      },
-      property
-    );
+    const transitionStatus = await element.evaluate((el, prop) => {
+      const style = window.getComputedStyle(el);
+      return {
+        property: prop,
+        value: style.getPropertyValue(prop || ""),
+        isTransitioning:
+          style.getPropertyValue("transition-property") !== "none",
+      };
+    }, property);
 
-    console.log(`CSS transition complete: ${property} = ${transitionStatus.value}`);
+    console.log(
+      `CSS transition complete: ${property} = ${transitionStatus.value}`
+    );
   }
 }
 
@@ -352,7 +352,9 @@ export async function verifyHighlighted(element: Locator): Promise<void> {
   await element.waitFor({ state: "visible" });
 
   // Check if element has focus
-  const hasFocus = await element.evaluate((el) => el === document.activeElement);
+  const hasFocus = await element.evaluate(
+    (el) => el === document.activeElement
+  );
 
   // Check for common highlight CSS properties
   const styles = await element.evaluate((el) => {
@@ -406,7 +408,9 @@ export async function verifyEmployeeCount(
   const countElement = page.locator('[data-testid*="employee-count"]').first();
 
   if ((await countElement.count()) === 0) {
-    console.warn("Employee count element not found. Cannot verify count display.");
+    console.warn(
+      "Employee count element not found. Cannot verify count display."
+    );
     return { total: 0 };
   }
 
@@ -468,8 +472,8 @@ export async function verifyDialogVisible(
   await page.waitForTimeout(CSS_TRANSITION_DURATIONS.enteringScreen);
 
   // Verify dialog is fully opaque (animation complete)
-  const opacity = await dialog.evaluate((el) =>
-    window.getComputedStyle(el).opacity
+  const opacity = await dialog.evaluate(
+    (el) => window.getComputedStyle(el).opacity
   );
 
   if (opacity !== "1") {
@@ -600,9 +604,7 @@ export function verifyScreenshotDimensions(
 
   // Check minimum width
   if (expected.minWidth !== undefined && actual.width < expected.minWidth) {
-    errors.push(
-      `Width ${actual.width}px below minimum ${expected.minWidth}px`
-    );
+    errors.push(`Width ${actual.width}px below minimum ${expected.minWidth}px`);
   }
 
   // Check maximum width

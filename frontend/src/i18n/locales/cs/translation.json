@@ -40,7 +40,9 @@
       "managers": "Manažeři",
       "exclusions": "Vyloučení",
       "excludeEmployees": "Vyloučit zaměstnance",
-      "clearAllFilters": "Vymazat všechny filtry"
+      "clearAllFilters": "Vymazat všechny filtry",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain"
     },
     "exclusionDialog": {
       "title": "Vyloučit zaměstnance",
@@ -197,7 +199,11 @@
         "level04": "Úroveň 04 (VP)",
         "level05": "Úroveň 05",
         "level06": "Úroveň 06"
-      }
+      },
+      "addFlag": "Add flag...",
+      "box": "Box",
+      "flags": "Flags",
+      "noFlagsAvailable": "No flags available"
     },
     "changeTrackerTab": {
       "noChanges": "Zatím žádné změny",
@@ -306,6 +312,13 @@
         "someAnomalies": "Detekovány některé anomálie. Zkontrolujte níže uvedené sekce pro podrobnosti.",
         "significantAnomalies": "Detekovány významné anomálie. Doporučuje se okamžitá kontrola."
       }
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     }
   },
   "common": {
@@ -372,7 +385,8 @@
       "darkModeDesc": "Vždy použít tmavý motiv",
       "auto": "Automaticky (Následovat systém)",
       "autoDesc": "Automaticky přizpůsobit systémovému motivu"
-    }
+    },
+    "language": "Language"
   },
   "zoom": {
     "zoomIn": "Přiblížit (Ctrl++)",

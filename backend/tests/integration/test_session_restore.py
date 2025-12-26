@@ -95,7 +95,11 @@ class TestSessionRestore:
 
         # Verify changes were persisted
         restored_session = list(new_manager.sessions.values())[0]
-        assert len(restored_session.changes) == 1
+        assert len(restored_session.events) == 1
+
+        # Debug: Check what the event employee_id is
+        event = restored_session.events[0]
+        assert event.employee_id == employee_id, f"Event employee_id {event.employee_id} != {employee_id}"
 
         # Verify employee position was persisted
         restored_employee = next(
@@ -103,7 +107,13 @@ class TestSessionRestore:
         )
         assert restored_employee.performance.value == new_perf
         assert restored_employee.potential.value == new_pot
-        assert restored_employee.modified_in_session is True
+        # Note: modified_in_session is recalculated from events during session restore
+        # Since we verified events are persisted above, we can verify the flag was recalculated
+        assert restored_employee.modified_in_session is True, (
+            f"Employee {employee_id} should have modified_in_session=True "
+            f"because there is 1 event in the session. "
+            f"Event employee_id={event.employee_id}, Employee employee_id={restored_employee.employee_id}"
+        )
 
     def test_session_when_notes_added_and_restart_then_notes_persisted(
         self, test_client: TestClient, sample_excel_file: Path
@@ -148,7 +158,7 @@ class TestSessionRestore:
 
         # Verify notes were persisted
         restored_session = list(new_manager.sessions.values())[0]
-        change_entry = restored_session.changes[0]
+        change_entry = restored_session.events[0]
         assert change_entry.notes == notes_text
 
     def test_session_when_deleted_and_restart_then_not_restored(
@@ -352,8 +362,8 @@ class TestErrorHandling:
                     user_id, session_id, created_at, original_filename,
                     original_file_path, sheet_name, sheet_index,
                     job_function_config, original_employees,
-                    current_employees, changes, updated_at,
-                    donut_changes, donut_mode_active
+                    current_employees, events, updated_at,
+                    donut_events, donut_mode_active
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
@@ -397,8 +407,8 @@ class TestErrorHandling:
                     user_id, session_id, created_at, original_filename,
                     original_file_path, sheet_name, sheet_index,
                     job_function_config, original_employees,
-                    current_employees, changes, updated_at,
-                    donut_changes, donut_mode_active
+                    current_employees, events, updated_at,
+                    donut_events, donut_mode_active
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (

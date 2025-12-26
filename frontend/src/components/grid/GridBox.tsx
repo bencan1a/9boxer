@@ -69,7 +69,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   // Validate mutually exclusive states
   if (isExpanded && isCollapsed) {
     logger.error(
-      `GridBox (position ${position}): Cannot be both expanded and collapsed. Using expanded state.`,
+      `GridBox (position ${position}): Cannot be both expanded and collapsed. Using expanded state.`
     );
   }
 

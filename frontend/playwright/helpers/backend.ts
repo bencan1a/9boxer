@@ -23,7 +23,7 @@ export async function waitForBackend(page: Page): Promise<void> {
         response.status() === 200
       );
     },
-    { timeout: 10000 },
+    { timeout: 10000 }
   );
 }
 
@@ -45,7 +45,7 @@ export async function checkBackendHealth(page: Page): Promise<void> {
   while (retries < maxRetries) {
     try {
       const response = await context.request.get(
-        "http://localhost:8000/health",
+        "http://localhost:8000/health"
       );
       if (response.status() === 200) {
         return;

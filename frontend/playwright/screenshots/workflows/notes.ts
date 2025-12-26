@@ -56,7 +56,7 @@ export async function generateChangesTabField(
   await clickTabAndWait(page, "changes-tab", 0.8);
 
   // Verify changes are visible before capturing
-  const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
+  const changesBadge = page.locator('[data-testid="file-menu-badge"]');
   const changeCount = await verifyBadgeCount(changesBadge, 1);
   console.log(
     `✓ Changes tab verified with ${changeCount} change(s) showing note field`
@@ -99,7 +99,7 @@ export async function generateGoodExample(
   await clickTabAndWait(page, "changes-tab", 0.8);
 
   // Verify changes are visible
-  const changesBadge = page.locator('[data-testid="changes-tab-badge"]');
+  const changesBadge = page.locator('[data-testid="file-menu-badge"]');
   await verifyBadgeCount(changesBadge, 1);
 
   // Try to find and fill a note field

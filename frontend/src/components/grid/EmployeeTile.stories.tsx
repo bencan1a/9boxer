@@ -1,8 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { DndContext } from '@dnd-kit/core';
-import { EmployeeTile } from './EmployeeTile';
-import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employee';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "@storybook/test";
+import { DndContext } from "@dnd-kit/core";
+import { EmployeeTile } from "./EmployeeTile";
+import type {
+  Employee,
+  PerformanceLevel,
+  PotentialLevel,
+} from "@/types/employee";
 
 /**
  * EmployeeTile is the core draggable employee card component displayed within grid boxes.
@@ -22,11 +26,11 @@ import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employe
  * - `data-testid="flag-badge"` - Flags count badge
  */
 const meta: Meta<typeof EmployeeTile> = {
-  title: 'Grid/EmployeeTile',
+  title: "Grid/EmployeeTile",
   component: EmployeeTile,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
   decorators: [
     (Story) => (
@@ -39,15 +43,16 @@ const meta: Meta<typeof EmployeeTile> = {
   ],
   argTypes: {
     employee: {
-      description: 'Employee data object with all employee information',
+      description: "Employee data object with all employee information",
     },
     onSelect: {
-      description: 'Callback fired when employee tile is clicked',
-      action: 'selected',
+      description: "Callback fired when employee tile is clicked",
+      action: "selected",
     },
     donutModeActive: {
-      control: 'boolean',
-      description: 'Whether donut mode is currently active (shows donut position indicators)',
+      control: "boolean",
+      description:
+        "Whether donut mode is currently active (shows donut position indicators)",
     },
   },
 };
@@ -58,35 +63,35 @@ type Story = StoryObj<typeof EmployeeTile>;
 // Base employee template
 const baseEmployee: Employee = {
   employee_id: 12345,
-  name: 'Alice Johnson',
-  business_title: 'Senior Software Engineer',
-  job_title: 'Software Engineer III',
-  job_profile: 'Engineering-USA',
-  job_level: 'MT5',
-  job_function: 'Engineering',
-  location: 'USA',
-  manager: 'Bob Smith',
-  management_chain_01: 'Carol White',
-  management_chain_02: 'David Brown',
+  name: "Alice Johnson",
+  business_title: "Senior Software Engineer",
+  job_title: "Software Engineer III",
+  job_profile: "Engineering-USA",
+  job_level: "MT5",
+  job_function: "Engineering",
+  location: "USA",
+  manager: "Bob Smith",
+  management_chain_01: "Carol White",
+  management_chain_02: "David Brown",
   management_chain_03: null,
   management_chain_04: null,
   management_chain_05: null,
   management_chain_06: null,
-  hire_date: '2020-03-15',
-  tenure_category: '3-5 years',
-  time_in_job_profile: '2 years',
-  performance: 'High' as PerformanceLevel,
-  potential: 'High' as PotentialLevel,
+  hire_date: "2020-03-15",
+  tenure_category: "3-5 years",
+  time_in_job_profile: "2 years",
+  performance: "High" as PerformanceLevel,
+  potential: "High" as PotentialLevel,
   grid_position: 9,
-  talent_indicator: 'Star',
+  talent_indicator: "Star",
   ratings_history: [
-    { year: 2024, rating: 'Strong' },
-    { year: 2023, rating: 'Leading' },
+    { year: 2024, rating: "Strong" },
+    { year: 2023, rating: "Leading" },
   ],
-  development_focus: 'Leadership skills',
-  development_action: 'Mentor junior engineers',
+  development_focus: "Leadership skills",
+  development_action: "Mentor junior engineers",
   notes: null,
-  promotion_status: 'Ready',
+  promotion_status: "Ready",
   promotion_readiness: true,
   modified_in_session: false,
   last_modified: null,
@@ -114,7 +119,7 @@ export const Modified: Story = {
     employee: {
       ...baseEmployee,
       modified_in_session: true,
-      last_modified: '2025-12-25T10:30:00Z',
+      last_modified: "2025-12-25T10:30:00Z",
     },
     onSelect: fn(),
     donutModeActive: false,
@@ -130,10 +135,10 @@ export const DonutModified: Story = {
     employee: {
       ...baseEmployee,
       donut_position: 6,
-      donut_performance: 'High' as PerformanceLevel,
-      donut_potential: 'Medium' as PotentialLevel,
+      donut_performance: "High" as PerformanceLevel,
+      donut_potential: "Medium" as PotentialLevel,
       donut_modified: true,
-      donut_last_modified: '2025-12-25T11:00:00Z',
+      donut_last_modified: "2025-12-25T11:00:00Z",
     },
     onSelect: fn(),
     donutModeActive: true,
@@ -148,8 +153,9 @@ export const LongName: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Dr. Elizabeth Alexandra Montgomery-Winthrop III',
-      business_title: 'Chief Distinguished Principal Senior Staff Software Architect',
+      name: "Dr. Elizabeth Alexandra Montgomery-Winthrop III",
+      business_title:
+        "Chief Distinguished Principal Senior Staff Software Architect",
     },
     onSelect: fn(),
     donutModeActive: false,
@@ -164,11 +170,11 @@ export const WithAllFields: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      flags: ['high-potential', 'flight-risk', 'new-hire'],
+      flags: ["high-potential", "flight-risk", "new-hire"],
       modified_in_session: true,
-      development_focus: 'Technical leadership and architecture',
-      development_action: 'Lead cross-functional initiatives',
-      notes: 'Excellent performer with strong team collaboration',
+      development_focus: "Technical leadership and architecture",
+      development_action: "Lead cross-functional initiatives",
+      notes: "Excellent performer with strong team collaboration",
     },
     onSelect: fn(),
     donutModeActive: false,
@@ -183,27 +189,27 @@ export const MinimalData: Story = {
   args: {
     employee: {
       employee_id: 99999,
-      name: 'John Doe',
-      business_title: 'Engineer',
-      job_title: 'Engineer',
-      job_profile: 'Engineering-USA',
-      job_level: 'MT3',
-      job_function: 'Engineering',
-      location: 'USA',
-      manager: 'Manager',
+      name: "John Doe",
+      business_title: "Engineer",
+      job_title: "Engineer",
+      job_profile: "Engineering-USA",
+      job_level: "MT3",
+      job_function: "Engineering",
+      location: "USA",
+      manager: "Manager",
       management_chain_01: null,
       management_chain_02: null,
       management_chain_03: null,
       management_chain_04: null,
       management_chain_05: null,
       management_chain_06: null,
-      hire_date: '2024-01-01',
-      tenure_category: '0-1 years',
-      time_in_job_profile: '< 1 year',
-      performance: 'Medium' as PerformanceLevel,
-      potential: 'Medium' as PotentialLevel,
+      hire_date: "2024-01-01",
+      tenure_category: "0-1 years",
+      time_in_job_profile: "< 1 year",
+      performance: "Medium" as PerformanceLevel,
+      potential: "Medium" as PotentialLevel,
       grid_position: 5,
-      talent_indicator: 'Solid',
+      talent_indicator: "Solid",
       ratings_history: [],
       development_focus: null,
       development_action: null,
@@ -227,7 +233,7 @@ export const WithFlags: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      flags: ['high-potential', 'promotion-ready', 'key-talent'],
+      flags: ["high-potential", "promotion-ready", "key-talent"],
     },
     onSelect: fn(),
     donutModeActive: false,
@@ -243,14 +249,14 @@ export const LowPerformer: Story = {
     employee: {
       ...baseEmployee,
       employee_id: 11111,
-      name: 'Sarah Williams',
-      business_title: 'Junior Analyst',
-      job_level: 'MT2',
-      performance: 'Low' as PerformanceLevel,
-      potential: 'Low' as PotentialLevel,
+      name: "Sarah Williams",
+      business_title: "Junior Analyst",
+      job_level: "MT2",
+      performance: "Low" as PerformanceLevel,
+      potential: "Low" as PotentialLevel,
       grid_position: 1,
-      talent_indicator: 'Development Needed',
-      flags: ['performance-plan'],
+      talent_indicator: "Development Needed",
+      flags: ["performance-plan"],
     },
     onSelect: fn(),
     donutModeActive: false,

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { DistributionChart } from './DistributionChart';
-import type { PositionDistribution } from '@/types/api';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { DistributionChart } from "./DistributionChart";
+import type { PositionDistribution } from "@/types/api";
 
 /**
  * DistributionChart displays a bar chart showing employee distribution across the 9-box grid positions.
@@ -22,11 +22,11 @@ import type { PositionDistribution } from '@/types/api';
  * - position_label: human-readable label (e.g., "9 - Star Performer")
  */
 const meta: Meta<typeof DistributionChart> = {
-  title: 'Panel/DistributionChart',
+  title: "Panel/DistributionChart",
   component: DistributionChart,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
   decorators: [
     (Story) => (
@@ -37,7 +37,7 @@ const meta: Meta<typeof DistributionChart> = {
   ],
   argTypes: {
     data: {
-      description: 'Array of position distribution data with counts and labels',
+      description: "Array of position distribution data with counts and labels",
     },
   },
 };
@@ -53,15 +53,60 @@ type Story = StoryObj<typeof DistributionChart>;
 export const BalancedDistribution: Story = {
   args: {
     data: [
-      { grid_position: 9, count: 12, percentage: 10.8, position_label: '9 - Star Performer' },
-      { grid_position: 8, count: 15, percentage: 13.5, position_label: '8 - High Performer' },
-      { grid_position: 7, count: 10, percentage: 9.0, position_label: '7 - High Potential' },
-      { grid_position: 6, count: 14, percentage: 12.6, position_label: '6 - Strong Contributor' },
-      { grid_position: 5, count: 18, percentage: 16.2, position_label: '5 - Solid Performer' },
-      { grid_position: 4, count: 11, percentage: 9.9, position_label: '4 - Development Needed' },
-      { grid_position: 3, count: 13, percentage: 11.7, position_label: '3 - Inconsistent' },
-      { grid_position: 2, count: 9, percentage: 8.1, position_label: '2 - Under Performer' },
-      { grid_position: 1, count: 9, percentage: 8.1, position_label: '1 - Needs Attention' },
+      {
+        grid_position: 9,
+        count: 12,
+        percentage: 10.8,
+        position_label: "9 - Star Performer",
+      },
+      {
+        grid_position: 8,
+        count: 15,
+        percentage: 13.5,
+        position_label: "8 - High Performer",
+      },
+      {
+        grid_position: 7,
+        count: 10,
+        percentage: 9.0,
+        position_label: "7 - High Potential",
+      },
+      {
+        grid_position: 6,
+        count: 14,
+        percentage: 12.6,
+        position_label: "6 - Strong Contributor",
+      },
+      {
+        grid_position: 5,
+        count: 18,
+        percentage: 16.2,
+        position_label: "5 - Solid Performer",
+      },
+      {
+        grid_position: 4,
+        count: 11,
+        percentage: 9.9,
+        position_label: "4 - Development Needed",
+      },
+      {
+        grid_position: 3,
+        count: 13,
+        percentage: 11.7,
+        position_label: "3 - Inconsistent",
+      },
+      {
+        grid_position: 2,
+        count: 9,
+        percentage: 8.1,
+        position_label: "2 - Under Performer",
+      },
+      {
+        grid_position: 1,
+        count: 9,
+        percentage: 8.1,
+        position_label: "1 - Needs Attention",
+      },
     ],
   },
 };
@@ -74,15 +119,60 @@ export const BalancedDistribution: Story = {
 export const SkewedDistribution: Story = {
   args: {
     data: [
-      { grid_position: 9, count: 3, percentage: 5.0, position_label: '9 - Star Performer' },
-      { grid_position: 8, count: 5, percentage: 8.3, position_label: '8 - High Performer' },
-      { grid_position: 7, count: 2, percentage: 3.3, position_label: '7 - High Potential' },
-      { grid_position: 6, count: 7, percentage: 11.7, position_label: '6 - Strong Contributor' },
-      { grid_position: 5, count: 35, percentage: 58.3, position_label: '5 - Solid Performer' },
-      { grid_position: 4, count: 3, percentage: 5.0, position_label: '4 - Development Needed' },
-      { grid_position: 3, count: 2, percentage: 3.3, position_label: '3 - Inconsistent' },
-      { grid_position: 2, count: 2, percentage: 3.3, position_label: '2 - Under Performer' },
-      { grid_position: 1, count: 1, percentage: 1.7, position_label: '1 - Needs Attention' },
+      {
+        grid_position: 9,
+        count: 3,
+        percentage: 5.0,
+        position_label: "9 - Star Performer",
+      },
+      {
+        grid_position: 8,
+        count: 5,
+        percentage: 8.3,
+        position_label: "8 - High Performer",
+      },
+      {
+        grid_position: 7,
+        count: 2,
+        percentage: 3.3,
+        position_label: "7 - High Potential",
+      },
+      {
+        grid_position: 6,
+        count: 7,
+        percentage: 11.7,
+        position_label: "6 - Strong Contributor",
+      },
+      {
+        grid_position: 5,
+        count: 35,
+        percentage: 58.3,
+        position_label: "5 - Solid Performer",
+      },
+      {
+        grid_position: 4,
+        count: 3,
+        percentage: 5.0,
+        position_label: "4 - Development Needed",
+      },
+      {
+        grid_position: 3,
+        count: 2,
+        percentage: 3.3,
+        position_label: "3 - Inconsistent",
+      },
+      {
+        grid_position: 2,
+        count: 2,
+        percentage: 3.3,
+        position_label: "2 - Under Performer",
+      },
+      {
+        grid_position: 1,
+        count: 1,
+        percentage: 1.7,
+        position_label: "1 - Needs Attention",
+      },
     ],
   },
 };
@@ -106,15 +196,60 @@ export const EmptyData: Story = {
 export const HighPerformerHeavy: Story = {
   args: {
     data: [
-      { grid_position: 9, count: 25, percentage: 25.0, position_label: '9 - Star Performer' },
-      { grid_position: 8, count: 30, percentage: 30.0, position_label: '8 - High Performer' },
-      { grid_position: 7, count: 8, percentage: 8.0, position_label: '7 - High Potential' },
-      { grid_position: 6, count: 20, percentage: 20.0, position_label: '6 - Strong Contributor' },
-      { grid_position: 5, count: 10, percentage: 10.0, position_label: '5 - Solid Performer' },
-      { grid_position: 4, count: 3, percentage: 3.0, position_label: '4 - Development Needed' },
-      { grid_position: 3, count: 2, percentage: 2.0, position_label: '3 - Inconsistent' },
-      { grid_position: 2, count: 1, percentage: 1.0, position_label: '2 - Under Performer' },
-      { grid_position: 1, count: 1, percentage: 1.0, position_label: '1 - Needs Attention' },
+      {
+        grid_position: 9,
+        count: 25,
+        percentage: 25.0,
+        position_label: "9 - Star Performer",
+      },
+      {
+        grid_position: 8,
+        count: 30,
+        percentage: 30.0,
+        position_label: "8 - High Performer",
+      },
+      {
+        grid_position: 7,
+        count: 8,
+        percentage: 8.0,
+        position_label: "7 - High Potential",
+      },
+      {
+        grid_position: 6,
+        count: 20,
+        percentage: 20.0,
+        position_label: "6 - Strong Contributor",
+      },
+      {
+        grid_position: 5,
+        count: 10,
+        percentage: 10.0,
+        position_label: "5 - Solid Performer",
+      },
+      {
+        grid_position: 4,
+        count: 3,
+        percentage: 3.0,
+        position_label: "4 - Development Needed",
+      },
+      {
+        grid_position: 3,
+        count: 2,
+        percentage: 2.0,
+        position_label: "3 - Inconsistent",
+      },
+      {
+        grid_position: 2,
+        count: 1,
+        percentage: 1.0,
+        position_label: "2 - Under Performer",
+      },
+      {
+        grid_position: 1,
+        count: 1,
+        percentage: 1.0,
+        position_label: "1 - Needs Attention",
+      },
     ],
   },
 };
@@ -127,15 +262,60 @@ export const HighPerformerHeavy: Story = {
 export const SmallDataset: Story = {
   args: {
     data: [
-      { grid_position: 9, count: 2, percentage: 10.0, position_label: '9 - Star Performer' },
-      { grid_position: 8, count: 3, percentage: 15.0, position_label: '8 - High Performer' },
-      { grid_position: 7, count: 1, percentage: 5.0, position_label: '7 - High Potential' },
-      { grid_position: 6, count: 4, percentage: 20.0, position_label: '6 - Strong Contributor' },
-      { grid_position: 5, count: 5, percentage: 25.0, position_label: '5 - Solid Performer' },
-      { grid_position: 4, count: 2, percentage: 10.0, position_label: '4 - Development Needed' },
-      { grid_position: 3, count: 1, percentage: 5.0, position_label: '3 - Inconsistent' },
-      { grid_position: 2, count: 1, percentage: 5.0, position_label: '2 - Under Performer' },
-      { grid_position: 1, count: 1, percentage: 5.0, position_label: '1 - Needs Attention' },
+      {
+        grid_position: 9,
+        count: 2,
+        percentage: 10.0,
+        position_label: "9 - Star Performer",
+      },
+      {
+        grid_position: 8,
+        count: 3,
+        percentage: 15.0,
+        position_label: "8 - High Performer",
+      },
+      {
+        grid_position: 7,
+        count: 1,
+        percentage: 5.0,
+        position_label: "7 - High Potential",
+      },
+      {
+        grid_position: 6,
+        count: 4,
+        percentage: 20.0,
+        position_label: "6 - Strong Contributor",
+      },
+      {
+        grid_position: 5,
+        count: 5,
+        percentage: 25.0,
+        position_label: "5 - Solid Performer",
+      },
+      {
+        grid_position: 4,
+        count: 2,
+        percentage: 10.0,
+        position_label: "4 - Development Needed",
+      },
+      {
+        grid_position: 3,
+        count: 1,
+        percentage: 5.0,
+        position_label: "3 - Inconsistent",
+      },
+      {
+        grid_position: 2,
+        count: 1,
+        percentage: 5.0,
+        position_label: "2 - Under Performer",
+      },
+      {
+        grid_position: 1,
+        count: 1,
+        percentage: 5.0,
+        position_label: "1 - Needs Attention",
+      },
     ],
   },
 };
@@ -148,15 +328,60 @@ export const SmallDataset: Story = {
 export const SparseDistribution: Story = {
   args: {
     data: [
-      { grid_position: 9, count: 8, percentage: 18.2, position_label: '9 - Star Performer' },
-      { grid_position: 8, count: 12, percentage: 27.3, position_label: '8 - High Performer' },
-      { grid_position: 7, count: 0, percentage: 0, position_label: '7 - High Potential' },
-      { grid_position: 6, count: 10, percentage: 22.7, position_label: '6 - Strong Contributor' },
-      { grid_position: 5, count: 14, percentage: 31.8, position_label: '5 - Solid Performer' },
-      { grid_position: 4, count: 0, percentage: 0, position_label: '4 - Development Needed' },
-      { grid_position: 3, count: 0, percentage: 0, position_label: '3 - Inconsistent' },
-      { grid_position: 2, count: 0, percentage: 0, position_label: '2 - Under Performer' },
-      { grid_position: 1, count: 0, percentage: 0, position_label: '1 - Needs Attention' },
+      {
+        grid_position: 9,
+        count: 8,
+        percentage: 18.2,
+        position_label: "9 - Star Performer",
+      },
+      {
+        grid_position: 8,
+        count: 12,
+        percentage: 27.3,
+        position_label: "8 - High Performer",
+      },
+      {
+        grid_position: 7,
+        count: 0,
+        percentage: 0,
+        position_label: "7 - High Potential",
+      },
+      {
+        grid_position: 6,
+        count: 10,
+        percentage: 22.7,
+        position_label: "6 - Strong Contributor",
+      },
+      {
+        grid_position: 5,
+        count: 14,
+        percentage: 31.8,
+        position_label: "5 - Solid Performer",
+      },
+      {
+        grid_position: 4,
+        count: 0,
+        percentage: 0,
+        position_label: "4 - Development Needed",
+      },
+      {
+        grid_position: 3,
+        count: 0,
+        percentage: 0,
+        position_label: "3 - Inconsistent",
+      },
+      {
+        grid_position: 2,
+        count: 0,
+        percentage: 0,
+        position_label: "2 - Under Performer",
+      },
+      {
+        grid_position: 1,
+        count: 0,
+        percentage: 0,
+        position_label: "1 - Needs Attention",
+      },
     ],
   },
 };

@@ -13,7 +13,7 @@ export interface ErrorMessageConfig {
   message: string;
   detail: string;
   buttons?: readonly string[];
-  type?: 'info' | 'warning' | 'error';
+  type?: "info" | "warning" | "error";
 }
 
 /**
@@ -26,11 +26,11 @@ export const ERROR_MESSAGES = {
    * Backend will automatically use an alternate port.
    */
   portConflict: {
-    title: 'Trying Alternate Port',
-    message: 'Port 8000 is already in use.',
-    detail: 'The application will use an alternate port automatically.',
-    buttons: ['OK'],
-    type: 'info' as const,
+    title: "Trying Alternate Port",
+    message: "Port 8000 is already in use.",
+    detail: "The application will use an alternate port automatically.",
+    buttons: ["OK"],
+    type: "info" as const,
   },
 
   /**
@@ -38,11 +38,12 @@ export const ERROR_MESSAGES = {
    * Session data has been saved, user can retry.
    */
   backendCrash: {
-    title: 'Backend Disconnected',
-    message: 'The backend process has stopped.',
-    detail: 'Your work has been saved. Click Retry to reconnect, or Close to exit.',
-    buttons: ['Retry', 'Close'],
-    type: 'error' as const,
+    title: "Backend Disconnected",
+    message: "The backend process has stopped.",
+    detail:
+      "Your work has been saved. Click Retry to reconnect, or Close to exit.",
+    buttons: ["Retry", "Close"],
+    type: "error" as const,
   },
 
   /**
@@ -50,11 +51,11 @@ export const ERROR_MESSAGES = {
    * Likely a configuration issue.
    */
   healthCheckTimeout: {
-    title: 'Backend Not Responding',
-    message: 'The backend is not responding to health checks.',
-    detail: 'This may be a configuration issue. Click Show Logs for details.',
-    buttons: ['Show Logs', 'Quit'],
-    type: 'error' as const,
+    title: "Backend Not Responding",
+    message: "The backend is not responding to health checks.",
+    detail: "This may be a configuration issue. Click Show Logs for details.",
+    buttons: ["Show Logs", "Quit"],
+    type: "error" as const,
   },
 
   /**
@@ -62,11 +63,11 @@ export const ERROR_MESSAGES = {
    * Installation or permission issue.
    */
   spawnFailure: {
-    title: 'Cannot Start Backend',
-    message: 'The backend executable could not be started.',
-    detail: 'Please check that the application is properly installed.',
-    buttons: ['Show Logs', 'Quit'],
-    type: 'error' as const,
+    title: "Cannot Start Backend",
+    message: "The backend executable could not be started.",
+    detail: "Please check that the application is properly installed.",
+    buttons: ["Show Logs", "Quit"],
+    type: "error" as const,
   },
 
   /**
@@ -74,11 +75,12 @@ export const ERROR_MESSAGES = {
    * User must restart manually.
    */
   restartFailed: {
-    title: 'Reconnection Failed',
-    message: 'Unable to reconnect to the backend.',
-    detail: 'Please restart the application manually. Your work has been saved.',
-    buttons: ['Close'],
-    type: 'error' as const,
+    title: "Reconnection Failed",
+    message: "Unable to reconnect to the backend.",
+    detail:
+      "Please restart the application manually. Your work has been saved.",
+    buttons: ["Close"],
+    type: "error" as const,
   },
 
   /**
@@ -86,11 +88,11 @@ export const ERROR_MESSAGES = {
    * Check logs for details.
    */
   startupCrash: {
-    title: 'Backend Crashed on Startup',
-    message: 'The backend process crashed during startup.',
-    detail: 'Please check the logs for more details.',
-    buttons: ['Show Logs', 'Quit'],
-    type: 'error' as const,
+    title: "Backend Crashed on Startup",
+    message: "The backend process crashed during startup.",
+    detail: "Please check the logs for more details.",
+    buttons: ["Show Logs", "Quit"],
+    type: "error" as const,
   },
 
   /**
@@ -98,11 +100,11 @@ export const ERROR_MESSAGES = {
    * Installation issue.
    */
   executableNotFound: {
-    title: 'Backend Executable Not Found',
-    message: 'The backend executable could not be found.',
-    detail: 'Please ensure the application is properly installed.',
-    buttons: ['Quit'],
-    type: 'error' as const,
+    title: "Backend Executable Not Found",
+    message: "The backend executable could not be found.",
+    detail: "Please ensure the application is properly installed.",
+    buttons: ["Quit"],
+    type: "error" as const,
   },
 } as const;
 

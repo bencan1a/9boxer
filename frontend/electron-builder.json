@@ -5,11 +5,7 @@
   "directories": {
     "output": "release"
   },
-  "files": [
-    "dist/**/*",
-    "dist-electron/**/*",
-    "package.json"
-  ],
+  "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
   "extraResources": [
     {
       "from": "../backend/dist/ninebox",

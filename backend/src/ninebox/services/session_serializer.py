@@ -4,7 +4,8 @@ from datetime import datetime, timezone
 from typing import Any
 
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
-from ninebox.models.session import EmployeeMove, SessionState
+from ninebox.models.events import Event
+from ninebox.models.session import SessionState
 from ninebox.services.excel_parser import JobFunctionConfig
 
 
@@ -15,7 +16,7 @@ class SessionSerializer:
     dictionaries, including proper serialization of:
     - Pydantic models with enums (PerformanceLevel, PotentialLevel)
     - Datetime objects (ISO format)
-    - Nested objects (JobFunctionConfig, Employee, EmployeeMove, HistoricalRating)
+    - Nested objects (JobFunctionConfig, Employee, Event, HistoricalRating)
     - Optional fields (job_function_config, various employee fields)
     """
 
@@ -59,7 +60,7 @@ class SessionSerializer:
         Reconstructs SessionState from database dict, including:
         - Parsing ISO datetime strings back to datetime objects
         - Reconstructing Employee objects with HistoricalRating nested objects
-        - Reconstructing EmployeeMove objects
+        - Reconstructing Event objects (polymorphic deserialization)
         - Reconstructing optional JobFunctionConfig
         - Handling enum values (PerformanceLevel, PotentialLevel)
 
@@ -103,11 +104,12 @@ class SessionSerializer:
         if isinstance(data.get("current_employees"), str):
             data["current_employees"] = json.loads(data["current_employees"])
 
-        if isinstance(data.get("changes"), str):
-            data["changes"] = json.loads(data["changes"])
+        # Parse JSON strings for events
+        if isinstance(data.get("events"), str):
+            data["events"] = json.loads(data["events"])
 
-        if isinstance(data.get("donut_changes"), str):
-            data["donut_changes"] = json.loads(data["donut_changes"])
+        if isinstance(data.get("donut_events"), str):
+            data["donut_events"] = json.loads(data["donut_events"])
 
         # Convert SQLite integer to boolean for donut_mode_active
         if isinstance(data.get("donut_mode_active"), int):
@@ -132,17 +134,16 @@ class SessionSerializer:
                 for emp_data in data["current_employees"]
             ]
 
-        # Reconstruct EmployeeMove objects
-        if "changes" in data:
-            data["changes"] = [
-                SessionSerializer._deserialize_employee_move(move_data)
-                for move_data in data["changes"]
+        # Reconstruct Event objects (polymorphic deserialization)
+        if "events" in data:
+            data["events"] = [
+                SessionSerializer._deserialize_event(event_data) for event_data in data["events"]
             ]
 
-        if "donut_changes" in data:
-            data["donut_changes"] = [
-                SessionSerializer._deserialize_employee_move(move_data)
-                for move_data in data["donut_changes"]
+        if "donut_events" in data:
+            data["donut_events"] = [
+                SessionSerializer._deserialize_event(event_data)
+                for event_data in data["donut_events"]
             ]
 
         # Use Pydantic's model_validate to reconstruct SessionState
@@ -203,27 +204,32 @@ class SessionSerializer:
         return Employee.model_validate(data)
 
     @staticmethod
-    def _deserialize_employee_move(move_data: dict[str, Any]) -> EmployeeMove:
-        """Reconstruct EmployeeMove object from dict.
+    def _deserialize_event(event_data: dict[str, Any]) -> Event:
+        """Reconstruct Event object from dict.
+
+        Uses Pydantic's discriminated union to automatically deserialize
+        to the correct event type (GridMoveEvent, DonutMoveEvent, FlagAddEvent,
+        FlagRemoveEvent) based on the event_type field.
 
         Handles:
         - Converting datetime strings to datetime objects
         - Converting enum strings to enum values
+        - Polymorphic deserialization via discriminator
 
         Args:
-            move_data: Dictionary with employee move data
+            event_data: Dictionary with event data
 
         Returns:
-            Reconstructed EmployeeMove object
+            Reconstructed Event object of the appropriate subtype
         """
         # Make a copy to avoid mutating input
-        data = dict(move_data)
+        data = dict(event_data)
 
         # Parse datetime strings
         if isinstance(data.get("timestamp"), str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
 
-        # Convert enum strings to enum values
+        # Convert enum strings to enum values (for grid/donut moves)
         if isinstance(data.get("old_performance"), str):
             data["old_performance"] = PerformanceLevel(data["old_performance"])
 
@@ -236,5 +242,24 @@ class SessionSerializer:
         if isinstance(data.get("new_potential"), str):
             data["new_potential"] = PotentialLevel(data["new_potential"])
 
-        # Use Pydantic's model_validate to reconstruct EmployeeMove
-        return EmployeeMove.model_validate(data)
+        # Pydantic discriminated union automatically deserializes to correct type
+        from ninebox.models.events import (
+            DonutMoveEvent,
+            FlagAddEvent,
+            FlagRemoveEvent,
+            GridMoveEvent,
+        )
+
+        # Use discriminated union - Pydantic will pick the right type based on event_type
+        event_type = data.get("event_type")
+        if event_type == "grid_move":
+            return GridMoveEvent.model_validate(data)
+        elif event_type == "donut_move":
+            return DonutMoveEvent.model_validate(data)
+        elif event_type == "flag_add":
+            return FlagAddEvent.model_validate(data)
+        elif event_type == "flag_remove":
+            return FlagRemoveEvent.model_validate(data)
+        else:
+            # Fallback - let Pydantic figure it out
+            return Event.model_validate(data)  # type: ignore[return-value, attr-defined, no-any-return]

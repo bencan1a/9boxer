@@ -74,13 +74,13 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
   const getStatusLabel = (status: string): string => {
     switch (status) {
       case "green":
-        return t('panel.intelligenceTab.anomaly.noIssues');
+        return t("panel.intelligenceTab.anomaly.noIssues");
       case "yellow":
-        return t('panel.intelligenceTab.anomaly.moderateAnomaly');
+        return t("panel.intelligenceTab.anomaly.moderateAnomaly");
       case "red":
-        return t('panel.intelligenceTab.anomaly.severeAnomaly');
+        return t("panel.intelligenceTab.anomaly.severeAnomaly");
       default:
-        return t('panel.intelligenceTab.anomaly.unknown');
+        return t("panel.intelligenceTab.anomaly.unknown");
     }
   };
 
@@ -99,7 +99,14 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
     <Card variant="outlined">
       <CardContent>
         {/* Header with title and status indicator */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
           <Typography variant="h6" color="primary">
             {title}
           </Typography>
@@ -114,14 +121,18 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
         {/* Statistical Summary */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" gutterBottom>
-            {t('panel.intelligenceTab.anomaly.statisticalSummary')}
+            {t("panel.intelligenceTab.anomaly.statisticalSummary")}
           </Typography>
           <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                {t('panel.intelligenceTab.anomaly.pValue')}
-                <Tooltip title={t('panel.intelligenceTab.anomaly.pValueTooltip')}>
-                  <InfoIcon sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }} />
+                {t("panel.intelligenceTab.anomaly.pValue")}
+                <Tooltip
+                  title={t("panel.intelligenceTab.anomaly.pValueTooltip")}
+                >
+                  <InfoIcon
+                    sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
+                  />
                 </Tooltip>
               </Typography>
               <Typography variant="body2" fontWeight="medium">
@@ -130,9 +141,13 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                {t('panel.intelligenceTab.anomaly.effectSize')}
-                <Tooltip title={t('panel.intelligenceTab.anomaly.effectSizeTooltip')}>
-                  <InfoIcon sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }} />
+                {t("panel.intelligenceTab.anomaly.effectSize")}
+                <Tooltip
+                  title={t("panel.intelligenceTab.anomaly.effectSizeTooltip")}
+                >
+                  <InfoIcon
+                    sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
+                  />
                 </Tooltip>
               </Typography>
               <Typography variant="body2" fontWeight="medium">
@@ -141,7 +156,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                {t('panel.intelligenceTab.anomaly.sampleSize')}
+                {t("panel.intelligenceTab.anomaly.sampleSize")}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {analysis.sample_size}
@@ -149,7 +164,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                {t('panel.intelligenceTab.anomaly.degreesOfFreedom')}
+                {t("panel.intelligenceTab.anomaly.degreesOfFreedom")}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {analysis.degrees_of_freedom}
@@ -161,7 +176,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
         {/* Interpretation */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" gutterBottom>
-            {t('panel.intelligenceTab.anomaly.interpretation')}
+            {t("panel.intelligenceTab.anomaly.interpretation")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {analysis.interpretation}
@@ -178,7 +193,9 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
-              "&:hover": { backgroundColor: alpha(theme.palette.text.primary, 0.04) },
+              "&:hover": {
+                backgroundColor: alpha(theme.palette.text.primary, 0.04),
+              },
               borderRadius: 1,
               p: 1,
               mt: 1,
@@ -186,7 +203,8 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             onClick={() => setDetailsExpanded(!detailsExpanded)}
           >
             <Typography variant="subtitle2" sx={{ flex: 1 }}>
-              {t('panel.intelligenceTab.anomaly.detailedDeviations')} ({analysis.deviations.length})
+              {t("panel.intelligenceTab.anomaly.detailedDeviations")} (
+              {analysis.deviations.length})
             </Typography>
             <IconButton
               size="small"
@@ -203,12 +221,24 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>{t('panel.intelligenceTab.anomaly.category')}</TableCell>
-                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.observedPercent')}</TableCell>
-                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.expectedPercent')}</TableCell>
-                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.zScore')}</TableCell>
-                    <TableCell align="right">{t('panel.intelligenceTab.anomaly.sampleSize')}</TableCell>
-                    <TableCell align="center">{t('panel.intelligenceTab.anomaly.significant')}</TableCell>
+                    <TableCell>
+                      {t("panel.intelligenceTab.anomaly.category")}
+                    </TableCell>
+                    <TableCell align="right">
+                      {t("panel.intelligenceTab.anomaly.observedPercent")}
+                    </TableCell>
+                    <TableCell align="right">
+                      {t("panel.intelligenceTab.anomaly.expectedPercent")}
+                    </TableCell>
+                    <TableCell align="right">
+                      {t("panel.intelligenceTab.anomaly.zScore")}
+                    </TableCell>
+                    <TableCell align="right">
+                      {t("panel.intelligenceTab.anomaly.sampleSize")}
+                    </TableCell>
+                    <TableCell align="center">
+                      {t("panel.intelligenceTab.anomaly.significant")}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -233,18 +263,33 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
                       <TableCell
                         align="right"
                         sx={{
-                          fontWeight: Math.abs(deviation.z_score) > 2 ? "bold" : "normal",
-                          color: Math.abs(deviation.z_score) > 3 ? "error.main" : "inherit",
+                          fontWeight:
+                            Math.abs(deviation.z_score) > 2 ? "bold" : "normal",
+                          color:
+                            Math.abs(deviation.z_score) > 3
+                              ? "error.main"
+                              : "inherit",
                         }}
                       >
                         {deviation.z_score.toFixed(2)}
                       </TableCell>
-                      <TableCell align="right">{deviation.sample_size}</TableCell>
+                      <TableCell align="right">
+                        {deviation.sample_size}
+                      </TableCell>
                       <TableCell align="center">
                         {deviation.is_significant ? (
-                          <Chip label={t('panel.intelligenceTab.anomaly.yes')} color="warning" size="small" />
+                          <Chip
+                            label={t("panel.intelligenceTab.anomaly.yes")}
+                            color="warning"
+                            size="small"
+                          />
                         ) : (
-                          <Chip label={t('panel.intelligenceTab.anomaly.no')} color="success" size="small" variant="outlined" />
+                          <Chip
+                            label={t("panel.intelligenceTab.anomaly.no")}
+                            color="success"
+                            size="small"
+                            variant="outlined"
+                          />
                         )}
                       </TableCell>
                     </TableRow>

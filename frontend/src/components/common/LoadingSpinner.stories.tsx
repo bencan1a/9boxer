@@ -1,25 +1,25 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { LoadingSpinner } from './LoadingSpinner';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const meta: Meta<typeof LoadingSpinner> = {
-  title: 'Common/LoadingSpinner',
+  title: "Common/LoadingSpinner",
   component: LoadingSpinner,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
   argTypes: {
     size: {
-      control: { type: 'number', min: 20, max: 100, step: 5 },
-      description: 'Size of the spinner in pixels',
+      control: { type: "number", min: 20, max: 100, step: 5 },
+      description: "Size of the spinner in pixels",
     },
     message: {
-      control: 'text',
-      description: 'Optional message to display below the spinner',
+      control: "text",
+      description: "Optional message to display below the spinner",
     },
     overlay: {
-      control: 'boolean',
-      description: 'Whether to display as a full-screen overlay',
+      control: "boolean",
+      description: "Whether to display as a full-screen overlay",
     },
   },
 };
@@ -39,7 +39,7 @@ export const Default: Story = {
  */
 export const WithMessage: Story = {
   args: {
-    message: 'Loading employees...',
+    message: "Loading employees...",
   },
 };
 
@@ -49,7 +49,7 @@ export const WithMessage: Story = {
 export const LargeSize: Story = {
   args: {
     size: 60,
-    message: 'Processing data...',
+    message: "Processing data...",
   },
 };
 
@@ -69,10 +69,10 @@ export const SmallSize: Story = {
 export const WithOverlay: Story = {
   args: {
     overlay: true,
-    message: 'Processing...',
+    message: "Processing...",
   },
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
 };
 
@@ -83,9 +83,9 @@ export const OverlayCustom: Story = {
   args: {
     overlay: true,
     size: 50,
-    message: 'Uploading file... Please wait.',
+    message: "Uploading file... Please wait.",
   },
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
 };

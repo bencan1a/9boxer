@@ -1,6 +1,6 @@
-import { BrowserWindow, screen, app } from 'electron';
-import * as fs from 'fs';
-import * as path from 'path';
+import { BrowserWindow, screen, app } from "electron";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Window bounds configuration
@@ -34,9 +34,9 @@ export class WindowStateManager {
 
   constructor() {
     // Store window state in userData directory
-    const userDataPath = app.getPath('userData');
-    this.configPath = path.join(userDataPath, 'window-state.json');
-    console.log('📐 Window state file:', this.configPath);
+    const userDataPath = app.getPath("userData");
+    this.configPath = path.join(userDataPath, "window-state.json");
+    console.log("📐 Window state file:", this.configPath);
   }
 
   /**
@@ -46,19 +46,19 @@ export class WindowStateManager {
   loadBounds(): WindowBounds {
     try {
       if (!fs.existsSync(this.configPath)) {
-        console.log('📐 No saved window state, using defaults');
+        console.log("📐 No saved window state, using defaults");
         return DEFAULT_BOUNDS;
       }
 
-      const data = fs.readFileSync(this.configPath, 'utf-8');
+      const data = fs.readFileSync(this.configPath, "utf-8");
       const savedBounds = JSON.parse(data) as WindowBounds;
 
       // Validate bounds to ensure window is visible on screen
       const validatedBounds = this.validateBounds(savedBounds);
-      console.log('📐 Loaded window state:', validatedBounds);
+      console.log("📐 Loaded window state:", validatedBounds);
       return validatedBounds;
     } catch (error) {
-      console.error('❌ Failed to load window state:', error);
+      console.error("❌ Failed to load window state:", error);
       return DEFAULT_BOUNDS;
     }
   }
@@ -86,7 +86,7 @@ export class WindowStateManager {
       });
 
       if (!isVisible) {
-        console.log('📐 Saved window position is off-screen, centering window');
+        console.log("📐 Saved window position is off-screen, centering window");
         // Keep saved size but remove position (will be centered by Electron)
         return {
           width: bounds.width || DEFAULT_BOUNDS.width,
@@ -136,10 +136,14 @@ export class WindowStateManager {
           isMaximized,
         };
 
-        fs.writeFileSync(this.configPath, JSON.stringify(state, null, 2), 'utf-8');
-        console.log('📐 Saved window state:', state);
+        fs.writeFileSync(
+          this.configPath,
+          JSON.stringify(state, null, 2),
+          "utf-8"
+        );
+        console.log("📐 Saved window state:", state);
       } catch (error) {
-        console.error('❌ Failed to save window state:', error);
+        console.error("❌ Failed to save window state:", error);
       }
     }, 500); // Debounce for 500ms
   }
@@ -152,15 +156,15 @@ export class WindowStateManager {
     this.window = window;
 
     // Save bounds when window is resized or moved
-    window.on('resize', () => this.saveBounds());
-    window.on('move', () => this.saveBounds());
+    window.on("resize", () => this.saveBounds());
+    window.on("move", () => this.saveBounds());
 
     // Save maximized state
-    window.on('maximize', () => this.saveBounds());
-    window.on('unmaximize', () => this.saveBounds());
+    window.on("maximize", () => this.saveBounds());
+    window.on("unmaximize", () => this.saveBounds());
 
     // Save one final time when window is about to close
-    window.on('close', () => {
+    window.on("close", () => {
       // Clear debounce timeout and save immediately
       if (this.saveTimeoutId) {
         clearTimeout(this.saveTimeoutId);
@@ -168,14 +172,16 @@ export class WindowStateManager {
       this.saveBounds();
     });
 
-    console.log('📐 Window state tracking enabled');
+    console.log("📐 Window state tracking enabled");
   }
 
   /**
    * Apply saved bounds to a BrowserWindow configuration.
    * Returns updated options object with restored bounds.
    */
-  applyBounds(options: Electron.BrowserWindowConstructorOptions): Electron.BrowserWindowConstructorOptions {
+  applyBounds(
+    options: Electron.BrowserWindowConstructorOptions
+  ): Electron.BrowserWindowConstructorOptions {
     const bounds = this.loadBounds();
 
     const result = {
@@ -201,7 +207,7 @@ export class WindowStateManager {
     const bounds = this.loadBounds();
     if (bounds.isMaximized) {
       window.maximize();
-      console.log('📐 Restored maximized state');
+      console.log("📐 Restored maximized state");
     }
   }
 }

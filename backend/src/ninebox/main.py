@@ -73,7 +73,7 @@ async def debug_sessions() -> dict:
             "session_id": sess.session_id,
             "employee_count": len(sess.current_employees),
             "original_employee_count": len(sess.original_employees),
-            "changes_count": len(sess.changes),
+            "changes_count": len(sess.events),
             "filename": sess.original_filename,
             "created_at": sess.created_at.isoformat(),
         }

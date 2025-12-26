@@ -38,6 +38,8 @@
       "jobFunctions": "Job Functions",
       "locations": "Locations",
       "managers": "Managers",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain",
       "exclusions": "Exclusions",
       "excludeEmployees": "Exclude Employees",
       "clearAllFilters": "Clear All Filters"
@@ -177,7 +179,11 @@
       "tenure": "Tenure",
       "timeInLevel": "Time in Level",
       "promotionReady": "Promotion Ready",
+      "flags": "Flags",
+      "addFlag": "Add flag...",
+      "noFlagsAvailable": "No flags available",
       "currentAssessment": "Current Assessment",
+      "box": "Box",
       "potential": "Potential:",
       "position": "Position:",
       "modifiedInSession": "Modified in Session",
@@ -204,7 +210,7 @@
       "noDonutChanges": "No donut changes yet",
       "moveEmployeesHint": "Move employees to track changes here",
       "moveEmployeesDonutHint": "Move employees in donut mode to track changes",
-      "addNotesPlaceholder": "Add notes...",
+      "addNotesPlaceholder": "Add note...",
       "employee": "Employee",
       "movement": "Movement",
       "from": "From",
@@ -212,6 +218,13 @@
       "notes": "Notes",
       "gridChanges": "Grid Changes",
       "donutChanges": "Donut Changes"
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     },
     "statisticsTab": {
       "totalEmployees": "Total Employees",
@@ -363,6 +376,7 @@
     "title": "Settings",
     "closeAriaLabel": "close settings",
     "appearance": "Appearance",
+    "language": "Language",
     "currentSelection": "Current Selection:",
     "currentTheme": "Currently using {{theme}} theme (from system)",
     "theme": {

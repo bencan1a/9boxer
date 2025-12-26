@@ -7,21 +7,21 @@
  * - UI text updates when language changes
  */
 
-import { test, expect } from '@playwright/test';
-import { uploadExcelFile } from '../helpers';
+import { test, expect } from "@playwright/test";
+import { uploadExcelFile } from "../helpers";
 
-test.describe('Language Switching', () => {
+test.describe("Language Switching", () => {
   test.beforeEach(async ({ page }) => {
     // Clear any existing session and start fresh
-    await page.goto('/');
+    await page.goto("/");
     await page.evaluate(() => localStorage.clear());
     await page.reload();
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState("domcontentloaded");
   });
 
-  test('should display language selector in app bar', async ({ page }) => {
+  test("should display language selector in app bar", async ({ page }) => {
     // Upload file to get to main interface
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Check for language selector (MUI Select with combobox role)
@@ -29,123 +29,163 @@ test.describe('Language Switching', () => {
     await expect(languageSelector).toBeVisible();
   });
 
-  test('should switch from English to Spanish and update UI text', async ({ page }) => {
+  test("should switch from English to Spanish and update UI text", async ({
+    page,
+  }) => {
     // Upload file to get to main interface
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Verify initial language is English - check for visible English tab text
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Details');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Details"
+    );
 
     // Find and open language selector (MUI Select component)
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
 
     // Select Spanish option
-    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    const spanishOption = page.getByRole("option", {
+      name: /Español|Spanish/i,
+    });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
     // Wait for language change to complete by checking for Spanish text
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Detalles"
+    );
 
     // Verify UI text has changed to Spanish
     // Check tab labels
-    await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Cambios');
-    await expect(page.locator('[data-testid="statistics-tab"]')).toContainText('Estadísticas');
-    await expect(page.locator('[data-testid="intelligence-tab"]')).toContainText('Inteligencia');
+    await expect(page.locator('[data-testid="changes-tab"]')).toContainText(
+      "Cambios"
+    );
+    await expect(page.locator('[data-testid="statistics-tab"]')).toContainText(
+      "Estadísticas"
+    );
+    await expect(
+      page.locator('[data-testid="intelligence-tab"]')
+    ).toContainText("Inteligencia");
 
     // Check filter button
     await page.locator('[data-testid="filter-button"]').click();
 
     // Wait for filter drawer to open by checking for Spanish filter title heading
-    await expect(page.getByRole('heading', { name: 'Filtros' })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Filtros" })).toBeVisible();
 
     // Check filter sections
-    await expect(page.getByText('Niveles de Trabajo')).toBeVisible();
-    await expect(page.getByText('Funciones de Trabajo')).toBeVisible();
-    await expect(page.getByText('Ubicaciones')).toBeVisible();
-    await expect(page.getByText('Gerentes')).toBeVisible();
+    await expect(page.getByText("Niveles de Trabajo")).toBeVisible();
+    await expect(page.getByText("Funciones de Trabajo")).toBeVisible();
+    await expect(page.getByText("Ubicaciones")).toBeVisible();
+    await expect(page.getByText("Gerentes")).toBeVisible();
 
     // Close filter drawer
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
 
     // Wait for drawer to close
-    await expect(page.getByRole('heading', { name: 'Filtros' })).not.toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Filtros" })
+    ).not.toBeVisible();
   });
 
-  test('should switch from Spanish back to English', async ({ page }) => {
+  test("should switch from Spanish back to English", async ({ page }) => {
     // Upload file
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Switch to Spanish first
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
 
-    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    const spanishOption = page.getByRole("option", {
+      name: /Español|Spanish/i,
+    });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
     // Wait for Spanish to be active
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Detalles"
+    );
 
     // Switch back to English
     await languageSelect.click();
 
-    const englishOption = page.getByRole('option', { name: /English|Inglés/i });
+    const englishOption = page.getByRole("option", { name: /English|Inglés/i });
     await expect(englishOption).toBeVisible();
     await englishOption.click();
 
     // Wait for English to be active
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Details');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Details"
+    );
 
     // Verify English is back
-    await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Changes');
-    await expect(page.locator('[data-testid="statistics-tab"]')).toContainText('Statistics');
+    await expect(page.locator('[data-testid="changes-tab"]')).toContainText(
+      "Changes"
+    );
+    await expect(page.locator('[data-testid="statistics-tab"]')).toContainText(
+      "Statistics"
+    );
   });
 
-  test('should persist language preference across page reloads', async ({ page }) => {
+  test("should persist language preference across page reloads", async ({
+    page,
+  }) => {
     // Upload file
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
 
-    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    const spanishOption = page.getByRole("option", {
+      name: /Español|Spanish/i,
+    });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
     // Wait for Spanish to be active
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Detalles"
+    );
 
     // Reload page
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
 
     // Verify Spanish is still active after reload
-    await expect(page.locator('[data-testid="details-tab"]')).toContainText('Detalles');
-    await expect(page.locator('[data-testid="changes-tab"]')).toContainText('Cambios');
+    await expect(page.locator('[data-testid="details-tab"]')).toContainText(
+      "Detalles"
+    );
+    await expect(page.locator('[data-testid="changes-tab"]')).toContainText(
+      "Cambios"
+    );
   });
 
-  test('should update employee count text when switching languages', async ({ page }) => {
+  test("should update employee count text when switching languages", async ({
+    page,
+  }) => {
     // Upload file
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Check English employee count
     const employeeCount = page.locator('[data-testid="employee-count"]');
     await expect(employeeCount).toBeVisible();
     const englishText = await employeeCount.textContent();
-    expect(englishText).toContain('employee');
+    expect(englishText).toContain("employee");
 
     // Switch to Spanish
     const languageSelect = page.locator('[role="combobox"]').first();
     await languageSelect.click();
 
-    const spanishOption = page.getByRole('option', { name: /Español|Spanish/i });
+    const spanishOption = page.getByRole("option", {
+      name: /Español|Spanish/i,
+    });
     await expect(spanishOption).toBeVisible();
     await spanishOption.click();
 
@@ -154,6 +194,6 @@ test.describe('Language Switching', () => {
 
     // Verify Spanish employee count text
     const spanishText = await employeeCount.textContent();
-    expect(spanishText).toContain('empleado');
+    expect(spanishText).toContain("empleado");
   });
 });
