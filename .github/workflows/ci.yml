@@ -141,6 +141,10 @@ jobs:
         working-directory: frontend
         run: npm run format:i18n:check
 
+      - name: Lint frontend with ESLint
+        working-directory: frontend
+        run: npx eslint . --ext ts,tsx --report-unused-disable-directives
+
   type-check:
     name: Type Check
     runs-on: windows-latest
