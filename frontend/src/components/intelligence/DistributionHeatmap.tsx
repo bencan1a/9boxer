@@ -215,7 +215,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                     </Typography>
                     <Typography
                       variant="caption"
-                      sx={{ fontSize: theme.tokens.typography.fontSize.caption, opacity: theme.tokens.opacity.inactive, lineHeight: 1 }}
+                      sx={{ fontSize: theme.tokens.typography.fontSize.caption, opacity: theme.tokens.opacity.hover, lineHeight: 1 }}
                     >
                       ({count})
                     </Typography>
