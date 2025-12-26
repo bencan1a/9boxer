@@ -142,6 +142,9 @@ test.describe("Zoom & Full-Screen Controls", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
 
+    // Wait for app to initialize and determine state (either empty state or grid loaded from session)
+    await page.waitForTimeout(500);
+
     // Re-upload to show grid
     await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

@@ -26,6 +26,13 @@ export async function uploadExcelFile(
   );
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
 
+  // Wait for either button to be visible before proceeding
+  // This ensures the app has fully rendered before we check which path to take
+  await Promise.race([
+    emptyStateButton.waitFor({ state: "visible", timeout: 10000 }),
+    fileMenuButton.waitFor({ state: "visible", timeout: 10000 }),
+  ]);
+
   // Check which button is visible and click it
   const isEmptyState = await emptyStateButton.isVisible().catch(() => false);
 
