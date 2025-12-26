@@ -453,7 +453,7 @@ def test_move_employee_when_multiple_employees_moved_then_tracks_all_changes(
 def test_move_employee_when_moved_multiple_times_then_preserves_original_position(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that multiple moves result in single event showing most recent move."""
+    """Test that multiple moves result in single event showing net change from original position."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -464,7 +464,7 @@ def test_move_employee_when_moved_multiple_times_then_preserves_original_positio
     )
 
     # Employee 2 starts at M,M (position 5)
-    # Move through several positions
+    # Move through several positions: M,M -> H,H -> L,L -> H,M
     session_manager.move_employee(
         user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.HIGH
     )
@@ -475,16 +475,16 @@ def test_move_employee_when_moved_multiple_times_then_preserves_original_positio
         user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.MEDIUM
     )
 
-    # Verify only one event exists showing the most recent move (L,L -> H,M)
+    # Verify only one event exists showing the NET change from original position (M,M -> H,M)
     session = session_manager.get_session("user1")
     assert session is not None
     assert len(session.events) == 1
     change = session.events[0]
     assert isinstance(change, GridMoveEvent)
     assert change.employee_id == 2
-    assert change.old_position == 1  # L,L (position before final move)
-    assert change.old_performance == PerformanceLevel.LOW
-    assert change.old_potential == PotentialLevel.LOW
+    assert change.old_position == 5  # Original M,M position (NOT position before final move)
+    assert change.old_performance == PerformanceLevel.MEDIUM  # Original state
+    assert change.old_potential == PotentialLevel.MEDIUM  # Original state
     assert change.new_position == 6  # Final H,M
     assert change.new_performance == PerformanceLevel.HIGH
     assert change.new_potential == PotentialLevel.MEDIUM
@@ -750,7 +750,7 @@ def test_move_employee_donut_when_called_then_updates_employee(
 def test_move_employee_donut_when_multiple_moves_then_tracks_final(
     session_manager: SessionManager, sample_employees: list[Employee]
 ) -> None:
-    """Test that moving employee in donut mode multiple times shows most recent move."""
+    """Test that moving employee in donut mode multiple times shows net change from original position."""
     session_manager.create_session(
         user_id="user1",
         employees=sample_employees,
@@ -784,14 +784,14 @@ def test_move_employee_donut_when_multiple_moves_then_tracks_final(
         new_potential=PotentialLevel.LOW,
     )
 
-    # Should still be only one entry, showing movement from original to final
+    # Should still be only one entry, showing NET change from original position (H,H -> L,L)
     session = session_manager.get_session("user1")
     assert session is not None
     assert len(session.donut_events) == 1
-    assert second_change.old_position == 6  # H,M (position before this move)
+    assert second_change.old_position == 9  # Original H,H position (NOT position before this move)
     assert second_change.new_position == 1  # L,L (final position)
-    assert second_change.old_performance == PerformanceLevel.HIGH
-    assert second_change.old_potential == PotentialLevel.MEDIUM
+    assert second_change.old_performance == PerformanceLevel.HIGH  # Original state
+    assert second_change.old_potential == PerformanceLevel.HIGH  # Original state
     assert second_change.new_performance == PerformanceLevel.LOW
     assert second_change.new_potential == PerformanceLevel.LOW
 

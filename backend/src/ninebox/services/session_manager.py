@@ -177,16 +177,32 @@ class SessionManager:
         new_position = calculate_grid_position(new_performance, new_potential)
         now = datetime.utcnow()
 
+        # Check if there's already a grid move event for this employee
+        # If so, preserve the original old_position/old_performance/old_potential to track net change
+        existing_event = next(
+            (
+                e
+                for e in session.events
+                if e.employee_id == employee_id and e.event_type == "grid_move"
+            ),
+            None,
+        )
+
+        # Use original position from existing event, or current position if no event exists
+        old_position = existing_event.old_position if existing_event else employee.grid_position
+        old_performance = existing_event.old_performance if existing_event else employee.performance
+        old_potential = existing_event.old_potential if existing_event else employee.potential
+
         # Create grid move event
         event = GridMoveEvent(
             employee_id=employee_id,
             employee_name=employee.name,
             timestamp=now,
-            old_performance=employee.performance,
-            old_potential=employee.potential,
+            old_performance=old_performance,
+            old_potential=old_potential,
             new_performance=new_performance,
             new_potential=new_potential,
-            old_position=employee.grid_position,
+            old_position=old_position,
             new_position=new_position,
         )
 
@@ -351,10 +367,26 @@ class SessionManager:
         # Position 5 is the center position (Medium/Medium) - moving back here clears donut state
         is_position_5 = new_position == 5
 
-        # Determine old position for the event
-        old_performance = employee.donut_performance or employee.performance
-        old_potential = employee.donut_potential or employee.potential
-        old_position = employee.donut_position or employee.grid_position
+        # Check if there's already a donut move event for this employee
+        # If so, preserve the original old_position/old_performance/old_potential to track net change
+        existing_donut_event = next(
+            (
+                e
+                for e in session.donut_events
+                if e.employee_id == employee_id and e.event_type == "donut_move"
+            ),
+            None,
+        )
+
+        # Determine old position for the event - use existing event if available
+        if existing_donut_event:
+            old_performance = existing_donut_event.old_performance
+            old_potential = existing_donut_event.old_potential
+            old_position = existing_donut_event.old_position
+        else:
+            old_performance = employee.donut_performance or employee.performance
+            old_potential = employee.donut_potential or employee.potential
+            old_position = employee.donut_position or employee.grid_position
 
         # Create donut move event
         event = DonutMoveEvent(
