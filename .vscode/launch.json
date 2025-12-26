@@ -2,6 +2,41 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Backend: Uvicorn (Reload)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "ninebox.main:app",
+        "--reload",
+        "--host", "127.0.0.1",
+        "--port", "38000"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "Cleanup Dev Processes",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/backend/src"
+      },
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Frontend: Electron Dev",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "electron:dev"
+      ],
+      "preLaunchTask": "Start Backend Server",
+      "cwd": "${workspaceFolder}/frontend",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
       "name": "pytest: Debug Unit Tests",
       "type": "debugpy",
       "request": "launch",
@@ -65,6 +100,20 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": false
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Backend + Frontend",
+      "configurations": [
+        "Frontend: Electron Dev"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "dev",
+        "order": 1
+      },
+      "stopAll": true
     }
   ]
 }
