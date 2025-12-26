@@ -11,6 +11,9 @@ site_author: 9Boxer Team
 docs_dir: resources/user-guide/docs  # User guide documentation source
 site_dir: resources/user-guide/site  # Build output directory
 
+# Development Server Configuration
+dev_addr: 127.0.0.1:38080  # Custom port to avoid conflicts (backend uses 38000)
+
 # URL Configuration
 # CRITICAL: Use flat file structure for file:// protocol compatibility
 # Without this, links open directories instead of HTML files when accessed via file://
