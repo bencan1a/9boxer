@@ -7,14 +7,8 @@ on:
       - 'frontend/.storybook/**'
       - 'frontend/playwright/visual/**'
       - 'frontend/playwright.visual.config.ts'
-  push:
-    branches:
-      - main
-    paths:
-      - 'frontend/src/**'
-      - 'frontend/.storybook/**'
-      - 'frontend/playwright/visual/**'
-      - 'frontend/playwright.visual.config.ts'
+  # Only run on PRs - no need to re-run on push to main after merge
+  # Use update-visual-baselines.yml workflow to update baselines when intentional UI changes are made
 
 jobs:
   visual-tests:
