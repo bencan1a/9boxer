@@ -329,14 +329,22 @@ The pre-commit hooks run the same checks as CI:
 - **Ruff lint**: Code linting (matches `make lint`)
 - **Mypy**: Type checking (matches `make type-check`)
 - **Bandit**: Security scanning (matches `make security`)
+- **ESLint**: Frontend TypeScript/JavaScript linting (accessibility, design tokens, React best practices)
+- **Prettier**: Frontend code formatting
 - **YAML/JSON validation**: File syntax checks
 - **Basic checks**: Trailing whitespace, end-of-file fixers, merge conflicts
 
 #### Fixing Pre-Commit Failures
 
 ```bash
-# Auto-fix formatting and linting issues
+# Backend: Auto-fix formatting and linting issues
 make fix
+
+# Frontend: Run ESLint to check for issues
+cd frontend
+npm run lint
+
+# Note: ESLint only blocks on errors, not warnings
 
 # Re-run pre-commit to verify
 pre-commit run --all-files
@@ -364,6 +372,16 @@ pre-commit install
 - **Better code quality**: Enforces consistent standards
 
 **REMEMBER: No commit should ever bypass pre-commit checks!**
+
+#### ESLint Configuration
+
+ESLint enforces frontend code quality with comprehensive rules:
+- **Accessibility**: jsx-a11y plugin enforces WCAG 2.1 Level AA standards
+- **Design tokens**: Warns on hardcoded colors (encourages using theme tokens)
+- **TypeScript**: Best practices and type safety
+- **React**: Hooks rules and component patterns
+
+**Note**: The pre-commit hook only blocks on ESLint **errors**, not warnings. This allows development to proceed while still catching critical issues. Warnings are informative and should be addressed when practical.
 
 ### Frontend Commands
 ```bash
