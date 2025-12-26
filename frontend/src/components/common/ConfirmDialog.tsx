@@ -51,10 +51,6 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   loading = false,
   maxWidth = "xs",
 }) => {
-  const handleConfirm = () => {
-    onConfirm();
-  };
-
   return (
     <Dialog
       open={open}
@@ -87,7 +83,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {cancelLabel}
         </Button>
         <Button
-          onClick={handleConfirm}
+          onClick={onConfirm}
           variant="contained"
           color={confirmColor}
           disabled={loading}
