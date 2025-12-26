@@ -116,7 +116,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "12px",
+                  height: `${theme.tokens.spacing.sm + theme.tokens.spacing.xs}px`,
                 }}
               >
                 <ArrowUpwardIcon
@@ -135,7 +135,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
                   width: "100%",
                   textAlign: "left",
                   borderRadius: 1,
-                  transition: "transform 0.15s ease-in-out",
+                  transition: `transform ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
                   "&:hover": {
                     transform: "scale(1.02)",
                   },
