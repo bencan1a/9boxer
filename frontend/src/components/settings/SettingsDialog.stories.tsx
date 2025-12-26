@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { SettingsDialog } from './SettingsDialog';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "@storybook/test";
+import { SettingsDialog } from "./SettingsDialog";
 
 /**
  * SettingsDialog provides user preferences and application settings.
@@ -39,20 +39,20 @@ import { SettingsDialog } from './SettingsDialog';
  * - `data-testid="language-option-{code}"` - Language options
  */
 const meta: Meta<typeof SettingsDialog> = {
-  title: 'Settings/SettingsDialog',
+  title: "Settings/SettingsDialog",
   component: SettingsDialog,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
   argTypes: {
     open: {
-      control: 'boolean',
-      description: 'Whether the dialog is open',
+      control: "boolean",
+      description: "Whether the dialog is open",
     },
     onClose: {
-      description: 'Callback fired when dialog is closed',
-      action: 'closed',
+      description: "Callback fired when dialog is closed",
+      action: "closed",
     },
   },
 };
@@ -97,7 +97,8 @@ export const LightThemeSelected: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Settings dialog with light theme mode selected. The current selection preview shows the light mode icon and "Light Mode" label.',
+        story:
+          'Settings dialog with light theme mode selected. The current selection preview shows the light mode icon and "Light Mode" label.',
       },
     },
   },
@@ -115,11 +116,12 @@ export const DarkThemeSelected: Story = {
   },
   parameters: {
     backgrounds: {
-      default: 'dark',
+      default: "dark",
     },
     docs: {
       description: {
-        story: 'Settings dialog with dark theme mode selected. Best viewed with dark background in Storybook. The current selection preview shows the dark mode icon.',
+        story:
+          "Settings dialog with dark theme mode selected. Best viewed with dark background in Storybook. The current selection preview shows the dark mode icon.",
       },
     },
   },
@@ -138,7 +140,8 @@ export const AutoThemeSelected: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Settings dialog with auto theme mode selected. The preview section shows both the auto mode icon and the current effective theme based on system preference.',
+        story:
+          "Settings dialog with auto theme mode selected. The preview section shows both the auto mode icon and the current effective theme based on system preference.",
       },
     },
   },

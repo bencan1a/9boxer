@@ -8,9 +8,17 @@ import uuid
 from datetime import datetime
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.events import (
+    DonutMoveEvent,
+    Event,
+    FlagAddEvent,
+    FlagRemoveEvent,
+    GridMoveEvent,
+)
 from ninebox.models.grid_positions import calculate_grid_position
-from ninebox.models.session import EmployeeMove, SessionState
+from ninebox.models.session import SessionState
 from ninebox.services.database import db_manager
+from ninebox.services.event_manager import EventManager
 from ninebox.services.excel_parser import JobFunctionConfig
 from ninebox.services.session_serializer import SessionSerializer
 
@@ -34,6 +42,7 @@ class SessionManager:
         """
         self._sessions: dict[str, SessionState] = {}
         self._sessions_loaded: bool = False
+        self.event_manager = EventManager(self)
 
     @property
     def sessions(self) -> dict[str, SessionState]:
@@ -88,7 +97,7 @@ class SessionManager:
             sheet_index=sheet_index,
             job_function_config=job_function_config,
             current_employees=current_employees,
-            changes=[],
+            events=[],
         )
 
         self._sessions[user_id] = session
@@ -121,13 +130,11 @@ class SessionManager:
         employee_id: int,
         new_performance: PerformanceLevel,
         new_potential: PotentialLevel,
-    ) -> EmployeeMove:
+    ) -> GridMoveEvent:
         """Update employee position in session.
 
-        Maintains ONE entry per employee in the changes list:
-        - If employee already has a change entry: UPDATE it (preserve old_position, update new_position)
-        - If employee is new to changes: CREATE new entry
-        - If employee is moved back to ORIGINAL position: REMOVE entry entirely
+        Creates a GridMoveEvent and uses EventManager to track it.
+        Events are automatically removed when employee returns to original position.
 
         Sessions are lazily loaded from database on first access.
 
@@ -138,14 +145,14 @@ class SessionManager:
             new_potential: New potential level
 
         Returns:
-            EmployeeMove: The change entry (either new or updated)
+            GridMoveEvent: The grid move event
 
         Raises:
             ValueError: If no active session or employee not found
 
         Example:
             >>> manager.move_employee("user1", 123, PerformanceLevel.HIGH, PotentialLevel.MEDIUM)
-            EmployeeMove(employee_id=123, old_position=1, new_position=8, ...)
+            GridMoveEvent(employee_id=123, old_position=1, new_position=8, ...)
         """
         self._ensure_sessions_loaded()
         session = self.sessions.get(user_id)
@@ -159,40 +166,29 @@ class SessionManager:
         if not employee:
             raise ValueError(f"Employee {employee_id} not found")
 
-        # Find original employee to check if position matches original
+        # Find original employee
         original_employee = next(
             (e for e in session.original_employees if e.employee_id == employee_id), None
         )
+        if not original_employee:
+            raise ValueError(f"Original employee {employee_id} not found")
 
         # Calculate new position
         new_position = calculate_grid_position(new_performance, new_potential)
         now = datetime.utcnow()
 
-        # Find existing change entry for this employee (one entry per employee)
-        existing_change = next((c for c in session.changes if c.employee_id == employee_id), None)
-
-        if existing_change:
-            # Update existing entry (preserve original old_position from first move)
-            existing_change.new_performance = new_performance
-            existing_change.new_potential = new_potential
-            existing_change.new_position = new_position
-            existing_change.timestamp = now
-            change = existing_change
-        else:
-            # Create new entry
-            change = EmployeeMove(
-                employee_id=employee_id,
-                employee_name=employee.name,
-                timestamp=now,
-                old_performance=employee.performance,
-                old_potential=employee.potential,
-                new_performance=new_performance,
-                new_potential=new_potential,
-                old_position=employee.grid_position,
-                new_position=new_position,
-                notes=None,
-            )
-            session.changes.append(change)
+        # Create grid move event
+        event = GridMoveEvent(
+            employee_id=employee_id,
+            employee_name=employee.name,
+            timestamp=now,
+            old_performance=employee.performance,
+            old_potential=employee.potential,
+            new_performance=new_performance,
+            new_potential=new_potential,
+            old_position=employee.grid_position,
+            new_position=new_position,
+        )
 
         # Update employee
         employee.performance = new_performance
@@ -200,23 +196,23 @@ class SessionManager:
         employee.grid_position = new_position
         employee.last_modified = now
 
-        # Check if employee is back to original position - if so, remove from changes
-        if (
-            original_employee
-            and employee.performance == original_employee.performance
-            and employee.potential == original_employee.potential
-        ):
-            employee.modified_in_session = False
-            # Remove from changes list (employee is back to original)
-            session.changes = [c for c in session.changes if c.employee_id != employee_id]
-        else:
-            employee.modified_in_session = True
+        # Track event (EventManager handles net-zero logic and persistence)
+        self.event_manager.track_event(session, event, original_employee)
 
-        self._persist_session(session)
-        return change
+        # Update modified status based on whether events exist
+        has_grid_events = any(
+            e.employee_id == employee_id and e.event_type == "grid_move" for e in session.events
+        )
+        has_flag_events = any(
+            e.employee_id == employee_id and e.event_type in ["flag_add", "flag_remove"]
+            for e in session.events
+        )
+        employee.modified_in_session = has_grid_events or has_flag_events
 
-    def update_change_notes(self, user_id: str, employee_id: int, notes: str) -> EmployeeMove:
-        """Update notes for an employee's change entry.
+        return event
+
+    def update_change_notes(self, user_id: str, employee_id: int, notes: str) -> Event | None:
+        """Update notes for an employee's grid move event.
 
         Sessions are lazily loaded from database on first access.
 
@@ -226,32 +222,39 @@ class SessionManager:
             notes: Notes text to store
 
         Returns:
-            EmployeeMove: Updated change entry with notes
+            Event: Updated event with notes, or None if no grid move event exists
 
         Raises:
-            ValueError: If no active session or no change entry exists for employee
+            ValueError: If no active session
 
         Example:
             >>> manager.update_change_notes("user1", 123, "Promoted due to exceptional Q4 performance")
-            EmployeeMove(employee_id=123, notes="Promoted due to exceptional Q4 performance", ...)
+            GridMoveEvent(employee_id=123, notes="Promoted due to exceptional Q4 performance", ...)
         """
         self._ensure_sessions_loaded()
         session = self.sessions.get(user_id)
         if not session:
             raise ValueError("No active session")
 
-        # Find change entry for this employee
-        change_entry = next((c for c in session.changes if c.employee_id == employee_id), None)
-        if not change_entry:
-            raise ValueError(f"No change entry found for employee {employee_id}")
+        # Find grid move event for this employee
+        event = next(
+            (
+                e
+                for e in session.events
+                if e.employee_id == employee_id and e.event_type == "grid_move"
+            ),
+            None,
+        )
+        if not event:
+            return None
 
         # Update notes
-        change_entry.notes = notes
+        event.notes = notes
         self._persist_session(session)
-        return change_entry
+        return event
 
-    def update_donut_change_notes(self, user_id: str, employee_id: int, notes: str) -> EmployeeMove:
-        """Update notes for an employee's donut change entry.
+    def update_donut_change_notes(self, user_id: str, employee_id: int, notes: str) -> Event | None:
+        """Update notes for an employee's donut move event.
 
         Sessions are lazily loaded from database on first access.
 
@@ -261,31 +264,36 @@ class SessionManager:
             notes: Notes text to store
 
         Returns:
-            EmployeeMove: Updated donut change entry with notes
+            Event: Updated donut event with notes, or None if no donut move event exists
 
         Raises:
-            ValueError: If no active session or no donut change entry exists for employee
+            ValueError: If no active session
 
         Example:
             >>> manager.update_donut_change_notes("user1", 123, "Exploring higher potential role")
-            EmployeeMove(employee_id=123, notes="Exploring higher potential role", ...)
+            DonutMoveEvent(employee_id=123, notes="Exploring higher potential role", ...)
         """
         self._ensure_sessions_loaded()
         session = self.sessions.get(user_id)
         if not session:
             raise ValueError("No active session")
 
-        # Find donut change entry for this employee
-        change_entry = next(
-            (c for c in session.donut_changes if c.employee_id == employee_id), None
+        # Find donut move event for this employee
+        event = next(
+            (
+                e
+                for e in session.donut_events
+                if e.employee_id == employee_id and e.event_type == "donut_move"
+            ),
+            None,
         )
-        if not change_entry:
-            raise ValueError(f"No donut change entry found for employee {employee_id}")
+        if not event:
+            return None
 
         # Update notes
-        change_entry.notes = notes
+        event.notes = notes
         self._persist_session(session)
-        return change_entry
+        return event
 
     def move_employee_donut(
         self,
@@ -293,13 +301,11 @@ class SessionManager:
         employee_id: int,
         new_performance: PerformanceLevel,
         new_potential: PotentialLevel,
-    ) -> EmployeeMove:
+    ) -> DonutMoveEvent:
         """Update employee donut position in session.
 
-        Maintains ONE entry per employee in the donut_changes list:
-        - If employee already has a donut change entry: UPDATE it (preserve old_position, update new_position)
-        - If employee is new to donut changes: CREATE new entry
-        - If employee is moved back to position 5: REMOVE entry entirely and clear donut fields
+        Creates a DonutMoveEvent and uses EventManager to track it.
+        Events are automatically removed when employee returns to position 5 (center).
 
         Sessions are lazily loaded from database on first access.
 
@@ -310,14 +316,14 @@ class SessionManager:
             new_potential: New donut potential level
 
         Returns:
-            EmployeeMove: The donut change entry (either new or updated)
+            DonutMoveEvent: The donut move event
 
         Raises:
             ValueError: If no active session or employee not found
 
         Example:
             >>> manager.move_employee_donut("user1", 123, PerformanceLevel.HIGH, PotentialLevel.MEDIUM)
-            EmployeeMove(employee_id=123, old_position=5, new_position=8, ...)
+            DonutMoveEvent(employee_id=123, old_position=5, new_position=8, ...)
         """
         self._ensure_sessions_loaded()
         session = self.sessions.get(user_id)
@@ -331,6 +337,13 @@ class SessionManager:
         if not employee:
             raise ValueError(f"Employee {employee_id} not found")
 
+        # Find original employee (needed for net-zero check)
+        original_employee = next(
+            (e for e in session.original_employees if e.employee_id == employee_id), None
+        )
+        if not original_employee:
+            raise ValueError(f"Original employee {employee_id} not found")
+
         # Calculate new position
         new_position = calculate_grid_position(new_performance, new_potential)
         now = datetime.utcnow()
@@ -338,83 +351,44 @@ class SessionManager:
         # Position 5 is the center position (Medium/Medium) - moving back here clears donut state
         is_position_5 = new_position == 5
 
-        # Find existing donut change entry for this employee (one entry per employee)
-        existing_change = next(
-            (c for c in session.donut_changes if c.employee_id == employee_id), None
+        # Determine old position for the event
+        old_performance = employee.donut_performance or employee.performance
+        old_potential = employee.donut_potential or employee.potential
+        old_position = employee.donut_position or employee.grid_position
+
+        # Create donut move event
+        event = DonutMoveEvent(
+            employee_id=employee_id,
+            employee_name=employee.name,
+            timestamp=now,
+            old_performance=old_performance,
+            old_potential=old_potential,
+            new_performance=new_performance,
+            new_potential=new_potential,
+            old_position=old_position,
+            new_position=new_position,
         )
 
         if is_position_5:
-            # Moving back to position 5 - clear donut fields and remove from changes
+            # Moving back to position 5 - clear donut fields
             employee.donut_performance = None
             employee.donut_potential = None
             employee.donut_position = None
             employee.donut_modified = False
             employee.donut_last_modified = None
             employee.donut_notes = None
-
-            # Remove from donut_changes list if exists
-            if existing_change:
-                session.donut_changes = [
-                    c for c in session.donut_changes if c.employee_id != employee_id
-                ]
-
-            # Return a change entry to indicate the move back (even though it's removed from list)
-            change = EmployeeMove(
-                employee_id=employee_id,
-                employee_name=employee.name,
-                timestamp=now,
-                old_performance=existing_change.new_performance
-                if existing_change
-                else employee.performance,
-                old_potential=existing_change.new_potential
-                if existing_change
-                else employee.potential,
-                new_performance=new_performance,
-                new_potential=new_potential,
-                old_position=existing_change.new_position
-                if existing_change
-                else employee.grid_position,
-                new_position=new_position,
-                notes=None,
-            )
         else:
             # Normal donut move (not position 5)
-            if existing_change:
-                # Update existing entry (preserve original old_position from first donut move)
-                existing_change.new_performance = new_performance
-                existing_change.new_potential = new_potential
-                existing_change.new_position = new_position
-                existing_change.timestamp = now
-                change = existing_change
-            else:
-                # Create new entry - old position is either previous donut position or current grid position
-                old_performance = employee.donut_performance or employee.performance
-                old_potential = employee.donut_potential or employee.potential
-                old_position = employee.donut_position or employee.grid_position
-
-                change = EmployeeMove(
-                    employee_id=employee_id,
-                    employee_name=employee.name,
-                    timestamp=now,
-                    old_performance=old_performance,
-                    old_potential=old_potential,
-                    new_performance=new_performance,
-                    new_potential=new_potential,
-                    old_position=old_position,
-                    new_position=new_position,
-                    notes=None,
-                )
-                session.donut_changes.append(change)
-
-            # Update employee donut fields
             employee.donut_performance = new_performance
             employee.donut_potential = new_potential
             employee.donut_position = new_position
             employee.donut_modified = True
             employee.donut_last_modified = now
 
-        self._persist_session(session)
-        return change
+        # Track event (EventManager handles net-zero logic and persistence)
+        self.event_manager.track_event(session, event, original_employee, is_donut=True)
+
+        return event
 
     def toggle_donut_mode(self, user_id: str, enabled: bool) -> SessionState:
         """Toggle donut mode on or off for a session.
@@ -444,12 +418,127 @@ class SessionManager:
         self._persist_session(session)
         return session
 
+    def update_employee_flags(
+        self,
+        user_id: str,
+        employee_id: int,
+        new_flags: list[str],
+    ) -> list[Event]:
+        """Update employee flags and track individual add/remove events.
+
+        Creates discrete FlagAddEvent and FlagRemoveEvent instances for each
+        flag that changes. Events are removed when flags return to original state.
+
+        Sessions are lazily loaded from database on first access.
+
+        Args:
+            user_id: Session owner
+            employee_id: Employee to update
+            new_flags: Complete new list of flags
+
+        Returns:
+            List of flag events for this employee
+
+        Raises:
+            ValueError: If no active session or employee not found
+
+        Example:
+            >>> manager.update_employee_flags("user1", 123, ["promotion_ready", "high_performer"])
+            [FlagAddEvent(flag="promotion_ready"), FlagAddEvent(flag="high_performer")]
+        """
+        self._ensure_sessions_loaded()
+        session = self.sessions.get(user_id)
+        if not session:
+            raise ValueError("No active session")
+
+        employee = next(
+            (e for e in session.current_employees if e.employee_id == employee_id), None
+        )
+        if not employee:
+            raise ValueError(f"Employee {employee_id} not found")
+
+        original_employee = next(
+            (e for e in session.original_employees if e.employee_id == employee_id), None
+        )
+        if not original_employee:
+            raise ValueError(f"Original employee {employee_id} not found")
+
+        # Calculate flag changes
+        old_flags = set(employee.flags or [])
+        new_flags_set = set(new_flags)
+        added_flags = new_flags_set - old_flags
+        removed_flags = old_flags - new_flags_set
+
+        now = datetime.utcnow()
+
+        # Track each added flag
+        for flag in added_flags:
+            add_event = FlagAddEvent(
+                employee_id=employee_id,
+                employee_name=employee.name,
+                timestamp=now,
+                flag=flag,
+            )
+            self.event_manager.track_event(session, add_event, original_employee)
+
+        # Track each removed flag
+        for flag in removed_flags:
+            remove_event = FlagRemoveEvent(
+                employee_id=employee_id,
+                employee_name=employee.name,
+                timestamp=now,
+                flag=flag,
+            )
+            self.event_manager.track_event(session, remove_event, original_employee)
+
+        # Update employee
+        employee.flags = new_flags
+        employee.last_modified = now
+
+        # Update modified status
+        original_flags = set((original_employee.flags or []) if original_employee else [])
+        has_flag_changes = new_flags_set != original_flags
+        has_other_events = any(
+            e.employee_id == employee_id and e.event_type in ["grid_move", "donut_move"]
+            for e in session.events
+        )
+        employee.modified_in_session = has_flag_changes or has_other_events
+
+        # Return all flag events for this employee
+        return self.event_manager.get_employee_events(session, employee_id)
+
+    def _recalculate_modified_flags(self, session: SessionState) -> None:
+        """Recalculate modified_in_session flags based on events.
+
+        Called after session restoration to ensure employees have correct
+        modified_in_session flags based on the events in the session.
+
+        Args:
+            session: Session whose employee flags need recalculation
+
+        Example:
+            >>> session = SessionSerializer.deserialize(row_dict)
+            >>> manager._recalculate_modified_flags(session)
+            >>> # Employees with events now have modified_in_session=True
+        """
+        # Build a set of employee IDs that have events
+        modified_employee_ids = set()
+        for event in session.events:
+            modified_employee_ids.add(event.employee_id)
+
+        # Update modified_in_session flag for all employees
+        for employee in session.current_employees:
+            employee.modified_in_session = employee.employee_id in modified_employee_ids
+
     def _restore_sessions(self) -> None:
         """Restore sessions from database on startup.
 
         Loads all sessions from the SQLite database and populates the in-memory cache.
         Errors during restoration are logged but do not prevent startup - individual
         sessions that fail to deserialize are skipped.
+
+        After deserialization, recalculates the modified_in_session flag for each
+        employee based on the events in the session.
 
         Example:
             >>> manager = SessionManager()
@@ -466,6 +555,10 @@ class SessionManager:
                         # Convert sqlite3.Row to dict
                         row_dict = dict(row)
                         session = SessionSerializer.deserialize(row_dict)
+
+                        # Recalculate modified_in_session flags based on events
+                        self._recalculate_modified_flags(session)
+
                         self._sessions[session.user_id] = session
                         restored_count += 1
                     except Exception as e:
@@ -503,33 +596,57 @@ class SessionManager:
             data = SessionSerializer.serialize(session)
 
             with db_manager.get_connection() as conn:
-                conn.execute(
-                    """
-                    INSERT OR REPLACE INTO sessions (
-                        user_id, session_id, created_at, original_filename,
-                        original_file_path, sheet_name, sheet_index,
-                        job_function_config, original_employees,
-                        current_employees, changes, donut_changes,
-                        donut_mode_active, updated_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        data["user_id"],
-                        data["session_id"],
-                        data["created_at"],
-                        data["original_filename"],
-                        data["original_file_path"],
-                        data["sheet_name"],
-                        data["sheet_index"],
-                        json.dumps(data["job_function_config"]),
-                        json.dumps(data["original_employees"]),
-                        json.dumps(data["current_employees"]),
-                        json.dumps(data["changes"]),
-                        json.dumps(data["donut_changes"]),
-                        1 if data["donut_mode_active"] else 0,
-                        data["updated_at"],
-                    ),
-                )
+                # Check what columns exist to handle migration period
+                cursor = conn.execute("PRAGMA table_info(sessions)")
+                columns = {row[1] for row in cursor.fetchall()}
+
+                # Build dynamic INSERT based on available columns
+                base_columns = [
+                    "user_id",
+                    "session_id",
+                    "created_at",
+                    "original_filename",
+                    "original_file_path",
+                    "sheet_name",
+                    "sheet_index",
+                    "job_function_config",
+                    "original_employees",
+                    "current_employees",
+                    "events",
+                    "donut_events",
+                    "donut_mode_active",
+                    "updated_at",
+                ]
+                base_values = [
+                    data["user_id"],
+                    data["session_id"],
+                    data["created_at"],
+                    data["original_filename"],
+                    data["original_file_path"],
+                    data["sheet_name"],
+                    data["sheet_index"],
+                    json.dumps(data["job_function_config"]),
+                    json.dumps(data["original_employees"]),
+                    json.dumps(data["current_employees"]),
+                    json.dumps(data.get("events", [])),
+                    json.dumps(data.get("donut_events", [])),
+                    1 if data["donut_mode_active"] else 0,
+                    data["updated_at"],
+                ]
+
+                # Add legacy columns if they still exist (migration period)
+                if "changes" in columns:
+                    base_columns.append("changes")
+                    base_values.append(json.dumps(data.get("events", [])))
+                if "donut_changes" in columns:
+                    base_columns.append("donut_changes")
+                    base_values.append(json.dumps(data.get("donut_events", [])))
+
+                # Execute dynamic INSERT
+                placeholders = ", ".join("?" * len(base_values))
+                cols = ", ".join(base_columns)
+                query = f"INSERT OR REPLACE INTO sessions ({cols}) VALUES ({placeholders})"
+                conn.execute(query, tuple(base_values))
 
             logger.debug(f"Persisted session for user {session.user_id}")
 

@@ -20,7 +20,7 @@ import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
  */
 export async function generateGridNormal(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);
@@ -51,7 +51,7 @@ export async function generateGridNormal(
  */
 export async function generateEmployeeTileNormal(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);

@@ -3,7 +3,7 @@
  */
 
 import { Employee } from "./employee";
-import { EmployeeMove } from "./session";
+import { TrackableEvent } from "./events";
 
 // Auth types
 export interface LoginRequest {
@@ -35,7 +35,7 @@ export interface SessionStatusResponse {
   active: boolean;
   employee_count: number;
   changes_count: number;
-  changes: EmployeeMove[];
+  events: TrackableEvent[];
   uploaded_filename: string;
   created_at: string;
   donut_mode_active: boolean;
@@ -60,7 +60,7 @@ export interface MoveRequest {
 
 export interface MoveResponse {
   employee: Employee;
-  change: EmployeeMove;
+  change: TrackableEvent;
   success: boolean;
 }
 

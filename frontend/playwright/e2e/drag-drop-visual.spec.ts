@@ -3,30 +3,32 @@
  * Tests visual indicators and state changes during employee movement
  */
 
-import { test, expect } from '@playwright/test';
-import { uploadExcelFile, dragEmployeeToPosition } from '../helpers';
+import { test, expect } from "@playwright/test";
+import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 
-test.describe('Drag-and-Drop Visual Feedback Flow', () => {
+test.describe("Drag-and-Drop Visual Feedback Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
-    await page.goto('/');
+    await page.goto("/");
 
     // Upload sample data
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await uploadExcelFile(page, "sample-employees.xlsx");
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 
-  test('should move employee and show visual feedback', async ({ page }) => {
+  test("should move employee and show visual feedback", async ({ page }) => {
     // Verify employee ID 1 (Alice Smith) is in box 9 initially
     const employeeCard = page.locator('[data-testid="employee-card-1"]');
 
-    await expect(employeeCard).toHaveAttribute('data-position', '9');
+    await expect(employeeCard).toHaveAttribute("data-position", "9");
     await expect(employeeCard).toBeVisible();
 
     // Verify employee does NOT have modified indicator before move
-    const modifiedIndicatorBefore = employeeCard.locator('[data-testid="modified-indicator"]');
+    const modifiedIndicatorBefore = employeeCard.locator(
+      '[data-testid="modified-indicator"]'
+    );
     await expect(modifiedIndicatorBefore).not.toBeVisible();
 
     // Get initial count for box 9 (should include Alice Smith)
@@ -41,15 +43,17 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
     await dragEmployeeToPosition(page, 1, 6);
 
     // Verify employee now appears in box 6
-    await expect(employeeCard).toHaveAttribute('data-position', '6');
+    await expect(employeeCard).toHaveAttribute("data-position", "6");
 
     // Verify employee card has visual feedback indicators
     const movedEmployeeCard = page.locator('[data-testid="employee-card-1"]');
 
     // Check for modified indicator chip
-    const modifiedIndicator = movedEmployeeCard.locator('[data-testid="modified-indicator"]');
+    const modifiedIndicator = movedEmployeeCard.locator(
+      '[data-testid="modified-indicator"]'
+    );
     await expect(modifiedIndicator).toBeVisible();
-    await expect(modifiedIndicator).toHaveText('Modified');
+    await expect(modifiedIndicator).toHaveText("Modified");
 
     // Verify box counts changed
     const box9CountAfter = page.locator('[data-testid="grid-box-9-count"]');
@@ -57,86 +61,104 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
 
     // Box 9 should have decreased by 1
     const box9FinalCount = await box9CountAfter.textContent();
-    expect(parseInt(box9FinalCount || '0')).toBe(parseInt(box9InitialCount || '0') - 1);
+    expect(parseInt(box9FinalCount || "0")).toBe(
+      parseInt(box9InitialCount || "0") - 1
+    );
 
     // Box 6 should have increased by 1
     const box6FinalCount = await box6CountAfter.textContent();
-    expect(parseInt(box6FinalCount || '0')).toBe(parseInt(box6InitialCount || '0') + 1);
+    expect(parseInt(box6FinalCount || "0")).toBe(
+      parseInt(box6InitialCount || "0") + 1
+    );
   });
 
-  test('should enable export button and show badge after movement', async ({ page }) => {
+  test("should enable export button and show badge after movement", async ({
+    page,
+  }) => {
     // Verify file menu badge is not visible initially (no changes)
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
     // Badge should be invisible initially (no changes)
     // Check the MUI Badge content element (the pill)
-    const badgePill = fileMenuBadge.locator('.MuiBadge-badge');
+    const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
     await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
     // Open file menu to check export menu item is disabled
     await page.locator('[data-testid="file-menu-button"]').click();
-    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    const exportMenuItem = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
     await expect(exportMenuItem).toBeDisabled();
 
     // Close menu
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
 
     // Move employee using dragEmployeeToPosition
     await dragEmployeeToPosition(page, 1, 6);
 
     // Verify file menu badge becomes visible (showing 1 change)
     await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);
-    await expect(fileMenuBadge).toContainText('1');
+    await expect(fileMenuBadge).toContainText("1");
 
     // Open file menu and verify export menu item is now enabled
     await page.locator('[data-testid="file-menu-button"]').click();
     await expect(exportMenuItem).toBeEnabled();
-    await expect(exportMenuItem).toContainText('Apply 1 Change');
+    await expect(exportMenuItem).toContainText("Apply 1 Change");
 
     // Close menu
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
   });
 
-  test('should remove visual indicators when employee is moved back to original position', async ({ page }) => {
+  test("should remove visual indicators when employee is moved back to original position", async ({
+    page,
+  }) => {
     // Move employee from box 9 to 6
     await dragEmployeeToPosition(page, 1, 6);
 
     // Verify modified indicator is visible
-    let modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
+    let modifiedIndicator = page
+      .locator('[data-testid="employee-card-1"]')
+      .locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).toBeVisible();
 
     // Longer stabilization for consecutive drags
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
 
     // Move employee back to original position (box 9) - skip API wait and don't expect modified indicator
     await dragEmployeeToPosition(page, 1, 9, {
       skipApiWait: true,
-      expectModified: false
+      expectModified: false,
     });
 
     // Verify employee is back in box 9
     const employeeCard = page.locator('[data-testid="employee-card-1"]');
-    await expect(employeeCard).toHaveAttribute('data-position', '9');
+    await expect(employeeCard).toHaveAttribute("data-position", "9");
 
     // Verify modified indicator is no longer visible
-    modifiedIndicator = page.locator('[data-testid="employee-card-1"]').locator('[data-testid="modified-indicator"]');
+    modifiedIndicator = page
+      .locator('[data-testid="employee-card-1"]')
+      .locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).not.toBeVisible();
 
     // Verify file menu badge is no longer visible (no changes)
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
     // Badge should be invisible again (no changes)
     // Check the MUI Badge content element (the pill)
-    const badgePill = fileMenuBadge.locator('.MuiBadge-badge');
+    const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
     await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
     // Verify export menu item is disabled again
     await page.locator('[data-testid="file-menu-button"]').click();
-    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    const exportMenuItem = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
     await expect(exportMenuItem).toBeDisabled();
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
   });
 
-  test('should show visual feedback during drag operation', async ({ page }) => {
+  test("should show visual feedback during drag operation", async ({
+    page,
+  }) => {
     // Get the employee card
     const employeeCard = page.locator('[data-testid="employee-card-1"]');
     await expect(employeeCard).toBeVisible();
@@ -151,14 +173,14 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
     // Start dragging (move to card and mouse down)
     const cardBox = await employeeCard.boundingBox();
     if (!cardBox) {
-      throw new Error('Employee card not found');
+      throw new Error("Employee card not found");
     }
 
     // Get target box
     const targetBox = page.locator('[data-testid="grid-box-6"]');
     const targetBoxBounds = await targetBox.boundingBox();
     if (!targetBoxBounds) {
-      throw new Error('Target box not found');
+      throw new Error("Target box not found");
     }
 
     // Calculate positions
@@ -200,7 +222,7 @@ test.describe('Drag-and-Drop Visual Feedback Flow', () => {
       return style.borderColor;
     });
     // Border should be primary color when dragging over
-    expect(borderColor).not.toBe('rgba(0, 0, 0, 0.12)'); // Not default divider color
+    expect(borderColor).not.toBe("rgba(0, 0, 0, 0.12)"); // Not default divider color
 
     // Drop
     await page.mouse.up();

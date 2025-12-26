@@ -5,7 +5,7 @@
 import { create } from "zustand";
 import { apiClient } from "../services/api";
 import { Employee } from "../types/employee";
-import { EmployeeMove } from "../types/session";
+import { TrackableEvent } from "../types/events";
 import { extractErrorMessage } from "../types/errors";
 import { logger } from "../utils/logger";
 
@@ -13,7 +13,7 @@ interface SessionState {
   sessionId: string | null;
   employees: Employee[];
   originalEmployees: Employee[];
-  changes: EmployeeMove[];
+  events: TrackableEvent[];
   filename: string | null;
   filePath: string | null;
   isLoading: boolean;
@@ -22,7 +22,7 @@ interface SessionState {
 
   // Donut Mode state
   donutModeActive: boolean;
-  donutChanges: EmployeeMove[];
+  donutEvents: TrackableEvent[];
 
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
@@ -33,7 +33,10 @@ interface SessionState {
     performance: string,
     potential: string
   ) => Promise<void>;
-  updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
+  updateEmployee: (
+    employeeId: number,
+    updates: Partial<Employee>
+  ) => Promise<void>;
   updateChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   updateDonutChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
@@ -54,7 +57,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   sessionId: null,
   employees: [],
   originalEmployees: [],
-  changes: [],
+  events: [],
   filename: null,
   filePath: null,
   isLoading: false,
@@ -63,7 +66,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   // Donut Mode state
   donutModeActive: false,
-  donutChanges: [],
+  donutEvents: [],
 
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
@@ -94,14 +97,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         filePath: filePath || null,
         employees: employeesResponse.employees,
         originalEmployees: employeesResponse.employees,
-        changes: [],
+        events: [],
+        donutEvents: [],
         selectedEmployeeId,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to upload file', error);
+      logger.error("Failed to upload file", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -123,7 +127,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         sessionId: null,
         employees: [],
         originalEmployees: [],
-        changes: [],
+        events: [],
+        donutEvents: [],
         filename: null,
         filePath: null,
         isLoading: false,
@@ -132,7 +137,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to clear session', error);
+      logger.error("Failed to clear session", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -152,7 +157,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to load employees', error);
+      logger.error("Failed to load employees", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -180,33 +185,37 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         emp.employee_id === employeeId ? response.employee : emp
       );
 
-      // Update change history based on whether employee is modified
-      let changes = get().changes;
+      // Update event history based on whether employee is modified
+      let events = get().events;
       if (!response.employee.modified_in_session) {
-        // Employee moved back to original position - remove change entry
-        changes = changes.filter((c) => c.employee_id !== employeeId);
+        // Employee moved back to original position - remove event entry
+        events = events.filter((e) => e.employee_id !== employeeId);
       } else {
-        // Employee is modified - update or add change entry
-        const existingChangeIndex = changes.findIndex((c) => c.employee_id === employeeId);
-        if (existingChangeIndex >= 0) {
-          // Update existing change entry
-          changes = [...changes];
-          changes[existingChangeIndex] = response.change;
+        // Employee is modified - update or add event entry
+        const existingEventIndex = events.findIndex(
+          (e) =>
+            e.employee_id === employeeId &&
+            e.event_type === response.change.event_type
+        );
+        if (existingEventIndex >= 0) {
+          // Update existing event entry
+          events = [...events];
+          events[existingEventIndex] = response.change;
         } else {
-          // Add new change entry
-          changes = [...changes, response.change];
+          // Add new event entry
+          events = [...events, response.change];
         }
       }
 
       set({
         employees: updatedEmployees,
-        changes,
+        events,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to move employee', error);
+      logger.error("Failed to move employee", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -226,14 +235,19 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         emp.employee_id === employeeId ? response.employee : emp
       );
 
+      // Reload session status to get updated events from backend
+      // Backend now handles flag event tracking
+      const sessionStatus = await apiClient.getSessionStatus();
+
       set({
         employees: updatedEmployees,
+        events: sessionStatus.events,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update employee', error);
+      logger.error("Failed to update employee", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -245,21 +259,21 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   updateChangeNotes: async (employeeId: number, notes: string) => {
     set({ isLoading: true, error: null });
     try {
-      const updatedChange = await apiClient.updateChangeNotes(employeeId, notes);
+      const updatedEvent = await apiClient.updateChangeNotes(employeeId, notes);
 
-      // Update change in history
-      const changes = get().changes.map((change) =>
-        change.employee_id === employeeId ? updatedChange : change
+      // Update event in history
+      const events = get().events.map((event) =>
+        event.employee_id === employeeId ? updatedEvent : event
       );
 
       set({
-        changes,
+        events,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update change notes', error);
+      logger.error("Failed to update event notes", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -271,21 +285,24 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   updateDonutChangeNotes: async (employeeId: number, notes: string) => {
     set({ isLoading: true, error: null });
     try {
-      const updatedChange = await apiClient.updateDonutChangeNotes(employeeId, notes);
+      const updatedEvent = await apiClient.updateDonutChangeNotes(
+        employeeId,
+        notes
+      );
 
-      // Update donut change in history
-      const donutChanges = get().donutChanges.map((change) =>
-        change.employee_id === employeeId ? updatedChange : change
+      // Update donut event in history
+      const donutEvents = get().donutEvents.map((event) =>
+        event.employee_id === employeeId ? updatedEvent : event
       );
 
       set({
-        donutChanges,
+        donutEvents,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update donut change notes', error);
+      logger.error("Failed to update donut event notes", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -337,7 +354,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             filePath: cachedFilePath,
             employees: employeesResponse.employees,
             originalEmployees: employeesResponse.employees,
-            changes: sessionStatus.changes,
+            events: sessionStatus.events,
+            donutEvents: [],
             selectedEmployeeId,
             isLoading: false,
             error: null,
@@ -379,14 +397,22 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
       set({
         sessionId: null,
+        employees: [],
+        originalEmployees: [],
+        events: [],
+        donutEvents: [],
         isLoading: false,
         error: null,
       });
       return false;
     } catch (error: unknown) {
-      logger.error('Failed to restore session', error);
+      logger.error("Failed to restore session", error);
       set({
         sessionId: null,
+        employees: [],
+        originalEmployees: [],
+        events: [],
+        donutEvents: [],
         isLoading: false,
         error: null,
       });
@@ -408,7 +434,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to toggle donut mode', error);
+      logger.error("Failed to toggle donut mode", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -438,33 +464,37 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         emp.employee_id === employeeId ? response.employee : emp
       );
 
-      // Update donut change history based on whether employee is modified
-      let donutChanges = get().donutChanges;
+      // Update donut event history based on whether employee is modified
+      let donutEvents = get().donutEvents;
       if (!response.employee.donut_modified) {
-        // Employee moved back to original position - remove change entry
-        donutChanges = donutChanges.filter((c) => c.employee_id !== employeeId);
+        // Employee moved back to original position - remove event entry
+        donutEvents = donutEvents.filter((e) => e.employee_id !== employeeId);
       } else {
-        // Employee is modified - update or add change entry
-        const existingChangeIndex = donutChanges.findIndex((c) => c.employee_id === employeeId);
-        if (existingChangeIndex >= 0) {
-          // Update existing change entry
-          donutChanges = [...donutChanges];
-          donutChanges[existingChangeIndex] = response.change;
+        // Employee is modified - update or add event entry
+        const existingEventIndex = donutEvents.findIndex(
+          (e) =>
+            e.employee_id === employeeId &&
+            e.event_type === response.change.event_type
+        );
+        if (existingEventIndex >= 0) {
+          // Update existing event entry
+          donutEvents = [...donutEvents];
+          donutEvents[existingEventIndex] = response.change;
         } else {
-          // Add new change entry
-          donutChanges = [...donutChanges, response.change];
+          // Add new event entry
+          donutEvents = [...donutEvents, response.change];
         }
       }
 
       set({
         employees: updatedEmployees,
-        donutChanges,
+        donutEvents,
         isLoading: false,
         error: null,
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to move employee in donut mode', error);
+      logger.error("Failed to move employee in donut mode", error);
       set({
         isLoading: false,
         error: errorMessage,

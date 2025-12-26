@@ -40,7 +40,9 @@
       "managers": "Führungskräfte",
       "exclusions": "Ausschlüsse",
       "excludeEmployees": "Mitarbeiter ausschließen",
-      "clearAllFilters": "Alle Filter zurücksetzen"
+      "clearAllFilters": "Alle Filter zurücksetzen",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain"
     },
     "exclusionDialog": {
       "title": "Mitarbeiter ausschließen",
@@ -197,7 +199,11 @@
         "level04": "Ebene 04 (VP)",
         "level05": "Ebene 05",
         "level06": "Ebene 06"
-      }
+      },
+      "addFlag": "Add flag...",
+      "box": "Box",
+      "flags": "Flags",
+      "noFlagsAvailable": "No flags available"
     },
     "changeTrackerTab": {
       "noChanges": "Noch keine Änderungen",
@@ -306,6 +312,13 @@
         "someAnomalies": "Einige Anomalien erkannt. Überprüfen Sie die folgenden Abschnitte für Details.",
         "significantAnomalies": "Erhebliche Anomalien erkannt. Sofortige Überprüfung empfohlen."
       }
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     }
   },
   "common": {
@@ -372,7 +385,8 @@
       "darkModeDesc": "Immer dunkles Design verwenden",
       "auto": "Automatisch (System folgen)",
       "autoDesc": "Automatisch an Ihr Systemdesign anpassen"
-    }
+    },
+    "language": "Language"
   },
   "zoom": {
     "zoomIn": "Vergrößern (Strg++)",

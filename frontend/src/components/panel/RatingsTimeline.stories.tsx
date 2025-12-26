@@ -1,6 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { RatingsTimeline } from './RatingsTimeline';
-import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employee';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { RatingsTimeline } from "./RatingsTimeline";
+import type {
+  Employee,
+  PerformanceLevel,
+  PotentialLevel,
+} from "@/types/employee";
 
 /**
  * RatingsTimeline displays a vertical timeline of employee performance ratings over the years.
@@ -24,11 +28,11 @@ import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employe
  * - Below employee information section
  */
 const meta: Meta<typeof RatingsTimeline> = {
-  title: 'Panel/RatingsTimeline',
+  title: "Panel/RatingsTimeline",
   component: RatingsTimeline,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
   decorators: [
     (Story) => (
@@ -39,7 +43,7 @@ const meta: Meta<typeof RatingsTimeline> = {
   ],
   argTypes: {
     employee: {
-      description: 'Employee data object with ratings history',
+      description: "Employee data object with ratings history",
     },
   },
 };
@@ -50,27 +54,27 @@ type Story = StoryObj<typeof RatingsTimeline>;
 // Base employee template
 const baseEmployee: Employee = {
   employee_id: 12345,
-  name: 'Alice Johnson',
-  business_title: 'Senior Software Engineer',
-  job_title: 'Software Engineer III',
-  job_profile: 'Engineering-USA',
-  job_level: 'MT5',
-  job_function: 'Engineering',
-  location: 'USA',
-  manager: 'Bob Smith',
+  name: "Alice Johnson",
+  business_title: "Senior Software Engineer",
+  job_title: "Software Engineer III",
+  job_profile: "Engineering-USA",
+  job_level: "MT5",
+  job_function: "Engineering",
+  location: "USA",
+  manager: "Bob Smith",
   management_chain_01: null,
   management_chain_02: null,
   management_chain_03: null,
   management_chain_04: null,
   management_chain_05: null,
   management_chain_06: null,
-  hire_date: '2018-01-15',
-  tenure_category: '5-10 years',
-  time_in_job_profile: '3 years',
-  performance: 'High' as PerformanceLevel,
-  potential: 'High' as PotentialLevel,
+  hire_date: "2018-01-15",
+  tenure_category: "5-10 years",
+  time_in_job_profile: "3 years",
+  performance: "High" as PerformanceLevel,
+  potential: "High" as PotentialLevel,
   grid_position: 9,
-  talent_indicator: 'Star',
+  talent_indicator: "Star",
   ratings_history: [],
   development_focus: null,
   development_action: null,
@@ -92,11 +96,11 @@ export const WithHistory: Story = {
     employee: {
       ...baseEmployee,
       ratings_history: [
-        { year: 2024, rating: 'Strong' },
-        { year: 2023, rating: 'Leading' },
-        { year: 2022, rating: 'Strong' },
-        { year: 2021, rating: 'Solid' },
-        { year: 2020, rating: 'Developing' },
+        { year: 2024, rating: "Strong" },
+        { year: 2023, rating: "Leading" },
+        { year: 2022, rating: "Strong" },
+        { year: 2021, rating: "Solid" },
+        { year: 2020, rating: "Developing" },
       ],
     },
   },
@@ -112,11 +116,11 @@ export const NoHistory: Story = {
     employee: {
       ...baseEmployee,
       employee_id: 99999,
-      name: 'John Doe',
-      hire_date: '2024-10-01',
-      tenure_category: '0-1 years',
-      performance: 'Medium' as PerformanceLevel,
-      potential: 'Medium' as PotentialLevel,
+      name: "John Doe",
+      hire_date: "2024-10-01",
+      tenure_category: "0-1 years",
+      performance: "Medium" as PerformanceLevel,
+      potential: "Medium" as PotentialLevel,
       grid_position: 5,
       ratings_history: [],
     },
@@ -132,21 +136,21 @@ export const MultipleYears: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Senior Leader',
-      business_title: 'Vice President of Engineering',
-      hire_date: '2010-03-01',
-      tenure_category: '10+ years',
+      name: "Senior Leader",
+      business_title: "Vice President of Engineering",
+      hire_date: "2010-03-01",
+      tenure_category: "10+ years",
       ratings_history: [
-        { year: 2024, rating: 'Leading' },
-        { year: 2023, rating: 'Leading' },
-        { year: 2022, rating: 'Strong' },
-        { year: 2021, rating: 'Strong' },
-        { year: 2020, rating: 'Strong' },
-        { year: 2019, rating: 'Solid' },
-        { year: 2018, rating: 'Solid' },
-        { year: 2017, rating: 'Strong' },
-        { year: 2016, rating: 'Solid' },
-        { year: 2015, rating: 'Developing' },
+        { year: 2024, rating: "Leading" },
+        { year: 2023, rating: "Leading" },
+        { year: 2022, rating: "Strong" },
+        { year: 2021, rating: "Strong" },
+        { year: 2020, rating: "Strong" },
+        { year: 2019, rating: "Solid" },
+        { year: 2018, rating: "Solid" },
+        { year: 2017, rating: "Strong" },
+        { year: 2016, rating: "Solid" },
+        { year: 2015, rating: "Developing" },
       ],
     },
   },
@@ -161,16 +165,16 @@ export const InconsistentRatings: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Variable Performer',
-      performance: 'Medium' as PerformanceLevel,
-      potential: 'Medium' as PotentialLevel,
+      name: "Variable Performer",
+      performance: "Medium" as PerformanceLevel,
+      potential: "Medium" as PotentialLevel,
       grid_position: 5,
       ratings_history: [
-        { year: 2024, rating: 'Strong' },
-        { year: 2023, rating: 'Developing' },
-        { year: 2022, rating: 'Solid' },
-        { year: 2021, rating: 'Strong' },
-        { year: 2020, rating: 'Solid' },
+        { year: 2024, rating: "Strong" },
+        { year: 2023, rating: "Developing" },
+        { year: 2022, rating: "Solid" },
+        { year: 2021, rating: "Strong" },
+        { year: 2020, rating: "Solid" },
       ],
     },
   },
@@ -185,17 +189,17 @@ export const ShortHistoryHighPotential: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Rising Star',
-      hire_date: '2022-01-15',
-      tenure_category: '1-3 years',
-      performance: 'High' as PerformanceLevel,
-      potential: 'High' as PotentialLevel,
+      name: "Rising Star",
+      hire_date: "2022-01-15",
+      tenure_category: "1-3 years",
+      performance: "High" as PerformanceLevel,
+      potential: "High" as PotentialLevel,
       grid_position: 9,
-      flags: ['high-potential', 'promotion-ready'],
+      flags: ["high-potential", "promotion-ready"],
       ratings_history: [
-        { year: 2024, rating: 'Leading' },
-        { year: 2023, rating: 'Strong' },
-        { year: 2022, rating: 'Developing' },
+        { year: 2024, rating: "Leading" },
+        { year: 2023, rating: "Strong" },
+        { year: 2022, rating: "Developing" },
       ],
     },
   },
@@ -210,15 +214,15 @@ export const PerformanceConcern: Story = {
   args: {
     employee: {
       ...baseEmployee,
-      name: 'Performance Plan Employee',
-      performance: 'Low' as PerformanceLevel,
-      potential: 'Low' as PotentialLevel,
+      name: "Performance Plan Employee",
+      performance: "Low" as PerformanceLevel,
+      potential: "Low" as PotentialLevel,
       grid_position: 1,
-      flags: ['performance-plan'],
+      flags: ["performance-plan"],
       ratings_history: [
-        { year: 2024, rating: 'Development Needed' },
-        { year: 2023, rating: 'Developing' },
-        { year: 2022, rating: 'Solid' },
+        { year: 2024, rating: "Development Needed" },
+        { year: 2023, rating: "Developing" },
+        { year: 2022, rating: "Solid" },
       ],
     },
   },

@@ -352,7 +352,8 @@ def test_export_when_donut_data_exists_then_populates_correctly(
 ) -> None:
     """Test donut data is populated correctly in export."""
     # Setup session with donut changes
-    from ninebox.models.session import EmployeeMove, SessionState  # noqa: PLC0415
+    from ninebox.models.events import DonutMoveEvent  # noqa: PLC0415
+    from ninebox.models.session import SessionState  # noqa: PLC0415
 
     # Mark employee with donut placement (employee 1: moved from H,H to H,M)
     sample_employees[0].donut_modified = True
@@ -372,9 +373,9 @@ def test_export_when_donut_data_exists_then_populates_correctly(
         original_file_path="/tmp/test.xlsx",
         sheet_name="Employee Data",
         sheet_index=1,
-        changes=[],
-        donut_changes=[
-            EmployeeMove(
+        events=[],
+        donut_events=[
+            DonutMoveEvent(
                 employee_id=1,
                 employee_name="Alice Smith",
                 timestamp=datetime.utcnow(),
@@ -464,3 +465,154 @@ def test_export_when_no_donut_data_then_empty_cells(
         assert donut_desc_val == "" or donut_desc_val is None
         donut_notes_val = sheet.cell(row_idx, donut_position_col + 3).value
         assert donut_notes_val == "" or donut_notes_val is None
+
+
+# ========== Flags Tests ==========
+
+
+def test_export_when_flags_exist_then_includes_flags_column(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test export includes Flags column."""
+    # Add flags to first employee
+    sample_employees[0].flags = ["promotion_ready", "flight_risk"]
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Flags column
+    flags_col_found = False
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Flags" == str(cell_value):
+            flags_col_found = True
+            break
+
+    assert flags_col_found
+
+
+def test_export_when_flags_set_then_writes_comma_separated(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test flags are written as comma-separated list."""
+    # Add flags to first employee
+    sample_employees[0].flags = ["promotion_ready", "flight_risk", "new_hire"]
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Flags column
+    flags_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Flags" == str(cell_value):
+            flags_col = col_idx
+            break
+
+    assert flags_col is not None
+    # Check first employee row (row 2)
+    flags_value = sheet.cell(2, flags_col).value
+    assert flags_value == "promotion_ready, flight_risk, new_hire"
+
+
+def test_export_when_no_flags_then_empty_cell(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test employees without flags have empty Flags cell."""
+    # No flags for any employee
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Flags column
+    flags_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Flags" == str(cell_value):
+            flags_col = col_idx
+            break
+
+    assert flags_col is not None
+
+    # All employee rows should have empty flags (empty string written by exporter, or None if not written)
+    for row_idx in range(2, sheet.max_row + 1):
+        flags_value = sheet.cell(row_idx, flags_col).value
+        assert flags_value == "" or flags_value is None
+
+
+def test_export_when_empty_flags_list_then_empty_cell(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test employee with empty flags list has empty cell."""
+    # Set empty flags list
+    sample_employees[0].flags = []
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Flags column
+    flags_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Flags" == str(cell_value):
+            flags_col = col_idx
+            break
+
+    assert flags_col is not None
+    # Check first employee row (row 2)
+    flags_value = sheet.cell(2, flags_col).value
+    # Excel may return None or empty string for empty cells
+    assert flags_value == "" or flags_value is None
+
+
+def test_export_when_single_flag_then_writes_without_comma(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test single flag is written without comma."""
+    # Add single flag
+    sample_employees[0].flags = ["promotion_ready"]
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Flags column
+    flags_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value and "Flags" == str(cell_value):
+            flags_col = col_idx
+            break
+
+    assert flags_col is not None
+    # Check first employee row (row 2)
+    flags_value = sheet.cell(2, flags_col).value
+    assert flags_value == "promotion_ready"

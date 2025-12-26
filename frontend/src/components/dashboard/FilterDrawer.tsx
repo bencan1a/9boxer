@@ -43,12 +43,16 @@ export const FilterDrawer: React.FC = () => {
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
+    selectedFlags,
     excludedEmployeeIds,
+    reportingChainFilter,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
     toggleLocation,
     toggleManager,
+    toggleFlag,
+    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
     getAvailableOptions,
@@ -60,7 +64,7 @@ export const FilterDrawer: React.FC = () => {
   // Memoize to avoid reprocessing on every render (e.g., when drawer opens/closes)
   const filterOptions = useMemo(() => {
     return getAvailableOptions(employees);
-  }, [employees]);
+  }, [employees, getAvailableOptions]);
 
   return (
     <>
@@ -83,14 +87,28 @@ export const FilterDrawer: React.FC = () => {
           },
         }}
       >
-        <Box sx={{ p: 2, height: "100%", display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            p: 2,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <FilterListIcon sx={{ mr: 1, color: theme.palette.text.primary }} />
-            <Typography variant="h6" sx={{ flexGrow: 1, color: theme.palette.text.primary }}>
-              {t('dashboard.filterDrawer.title')}
+            <Typography
+              variant="h6"
+              sx={{ flexGrow: 1, color: theme.palette.text.primary }}
+            >
+              {t("dashboard.filterDrawer.title")}
             </Typography>
-            <IconButton size="small" onClick={toggleDrawer} data-testid="filter-close-button">
+            <IconButton
+              size="small"
+              onClick={toggleDrawer}
+              data-testid="filter-close-button"
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -111,10 +129,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.jobLevels')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.jobLevels")}
                   {selectedLevels.length > 0 && (
-                    <Chip label={selectedLevels.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedLevels.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -150,10 +176,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.jobFunctions')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.jobFunctions")}
                   {selectedJobFunctions.length > 0 && (
-                    <Chip label={selectedJobFunctions.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedJobFunctions.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -171,7 +205,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {jobFunction}
                         </Typography>
                       }
@@ -193,10 +230,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.locations')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.locations")}
                   {selectedLocations.length > 0 && (
-                    <Chip label={selectedLocations.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedLocations.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -214,7 +259,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {location}
                         </Typography>
                       }
@@ -235,10 +283,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.managers')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.managers")}
                   {selectedManagers.length > 0 && (
-                    <Chip label={selectedManagers.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedManagers.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -256,7 +312,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {manager}
                         </Typography>
                       }
@@ -266,7 +325,80 @@ export const FilterDrawer: React.FC = () => {
               </AccordionDetails>
             </Accordion>
 
+            {/* Flags Section */}
+            <Accordion
+              disableGutters
+              elevation={0}
+              data-testid="filter-accordion-flags"
+              sx={{
+                backgroundColor: "transparent",
+                "&:before": { display: "none" },
+              }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  🏷️ {t("dashboard.filterDrawer.flags")}
+                  {selectedFlags.length > 0 && (
+                    <Chip
+                      label={selectedFlags.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
+                  )}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormGroup>
+                  {filterOptions.flags.map((flag) => (
+                    <FormControlLabel
+                      key={flag.key}
+                      control={
+                        <Checkbox
+                          checked={selectedFlags.includes(flag.key)}
+                          onChange={() => toggleFlag(flag.key)}
+                          size="small"
+                          data-testid={`filter-checkbox-flags-${sanitizeTestId(flag.key)}`}
+                        />
+                      }
+                      label={
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
+                          {flag.displayName} ({flag.count})
+                        </Typography>
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+
             <Divider sx={{ my: 2 }} />
+
+            {/* Reporting Chain Filter Section */}
+            {reportingChainFilter && (
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary, mb: 1 }}
+                >
+                  {t("dashboard.filterDrawer.reportingChain")}
+                </Typography>
+                <Chip
+                  label={`Reporting to: ${reportingChainFilter}`}
+                  onDelete={clearReportingChainFilter}
+                  color="success"
+                  data-testid="reporting-chain-filter-chip"
+                  sx={{ width: "100%" }}
+                />
+              </Box>
+            )}
 
             {/* Exclusions Section */}
             <Accordion
@@ -279,10 +411,19 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.exclusions')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.exclusions")}
                   {excludedEmployeeIds.length > 0 && (
-                    <Chip label={excludedEmployeeIds.length} size="small" color="warning" sx={{ ml: 1 }} />
+                    <Chip
+                      label={excludedEmployeeIds.length}
+                      size="small"
+                      color="warning"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -295,7 +436,7 @@ export const FilterDrawer: React.FC = () => {
                     onClick={() => setExclusionDialogOpen(true)}
                     data-testid="exclude-employees-button"
                   >
-                    {t('dashboard.filterDrawer.excludeEmployees')}
+                    {t("dashboard.filterDrawer.excludeEmployees")}
                   </Button>
                 </Box>
               </AccordionDetails>
@@ -311,7 +452,7 @@ export const FilterDrawer: React.FC = () => {
               onClick={clearAllFilters}
               data-testid="clear-filter-button"
             >
-              {t('dashboard.filterDrawer.clearAllFilters')}
+              {t("dashboard.filterDrawer.clearAllFilters")}
             </Button>
           </Box>
         </Box>

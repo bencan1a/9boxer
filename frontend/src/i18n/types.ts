@@ -3,7 +3,7 @@
  * Provides type safety and autocomplete for translation keys
  */
 
-import type enTranslation from './locales/en/translation.json';
+import type enTranslation from "./locales/en/translation.json";
 
 /**
  * Extract all nested keys from translation object

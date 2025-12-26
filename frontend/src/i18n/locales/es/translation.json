@@ -38,6 +38,8 @@
       "jobFunctions": "Funciones de Trabajo",
       "locations": "Ubicaciones",
       "managers": "Gerentes",
+      "flags": "Etiquetas",
+      "reportingChain": "Cadena de Reportes",
       "exclusions": "Exclusiones",
       "excludeEmployees": "Excluir Empleados",
       "clearAllFilters": "Limpiar Todos los Filtros"
@@ -177,7 +179,11 @@
       "tenure": "Antigüedad",
       "timeInLevel": "Tiempo en el Nivel",
       "promotionReady": "Listo para Promoción",
+      "flags": "Etiquetas",
+      "addFlag": "Agregar etiqueta...",
+      "noFlagsAvailable": "No hay etiquetas disponibles",
       "currentAssessment": "Evaluación Actual",
+      "box": "Caja",
       "potential": "Potencial:",
       "position": "Posición:",
       "modifiedInSession": "Modificado en la Sesión",
@@ -204,7 +210,7 @@
       "noDonutChanges": "Ningún cambio de dona aún",
       "moveEmployeesHint": "Mueva empleados para rastrear cambios aquí",
       "moveEmployeesDonutHint": "Mueva empleados en modo dona para rastrear cambios",
-      "addNotesPlaceholder": "Agregar notas...",
+      "addNotesPlaceholder": "Agregar nota...",
       "employee": "Empleado",
       "movement": "Movimiento",
       "from": "De",
@@ -212,6 +218,13 @@
       "notes": "Notas",
       "gridChanges": "Cambios de Cuadrícula",
       "donutChanges": "Cambios de Dona"
+    },
+    "changesSummary": {
+      "recentChanges": "Cambios Recientes",
+      "noChanges": "No hay cambios para este empleado",
+      "movement": "Movimiento",
+      "donutMovement": "Movimiento de Dona",
+      "notes": "Notas"
     },
     "statisticsTab": {
       "totalEmployees": "Total de Empleados",
@@ -363,6 +376,7 @@
     "title": "Configuración",
     "closeAriaLabel": "cerrar configuración",
     "appearance": "Apariencia",
+    "language": "Idioma",
     "currentSelection": "Selección Actual:",
     "currentTheme": "Usando actualmente tema {{theme}} (del sistema)",
     "theme": {

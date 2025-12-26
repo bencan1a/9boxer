@@ -20,7 +20,7 @@ import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
  */
 export async function generateActiveLayout(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);
@@ -57,7 +57,7 @@ export async function generateActiveLayout(
  */
 export async function generateToggleComparison(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // This screenshot requires manual composition
   // We'll capture the donut mode view; normal grid is captured separately

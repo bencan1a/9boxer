@@ -61,7 +61,6 @@ export const useIntelligence = (): UseIntelligenceResult => {
   // Fetch on mount and when employees array changes (real-time updates)
   useEffect(() => {
     refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employees]);
 
   return { data, isLoading, error, refetch };

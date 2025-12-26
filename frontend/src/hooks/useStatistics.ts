@@ -24,7 +24,10 @@ interface UseStatisticsResult {
   error: string | null;
 }
 
-export const useStatistics = (employees: Employee[], donutModeActive = false): UseStatisticsResult => {
+export const useStatistics = (
+  employees: Employee[],
+  donutModeActive = false
+): UseStatisticsResult => {
   const statistics = useMemo(() => {
     if (!employees || employees.length === 0) {
       return null;
@@ -36,7 +39,11 @@ export const useStatistics = (employees: Employee[], donutModeActive = false): U
       { count: number; percentage: number; label: string }
     > = {};
     for (let i = 1; i <= 9; i++) {
-      distributionDict[i] = { count: 0, percentage: 0, label: getPositionLabel(i) };
+      distributionDict[i] = {
+        count: 0,
+        percentage: 0,
+        label: getPositionLabel(i),
+      };
     }
 
     // Count employees in each box

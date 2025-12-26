@@ -358,7 +358,12 @@ def test_update_change_notes_when_employee_moved_back_then_returns_404(
 def test_update_change_notes_when_notes_added_then_persists_across_moves(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
-    """Test that notes persist when employee is moved again."""
+    """Test that notes can be updated after multiple moves.
+
+    With the new event architecture, each move creates a discrete GridMoveEvent
+    that tracks the immediate previous -> new position. The event replaces any
+    previous grid_move event for the same employee.
+    """
     # Upload file and move employee
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -377,32 +382,33 @@ def test_update_change_notes_when_notes_added_then_persists_across_moves(
         headers=auth_headers,
     )
 
-    # Add notes
-    test_notes = "Performance improvement plan completed"
+    # Add notes to first move
+    first_notes = "Initial performance discussion"
     test_client.patch(
         "/api/session/changes/1/notes",
-        json={"notes": test_notes},
+        json={"notes": first_notes},
         headers=auth_headers,
     )
 
-    # Second move (M,M -> L,L)
+    # Second move (M,M -> L,L) - replaces previous event
     test_client.patch(
         "/api/employees/1/move",
         json={"performance": "Low", "potential": "Low"},
         headers=auth_headers,
     )
 
-    # Verify notes are still present
+    # Add notes to the new event after second move
+    final_notes = "Performance improvement plan completed"
     notes_response = test_client.patch(
         "/api/session/changes/1/notes",
-        json={"notes": test_notes},  # Re-setting same notes to verify they exist
+        json={"notes": final_notes},
         headers=auth_headers,
     )
 
     assert notes_response.status_code == 200
-    assert notes_response.json()["notes"] == test_notes
-    # Verify the move still shows original -> final position
-    assert notes_response.json()["old_performance"] == "High"
+    assert notes_response.json()["notes"] == final_notes
+    # Event tracks the immediate previous position (M,M) -> current position (L,L)
+    assert notes_response.json()["old_performance"] == "Medium"
     assert notes_response.json()["new_performance"] == "Low"
 
 

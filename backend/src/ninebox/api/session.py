@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from ninebox.core.dependencies import get_session_manager
-from ninebox.models.session import EmployeeMove
+from ninebox.models.events import Event
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
 from ninebox.services.session_manager import SessionManager
@@ -145,8 +145,8 @@ async def get_session_status(
         "session_id": session.session_id,
         "active": True,
         "employee_count": len(session.current_employees),
-        "changes_count": len(session.changes),
-        "changes": session.changes,
+        "changes_count": len(session.events),  # Keep field name for API compatibility
+        "events": [e.model_dump() for e in session.events],
         "uploaded_filename": session.original_filename,
         "created_at": session.created_at.isoformat(),
     }
@@ -237,7 +237,7 @@ async def update_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
     session_mgr: SessionManager = Depends(get_session_manager),
-) -> EmployeeMove:
+) -> Event:
     """Update notes for an employee's change entry."""
     try:
         updated_change = session_mgr.update_change_notes(
@@ -245,6 +245,8 @@ async def update_change_notes(
             employee_id=employee_id,
             notes=request.notes,
         )
+        if updated_change is None:
+            raise ValueError(f"No change entry found for employee {employee_id}")
         return updated_change
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -255,7 +257,7 @@ async def update_donut_change_notes(
     employee_id: int,
     request: UpdateNotesRequest,
     session_mgr: SessionManager = Depends(get_session_manager),
-) -> EmployeeMove:
+) -> Event:
     """Update notes for an employee's donut change entry."""
     try:
         updated_change = session_mgr.update_donut_change_notes(
@@ -263,6 +265,8 @@ async def update_donut_change_notes(
             employee_id=employee_id,
             notes=request.notes,
         )
+        if updated_change is None:
+            raise ValueError(f"No donut change entry found for employee {employee_id}")
         return updated_change
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e

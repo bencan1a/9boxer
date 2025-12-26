@@ -2,7 +2,7 @@
  * Language selector component for switching between available languages
  */
 
-import React from 'react';
+import React from "react";
 import {
   MenuItem,
   Select,
@@ -10,10 +10,10 @@ import {
   FormControl,
   Box,
   Typography,
-} from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
-import LanguageIcon from '@mui/icons-material/Language';
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../i18n";
+import LanguageIcon from "@mui/icons-material/Language";
 
 export const LanguageSelector: React.FC = () => {
   const { i18n } = useTranslation();
@@ -25,20 +25,22 @@ export const LanguageSelector: React.FC = () => {
 
   // Normalize language code to handle variants (e.g., 'en-US' -> 'en')
   const getCurrentLanguage = (): SupportedLanguage => {
-    const baseLang = i18n.language.split('-')[0];
-    return (baseLang in SUPPORTED_LANGUAGES) ? baseLang as SupportedLanguage : 'en';
+    const baseLang = i18n.language.split("-")[0];
+    return baseLang in SUPPORTED_LANGUAGES
+      ? (baseLang as SupportedLanguage)
+      : "en";
   };
 
   return (
     <FormControl size="small" sx={{ minWidth: 120 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <LanguageIcon fontSize="small" />
         <Select
           value={getCurrentLanguage()}
           onChange={handleLanguageChange}
           displayEmpty
           sx={{
-            '& .MuiSelect-select': {
+            "& .MuiSelect-select": {
               py: 0.5,
             },
           }}

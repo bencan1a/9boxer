@@ -22,7 +22,9 @@ interface DistributionChartProps {
   data: PositionDistribution[];
 }
 
-export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) => {
+export const DistributionChart: React.FC<DistributionChartProps> = ({
+  data,
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -37,14 +39,16 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          {t('panel.intelligenceTab.chart.noDataAvailable')}
+          {t("panel.intelligenceTab.chart.noDataAvailable")}
         </Typography>
       </Box>
     );
   }
 
   // Sort data by grid_position for consistent display (9 → 1)
-  const sortedData = [...data].sort((a, b) => b.grid_position - a.grid_position);
+  const sortedData = [...data].sort(
+    (a, b) => b.grid_position - a.grid_position
+  );
 
   // Color based on count (higher count = darker blue)
   const maxCount = Math.max(...sortedData.map((d) => d.count));
@@ -68,7 +72,10 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
           data={sortedData}
           margin={{ top: 10, right: 10, left: 0, bottom: 60 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.charts.gridLines} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke={theme.palette.charts.gridLines}
+          />
           <XAxis
             dataKey="position_label"
             angle={-45}
@@ -79,7 +86,11 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
             stroke={theme.palette.text.secondary}
           />
           <YAxis
-            label={{ value: t('panel.statisticsTab.employeeCount'), angle: -90, position: "insideLeft" }}
+            label={{
+              value: t("panel.statisticsTab.employeeCount"),
+              angle: -90,
+              position: "insideLeft",
+            }}
             stroke={theme.palette.text.secondary}
           />
           <Tooltip
@@ -90,8 +101,8 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({ data }) =>
               borderRadius: "4px",
             }}
             formatter={(value: number) => [
-              t('panel.statisticsTab.employeesCount', { count: value }),
-              t('panel.statisticsTab.countLabel')
+              t("panel.statisticsTab.employeesCount", { count: value }),
+              t("panel.statisticsTab.countLabel"),
             ]}
           />
           <Bar dataKey="count" radius={[8, 8, 0, 0]}>

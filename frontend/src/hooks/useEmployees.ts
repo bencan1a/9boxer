@@ -70,20 +70,18 @@ export const useEmployees = () => {
   const positionToLevels = (
     position: number
   ): { performance: string; potential: string } => {
-    const mapping: Record<
-      number,
-      { performance: string; potential: string }
-    > = {
-      1: { performance: "Low", potential: "Low" },
-      2: { performance: "Medium", potential: "Low" },
-      3: { performance: "High", potential: "Low" },
-      4: { performance: "Low", potential: "Medium" },
-      5: { performance: "Medium", potential: "Medium" },
-      6: { performance: "High", potential: "Medium" },
-      7: { performance: "Low", potential: "High" },
-      8: { performance: "Medium", potential: "High" },
-      9: { performance: "High", potential: "High" },
-    };
+    const mapping: Record<number, { performance: string; potential: string }> =
+      {
+        1: { performance: "Low", potential: "Low" },
+        2: { performance: "Medium", potential: "Low" },
+        3: { performance: "High", potential: "Low" },
+        4: { performance: "Low", potential: "Medium" },
+        5: { performance: "Medium", potential: "Medium" },
+        6: { performance: "High", potential: "Medium" },
+        7: { performance: "Low", potential: "High" },
+        8: { performance: "Medium", potential: "High" },
+        9: { performance: "High", potential: "High" },
+      };
     return mapping[position] || { performance: "Medium", potential: "Medium" };
   };
 

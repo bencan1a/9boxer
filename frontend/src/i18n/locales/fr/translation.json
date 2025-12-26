@@ -40,7 +40,9 @@
       "managers": "Managers",
       "exclusions": "Exclusions",
       "excludeEmployees": "Exclure des collaborateurs",
-      "clearAllFilters": "Effacer tous les filtres"
+      "clearAllFilters": "Effacer tous les filtres",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain"
     },
     "exclusionDialog": {
       "title": "Exclure des collaborateurs",
@@ -197,7 +199,11 @@
         "level04": "Niveau 04 (VP)",
         "level05": "Niveau 05",
         "level06": "Niveau 06"
-      }
+      },
+      "addFlag": "Add flag...",
+      "box": "Box",
+      "flags": "Flags",
+      "noFlagsAvailable": "No flags available"
     },
     "changeTrackerTab": {
       "noChanges": "Aucune modification",
@@ -306,6 +312,13 @@
         "someAnomalies": "Quelques anomalies détectées. Consultez les sections ci-dessous pour plus de détails.",
         "significantAnomalies": "Anomalies importantes détectées. Examen immédiat recommandé."
       }
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     }
   },
   "common": {
@@ -372,7 +385,8 @@
       "darkModeDesc": "Toujours utiliser le thème sombre",
       "auto": "Auto (Suivre le système)",
       "autoDesc": "S'adapter automatiquement au thème de votre système"
-    }
+    },
+    "language": "Language"
   },
   "zoom": {
     "zoomIn": "Agrandir (Ctrl++)",

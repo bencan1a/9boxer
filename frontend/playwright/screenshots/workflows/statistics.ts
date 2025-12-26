@@ -24,7 +24,7 @@ import {
  */
 export async function generatePanelDistribution(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);
@@ -55,7 +55,7 @@ export async function generatePanelDistribution(
  */
 export async function generateIdealActualComparison(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure we're on the Statistics tab with data loaded
   const statisticsTab = page.locator('[data-testid="statistics-tab"]');
@@ -72,7 +72,7 @@ export async function generateIdealActualComparison(
 
   // Look for the comparison chart/section
   const comparisonSection = page.locator(
-    '[data-testid="distribution-comparison"]',
+    '[data-testid="distribution-comparison"]'
   );
   if ((await comparisonSection.count()) > 0) {
     await comparisonSection.screenshot({ path: outputPath });
@@ -94,7 +94,7 @@ export async function generateIdealActualComparison(
  */
 export async function generateTrendIndicators(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure we're on the Statistics tab with data loaded
   const statisticsTab = page.locator('[data-testid="statistics-tab"]');

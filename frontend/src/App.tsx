@@ -30,9 +30,9 @@ const App: React.FC = () => {
     async function init() {
       try {
         await initializeConfig();
-        logger.info('[App] Configuration initialized successfully');
+        logger.info("[App] Configuration initialized successfully");
       } catch (error) {
-        logger.error('[App] Failed to initialize configuration:', error);
+        logger.error("[App] Failed to initialize configuration:", error);
         // Continue anyway with default configuration
       } finally {
         setConfigReady(true);
@@ -45,7 +45,9 @@ const App: React.FC = () => {
   useEffect(() => {
     // Check if running in Electron environment
     if (!window.electronAPI?.theme) {
-      logger.warn('Electron API not available - theme detection disabled (running in web mode)');
+      logger.warn(
+        "Electron API not available - theme detection disabled (running in web mode)"
+      );
       return;
     }
 
@@ -53,18 +55,20 @@ const App: React.FC = () => {
     window.electronAPI.theme
       .getSystemTheme()
       .then((systemTheme) => {
-        logger.info('Initial system theme detected:', systemTheme);
+        logger.info("Initial system theme detected:", systemTheme);
         useUiStore.getState().setSystemTheme(systemTheme);
       })
       .catch((error) => {
-        logger.error('Failed to get system theme:', error);
+        logger.error("Failed to get system theme:", error);
       });
 
     // Listen for system theme changes
-    const cleanup = window.electronAPI.theme.onSystemThemeChange((systemTheme) => {
-      logger.info('System theme changed to:', systemTheme);
-      useUiStore.getState().setSystemTheme(systemTheme);
-    });
+    const cleanup = window.electronAPI.theme.onSystemThemeChange(
+      (systemTheme) => {
+        logger.info("System theme changed to:", systemTheme);
+        useUiStore.getState().setSystemTheme(systemTheme);
+      }
+    );
 
     return cleanup;
   }, []);
@@ -73,16 +77,16 @@ const App: React.FC = () => {
   useEffect(() => {
     // Handle uncaught errors (e.g., in setTimeout, setInterval callbacks)
     const handleError = (event: ErrorEvent) => {
-      logger.error('Uncaught error', event.error);
-      logger.error('Error stack', event.error?.stack);
+      logger.error("Uncaught error", event.error);
+      logger.error("Error stack", event.error?.stack);
       // Prevent the default browser error handling
       event.preventDefault();
     };
 
     // Handle unhandled promise rejections (e.g., in async code, API calls)
     const handleRejection = (event: PromiseRejectionEvent) => {
-      logger.error('Unhandled promise rejection', event.reason);
-      logger.error('Rejection stack', event.reason?.stack);
+      logger.error("Unhandled promise rejection", event.reason);
+      logger.error("Rejection stack", event.reason?.stack);
       // Prevent the default browser rejection handling
       event.preventDefault();
     };
@@ -103,14 +107,18 @@ const App: React.FC = () => {
         <CssBaseline />
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            backgroundColor: 'background.default',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            backgroundColor: "background.default",
           }}
         >
-          <LoadingSpinner size={60} message="Connecting to backend..." overlay={false} />
+          <LoadingSpinner
+            size={60}
+            message="Connecting to backend..."
+            overlay={false}
+          />
         </Box>
       </ThemeProvider>
     );
@@ -123,14 +131,17 @@ const App: React.FC = () => {
           <CssBaseline />
           <Box
             sx={{
-              transition: 'background-color 0.3s ease, color 0.3s ease',
-              minHeight: '100vh',
-              backgroundColor: 'background.default',
+              transition: "background-color 0.3s ease, color 0.3s ease",
+              minHeight: "100vh",
+              backgroundColor: "background.default",
             }}
           >
             <HashRouter>
               <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace />}
+                />
                 <Route path="/dashboard" element={<DashboardPage />} />
               </Routes>
             </HashRouter>

@@ -4,7 +4,9 @@ from datetime import date, datetime
 from enum import Enum
 from typing import ClassVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+from ninebox.models.constants import ALLOWED_FLAGS
 
 
 class PerformanceLevel(str, Enum):
@@ -75,6 +77,9 @@ class Employee(BaseModel):
     promotion_status: str | None = None
     promotion_readiness: bool | None = None
 
+    # Flags (predefined tags for filtering and categorization)
+    flags: list[str] | None = None
+
     # Metadata
     modified_in_session: bool = False
     last_modified: datetime | None = None
@@ -86,6 +91,31 @@ class Employee(BaseModel):
     donut_modified: bool = False
     donut_last_modified: datetime | None = None
     donut_notes: str | None = None
+
+    @field_validator("flags")
+    @classmethod
+    def validate_flags(cls, v: list[str] | None) -> list[str] | None:
+        """Validate flags are from allowed list.
+
+        Args:
+            v: List of flag strings to validate
+
+        Returns:
+            Validated list of flags or None
+
+        Raises:
+            ValueError: If any flag is not in the allowed list
+        """
+        if v is None:
+            return None
+
+        invalid_flags = [flag for flag in v if flag not in ALLOWED_FLAGS]
+        if invalid_flags:
+            raise ValueError(
+                f"Invalid flags: {', '.join(invalid_flags)}. Allowed flags: {', '.join(sorted(ALLOWED_FLAGS))}"
+            )
+
+        return v
 
     class Config:
         """Pydantic config."""

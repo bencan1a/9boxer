@@ -34,7 +34,7 @@ import { dragEmployeeToPosition } from "../../helpers/dragAndDrop";
  */
 export async function generateFileImport(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Navigate to a state where we can open file menu
   await page.goto("http://localhost:5173");
@@ -84,7 +84,7 @@ export async function generateFileImport(
  */
 export async function generateStatisticsRedFlags(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -129,7 +129,7 @@ export async function generateStatisticsRedFlags(
  */
 export async function generateIntelligenceAnomalies(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -168,7 +168,7 @@ export async function generateIntelligenceAnomalies(
  */
 export async function generateFiltersPanel(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded (filter button is disabled without data)
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -237,7 +237,7 @@ export async function generateFiltersPanel(
  */
 export async function generateDonutModeToggle(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -283,7 +283,7 @@ export async function generateDonutModeToggle(
  */
 export async function generateDonutModeGrid(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded (donut mode requires employees)
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -302,7 +302,7 @@ export async function generateDonutModeGrid(
     // (Without this, grid just shows position-5 employees normally)
     // Dragging creates the "ghostly" visual state with purple borders
     const pos5Employees = page.locator(
-      '[data-testid="grid-box-5"] [data-testid^="employee-card-"]',
+      '[data-testid="grid-box-5"] [data-testid^="employee-card-"]'
     );
     if ((await pos5Employees.count()) > 0) {
       // Get first employee in position 5
@@ -348,7 +348,7 @@ export async function generateDonutModeGrid(
  */
 export async function generateExportResults(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // This is a placeholder for manual screenshot workflow
   // The actual screenshot must be captured manually from Excel
@@ -359,7 +359,7 @@ export async function generateExportResults(
       "2. Export data to Excel (File > Export Data)\n" +
       "3. Open exported Excel file\n" +
       "4. Highlight columns showing position changes\n" +
-      `5. Save to: ${outputPath}`,
+      `5. Save to: ${outputPath}`
   );
 
   // Return without error to allow generator to continue

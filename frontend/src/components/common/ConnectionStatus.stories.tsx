@@ -1,70 +1,121 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { ConnectionStatus } from './ConnectionStatus';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "@storybook/test";
+import { Chip, IconButton, Box } from "@mui/material";
+import { Refresh as RefreshIcon } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
-// Mock the useConnectionStatus hook for Storybook
-const mockConnectionStatus = {
-  status: 'connected' as const,
-  retryCount: 0,
-  manualRetry: fn(),
-};
-
-// Create a wrapper component that accepts props for the mock
-const ConnectionStatusWrapper = ({
-  status = 'connected',
+// Create a standalone component that mimics ConnectionStatus behavior
+// without requiring the actual hook (which needs Electron/backend)
+const ConnectionStatusDemo = ({
+  status = "connected",
   retryCount = 0,
 }: {
-  status?: 'connected' | 'reconnecting' | 'disconnected';
+  status?: "connected" | "reconnecting" | "disconnected";
   retryCount?: number;
 }) => {
-  // Mock the hook at component level
-  const originalHook = require('../../hooks/useConnectionStatus').useConnectionStatus;
+  const { t } = useTranslation();
+  const manualRetry = fn();
 
-  // Override for this specific story
-  require('../../hooks/useConnectionStatus').useConnectionStatus = () => ({
-    status,
-    retryCount,
-    manualRetry: fn(),
-  });
+  // Configuration for each status (same as the real component)
+  const statusConfig = {
+    connected: {
+      color: "success" as const,
+      label: t("common.connectionStatus.connected"),
+      icon: "🟢",
+    },
+    reconnecting: {
+      color: "warning" as const,
+      label:
+        retryCount > 0
+          ? t("common.connectionStatus.reconnectingWithCount", {
+              count: retryCount,
+            })
+          : t("common.connectionStatus.reconnecting"),
+      icon: "🟡",
+    },
+    disconnected: {
+      color: "error" as const,
+      label: t("common.connectionStatus.disconnected"),
+      icon: "🔴",
+    },
+  };
 
-  const component = <ConnectionStatus />;
+  const config = statusConfig[status];
 
-  // Restore original hook
-  require('../../hooks/useConnectionStatus').useConnectionStatus = originalHook;
-
-  return component;
+  return (
+    <Box
+      sx={{
+        position: "fixed",
+        top: 16,
+        right: 16,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      <Chip
+        icon={<span style={{ fontSize: "14px" }}>{config.icon}</span>}
+        label={config.label}
+        color={config.color}
+        size="small"
+        variant="filled"
+        sx={{
+          fontWeight: 500,
+          boxShadow: 2,
+        }}
+      />
+      {status === "disconnected" && (
+        <IconButton
+          size="small"
+          color="error"
+          onClick={manualRetry}
+          title={t("common.retryConnection")}
+          sx={{
+            boxShadow: 2,
+            bgcolor: "background.paper",
+            "&:hover": {
+              bgcolor: "background.default",
+            },
+          }}
+        >
+          <RefreshIcon fontSize="small" />
+        </IconButton>
+      )}
+    </Box>
+  );
 };
 
-const meta: Meta<typeof ConnectionStatusWrapper> = {
-  title: 'Common/ConnectionStatus',
-  component: ConnectionStatusWrapper,
-  tags: ['autodocs'],
+const meta: Meta<typeof ConnectionStatusDemo> = {
+  title: "Common/ConnectionStatus",
+  component: ConnectionStatusDemo,
+  tags: ["autodocs"],
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
     docs: {
       description: {
         component:
-          'Displays the backend connection status in the top-right corner. ' +
-          'Shows green when connected, yellow when reconnecting, and red when disconnected. ' +
-          'Includes a retry button when disconnected.',
+          "Displays the backend connection status in the top-right corner. " +
+          "Shows green when connected, yellow when reconnecting, and red when disconnected. " +
+          "Includes a retry button when disconnected.",
       },
     },
   },
   argTypes: {
     status: {
-      control: 'select',
-      options: ['connected', 'reconnecting', 'disconnected'],
-      description: 'Current connection status',
+      control: "select",
+      options: ["connected", "reconnecting", "disconnected"],
+      description: "Current connection status",
     },
     retryCount: {
-      control: { type: 'number', min: 0, max: 10 },
-      description: 'Number of retry attempts (shown when reconnecting)',
+      control: { type: "number", min: 0, max: 10 },
+      description: "Number of retry attempts (shown when reconnecting)",
     },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof ConnectionStatusWrapper>;
+type Story = StoryObj<typeof ConnectionStatusDemo>;
 
 /**
  * Connected state - green chip indicator.
@@ -72,14 +123,14 @@ type Story = StoryObj<typeof ConnectionStatusWrapper>;
  */
 export const Connected: Story = {
   args: {
-    status: 'connected',
+    status: "connected",
     retryCount: 0,
   },
   parameters: {
     docs: {
       description: {
         story:
-          'The default healthy state. Shows a green chip with a checkmark emoji ' +
+          "The default healthy state. Shows a green chip with a checkmark emoji " +
           'and "Connected" label. No retry button is shown.',
       },
     },
@@ -92,15 +143,15 @@ export const Connected: Story = {
  */
 export const Reconnecting: Story = {
   args: {
-    status: 'reconnecting',
+    status: "reconnecting",
     retryCount: 3,
   },
   parameters: {
     docs: {
       description: {
         story:
-          'Shown during automatic reconnection attempts. The chip is yellow and displays ' +
-          'the retry count. This appears when the backend becomes temporarily unavailable.',
+          "Shown during automatic reconnection attempts. The chip is yellow and displays " +
+          "the retry count. This appears when the backend becomes temporarily unavailable.",
       },
     },
   },
@@ -112,16 +163,16 @@ export const Reconnecting: Story = {
  */
 export const Disconnected: Story = {
   args: {
-    status: 'disconnected',
+    status: "disconnected",
     retryCount: 0,
   },
   parameters: {
     docs: {
       description: {
         story:
-          'Shown when the connection is lost and automatic reconnection has failed. ' +
-          'The chip is red and includes a manual retry button (refresh icon) that users ' +
-          'can click to attempt reconnection.',
+          "Shown when the connection is lost and automatic reconnection has failed. " +
+          "The chip is red and includes a manual retry button (refresh icon) that users " +
+          "can click to attempt reconnection.",
       },
     },
   },
@@ -133,14 +184,14 @@ export const Disconnected: Story = {
  */
 export const ReconnectingInitial: Story = {
   args: {
-    status: 'reconnecting',
+    status: "reconnecting",
     retryCount: 0,
   },
   parameters: {
     docs: {
       description: {
         story:
-          'The first reconnection attempt, before the retry counter increments. ' +
+          "The first reconnection attempt, before the retry counter increments. " +
           'Shows "Reconnecting..." without a count.',
       },
     },

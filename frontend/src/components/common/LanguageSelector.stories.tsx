@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { LanguageSelector } from './LanguageSelector';
-import { Box } from '@mui/material';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { LanguageSelector } from "./LanguageSelector";
+import { Box } from "@mui/material";
 
 const meta: Meta<typeof LanguageSelector> = {
-  title: 'Common/LanguageSelector',
+  title: "Common/LanguageSelector",
   component: LanguageSelector,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'Language selector dropdown for switching between supported languages. ' +
-          'Currently supports English and Spanish (Español). ' +
-          'The selected language is persisted to localStorage and affects all UI text. ' +
-          'Includes a language icon and a compact dropdown menu.',
+          "Language selector dropdown for switching between supported languages. " +
+          "Currently supports English and Spanish (Español). " +
+          "The selected language is persisted to localStorage and affects all UI text. " +
+          "Includes a language icon and a compact dropdown menu.",
       },
     },
   },
@@ -39,9 +39,9 @@ export const Default: Story = {
     docs: {
       description: {
         story:
-          'Default state showing English as the selected language. ' +
-          'The language selector displays a globe icon and the current language name. ' +
-          'Clicking opens a dropdown with all available languages.',
+          "Default state showing English as the selected language. " +
+          "The language selector displays a globe icon and the current language name. " +
+          "Clicking opens a dropdown with all available languages.",
       },
     },
   },
@@ -57,8 +57,8 @@ export const SpanishSelected: Story = {
       description: {
         story:
           'When Spanish is selected, the dropdown shows "Español". ' +
-          'This affects all translatable text throughout the application. ' +
-          'The selection is automatically saved to localStorage.',
+          "This affects all translatable text throughout the application. " +
+          "The selection is automatically saved to localStorage.",
       },
     },
   },
@@ -77,11 +77,11 @@ export const AllLanguagesAvailable: Story = {
     docs: {
       description: {
         story:
-          '**Currently Supported Languages:**\n\n' +
-          '- **en**: English\n' +
-          '- **es**: Español (Spanish)\n\n' +
-          'The language selector automatically detects the user\'s browser language ' +
-          'on first load. If the detected language is not supported, it falls back to English. ' +
+          "**Currently Supported Languages:**\n\n" +
+          "- **en**: English\n" +
+          "- **es**: Español (Spanish)\n\n" +
+          "The language selector automatically detects the user's browser language " +
+          "on first load. If the detected language is not supported, it falls back to English. " +
           'Language preferences are stored in localStorage under the key "9boxer-language".',
       },
     },
@@ -104,9 +104,9 @@ export const CompactSize: Story = {
     docs: {
       description: {
         story:
-          'The language selector is designed to work in compact spaces. ' +
+          "The language selector is designed to work in compact spaces. " +
           'It uses MUI\'s "small" size variant and a minimum width of 120px. ' +
-          'The globe icon provides visual recognition even when space is limited.',
+          "The globe icon provides visual recognition even when space is limited.",
       },
     },
   },

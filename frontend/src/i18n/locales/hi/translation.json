@@ -40,7 +40,9 @@
       "managers": "प्रबंधक",
       "exclusions": "बहिष्करण",
       "excludeEmployees": "कर्मचारियों को बाहर करें",
-      "clearAllFilters": "सभी फ़िल्टर साफ़ करें"
+      "clearAllFilters": "सभी फ़िल्टर साफ़ करें",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain"
     },
     "exclusionDialog": {
       "title": "कर्मचारियों को बाहर करें",
@@ -197,7 +199,11 @@
         "level04": "स्तर 04 (VP)",
         "level05": "स्तर 05",
         "level06": "स्तर 06"
-      }
+      },
+      "addFlag": "Add flag...",
+      "box": "Box",
+      "flags": "Flags",
+      "noFlagsAvailable": "No flags available"
     },
     "changeTrackerTab": {
       "noChanges": "अभी तक कोई परिवर्तन नहीं",
@@ -306,6 +312,13 @@
         "someAnomalies": "कुछ विसंगतियां पाई गईं। विवरण के लिए नीचे दिए गए खंडों की समीक्षा करें।",
         "significantAnomalies": "महत्वपूर्ण विसंगतियां पाई गईं। तत्काल समीक्षा की सिफारिश की जाती है।"
       }
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     }
   },
   "common": {
@@ -372,7 +385,8 @@
       "darkModeDesc": "हमेशा डार्क थीम का उपयोग करें",
       "auto": "स्वतः (सिस्टम का अनुसरण करें)",
       "autoDesc": "स्वचालित रूप से अपनी सिस्टम थीम से मिलान करें"
-    }
+    },
+    "language": "Language"
   },
   "zoom": {
     "zoomIn": "ज़ूम इन (Ctrl++)",

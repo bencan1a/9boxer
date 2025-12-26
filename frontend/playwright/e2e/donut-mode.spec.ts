@@ -5,28 +5,30 @@
  * persistence, and export functionality
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 import {
   uploadExcelFile,
   dragEmployeeToPosition,
   toggleDonutMode,
   getEmployeeIdFromCard,
-  waitForUiSettle
-} from '../helpers';
-import * as path from 'path';
-import * as fs from 'fs';
+  waitForUiSettle,
+} from "../helpers";
+import * as path from "path";
+import * as fs from "fs";
 
-test.describe('Donut Mode Workflow', () => {
+test.describe("Donut Mode Workflow", () => {
   test.beforeEach(async ({ page }) => {
     // Visit and upload sample data
-    await page.goto('/');
-    await uploadExcelFile(page, 'sample-employees.xlsx');
+    await page.goto("/");
+    await uploadExcelFile(page, "sample-employees.xlsx");
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 
-  test('should perform full donut mode workflow with placement, toggle, and export', async ({ page }) => {
+  test("should perform full donut mode workflow with placement, toggle, and export", async ({
+    page,
+  }) => {
     // 1. Get all employees count initially
     const allEmployeeCards = page.locator('[data-testid^="employee-card-"]');
     const totalCount = await allEmployeeCards.count();
@@ -53,7 +55,9 @@ test.describe('Donut Mode Workflow', () => {
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     await expect(gridBox5).toBeVisible();
 
-    const firstPosition5Employee = gridBox5.locator('[data-testid^="employee-card-"]').first();
+    const firstPosition5Employee = gridBox5
+      .locator('[data-testid^="employee-card-"]')
+      .first();
     await expect(firstPosition5Employee).toBeVisible();
 
     // Get employee ID from the data-testid
@@ -62,7 +66,7 @@ test.describe('Donut Mode Workflow', () => {
     // Get employee name for tracking (extract from card's text content)
     const employeeCardText = await firstPosition5Employee.textContent();
     // The first line of text in the card is the employee name
-    const employeeName = employeeCardText?.split('\n')[0].trim();
+    const employeeName = employeeCardText?.split("\n")[0].trim();
     expect(employeeName).toBeTruthy();
 
     // 7. Drag employee to different position (position 9 - Star quadrant)
@@ -73,7 +77,9 @@ test.describe('Donut Mode Workflow', () => {
     await expect(gridBox9.getByText(employeeName!)).toBeVisible();
 
     // 9. Verify ghostly styling (opacity 0.7) and purple border
-    const movedEmployee = page.locator(`[data-testid="employee-card-${empId}"]`);
+    const movedEmployee = page.locator(
+      `[data-testid="employee-card-${empId}"]`
+    );
     await expect(movedEmployee).toBeVisible();
 
     // Check opacity is 0.7 (ghostly effect)
@@ -88,20 +94,20 @@ test.describe('Donut Mode Workflow', () => {
       const style = window.getComputedStyle(el);
       return style.borderWidth;
     });
-    expect(borderWidth).toBe('2px');
+    expect(borderWidth).toBe("2px");
 
     const borderStyle = await movedEmployee.evaluate((el) => {
       const style = window.getComputedStyle(el);
       return style.borderStyle;
     });
-    expect(borderStyle).toBe('solid');
+    expect(borderStyle).toBe("solid");
 
     const borderColor = await movedEmployee.evaluate((el) => {
       const style = window.getComputedStyle(el);
       return style.borderColor;
     });
     // Purple color (#9c27b0 converts to rgb(156, 39, 176))
-    expect(borderColor).toBe('rgb(156, 39, 176)');
+    expect(borderColor).toBe("rgb(156, 39, 176)");
 
     // 10. Verify donut indicator badge is visible on the card
     const donutBadge = movedEmployee.locator('[data-testid="donut-indicator"]');
@@ -120,7 +126,9 @@ test.describe('Donut Mode Workflow', () => {
 
     // 14. Verify employee back in original position (position 5)
     // When donut mode is OFF, employee should display in their original position
-    const employeeInOriginalPosition = gridBox5.locator(`[data-testid="employee-card-${empId}"]`);
+    const employeeInOriginalPosition = gridBox5.locator(
+      `[data-testid="employee-card-${empId}"]`
+    );
     await expect(employeeInOriginalPosition).toBeVisible();
     await expect(employeeInOriginalPosition).toContainText(employeeName!);
 
@@ -136,7 +144,9 @@ test.describe('Donut Mode Workflow', () => {
 
     // 16. Verify donut placement persisted (still in position 9)
     await page.waitForTimeout(500); // Allow filter to apply
-    const persistedEmployee = gridBox9.locator(`[data-testid="employee-card-${empId}"]`);
+    const persistedEmployee = gridBox9.locator(
+      `[data-testid="employee-card-${empId}"]`
+    );
     await expect(persistedEmployee).toBeVisible();
     await expect(persistedEmployee).toContainText(employeeName!);
 
@@ -162,9 +172,11 @@ test.describe('Donut Mode Workflow', () => {
 
     // Verify export menu item is disabled (as expected with only donut placements)
     await page.locator('[data-testid="file-menu-button"]').click();
-    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    const exportMenuItem = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
     await expect(exportMenuItem).toBeDisabled();
-    await page.keyboard.press('Escape');
+    await page.keyboard.press("Escape");
 
     // To actually test export with donut data, we'd need to:
     // 1. Make a regular modification (move employee outside donut mode)
@@ -172,7 +184,9 @@ test.describe('Donut Mode Workflow', () => {
     // This is covered in the optional test below
   });
 
-  test('should include donut placement data in Excel export', async ({ page }) => {
+  test("should include donut placement data in Excel export", async ({
+    page,
+  }) => {
     // 1. Upload data
     // Already done in beforeEach
 
@@ -182,7 +196,9 @@ test.describe('Donut Mode Workflow', () => {
     // 3. Make a donut placement
     await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5.locator('[data-testid^="employee-card-"]').first();
+    const firstEmployee = gridBox5
+      .locator('[data-testid^="employee-card-"]')
+      .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
 
     await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
@@ -222,14 +238,16 @@ test.describe('Donut Mode Workflow', () => {
 
     // 6. Verify file menu badge shows changes
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
-    await expect(fileMenuBadge).not.toHaveAttribute('class', /invisible/);
+    await expect(fileMenuBadge).not.toHaveAttribute("class", /invisible/);
 
     // 7. Set up download listener
-    const downloadPromise = page.waitForEvent('download');
+    const downloadPromise = page.waitForEvent("download");
 
     // 8. Open file menu and click export menu item
     await page.locator('[data-testid="file-menu-button"]').click();
-    const exportMenuItem = page.locator('[data-testid="export-changes-menu-item"]');
+    const exportMenuItem = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
     await expect(exportMenuItem).toBeEnabled();
     await exportMenuItem.click();
 
@@ -240,10 +258,15 @@ test.describe('Donut Mode Workflow', () => {
     expect(download.suggestedFilename()).toMatch(/modified_.*\.xlsx$/);
 
     // 11. Save the downloaded file temporarily
-    const downloadPath = path.join(__dirname, '..', 'tmp', download.suggestedFilename());
+    const downloadPath = path.join(
+      __dirname,
+      "..",
+      "tmp",
+      download.suggestedFilename()
+    );
 
     // Create tmp directory if it doesn't exist
-    const tmpDir = path.join(__dirname, '..', 'tmp');
+    const tmpDir = path.join(__dirname, "..", "tmp");
     if (!fs.existsSync(tmpDir)) {
       fs.mkdirSync(tmpDir, { recursive: true });
     }
@@ -263,21 +286,25 @@ test.describe('Donut Mode Workflow', () => {
     }
   });
 
-  test('should allow adding notes to donut placements', async ({ page }) => {
+  test("should allow adding notes to donut placements", async ({ page }) => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
     // 2. Find and move an employee in donut mode
     await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5.locator('[data-testid^="employee-card-"]').first();
+    const firstEmployee = gridBox5
+      .locator('[data-testid^="employee-card-"]')
+      .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
 
     await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Open employee details to add notes
     // Click on the employee card
-    const movedEmployee = page.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const movedEmployee = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await movedEmployee.click();
 
     // 4. Wait for details panel/dialog to open
@@ -288,22 +315,27 @@ test.describe('Donut Mode Workflow', () => {
 
     // 5. Look for notes field (adjust selector based on actual implementation)
     // This is a placeholder - actual implementation may vary
-    const notesField = page.locator('textarea[placeholder*="note" i], textarea[aria-label*="note" i]').first();
+    const notesField = page
+      .locator(
+        'textarea[placeholder*="note" i], textarea[aria-label*="note" i]'
+      )
+      .first();
 
     // Check if notes field is available
-    const notesFieldExists = await notesField.count() > 0;
+    const notesFieldExists = (await notesField.count()) > 0;
 
     if (notesFieldExists) {
       await expect(notesField).toBeVisible();
 
       // 6. Add notes
-      const testNotes = 'High potential for leadership role - consider for succession planning';
+      const testNotes =
+        "High potential for leadership role - consider for succession planning";
       await notesField.click();
       await notesField.fill(testNotes);
 
       // 7. Save notes (might be auto-save or require button click)
       // Blur to trigger auto-save
-      await page.keyboard.press('Escape'); // Or click outside to blur
+      await page.keyboard.press("Escape"); // Or click outside to blur
       await page.waitForTimeout(500);
 
       // 8. Verify notes persisted
@@ -311,25 +343,35 @@ test.describe('Donut Mode Workflow', () => {
       await movedEmployee.click();
       await page.waitForTimeout(300);
 
-      const notesFieldAfter = page.locator('textarea[placeholder*="note" i], textarea[aria-label*="note" i]').first();
-      if (await notesFieldAfter.count() > 0) {
+      const notesFieldAfter = page
+        .locator(
+          'textarea[placeholder*="note" i], textarea[aria-label*="note" i]'
+        )
+        .first();
+      if ((await notesFieldAfter.count()) > 0) {
         await expect(notesFieldAfter).toHaveValue(testNotes);
       }
     } else {
       // If notes field not found, log for debugging
       // This test is optional and depends on UI implementation
-      console.log('Notes field not found in employee details - feature may not be implemented yet');
+      console.log(
+        "Notes field not found in employee details - feature may not be implemented yet"
+      );
     }
   });
 
-  test('should show correct position labels in donut mode vs normal mode', async ({ page }) => {
+  test("should show correct position labels in donut mode vs normal mode", async ({
+    page,
+  }) => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
     // 2. Make a donut placement
     await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5.locator('[data-testid^="employee-card-"]').first();
+    const firstEmployee = gridBox5
+      .locator('[data-testid^="employee-card-"]')
+      .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
 
     // Move from position 5 to position 9
@@ -337,13 +379,17 @@ test.describe('Donut Mode Workflow', () => {
 
     // 3. Verify employee shows in position 9 with donut label
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const employeeInDonutMode = gridBox9.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeInDonutMode = gridBox9.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeInDonutMode).toBeVisible();
 
     // Position 9 label should be "Star" or "High Performance, High Potential"
     // Verify the position label is shown (actual text depends on implementation)
-    const positionLabel = employeeInDonutMode.locator('[data-testid="position-label"]');
-    const positionLabelExists = await positionLabel.count() > 0;
+    const positionLabel = employeeInDonutMode.locator(
+      '[data-testid="position-label"]'
+    );
+    const positionLabelExists = (await positionLabel.count()) > 0;
 
     if (positionLabelExists) {
       const donutModeLabel = await positionLabel.textContent();
@@ -356,38 +402,52 @@ test.describe('Donut Mode Workflow', () => {
     // Wait for all employees to be shown again (donut filter removed)
     // The employee count should increase from position-5-only to all employees
     await expect(async () => {
-      const totalCount = await page.locator('[data-testid^="employee-card-"]').count();
+      const totalCount = await page
+        .locator('[data-testid^="employee-card-"]')
+        .count();
       // Sample data has 15 employees, so we should see significantly more than 3
       expect(totalCount).toBeGreaterThan(10);
     }).toPass({ timeout: 5000 });
 
     // 5. Verify employee shows in original position with regular label
-    const employeeInNormalMode = gridBox5.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeInNormalMode = gridBox5.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeInNormalMode).toBeVisible();
 
     // In normal mode, should show position 5 label
-    const normalModeLabel = employeeInNormalMode.locator('[data-testid="position-label"]');
-    if (await normalModeLabel.count() > 0) {
+    const normalModeLabel = employeeInNormalMode.locator(
+      '[data-testid="position-label"]'
+    );
+    if ((await normalModeLabel.count()) > 0) {
       const normalLabelText = await normalModeLabel.textContent();
       expect(normalLabelText).toBeTruthy();
     }
   });
 
-  test('should handle multiple donut placements correctly', async ({ page }) => {
+  test("should handle multiple donut placements correctly", async ({
+    page,
+  }) => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
     // 2. Make multiple donut placements
     await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const position5Employees = gridBox5.locator('[data-testid^="employee-card-"]');
+    const position5Employees = gridBox5.locator(
+      '[data-testid^="employee-card-"]'
+    );
     const count = await position5Employees.count();
 
     // Move at least 2 employees if available
     if (count >= 2) {
       // Collect employee IDs before moving
-      const employee1Id = await getEmployeeIdFromCard(position5Employees.nth(0));
-      const employee2Id = await getEmployeeIdFromCard(position5Employees.nth(1));
+      const employee1Id = await getEmployeeIdFromCard(
+        position5Employees.nth(0)
+      );
+      const employee2Id = await getEmployeeIdFromCard(
+        position5Employees.nth(1)
+      );
 
       // Move first employee
       await dragEmployeeToPosition(page, employee1Id, 9, { isDonutMode: true });
@@ -398,8 +458,12 @@ test.describe('Donut Mode Workflow', () => {
       await page.waitForTimeout(500);
 
       // 3. Verify both employees show with ghostly styling
-      const employee1Card = page.locator(`[data-testid="employee-card-${employee1Id}"]`);
-      const employee2Card = page.locator(`[data-testid="employee-card-${employee2Id}"]`);
+      const employee1Card = page.locator(
+        `[data-testid="employee-card-${employee1Id}"]`
+      );
+      const employee2Card = page.locator(
+        `[data-testid="employee-card-${employee2Id}"]`
+      );
 
       // Both should be visible with opacity 0.7
       const opacity1 = await employee1Card.evaluate((el) => {
@@ -421,7 +485,9 @@ test.describe('Donut Mode Workflow', () => {
     }
   });
 
-  test.skip('should clear donut placement when moved back to position 5 in donut mode', async ({ page }) => {
+  test.skip("should clear donut placement when moved back to position 5 in donut mode", async ({
+    page,
+  }) => {
     // SKIPPED: This test reveals a potential frontend issue where moving an employee
     // back to position 5 doesn't immediately clear the ghostly styling (opacity 0.7).
     // The backend correctly clears the donut fields (verified in backend tests),
@@ -441,15 +507,21 @@ test.describe('Donut Mode Workflow', () => {
     // 2. Make a donut placement
     await page.waitForTimeout(500);
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5.locator('[data-testid^="employee-card-"]').first();
+    const firstEmployee = gridBox5
+      .locator('[data-testid^="employee-card-"]')
+      .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
 
     // Move to position 9
     await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Verify ghostly styling is present
-    let employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
-    let opacity = await employeeCard.evaluate((el) => window.getComputedStyle(el).opacity);
+    let employeeCard = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
+    let opacity = await employeeCard.evaluate(
+      (el) => window.getComputedStyle(el).opacity
+    );
     expect(parseFloat(opacity)).toBe(0.7);
 
     // 4. Move back to position 5 (still in donut mode)
@@ -459,12 +531,16 @@ test.describe('Donut Mode Workflow', () => {
     await page.waitForTimeout(1000);
 
     // Verify employee is back in position 5
-    const employeeInBox5 = gridBox5.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeInBox5 = gridBox5.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeInBox5).toBeVisible();
 
     // Check opacity should be 1 (normal)
     employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
-    opacity = await employeeCard.evaluate((el) => window.getComputedStyle(el).opacity);
+    opacity = await employeeCard.evaluate(
+      (el) => window.getComputedStyle(el).opacity
+    );
     expect(parseFloat(opacity)).toBe(1);
 
     // 6. Donut indicator badge should not be visible

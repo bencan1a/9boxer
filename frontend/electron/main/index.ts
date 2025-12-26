@@ -1,8 +1,15 @@
-import { app, BrowserWindow, dialog, Menu, ipcMain, nativeTheme } from 'electron';
-import { spawn, ChildProcess } from 'child_process';
-import path from 'path';
-import axios from 'axios';
-import { WindowStateManager } from './windowState';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  Menu,
+  ipcMain,
+  nativeTheme,
+} from "electron";
+import { spawn, ChildProcess } from "child_process";
+import path from "path";
+import axios from "axios";
+import { WindowStateManager } from "./windowState";
 
 // Global references
 let mainWindow: BrowserWindow | null = null;
@@ -23,7 +30,8 @@ const HEALTH_CHECK_TIMEOUT = 5000; // 5 seconds
 
 // Connection monitoring state
 let healthCheckInterval: NodeJS.Timeout | null = null;
-let connectionStatus: 'connected' | 'reconnecting' | 'disconnected' = 'connected';
+let connectionStatus: "connected" | "reconnecting" | "disconnected" =
+  "connected";
 let restartAttempts = 0;
 const MAX_RESTART_ATTEMPTS = 1;
 
@@ -32,20 +40,20 @@ const MAX_RESTART_ATTEMPTS = 1;
  * Used by error dialogs to help users troubleshoot issues.
  */
 async function showLogs(): Promise<void> {
-  const { shell } = require('electron');
-  const appDataPath = app.getPath('userData');
-  const logFilePath = path.join(appDataPath, 'backend.log');
+  const { shell } = require("electron");
+  const appDataPath = app.getPath("userData");
+  const logFilePath = path.join(appDataPath, "backend.log");
 
   try {
     // Try to open the log file directly
     const result = await shell.openPath(logFilePath);
     if (result) {
       // If opening file failed, fall back to opening the folder
-      console.log('Failed to open log file, opening folder instead:', result);
+      console.log("Failed to open log file, opening folder instead:", result);
       await shell.openPath(appDataPath);
     }
   } catch (error) {
-    console.error('Failed to show logs:', error);
+    console.error("Failed to show logs:", error);
     // Fall back to opening the folder
     await shell.openPath(appDataPath);
   }
@@ -60,13 +68,13 @@ function getBackendPath(): string {
   if (app.isPackaged) {
     // Production: backend is in resources
     const platform = process.platform;
-    const backendName = platform === 'win32' ? 'ninebox.exe' : 'ninebox';
-    return path.join(process.resourcesPath, 'backend', backendName);
+    const backendName = platform === "win32" ? "ninebox.exe" : "ninebox";
+    return path.join(process.resourcesPath, "backend", backendName);
   } else {
     // Development: use built backend from Phase 1
     const platform = process.platform;
-    const backendName = platform === 'win32' ? 'ninebox.exe' : 'ninebox';
-    return path.join(__dirname, '../../../backend/dist/ninebox', backendName);
+    const backendName = platform === "win32" ? "ninebox.exe" : "ninebox";
+    return path.join(__dirname, "../../../backend/dist/ninebox", backendName);
   }
 }
 
@@ -90,13 +98,13 @@ function createSplashScreen(): void {
 
   // Get splash screen path based on environment
   const splashPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'splash.html')
-    : path.join(__dirname, '../renderer/splash.html');
+    ? path.join(process.resourcesPath, "splash.html")
+    : path.join(__dirname, "../renderer/splash.html");
 
-  console.log('🎨 Loading splash screen from:', splashPath);
+  console.log("🎨 Loading splash screen from:", splashPath);
   splashWindow.loadFile(splashPath);
   splashWindow.center();
-  console.log('🎨 Splash screen created');
+  console.log("🎨 Splash screen created");
 }
 
 /**
@@ -106,7 +114,7 @@ function closeSplashScreen(): void {
   if (splashWindow) {
     splashWindow.close();
     splashWindow = null;
-    console.log('🎨 Splash screen closed');
+    console.log("🎨 Splash screen closed");
   }
 }
 
@@ -116,13 +124,13 @@ function closeSplashScreen(): void {
  */
 function setupLogging(): void {
   if (getIsDev()) {
-    console.log('🔧 Running in DEVELOPMENT mode');
-    console.log('📁 App path:', app.getAppPath());
-    console.log('📁 User data path:', app.getPath('userData'));
+    console.log("🔧 Running in DEVELOPMENT mode");
+    console.log("📁 App path:", app.getAppPath());
+    console.log("📁 User data path:", app.getPath("userData"));
   } else {
-    console.log('🚀 Running in PRODUCTION mode');
-    console.log('📁 App path:', app.getAppPath());
-    console.log('📁 User data path:', app.getPath('userData'));
+    console.log("🚀 Running in PRODUCTION mode");
+    console.log("📁 App path:", app.getAppPath());
+    console.log("📁 User data path:", app.getPath("userData"));
   }
 }
 
@@ -131,39 +139,41 @@ function setupLogging(): void {
  * Includes Node, Electron, Chrome versions and platform details.
  */
 function logEnvironmentInfo(): void {
-  console.log('📊 Environment Information:');
-  console.log('  Node:', process.versions.node);
-  console.log('  Electron:', process.versions.electron);
-  console.log('  Chrome:', process.versions.chrome);
-  console.log('  Platform:', process.platform);
-  console.log('  Architecture:', process.arch);
-  console.log('  Development:', getIsDev());
-  console.log('  Packaged:', app.isPackaged);
+  console.log("📊 Environment Information:");
+  console.log("  Node:", process.versions.node);
+  console.log("  Electron:", process.versions.electron);
+  console.log("  Chrome:", process.versions.chrome);
+  console.log("  Platform:", process.platform);
+  console.log("  Architecture:", process.arch);
+  console.log("  Development:", getIsDev());
+  console.log("  Packaged:", app.isPackaged);
 }
 
 /**
  * Wait for backend to be ready by polling the health endpoint.
  * Returns true if backend responds within timeout, false otherwise.
  */
-async function waitForBackend(maxAttempts = BACKEND_STARTUP_TIMEOUT): Promise<boolean> {
-  console.log('⏳ Waiting for backend to be ready...');
+async function waitForBackend(
+  maxAttempts = BACKEND_STARTUP_TIMEOUT
+): Promise<boolean> {
+  console.log("⏳ Waiting for backend to be ready...");
 
   for (let i = 0; i < maxAttempts; i++) {
     try {
       const response = await axios.get(`${BACKEND_URL}/health`, {
-        timeout: 1000
+        timeout: 1000,
       });
       if (response.status === 200) {
-        console.log('✅ Backend ready');
+        console.log("✅ Backend ready");
         return true;
       }
     } catch (error) {
       console.log(`⏳ Waiting for backend... (${i + 1}/${maxAttempts})`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
-  console.error('❌ Backend failed to start within timeout');
+  console.error("❌ Backend failed to start within timeout");
   return false;
 }
 
@@ -174,13 +184,15 @@ async function waitForBackend(maxAttempts = BACKEND_STARTUP_TIMEOUT): Promise<bo
  */
 async function startBackend(): Promise<number> {
   const backendPath = getBackendPath();
-  const appDataPath = app.getPath('userData');
+  const appDataPath = app.getPath("userData");
 
   console.log(`🚀 Starting backend from: ${backendPath}`);
   console.log(`📁 App data: ${appDataPath}`);
-  console.log(`🔍 Backend executable exists: ${require('fs').existsSync(backendPath)}`);
+  console.log(
+    `🔍 Backend executable exists: ${require("fs").existsSync(backendPath)}`
+  );
 
-  if (!require('fs').existsSync(backendPath)) {
+  if (!require("fs").existsSync(backendPath)) {
     throw new Error(`Backend executable not found at: ${backendPath}`);
   }
 
@@ -195,37 +207,41 @@ async function startBackend(): Promise<number> {
         APP_DATA_DIR: appDataPath,
         PORT: BACKEND_PORT.toString(), // Request port, backend may use alternative
       },
-      stdio: ['ignore', 'pipe', 'pipe'], // Always pipe stdout/stderr for port discovery
+      stdio: ["ignore", "pipe", "pipe"], // Always pipe stdout/stderr for port discovery
       windowsHide: true, // Hide console window on Windows
     });
 
     // Set up port discovery timeout
     const portTimeout = setTimeout(() => {
       if (!portDiscovered) {
-        console.error('❌ Port discovery timeout: Backend did not report port within 5 seconds');
-        reject(new Error('Backend did not report port within timeout'));
+        console.error(
+          "❌ Port discovery timeout: Backend did not report port within 5 seconds"
+        );
+        reject(new Error("Backend did not report port within timeout"));
       }
     }, PORT_DISCOVERY_TIMEOUT * 1000);
 
     // Capture stdout for port discovery AND logging
     if (backendProcess.stdout) {
-      const fs = require('fs');
-      const logPath = path.join(appDataPath, 'backend.log');
+      const fs = require("fs");
+      const logPath = path.join(appDataPath, "backend.log");
       let logStream: any = null;
 
       // Create log stream for production mode
       if (!getIsDev()) {
-        logStream = fs.createWriteStream(logPath, { flags: 'a' });
+        logStream = fs.createWriteStream(logPath, { flags: "a" });
         console.log(`📝 Backend logs will be written to: ${logPath}`);
-        logStream.write(`\n\n=== Backend started at ${new Date().toISOString()} ===\n`);
+        logStream.write(
+          `\n\n=== Backend started at ${new Date().toISOString()} ===\n`
+        );
       }
 
-      backendProcess.stdout.on('data', (data: Buffer) => {
+      backendProcess.stdout.on("data", (data: Buffer) => {
         const output = data.toString();
 
         // Log output for debugging (dev mode)
         if (getIsDev()) {
-          console.log('Backend stdout:', output);
+          console.log("Backend stdout:", output);
         }
 
         // Write to log file (production mode)
@@ -240,7 +256,7 @@ async function startBackend(): Promise<number> {
             const match = output.match(/\{.*"port".*"status".*\}/);
             if (match) {
               const message = JSON.parse(match[0]);
-              if (message.port && message.status === 'ready') {
+              if (message.port && message.status === "ready") {
                 discoveredPort = message.port as number;
                 portDiscovered = true;
                 clearTimeout(portTimeout);
@@ -257,20 +273,20 @@ async function startBackend(): Promise<number> {
 
     // Capture stderr for logging
     if (backendProcess.stderr) {
-      const fs = require('fs');
-      const logPath = path.join(appDataPath, 'backend.log');
+      const fs = require("fs");
+      const logPath = path.join(appDataPath, "backend.log");
       let errorLogStream: any = null;
 
       if (!getIsDev()) {
-        errorLogStream = fs.createWriteStream(logPath, { flags: 'a' });
+        errorLogStream = fs.createWriteStream(logPath, { flags: "a" });
       }
 
-      backendProcess.stderr.on('data', (data: Buffer) => {
+      backendProcess.stderr.on("data", (data: Buffer) => {
         const output = data.toString();
 
         // Log errors for debugging (dev mode)
         if (getIsDev()) {
-          console.error('Backend stderr:', output);
+          console.error("Backend stderr:", output);
         }
 
         // Write to log file (production mode)
@@ -280,43 +296,47 @@ async function startBackend(): Promise<number> {
       });
     }
 
-    backendProcess.on('error', (error) => {
+    backendProcess.on("error", (error) => {
       clearTimeout(portTimeout);
-      console.error('❌ Backend process spawn error:', error);
+      console.error("❌ Backend process spawn error:", error);
       reject(new Error(`Backend failed to start: ${error.message}`));
     });
 
-    backendProcess.on('exit', async (code) => {
+    backendProcess.on("exit", async (code) => {
       clearTimeout(portTimeout);
       console.log(`Backend exited with code ${code}`);
 
       // If backend exits before port discovery, reject the startup promise
       if (!portDiscovered) {
         if (code !== 0 && code !== null) {
-          reject(new Error(`Backend exited with code ${code} before reporting port`));
+          reject(
+            new Error(`Backend exited with code ${code} before reporting port`)
+          );
         }
       } else {
         // Backend crashed during runtime (after successful startup)
         if (code !== 0 && code !== null) {
           console.error(`❌ Backend crashed with code ${code} during runtime`);
-          connectionStatus = 'reconnecting';
-          broadcastConnectionStatus('reconnecting');
+          connectionStatus = "reconnecting";
+          broadcastConnectionStatus("reconnecting");
 
           // Attempt automatic restart if within limits
           if (restartAttempts < MAX_RESTART_ATTEMPTS) {
             restartAttempts++;
-            console.log(`🔄 Attempting automatic restart (attempt ${restartAttempts}/${MAX_RESTART_ATTEMPTS})...`);
+            console.log(
+              `🔄 Attempting automatic restart (attempt ${restartAttempts}/${MAX_RESTART_ATTEMPTS})...`
+            );
             const restarted = await attemptBackendRestart();
 
             if (!restarted) {
-              connectionStatus = 'disconnected';
-              broadcastConnectionStatus('disconnected');
+              connectionStatus = "disconnected";
+              broadcastConnectionStatus("disconnected");
               await showBackendDisconnectedDialog();
             }
           } else {
-            console.error('❌ Max restart attempts exceeded');
-            connectionStatus = 'disconnected';
-            broadcastConnectionStatus('disconnected');
+            console.error("❌ Max restart attempts exceeded");
+            connectionStatus = "disconnected";
+            broadcastConnectionStatus("disconnected");
             await showBackendDisconnectedDialog();
           }
         }
@@ -334,17 +354,22 @@ function getWindowUrl(): string {
   if (getIsDev() && process.env.VITE_DEV_SERVER_URL) {
     // Development mode: use Vite dev server for hot reload
     const devServerUrl = process.env.VITE_DEV_SERVER_URL;
-    console.log('🔥 Using Vite dev server:', devServerUrl);
+    console.log("🔥 Using Vite dev server:", devServerUrl);
     return devServerUrl;
   } else if (app.isPackaged) {
     // Production mode: load from app bundle
-    const prodPath = path.join(process.resourcesPath, 'app', 'dist', 'index.html');
-    console.log('📦 Using production bundle:', prodPath);
+    const prodPath = path.join(
+      process.resourcesPath,
+      "app",
+      "dist",
+      "index.html"
+    );
+    console.log("📦 Using production bundle:", prodPath);
     return prodPath;
   } else {
     // Development without Vite server: use built files
-    const devBuildPath = path.join(__dirname, '../../dist/index.html');
-    console.log('📦 Using development build:', devBuildPath);
+    const devBuildPath = path.join(__dirname, "../../dist/index.html");
+    console.log("📦 Using development build:", devBuildPath);
     return devBuildPath;
   }
 }
@@ -354,12 +379,14 @@ function getWindowUrl(): string {
  * Notifies the frontend about backend connection state changes.
  */
 function broadcastConnectionStatus(
-  status: 'connected' | 'reconnecting' | 'disconnected',
+  status: "connected" | "reconnecting" | "disconnected",
   port?: number
 ): void {
-  console.log(`📡 Broadcasting connection status: ${status}${port ? ` (port ${port})` : ''}`);
+  console.log(
+    `📡 Broadcasting connection status: ${status}${port ? ` (port ${port})` : ""}`
+  );
   BrowserWindow.getAllWindows().forEach((window) => {
-    window.webContents.send('backend:connection-status', { status, port });
+    window.webContents.send("backend:connection-status", { status, port });
   });
 }
 
@@ -369,11 +396,11 @@ function broadcastConnectionStatus(
  */
 async function attemptBackendRestart(): Promise<boolean> {
   try {
-    console.log('🔄 Attempting to restart backend...');
+    console.log("🔄 Attempting to restart backend...");
 
     // Kill existing process if still running
     if (backendProcess && !backendProcess.killed) {
-      console.log('🛑 Killing existing backend process...');
+      console.log("🛑 Killing existing backend process...");
       backendProcess.kill();
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
@@ -387,16 +414,16 @@ async function attemptBackendRestart(): Promise<boolean> {
     // Wait for backend health check
     const ready = await waitForBackend();
     if (ready) {
-      connectionStatus = 'connected';
+      connectionStatus = "connected";
       restartAttempts = 0; // Reset attempts on success
-      broadcastConnectionStatus('connected', discoveredPort);
+      broadcastConnectionStatus("connected", discoveredPort);
       return true;
     } else {
-      console.error('❌ Backend restart failed: health check failed');
+      console.error("❌ Backend restart failed: health check failed");
       return false;
     }
   } catch (error) {
-    console.error('❌ Backend restart failed:', error);
+    console.error("❌ Backend restart failed:", error);
     return false;
   }
 }
@@ -412,7 +439,10 @@ async function performHealthCheck(): Promise<boolean> {
     });
     return response.status === 200;
   } catch (error) {
-    console.warn('⚠️ Health check failed:', error instanceof Error ? error.message : String(error));
+    console.warn(
+      "⚠️ Health check failed:",
+      error instanceof Error ? error.message : String(error)
+    );
     return false;
   }
 }
@@ -422,25 +452,25 @@ async function performHealthCheck(): Promise<boolean> {
  * Runs every 30 seconds after initial startup.
  */
 function startHealthMonitoring(): void {
-  console.log('🏥 Starting health monitoring (every 30 seconds)...');
+  console.log("🏥 Starting health monitoring (every 30 seconds)...");
 
   healthCheckInterval = setInterval(async () => {
     const healthy = await performHealthCheck();
 
     if (healthy) {
       // Backend is healthy
-      if (connectionStatus !== 'connected') {
-        console.log('✅ Backend recovered');
-        connectionStatus = 'connected';
+      if (connectionStatus !== "connected") {
+        console.log("✅ Backend recovered");
+        connectionStatus = "connected";
         restartAttempts = 0;
-        broadcastConnectionStatus('connected', BACKEND_PORT);
+        broadcastConnectionStatus("connected", BACKEND_PORT);
       }
     } else {
       // Backend is unhealthy
-      if (connectionStatus === 'connected') {
-        console.warn('⚠️ Backend health check failed, attempting restart...');
-        connectionStatus = 'reconnecting';
-        broadcastConnectionStatus('reconnecting');
+      if (connectionStatus === "connected") {
+        console.warn("⚠️ Backend health check failed, attempting restart...");
+        connectionStatus = "reconnecting";
+        broadcastConnectionStatus("reconnecting");
 
         // Attempt restart if we haven't exceeded max attempts
         if (restartAttempts < MAX_RESTART_ATTEMPTS) {
@@ -448,14 +478,14 @@ function startHealthMonitoring(): void {
           const restarted = await attemptBackendRestart();
 
           if (!restarted) {
-            connectionStatus = 'disconnected';
-            broadcastConnectionStatus('disconnected');
+            connectionStatus = "disconnected";
+            broadcastConnectionStatus("disconnected");
             await showBackendDisconnectedDialog();
           }
         } else {
-          console.error('❌ Max restart attempts exceeded');
-          connectionStatus = 'disconnected';
-          broadcastConnectionStatus('disconnected');
+          console.error("❌ Max restart attempts exceeded");
+          connectionStatus = "disconnected";
+          broadcastConnectionStatus("disconnected");
           await showBackendDisconnectedDialog();
         }
       }
@@ -470,7 +500,7 @@ function stopHealthMonitoring(): void {
   if (healthCheckInterval) {
     clearInterval(healthCheckInterval);
     healthCheckInterval = null;
-    console.log('🏥 Health monitoring stopped');
+    console.log("🏥 Health monitoring stopped");
   }
 }
 
@@ -480,32 +510,33 @@ function stopHealthMonitoring(): void {
  */
 async function showBackendDisconnectedDialog(): Promise<void> {
   const choice = await dialog.showMessageBox({
-    type: 'error',
-    title: 'Backend Disconnected',
-    message: 'The backend process has stopped.',
-    detail: 'Your work has been saved. Click Retry to reconnect, or Close to exit.',
-    buttons: ['Retry', 'Close'],
+    type: "error",
+    title: "Backend Disconnected",
+    message: "The backend process has stopped.",
+    detail:
+      "Your work has been saved. Click Retry to reconnect, or Close to exit.",
+    buttons: ["Retry", "Close"],
     defaultId: 0,
     cancelId: 1,
   });
 
   if (choice.response === 0) {
     // Retry
-    console.log('🔄 User requested retry...');
-    connectionStatus = 'reconnecting';
-    broadcastConnectionStatus('reconnecting');
+    console.log("🔄 User requested retry...");
+    connectionStatus = "reconnecting";
+    broadcastConnectionStatus("reconnecting");
     restartAttempts = 0; // Reset attempts for manual retry
     const restarted = await attemptBackendRestart();
 
     if (!restarted) {
-      connectionStatus = 'disconnected';
-      broadcastConnectionStatus('disconnected');
+      connectionStatus = "disconnected";
+      broadcastConnectionStatus("disconnected");
       // Show failed restart dialog
       await showRestartFailedDialog();
     }
   } else {
     // Close
-    console.log('🛑 User chose to close application');
+    console.log("🛑 User chose to close application");
     app.quit();
   }
 }
@@ -516,11 +547,12 @@ async function showBackendDisconnectedDialog(): Promise<void> {
  */
 async function showRestartFailedDialog(): Promise<void> {
   const choice = await dialog.showMessageBox({
-    type: 'error',
-    title: 'Reconnection Failed',
-    message: 'Unable to reconnect to the backend.',
-    detail: 'Please restart the application manually. Your work has been saved.',
-    buttons: ['Show Logs', 'Close'],
+    type: "error",
+    title: "Reconnection Failed",
+    message: "Unable to reconnect to the backend.",
+    detail:
+      "Please restart the application manually. Your work has been saved.",
+    buttons: ["Show Logs", "Close"],
     defaultId: 1,
     cancelId: 1,
   });
@@ -552,10 +584,10 @@ async function showStartupErrorDialog(
   showLogsButton: boolean
 ): Promise<void> {
   const fullDetail = `${detail}\n\nError: ${errorMessage}`;
-  const buttons = showLogsButton ? ['Show Logs', 'Quit'] : ['Quit'];
+  const buttons = showLogsButton ? ["Show Logs", "Quit"] : ["Quit"];
 
   const choice = await dialog.showMessageBox({
-    type: 'error',
+    type: "error",
     title,
     message,
     detail: fullDetail,
@@ -576,22 +608,25 @@ async function showStartupErrorDialog(
  */
 function setupIpcHandlers(): void {
   // Handle getting system theme preference
-  ipcMain.handle('theme:getSystemTheme', () => {
-    console.log('🎨 [Theme] System theme requested:', nativeTheme.shouldUseDarkColors ? 'dark' : 'light');
-    return nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+  ipcMain.handle("theme:getSystemTheme", () => {
+    console.log(
+      "🎨 [Theme] System theme requested:",
+      nativeTheme.shouldUseDarkColors ? "dark" : "light"
+    );
+    return nativeTheme.shouldUseDarkColors ? "dark" : "light";
   });
 
   // Handle file open dialog for importing Excel files
-  ipcMain.handle('dialog:openFile', async () => {
+  ipcMain.handle("dialog:openFile", async () => {
     if (!mainWindow) {
       return null;
     }
 
     const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openFile'],
+      properties: ["openFile"],
       filters: [
-        { name: 'Excel Files', extensions: ['xlsx', 'xls'] },
-        { name: 'All Files', extensions: ['*'] },
+        { name: "Excel Files", extensions: ["xlsx", "xls"] },
+        { name: "All Files", extensions: ["*"] },
       ],
     });
 
@@ -603,16 +638,16 @@ function setupIpcHandlers(): void {
   });
 
   // Handle file save dialog for exporting Excel files
-  ipcMain.handle('dialog:saveFile', async (event, defaultName: string) => {
+  ipcMain.handle("dialog:saveFile", async (event, defaultName: string) => {
     if (!mainWindow) {
       return null;
     }
 
     const result = await dialog.showSaveDialog(mainWindow, {
-      defaultPath: defaultName || 'export.xlsx',
+      defaultPath: defaultName || "export.xlsx",
       filters: [
-        { name: 'Excel Files', extensions: ['xlsx'] },
-        { name: 'All Files', extensions: ['*'] },
+        { name: "Excel Files", extensions: ["xlsx"] },
+        { name: "All Files", extensions: ["*"] },
       ],
     });
 
@@ -624,29 +659,29 @@ function setupIpcHandlers(): void {
   });
 
   // Handle opening logs folder
-  ipcMain.handle('app:openLogsFolder', async () => {
-    const { shell } = require('electron');
-    const appDataPath = app.getPath('userData');
+  ipcMain.handle("app:openLogsFolder", async () => {
+    const { shell } = require("electron");
+    const appDataPath = app.getPath("userData");
     await shell.openPath(appDataPath);
   });
 
   // Handle showing logs (opens log file or folder)
-  ipcMain.handle('app:showLogs', async () => {
-    const { shell } = require('electron');
-    const appDataPath = app.getPath('userData');
-    const logFilePath = path.join(appDataPath, 'backend.log');
+  ipcMain.handle("app:showLogs", async () => {
+    const { shell } = require("electron");
+    const appDataPath = app.getPath("userData");
+    const logFilePath = path.join(appDataPath, "backend.log");
 
     try {
       // Try to open the log file directly (opens in default text editor)
       const result = await shell.openPath(logFilePath);
       if (result) {
         // If opening file failed, fall back to opening the folder
-        console.log('Failed to open log file, opening folder instead:', result);
+        console.log("Failed to open log file, opening folder instead:", result);
         await shell.openPath(appDataPath);
       }
       return { success: true };
     } catch (error) {
-      console.error('Failed to show logs:', error);
+      console.error("Failed to show logs:", error);
       // Fall back to opening the folder
       await shell.openPath(appDataPath);
       return { success: true }; // Still return success since we opened the folder
@@ -654,18 +689,18 @@ function setupIpcHandlers(): void {
   });
 
   // Handle getting app paths for debugging
-  ipcMain.handle('app:getPaths', async () => {
+  ipcMain.handle("app:getPaths", async () => {
     return {
-      userData: app.getPath('userData'),
-      logs: path.join(app.getPath('userData'), 'backend.log'),
-      database: path.join(app.getPath('userData'), 'ninebox.db'),
+      userData: app.getPath("userData"),
+      logs: path.join(app.getPath("userData"), "backend.log"),
+      database: path.join(app.getPath("userData"), "ninebox.db"),
     };
   });
 
   // Handle reading a file from disk (for auto-reload functionality)
-  ipcMain.handle('file:readFile', async (event, filePath: string) => {
+  ipcMain.handle("file:readFile", async (event, filePath: string) => {
     try {
-      const fs = require('fs').promises;
+      const fs = require("fs").promises;
       const buffer = await fs.readFile(filePath);
       const fileName = path.basename(filePath);
       return {
@@ -674,52 +709,52 @@ function setupIpcHandlers(): void {
         success: true,
       };
     } catch (error) {
-      console.error('Failed to read file:', error);
+      console.error("Failed to read file:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   });
 
   // Handle opening user guide in default browser
-  ipcMain.handle('app:openUserGuide', async () => {
+  ipcMain.handle("app:openUserGuide", async () => {
     try {
-      const { shell } = require('electron');
+      const { shell } = require("electron");
       const userGuidePath = app.isPackaged
-        ? path.join(process.resourcesPath, 'user-guide', 'index.html')
-        : path.join(__dirname, '../../../resources/user-guide/site/index.html');
+        ? path.join(process.resourcesPath, "user-guide", "index.html")
+        : path.join(__dirname, "../../../resources/user-guide/site/index.html");
 
-      console.log('📖 Opening user guide from:', userGuidePath);
+      console.log("📖 Opening user guide from:", userGuidePath);
 
       // Check if file exists
-      const fs = require('fs');
+      const fs = require("fs");
       if (!fs.existsSync(userGuidePath)) {
-        console.error('❌ User guide not found at:', userGuidePath);
-        return { success: false, error: 'User guide file not found' };
+        console.error("❌ User guide not found at:", userGuidePath);
+        return { success: false, error: "User guide file not found" };
       }
 
       // Open in default browser
       await shell.openExternal(`file://${userGuidePath}`);
       return { success: true };
     } catch (error) {
-      console.error('Failed to open user guide:', error);
+      console.error("Failed to open user guide:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   });
 
   // Handle getting backend port (for dynamic API client)
-  ipcMain.handle('backend:getPort', () => {
-    console.log('🔌 Renderer requested backend port:', BACKEND_PORT);
+  ipcMain.handle("backend:getPort", () => {
+    console.log("🔌 Renderer requested backend port:", BACKEND_PORT);
     return BACKEND_PORT;
   });
 
   // Handle getting backend URL (for dynamic API client)
-  ipcMain.handle('backend:getUrl', () => {
-    console.log('🔌 Renderer requested backend URL:', BACKEND_URL);
+  ipcMain.handle("backend:getUrl", () => {
+    console.log("🔌 Renderer requested backend URL:", BACKEND_URL);
     return BACKEND_URL;
   });
 }
@@ -736,20 +771,20 @@ function createWindow(): void {
 
   // Get icon path based on environment
   const iconPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'icon.png')
-    : path.join(__dirname, '../../build/icon.png');
+    ? path.join(process.resourcesPath, "icon.png")
+    : path.join(__dirname, "../../build/icon.png");
 
   // Apply saved window bounds (or use defaults)
   const windowOptions = windowStateManager.applyBounds({
     minWidth: 1024,
     minHeight: 768,
-    title: '9Boxer',
+    title: "9Boxer",
     icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, "../preload/index.js"),
     },
     show: false, // Don't show until ready
   });
@@ -763,7 +798,7 @@ function createWindow(): void {
   const url = getWindowUrl();
   console.log(`📄 Loading frontend from: ${url}`);
 
-  if (url.startsWith('http')) {
+  if (url.startsWith("http")) {
     mainWindow.loadURL(url);
   } else {
     mainWindow.loadFile(url);
@@ -775,16 +810,23 @@ function createWindow(): void {
   }
 
   // Handle window ready to show
-  mainWindow.webContents.on('did-finish-load', () => {
-    console.log('✅ Main window finished loading');
+  mainWindow.webContents.on("did-finish-load", () => {
+    console.log("✅ Main window finished loading");
   });
 
-  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
-    console.error('❌ Main window failed to load:', errorCode, errorDescription);
-  });
+  mainWindow.webContents.on(
+    "did-fail-load",
+    (event, errorCode, errorDescription) => {
+      console.error(
+        "❌ Main window failed to load:",
+        errorCode,
+        errorDescription
+      );
+    }
+  );
 
   // Handle window closed event
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
@@ -795,23 +837,25 @@ function createWindow(): void {
  * This should be called after the main window is created.
  */
 function setupThemeListener(): void {
-  nativeTheme.on('updated', () => {
-    const theme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
-    console.log('🎨 [Theme] System theme changed to:', theme);
+  nativeTheme.on("updated", () => {
+    const theme = nativeTheme.shouldUseDarkColors ? "dark" : "light";
+    console.log("🎨 [Theme] System theme changed to:", theme);
 
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('theme:systemThemeChanged', theme);
+      mainWindow.webContents.send("theme:systemThemeChanged", theme);
     }
   });
 
-  console.log('🎨 [Theme] Theme listener initialized, current theme:',
-    nativeTheme.shouldUseDarkColors ? 'dark' : 'light');
+  console.log(
+    "🎨 [Theme] Theme listener initialized, current theme:",
+    nativeTheme.shouldUseDarkColors ? "dark" : "light"
+  );
 }
 
 // App lifecycle events
-app.on('ready', async () => {
+app.on("ready", async () => {
   try {
-    console.log('🚀 Starting 9Boxer...');
+    console.log("🚀 Starting 9Boxer...");
 
     // Setup logging and environment info
     setupLogging();
@@ -831,7 +875,7 @@ app.on('ready', async () => {
     // Wait for backend health check
     const ready = await waitForBackend();
     if (!ready) {
-      throw new Error('Backend health check failed');
+      throw new Error("Backend health check failed");
     }
 
     // Create main window
@@ -843,8 +887,8 @@ app.on('ready', async () => {
     Menu.setApplicationMenu(null);
 
     // Close splash when main window is ready to show
-    mainWindow?.once('ready-to-show', () => {
-      console.log('🎉 Main window ready to show');
+    mainWindow?.once("ready-to-show", () => {
+      console.log("🎉 Main window ready to show");
       closeSplashScreen();
 
       // Restore maximized state if needed
@@ -855,64 +899,67 @@ app.on('ready', async () => {
       mainWindow?.show();
       mainWindow?.focus();
       mainWindow?.moveTop();
-      console.log('✅ Main window shown and focused');
+      console.log("✅ Main window shown and focused");
 
       // Start health monitoring after app is fully loaded
       startHealthMonitoring();
     });
   } catch (error) {
-    console.error('❌ Failed to start app:', error);
+    console.error("❌ Failed to start app:", error);
     closeSplashScreen();
 
     const errorMessage = error instanceof Error ? error.message : String(error);
 
     // Categorize error and show appropriate dialog
-    if (errorMessage.includes('not found')) {
+    if (errorMessage.includes("not found")) {
       await showStartupErrorDialog(
-        'Backend Executable Not Found',
-        'The backend executable could not be found.',
-        'Please ensure the application is properly installed.',
+        "Backend Executable Not Found",
+        "The backend executable could not be found.",
+        "Please ensure the application is properly installed.",
         errorMessage,
         false // No logs button - installation issue
       );
-    } else if (errorMessage.includes('timeout') || errorMessage.includes('did not report port')) {
+    } else if (
+      errorMessage.includes("timeout") ||
+      errorMessage.includes("did not report port")
+    ) {
       await showStartupErrorDialog(
-        'Backend Not Responding',
-        'The backend is not responding to health checks.',
-        'This may be a configuration issue. Click Show Logs for details.',
+        "Backend Not Responding",
+        "The backend is not responding to health checks.",
+        "This may be a configuration issue. Click Show Logs for details.",
         errorMessage,
         true // Show logs button
       );
-    } else if (errorMessage.includes('exited with code')) {
+    } else if (errorMessage.includes("exited with code")) {
       await showStartupErrorDialog(
-        'Backend Crashed on Startup',
-        'The backend process crashed during startup.',
-        'Please check the logs for more details.',
+        "Backend Crashed on Startup",
+        "The backend process crashed during startup.",
+        "Please check the logs for more details.",
         errorMessage,
         true // Show logs button
       );
-    } else if (errorMessage.includes('health check failed')) {
+    } else if (errorMessage.includes("health check failed")) {
       await showStartupErrorDialog(
-        'Backend Not Responding',
-        'The backend is not responding to health checks.',
-        'This may be a configuration issue. Click Show Logs for details.',
+        "Backend Not Responding",
+        "The backend is not responding to health checks.",
+        "This may be a configuration issue. Click Show Logs for details.",
         errorMessage,
         true // Show logs button
       );
-    } else if (errorMessage.includes('failed to start')) {
+    } else if (errorMessage.includes("failed to start")) {
       await showStartupErrorDialog(
-        'Cannot Start Backend',
-        'The backend executable could not be started.',
-        'Please check that the application is properly installed.',
+        "Cannot Start Backend",
+        "The backend executable could not be started.",
+        "Please check that the application is properly installed.",
         errorMessage,
         true // Show logs button
       );
     } else {
       // Generic error
       await showStartupErrorDialog(
-        'Startup Error',
-        'Failed to start the application.',
-        'An unexpected error occurred.',
+        "Startup Error",
+        "Failed to start the application.",
+        "An unexpected error occurred.",
         errorMessage,
         true // Show logs button
       );
@@ -922,26 +969,26 @@ app.on('ready', async () => {
   }
 });
 
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
   // Stop health monitoring
   stopHealthMonitoring();
 
   // Kill backend before quitting
   if (backendProcess) {
-    console.log('🛑 Stopping backend...');
+    console.log("🛑 Stopping backend...");
     backendProcess.kill();
   }
   app.quit();
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
 });
 
 // Handle app quit - graceful shutdown with session preservation
-app.on('before-quit', async (event) => {
+app.on("before-quit", async (event) => {
   event.preventDefault();
   await gracefulShutdown();
   app.exit(0);
@@ -952,25 +999,25 @@ app.on('before-quit', async (event) => {
  * Ensures backend has time to save session data before terminating.
  */
 async function gracefulShutdown(): Promise<void> {
-  console.log('🛑 Performing graceful shutdown...');
+  console.log("🛑 Performing graceful shutdown...");
 
   // Stop health monitoring first
   stopHealthMonitoring();
 
   // Give backend time to save session data
   if (backendProcess && !backendProcess.killed) {
-    console.log('🛑 Sending SIGTERM to backend (polite shutdown)...');
-    backendProcess.kill('SIGTERM'); // Polite kill - allows cleanup
+    console.log("🛑 Sending SIGTERM to backend (polite shutdown)...");
+    backendProcess.kill("SIGTERM"); // Polite kill - allows cleanup
 
     // Wait 2 seconds for backend to save session
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Force kill if still running
     if (backendProcess && !backendProcess.killed) {
-      console.log('🛑 Force killing backend process...');
-      backendProcess.kill('SIGKILL');
+      console.log("🛑 Force killing backend process...");
+      backendProcess.kill("SIGKILL");
     }
   }
 
-  console.log('✅ Graceful shutdown complete');
+  console.log("✅ Graceful shutdown complete");
 }

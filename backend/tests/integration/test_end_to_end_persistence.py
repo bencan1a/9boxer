@@ -98,7 +98,7 @@ class TestEndToEndPersistence:
         assert len(restored_session.current_employees) == original_count
 
         # Verify all 3 changes persisted
-        assert len(restored_session.changes) == 3
+        assert len(restored_session.events) == 3
 
         # Verify employee positions persisted
         for employee_id, expected_perf, expected_potential in moved_employees:
@@ -111,8 +111,11 @@ class TestEndToEndPersistence:
 
         # Verify notes persisted
         for employee_id, expected_notes in notes_data:
-            change = next(c for c in restored_session.changes if c.employee_id == employee_id)
-            assert change.notes == expected_notes
+            event = next(
+                e for e in restored_session.events
+                if e.employee_id == employee_id and e.event_type == "grid_move"
+            )
+            assert event.notes == expected_notes
 
         # Step 6: Export to Excel and verify changes reflected
         # The new_manager already has the sessions loaded from DB
@@ -202,11 +205,11 @@ class TestEndToEndPersistence:
 
         # Verify database updated after move
         with db_mgr.get_connection() as conn:
-            cursor = conn.execute("SELECT changes, updated_at FROM sessions")
+            cursor = conn.execute("SELECT events, updated_at FROM sessions")
             row = cursor.fetchone()
             import json
 
-            changes = json.loads(row["changes"])
+            changes = json.loads(row["events"])
             assert len(changes) == 1
             assert changes[0]["employee_id"] == employee_id
 
@@ -278,14 +281,15 @@ class TestEndToEndPersistence:
         assert current_employee.potential.value == new_pot
         assert current_employee.modified_in_session is True
 
-        # Verify change entry exists
-        assert len(restored_session.changes) == 1
-        change = restored_session.changes[0]
-        assert change.employee_id == employee_id
-        assert change.old_performance.value == original_perf
-        assert change.old_potential.value == original_pot
-        assert change.new_performance.value == new_perf
-        assert change.new_potential.value == new_pot
+        # Verify change entry exists (grid move event)
+        grid_events = [e for e in restored_session.events if e.event_type == "grid_move"]
+        assert len(grid_events) == 1
+        event = grid_events[0]
+        assert event.employee_id == employee_id
+        assert event.old_performance.value == original_perf
+        assert event.old_potential.value == original_pot
+        assert event.new_performance.value == new_perf
+        assert event.new_potential.value == new_pot
 
 
 class TestPerformanceBenchmarks:

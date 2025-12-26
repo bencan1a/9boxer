@@ -1,33 +1,37 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useStatistics } from '../useStatistics';
-import { Employee, PerformanceLevel, PotentialLevel } from '../../types/employee';
+import { describe, it, expect } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useStatistics } from "../useStatistics";
+import {
+  Employee,
+  PerformanceLevel,
+  PotentialLevel,
+} from "../../types/employee";
 
 // Helper to create a test employee
 const createEmployee = (overrides: Partial<Employee>): Employee => ({
   employee_id: 1,
-  name: 'Test Employee',
-  business_title: 'Test Title',
-  job_title: 'Test Job',
-  job_profile: 'Test Profile',
-  job_level: 'MT1',
-  job_function: 'Test Function',
-  location: 'USA',
-  manager: 'Test Manager',
+  name: "Test Employee",
+  business_title: "Test Title",
+  job_title: "Test Job",
+  job_profile: "Test Profile",
+  job_level: "MT1",
+  job_function: "Test Function",
+  location: "USA",
+  manager: "Test Manager",
   management_chain_01: null,
   management_chain_02: null,
   management_chain_03: null,
   management_chain_04: null,
   management_chain_05: null,
   management_chain_06: null,
-  hire_date: '2020-01-01',
-  tenure_category: 'Mid',
-  time_in_job_profile: '2 years',
+  hire_date: "2020-01-01",
+  tenure_category: "Mid",
+  time_in_job_profile: "2 years",
   performance: PerformanceLevel.MEDIUM,
   potential: PotentialLevel.MEDIUM,
   grid_position: 5,
-  position_label: 'Core Talent [M,M]',
-  talent_indicator: 'Core',
+  position_label: "Core Talent [M,M]",
+  talent_indicator: "Core",
   ratings_history: [],
   development_focus: null,
   development_action: null,
@@ -39,9 +43,9 @@ const createEmployee = (overrides: Partial<Employee>): Employee => ({
   ...overrides,
 });
 
-describe('useStatistics', () => {
-  describe('Normal Mode', () => {
-    it('calculates distribution based on grid_position in normal mode', () => {
+describe("useStatistics", () => {
+  describe("Normal Mode", () => {
+    it("calculates distribution based on grid_position in normal mode", () => {
       const employees: Employee[] = [
         createEmployee({ employee_id: 1, grid_position: 9 }),
         createEmployee({ employee_id: 2, grid_position: 9 }),
@@ -64,7 +68,7 @@ describe('useStatistics', () => {
       expect(position1?.count).toBe(1);
     });
 
-    it('counts modified employees based on modified_in_session in normal mode', () => {
+    it("counts modified employees based on modified_in_session in normal mode", () => {
       const employees: Employee[] = [
         createEmployee({ employee_id: 1, modified_in_session: true }),
         createEmployee({ employee_id: 2, modified_in_session: true }),
@@ -77,7 +81,7 @@ describe('useStatistics', () => {
       expect(result.current.statistics?.modified_employees).toBe(2);
     });
 
-    it('ignores donut fields in normal mode', () => {
+    it("ignores donut fields in normal mode", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,
@@ -108,8 +112,8 @@ describe('useStatistics', () => {
     });
   });
 
-  describe('Donut Mode', () => {
-    it('calculates distribution based on donut_position when employee is donut_modified', () => {
+  describe("Donut Mode", () => {
+    it("calculates distribution based on donut_position when employee is donut_modified", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,
@@ -142,7 +146,7 @@ describe('useStatistics', () => {
       expect(position5?.count).toBe(1);
     });
 
-    it('falls back to grid_position when donut_modified is false', () => {
+    it("falls back to grid_position when donut_modified is false", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,
@@ -168,7 +172,7 @@ describe('useStatistics', () => {
       expect(position9?.count).toBe(0);
     });
 
-    it('counts modified employees based on donut_modified in donut mode', () => {
+    it("counts modified employees based on donut_modified in donut mode", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,
@@ -193,7 +197,7 @@ describe('useStatistics', () => {
       expect(result.current.statistics?.modified_employees).toBe(2);
     });
 
-    it('handles mixed donut and non-donut employees correctly', () => {
+    it("handles mixed donut and non-donut employees correctly", () => {
       const employees: Employee[] = [
         // Donut-modified: position 5 → 9
         createEmployee({
@@ -240,7 +244,7 @@ describe('useStatistics', () => {
       expect(position1?.count).toBe(1); // Employee 4 without donut modification
     });
 
-    it('calculates percentages correctly in donut mode', () => {
+    it("calculates percentages correctly in donut mode", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,
@@ -279,14 +283,14 @@ describe('useStatistics', () => {
     });
   });
 
-  describe('Edge Cases', () => {
-    it('returns null when no employees provided', () => {
+  describe("Edge Cases", () => {
+    it("returns null when no employees provided", () => {
       const { result } = renderHook(() => useStatistics([], false));
 
       expect(result.current.statistics).toBeNull();
     });
 
-    it('handles employees without donut_position gracefully', () => {
+    it("handles employees without donut_position gracefully", () => {
       const employees: Employee[] = [
         createEmployee({
           employee_id: 1,

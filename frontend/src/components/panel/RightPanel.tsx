@@ -70,10 +70,30 @@ export const RightPanel: React.FC = () => {
             },
           }}
         >
-          <Tab label={t('panel.tabs.details')} id="panel-tab-0" aria-controls="panel-tabpanel-0" data-testid="details-tab" />
-          <Tab label={t('panel.tabs.changes')} id="panel-tab-1" aria-controls="panel-tabpanel-1" data-testid="changes-tab" />
-          <Tab label={t('panel.tabs.statistics')} id="panel-tab-2" aria-controls="panel-tabpanel-2" data-testid="statistics-tab" />
-          <Tab label={t('panel.tabs.intelligence')} id="panel-tab-3" aria-controls="panel-tabpanel-3" data-testid="intelligence-tab" />
+          <Tab
+            label={t("panel.tabs.details")}
+            id="panel-tab-0"
+            aria-controls="panel-tabpanel-0"
+            data-testid="details-tab"
+          />
+          <Tab
+            label={t("panel.tabs.changes")}
+            id="panel-tab-1"
+            aria-controls="panel-tabpanel-1"
+            data-testid="changes-tab"
+          />
+          <Tab
+            label={t("panel.tabs.statistics")}
+            id="panel-tab-2"
+            aria-controls="panel-tabpanel-2"
+            data-testid="statistics-tab"
+          />
+          <Tab
+            label={t("panel.tabs.intelligence")}
+            id="panel-tab-3"
+            aria-controls="panel-tabpanel-3"
+            data-testid="intelligence-tab"
+          />
         </Tabs>
       </Box>
 

@@ -70,6 +70,7 @@ class ExcelExporter:
             sheet.cell(1, modified_col + 5, "Donut Exercise Label")
             sheet.cell(1, modified_col + 6, "Donut Exercise Change Description")
             sheet.cell(1, modified_col + 7, "Donut Exercise Notes")
+            sheet.cell(1, modified_col + 8, "Flags")
 
         # Create employee lookup by ID
         employee_map = {e.employee_id: e for e in employees}
@@ -78,26 +79,30 @@ class ExcelExporter:
         change_notes_map = {}
         change_description_map = {}
         if session:
-            for change in session.changes:
-                if change.notes:
-                    change_notes_map[change.employee_id] = change.notes
-                # Create movement description
-                old_label = get_position_label(change.old_performance, change.old_potential)
-                new_label = get_position_label(change.new_performance, change.new_potential)
-                change_description_map[
-                    change.employee_id
-                ] = f"Moved from {old_label} to {new_label}"
+            for event in session.events:
+                # Only process grid move events
+                if event.event_type == "grid_move":
+                    if event.notes:
+                        change_notes_map[event.employee_id] = event.notes
+                    # Create movement description
+                    old_label = get_position_label(event.old_performance, event.old_potential)
+                    new_label = get_position_label(event.new_performance, event.new_potential)
+                    change_description_map[
+                        event.employee_id
+                    ] = f"Moved from {old_label} to {new_label}"
 
         # Create donut change descriptions lookup by employee ID
         donut_change_description_map = {}
         if session:
-            for change in session.donut_changes:
-                # Create donut movement description
-                old_label = get_position_label(change.old_performance, change.old_potential)
-                new_label = get_position_label(change.new_performance, change.new_potential)
-                donut_change_description_map[
-                    change.employee_id
-                ] = f"Donut: Moved from {old_label} to {new_label}"
+            for event in session.donut_events:
+                # Only process donut move events
+                if event.event_type == "donut_move":
+                    # Create donut movement description
+                    old_label = get_position_label(event.old_performance, event.old_potential)
+                    new_label = get_position_label(event.new_performance, event.new_potential)
+                    donut_change_description_map[
+                        event.employee_id
+                    ] = f"Donut: Moved from {old_label} to {new_label}"
 
         # Update rows with modified data
         for row_idx in range(2, sheet.max_row + 1):
@@ -166,6 +171,10 @@ class ExcelExporter:
                     sheet.cell(row_idx, modified_col + 5, "")
                     sheet.cell(row_idx, modified_col + 6, "")
                     sheet.cell(row_idx, modified_col + 7, "")
+
+                # Add flags (comma-separated list)
+                flags_value = ", ".join(emp.flags) if emp.flags else ""
+                sheet.cell(row_idx, modified_col + 8, flags_value)
 
         # Save modified workbook
         workbook.save(output_path)

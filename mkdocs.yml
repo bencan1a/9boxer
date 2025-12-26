@@ -1,5 +1,6 @@
 # MkDocs Material Configuration for 9Boxer User Guide
 # This generates static documentation bundled with the Electron app for offline use
+# UPDATED: Now aligned with 9Boxer design system (frontend/src/theme/tokens.ts)
 
 # Site Information
 site_name: 9Boxer User Guide
@@ -22,11 +23,21 @@ use_directory_urls: false  # Generate page.html instead of page/index.html
 theme:
   name: material
 
-  # Dark theme to match 9Boxer app aesthetic
+  # UPDATED: Support both light and dark modes (matches app theme toggle)
   palette:
-    scheme: slate  # Dark mode
-    primary: blue  # Matches app primary color (#1976d2 / #90caf9)
-    accent: blue   # Matches app accent color
+    # Light mode (default)
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
 
   # Material Design features for enhanced navigation
   features:
@@ -44,7 +55,7 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
-  # Font configuration (matches app Roboto font)
+  # Font configuration (matches app Roboto font - tokens.typography.fontFamily)
   font:
     text: Roboto
     code: Roboto Mono
@@ -145,9 +156,11 @@ nav:
   - Help:
     - Frequently Asked Questions: faq.md
 
-# Extra CSS/JS (optional for future customization)
-# extra_css:
-#   - stylesheets/extra.css
+# UPDATED: Custom CSS for design system alignment
+extra_css:
+  - stylesheets/extra.css
+
+# Extra JavaScript (optional for future enhancements)
 # extra_javascript:
 #   - javascripts/extra.js
 

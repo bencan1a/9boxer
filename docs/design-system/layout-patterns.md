@@ -38,13 +38,11 @@ Full breakdown of component nesting with responsibilities:
         │   ├── Logo & Title (Left)
         │   ├── FileMenu (Dropdown)
         │   │   └── ExclusionDialog (Modal, conditional)
-        │   ├── ViewModeToggle (Grid control)
-        │   ├── ZoomControls (Grid control)
-        │   ├── FullScreenToggle (App control)
-        │   ├── LanguageSelector (User preference)
         │   ├── HelpButton (Documentation)
         │   └── SettingsButton (Opens SettingsDialog)
         │       └── SettingsDialog (Modal, conditional)
+        │           ├── Theme Selection (Radio buttons)
+        │           └── Language Selection (Dropdown)
         │
         ├── FilterDrawer (Zone 2: Left Sidebar - Collapsible)
         │   ├── Search Input
@@ -54,6 +52,10 @@ Full breakdown of component nesting with responsibilities:
         │   └── Reset Button
         │
         ├── NineBoxGrid (Zone 3: Center - Main Content)
+        │   ├── ViewControls (Floating: Top-Right)
+        │   │   ├── ViewModeToggle (Grid/Donut switcher)
+        │   │   ├── ZoomControls (In/Out/Reset + percentage)
+        │   │   └── FullscreenToggle (Enter/Exit fullscreen)
         │   ├── LoadingSpinner (Overlay, conditional)
         │   ├── GridBox (x9 - Positions 1-9)
         │   │   ├── Position Label (Header)
@@ -105,7 +107,7 @@ Full breakdown of component nesting with responsibilities:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Zone 1: TOP TOOLBAR (Fixed Height: 64px)                      │
-│  [Logo] [File▾] [View] [🔍] [🔍] [⛶] [🌐] [?] [⚙]           │
+│  [Logo] [File▾]                                      [?] [⚙]   │
 ├────────────┬──────────────────────────────┬─────────────────────┤
 │            │                              │                     │
 │  Zone 2:   │   Zone 3: GRID AREA          │  Zone 4:            │
@@ -163,11 +165,11 @@ Detailed breakdown of each zone's structure and purpose.
 
 **Layout Structure:**
 ```
-┌──────────────────────────────────────────────────────────────┐
-│ [Logo] [File▾] [View] [🔍+] [🔍-] [⛶] [🌐] [?] [⚙]        │
-│  16px   Auto   Auto   44px  44px 44px 44px 44px 44px         │
-└──────────────────────────────────────────────────────────────┘
-   ← Left Group (Actions)         Right Group (Settings) →
+┌────────────────────────────────────────────────────┐
+│ [Logo] [File▾]                    [?] [⚙]        │
+│  16px   Auto                     44px 44px        │
+└────────────────────────────────────────────────────┘
+   ← Left Group (Actions)    Right Group (Settings) →
 ```
 
 **Spacing Rules:**
@@ -179,37 +181,23 @@ Detailed breakdown of each zone's structure and purpose.
 **Left Group (Actions):**
 1. **Logo & Title** - Branding (16px padding-right)
 2. **FileMenu** - New, Open, Save, Export (dropdown)
-3. **ViewModeToggle** - Normal/Donut mode switcher
-
-**Center Group (Grid Controls):**
-4. **ZoomControls** - Zoom In, Zoom Out, Reset (button group)
-5. **FullScreenToggle** - Enter/Exit full screen
 
 **Right Group (Settings):**
-6. **LanguageSelector** - i18n language picker (dropdown)
-7. **HelpButton** - Opens user guide
-8. **SettingsButton** - Opens settings dialog
+3. **HelpButton** - Opens user guide
+4. **SettingsButton** - Opens settings dialog (theme, language preferences)
 
 **Example Layout:**
 ```tsx
 <AppBar position="sticky" sx={{ height: 64, px: 3 }}>
   <Toolbar disableGutters sx={{ height: '100%', gap: 1 }}>
-    {/* Left Group */}
+    {/* Left Group - File Operations */}
     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', pr: 2 }}>
       <Typography variant="h6">9Boxer</Typography>
       <FileMenu />
-      <ViewModeToggle />
     </Box>
 
-    {/* Center Group (Grid Controls) */}
+    {/* Right Group - Help & Settings */}
     <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-      <ZoomControls />
-      <FullScreenToggle />
-    </Box>
-
-    {/* Right Group (Settings) */}
-    <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-      <LanguageSelector />
       <HelpButton />
       <SettingsButton />
     </Box>
@@ -219,15 +207,17 @@ Detailed breakdown of each zone's structure and purpose.
 
 **What SHOULD Go Here:**
 - ✅ Global file operations (New, Save, Export)
-- ✅ View controls affecting entire grid (Zoom, Full-screen)
-- ✅ User preferences (Language, Settings)
+- ✅ Application settings (theme, language - via SettingsDialog)
 - ✅ Help/Documentation access
 
 **What Should NOT Go Here:**
+- ❌ View/Grid controls (now in floating ViewControls component)
 - ❌ Employee-specific actions (belongs in EmployeeTile or DetailsTab)
 - ❌ Grid box controls (belongs in GridBox)
 - ❌ Search/Filter (belongs in FilterDrawer)
 - ❌ Detailed statistics (belongs in RightPanel)
+
+**Note:** View controls (view mode toggle, zoom, fullscreen) were intentionally moved out of the toolbar to a floating ViewControls component in the grid area. See [Grid Area - ViewControls Component](#viewcontrols-floating-component) for rationale.
 
 ---
 
@@ -460,12 +450,79 @@ Parts:
 - ✅ Drag-and-drop interactions
 - ✅ Grid-level loading spinner (overlay)
 - ✅ Empty state (when no employees)
+- ✅ ViewControls floating component (see below)
 
 **What Should NOT Go Here:**
 - ❌ File operations (belongs in Toolbar)
 - ❌ Detailed employee information (belongs in RightPanel)
 - ❌ Search/filter inputs (belongs in FilterDrawer)
 - ❌ Statistics (belongs in RightPanel)
+
+#### ViewControls Floating Component
+
+**Purpose:** Unified view manipulation controls (view mode, zoom, fullscreen) positioned as a floating toolbar within the grid area.
+
+**Positioning:** Absolute positioning at `top: 16px, right: 16px` within the grid container (not viewport).
+
+**Layout Structure:**
+```
+┌────────────────────────────────────────────────┐
+│ Grid Container (position: relative)            │
+│                                                 │
+│  ┌─────────────────────────────────────┐       │
+│  │ [Grid][Donut] │ [−][↺][+] 100% │ [⛶] │  ← Floating at top-right
+│  └─────────────────────────────────────┘       │
+│                                                 │
+│  [9-Box Grid Layout]                            │
+│                                                 │
+└────────────────────────────────────────────────┘
+```
+
+**Component Groups** (separated by vertical dividers):
+1. **View Mode Toggle** - Grid/Donut switcher (ToggleButtonGroup)
+2. **Zoom Controls** - Zoom Out, Reset, Zoom In + percentage display
+3. **Fullscreen Toggle** - Enter/Exit fullscreen
+
+**Keyboard Shortcuts:**
+- **D** - Toggle Grid/Donut view mode
+- **Ctrl/Cmd + Plus** - Zoom in
+- **Ctrl/Cmd + Minus** - Zoom out
+- **Ctrl/Cmd + 0** - Reset zoom
+- **F11** - Toggle fullscreen
+
+**Example Layout:**
+```tsx
+<Box sx={{ position: 'relative', height: '100%', width: '100%' }}>
+  {/* Grid Content */}
+  <NineBoxGrid />
+
+  {/* Floating View Controls */}
+  <ViewControls />  {/* Absolutely positioned at top-right */}
+</Box>
+```
+
+**Design System Exception Rationale:**
+
+ViewControls intentionally floats in the grid area rather than being in the AppBar for the following reasons:
+
+1. **Toolbar Space Constraints** - The consolidated controls would add 5+ items to an already crowded toolbar, causing visual clutter and potential wrapping on smaller screens.
+
+2. **Contextual Proximity** - View controls (zoom, view mode, fullscreen) directly manipulate the grid visualization. Placing them near the grid provides better UX through spatial association.
+
+3. **Industry Standard Pattern** - Floating view controls are a common pattern in visualization-heavy applications:
+   - Video players (YouTube, Vimeo): play/pause, volume, fullscreen float over video
+   - Mapping applications (Google Maps, Mapbox): zoom controls float over map
+   - Data visualization tools (Tableau, D3.js dashboards): view controls overlay the chart area
+
+4. **Frequent Use** - These controls are used frequently during grid manipulation sessions. A floating, always-visible toolbar provides faster access than tucked-away menu items.
+
+5. **Clean Separation of Concerns:**
+   - **AppBar** → Global file operations and application settings
+   - **ViewControls** → Grid-specific view manipulation
+   - **FilterDrawer** → Data filtering and search
+   - **RightPanel** → Detailed information and analysis
+
+**Visibility:** Hidden on small screens (`< 600px width`) via `useMediaQuery(theme.breakpoints.down('sm'))`.
 
 ---
 

@@ -1,21 +1,21 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { FileUploadDialog } from './FileUploadDialog';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "@storybook/test";
+import { FileUploadDialog } from "./FileUploadDialog";
 
 const meta: Meta<typeof FileUploadDialog> = {
-  title: 'Common/FileUploadDialog',
+  title: "Common/FileUploadDialog",
   component: FileUploadDialog,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
   argTypes: {
     open: {
-      control: 'boolean',
-      description: 'Controls whether the dialog is open or closed',
+      control: "boolean",
+      description: "Controls whether the dialog is open or closed",
     },
     onClose: {
-      description: 'Callback function called when the dialog is closed',
+      description: "Callback function called when the dialog is closed",
     },
   },
   args: {
@@ -30,7 +30,7 @@ type Story = StoryObj<typeof FileUploadDialog>;
  * Default closed state - dialog will not be visible in this state.
  * This story documents the component API when closed.
  */
-export const Closed: Story = {
+export const Default: Story = {
   args: {
     open: false,
   },
@@ -51,7 +51,7 @@ export const Open: Story = {
  * Note: This story requires manual interaction to select a file in Storybook.
  * In the actual app, users can select .xlsx or .xls files.
  */
-export const WithFileSelected: Story = {
+export const WithFile: Story = {
   args: {
     open: true,
   },
@@ -60,8 +60,8 @@ export const WithFileSelected: Story = {
       description: {
         story:
           'After clicking "Select File", users can choose an Excel file (.xlsx or .xls). ' +
-          'The selected filename will be displayed in the dialog. ' +
-          'Files must be under 10MB to pass validation.',
+          "The selected filename will be displayed in the dialog. " +
+          "Files must be under 10MB to pass validation.",
       },
     },
   },
@@ -79,8 +79,8 @@ export const Uploading: Story = {
     docs: {
       description: {
         story:
-          'When the Import button is clicked, the dialog shows a loading spinner ' +
-          'and disables controls while the file is being uploaded and processed.',
+          "When the Import button is clicked, the dialog shows a loading spinner " +
+          "and disables controls while the file is being uploaded and processed.",
       },
     },
   },
@@ -98,8 +98,8 @@ export const Success: Story = {
     docs: {
       description: {
         story:
-          'After successful upload, a green success alert is shown for 1.5 seconds ' +
-          'before the dialog automatically closes. The success message includes the filename.',
+          "After successful upload, a green success alert is shown for 1.5 seconds " +
+          "before the dialog automatically closes. The success message includes the filename.",
       },
     },
   },
@@ -117,8 +117,8 @@ export const Error: Story = {
     docs: {
       description: {
         story:
-          'Error states include: file too large (>10MB), invalid file type (not .xlsx/.xls), ' +
-          'or server-side errors during upload. The error message is displayed in a red alert.',
+          "Error states include: file too large (>10MB), invalid file type (not .xlsx/.xls), " +
+          "or server-side errors during upload. The error message is displayed in a red alert.",
       },
     },
   },

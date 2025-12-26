@@ -1,8 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { DndContext } from '@dnd-kit/core';
-import { GridBox } from './GridBox';
-import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employee';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "@storybook/test";
+import { DndContext } from "@dnd-kit/core";
+import { GridBox } from "./GridBox";
+import type {
+  Employee,
+  PerformanceLevel,
+  PotentialLevel,
+} from "@/types/employee";
 
 /**
  * GridBox is a droppable container representing one of the 9 positions in the nine-box grid.
@@ -27,11 +31,11 @@ import type { Employee, PerformanceLevel, PotentialLevel } from '@/types/employe
  * - `data-testid="grid-box-{position}-count"` - Employee count badge
  */
 const meta: Meta<typeof GridBox> = {
-  title: 'Grid/GridBox',
+  title: "Grid/GridBox",
   component: GridBox,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
   decorators: [
     (Story) => (
@@ -44,39 +48,39 @@ const meta: Meta<typeof GridBox> = {
   ],
   argTypes: {
     position: {
-      control: { type: 'number', min: 1, max: 9 },
-      description: 'Grid position (1-9), determines color and label',
+      control: { type: "number", min: 1, max: 9 },
+      description: "Grid position (1-9), determines color and label",
     },
     employees: {
-      description: 'Array of employees in this box',
+      description: "Array of employees in this box",
     },
     shortLabel: {
-      control: 'text',
+      control: "text",
       description: 'Short label for the position (e.g., "L,H")',
     },
     onSelectEmployee: {
-      description: 'Callback fired when an employee is selected',
-      action: 'employee-selected',
+      description: "Callback fired when an employee is selected",
+      action: "employee-selected",
     },
     isExpanded: {
-      control: 'boolean',
-      description: 'Whether the box is in expanded state (full height)',
+      control: "boolean",
+      description: "Whether the box is in expanded state (full height)",
     },
     isCollapsed: {
-      control: 'boolean',
-      description: 'Whether the box is in collapsed state (minimal height)',
+      control: "boolean",
+      description: "Whether the box is in collapsed state (minimal height)",
     },
     onExpand: {
-      description: 'Callback fired when expand button is clicked',
-      action: 'expand',
+      description: "Callback fired when expand button is clicked",
+      action: "expand",
     },
     onCollapse: {
-      description: 'Callback fired when collapse button is clicked',
-      action: 'collapse',
+      description: "Callback fired when collapse button is clicked",
+      action: "collapse",
     },
     donutModeActive: {
-      control: 'boolean',
-      description: 'Whether donut mode is active',
+      control: "boolean",
+      description: "Whether donut mode is active",
     },
   },
 };
@@ -90,24 +94,24 @@ const createEmployee = (id: number, name: string, title: string): Employee => ({
   name,
   business_title: title,
   job_title: title,
-  job_profile: 'Engineering-USA',
-  job_level: 'MT5',
-  job_function: 'Engineering',
-  location: 'USA',
-  manager: 'Manager Name',
+  job_profile: "Engineering-USA",
+  job_level: "MT5",
+  job_function: "Engineering",
+  location: "USA",
+  manager: "Manager Name",
   management_chain_01: null,
   management_chain_02: null,
   management_chain_03: null,
   management_chain_04: null,
   management_chain_05: null,
   management_chain_06: null,
-  hire_date: '2020-01-01',
-  tenure_category: '3-5 years',
-  time_in_job_profile: '2 years',
-  performance: 'High' as PerformanceLevel,
-  potential: 'High' as PotentialLevel,
+  hire_date: "2020-01-01",
+  tenure_category: "3-5 years",
+  time_in_job_profile: "2 years",
+  performance: "High" as PerformanceLevel,
+  potential: "High" as PotentialLevel,
   grid_position: 9,
-  talent_indicator: 'Star',
+  talent_indicator: "Star",
   ratings_history: [],
   development_focus: null,
   development_action: null,
@@ -120,9 +124,9 @@ const createEmployee = (id: number, name: string, title: string): Employee => ({
 });
 
 const threeEmployees: Employee[] = [
-  createEmployee(1, 'Alice Johnson', 'Senior Software Engineer'),
-  createEmployee(2, 'Bob Smith', 'Product Manager'),
-  createEmployee(3, 'Carol White', 'Data Scientist'),
+  createEmployee(1, "Alice Johnson", "Senior Software Engineer"),
+  createEmployee(2, "Bob Smith", "Product Manager"),
+  createEmployee(3, "Carol White", "Data Scientist"),
 ];
 
 const manyEmployees: Employee[] = Array.from({ length: 12 }, (_, i) =>
@@ -137,7 +141,7 @@ export const Empty: Story = {
   args: {
     position: 5,
     employees: [],
-    shortLabel: 'M,M',
+    shortLabel: "M,M",
     onSelectEmployee: fn(),
     isExpanded: false,
     isCollapsed: false,
@@ -155,7 +159,7 @@ export const WithEmployees: Story = {
   args: {
     position: 9,
     employees: threeEmployees,
-    shortLabel: 'H,H',
+    shortLabel: "H,H",
     onSelectEmployee: fn(),
     isExpanded: false,
     isCollapsed: false,
@@ -173,7 +177,7 @@ export const Collapsed: Story = {
   args: {
     position: 6,
     employees: threeEmployees,
-    shortLabel: 'H,M',
+    shortLabel: "H,M",
     onSelectEmployee: fn(),
     isExpanded: false,
     isCollapsed: true,
@@ -191,7 +195,7 @@ export const Expanded: Story = {
   args: {
     position: 8,
     employees: manyEmployees,
-    shortLabel: 'M,H',
+    shortLabel: "M,H",
     onSelectEmployee: fn(),
     isExpanded: true,
     isCollapsed: false,
@@ -209,7 +213,7 @@ export const ManyEmployees: Story = {
   args: {
     position: 9,
     employees: manyEmployees,
-    shortLabel: 'H,H',
+    shortLabel: "H,H",
     onSelectEmployee: fn(),
     isExpanded: true,
     isCollapsed: false,
@@ -229,19 +233,19 @@ export const NeedsAttention: Story = {
     employees: [
       {
         ...threeEmployees[0],
-        performance: 'Low' as PerformanceLevel,
-        potential: 'Low' as PotentialLevel,
+        performance: "Low" as PerformanceLevel,
+        potential: "Low" as PotentialLevel,
         grid_position: 1,
-        flags: ['performance-plan'],
+        flags: ["performance-plan"],
       },
       {
         ...threeEmployees[1],
-        performance: 'Low' as PerformanceLevel,
-        potential: 'Low' as PotentialLevel,
+        performance: "Low" as PerformanceLevel,
+        potential: "Low" as PotentialLevel,
         grid_position: 1,
       },
     ],
-    shortLabel: 'L,L',
+    shortLabel: "L,L",
     onSelectEmployee: fn(),
     isExpanded: false,
     isCollapsed: false,
@@ -261,13 +265,13 @@ export const Development: Story = {
     employees: [
       {
         ...threeEmployees[0],
-        performance: 'Low' as PerformanceLevel,
-        potential: 'High' as PotentialLevel,
+        performance: "Low" as PerformanceLevel,
+        potential: "High" as PotentialLevel,
         grid_position: 7,
-        talent_indicator: 'Develop',
+        talent_indicator: "Develop",
       },
     ],
-    shortLabel: 'L,H',
+    shortLabel: "L,H",
     onSelectEmployee: fn(),
     isExpanded: false,
     isCollapsed: false,

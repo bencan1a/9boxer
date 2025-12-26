@@ -40,7 +40,9 @@
       "managers": "上司",
       "exclusions": "除外設定",
       "excludeEmployees": "従業員を除外",
-      "clearAllFilters": "すべてのフィルターをクリア"
+      "clearAllFilters": "すべてのフィルターをクリア",
+      "flags": "Flags",
+      "reportingChain": "Reporting Chain"
     },
     "exclusionDialog": {
       "title": "従業員を除外",
@@ -197,7 +199,11 @@
         "level04": "レベル04（VP）",
         "level05": "レベル05",
         "level06": "レベル06"
-      }
+      },
+      "addFlag": "Add flag...",
+      "box": "Box",
+      "flags": "Flags",
+      "noFlagsAvailable": "No flags available"
     },
     "changeTrackerTab": {
       "noChanges": "変更はまだありません",
@@ -306,6 +312,13 @@
         "someAnomalies": "いくつかの異常が検出されました。詳細については以下のセクションをご確認ください。",
         "significantAnomalies": "重大な異常が検出されました。早急な確認を推奨します。"
       }
+    },
+    "changesSummary": {
+      "recentChanges": "Recent Changes",
+      "noChanges": "No changes for this employee",
+      "movement": "Movement",
+      "donutMovement": "Donut Movement",
+      "notes": "Notes"
     }
   },
   "common": {
@@ -372,7 +385,8 @@
       "darkModeDesc": "常にダークテーマを使用",
       "auto": "自動（システムに従う）",
       "autoDesc": "システムテーマに自動的に合わせる"
-    }
+    },
+    "language": "Language"
   },
   "zoom": {
     "zoomIn": "拡大（Ctrl++）",

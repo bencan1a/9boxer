@@ -148,7 +148,7 @@ def test_restore_sessions_when_startup_then_loads_from_database(
         assert restored_session.original_filename == "test.xlsx"
         assert len(restored_session.original_employees) == 5
         assert len(restored_session.current_employees) == 5
-        assert len(restored_session.changes) == 0
+        assert len(restored_session.events) == 0
 
 
 def test_move_employee_when_called_then_persists_changes(
@@ -180,12 +180,12 @@ def test_move_employee_when_called_then_persists_changes(
     # Verify changes persisted to database
     conn = sqlite3.connect(str(temp_db))
     conn.row_factory = sqlite3.Row
-    cursor = conn.execute("SELECT changes FROM sessions WHERE user_id = ?", ("user1",))
+    cursor = conn.execute("SELECT events FROM sessions WHERE user_id = ?", ("user1",))
     row = cursor.fetchone()
     conn.close()
 
     assert row is not None
-    changes_json = dict(row)["changes"]
+    changes_json = dict(row)["events"]
     assert changes_json is not None
     assert "Medium" in changes_json  # Check that the new performance level is in JSON
 
@@ -222,12 +222,12 @@ def test_update_change_notes_when_called_then_persists_notes(
     # Verify notes persisted to database
     conn = sqlite3.connect(str(temp_db))
     conn.row_factory = sqlite3.Row
-    cursor = conn.execute("SELECT changes FROM sessions WHERE user_id = ?", ("user1",))
+    cursor = conn.execute("SELECT events FROM sessions WHERE user_id = ?", ("user1",))
     row = cursor.fetchone()
     conn.close()
 
     assert row is not None
-    changes_json = dict(row)["changes"]
+    changes_json = dict(row)["events"]
     assert changes_json is not None
     assert note_text in changes_json
 
@@ -377,8 +377,8 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
             user_id, session_id, created_at, original_filename,
             original_file_path, sheet_name, sheet_index,
             job_function_config, original_employees,
-            current_employees, changes, updated_at,
-            donut_changes, donut_mode_active
+            current_employees, events, updated_at,
+            donut_events, donut_mode_active
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (

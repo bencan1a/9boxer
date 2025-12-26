@@ -63,10 +63,15 @@ export async function initializeConfig(): Promise<void> {
       // Get dynamic backend URL from main process
       const backendUrl = await window.electronAPI.backend.getUrl();
       API_BASE_URL = backendUrl;
-      console.log(`[Config] API initialized with dynamic backend URL: ${API_BASE_URL}`);
+      console.log(
+        `[Config] API initialized with dynamic backend URL: ${API_BASE_URL}`
+      );
     } catch (error) {
-      console.error('[Config] Failed to get backend URL from main process:', error);
-      console.warn('[Config] Using default URL: http://localhost:8000');
+      console.error(
+        "[Config] Failed to get backend URL from main process:",
+        error
+      );
+      console.warn("[Config] Using default URL: http://localhost:8000");
       // Keep default URL as fallback
     }
   } else if (!isElectron()) {
@@ -74,8 +79,10 @@ export async function initializeConfig(): Promise<void> {
     API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
     console.log(`[Config] API initialized with browser URL: ${API_BASE_URL}`);
   } else {
-    console.warn('[Config] Running in Electron mode but backend IPC not available');
-    console.warn('[Config] Using default URL: http://localhost:8000');
+    console.warn(
+      "[Config] Running in Electron mode but backend IPC not available"
+    );
+    console.warn("[Config] Using default URL: http://localhost:8000");
   }
 }
 

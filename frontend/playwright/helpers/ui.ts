@@ -15,7 +15,7 @@ import { Page, expect } from "@playwright/test";
  */
 export async function waitForUiSettle(
   page: Page,
-  duration: number = 0.5,
+  duration: number = 0.5
 ): Promise<void> {
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(duration * 1000);
@@ -69,7 +69,7 @@ export async function closeAllDialogsAndOverlays(page: Page): Promise<void> {
 
   // Strategy 5: Click close buttons on any remaining dialogs
   const closeButtons = page.locator(
-    '[aria-label="close"], [data-testid*="close-button"]',
+    '[aria-label="close"], [data-testid*="close-button"]'
   );
   const count = await closeButtons.count();
   for (let i = 0; i < count; i++) {
@@ -119,7 +119,7 @@ export async function resetToEmptyState(page: Page): Promise<void> {
  */
 export async function toggleDonutMode(
   page: Page,
-  enabled: boolean,
+  enabled: boolean
 ): Promise<void> {
   const donutButton = page.locator('[data-testid="donut-view-button"]');
   const gridButton = page.locator('[data-testid="grid-view-button"]');
@@ -158,7 +158,7 @@ export async function toggleDonutMode(
 export async function clickTabAndWait(
   page: Page,
   tabTestId: string,
-  waitDuration: number = 0.5,
+  waitDuration: number = 0.5
 ): Promise<void> {
   await page.locator(`[data-testid="${tabTestId}"]`).click();
   await waitForUiSettle(page, waitDuration);

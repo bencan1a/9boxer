@@ -35,9 +35,9 @@ export const DevModeIndicator: React.FC = () => {
         ]);
         setBackendPort(port);
         setBackendUrl(url);
-        logger.info('[DevModeIndicator] Backend info:', { port, url });
+        logger.info("[DevModeIndicator] Backend info:", { port, url });
       } catch (error) {
-        logger.error('[DevModeIndicator] Failed to fetch backend info:', error);
+        logger.error("[DevModeIndicator] Failed to fetch backend info:", error);
       }
     }
 
@@ -52,10 +52,10 @@ export const DevModeIndicator: React.FC = () => {
   // Only show in Electron mode
   if (!isElectron()) {
     return (
-      <Tooltip title={t('common.devMode.webModeTooltip')} placement="left">
+      <Tooltip title={t("common.devMode.webModeTooltip")} placement="left">
         <Chip
           icon={<CodeIcon />}
-          label={t('common.devMode.webModeLabel')}
+          label={t("common.devMode.webModeLabel")}
           size="small"
           color="info"
           sx={{
@@ -72,12 +72,12 @@ export const DevModeIndicator: React.FC = () => {
 
   // Show backend connection info
   const label = backendPort
-    ? t('common.devMode.backendPort', { port: backendPort })
-    : t('common.devMode.backendLoading');
+    ? t("common.devMode.backendPort", { port: backendPort })
+    : t("common.devMode.backendLoading");
 
   const tooltipText = backendUrl
-    ? t('common.devMode.backendUrlTooltip', { url: backendUrl })
-    : t('common.devMode.fetchingBackendInfo');
+    ? t("common.devMode.backendUrlTooltip", { url: backendUrl })
+    : t("common.devMode.fetchingBackendInfo");
 
   return (
     <Tooltip title={tooltipText} placement="left">

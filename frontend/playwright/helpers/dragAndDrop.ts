@@ -27,7 +27,7 @@ export async function dragEmployeeToPosition(
     isDonutMode?: boolean;
     expectModified?: boolean;
     skipApiWait?: boolean;
-  } = {},
+  } = {}
 ): Promise<void> {
   const {
     maxRetries = 2,
@@ -40,7 +40,7 @@ export async function dragEmployeeToPosition(
     try {
       // Find the employee card
       const employeeCard = page.locator(
-        `[data-testid="employee-card-${employeeId}"]`,
+        `[data-testid="employee-card-${employeeId}"]`
       );
       await employeeCard.waitFor({ state: "visible", timeout: 5000 });
 
@@ -52,7 +52,7 @@ export async function dragEmployeeToPosition(
 
       // Find the target grid box
       const targetBox = page.locator(
-        `[data-testid="grid-box-${targetPosition}"]`,
+        `[data-testid="grid-box-${targetPosition}"]`
       );
       await targetBox.waitFor({ state: "visible", timeout: 5000 });
 
@@ -82,7 +82,7 @@ export async function dragEmployeeToPosition(
         // Wait for the appropriate endpoint based on mode
         const moveEndpoint = isDonutMode ? "/move-donut" : "/move";
         console.log(
-          `Setting up listener for endpoint: ${moveEndpoint}, employee: ${employeeId}, target: ${targetPosition}`,
+          `Setting up listener for endpoint: ${moveEndpoint}, employee: ${employeeId}, target: ${targetPosition}`
         );
 
         moveEmployeePromise = page.waitForResponse(
@@ -91,16 +91,16 @@ export async function dragEmployeeToPosition(
             const is200 = response.status() === 200;
             if (matchesEndpoint) {
               console.log(
-                `  Response received: ${response.url()}, status: ${response.status()}`,
+                `  Response received: ${response.url()}, status: ${response.status()}`
               );
             }
             return matchesEndpoint && is200;
           },
-          { timeout: 15000 }, // Increased timeout for donut mode
+          { timeout: 15000 } // Increased timeout for donut mode
         );
       } else {
         console.log(
-          `Skipping API wait for employee: ${employeeId}, target: ${targetPosition} (validating UX state only)`,
+          `Skipping API wait for employee: ${employeeId}, target: ${targetPosition} (validating UX state only)`
         );
       }
 
@@ -132,11 +132,11 @@ export async function dragEmployeeToPosition(
           await moveEmployeePromise;
         } catch (error) {
           console.log(
-            `Attempt ${attempt + 1}: API call did not complete, retrying...`,
+            `Attempt ${attempt + 1}: API call did not complete, retrying...`
           );
           if (attempt === maxRetries) {
             throw new Error(
-              `Failed to move employee ${employeeId} to position ${targetPosition}: API call timeout`,
+              `Failed to move employee ${employeeId} to position ${targetPosition}: API call timeout`
             );
           }
           continue;
@@ -160,19 +160,19 @@ export async function dragEmployeeToPosition(
           targetPosition.toString(),
           {
             timeout: 3000,
-          },
+          }
         );
         console.log(
-          `  ✓ Position attribute updated: ${positionAttr}=${targetPosition}`,
+          `  ✓ Position attribute updated: ${positionAttr}=${targetPosition}`
         );
       } catch (error) {
         const currentValue = await employeeCard.getAttribute(positionAttr);
         console.log(
-          `Attempt ${attempt + 1}: Position attribute not updated (expected ${targetPosition}, got ${currentValue}), retrying...`,
+          `Attempt ${attempt + 1}: Position attribute not updated (expected ${targetPosition}, got ${currentValue}), retrying...`
         );
         if (attempt === maxRetries) {
           throw new Error(
-            `Failed to move employee ${employeeId} to position ${targetPosition}: Position attribute not updated after drag (got ${currentValue})`,
+            `Failed to move employee ${employeeId} to position ${targetPosition}: Position attribute not updated after drag (got ${currentValue})`
           );
         }
         continue;
@@ -187,7 +187,7 @@ export async function dragEmployeeToPosition(
           ? "donut-indicator"
           : "modified-indicator";
         const indicator = employeeCard.locator(
-          `[data-testid="${indicatorTestId}"]`,
+          `[data-testid="${indicatorTestId}"]`
         );
         await expect(indicator).toBeVisible({ timeout: 2000 });
       }

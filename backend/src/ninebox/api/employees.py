@@ -1,7 +1,7 @@
 """Employee management API endpoints."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from ninebox.core.dependencies import get_employee_service, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
@@ -25,10 +25,53 @@ class MoveRequest(BaseModel):
 class UpdateEmployeeRequest(BaseModel):
     """Request to update employee fields."""
 
+    # Grid position fields (will trigger event tracking)
+    performance: str | None = None  # "LOW", "MEDIUM", "HIGH"
+    potential: str | None = None  # "LOW", "MEDIUM", "HIGH"
+
+    # Other employee fields
     promotion_readiness: bool | None = None
     development_focus: str | None = None
     development_action: str | None = None
     notes: str | None = None
+    flags: list[str] | None = None
+
+    @field_validator("flags")
+    @classmethod
+    def validate_flags(cls, v: list[str] | None) -> list[str] | None:
+        """Validate flags are from allowed list.
+
+        Args:
+            v: List of flag strings to validate
+
+        Returns:
+            Validated list of flags or None
+
+        Raises:
+            ValueError: If any flag is not in the allowed list
+        """
+        if v is None:
+            return None
+
+        allowed_flags = {
+            "promotion_ready",
+            "flagged_for_discussion",
+            "flight_risk",
+            "new_hire",
+            "succession_candidate",
+            "pip",
+            "high_retention_priority",
+            "ready_for_lateral_move",
+        }
+
+        invalid_flags = [flag for flag in v if flag not in allowed_flags]
+        if invalid_flags:
+            raise ValueError(
+                f"Invalid flags: {', '.join(invalid_flags)}. "
+                f"Allowed flags: {', '.join(sorted(allowed_flags))}"
+            )
+
+        return v
 
 
 class DonutMoveRequest(BaseModel):
@@ -125,41 +168,109 @@ async def get_employee(
 
 
 @router.patch("/{employee_id}")
-async def update_employee(
+async def update_employee(  # noqa: PLR0912 - Complex update logic requires multiple branches for validation and different update types (flags, grid moves, field updates)
     employee_id: int,
     updates: UpdateEmployeeRequest,
     session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
     """Update employee fields."""
     session = session_mgr.get_session(LOCAL_USER_ID)
-
     if not session:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session",
-        )
+        raise HTTPException(status_code=404, detail="No active session")
 
-    # Find employee
-    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
-
-    if not employee:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Employee {employee_id} not found",
-        )
-
-    # Update fields
     update_data = updates.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(employee, field, value)
 
-    # Mark as modified
-    employee.modified_in_session = True
+    # Handle flags separately using new event tracking
+    if "flags" in update_data:
+        new_flags = update_data.pop("flags")
+        session_mgr.update_employee_flags(
+            user_id=LOCAL_USER_ID,
+            employee_id=employee_id,
+            new_flags=new_flags,
+        )
 
-    return {
-        "employee": employee.model_dump(),
-        "success": True,
-    }
+    # Handle performance/potential changes with event tracking
+    if "performance" in update_data or "potential" in update_data:
+        # Get current employee to determine defaults if only one field is provided
+        employee = next(
+            (e for e in session.current_employees if e.employee_id == employee_id), None
+        )
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+
+        # Use current values as defaults if not provided
+        new_performance = update_data.pop("performance", None)
+        new_potential = update_data.pop("potential", None)
+
+        # If not provided, use current values
+        if new_performance is None:
+            new_performance = employee.performance
+        if new_potential is None:
+            new_potential = employee.potential
+
+        # Convert strings to enums if needed (normalize case: "MEDIUM" -> "Medium")
+        if isinstance(new_performance, str):
+            try:
+                # Normalize case: "MEDIUM" -> "Medium", "medium" -> "Medium"
+                normalized = new_performance.capitalize()
+                new_performance = PerformanceLevel(normalized)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid performance value: {new_performance}",
+                ) from e
+        if isinstance(new_potential, str):
+            try:
+                # Normalize case: "HIGH" -> "High", "high" -> "High"
+                normalized = new_potential.capitalize()
+                new_potential = PotentialLevel(normalized)
+            except ValueError as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid potential value: {new_potential}",
+                ) from e
+
+        # Create GridMoveEvent via session manager (handles event tracking)
+        try:
+            session_mgr.move_employee(
+                user_id=LOCAL_USER_ID,
+                employee_id=employee_id,
+                new_performance=new_performance,
+                new_potential=new_potential,
+            )
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(e),
+            ) from e
+
+    # Handle other fields (promotion_readiness, development_focus, development_action, notes)
+    if update_data:
+        employee = next(
+            (e for e in session.current_employees if e.employee_id == employee_id), None
+        )
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+
+        # Update remaining fields
+        for field, value in update_data.items():
+            setattr(employee, field, value)
+
+        # Update modified status based on events
+        has_event = any(e.employee_id == employee_id for e in session.events)
+        employee.modified_in_session = has_event
+
+        # Persist
+        session_mgr._persist_session(session)
+
+    # Return updated employee
+    session = session_mgr.get_session(LOCAL_USER_ID)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return {"employee": employee.model_dump(), "success": True}
 
 
 @router.patch("/{employee_id}/move")
@@ -269,12 +380,12 @@ async def move_employee_donut(
         )
         if employee_obj and employee_obj.donut_modified:
             employee_obj.donut_notes = move.notes
-            # Also update the change entry if it exists
-            change_entry = next(
-                (c for c in session.donut_changes if c.employee_id == employee_id), None
+            # Also update the event entry if it exists
+            event_entry = next(
+                (e for e in session.donut_events if e.employee_id == employee_id), None
             )
-            if change_entry:
-                change_entry.notes = move.notes
+            if event_entry:
+                event_entry.notes = move.notes
 
     # Get updated employee for response
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)

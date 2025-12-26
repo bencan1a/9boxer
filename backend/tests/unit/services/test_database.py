@@ -57,8 +57,8 @@ def test_get_connection_when_query_executes_then_commits(db_manager: DatabaseMan
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at,
-                donut_changes, donut_mode_active
+                current_employees, events, updated_at,
+                donut_events, donut_mode_active
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -100,8 +100,8 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at,
-                donut_changes, donut_mode_active
+                current_employees, events, updated_at,
+                donut_events, donut_mode_active
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -131,8 +131,8 @@ def test_get_connection_when_exception_occurs_then_rolls_back(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at,
-                donut_changes, donut_mode_active
+                current_employees, events, updated_at,
+                donut_events, donut_mode_active
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -183,8 +183,10 @@ def test_sessions_table_when_queried_then_has_correct_schema(
     assert columns["job_function_config"] == "TEXT"
     assert columns["original_employees"] == "TEXT"
     assert columns["current_employees"] == "TEXT"
-    assert columns["changes"] == "TEXT"
+    assert columns["events"] == "TEXT"
     assert columns["updated_at"] == "TIMESTAMP"
+    assert columns["donut_events"] == "TEXT"
+    assert columns["donut_mode_active"] == "INTEGER"
 
 
 def test_sessions_table_when_queried_then_has_indexes(db_manager: DatabaseManager) -> None:
@@ -210,8 +212,8 @@ def test_multiple_connections_when_opened_then_work_independently(
                 user_id, session_id, created_at, original_filename,
                 original_file_path, sheet_name, sheet_index,
                 job_function_config, original_employees,
-                current_employees, changes, updated_at,
-                donut_changes, donut_mode_active
+                current_employees, events, updated_at,
+                donut_events, donut_mode_active
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (

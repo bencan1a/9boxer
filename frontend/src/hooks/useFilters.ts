@@ -4,19 +4,48 @@
 
 import { Employee } from "../types/employee";
 import { useFilterStore } from "../store/filterStore";
+import { getAllFlags, getFlagDisplayName } from "../constants/flags";
 
 export interface FilterOptions {
   levels: string[];
   jobFunctions: string[];
   locations: string[];
   managers: string[];
+  flags: Array<{ key: string; displayName: string; count: number }>;
 }
 
 // European country codes (ISO 3166-1 alpha-3)
 const EUROPEAN_COUNTRIES = new Set([
-  "GBR", "FRA", "DEU", "ITA", "ESP", "NLD", "BEL", "SWE", "NOR", "DNK",
-  "FIN", "POL", "AUT", "CHE", "IRL", "PRT", "GRC", "CZE", "HUN", "ROU",
-  "BGR", "HRV", "SVK", "SVN", "LTU", "LVA", "EST", "LUX", "MLT", "CYP"
+  "GBR",
+  "FRA",
+  "DEU",
+  "ITA",
+  "ESP",
+  "NLD",
+  "BEL",
+  "SWE",
+  "NOR",
+  "DNK",
+  "FIN",
+  "POL",
+  "AUT",
+  "CHE",
+  "IRL",
+  "PRT",
+  "GRC",
+  "CZE",
+  "HUN",
+  "ROU",
+  "BGR",
+  "HRV",
+  "SVK",
+  "SVN",
+  "LTU",
+  "LVA",
+  "EST",
+  "LUX",
+  "MLT",
+  "CYP",
 ]);
 
 /**
@@ -28,10 +57,10 @@ const mapLocationToDisplay = (locationCode: string): string => {
   }
 
   const locationMap: Record<string, string> = {
-    "AUS": "Australia",
-    "IND": "India",
-    "USA": "USA",
-    "CAN": "Canada",
+    AUS: "Australia",
+    IND: "India",
+    USA: "USA",
+    CAN: "Canada",
   };
 
   return locationMap[locationCode] || locationCode;
@@ -43,13 +72,18 @@ export const useFilters = () => {
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
+    selectedFlags,
     excludedEmployeeIds,
+    reportingChainFilter,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
     toggleLocation,
     toggleManager,
+    toggleFlag,
     setExcludedIds,
+    setReportingChainFilter,
+    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
     hasActiveFilters,
@@ -84,6 +118,29 @@ export const useFilters = () => {
         if (!selectedManagers.includes(emp.manager)) return false;
       }
 
+      // Filter by reporting chain
+      if (reportingChainFilter) {
+        const chainFilter = reportingChainFilter.toLowerCase();
+        const hasManagerInChain =
+          emp.manager?.toLowerCase() === chainFilter ||
+          emp.management_chain_01?.toLowerCase() === chainFilter ||
+          emp.management_chain_02?.toLowerCase() === chainFilter ||
+          emp.management_chain_03?.toLowerCase() === chainFilter ||
+          emp.management_chain_04?.toLowerCase() === chainFilter ||
+          emp.management_chain_05?.toLowerCase() === chainFilter ||
+          emp.management_chain_06?.toLowerCase() === chainFilter;
+        if (!hasManagerInChain) return false;
+      }
+
+      // Filter by flags (employee must have ALL selected flags)
+      if (selectedFlags.length > 0) {
+        const employeeFlags = emp.flags || [];
+        const hasAllSelectedFlags = selectedFlags.every((flag) =>
+          employeeFlags.includes(flag)
+        );
+        if (!hasAllSelectedFlags) return false;
+      }
+
       // Exclude employees by ID
       if (excludedEmployeeIds.includes(emp.employee_id)) return false;
 
@@ -102,6 +159,7 @@ export const useFilters = () => {
         jobFunctions: [],
         locations: [],
         managers: [],
+        flags: [],
       };
     }
 
@@ -118,11 +176,7 @@ export const useFilters = () => {
 
     // Extract unique job functions
     const jobFunctions = Array.from(
-      new Set(
-        employees
-          .map((emp) => emp.job_function)
-          .filter(Boolean)
-      )
+      new Set(employees.map((emp) => emp.job_function).filter(Boolean))
     ).sort();
 
     // Extract unique locations and map to display names
@@ -140,11 +194,32 @@ export const useFilters = () => {
       new Set(employees.map((emp) => emp.manager))
     ).sort();
 
+    // Extract flags with counts (only flags that exist in the dataset)
+    const flagCounts = new Map<string, number>();
+    employees.forEach((emp) => {
+      if (emp.flags && emp.flags.length > 0) {
+        emp.flags.forEach((flag) => {
+          flagCounts.set(flag, (flagCounts.get(flag) || 0) + 1);
+        });
+      }
+    });
+
+    // Build flags array with display names and counts
+    const flags = getAllFlags()
+      .filter((flagDef) => flagCounts.has(flagDef.key))
+      .map((flagDef) => ({
+        key: flagDef.key,
+        displayName: flagDef.displayName,
+        count: flagCounts.get(flagDef.key) || 0,
+      }))
+      .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
     return {
       levels,
       jobFunctions,
       locations,
       managers,
+      flags,
     };
   };
 
@@ -154,7 +229,9 @@ export const useFilters = () => {
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
+    selectedFlags,
     excludedEmployeeIds,
+    reportingChainFilter,
     isDrawerOpen,
     hasActiveFilters: hasActiveFilters(),
 
@@ -163,7 +240,10 @@ export const useFilters = () => {
     toggleJobFunction,
     toggleLocation,
     toggleManager,
+    toggleFlag,
     setExcludedIds,
+    setReportingChainFilter,
+    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
 

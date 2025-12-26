@@ -7,6 +7,17 @@
  */
 
 /**
+ * Screenshot source type
+ *
+ * Indicates whether the screenshot should be generated from Storybook
+ * (isolated component) or from the full application (workflow/integration).
+ *
+ * - storybook: Component-level screenshot from Storybook story (faster, more reliable)
+ * - full-app: Full application screenshot with navigation and state setup
+ */
+export type ScreenshotSource = "storybook" | "full-app";
+
+/**
  * Cropping strategy for screenshot capture
  *
  * - element: Capture specific UI element only (button, card, field)
@@ -15,7 +26,12 @@
  * - grid: Capture the 9-box grid area
  * - full-page: Capture entire viewport
  */
-export type CroppingStrategy = 'element' | 'container' | 'panel' | 'grid' | 'full-page';
+export type CroppingStrategy =
+  | "element"
+  | "container"
+  | "panel"
+  | "grid"
+  | "full-page";
 
 /**
  * Expected dimensions for screenshot validation
@@ -36,7 +52,9 @@ export interface ExpectedDimensions {
 }
 
 export interface ScreenshotMetadata {
-  /** Module name in workflows/ directory (e.g., 'quickstart', 'changes') */
+  /** Source type: storybook (component) or full-app (workflow) */
+  source: ScreenshotSource;
+  /** Module name in workflows/ directory (e.g., 'quickstart', 'changes', 'storybook-components') */
   workflow: string;
   /** Function name within the workflow module (e.g., 'generateChangesTab') */
   function: string;
@@ -50,6 +68,8 @@ export interface ScreenshotMetadata {
   cropping?: CroppingStrategy;
   /** Expected dimensions for validation (helps catch incorrect captures) */
   dimensions?: ExpectedDimensions;
+  /** For Storybook screenshots: the story ID (e.g., 'grid-employeetile--modified') */
+  storyId?: string;
 }
 
 /**
@@ -60,305 +80,331 @@ export interface ScreenshotMetadata {
  */
 export const screenshotConfig: Record<string, ScreenshotMetadata> = {
   // Changes workflow screenshots (5 screenshots)
-  'changes-drag-sequence': {
-    workflow: 'changes',
-    function: 'generateDragSequence',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png',
-    description: 'Base grid for 3-panel drag sequence (requires manual composition)',
+  "changes-drag-sequence": {
+    source: "full-app",
+    workflow: "changes",
+    function: "generateDragSequence",
+    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png",
+    description:
+      "Base grid for 3-panel drag sequence (requires manual composition)",
     manual: true,
-    cropping: 'grid',
+    cropping: "grid",
     dimensions: { minWidth: 800, minHeight: 600 },
   },
-  'changes-orange-border': {
-    workflow: 'changes',
-    function: 'generateOrangeBorder',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png',
-    description: 'Employee tile with orange modified border and badge',
-    cropping: 'element',
+  "changes-orange-border": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileModified",
+    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png",
+    description: "Employee tile with orange modified border and badge",
+    storyId: "grid-employeetile--modified",
+    cropping: "element",
     dimensions: { minWidth: 150, maxWidth: 250, minHeight: 80, maxHeight: 150 },
   },
-  'changes-employee-details': {
-    workflow: 'changes',
-    function: 'generateEmployeeDetails',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png',
-    description: 'Employee details panel showing updated ratings',
-    cropping: 'panel',
+  "changes-employee-details": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeDetailsPanel",
+    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png",
+    description: "Employee details panel showing updated ratings",
+    storyId: "panel-employeedetails--default",
+    cropping: "panel",
     dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
-  'changes-timeline-view': {
-    workflow: 'changes',
-    function: 'generateTimelineView',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png',
-    description: 'Performance History timeline in employee details',
-    cropping: 'panel',
+  "changes-timeline-view": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateRatingsTimeline",
+    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png",
+    description: "Performance History timeline in employee details",
+    storyId: "panel-ratingstimeline--default",
+    cropping: "panel",
     dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
-  'changes-tab': {
-    workflow: 'changes',
-    function: 'generateChangesTab',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png',
-    description: 'Changes tab with employee movements',
-    cropping: 'panel',
+  "changes-tab": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateChangesTab",
+    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png",
+    description: "Changes tab with employee movements",
+    storyId: "panel-changetrackertab--default",
+    cropping: "panel",
     dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
   // Notes workflow screenshots (3 screenshots)
-  'notes-changes-tab-field': {
-    workflow: 'notes',
-    function: 'generateChangesTabField',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png',
-    description: 'Changes tab with note field highlighted',
+  "notes-changes-tab-field": {
+    workflow: "notes",
+    function: "generateChangesTabField",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png",
+    description: "Changes tab with note field highlighted",
   },
-  'notes-good-example': {
-    workflow: 'notes',
-    function: 'generateGoodExample',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png',
-    description: 'Changes tab with well-written note example',
+  "notes-good-example": {
+    workflow: "notes",
+    function: "generateGoodExample",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png",
+    description: "Changes tab with well-written note example",
   },
-  'notes-export-excel': {
-    workflow: 'notes',
-    function: 'generateExportExcel',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/workflow-changes-notes-in-excel.png',
-    description: 'Excel export with notes column (manual capture required)',
+  "notes-export-excel": {
+    workflow: "notes",
+    function: "generateExportExcel",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-notes-in-excel.png",
+    description: "Excel export with notes column (manual capture required)",
     manual: true,
   },
 
   // Filters workflow screenshots (4 screenshots)
-  'filters-active-chips': {
-    workflow: 'filters',
-    function: 'generateActiveChips',
-    path: 'resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png',
-    description: 'Grid view with active filter chips and orange dot indicator',
-    cropping: 'full-page',
+  "filters-active-chips": {
+    workflow: "filters",
+    function: "generateActiveChips",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png",
+    description: "Grid view with active filter chips and orange dot indicator",
+    cropping: "full-page",
     dimensions: { exactWidth: 1400, exactHeight: 900 },
   },
-  'filters-panel-expanded': {
-    workflow: 'filters',
-    function: 'generatePanelExpanded',
-    path: 'resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png',
-    description: 'Filter panel expanded showing all filter options',
-    cropping: 'container',
+  "filters-panel-expanded": {
+    workflow: "filters",
+    function: "generatePanelExpanded",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
+    description: "Filter panel expanded showing all filter options",
+    cropping: "container",
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
-  'filters-before-after': {
-    workflow: 'filters',
-    function: 'generateBeforeAfter',
-    path: 'resources/user-guide/docs/images/screenshots/filters/filters-before-state.png',
-    description: 'Before/after filtering comparison (requires manual 2-panel composition)',
+  "filters-before-after": {
+    workflow: "filters",
+    function: "generateBeforeAfter",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-before-state.png",
+    description:
+      "Before/after filtering comparison (requires manual 2-panel composition)",
     manual: true,
-    cropping: 'grid',
+    cropping: "grid",
     dimensions: { minWidth: 800, minHeight: 600 },
   },
-  'filters-clear-all-button': {
-    workflow: 'filters',
-    function: 'generateClearAllButton',
-    path: 'resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png',
-    description: 'Filter drawer with Clear All button highlighted',
-    cropping: 'container',
+  "filters-clear-all-button": {
+    workflow: "filters",
+    function: "generateClearAllButton",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png",
+    description: "Filter drawer with Clear All button highlighted",
+    cropping: "container",
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
 
   // Quickstart workflow screenshots (4 screenshots)
-  'quickstart-file-menu-button': {
-    workflow: 'quickstart',
-    function: 'generateFileMenuButton',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png',
-    description: 'File menu button in toolbar showing "No file selected" empty state',
-    cropping: 'element',
+  "quickstart-file-menu-button": {
+    workflow: "quickstart",
+    function: "generateFileMenuButton",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png",
+    description:
+      'File menu button in toolbar showing "No file selected" empty state',
+    cropping: "element",
     dimensions: { minWidth: 300, maxWidth: 1400, minHeight: 60, maxHeight: 80 },
   },
-  'quickstart-upload-dialog': {
-    workflow: 'quickstart',
-    function: 'generateUploadDialog',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png',
-    description: 'File upload dialog with file selection input and upload button',
-    cropping: 'container',
-    dimensions: { minWidth: 400, maxWidth: 600, minHeight: 200, maxHeight: 400 },
+  "quickstart-upload-dialog": {
+    workflow: "quickstart",
+    function: "generateUploadDialog",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
+    description:
+      "File upload dialog with file selection input and upload button",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 200,
+      maxHeight: 400,
+    },
   },
-  'quickstart-grid-populated': {
-    workflow: 'quickstart',
-    function: 'generateGridPopulated',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png',
-    description: 'Populated 9-box grid after successful file upload',
-    cropping: 'grid',
+  "quickstart-grid-populated": {
+    workflow: "quickstart",
+    function: "generateGridPopulated",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png",
+    description: "Populated 9-box grid after successful file upload",
+    cropping: "grid",
     dimensions: { minWidth: 800, minHeight: 600 },
   },
-  'quickstart-success-annotated': {
-    workflow: 'quickstart',
-    function: 'generateSuccessAnnotated',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png',
+  "quickstart-success-annotated": {
+    workflow: "quickstart",
+    function: "generateSuccessAnnotated",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png",
     description:
-      'Full application view showing populated grid and employee count (requires manual annotation)',
+      "Full application view showing populated grid and employee count (requires manual annotation)",
     manual: true,
-    cropping: 'full-page',
+    cropping: "full-page",
     dimensions: { exactWidth: 1400, exactHeight: 900 },
   },
 
   // Calibration workflow screenshots (6 screenshots)
-  'calibration-file-import': {
-    workflow: 'calibration',
-    function: 'generateFileImport',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png',
-    description: 'File menu open with Import Data menu item highlighted',
+  "calibration-file-import": {
+    workflow: "calibration",
+    function: "generateFileImport",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
+    description: "File menu open with Import Data menu item highlighted",
   },
-  'calibration-statistics-red-flags': {
-    workflow: 'calibration',
-    function: 'generateStatisticsRedFlags',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png',
-    description: 'Statistics tab showing distribution table with problematic patterns',
-  },
-  'calibration-intelligence-anomalies': {
-    workflow: 'calibration',
-    function: 'generateIntelligenceAnomalies',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-intelligence-anomalies.png',
-    description: 'Intelligence tab showing AI-powered anomaly detection results',
-  },
-  'calibration-filters-panel': {
-    workflow: 'calibration',
-    function: 'generateFiltersPanel',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png',
-    description: 'Filters panel with active filter selections applied',
-  },
-  'calibration-donut-mode-toggle': {
-    workflow: 'calibration',
-    function: 'generateDonutModeToggle',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png',
-    description: 'View mode toggle button in active donut mode state',
-  },
-  'calibration-donut-mode-grid': {
-    workflow: 'calibration',
-    function: 'generateDonutModeGrid',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png',
+  "calibration-statistics-red-flags": {
+    workflow: "calibration",
+    function: "generateStatisticsRedFlags",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png",
     description:
-      'Grid in donut mode showing ghostly purple-bordered employees moved from position-5',
+      "Statistics tab showing distribution table with problematic patterns",
   },
-  'calibration-export-results': {
-    workflow: 'calibration',
-    function: 'generateExportResults',
-    path: 'resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png',
-    description: 'Exported Excel file with changes applied',
+  "calibration-intelligence-anomalies": {
+    workflow: "calibration",
+    function: "generateIntelligenceAnomalies",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-intelligence-anomalies.png",
+    description:
+      "Intelligence tab showing AI-powered anomaly detection results",
+  },
+  "calibration-filters-panel": {
+    workflow: "calibration",
+    function: "generateFiltersPanel",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png",
+    description: "Filters panel with active filter selections applied",
+  },
+  "calibration-donut-mode-toggle": {
+    workflow: "calibration",
+    function: "generateDonutModeToggle",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
+    description: "View mode toggle button in active donut mode state",
+  },
+  "calibration-donut-mode-grid": {
+    workflow: "calibration",
+    function: "generateDonutModeGrid",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png",
+    description:
+      "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
+  },
+  "calibration-export-results": {
+    workflow: "calibration",
+    function: "generateExportResults",
+    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png",
+    description: "Exported Excel file with changes applied",
     manual: true,
   },
 
   // Statistics workflow screenshots (3 screenshots)
-  'statistics-panel-distribution': {
-    workflow: 'statistics',
-    function: 'generatePanelDistribution',
-    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png',
-    description: 'Statistics panel showing employee distribution across boxes',
+  "statistics-panel-distribution": {
+    workflow: "statistics",
+    function: "generatePanelDistribution",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png",
+    description: "Statistics panel showing employee distribution across boxes",
   },
-  'statistics-ideal-actual-comparison': {
-    workflow: 'statistics',
-    function: 'generateIdealActualComparison',
-    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png',
-    description: 'Ideal vs actual distribution comparison chart',
+  "statistics-ideal-actual-comparison": {
+    workflow: "statistics",
+    function: "generateIdealActualComparison",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png",
+    description: "Ideal vs actual distribution comparison chart",
   },
-  'statistics-trend-indicators': {
-    workflow: 'statistics',
-    function: 'generateTrendIndicators',
-    path: 'resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png',
-    description: 'Trend indicators showing distribution changes over time',
+  "statistics-trend-indicators": {
+    workflow: "statistics",
+    function: "generateTrendIndicators",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png",
+    description: "Trend indicators showing distribution changes over time",
   },
 
   // Donut mode screenshots (2 screenshots)
-  'donut-mode-active-layout': {
-    workflow: 'donut',
-    function: 'generateActiveLayout',
-    path: 'resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png',
-    description: 'Active donut mode layout with concentric circles',
+  "donut-mode-active-layout": {
+    workflow: "donut",
+    function: "generateActiveLayout",
+    path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png",
+    description: "Active donut mode layout with concentric circles",
   },
-  'donut-mode-toggle-comparison': {
-    workflow: 'donut',
-    function: 'generateToggleComparison',
-    path: 'resources/user-guide/docs/images/screenshots/donut/donut-mode-toggle-comparison.png',
-    description: 'Side-by-side normal vs donut mode comparison',
+  "donut-mode-toggle-comparison": {
+    workflow: "donut",
+    function: "generateToggleComparison",
+    path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-toggle-comparison.png",
+    description: "Side-by-side normal vs donut mode comparison",
     manual: true,
   },
 
   // Grid and basic UI screenshots (2 screenshots)
-  'grid-normal': {
-    workflow: 'grid',
-    function: 'generateGridNormal',
-    path: 'resources/user-guide/docs/images/screenshots/grid-normal.png',
-    description: 'Standard 9-box grid with employee tiles',
+  "grid-normal": {
+    source: "full-app",
+    workflow: "grid",
+    function: "generateGridNormal",
+    path: "resources/user-guide/docs/images/screenshots/grid-normal.png",
+    description: "Standard 9-box grid with employee tiles",
   },
-  'employee-tile-normal': {
-    workflow: 'grid',
-    function: 'generateEmployeeTileNormal',
-    path: 'resources/user-guide/docs/images/screenshots/employee-tile-normal.png',
-    description: 'Individual employee tile showing name and role',
+  "employee-tile-normal": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileNormal",
+    path: "resources/user-guide/docs/images/screenshots/employee-tile-normal.png",
+    description: "Individual employee tile showing name and role",
+    storyId: "grid-employeetile--default",
   },
 
   // Hero and index images (2 screenshots)
-  'hero-grid-sample': {
-    workflow: 'hero',
-    function: 'generateHeroGrid',
-    path: 'resources/user-guide/docs/images/screenshots/hero-grid-sample.png',
-    description: 'Hero image showing full grid with sample data',
+  "hero-grid-sample": {
+    workflow: "hero",
+    function: "generateHeroGrid",
+    path: "resources/user-guide/docs/images/screenshots/hero-grid-sample.png",
+    description: "Hero image showing full grid with sample data",
   },
-  'index-quick-win-preview': {
-    workflow: 'hero',
-    function: 'generateQuickWinPreview',
-    path: 'resources/user-guide/docs/images/screenshots/index-quick-win-preview.png',
-    description: 'Quick win preview for index page',
+  "index-quick-win-preview": {
+    workflow: "hero",
+    function: "generateQuickWinPreview",
+    path: "resources/user-guide/docs/images/screenshots/index-quick-win-preview.png",
+    description: "Quick win preview for index page",
   },
 
   // Additional features screenshots (5 screenshots)
-  'changes-panel-entries': {
-    workflow: 'changes',
-    function: 'generatePanelEntries',
-    path: 'resources/user-guide/docs/images/screenshots/changes-panel-entries.png',
-    description: 'Changes panel with multiple employee movement entries',
+  "changes-panel-entries": {
+    workflow: "changes",
+    function: "generatePanelEntries",
+    path: "resources/user-guide/docs/images/screenshots/changes-panel-entries.png",
+    description: "Changes panel with multiple employee movement entries",
   },
-  'timeline-employee-history': {
-    workflow: 'timeline',
-    function: 'generateEmployeeHistory',
-    path: 'resources/user-guide/docs/images/screenshots/timeline-employee-history.png',
-    description: 'Employee movement timeline showing historical positions',
+  "timeline-employee-history": {
+    workflow: "timeline",
+    function: "generateEmployeeHistory",
+    path: "resources/user-guide/docs/images/screenshots/timeline-employee-history.png",
+    description: "Employee movement timeline showing historical positions",
   },
-  'employee-details-panel-expanded': {
-    workflow: 'employees',
-    function: 'generateDetailsPanelExpanded',
-    path: 'resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png',
-    description: 'Expanded employee details panel with all information',
+  "employee-details-panel-expanded": {
+    workflow: "employees",
+    function: "generateDetailsPanelExpanded",
+    path: "resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png",
+    description: "Expanded employee details panel with all information",
   },
-  'file-menu-apply-changes': {
-    workflow: 'exporting',
-    function: 'generateFileMenuApplyChanges',
-    path: 'resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png',
-    description: 'File menu with Apply Changes option highlighted',
+  "file-menu-apply-changes": {
+    workflow: "exporting",
+    function: "generateFileMenuApplyChanges",
+    path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
+    description: "File menu with Apply Changes option highlighted",
   },
-  'excel-file-new-columns': {
-    workflow: 'exporting',
-    function: 'generateExcelFileNewColumns',
-    path: 'resources/user-guide/docs/images/screenshots/excel-file-new-columns.png',
-    description: 'Excel file showing new columns after export',
+  "excel-file-new-columns": {
+    workflow: "exporting",
+    function: "generateExcelFileNewColumns",
+    path: "resources/user-guide/docs/images/screenshots/excel-file-new-columns.png",
+    description: "Excel file showing new columns after export",
     manual: true,
   },
 
   // Notes donut mode (1 screenshot)
-  'notes-donut-mode': {
-    workflow: 'notes',
-    function: 'generateDonutMode',
-    path: 'resources/user-guide/docs/images/screenshots/notes/notes-donut-mode.png',
-    description: 'Notes visible in donut mode employee hover tooltip',
+  "notes-donut-mode": {
+    workflow: "notes",
+    function: "generateDonutMode",
+    path: "resources/user-guide/docs/images/screenshots/notes/notes-donut-mode.png",
+    description: "Notes visible in donut mode employee hover tooltip",
   },
 
   // Quickstart Excel sample (already defined above but adding here for completeness)
-  'quickstart-excel-sample': {
-    workflow: 'quickstart',
-    function: 'generateExcelSample',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png',
-    description: 'Sample Excel file format showing required columns',
+  "quickstart-excel-sample": {
+    workflow: "quickstart",
+    function: "generateExcelSample",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png",
+    description: "Sample Excel file format showing required columns",
     manual: true,
   },
 
   // Zoom controls screenshot (1 screenshot)
-  'zoom-controls': {
-    workflow: 'zoom',
-    function: 'generateZoomControls',
-    path: 'resources/user-guide/docs/images/screenshots/zoom-controls.png',
-    description: 'Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle',
+  "zoom-controls": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateZoomControls",
+    path: "resources/user-guide/docs/images/screenshots/zoom-controls.png",
+    description:
+      "Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle",
+    storyId: "common-zoomcontrols--default",
   },
 };
 
@@ -372,9 +418,13 @@ export function getAllScreenshotNames(): string[] {
 /**
  * Get screenshots by workflow
  */
-export function getScreenshotsByWorkflow(workflow: string): Record<string, ScreenshotMetadata> {
+export function getScreenshotsByWorkflow(
+  workflow: string
+): Record<string, ScreenshotMetadata> {
   return Object.fromEntries(
-    Object.entries(screenshotConfig).filter(([_, meta]) => meta.workflow === workflow)
+    Object.entries(screenshotConfig).filter(
+      ([_, meta]) => meta.workflow === workflow
+    )
   );
 }
 
@@ -396,6 +446,8 @@ export function getAutomatedScreenshots(): Record<string, ScreenshotMetadata> {
  */
 export function getManualScreenshots(): Record<string, ScreenshotMetadata> {
   return Object.fromEntries(
-    Object.entries(screenshotConfig).filter(([_, metadata]) => metadata.manual === true)
+    Object.entries(screenshotConfig).filter(
+      ([_, metadata]) => metadata.manual === true
+    )
   );
 }

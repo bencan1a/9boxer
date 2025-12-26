@@ -9,23 +9,23 @@
 export const ZOOM_LEVELS = [
   0.25, // 25%
   0.33, // 33%
-  0.5,  // 50%
+  0.5, // 50%
   0.67, // 67%
   0.75, // 75%
-  0.8,  // 80%
-  0.9,  // 90%
-  1.0,  // 100% (default)
-  1.1,  // 110%
+  0.8, // 80%
+  0.9, // 90%
+  1.0, // 100% (default)
+  1.1, // 110%
   1.25, // 125%
-  1.5,  // 150%
+  1.5, // 150%
   1.75, // 175%
-  2.0,  // 200%
-  2.5,  // 250%
-  3.0,  // 300%
+  2.0, // 200%
+  2.5, // 250%
+  3.0, // 300%
 ] as const;
 
 export const DEFAULT_ZOOM_INDEX = ZOOM_LEVELS.indexOf(1.0); // Index of 100%
-const STORAGE_KEY = 'app-zoom-level';
+const STORAGE_KEY = "app-zoom-level";
 
 /**
  * Get the webFrame API from Electron.
@@ -35,7 +35,7 @@ function getWebFrame() {
   // In Electron, webFrame is available via require in renderer process
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { webFrame } = require('electron');
+    const { webFrame } = require("electron");
     return webFrame;
   } catch {
     // Not in Electron environment (e.g., web mode, tests)
@@ -53,7 +53,7 @@ function applyCssZoom(factor: number, index: number): void {
     // Use CSS zoom property (simpler than transform and works better for layout)
     root.style.zoom = factor.toString();
     // Store index in data attribute for reliable retrieval
-    root.setAttribute('data-zoom-index', index.toString());
+    root.setAttribute("data-zoom-index", index.toString());
   }
 }
 
@@ -63,7 +63,7 @@ function applyCssZoom(factor: number, index: number): void {
 function getFallbackZoomIndex(): number {
   const root = document.documentElement;
   if (root) {
-    const stored = root.getAttribute('data-zoom-index');
+    const stored = root.getAttribute("data-zoom-index");
     if (stored !== null) {
       const index = parseInt(stored, 10);
       if (!isNaN(index) && index >= 0 && index < ZOOM_LEVELS.length) {
@@ -168,7 +168,7 @@ export function saveZoomLevel(): void {
   try {
     localStorage.setItem(STORAGE_KEY, index.toString());
   } catch (error) {
-    console.warn('[ZoomService] Failed to save zoom level:', error);
+    console.warn("[ZoomService] Failed to save zoom level:", error);
   }
 }
 
@@ -183,11 +183,13 @@ export function loadSavedZoom(): void {
       const index = parseInt(saved, 10);
       if (!isNaN(index) && index >= 0 && index < ZOOM_LEVELS.length) {
         setZoomByIndex(index);
-        console.log(`[ZoomService] Restored zoom level: ${getCurrentZoomPercentage()}`);
+        console.log(
+          `[ZoomService] Restored zoom level: ${getCurrentZoomPercentage()}`
+        );
       }
     }
   } catch (error) {
-    console.warn('[ZoomService] Failed to load saved zoom level:', error);
+    console.warn("[ZoomService] Failed to load saved zoom level:", error);
   }
 }
 
