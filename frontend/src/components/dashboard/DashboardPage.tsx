@@ -249,14 +249,14 @@ export const DashboardPage: React.FC = () => {
                   <Box
                     data-testid="panel-resize-handle"
                     sx={{
-                      width: "8px",
+                      width: theme.tokens.spacing.sm,
                       height: "100%",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "col-resize",
                       backgroundColor: theme.palette.divider,
-                      transition: "background-color 0.2s",
+                      transition: `background-color ${theme.tokens.duration.fast}`,
                       "&:hover": {
                         backgroundColor: theme.palette.primary.main,
                       },
@@ -267,10 +267,10 @@ export const DashboardPage: React.FC = () => {
                   >
                     <Box
                       sx={{
-                        width: "2px",
-                        height: "40px",
+                        width: 2,
+                        height: 40,
                         backgroundColor: theme.palette.background.paper,
-                        borderRadius: "1px",
+                        borderRadius: 1,
                       }}
                     />
                   </Box>
