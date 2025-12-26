@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-26T03:41:19.330350+00:00
-**Source SHA**: 760896f011404433cd02674d810b0fb7bab98daf
+**Generated**: 2025-12-26T07:43:37.665876+00:00
+**Source SHA**: 9874bcf5cfa30044404f3d912c8df96bc3265316
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -270,7 +270,16 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 6 active plan(s):
+There are 7 active plan(s):
+
+### playwright-performance
+- Owner: Claude Code
+- Created: 2025-12-25
+- Summary:
+  - Eliminate 239 hardcoded waitForTimeout calls causing ~95 seconds of unnecessary waiting
+  - Enable test parallelization to reduce total runtime by 60-70%
+  - Replace arbitrary waits with state-based assertions using Playwright best practices
+  - Target runtime reduction from 10-15 minutes to 2-4 minutes
 
 ### design-system
 - Owner: Claude Code
