@@ -7,6 +7,11 @@ This guide covers how to use internationalization in the 9Boxer application.
 9Boxer uses [react-i18next](https://react.i18next.com/) for internationalization. The application currently supports:
 - 🇺🇸 English (en) - Default
 - 🇪🇸 Spanish (es)
+- 🇫🇷 French (fr)
+- 🇩🇪 German (de)
+- 🇨🇿 Czech (cs)
+- 🇯🇵 Japanese (ja)
+- 🇮🇳 Hindi (hi)
 
 ## Quick Start
 
@@ -61,8 +66,18 @@ frontend/src/i18n/
 └── locales/
     ├── en/
     │   └── translation.json      # English translations
-    └── es/
-        └── translation.json      # Spanish translations
+    ├── es/
+    │   └── translation.json      # Spanish translations
+    ├── fr/
+    │   └── translation.json      # French translations
+    ├── de/
+    │   └── translation.json      # German translations
+    ├── cs/
+    │   └── translation.json      # Czech translations
+    ├── ja/
+    │   └── translation.json      # Japanese translations
+    └── hi/
+        └── translation.json      # Hindi translations
 ```
 
 ## Adding New Strings
@@ -77,7 +92,15 @@ frontend/src/i18n/
 }
 ```
 
-2. Add the Spanish translation to `frontend/src/i18n/locales/es/translation.json`:
+2. Add translations to all other language files:
+- `frontend/src/i18n/locales/es/translation.json` (Spanish)
+- `frontend/src/i18n/locales/fr/translation.json` (French)
+- `frontend/src/i18n/locales/de/translation.json` (German)
+- `frontend/src/i18n/locales/cs/translation.json` (Czech)
+- `frontend/src/i18n/locales/ja/translation.json` (Japanese)
+- `frontend/src/i18n/locales/hi/translation.json` (Hindi)
+
+Example for Spanish:
 ```json
 {
   "myComponent": {
@@ -186,17 +209,34 @@ The `LanguageSelector` component is integrated into the AppBar and allows users 
 
 ## For Translators
 
-Translation workflow documentation is planned for future phases. For now, translations can be added directly to the JSON files in `frontend/src/i18n/locales/`.
+### Translation Glossary
+
+**Always refer to the [Translation Glossary](./glossary.md) for approved terminology.** The glossary ensures consistency across all translations and provides:
+- Core business terms with approved translations
+- UI component terminology
+- Action verbs and common phrases
+- Context for ambiguous terms
+- Special cases and usage guidelines
+
+### Workflow
+
+1. **Check the glossary** for existing terminology before translating
+2. **Add translations** directly to the JSON files in `frontend/src/i18n/locales/`
+3. **Use approved terms** exactly as documented in the glossary
+4. **Test both languages** to ensure layout works with longer text
+5. **Update the glossary** when introducing new reusable terminology
 
 ## Best Practices
 
-1. **Use namespacing**: Group related strings (e.g., `dashboard.fileMenu.*`)
-2. **Provide context**: Use descriptive keys (`importData` not `btn1`)
-3. **Handle plurals properly**: Use `_other` suffix for plural forms
-4. **Test with longer text**: Spanish is typically 20-30% longer than English
-5. **Include variables**: Use `{{variable}}` syntax for dynamic content
-6. **Accessibility**: Don't forget to translate aria-labels, alt text, tooltips
-7. **Type safety**: Use `useTypedTranslation` for autocomplete and validation
+1. **Use the glossary**: Always check [glossary.md](./glossary.md) for approved terminology
+2. **Use namespacing**: Group related strings (e.g., `dashboard.fileMenu.*`)
+3. **Provide context**: Use descriptive keys (`importData` not `btn1`)
+4. **Handle plurals properly**: Use `_other` suffix for plural forms
+5. **Test with longer text**: Spanish is typically 20-30% longer than English
+6. **Include variables**: Use `{{variable}}` syntax for dynamic content
+7. **Accessibility**: Don't forget to translate aria-labels, alt text, tooltips
+8. **Type safety**: Use `useTypedTranslation` for autocomplete and validation
+9. **Maintain consistency**: Use the same translation for the same concept everywhere
 
 ## Migration Guide
 
@@ -223,6 +263,8 @@ If you see `dashboard.fileMenu.importData` instead of `Import Data`, check:
 
 ## Resources
 
+- **[Translation Glossary](./glossary.md)** - Required reading for all translators
+- [Migration Patterns](./migration-patterns.md) - Code examples for common i18n patterns
 - [react-i18next Documentation](https://react.i18next.com/)
 - [i18next Documentation](https://www.i18next.com/)
 - [ICU MessageFormat](https://unicode-org.github.io/icu/userguide/format_parse/messages/)

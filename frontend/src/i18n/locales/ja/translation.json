@@ -1,0 +1,384 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "9Boxerロゴ"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "従業員を絞り込む",
+      "activeFilters": "適用中のフィルター:",
+      "levels": "職位",
+      "functions": "職種",
+      "locations": "勤務地",
+      "managers": "上司",
+      "excluded": "除外",
+      "employees": "名",
+      "help": "ヘルプ",
+      "settings": "設定",
+      "userGuideError": "ユーザーガイドを開けませんでした",
+      "userGuideOnlyDesktop": "ユーザーガイドはデスクトップアプリケーションでのみご利用いただけます"
+    },
+    "fileMenu": {
+      "noFileSelected": "ファイルが選択されていません",
+      "fileMenuAriaLabel": "ファイルメニュー: {{filename}}、{{count}}件の変更が保留中",
+      "fileMenuAriaLabelNoFile": "ファイルメニュー: ファイルが選択されていません",
+      "importData": "データをインポート",
+      "exportChanges": "{{count}}件の変更をExcelに適用",
+      "exportChanges_other": "{{count}}件の変更をExcelに適用",
+      "exporting": "エクスポート中...",
+      "openRecentFile": "最近使ったファイルを開く",
+      "comingSoon": "（近日公開予定）",
+      "noActiveSession": "アクティブなセッションがありません",
+      "exportSuccess": "{{filename}}に{{count}}件の変更をエクスポートしました",
+      "exportSuccess_other": "{{filename}}に{{count}}件の変更をエクスポートしました"
+    },
+    "filterDrawer": {
+      "title": "フィルター",
+      "jobLevels": "職位",
+      "jobFunctions": "職種",
+      "locations": "勤務地",
+      "managers": "上司",
+      "exclusions": "除外設定",
+      "excludeEmployees": "従業員を除外",
+      "clearAllFilters": "すべてのフィルターをクリア"
+    },
+    "exclusionDialog": {
+      "title": "従業員を除外",
+      "quickFilters": "クイックフィルター",
+      "excludeVPs": "VP（副社長）を除外",
+      "excludeDirectorsPlus": "部長以上を除外",
+      "excludeManagers": "管理職を除外",
+      "clearAll": "すべてクリア",
+      "searchPlaceholder": "従業員を検索...",
+      "selectAll": "すべて選択（{{count}}名）",
+      "selectedCount": "{{count}}名を選択中",
+      "cancel": "キャンセル",
+      "applyExclusions": "除外を適用"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "ファイルが読み込まれていません",
+      "emptyStateDescription": "Excelファイルをここにドロップするか、データをインポートをクリックして開始してください",
+      "importData": "データをインポート",
+      "sampleFileHint": "9Boxerを初めてお使いですか？ヘルプ → ユーザーガイドからサンプルファイルをインポートしてお試しください",
+      "showPanel": "パネルを表示",
+      "hidePanel": "パネルを非表示"
+    }
+  },
+  "grid": {
+    "axes": {
+      "performance": "パフォーマンス（低 → 高）",
+      "potential": "ポテンシャル（低 → 高）"
+    },
+    "employeeCount": {
+      "employee": "名",
+      "employee_other": "名",
+      "of": "/",
+      "noEmployees": "従業員がいません",
+      "totalEmployeesInSession": "セッション内の総従業員数",
+      "showingCount": "{{totalCount}}名中{{filteredCount}}名を表示",
+      "activeFilters": "適用中のフィルター:",
+      "jobLevel": "職位",
+      "jobFunction": "職種",
+      "location": "勤務地",
+      "manager": "上司",
+      "excluded": "除外",
+      "ariaLabel": "総従業員数{{count}}名",
+      "ariaLabelFiltered": "フィルター適用中: {{totalCount}}名中{{filteredCount}}名を表示",
+      "ariaLabelNoEmployees": "セッション内に従業員がいません"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "グリッドビュー表示中（Dキーでドーナツビューに切替）",
+      "donutViewActive": "ドーナツビュー表示中（Dキーでグリッドビューに切替）",
+      "ariaLabelToggle": "ビューモード切替",
+      "ariaLabelGrid": "グリッドビュー",
+      "ariaLabelDonut": "ドーナツビュー"
+    },
+    "gridBox": {
+      "collapseBox": "ボックスを折りたたむ",
+      "expandBox": "ボックスを展開",
+      "modified": "変更済み"
+    },
+    "employeeTile": {
+      "modified": "変更済み",
+      "donut": "ドーナツ",
+      "donutLabel": "ドーナツ:"
+    },
+    "positions": {
+      "1": {
+        "name": "要改善人材",
+        "shortLabel": "[低,低]",
+        "fullLabel": "要改善人材 [低,低]",
+        "guidance": "パフォーマンスとポテンシャルがともに低い。期待される水準を満たすことが困難で、成長の余地も限定的な従業員。業績改善計画、追加サポート、または配置転換が必要な場合があります。"
+      },
+      "2": {
+        "name": "堅実な実務者",
+        "shortLabel": "[中,低]",
+        "fullLabel": "堅実な実務者 [中,低]",
+        "guidance": "現在の役割では安定したパフォーマンスを発揮するが、昇進の可能性は限定的。現在のレベルで優れた成果を出す信頼できる貢献者。現在の役割における評価、エンゲージメント、定着に注力します。"
+      },
+      "3": {
+        "name": "中核実行者",
+        "shortLabel": "[高,低]",
+        "fullLabel": "中核実行者 [高,低]",
+        "guidance": "昇進の可能性は限定的だが、高いパフォーマンスを発揮。現在の役割で非常に価値があり、一貫して優れた成果を提供。エンゲージメント戦略、評価、定着施策に投資してモチベーションを維持します。"
+      },
+      "4": {
+        "name": "不安定人材",
+        "shortLabel": "[低,中]",
+        "fullLabel": "不安定人材 [低,中]",
+        "guidance": "パフォーマンスは低いが、成長のポテンシャルを示している。役割が合っていない、育成が必要、または障害に直面している可能性。コーチング、メンタリング、明確なパフォーマンス期待の設定、役割の調整を検討します。"
+      },
+      "5": {
+        "name": "中核人材",
+        "shortLabel": "[中,中]",
+        "fullLabel": "中核人材 [中,中]",
+        "guidance": "安定したパフォーマンスと適度な成長ポテンシャルを持つ。一貫した成果を提供する組織の基盤。育成機会、横方向の成長、スキル向上に投資します。"
+      },
+      "6": {
+        "name": "高影響力人材",
+        "shortLabel": "[高,中]",
+        "fullLabel": "高影響力人材 [高,中]",
+        "guidance": "適度な昇進可能性を持つ高いパフォーマンス発揮者。優れた成果を出し、より大きな責任を担える価値ある貢献者。ストレッチアサインメント、スキル開発、専門家としての育成に注力します。"
+      },
+      "7": {
+        "name": "未開花人材",
+        "shortLabel": "[低,高]",
+        "fullLabel": "未開花人材 [低,高]",
+        "guidance": "高いポテンシャルを持つが、現在のパフォーマンスは低い。役割が新しい、ミスマッチ、または課題に直面している可能性。コーチング、役割調整、または的を絞った育成計画を通じて、ポテンシャルを引き出すための即座の対応が必要です。"
+      },
+      "8": {
+        "name": "成長人材",
+        "shortLabel": "[中,高]",
+        "fullLabel": "成長人材 [中,高]",
+        "guidance": "昇進の高いポテンシャルを持つ安定したパフォーマンス発揮者。育成中の将来のリーダー。メンタリング、リーダーシップトレーニング、キャリアパス計画、より大きな責任を担う機会を提供します。"
+      },
+      "9": {
+        "name": "スター人材",
+        "shortLabel": "[高,高]",
+        "fullLabel": "スター人材 [高,高]",
+        "guidance": "高いポテンシャルを持つトップパフォーマー。リーダーシップ役割のために定着・育成すべき重要な人材。定着、後継者計画、エグゼクティブ育成、挑戦的なアサインメントに注力します。"
+      }
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "詳細",
+      "changes": "変更履歴",
+      "statistics": "統計",
+      "intelligence": "インテリジェンス"
+    },
+    "detailsTab": {
+      "selectEmployee": "従業員を選択して詳細を表示",
+      "reportingChain": "報告系統",
+      "employeeInformation": "従業員情報",
+      "jobFunction": "職種",
+      "location": "勤務地",
+      "jobLevel": "職位",
+      "tenure": "勤続年数",
+      "timeInLevel": "現職位での期間",
+      "promotionReady": "昇進可能",
+      "currentAssessment": "現在の評価",
+      "potential": "ポテンシャル:",
+      "position": "ポジション:",
+      "modifiedInSession": "セッション内で変更済み",
+      "performanceHistory": "パフォーマンス履歴",
+      "currentYear": "{{year}}年（現在）",
+      "performance": "パフォーマンス",
+      "potentialLabel": "ポテンシャル",
+      "rating": "評価",
+      "noHistoricalRatings": "過去の評価データがありません",
+      "managementChain": {
+        "employee": "従業員",
+        "manager": "上司",
+        "noData": "組織階層データがありません",
+        "level01": "レベル01",
+        "level02": "レベル02",
+        "level03": "レベル03",
+        "level04": "レベル04（VP）",
+        "level05": "レベル05",
+        "level06": "レベル06"
+      }
+    },
+    "changeTrackerTab": {
+      "noChanges": "変更はまだありません",
+      "noDonutChanges": "ドーナツビューでの変更はまだありません",
+      "moveEmployeesHint": "従業員を移動すると、ここに変更履歴が表示されます",
+      "moveEmployeesDonutHint": "ドーナツモードで従業員を移動すると、ここに変更履歴が表示されます",
+      "addNotesPlaceholder": "メモを追加...",
+      "employee": "従業員",
+      "movement": "移動",
+      "from": "移動元",
+      "to": "移動先",
+      "notes": "メモ",
+      "gridChanges": "グリッドビューの変更",
+      "donutChanges": "ドーナツビューの変更"
+    },
+    "statisticsTab": {
+      "totalEmployees": "総従業員数",
+      "modified": "変更済み",
+      "highPerformers": "高パフォーマンス",
+      "solidPerformers": "安定パフォーマンス",
+      "needsAttention": "要注意",
+      "distributionByPosition": "ポジション別分布",
+      "position": "ポジション",
+      "count": "人数",
+      "percentage": "割合",
+      "groupPercentage": "グループ割合",
+      "noStatisticsAvailable": "統計データがありません",
+      "employeeCount": "従業員数",
+      "employeesCount": "{{count}}名",
+      "countLabel": "人数"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "セッションが見つかりません",
+      "sessionLostMessage": "データセッションが失われました（アプリケーションの再起動が原因と思われます）。続行するには、Excelファイルを再度アップロードしてください。",
+      "failedToLoad": "インテリジェンスデータの読み込みに失敗しました",
+      "retry": "再試行",
+      "noIntelligenceData": "インテリジェンスデータがありません",
+      "locationAnalysis": "勤務地分析",
+      "highPerformerByLocation": "勤務地別高パフォーマンス率",
+      "functionAnalysis": "職種分析",
+      "highPerformerByFunction": "職種別高パフォーマンス率",
+      "levelAnalysis": "職位分析",
+      "performanceDistributionByLevel": "職位別パフォーマンス分布",
+      "tenureAnalysis": "勤続年数分析",
+      "highPerformerByTenure": "勤続年数別高パフォーマンス率",
+      "performanceLevel": {
+        "low": "低パフォーマンス",
+        "medium": "中パフォーマンス",
+        "high": "高パフォーマンス"
+      },
+      "anomaly": {
+        "noIssues": "問題なし",
+        "moderateAnomaly": "中程度の異常",
+        "severeAnomaly": "深刻な異常",
+        "unknown": "不明",
+        "statisticalSummary": "統計サマリー",
+        "pValue": "P値",
+        "pValueTooltip": "観測された差異が偶然による確率。p < 0.05は有意な偏差を示します。",
+        "effectSize": "効果量（クラメールのV）",
+        "effectSizeTooltip": "関連の強さ（0-1スケール）。0.1=小、0.3=中、0.5=大",
+        "sampleSize": "サンプルサイズ",
+        "degreesOfFreedom": "自由度",
+        "interpretation": "解釈",
+        "detailedDeviations": "詳細な偏差",
+        "category": "カテゴリ",
+        "observedPercent": "観測値%",
+        "expectedPercent": "期待値%",
+        "zScore": "Z スコア",
+        "significant": "有意？",
+        "yes": "はい",
+        "no": "いいえ"
+      },
+      "chart": {
+        "noDataAvailable": "データがありません",
+        "actual": "実測値",
+        "expected": "期待値",
+        "zScore": "Zスコア",
+        "pValue": "P値",
+        "sampleSize": "N",
+        "percentage": "割合（%）",
+        "expectedPercent": "期待値%",
+        "actualPercent": "実測値%",
+        "level": "レベル",
+        "high": "高",
+        "medium": "中",
+        "low": "低",
+        "total": "合計",
+        "baseline": "ベースライン（{{percent}}%）",
+        "baselineNote": "注: ベースラインは、全レベルでの全体的な平均高パフォーマンス率を表します。有意な偏差は、較正の問題を示している可能性があります。",
+        "function": "職種",
+        "position": "ポジション{{number}}",
+        "heatIntensity": "ヒート強度:"
+      },
+      "summary": {
+        "excellent": "優良",
+        "good": "良好",
+        "needsAttention": "要注意",
+        "qualityScore": "品質スコア",
+        "qualityScoreDescription": "検出された統計的異常に基づく0-100スケール",
+        "totalAnomalies": "総異常数",
+        "green": "緑",
+        "yellow": "黄",
+        "red": "赤",
+        "overallHealth": "全体的な健全性",
+        "wellCalibrated": "評価分布はすべての次元で適切に較正されています。",
+        "someAnomalies": "いくつかの異常が検出されました。詳細については以下のセクションをご確認ください。",
+        "significantAnomalies": "重大な異常が検出されました。早急な確認を推奨します。"
+      }
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "retry": "再試行",
+    "quit": "終了",
+    "retryConnection": "接続を再試行",
+    "fileUpload": {
+      "dialogTitle": "Excelファイルをインポート",
+      "description": "9Box人材マッピングExcelファイル（.xlsxまたは.xls）をインポート",
+      "successMessage": "ファイルのインポートに成功しました！",
+      "selectFile": "ファイルを選択",
+      "selected": "選択中:",
+      "importing": "インポート中...",
+      "import": "インポート",
+      "importSuccess": "{{filename}}のインポートに成功しました",
+      "importFailed": "ファイルのインポートに失敗しました",
+      "failedToRead": "ファイルの読み込みに失敗しました",
+      "fileTooLarge": "ファイルサイズは10MB未満である必要があります",
+      "invalidFileType": "Excelファイル（.xlsxまたは.xls）を選択してください",
+      "noFileSelected": "最初にファイルを選択してください"
+    },
+    "devMode": {
+      "webModeTooltip": "Webブラウザモードで実行中",
+      "webModeLabel": "Webモード",
+      "fetchingBackendInfo": "バックエンド情報を取得中...",
+      "backendPort": "バックエンド: ポート{{port}}",
+      "backendLoading": "バックエンド: 読み込み中...",
+      "backendUrlTooltip": "バックエンドURL: {{url}}\n\n起動時にポートの競合があった場合、このポートはデフォルト（8000）と異なる場合があります。"
+    },
+    "connectionStatus": {
+      "connected": "接続済み",
+      "reconnecting": "再接続中",
+      "reconnectingWithCount": "再接続中（{{count}}）",
+      "disconnected": "切断"
+    },
+    "errorBoundary": {
+      "title": "エラーが発生しました",
+      "message": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+      "returnHome": "ホームに戻る"
+    }
+  },
+  "messages": {
+    "success": "成功",
+    "error": "エラー",
+    "warning": "警告",
+    "info": "情報"
+  },
+  "settings": {
+    "title": "設定",
+    "closeAriaLabel": "設定を閉じる",
+    "appearance": "外観",
+    "currentSelection": "現在の選択:",
+    "currentTheme": "現在{{theme}}テーマを使用中（システム設定から）",
+    "theme": {
+      "lightMode": "ライトモード",
+      "lightModeDesc": "常にライトテーマを使用",
+      "darkMode": "ダークモード",
+      "darkModeDesc": "常にダークテーマを使用",
+      "auto": "自動（システムに従う）",
+      "autoDesc": "システムテーマに自動的に合わせる"
+    }
+  },
+  "zoom": {
+    "zoomIn": "拡大（Ctrl++）",
+    "zoomOut": "縮小（Ctrl+-）",
+    "resetZoom": "ズームをリセット（Ctrl+0）",
+    "enterFullScreen": "全画面表示（F11）",
+    "exitFullScreen": "全画面表示を終了（F11）"
+  }
+}

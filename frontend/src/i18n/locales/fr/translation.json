@@ -1,0 +1,384 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "Logo 9Boxer"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "Filtrer les collaborateurs",
+      "activeFilters": "Filtres actifs :",
+      "levels": "Niveaux",
+      "functions": "Fonctions",
+      "locations": "Localisations",
+      "managers": "Managers",
+      "excluded": "Exclus",
+      "employees": "collaborateur(s)",
+      "help": "Aide",
+      "settings": "Paramètres",
+      "userGuideError": "Impossible d'ouvrir le guide utilisateur",
+      "userGuideOnlyDesktop": "Le guide utilisateur n'est disponible que dans l'application de bureau"
+    },
+    "fileMenu": {
+      "noFileSelected": "Aucun fichier sélectionné",
+      "fileMenuAriaLabel": "Menu fichier : {{filename}}, {{count}} modification en attente",
+      "fileMenuAriaLabelNoFile": "Menu fichier : Aucun fichier sélectionné",
+      "importData": "Importer des données",
+      "exportChanges": "Appliquer {{count}} modification à Excel",
+      "exportChanges_other": "Appliquer {{count}} modifications à Excel",
+      "exporting": "Export en cours...",
+      "openRecentFile": "Ouvrir un fichier récent",
+      "comingSoon": "(Prochainement)",
+      "noActiveSession": "Aucune session active",
+      "exportSuccess": "{{count}} modification exportée avec succès vers {{filename}}",
+      "exportSuccess_other": "{{count}} modifications exportées avec succès vers {{filename}}"
+    },
+    "filterDrawer": {
+      "title": "Filtres",
+      "jobLevels": "Niveaux hiérarchiques",
+      "jobFunctions": "Fonctions",
+      "locations": "Localisations",
+      "managers": "Managers",
+      "exclusions": "Exclusions",
+      "excludeEmployees": "Exclure des collaborateurs",
+      "clearAllFilters": "Effacer tous les filtres"
+    },
+    "exclusionDialog": {
+      "title": "Exclure des collaborateurs",
+      "quickFilters": "Filtres rapides",
+      "excludeVPs": "Exclure les VP",
+      "excludeDirectorsPlus": "Exclure les Directeurs+",
+      "excludeManagers": "Exclure les Managers",
+      "clearAll": "Tout effacer",
+      "searchPlaceholder": "Rechercher des collaborateurs...",
+      "selectAll": "Tout sélectionner ({{count}} collaborateurs)",
+      "selectedCount": "{{count}} sélectionné(s)",
+      "cancel": "Annuler",
+      "applyExclusions": "Appliquer les exclusions"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "Aucun fichier chargé",
+      "emptyStateDescription": "Déposez un fichier Excel ici ou cliquez sur Importer des données pour commencer",
+      "importData": "Importer des données",
+      "sampleFileHint": "Nouveau sur 9Boxer ? Essayez d'importer le fichier exemple depuis Aide → Guide utilisateur",
+      "showPanel": "Afficher le panneau",
+      "hidePanel": "Masquer le panneau"
+    }
+  },
+  "grid": {
+    "axes": {
+      "performance": "Performance (Faible → Élevée)",
+      "potential": "Potentiel (Faible → Élevé)"
+    },
+    "employeeCount": {
+      "employee": "collaborateur",
+      "employee_other": "collaborateurs",
+      "of": "sur",
+      "noEmployees": "Aucun collaborateur",
+      "totalEmployeesInSession": "Total des collaborateurs dans la session",
+      "showingCount": "Affichage de {{filteredCount}} sur {{totalCount}} collaborateurs",
+      "activeFilters": "Filtres actifs :",
+      "jobLevel": "Niveau hiérarchique",
+      "jobFunction": "Fonction",
+      "location": "Localisation",
+      "manager": "Manager",
+      "excluded": "Exclu",
+      "ariaLabel": "{{count}} collaborateurs au total",
+      "ariaLabelFiltered": "Affichage de {{filteredCount}} sur {{totalCount}} collaborateurs avec filtres actifs",
+      "ariaLabelNoEmployees": "Aucun collaborateur dans la session"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Vue grille active (Appuyez sur D pour la vue donut)",
+      "donutViewActive": "Vue donut active (Appuyez sur D pour la vue grille)",
+      "ariaLabelToggle": "Basculer le mode d'affichage",
+      "ariaLabelGrid": "Vue grille",
+      "ariaLabelDonut": "Vue donut"
+    },
+    "gridBox": {
+      "collapseBox": "Réduire la case",
+      "expandBox": "Développer la case",
+      "modified": "Modifié"
+    },
+    "employeeTile": {
+      "modified": "Modifié",
+      "donut": "Donut",
+      "donutLabel": "Donut :"
+    },
+    "positions": {
+      "1": {
+        "name": "Sous-performant",
+        "shortLabel": "[F,F]",
+        "fullLabel": "Sous-performant [F,F]",
+        "guidance": "Performance faible, potentiel faible. Collaborateurs en difficulté pour répondre aux attentes avec une capacité d'évolution limitée. Peuvent nécessiter un plan d'amélioration, un accompagnement supplémentaire ou une réaffectation."
+      },
+      "2": {
+        "name": "Professionnel efficace",
+        "shortLabel": "[M,F]",
+        "fullLabel": "Professionnel efficace [M,F]",
+        "guidance": "Performance solide dans le poste actuel mais potentiel d'évolution limité. Contributeurs fiables qui excellent à leur niveau actuel. Privilégier la reconnaissance, l'engagement et la fidélisation dans le poste actuel."
+      },
+      "3": {
+        "name": "Pilier",
+        "shortLabel": "[É,F]",
+        "fullLabel": "Pilier [É,F]",
+        "guidance": "Hauts performeurs avec un potentiel d'évolution limité. Très précieux dans leur poste actuel, ils fournissent des résultats excellents et constants. Investir dans des stratégies d'engagement, de reconnaissance et de fidélisation pour maintenir leur motivation."
+      },
+      "4": {
+        "name": "Irrégulier",
+        "shortLabel": "[F,M]",
+        "fullLabel": "Irrégulier [F,M]",
+        "guidance": "Sous-performant mais montrant un potentiel d'évolution. Peut être dans un poste inadapté, nécessiter un développement ou faire face à des obstacles. Fournir du coaching, du mentorat, des objectifs clairs et envisager un ajustement de poste."
+      },
+      "5": {
+        "name": "Talent central",
+        "shortLabel": "[M,M]",
+        "fullLabel": "Talent central [M,M]",
+        "guidance": "Performeurs solides avec un potentiel de croissance modéré. L'épine dorsale de l'organisation, ils fournissent des résultats constants. Investir dans des opportunités de développement, d'évolution transversale et de montée en compétences."
+      },
+      "6": {
+        "name": "Haut impact",
+        "shortLabel": "[É,M]",
+        "fullLabel": "Haut impact [É,M]",
+        "guidance": "Hauts performeurs avec un potentiel d'évolution modéré. Contributeurs précieux qui excellent et peuvent assumer davantage de responsabilités. Privilégier les missions challengeantes, le développement des compétences et l'expertise métier."
+      },
+      "7": {
+        "name": "Énigme",
+        "shortLabel": "[F,É]",
+        "fullLabel": "Énigme [F,É]",
+        "guidance": "Haut potentiel mais actuellement sous-performant. Peut être nouveau dans le poste, mal aligné ou confronté à des défis. Nécessite une attention immédiate par le coaching, l'ajustement du poste ou des plans de développement ciblés pour libérer le potentiel."
+      },
+      "8": {
+        "name": "En croissance",
+        "shortLabel": "[M,É]",
+        "fullLabel": "En croissance [M,É]",
+        "guidance": "Performeurs solides avec un haut potentiel d'évolution. Futurs leaders en développement. Fournir du mentorat, de la formation au leadership, une planification de carrière et des opportunités d'accroître les responsabilités."
+      },
+      "9": {
+        "name": "Star",
+        "shortLabel": "[É,É]",
+        "fullLabel": "Star [É,É]",
+        "guidance": "Meilleurs performeurs avec un haut potentiel. Talents critiques à fidéliser et développer pour des postes de direction. Privilégier la rétention, la planification de succession, le développement exécutif et les missions stimulantes."
+      }
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "Détails",
+      "changes": "Modifications",
+      "statistics": "Statistiques",
+      "intelligence": "Intelligence"
+    },
+    "detailsTab": {
+      "selectEmployee": "Sélectionnez un collaborateur pour voir les détails",
+      "reportingChain": "Hiérarchie",
+      "employeeInformation": "Informations du collaborateur",
+      "jobFunction": "Fonction",
+      "location": "Localisation",
+      "jobLevel": "Niveau hiérarchique",
+      "tenure": "Ancienneté",
+      "timeInLevel": "Temps dans le niveau",
+      "promotionReady": "Prêt pour promotion",
+      "currentAssessment": "Évaluation actuelle",
+      "potential": "Potentiel :",
+      "position": "Position :",
+      "modifiedInSession": "Modifié dans la session",
+      "performanceHistory": "Historique de performance",
+      "currentYear": "{{year}} (Actuel)",
+      "performance": "Performance",
+      "potentialLabel": "Potentiel",
+      "rating": "Évaluation",
+      "noHistoricalRatings": "Aucune évaluation historique disponible",
+      "managementChain": {
+        "employee": "Collaborateur",
+        "manager": "Manager",
+        "noData": "Aucune donnée de hiérarchie disponible",
+        "level01": "Niveau 01",
+        "level02": "Niveau 02",
+        "level03": "Niveau 03",
+        "level04": "Niveau 04 (VP)",
+        "level05": "Niveau 05",
+        "level06": "Niveau 06"
+      }
+    },
+    "changeTrackerTab": {
+      "noChanges": "Aucune modification",
+      "noDonutChanges": "Aucune modification de donut",
+      "moveEmployeesHint": "Déplacez des collaborateurs pour suivre les modifications ici",
+      "moveEmployeesDonutHint": "Déplacez des collaborateurs en mode donut pour suivre les modifications",
+      "addNotesPlaceholder": "Ajouter des notes...",
+      "employee": "Collaborateur",
+      "movement": "Mouvement",
+      "from": "De",
+      "to": "Vers",
+      "notes": "Notes",
+      "gridChanges": "Modifications de grille",
+      "donutChanges": "Modifications de donut"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Total collaborateurs",
+      "modified": "Modifiés",
+      "highPerformers": "Hauts performeurs",
+      "solidPerformers": "Performeurs solides",
+      "needsAttention": "Nécessite attention",
+      "distributionByPosition": "Répartition par position",
+      "position": "Position",
+      "count": "Nombre",
+      "percentage": "Pourcentage",
+      "groupPercentage": "% Groupe",
+      "noStatisticsAvailable": "Aucune statistique disponible",
+      "employeeCount": "Nombre de collaborateurs",
+      "employeesCount": "{{count}} collaborateurs",
+      "countLabel": "Nombre"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Session introuvable",
+      "sessionLostMessage": "Votre session de données a été perdue (probablement suite au redémarrage de l'application). Veuillez télécharger à nouveau votre fichier Excel pour continuer.",
+      "failedToLoad": "Échec du chargement des données d'intelligence",
+      "retry": "Réessayer",
+      "noIntelligenceData": "Aucune donnée d'intelligence disponible",
+      "locationAnalysis": "Analyse par localisation",
+      "highPerformerByLocation": "% de hauts performeurs par localisation",
+      "functionAnalysis": "Analyse par fonction",
+      "highPerformerByFunction": "% de hauts performeurs par fonction",
+      "levelAnalysis": "Analyse par niveau",
+      "performanceDistributionByLevel": "Répartition de la performance par niveau",
+      "tenureAnalysis": "Analyse par ancienneté",
+      "highPerformerByTenure": "% de hauts performeurs par ancienneté",
+      "performanceLevel": {
+        "low": "Performance faible",
+        "medium": "Performance moyenne",
+        "high": "Performance élevée"
+      },
+      "anomaly": {
+        "noIssues": "Aucun problème",
+        "moderateAnomaly": "Anomalie modérée",
+        "severeAnomaly": "Anomalie sévère",
+        "unknown": "Inconnu",
+        "statisticalSummary": "Résumé statistique",
+        "pValue": "Valeur p",
+        "pValueTooltip": "Probabilité que les différences observées soient dues au hasard. p < 0,05 indique une déviation significative.",
+        "effectSize": "Taille d'effet (V de Cramér)",
+        "effectSizeTooltip": "Force de l'association (échelle 0-1). 0,1=petit, 0,3=moyen, 0,5=grand",
+        "sampleSize": "Taille de l'échantillon",
+        "degreesOfFreedom": "Degrés de liberté",
+        "interpretation": "Interprétation",
+        "detailedDeviations": "Déviations détaillées",
+        "category": "Catégorie",
+        "observedPercent": "% Observé",
+        "expectedPercent": "% Attendu",
+        "zScore": "Score Z",
+        "significant": "Significatif ?",
+        "yes": "Oui",
+        "no": "Non"
+      },
+      "chart": {
+        "noDataAvailable": "Aucune donnée disponible",
+        "actual": "Réel",
+        "expected": "Attendu",
+        "zScore": "Score Z",
+        "pValue": "Valeur p",
+        "sampleSize": "N",
+        "percentage": "Pourcentage (%)",
+        "expectedPercent": "% Attendu",
+        "actualPercent": "% Réel",
+        "level": "Niveau",
+        "high": "Élevé",
+        "medium": "Moyen",
+        "low": "Faible",
+        "total": "Total",
+        "baseline": "Référence ({{percent}}%)",
+        "baselineNote": "Note : La référence représente le pourcentage moyen global de haute performance à tous les niveaux. Des déviations significatives peuvent indiquer des problèmes de calibrage.",
+        "function": "Fonction",
+        "position": "Pos {{number}}",
+        "heatIntensity": "Intensité de chaleur :"
+      },
+      "summary": {
+        "excellent": "Excellent",
+        "good": "Bon",
+        "needsAttention": "Nécessite attention",
+        "qualityScore": "Score de qualité",
+        "qualityScoreDescription": "Échelle de 0 à 100 basée sur les anomalies statistiques détectées",
+        "totalAnomalies": "Total des anomalies",
+        "green": "Vert",
+        "yellow": "Jaune",
+        "red": "Rouge",
+        "overallHealth": "État général",
+        "wellCalibrated": "Les répartitions d'évaluations semblent bien calibrées sur toutes les dimensions.",
+        "someAnomalies": "Quelques anomalies détectées. Consultez les sections ci-dessous pour plus de détails.",
+        "significantAnomalies": "Anomalies importantes détectées. Examen immédiat recommandé."
+      }
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "retry": "Réessayer",
+    "quit": "Quitter",
+    "retryConnection": "Réessayer la connexion",
+    "fileUpload": {
+      "dialogTitle": "Importer un fichier Excel",
+      "description": "Importer un fichier Excel de cartographie des talents 9-Box (.xlsx ou .xls)",
+      "successMessage": "Fichier importé avec succès !",
+      "selectFile": "Sélectionner un fichier",
+      "selected": "Sélectionné :",
+      "importing": "Import en cours...",
+      "import": "Importer",
+      "importSuccess": "{{filename}} importé avec succès",
+      "importFailed": "Échec de l'importation du fichier",
+      "failedToRead": "Échec de la lecture du fichier",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 10 Mo",
+      "invalidFileType": "Veuillez sélectionner un fichier Excel (.xlsx ou .xls)",
+      "noFileSelected": "Veuillez d'abord sélectionner un fichier"
+    },
+    "devMode": {
+      "webModeTooltip": "Exécution en mode navigateur web",
+      "webModeLabel": "Mode Web",
+      "fetchingBackendInfo": "Récupération des informations du backend...",
+      "backendPort": "Backend : Port {{port}}",
+      "backendLoading": "Backend : Chargement...",
+      "backendUrlTooltip": "URL du backend : {{url}}\n\nCe port peut différer du port par défaut (8000) s'il y a eu un conflit de port au démarrage."
+    },
+    "connectionStatus": {
+      "connected": "Connecté",
+      "reconnecting": "Reconnexion",
+      "reconnectingWithCount": "Reconnexion ({{count}})",
+      "disconnected": "Déconnecté"
+    },
+    "errorBoundary": {
+      "title": "Oups ! Une erreur s'est produite",
+      "message": "Une erreur inattendue s'est produite. Veuillez essayer de recharger la page.",
+      "returnHome": "Retour à l'accueil"
+    }
+  },
+  "messages": {
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Info"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "closeAriaLabel": "fermer les paramètres",
+    "appearance": "Apparence",
+    "currentSelection": "Sélection actuelle :",
+    "currentTheme": "Utilisation actuelle du thème {{theme}} (depuis le système)",
+    "theme": {
+      "lightMode": "Mode clair",
+      "lightModeDesc": "Toujours utiliser le thème clair",
+      "darkMode": "Mode sombre",
+      "darkModeDesc": "Toujours utiliser le thème sombre",
+      "auto": "Auto (Suivre le système)",
+      "autoDesc": "S'adapter automatiquement au thème de votre système"
+    }
+  },
+  "zoom": {
+    "zoomIn": "Agrandir (Ctrl++)",
+    "zoomOut": "Réduire (Ctrl+-)",
+    "resetZoom": "Réinitialiser le zoom (Ctrl+0)",
+    "enterFullScreen": "Plein écran (F11)",
+    "exitFullScreen": "Quitter le plein écran (F11)"
+  }
+}

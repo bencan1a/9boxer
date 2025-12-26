@@ -1,0 +1,384 @@
+{
+  "app": {
+    "title": "9Boxer",
+    "logoAlt": "9Boxer Logo"
+  },
+  "dashboard": {
+    "appBar": {
+      "filterEmployees": "Mitarbeiter filtern",
+      "activeFilters": "Aktive Filter:",
+      "levels": "Ebenen",
+      "functions": "Funktionen",
+      "locations": "Standorte",
+      "managers": "Führungskräfte",
+      "excluded": "Ausgeschlossen",
+      "employees": "Mitarbeiter",
+      "help": "Hilfe",
+      "settings": "Einstellungen",
+      "userGuideError": "Benutzerhandbuch konnte nicht geöffnet werden",
+      "userGuideOnlyDesktop": "Das Benutzerhandbuch ist nur in der Desktop-Anwendung verfügbar"
+    },
+    "fileMenu": {
+      "noFileSelected": "Keine Datei ausgewählt",
+      "fileMenuAriaLabel": "Dateimenü: {{filename}}, {{count}} ausstehende Änderung",
+      "fileMenuAriaLabelNoFile": "Dateimenü: Keine Datei ausgewählt",
+      "importData": "Daten importieren",
+      "exportChanges": "{{count}} Änderung in Excel übernehmen",
+      "exportChanges_other": "{{count}} Änderungen in Excel übernehmen",
+      "exporting": "Wird exportiert...",
+      "openRecentFile": "Zuletzt verwendete Datei öffnen",
+      "comingSoon": "(Demnächst verfügbar)",
+      "noActiveSession": "Keine aktive Sitzung",
+      "exportSuccess": "{{count}} Änderung wurde erfolgreich nach {{filename}} exportiert",
+      "exportSuccess_other": "{{count}} Änderungen wurden erfolgreich nach {{filename}} exportiert"
+    },
+    "filterDrawer": {
+      "title": "Filter",
+      "jobLevels": "Karrierestufen",
+      "jobFunctions": "Funktionsbereiche",
+      "locations": "Standorte",
+      "managers": "Führungskräfte",
+      "exclusions": "Ausschlüsse",
+      "excludeEmployees": "Mitarbeiter ausschließen",
+      "clearAllFilters": "Alle Filter zurücksetzen"
+    },
+    "exclusionDialog": {
+      "title": "Mitarbeiter ausschließen",
+      "quickFilters": "Schnellfilter",
+      "excludeVPs": "VPs ausschließen",
+      "excludeDirectorsPlus": "Direktoren+ ausschließen",
+      "excludeManagers": "Manager ausschließen",
+      "clearAll": "Alle zurücksetzen",
+      "searchPlaceholder": "Mitarbeiter suchen...",
+      "selectAll": "Alle auswählen ({{count}} Mitarbeiter)",
+      "selectedCount": "{{count}} ausgewählt",
+      "cancel": "Abbrechen",
+      "applyExclusions": "Ausschlüsse anwenden"
+    },
+    "dashboardPage": {
+      "noFileLoaded": "Keine Datei geladen",
+      "emptyStateDescription": "Ziehen Sie eine Excel-Datei hierher oder klicken Sie auf \"Daten importieren\", um zu beginnen",
+      "importData": "Daten importieren",
+      "sampleFileHint": "Neu bei 9Boxer? Versuchen Sie, die Beispieldatei über Hilfe → Benutzerhandbuch zu importieren",
+      "showPanel": "Panel anzeigen",
+      "hidePanel": "Panel ausblenden"
+    }
+  },
+  "grid": {
+    "axes": {
+      "performance": "Leistung (Niedrig → Hoch)",
+      "potential": "Potenzial (Niedrig → Hoch)"
+    },
+    "employeeCount": {
+      "employee": "Mitarbeiter",
+      "employee_other": "Mitarbeiter",
+      "of": "von",
+      "noEmployees": "Keine Mitarbeiter",
+      "totalEmployeesInSession": "Mitarbeiter gesamt in Sitzung",
+      "showingCount": "{{filteredCount}} von {{totalCount}} Mitarbeitern werden angezeigt",
+      "activeFilters": "Aktive Filter:",
+      "jobLevel": "Karrierestufe",
+      "jobFunction": "Funktionsbereich",
+      "location": "Standort",
+      "manager": "Führungskraft",
+      "excluded": "Ausgeschlossen",
+      "ariaLabel": "{{count}} Mitarbeiter gesamt",
+      "ariaLabelFiltered": "{{filteredCount}} von {{totalCount}} Mitarbeitern werden mit aktiven Filtern angezeigt",
+      "ariaLabelNoEmployees": "Keine Mitarbeiter in Sitzung"
+    },
+    "viewModeToggle": {
+      "gridViewActive": "Rasteransicht aktiv (Drücken Sie D für Donut-Ansicht)",
+      "donutViewActive": "Donut-Ansicht aktiv (Drücken Sie D für Rasteransicht)",
+      "ariaLabelToggle": "Ansichtsmodus umschalten",
+      "ariaLabelGrid": "Rasteransicht",
+      "ariaLabelDonut": "Donut-Ansicht"
+    },
+    "gridBox": {
+      "collapseBox": "Feld einklappen",
+      "expandBox": "Feld ausklappen",
+      "modified": "Geändert"
+    },
+    "employeeTile": {
+      "modified": "Geändert",
+      "donut": "Donut",
+      "donutLabel": "Donut:"
+    },
+    "positions": {
+      "1": {
+        "name": "Leistungsschwach",
+        "shortLabel": "[N,N]",
+        "fullLabel": "Leistungsschwach [N,N]",
+        "guidance": "Niedrige Leistung, niedriges Potenzial. Mitarbeiter, die Schwierigkeiten haben, Erwartungen zu erfüllen, mit begrenzter Entwicklungsfähigkeit. Möglicherweise sind Leistungsverbesserungspläne, zusätzliche Unterstützung oder eine Neuausrichtung erforderlich."
+      },
+      "2": {
+        "name": "Solider Fachmann",
+        "shortLabel": "[M,N]",
+        "fullLabel": "Solider Fachmann [M,N]",
+        "guidance": "Solide Leistung in der aktuellen Rolle, aber begrenztes Aufstiegspotenzial. Zuverlässige Mitarbeiter, die auf ihrem aktuellen Level hervorragende Leistung erbringen. Fokus auf Anerkennung, Engagement und Bindung in der aktuellen Position."
+      },
+      "3": {
+        "name": "Leistungsträger",
+        "shortLabel": "[H,N]",
+        "fullLabel": "Leistungsträger [H,N]",
+        "guidance": "Hochleistungsträger mit begrenztem Aufstiegspotenzial. Äußerst wertvoll in ihrer aktuellen Rolle, liefern konstant hervorragende Ergebnisse. Investieren Sie in Engagement-Strategien, Anerkennung und Bindungsmaßnahmen, um ihre Motivation aufrechtzuerhalten."
+      },
+      "4": {
+        "name": "Inkonsistent",
+        "shortLabel": "[N,M]",
+        "fullLabel": "Inkonsistent [N,M]",
+        "guidance": "Unterhalb der Erwartungen, zeigt aber Entwicklungspotenzial. Möglicherweise in der falschen Rolle, benötigt Entwicklung oder steht vor Hindernissen. Bieten Sie Coaching, Mentoring, klare Leistungserwartungen und erwägen Sie eine Rollenanpassung."
+      },
+      "5": {
+        "name": "Kerntalent",
+        "shortLabel": "[M,M]",
+        "fullLabel": "Kerntalent [M,M]",
+        "guidance": "Solide Leistungsträger mit moderatem Entwicklungspotenzial. Das Rückgrat der Organisation, das konstante Ergebnisse liefert. Investieren Sie in Entwicklungsmöglichkeiten, horizontale Entwicklung und Kompetenzaufbau."
+      },
+      "6": {
+        "name": "Hochleistungsträger",
+        "shortLabel": "[H,M]",
+        "fullLabel": "Hochleistungsträger [H,M]",
+        "guidance": "Hochleistungsträger mit moderatem Aufstiegspotenzial. Wertvolle Mitarbeiter, die herausragende Leistung erbringen und mehr Verantwortung übernehmen können. Fokus auf herausfordernde Aufgaben, Kompetenzentwicklung und Fachexpertise."
+      },
+      "7": {
+        "name": "Rätselhaft",
+        "shortLabel": "[N,H]",
+        "fullLabel": "Rätselhaft [N,H]",
+        "guidance": "Hohes Potenzial, aber aktuell unterhalb der Erwartungen. Möglicherweise neu in der Rolle, nicht optimal eingesetzt oder vor Herausforderungen. Benötigt sofortige Aufmerksamkeit durch Coaching, Rollenanpassung oder gezielte Entwicklungspläne, um das Potenzial freizusetzen."
+      },
+      "8": {
+        "name": "Nachwuchstalent",
+        "shortLabel": "[M,H]",
+        "fullLabel": "Nachwuchstalent [M,H]",
+        "guidance": "Solide Leistungsträger mit hohem Aufstiegspotenzial. Zukünftige Führungskräfte in Entwicklung. Bieten Sie Mentoring, Führungskräftetraining, Karriereplanung und Möglichkeiten für mehr Verantwortung."
+      },
+      "9": {
+        "name": "Spitzentalent",
+        "shortLabel": "[H,H]",
+        "fullLabel": "Spitzentalent [H,H]",
+        "guidance": "Top-Leistungsträger mit hohem Potenzial. Kritische Talente, die für Führungspositionen zu halten und zu entwickeln sind. Fokus auf Bindung, Nachfolgeplanung, Führungskräfteentwicklung und anspruchsvolle Aufgaben."
+      }
+    }
+  },
+  "panel": {
+    "tabs": {
+      "details": "Details",
+      "changes": "Änderungen",
+      "statistics": "Statistiken",
+      "intelligence": "Analysen"
+    },
+    "detailsTab": {
+      "selectEmployee": "Wählen Sie einen Mitarbeiter aus, um Details anzuzeigen",
+      "reportingChain": "Berichtslinie",
+      "employeeInformation": "Mitarbeiterinformationen",
+      "jobFunction": "Funktionsbereich",
+      "location": "Standort",
+      "jobLevel": "Karrierestufe",
+      "tenure": "Betriebszugehörigkeit",
+      "timeInLevel": "Zeit in aktueller Stufe",
+      "promotionReady": "Beförderungsbereit",
+      "currentAssessment": "Aktuelle Bewertung",
+      "potential": "Potenzial:",
+      "position": "Position:",
+      "modifiedInSession": "In Sitzung geändert",
+      "performanceHistory": "Leistungsverlauf",
+      "currentYear": "{{year}} (Aktuell)",
+      "performance": "Leistung",
+      "potentialLabel": "Potenzial",
+      "rating": "Bewertung",
+      "noHistoricalRatings": "Keine historischen Bewertungen verfügbar",
+      "managementChain": {
+        "employee": "Mitarbeiter",
+        "manager": "Führungskraft",
+        "noData": "Keine Berichtsliniendaten verfügbar",
+        "level01": "Ebene 01",
+        "level02": "Ebene 02",
+        "level03": "Ebene 03",
+        "level04": "Ebene 04 (VP)",
+        "level05": "Ebene 05",
+        "level06": "Ebene 06"
+      }
+    },
+    "changeTrackerTab": {
+      "noChanges": "Noch keine Änderungen",
+      "noDonutChanges": "Noch keine Donut-Änderungen",
+      "moveEmployeesHint": "Verschieben Sie Mitarbeiter, um Änderungen hier zu verfolgen",
+      "moveEmployeesDonutHint": "Verschieben Sie Mitarbeiter im Donut-Modus, um Änderungen zu verfolgen",
+      "addNotesPlaceholder": "Notizen hinzufügen...",
+      "employee": "Mitarbeiter",
+      "movement": "Bewegung",
+      "from": "Von",
+      "to": "Nach",
+      "notes": "Notizen",
+      "gridChanges": "Raster-Änderungen",
+      "donutChanges": "Donut-Änderungen"
+    },
+    "statisticsTab": {
+      "totalEmployees": "Mitarbeiter gesamt",
+      "modified": "Geändert",
+      "highPerformers": "Hochleistungsträger",
+      "solidPerformers": "Solide Leistungsträger",
+      "needsAttention": "Benötigt Aufmerksamkeit",
+      "distributionByPosition": "Verteilung nach Position",
+      "position": "Position",
+      "count": "Anzahl",
+      "percentage": "Prozentsatz",
+      "groupPercentage": "Gruppen-%",
+      "noStatisticsAvailable": "Keine Statistiken verfügbar",
+      "employeeCount": "Mitarbeiteranzahl",
+      "employeesCount": "{{count}} Mitarbeiter",
+      "countLabel": "Anzahl"
+    },
+    "intelligenceTab": {
+      "sessionNotFound": "Sitzung nicht gefunden",
+      "sessionLostMessage": "Ihre Datensitzung ging verloren (wahrscheinlich aufgrund eines Anwendungsneustarts). Bitte laden Sie Ihre Excel-Datei erneut hoch, um fortzufahren.",
+      "failedToLoad": "Analysedaten konnten nicht geladen werden",
+      "retry": "Wiederholen",
+      "noIntelligenceData": "Keine Analysedaten verfügbar",
+      "locationAnalysis": "Standortanalyse",
+      "highPerformerByLocation": "Hochleistungsträger-% nach Standort",
+      "functionAnalysis": "Funktionsbereichsanalyse",
+      "highPerformerByFunction": "Hochleistungsträger-% nach Funktionsbereich",
+      "levelAnalysis": "Ebenenanalyse",
+      "performanceDistributionByLevel": "Leistungsverteilung nach Ebene",
+      "tenureAnalysis": "Betriebszugehörigkeitsanalyse",
+      "highPerformerByTenure": "Hochleistungsträger-% nach Betriebszugehörigkeit",
+      "performanceLevel": {
+        "low": "Niedrige Leistung",
+        "medium": "Mittlere Leistung",
+        "high": "Hohe Leistung"
+      },
+      "anomaly": {
+        "noIssues": "Keine Auffälligkeiten",
+        "moderateAnomaly": "Moderate Anomalie",
+        "severeAnomaly": "Erhebliche Anomalie",
+        "unknown": "Unbekannt",
+        "statisticalSummary": "Statistische Zusammenfassung",
+        "pValue": "P-Wert",
+        "pValueTooltip": "Wahrscheinlichkeit, dass beobachtete Unterschiede zufällig sind. p < 0,05 zeigt signifikante Abweichung an.",
+        "effectSize": "Effektstärke (Cramér's V)",
+        "effectSizeTooltip": "Stärke der Assoziation (Skala 0-1). 0,1=klein, 0,3=mittel, 0,5=groß",
+        "sampleSize": "Stichprobengröße",
+        "degreesOfFreedom": "Freiheitsgrade",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detaillierte Abweichungen",
+        "category": "Kategorie",
+        "observedPercent": "Beobachtet %",
+        "expectedPercent": "Erwartet %",
+        "zScore": "Z-Wert",
+        "significant": "Signifikant?",
+        "yes": "Ja",
+        "no": "Nein"
+      },
+      "chart": {
+        "noDataAvailable": "Keine Daten verfügbar",
+        "actual": "Tatsächlich",
+        "expected": "Erwartet",
+        "zScore": "Z-Wert",
+        "pValue": "P-Wert",
+        "sampleSize": "N",
+        "percentage": "Prozentsatz (%)",
+        "expectedPercent": "Erwartet %",
+        "actualPercent": "Tatsächlich %",
+        "level": "Ebene",
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig",
+        "total": "Gesamt",
+        "baseline": "Basislinie ({{percent}}%)",
+        "baselineNote": "Hinweis: Die Basislinie stellt den Gesamtdurchschnitt der Hochleistungsträger über alle Ebenen hinweg dar. Signifikante Abweichungen können auf Kalibrierungsprobleme hinweisen.",
+        "function": "Funktion",
+        "position": "Pos {{number}}",
+        "heatIntensity": "Intensität:"
+      },
+      "summary": {
+        "excellent": "Ausgezeichnet",
+        "good": "Gut",
+        "needsAttention": "Benötigt Aufmerksamkeit",
+        "qualityScore": "Qualitätsbewertung",
+        "qualityScoreDescription": "Skala 0-100 basierend auf erkannten statistischen Anomalien",
+        "totalAnomalies": "Anomalien gesamt",
+        "green": "Grün",
+        "yellow": "Gelb",
+        "red": "Rot",
+        "overallHealth": "Gesamtzustand",
+        "wellCalibrated": "Die Bewertungsverteilungen erscheinen über alle Dimensionen hinweg gut kalibriert.",
+        "someAnomalies": "Einige Anomalien erkannt. Überprüfen Sie die folgenden Abschnitte für Details.",
+        "significantAnomalies": "Erhebliche Anomalien erkannt. Sofortige Überprüfung empfohlen."
+      }
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "retry": "Wiederholen",
+    "quit": "Beenden",
+    "retryConnection": "Verbindung wiederholen",
+    "fileUpload": {
+      "dialogTitle": "Excel-Datei importieren",
+      "description": "Importieren Sie eine 9-Box-Talent-Mapping-Excel-Datei (.xlsx oder .xls)",
+      "successMessage": "Datei erfolgreich importiert!",
+      "selectFile": "Datei auswählen",
+      "selected": "Ausgewählt:",
+      "importing": "Wird importiert...",
+      "import": "Importieren",
+      "importSuccess": "{{filename}} wurde erfolgreich importiert",
+      "importFailed": "Datei konnte nicht importiert werden",
+      "failedToRead": "Datei konnte nicht gelesen werden",
+      "fileTooLarge": "Dateigröße muss weniger als 10 MB betragen",
+      "invalidFileType": "Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)",
+      "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus"
+    },
+    "devMode": {
+      "webModeTooltip": "Wird im Webbrowser-Modus ausgeführt",
+      "webModeLabel": "Web-Modus",
+      "fetchingBackendInfo": "Backend-Informationen werden abgerufen...",
+      "backendPort": "Backend: Port {{port}}",
+      "backendLoading": "Backend: Wird geladen...",
+      "backendUrlTooltip": "Backend-URL: {{url}}\n\nDieser Port kann vom Standard (8000) abweichen, wenn beim Start ein Portkonflikt aufgetreten ist."
+    },
+    "connectionStatus": {
+      "connected": "Verbunden",
+      "reconnecting": "Verbindung wird wiederhergestellt",
+      "reconnectingWithCount": "Verbindung wird wiederhergestellt ({{count}})",
+      "disconnected": "Getrennt"
+    },
+    "errorBoundary": {
+      "title": "Hoppla! Etwas ist schiefgelaufen",
+      "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden.",
+      "returnHome": "Zur Startseite zurückkehren"
+    }
+  },
+  "messages": {
+    "success": "Erfolg",
+    "error": "Fehler",
+    "warning": "Warnung",
+    "info": "Information"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "closeAriaLabel": "Einstellungen schließen",
+    "appearance": "Darstellung",
+    "currentSelection": "Aktuelle Auswahl:",
+    "currentTheme": "Verwendet derzeit {{theme}}-Design (vom System)",
+    "theme": {
+      "lightMode": "Heller Modus",
+      "lightModeDesc": "Immer helles Design verwenden",
+      "darkMode": "Dunkler Modus",
+      "darkModeDesc": "Immer dunkles Design verwenden",
+      "auto": "Automatisch (System folgen)",
+      "autoDesc": "Automatisch an Ihr Systemdesign anpassen"
+    }
+  },
+  "zoom": {
+    "zoomIn": "Vergrößern (Strg++)",
+    "zoomOut": "Verkleinern (Strg+-)",
+    "resetZoom": "Zoom zurücksetzen (Strg+0)",
+    "enterFullScreen": "Vollbildmodus (F11)",
+    "exitFullScreen": "Vollbildmodus verlassen (F11)"
+  }
+}
