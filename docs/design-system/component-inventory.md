@@ -2,8 +2,8 @@
 
 Complete catalog of all UI components in the 9Boxer application. This inventory helps understand what exists, where components live, and how they relate to each other.
 
-**Last Updated:** 2025-12-24
-**Total Components:** 32
+**Last Updated:** 2025-12-26
+**Total Components:** 34
 
 ---
 
@@ -157,6 +157,8 @@ Highly reusable components that can be used anywhere.
 
 | Component | File | Purpose | Reusable |
 |-----------|------|---------|----------|
+| **EmptyState** | `common/EmptyState.tsx` | Consistent empty state display with icon, message, and optional action | ✅ Yes |
+| **ConfirmDialog** | `common/ConfirmDialog.tsx` | Reusable confirmation dialog for user actions | ✅ Yes |
 | **FileUploadDialog** | `common/FileUploadDialog.tsx` | Excel file upload modal | ✅ Yes |
 | **ZoomControls** | `common/ZoomControls.tsx` | Zoom in/out/reset buttons | ✅ Yes |
 | **LanguageSelector** | `common/LanguageSelector.tsx` | i18n language picker | ✅ Yes |
@@ -185,6 +187,8 @@ Components categorized by reusability potential.
 
 Can be used in any React app with minimal modification.
 
+- **EmptyState** - Generic empty state with icon, message, and action
+- **ConfirmDialog** - Generic confirmation dialog
 - **ErrorBoundary** - Generic error boundary
 - **LoadingSpinner** - Generic loading indicator
 - **FileUploadDialog** - Generic file upload (Excel-specific)
@@ -276,13 +280,15 @@ Alphabetical index of all components with quick reference.
 | AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | AppBar | `dashboard/` | Layout | ❌ No | ❌ |
 | ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ |
+| ConfirmDialog | `common/` | Utility | ✅ Yes | ✅ |
 | ConnectionStatus | `common/` | Global | ⚠️ Moderate | ❌ |
 | DashboardPage | `dashboard/` | Layout | ❌ No | ❌ |
-| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ |
+| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
 | DeviationChart | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | DevModeIndicator | `common/` | Global | ⚠️ Moderate | ❌ |
 | DistributionChart | `panel/` | Visualization | ✅ Yes | ❌ |
 | DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
+| EmptyState | `common/` | Utility | ✅ Yes | ✅ |
 | EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ |
 | EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ |
 | EmployeeTile | `grid/` | Grid | ✅ Yes | ❌ |
@@ -293,7 +299,7 @@ Alphabetical index of all components with quick reference.
 | FilterDrawer | `dashboard/` | Sidebar | ❌ No | ❌ |
 | GridBox | `grid/` | Grid | ⚠️ Moderate | ❌ |
 | IntelligenceSummary | `intelligence/` | Intelligence | ❌ No | ❌ |
-| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ❌ |
+| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ✅ |
 | LanguageSelector | `common/` | Utility | ✅ Yes | ❌ |
 | LevelDistributionChart | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | LoadingSpinner | `common/` | Utility | ✅ Yes | ❌ |
@@ -303,7 +309,7 @@ Alphabetical index of all components with quick reference.
 | RatingsTimeline | `panel/` | Panel Component | ❌ No | ❌ |
 | RightPanel | `panel/` | Layout | ⚠️ Moderate | ❌ |
 | SettingsDialog | `settings/` | Modal | ❌ No | ❌ |
-| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ |
+| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
 | ViewModeToggle | `grid/` | Control | ❌ No | ❌ |
 | ZoomControls | `common/` | Control | ✅ Yes | ❌ |
 
@@ -315,28 +321,28 @@ Alphabetical index of all components with quick reference.
 
 | Zone | Count | Purpose |
 |------|-------|---------|
-| **Common** | 7 | Reusable utilities |
+| **Common** | 9 | Reusable utilities |
 | **Dashboard** | 5 | Layout & navigation |
 | **Grid** | 5 | Employee visualization |
 | **Panel** | 9 | Detailed information |
 | **Intelligence** | 6 | Analytics & insights |
 | **Settings** | 1 | User preferences |
-| **Total** | 32 | All components |
+| **Total** | 34 | All components |
 
 ### By Reusability
 
 | Category | Count | Percentage |
 |----------|-------|------------|
-| **Highly Reusable** | 7 | 22% |
-| **Moderately Reusable** | 11 | 34% |
-| **App-Specific** | 14 | 44% |
+| **Highly Reusable** | 9 | 26% |
+| **Moderately Reusable** | 11 | 32% |
+| **App-Specific** | 14 | 41% |
 
 ### By Migration Status
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| **Migrated** | 0 | 0% |
-| **Pending** | 32 | 100% |
+| **Migrated** | 4 | 12% |
+| **Pending** | 30 | 88% |
 
 ---
 
