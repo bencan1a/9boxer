@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-26T19:58:11.448645+00:00
-**Source SHA**: 86863abaae742d1d8a7cb8c166c5bf12a1294318
+**Generated**: 2025-12-26T23:18:35.197400+00:00
+**Source SHA**: eb7105e8762e918db7fc077843a64e762889f401
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -270,50 +270,17 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 7 active plan(s):
+There are 2 active plan(s):
 
-### playwright-performance
-- Owner: Claude Code
-- Created: 2025-12-25
+### self-managing-docs-system
+- Owner: Development Team
+- Created: 2025-12-26
 - Summary:
-  - Eliminate 239 hardcoded waitForTimeout calls causing ~95 seconds of unnecessary waiting
-  - Enable test parallelization to reduce total runtime by 60-70%
-  - Replace arbitrary waits with state-based assertions using Playwright best practices
-  - Target runtime reduction from 10-15 minutes to 2-4 minutes
-
-### design-system
-- Owner: Claude Code
-- Created: 2025-12-24
-- Summary:
-  - Implement comprehensive design system with tokens, documentation, and tooling
-  - Extract hardcoded values into centralized theme tokens
-  - Create Storybook for component discovery and validation
-  - Establish governance processes for design consistency
-
-### view-controls-consolidation
-- Owner: Claude
-- Created: 2025-12-24
-- Summary:
-  - Consolidate floating view controls into single top-right toolbar
-  - Move language selector from AppBar to Settings dialog
-  - Improve UX by grouping related controls and reducing toolbar clutter
-
-### i18n-implementation
-- Owner: bencan1a
-- Created: 2025-12-23
-- Summary:
-  - Implement react-i18next for internationalization across entire frontend
-  - Externalize 400-500 hardcoded strings from 42 React components
-  - Support English + Spanish (minimum 2 languages)
-  - Break work into 10 agent-sized tasks (24-34 hours total)
-
-### backend-robustness
-- Owner: Claude Code
-- Created: 2025-12-22
-- Summary:
-  - Implement dynamic port selection for backend to handle port conflicts
-  - Add connection monitoring and automatic recovery from backend crashes
-  - Improve error messages and user experience during failures
+  - Build self-managing documentation system with automated screenshot updates
+  - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
+  - Implement AI-powered documentation audits and change detection
+  - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
+  - -
 
 ### big-movers-feature
 - Owner: Claude
@@ -323,15 +290,6 @@ There are 7 active plan(s):
   - Display badge on employee tiles for big movers
   - Add filtering capability to show only big movers
   - Ensure dynamic updates when employees are moved via drag-and-drop
-
-### ninebox-expand-collapse
-- Owner: Claude Code
-- Created: 2025-12-10
-- Summary:
-  - Add expand/collapse functionality to nine box grid boxes
-  - Expanded box fills grid area while other boxes remain as small drop targets
-  - Preserve drag-and-drop functionality across all boxes
-  - Implement smooth animations and keyboard controls
 
 ## API Documentation
 
