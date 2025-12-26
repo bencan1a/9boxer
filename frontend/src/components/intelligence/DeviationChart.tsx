@@ -143,7 +143,7 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({
               textAnchor="end"
               height={80}
               interval={0}
-              style={{ fontSize: "12px" }}
+              style={{ fontSize: theme.tokens.typography.fontSize.caption }}
             />
             <YAxis
               label={{

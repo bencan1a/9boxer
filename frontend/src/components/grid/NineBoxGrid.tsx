@@ -10,6 +10,7 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
@@ -21,6 +22,7 @@ import { logger } from "../../utils/logger";
 const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 
 export const NineBoxGrid: React.FC = () => {
+  const theme = useTheme();
   const { t } = useTranslation();
   const {
     employeesByPosition,
@@ -259,8 +261,7 @@ export const NineBoxGrid: React.FC = () => {
               gridTemplateColumns: gridTemplate.gridTemplateColumns,
               gridTemplateRows: gridTemplate.gridTemplateRows,
               gap: 2,
-              transition:
-                "grid-template-columns 0.3s ease-in-out, grid-template-rows 0.3s ease-in-out, gap 0.3s ease-in-out",
+              transition: `grid-template-columns ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, grid-template-rows ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, gap ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
             }}
           >
             {gridPositions.flat().map((position) => (

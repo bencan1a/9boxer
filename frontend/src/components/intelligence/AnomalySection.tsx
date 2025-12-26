@@ -210,7 +210,7 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
               size="small"
               sx={{
                 transform: detailsExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.3s",
+                transition: `transform ${theme.tokens.duration.normal}`,
               }}
             >
               <ExpandMoreIcon />
