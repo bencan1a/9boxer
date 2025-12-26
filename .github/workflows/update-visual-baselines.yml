@@ -5,8 +5,9 @@ on:
     inputs:
       reason:
         description: 'Reason for baseline update (e.g., "New button styling", "Updated theme colors")'
-        required: true
+        required: false
         type: string
+        default: 'Visual baseline update'
 
 jobs:
   update-baselines:
