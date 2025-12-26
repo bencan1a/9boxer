@@ -12,12 +12,12 @@
    npm run electron:compile
    ```
 
-## Test 1: Normal Startup (Port 8000 Available)
+## Test 1: Normal Startup (Port 38000 Available)
 
 ### Setup
-1. Ensure port 8000 is not in use
+1. Ensure port 38000 is not in use
    ```bash
-   # Check if port 8000 is free (Windows)
+   # Check if port 38000 is free (Windows)
    netstat -an | findstr :8000
    # Should return nothing
    ```
@@ -32,9 +32,9 @@ npm run electron:dev
 **Console Output:**
 ```
 🚀 Starting backend from: C:\Git_Repos\9boxer\backend\dist\ninebox\ninebox.exe
-Backend stdout: {"port": 8000, "status": "ready"}
-✅ Backend port discovered: 8000
-🔌 Backend URL updated to: http://localhost:8000
+Backend stdout: {"port": 38000, "status": "ready"}
+✅ Backend port discovered: 38000
+🔌 Backend URL updated to: http://localhost:38000
 ⏳ Waiting for backend to be ready...
 ✅ Backend ready
 ```
@@ -48,19 +48,19 @@ Backend stdout: {"port": 8000, "status": "ready"}
 ```javascript
 // In DevTools console
 await window.electronAPI.backend.getPort()
-// Expected: 8000
+// Expected: 38000
 
 await window.electronAPI.backend.getUrl()
-// Expected: "http://localhost:8000"
+// Expected: "http://localhost:38000"
 ```
 
-## Test 2: Port Conflict (Port 8000 Occupied)
+## Test 2: Port Conflict (Port 38000 Occupied)
 
 ### Setup
-1. Start a simple HTTP server on port 8000
+1. Start a simple HTTP server on port 38000
    ```bash
    # In a separate terminal
-   python -m http.server 8000
+   python -m http.server 38000
    ```
    Keep this running during the test.
 
@@ -74,7 +74,7 @@ npm run electron:dev
 **Console Output:**
 ```
 🚀 Starting backend from: C:\Git_Repos\9boxer\backend\dist\ninebox\ninebox.exe
-Backend stdout: Port 8000 is in use, finding alternative...
+Backend stdout: Port 38000 is in use, finding alternative...
 Backend stdout: Using alternative port: 54321
 Backend stdout: {"port": 54321, "status": "ready"}
 ✅ Backend port discovered: 54321
@@ -92,7 +92,7 @@ Backend stdout: {"port": 54321, "status": "ready"}
 ```javascript
 // In DevTools console
 await window.electronAPI.backend.getPort()
-// Expected: A port number OTHER than 8000 (e.g., 54321)
+// Expected: A port number OTHER than 38000 (e.g., 54321)
 
 await window.electronAPI.backend.getUrl()
 // Expected: "http://localhost:<alternative-port>"
@@ -237,12 +237,12 @@ In the DevTools console:
 // Test 1: Get backend port
 const port = await window.electronAPI.backend.getPort();
 console.log('Backend port:', port);
-// Expected: 8000 or alternative port number
+// Expected: 38000 or alternative port number
 
 // Test 2: Get backend URL
 const url = await window.electronAPI.backend.getUrl();
 console.log('Backend URL:', url);
-// Expected: "http://localhost:8000" or alternative
+// Expected: "http://localhost:38000" or alternative
 
 // Test 3: Verify TypeScript types (if using TS)
 window.electronAPI.backend.getPort() satisfies Promise<number>;
@@ -257,8 +257,8 @@ window.electronAPI.backend.getUrl() satisfies Promise<string>;
 
 **Main Process Logs (check terminal):**
 ```
-🔌 Renderer requested backend port: 8000
-🔌 Renderer requested backend URL: http://localhost:8000
+🔌 Renderer requested backend port: 38000
+🔌 Renderer requested backend URL: http://localhost:38000
 ```
 
 ## Test 7: Multiple Rapid Requests
@@ -296,7 +296,7 @@ for (let i = 0; i < 10; i++) {
 **Fix:**
 1. Verify Agent 1 backend changes are complete
 2. Test backend directly: `python backend/src/ninebox/main.py`
-3. Verify JSON appears in output: `{"port": 8000, "status": "ready"}`
+3. Verify JSON appears in output: `{"port": 38000, "status": "ready"}`
 
 ### Issue: Error dialog shows generic message
 **Cause:** Error type not matching expected patterns
@@ -316,7 +316,7 @@ for (let i = 0; i < 10; i++) {
 
 After running all tests:
 
-- [ ] Test 1: Normal startup works (port 8000)
+- [ ] Test 1: Normal startup works (port 38000)
 - [ ] Test 2: Port conflict handled (alternative port used)
 - [ ] Test 3: Timeout error shown correctly
 - [ ] Test 4: Crash error shown correctly

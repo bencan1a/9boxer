@@ -63,7 +63,7 @@ This directory contains configuration files from the project's previous incarnat
 ```
 Docker Compose
 ├── Backend Container (FastAPI + Python 3.10)
-│   ├── uvicorn server on port 8000
+│   ├── uvicorn server on port 38000
 │   ├── SQLite database in Docker volume
 │   └── Health checks via curl
 ├── Frontend Container (nginx + React build)
@@ -81,7 +81,7 @@ Electron App
 │   ├── Creates BrowserWindow
 │   └── Manages IPC communication
 ├── Backend Subprocess (Embedded)
-│   ├── FastAPI server on localhost:8000
+│   ├── FastAPI server on localhost:38000
 │   ├── SQLite in user app data directory
 │   └── Bundled with PyInstaller (~225MB)
 └── Renderer Process (React)

@@ -13,6 +13,7 @@
  */
 
 import { Page, Locator, expect } from "@playwright/test";
+import { tokens } from "../../src/theme/tokens";
 
 /**
  * Material-UI CSS transition timings (milliseconds)
@@ -164,18 +165,15 @@ export async function verifyBadgeCount(
  * ```
  */
 export async function verifyFilterActive(page: Page): Promise<void> {
-  const filterButton = page.locator('[data-testid="filter-button"]');
+  // The orange dot is a MUI Badge component with data-testid="filter-badge"
+  const filterBadge = page.locator('[data-testid="filter-badge"]');
 
-  // Verify button exists
-  await expect(filterButton).toBeVisible();
+  // Verify badge exists
+  await expect(filterBadge).toBeVisible();
 
-  // The orange dot is a MUI Badge component
-  // It should have a badge indicator when filters are active
-  const badge = filterButton.locator('[class*="MuiBadge-badge"]');
-
-  try {
-    await expect(badge).toBeVisible({ timeout: 2000 });
-  } catch (error) {
+  // Verify badge is not invisible (MUI Badge sets invisible attribute when no filters active)
+  const badgeClasses = await filterBadge.getAttribute("class");
+  if (badgeClasses && badgeClasses.includes("invisible")) {
     throw new Error(
       "Filter button orange dot indicator not visible. " +
         "Filters may not be active, or visual indicator failed to appear. " +
@@ -183,16 +181,36 @@ export async function verifyFilterActive(page: Page): Promise<void> {
     );
   }
 
-  // Verify badge has orange color (optional but recommended)
-  const badgeColor = await badge.evaluate(
-    (el) => window.getComputedStyle(el).backgroundColor
-  );
+  // Verify badge dot element has orange color
+  const badgeDot = filterBadge.locator('[class*="MuiBadge-badge"]');
+  try {
+    await expect(badgeDot).toBeVisible({ timeout: 2000 });
 
-  // MUI orange[500] = rgb(255, 152, 0)
-  if (!badgeColor.includes("255") || !badgeColor.includes("152")) {
-    console.warn(
-      `Warning: Filter badge color is ${badgeColor}, expected orange rgb(255, 152, 0). ` +
-        `Visual may not match documentation expectations.`
+    // Verify badge has orange/warning color (optional but recommended)
+    const badgeColor = await badgeDot.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor
+    );
+
+    // Convert design system hex color to RGB for comparison
+    const hexToRgb = (hex: string): string => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (!result) return "";
+      return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
+    };
+
+    const expectedColor = hexToRgb(tokens.colors.semantic.warning);
+    if (!badgeColor.includes(expectedColor)) {
+      console.warn(
+        `Warning: Filter badge color is ${badgeColor}, expected ${expectedColor} from design system. ` +
+          `(tokens.colors.semantic.warning = ${tokens.colors.semantic.warning}). ` +
+          `Visual may not match documentation expectations.`
+      );
+    }
+  } catch (error) {
+    throw new Error(
+      "Filter button orange dot indicator not visible. " +
+        "Filters may not be active, or visual indicator failed to appear. " +
+        "Screenshot would not demonstrate active filter state."
     );
   }
 }

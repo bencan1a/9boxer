@@ -23,6 +23,10 @@ main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
+# Collect ninebox data files (schema.sql and any other data files)
+# Use collect_data_files to automatically find and include data files
+ninebox_datas = collect_data_files('ninebox', includes=['**/*.sql'])
+
 # Note: setuptools and pkg_resources are build-time dependencies only,
 # not needed at runtime. Excluding them avoids the jaraco.text Lorem ipsum.txt error.
 
@@ -31,10 +35,7 @@ a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
     binaries=scipy_binaries + numpy_binaries,
-    datas=scipy_datas + numpy_datas + [
-        # Include database schema file (source, destination_folder_in_bundle)
-        (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'ninebox/models'),
-    ],
+    datas=scipy_datas + numpy_datas + ninebox_datas,
     hiddenimports=[
         # FastAPI and dependencies
         'fastapi',

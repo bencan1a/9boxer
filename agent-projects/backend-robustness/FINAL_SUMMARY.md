@@ -12,7 +12,7 @@ The backend robustness implementation has been **successfully completed** throug
 
 ### Key Achievements
 
-✅ **Dynamic Port Selection** - Backend automatically finds free ports when 8000 is occupied
+✅ **Dynamic Port Selection** - Backend automatically finds free ports when 38000 is occupied
 ✅ **Zero-Configuration Fallback** - No user intervention required for port conflicts
 ✅ **Automatic Crash Recovery** - Backend restarts automatically on crashes (1 attempt)
 ✅ **User-Friendly Error Messages** - Specific, actionable guidance for all failure scenarios
@@ -143,8 +143,8 @@ The backend robustness implementation has been **successfully completed** throug
 - **Code Quality:** 29/30 (96.7%) before fixes, 30/30 (100%) after fixes
 
 ### Manual Testing Required ⏳
-- Normal startup (port 8000 available)
-- Port conflict scenario (port 8000 occupied)
+- Normal startup (port 38000 available)
+- Port conflict scenario (port 38000 occupied)
 - Backend crash during runtime
 - IPC communication verification
 - Error dialog scenarios
@@ -311,7 +311,7 @@ The backend robustness implementation has been **successfully completed** throug
 - ✅ **User-initiated restarts:** Expected 80% reduction
 
 ### Qualitative Goals
-- ✅ Users no longer report "Port 8000 in use" errors
+- ✅ Users no longer report "Port 38000 in use" errors
 - ✅ Improved first-run experience
 - ✅ Reduced support tickets for connection issues
 - ✅ Professional, polished error handling

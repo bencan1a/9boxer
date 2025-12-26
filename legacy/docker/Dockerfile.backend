@@ -24,11 +24,11 @@ COPY backend/init_user.py ./
 RUN mkdir -p /app/data
 
 # Expose port
-EXPOSE 8000
+EXPOSE 38000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8000/health || exit 1
+  CMD curl -f http://localhost:38000/health || exit 1
 
 # Run server (initialize user first if needed)
-CMD python init_user.py || true && python -m uvicorn ninebox.main:app --host 0.0.0.0 --port 8000
+CMD python init_user.py || true && python -m uvicorn ninebox.main:app --host 0.0.0.0 --port 38000

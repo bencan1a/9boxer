@@ -31,7 +31,7 @@ import axios from 'axios';                      // Health check polling
 ### 3. Backend Configuration
 
 ```typescript
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 38000;
 const BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 const BACKEND_STARTUP_TIMEOUT = 30; // seconds
 ```
@@ -64,7 +64,7 @@ const BACKEND_STARTUP_TIMEOUT = 30; // seconds
 **Purpose**: Wait for backend to be ready before opening window
 
 **Implementation**:
-- Polls: `http://localhost:8000/health`
+- Polls: `http://localhost:38000/health`
 - Timeout: 30 seconds (30 attempts × 1 second)
 - Method: Axios GET request with 1s timeout
 - Returns: `true` if backend responds with 200, `false` on timeout
@@ -127,7 +127,7 @@ width: 1400, height: 900, minWidth: 1024, minHeight: 768
 title: '9-Box Performance Review'
 show: false  // Don't show until backend ready
 // Loaded from: Backend URL (FastAPI serves frontend)
-mainWindow.loadURL(BACKEND_URL);  // http://localhost:8000
+mainWindow.loadURL(BACKEND_URL);  // http://localhost:38000
 mainWindow.once('ready-to-show', () => mainWindow?.show());
 ```
 
@@ -217,7 +217,7 @@ app.on('before-quit', () => {
 
 ### 4. Window Load Errors
 
-**Scenario**: Electron can't load http://localhost:8000 (unlikely if health check passed)
+**Scenario**: Electron can't load http://localhost:38000 (unlikely if health check passed)
 
 **Detection**: Window load failure (handled by Electron default behavior)
 
@@ -280,8 +280,8 @@ app.on('before-quit', () => {
    Path: /home/devcontainers/.9boxer-test
 
 📍 Backend Configuration:
-   Port: 8000
-   URL: http://localhost:8000
+   Port: 38000
+   URL: http://localhost:38000
    Timeout: 30 seconds
 
 ✅ Path resolution test complete!
@@ -321,7 +321,7 @@ All acceptance criteria from the task description are met:
 - ✅ **Backend subprocess starts successfully**: Path verified, executable found
 - ✅ **Health check polling works**: 30-second timeout, 1-second intervals
 - ✅ **Frontend window opens after backend ready**: Uses 'ready-to-show' event
-- ✅ **Backend URL is loaded in window**: `http://localhost:8000`
+- ✅ **Backend URL is loaded in window**: `http://localhost:38000`
 - ✅ **Graceful shutdown kills backend**: Handlers in window-all-closed and before-quit
 - ✅ **Error handling for backend crashes**: Exit event handler with dialog
 - ✅ **Error handling for startup failures**: Try/catch in ready event

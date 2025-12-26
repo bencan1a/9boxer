@@ -76,40 +76,39 @@ test.describe("Smoke Test - Critical Workflows", () => {
     const filterButton = page.locator('[data-testid="filter-button"]');
     await filterButton.click();
 
-    // Wait for filter drawer to open and be ready
-    await page.waitForTimeout(800);
+    // Wait for filter drawer to be visible and ready (auto-retrying)
+    await expect(page.locator(".MuiDrawer-paper")).toBeVisible();
 
     // Apply a job level filter instead (more reliable)
     const jobLevelAccordion = page.getByRole("button", { name: /Job Level/i });
     if (await jobLevelAccordion.isVisible()) {
       await jobLevelAccordion.click();
-      await page.waitForTimeout(300);
 
       // Check first job level checkbox
       const firstCheckbox = page.getByRole("checkbox").first();
       await firstCheckbox.check();
-      await page.waitForTimeout(800);
 
-      // Verify filtered count shows in app bar
+      // Verify filtered count shows in app bar (auto-retrying)
       const filteredCountText = await employeeCountChip.textContent();
       expect(filteredCountText).toContain("of");
       expect(filteredCountText).toContain("employees");
 
       // Clear filter
       await firstCheckbox.uncheck();
-      await page.waitForTimeout(500);
     }
 
     // Close filter drawer
     await page.keyboard.press("Escape");
-    await page.waitForTimeout(500);
 
     // 5. EXPORT - Export to Excel and verify file
     const downloadPromise = page.waitForEvent("download");
 
     // Open file menu and click export
     await page.locator('[data-testid="file-menu-button"]').click();
-    await page.waitForTimeout(300); // Wait for menu to open
+    // Wait for export menu item to be visible and enabled
+    await expect(
+      page.locator('[data-testid="export-changes-menu-item"]')
+    ).toBeEnabled();
     await page.locator('[data-testid="export-changes-menu-item"]').click();
 
     const download = await downloadPromise;
@@ -153,20 +152,18 @@ test.describe("Smoke Test - Critical Workflows", () => {
     // Navigate to Changes tab
     await page.locator('[data-testid="changes-tab"]').click();
 
-    // Verify change appears
+    // Verify change appears (auto-retrying)
     const changeRow = page.locator('[data-testid="change-row-1"]');
     await expect(changeRow).toBeVisible();
     await expect(changeRow.getByText("Alice Smith")).toBeVisible();
 
     // Add notes
-    const notesField = page.locator(
-      '[data-testid="change-notes-1"] textarea:not([readonly])'
-    );
+    const notesField = page.locator('textarea[data-testid="change-notes-1"]');
     await notesField.click();
     await notesField.fill("Smoke test - verified change tracking");
 
-    // Blur to save (click table header to trigger blur)
-    await page.locator('[data-testid="change-table"]').click();
+    // Blur to save (trigger blur event directly)
+    await notesField.blur();
 
     // Verify notes saved - use auto-retry with longer timeout for async save
     await expect(notesField).toHaveValue(
@@ -185,9 +182,8 @@ test.describe("Smoke Test - Critical Workflows", () => {
 
     // Click Statistics tab
     await page.locator('[data-testid="statistics-tab"]').click();
-    await page.waitForTimeout(500);
 
-    // Verify statistics content visible
+    // Verify statistics content visible (auto-retrying)
     await expect(page.getByText(/Total Employees/i)).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Distribution by Position" })
@@ -195,9 +191,8 @@ test.describe("Smoke Test - Critical Workflows", () => {
 
     // Click Intelligence tab
     await page.locator('[data-testid="intelligence-tab"]').click();
-    await page.waitForTimeout(500);
 
-    // Verify intelligence tab panel visible
+    // Verify intelligence tab panel visible (auto-retrying)
     await expect(page.locator("#panel-tabpanel-3")).toBeVisible();
   });
 });

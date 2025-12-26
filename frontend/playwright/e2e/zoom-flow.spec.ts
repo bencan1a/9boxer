@@ -12,6 +12,8 @@
 import { test, expect } from "@playwright/test";
 import { uploadExcelFile } from "../helpers";
 
+// Note: Zoom functionality is in ViewControls component (data-testid="view-controls")
+// ViewControls is a unified toolbar that includes view mode toggle AND zoom controls
 test.describe("Zoom & Full-Screen Controls", () => {
   test.beforeEach(async ({ page }) => {
     // Start fresh with clean state
@@ -23,12 +25,15 @@ test.describe("Zoom & Full-Screen Controls", () => {
     // Upload sample data to show grid (zoom controls only visible when grid loaded)
     await uploadExcelFile(page, "sample-employees.xlsx");
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+
+    // Wait for zoom controls to be ready (they appear after grid loads)
+    await expect(page.locator('[data-testid="view-controls"]')).toBeVisible();
   });
 
   test("should display zoom controls when grid is loaded", async ({ page }) => {
-    // Verify zoom controls are visible
-    const zoomControls = page.locator('[data-testid="zoom-controls"]');
-    await expect(zoomControls).toBeVisible();
+    // Verify view controls (containing zoom) are visible
+    const viewControls = page.locator('[data-testid="view-controls"]');
+    await expect(viewControls).toBeVisible();
 
     // Verify all buttons are present
     await expect(page.locator('[data-testid="zoom-in-button"]')).toBeVisible();
@@ -51,9 +56,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Click zoom in button
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200); // Wait for zoom to apply
 
-    // Verify percentage changed (should be 110%)
+    // Verify percentage changed (should be 110%) (auto-retrying)
     const newPercentage = await zoomPercentage.textContent();
     expect(newPercentage).not.toBe("100%");
     expect(parseInt(newPercentage || "0")).toBeGreaterThan(100);
@@ -64,9 +68,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Click zoom out button
     await page.locator('[data-testid="zoom-out-button"]').click();
-    await page.waitForTimeout(200); // Wait for zoom to apply
 
-    // Verify percentage changed (should be 90%)
+    // Verify percentage changed (should be 90%) (auto-retrying)
     const newPercentage = await zoomPercentage.textContent();
     expect(newPercentage).not.toBe("100%");
     expect(parseInt(newPercentage || "0")).toBeLessThan(100);
@@ -77,7 +80,6 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Zoom in first
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200);
 
     // Verify not at 100%
     let currentPercentage = await zoomPercentage.textContent();
@@ -85,9 +87,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Click reset
     await page.locator('[data-testid="zoom-reset-button"]').click();
-    await page.waitForTimeout(200);
 
-    // Verify back to 100%
+    // Verify back to 100% (auto-retrying)
     currentPercentage = await zoomPercentage.textContent();
     expect(currentPercentage).toBe("100%");
   });
@@ -97,9 +98,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Press Ctrl++
     await page.keyboard.press("Control++");
-    await page.waitForTimeout(200);
 
-    // Verify zoom changed
+    // Verify zoom changed (auto-retrying)
     const newPercentage = await zoomPercentage.textContent();
     expect(parseInt(newPercentage || "0")).toBeGreaterThan(100);
   });
@@ -109,9 +109,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Press Ctrl+-
     await page.keyboard.press("Control+-");
-    await page.waitForTimeout(200);
 
-    // Verify zoom changed
+    // Verify zoom changed (auto-retrying)
     const newPercentage = await zoomPercentage.textContent();
     expect(parseInt(newPercentage || "0")).toBeLessThan(100);
   });
@@ -121,13 +120,11 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Zoom in first
     await page.keyboard.press("Control++");
-    await page.waitForTimeout(200);
 
     // Reset with Ctrl+0
     await page.keyboard.press("Control+0");
-    await page.waitForTimeout(200);
 
-    // Verify back to 100%
+    // Verify back to 100% (auto-retrying)
     const currentPercentage = await zoomPercentage.textContent();
     expect(currentPercentage).toBe("100%");
   });
@@ -137,9 +134,7 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Zoom in multiple times to get to 125%
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200);
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200);
 
     const zoomBeforeReload = await zoomPercentage.textContent();
 
@@ -168,7 +163,6 @@ test.describe("Zoom & Full-Screen Controls", () => {
       const isDisabled = await zoomOutButton.isDisabled();
       if (isDisabled) break;
       await zoomOutButton.click({ force: true }); // Force click to bypass tooltips
-      await page.waitForTimeout(100);
     }
 
     // Verify button is disabled
@@ -187,7 +181,6 @@ test.describe("Zoom & Full-Screen Controls", () => {
       const isDisabled = await zoomInButton.isDisabled();
       if (isDisabled) break;
       await zoomInButton.click({ force: true }); // Force click to bypass tooltips
-      await page.waitForTimeout(100);
     }
 
     // Verify button is disabled
@@ -202,16 +195,14 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Zoom in
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200);
 
-    // Reset should be enabled
+    // Reset should be enabled (auto-retrying)
     await expect(resetButton).not.toBeDisabled();
 
     // Click reset
     await resetButton.click();
-    await page.waitForTimeout(200);
 
-    // Reset should be disabled again
+    // Reset should be disabled again (auto-retrying)
     await expect(resetButton).toBeDisabled();
   });
 
@@ -222,7 +213,6 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Click to enter full-screen
     await fullscreenButton.click();
-    await page.waitForTimeout(300);
 
     // Note: In headless mode, document.fullscreenElement might not work
     // We test that the button exists and is clickable, actual fullscreen
@@ -230,9 +220,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Click again to exit (if it worked)
     await fullscreenButton.click();
-    await page.waitForTimeout(300);
 
-    // Verify button is still visible (not testing actual fullscreen in headless)
+    // Verify button is still visible (not testing actual fullscreen in headless) (auto-retrying)
     await expect(fullscreenButton).toBeVisible();
   });
 
@@ -241,15 +230,11 @@ test.describe("Zoom & Full-Screen Controls", () => {
 
     // Perform rapid zoom operations
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(50);
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(50);
     await page.locator('[data-testid="zoom-out-button"]').click();
-    await page.waitForTimeout(50);
     await page.locator('[data-testid="zoom-reset-button"]').click();
-    await page.waitForTimeout(200);
 
-    // Verify we're back at 100%
+    // Verify we're back at 100% (auto-retrying)
     const currentPercentage = await zoomPercentage.textContent();
     expect(currentPercentage).toBe("100%");
   });
@@ -257,9 +242,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
   test("should zoom entire application interface", async ({ page }) => {
     // Zoom in
     await page.locator('[data-testid="zoom-in-button"]').click();
-    await page.waitForTimeout(200);
 
-    // Verify grid is visible and interactable (testing that zoom doesn't break UI)
+    // Verify grid is visible and interactable (testing that zoom doesn't break UI) (auto-retrying)
     const grid = page.locator('[data-testid="nine-box-grid"]');
     await expect(grid).toBeVisible();
 

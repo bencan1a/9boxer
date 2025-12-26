@@ -35,8 +35,8 @@ export async function uploadExcelFile(
   } else {
     // File already loaded - use FileMenu
     await fileMenuButton.click();
-    // Wait for menu to open
-    await page.waitForTimeout(300);
+    // Wait for menu to become visible
+    await expect(page.locator('[role="menu"]')).toBeVisible();
     // Click Import Data menu item
     await page.locator('[data-testid="import-data-menu-item"]').click();
   }

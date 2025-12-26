@@ -51,7 +51,7 @@ interface GenerationResults {
 class ServerManager {
   private backendProcess: ChildProcess | null = null;
   private frontendProcess: ChildProcess | null = null;
-  private readonly backendPort = 8000;
+  private readonly backendPort = 38000;
   private readonly frontendPort = 5173;
 
   async startBackend(): Promise<void> {

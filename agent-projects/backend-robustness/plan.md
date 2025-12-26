@@ -13,12 +13,12 @@ summary:
 ## Problem Statement
 
 **Current Issues:**
-1. **Port Conflicts:** Backend fails if port 8000 is already in use, resulting in 30-second timeout and generic error message
+1. **Port Conflicts:** Backend fails if port 38000 is already in use, resulting in 30-second timeout and generic error message
 2. **Backend Crashes:** Frontend immediately quits with harsh error dialog when backend crashes, potentially losing user context
 3. **No Recovery:** No retry mechanisms or automatic reconnection exist
 
 **User Impact:**
-- Poor first-run experience when port 8000 is occupied
+- Poor first-run experience when port 38000 is occupied
 - Data loss risk when backend crashes during active work
 - No guidance for troubleshooting connection issues
 
@@ -32,7 +32,7 @@ summary:
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
 │  1. Spawn Backend Process                                    │
-│     ├─ Try PORT env var (default 8000)                       │
+│     ├─ Try PORT env var (default 38000)                       │
 │     └─ Backend detects conflict → picks free port            │
 │                                                               │
 │  2. Parse Backend Stdout                                     │
@@ -163,7 +163,7 @@ async function startBackend(): Promise<number> {
       env: {
         ...process.env,
         APP_DATA_DIR: appDataDir,
-        PORT: "8000", // Request port 8000, backend may use alternative
+        PORT: "8000", // Request port 38000, backend may use alternative
       },
     });
 
@@ -246,7 +246,7 @@ ipcMain.handle("backend:getUrl", () => {
 **Testing:**
 - Integration test: Spawn backend with port conflict, verify alternative port used
 - Integration test: Verify IPC returns correct port to renderer
-- E2E test: Playwright test with port 8000 occupied
+- E2E test: Playwright test with port 38000 occupied
 
 ---
 
@@ -280,7 +280,7 @@ contextBridge.exposeInMainWorld("electron", api);
 **Config:**
 ```typescript
 // frontend/src/config.ts
-let API_BASE_URL = "http://localhost:8000"; // Default fallback
+let API_BASE_URL = "http://localhost:38000"; // Default fallback
 
 export async function initializeConfig(): Promise<void> {
   if (import.meta.env.MODE === "electron") {
@@ -308,7 +308,7 @@ class ApiClient {
   constructor() {
     // Initialize with default, will be updated
     this.client = axios.create({
-      baseURL: "http://localhost:8000",
+      baseURL: "http://localhost:38000",
       timeout: 30000,
     });
   }
@@ -584,7 +584,7 @@ export function ConnectionStatus() {
 
 | Scenario | Error Title | Error Message | Action |
 |----------|-------------|---------------|--------|
-| Port conflict (before start) | "Port In Use" | "Port 8000 is already in use by another application. Trying alternate port..." | Auto-retry with free port |
+| Port conflict (before start) | "Port In Use" | "Port 38000 is already in use by another application. Trying alternate port..." | Auto-retry with free port |
 | Backend crash (during runtime) | "Backend Disconnected" | "The backend process has stopped unexpectedly. Your session data has been saved. You can retry or close the application." | Retry/Close buttons |
 | Health check failure (startup) | "Backend Not Responding" | "The backend started but is not responding to health checks. This may indicate a configuration issue." | Show logs, Quit button |
 | Spawn failure | "Backend Failed to Start" | "The backend executable could not be started. Please check that the application is properly installed." | Show error details, Quit button |
@@ -596,7 +596,7 @@ function showErrorDialog(scenario: ErrorScenario, error?: Error): void {
   const scenarios = {
     portConflict: {
       title: "Port In Use",
-      message: "Port 8000 is already in use by another application.",
+      message: "Port 38000 is already in use by another application.",
       detail: "The backend will try to use an alternate port automatically.",
       type: "info",
       buttons: ["OK"],
@@ -686,7 +686,7 @@ app.on("before-quit", async (event) => {
 - **IPC Communication:** Verify port discovery and status broadcasts work
 
 ### E2E Tests (Playwright)
-- **Port Conflict on Startup:** Occupy port 8000, launch app, verify alternative port used
+- **Port Conflict on Startup:** Occupy port 38000, launch app, verify alternative port used
 - **Backend Crash During Operation:**
   1. Launch app
   2. Upload data and interact with UI
@@ -697,7 +697,7 @@ app.on("before-quit", async (event) => {
 - **Multiple Restart Attempts:** Crash backend repeatedly, verify retry limit
 
 ### Manual Testing Checklist
-- [ ] Start app with port 8000 occupied (e.g., run `python -m http.server 8000`)
+- [ ] Start app with port 38000 occupied (e.g., run `python -m http.server 38000`)
 - [ ] Verify app starts on alternate port and functions normally
 - [ ] Kill backend process mid-session: `taskkill /F /IM ninebox.exe` (Windows) or `kill -9 <pid>` (Linux/macOS)
 - [ ] Verify "Reconnecting..." status appears
@@ -764,13 +764,13 @@ app.on("before-quit", async (event) => {
 
 ### Phase 1: Backend Port Selection (Low Risk)
 - Deploy backend changes first
-- Fully backward compatible (still works with hardcoded port 8000)
+- Fully backward compatible (still works with hardcoded port 38000)
 - Rollback: Revert to previous main.py
 
 ### Phase 2: Frontend Port Discovery (Medium Risk)
 - Deploy Electron main process changes
 - Requires backend from Phase 1
-- Rollback: Revert to hardcoded port 8000
+- Rollback: Revert to hardcoded port 38000
 
 ### Phase 3: API Client & Monitoring (Medium Risk)
 - Deploy renderer and API client changes
@@ -797,7 +797,7 @@ app.on("before-quit", async (event) => {
 - **User-initiated restarts:** Reduce by 80% (fewer "app won't start" issues)
 
 ### Qualitative
-- Users no longer report "Port 8000 in use" errors
+- Users no longer report "Port 38000 in use" errors
 - Improved first-run experience
 - Reduced support tickets for connection issues
 - Positive feedback on reconnection UX

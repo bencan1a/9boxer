@@ -1,7 +1,26 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "@storybook/test";
 import { FileUploadDialog } from "./FileUploadDialog";
+import { SnackbarProvider } from "../../contexts/SnackbarContext";
 
+/**
+ * FileUploadDialog provides the Excel file import interface.
+ *
+ * **Key Features:**
+ * - File selection via browser input or Electron native dialog
+ * - File validation (type, size limits)
+ * - Upload progress indicator
+ * - Success/error feedback
+ *
+ * **Dependencies:**
+ * - Uses sessionStore (Zustand) for upload state management
+ * - Uses SnackbarContext for notifications
+ * - Uses Electron API for native file dialogs (when available)
+ *
+ * **File Requirements:**
+ * - Format: .xlsx or .xls
+ * - Max size: 10MB
+ */
 const meta: Meta<typeof FileUploadDialog> = {
   title: "Common/FileUploadDialog",
   component: FileUploadDialog,
@@ -9,6 +28,13 @@ const meta: Meta<typeof FileUploadDialog> = {
   parameters: {
     layout: "centered",
   },
+  decorators: [
+    (Story) => (
+      <SnackbarProvider>
+        <Story />
+      </SnackbarProvider>
+    ),
+  ],
   argTypes: {
     open: {
       control: "boolean",
@@ -25,16 +51,6 @@ const meta: Meta<typeof FileUploadDialog> = {
 
 export default meta;
 type Story = StoryObj<typeof FileUploadDialog>;
-
-/**
- * Default closed state - dialog will not be visible in this state.
- * This story documents the component API when closed.
- */
-export const Default: Story = {
-  args: {
-    open: false,
-  },
-};
 
 /**
  * Open and idle state - ready to select a file.
@@ -70,6 +86,7 @@ export const WithFile: Story = {
 /**
  * Uploading state with loading spinner.
  * Note: This state is transient in the actual app and appears during file upload.
+ * The dialog shows a loading spinner while the file is being processed.
  */
 export const Uploading: Story = {
   args: {
@@ -81,25 +98,6 @@ export const Uploading: Story = {
         story:
           "When the Import button is clicked, the dialog shows a loading spinner " +
           "and disables controls while the file is being uploaded and processed.",
-      },
-    },
-  },
-};
-
-/**
- * Success state with green alert message.
- * Note: This state is shown briefly before the dialog auto-closes.
- */
-export const Success: Story = {
-  args: {
-    open: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "After successful upload, a green success alert is shown for 1.5 seconds " +
-          "before the dialog automatically closes. The success message includes the filename.",
       },
     },
   },

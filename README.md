@@ -75,7 +75,7 @@ npm run electron:dev
 ```
 
 The app will launch with:
-- Backend running from built executable (http://localhost:8000)
+- Backend running from built executable (http://localhost:38000)
 - Frontend with Vite hot reload (http://localhost:5173)
 - Electron DevTools enabled
 
@@ -266,8 +266,8 @@ npm run type-check      # TypeScript checks
 ## API Documentation
 
 Once the backend is running, visit:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- Swagger UI: http://localhost:38000/docs
+- ReDoc: http://localhost:38000/redoc
 
 ### Key Endpoints
 

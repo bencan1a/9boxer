@@ -2,7 +2,7 @@
  * Screenshot workflows for "Filtering" documentation
  *
  * Generates screenshots demonstrating the filtering functionality:
- * - Active filter chips with orange dot indicator
+ * - Active filter indicator (orange dot badge)
  * - Expanded filter panel
  * - Before/after filtering comparison (manual)
  * - Clear All button
@@ -20,7 +20,6 @@ import {
 } from "../../helpers/ui";
 import {
   verifyFilterActive,
-  verifyFilterChips,
   waitForCssTransition,
   CSS_TRANSITION_DURATIONS,
 } from "../../helpers/visualValidation";
@@ -41,19 +40,22 @@ async function selectFirstAvailableFilter(page: Page): Promise<void> {
 }
 
 /**
- * Generate grid view with ACTIVE filter chips and indicators visible
+ * Generate grid view with ACTIVE filter indicator visible
  *
- * CRITICAL: Filters must actually be selected to show orange dot and chips.
+ * CRITICAL: Filters must actually be selected to show orange dot badge.
  *
  * This was a major fix - earlier versions captured empty filter state
  * which didn't demonstrate the feature at all. Now we actively select
  * filters before capturing to show the real UI state.
  *
  * Screenshot should show:
- * - Orange dot indicator on Filters button (shows filters are active)
- * - Active filter chips displayed above grid
+ * - Orange dot badge on Filters button (primary indicator that filters are active)
  * - Updated employee count showing filtered vs total ("5 of 12")
  * - Grid showing only filtered employees
+ *
+ * Note: Function name kept as "generateActiveChips" for backwards compatibility,
+ * but filter chips UI element was removed in recent UX updates. Only the orange
+ * dot badge indicator is now shown.
  */
 export async function generateActiveChips(
   page: Page,
@@ -106,30 +108,22 @@ export async function generateActiveChips(
   const closeButton = page.locator('[data-testid="filter-close-button"]');
   if ((await closeButton.count()) > 0) {
     await closeButton.click();
-    // Wait for drawer close animation to complete
-    await waitForCssTransition(
-      page.locator('[data-testid="filter-drawer"]'),
-      CSS_TRANSITION_DURATIONS.leavingScreen
-    );
   } else {
     // Alternative: press Escape
     await page.keyboard.press("Escape");
-    await waitForUiSettle(page, 0.5);
   }
+
+  // Wait for drawer to close (auto-retrying assertion)
+  // Note: Don't use waitForCssTransition here because temporary drawers get removed from DOM
+  await expect(page.locator('[data-testid="filter-drawer"]')).not.toBeVisible();
 
   // CRITICAL: Verify orange dot indicator is visible on filter button
   // This is the key visual element that shows filters are active
   await verifyFilterActive(page);
   console.log("✓ Filter button orange dot indicator verified");
 
-  // CRITICAL: Verify filter chips are displayed
-  // These chips show which filters are currently active
-  const chipCount = await verifyFilterChips(page, 1);
-  console.log(`✓ ${chipCount} active filter chip(s) verified`);
-
   // Capture the main grid area showing:
-  // - Filter button with orange dot
-  // - Active filter chips
+  // - Filter button with orange dot (shows filters are active)
   // - Filtered employee count
   // - Grid with filtered employees
   await page.screenshot({

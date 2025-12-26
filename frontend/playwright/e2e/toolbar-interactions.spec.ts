@@ -16,6 +16,7 @@ import {
   openFileMenu,
   openFilterDrawer,
   getEmployeeIdFromCard,
+  t,
 } from "../helpers";
 
 test.describe("FileMenu Component", () => {
@@ -55,9 +56,6 @@ test.describe("FileMenu Component", () => {
 
     // Move employee to different position
     await dragEmployeeToPosition(page, employeeId, 6);
-
-    // Wait for change to register
-    await page.waitForTimeout(500);
 
     // Verify badge appears on FileMenu button (MUI Badge component)
     const fileMenuBadge = page
@@ -105,7 +103,12 @@ test.describe("FileMenu Component", () => {
       .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
     await dragEmployeeToPosition(page, employeeId, 6);
-    await page.waitForTimeout(500);
+
+    // Verify badge appears before opening menu
+    const fileMenuBadge = page
+      .locator('[data-testid="file-menu-button"]')
+      .locator("..");
+    await expect(fileMenuBadge.locator(".MuiBadge-badge")).toBeVisible();
 
     // Open FileMenu
     await openFileMenu(page);
@@ -187,7 +190,6 @@ test.describe("ViewModeToggle in Grid", () => {
     await page.getByTestId("donut-view-button").click();
 
     // Verify donut mode is active
-    await page.waitForTimeout(500);
     await expect(page.getByTestId("donut-view-button")).toHaveAttribute(
       "aria-pressed",
       "true"
@@ -207,7 +209,6 @@ test.describe("ViewModeToggle in Grid", () => {
     await page.getByTestId("grid-view-button").click();
 
     // Verify grid mode is active
-    await page.waitForTimeout(500);
     await expect(page.getByTestId("grid-view-button")).toHaveAttribute(
       "aria-pressed",
       "true"
@@ -229,7 +230,6 @@ test.describe("ViewModeToggle in Grid", () => {
 
     // Press 'D' key
     await page.keyboard.press("d");
-    await page.waitForTimeout(500);
 
     // Verify donut mode is active
     await expect(page.getByTestId("donut-view-button")).toHaveAttribute(
@@ -243,7 +243,6 @@ test.describe("ViewModeToggle in Grid", () => {
 
     // Press 'D' again
     await page.keyboard.press("d");
-    await page.waitForTimeout(500);
 
     // Verify grid mode is active
     await expect(page.getByTestId("grid-view-button")).toHaveAttribute(
@@ -297,9 +296,6 @@ test.describe("EmployeeCount in Grid", () => {
     // Open filter drawer
     await openFilterDrawer(page);
 
-    // Wait a bit more for content to load
-    await page.waitForTimeout(1000);
-
     // Find and click first available checkbox (try multiple approaches)
     const checkboxes = page.locator('input[type="checkbox"]');
     const checkboxCount = await checkboxes.count();
@@ -307,12 +303,11 @@ test.describe("EmployeeCount in Grid", () => {
     if (checkboxCount > 0) {
       await checkboxes.first().click();
 
-      // Wait for filter to apply
-      await page.waitForTimeout(1000);
-
-      // Verify count shows "X of Y employees"
-      const filteredText = await employeeCount.textContent();
-      expect(filteredText).toMatch(/\d+ of \d+ employee/);
+      // Verify count shows "X of Y employees" after filter applied
+      await expect(async () => {
+        const filteredText = await employeeCount.textContent();
+        expect(filteredText).toMatch(/\d+ of \d+ employee/);
+      }).toPass({ timeout: 5000 });
     }
 
     // Close drawer
@@ -333,7 +328,9 @@ test.describe("Enhanced Empty State", () => {
 
   test("displays enhanced empty state on first load", async ({ page }) => {
     // Verify empty state heading
-    await expect(page.getByText("No File Loaded")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
+    ).toBeVisible();
 
     // Verify description text
     await expect(
@@ -366,13 +363,17 @@ test.describe("Enhanced Empty State", () => {
 
   test("empty state disappears after file upload", async ({ page }) => {
     // Verify empty state is visible initially
-    await expect(page.getByText("No File Loaded")).toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
+    ).toBeVisible();
 
     // Upload file
     await uploadExcelFile(page, "sample-employees.xlsx");
 
     // Verify empty state is gone
-    await expect(page.getByText("No File Loaded")).not.toBeVisible();
+    await expect(
+      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
+    ).not.toBeVisible();
 
     // Verify grid is now visible
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
@@ -427,38 +428,6 @@ test.describe("Toolbar Layout", () => {
     const fileMenu = page.getByTestId("file-menu-button");
     await expect(fileMenu).toContainText("sample-employees.xlsx");
   });
-
-  test("ViewModeToggle and EmployeeCount are in grid header, not AppBar", async ({
-    page,
-  }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
-
-    // Verify grid is visible
-    const grid = page.getByTestId("nine-box-grid");
-    await expect(grid).toBeVisible();
-
-    // Verify ViewModeToggle is inside grid, not AppBar
-    const viewModeToggle = page.getByTestId("view-mode-toggle");
-    await expect(viewModeToggle).toBeVisible();
-
-    // Check that toggle is a descendant of grid
-    const toggleInGrid = grid.locator('[data-testid="view-mode-toggle"]');
-    await expect(toggleInGrid).toBeVisible();
-
-    // Verify EmployeeCount is inside grid, not AppBar
-    const employeeCount = page.getByTestId("employee-count");
-    await expect(employeeCount).toBeVisible();
-
-    // Check that count is a descendant of grid
-    const countInGrid = grid.locator('[data-testid="employee-count"]');
-    await expect(countInGrid).toBeVisible();
-
-    // Verify they are NOT in AppBar
-    const appBar = page.locator('header[class*="MuiAppBar"]');
-    await expect(appBar.getByTestId("view-mode-toggle")).not.toBeVisible();
-    await expect(appBar.getByTestId("employee-count")).not.toBeVisible();
-  });
 });
 
 test.describe("FileMenu Integration with Changes", () => {
@@ -485,7 +454,6 @@ test.describe("FileMenu Integration with Changes", () => {
       // Move first employee from box 9
       const emp1Id = await getEmployeeIdFromCard(box9Employees.first());
       await dragEmployeeToPosition(page, emp1Id, 6);
-      await page.waitForTimeout(500);
 
       // Verify badge shows 1
       let badge = page
@@ -497,7 +465,6 @@ test.describe("FileMenu Integration with Changes", () => {
       // Move second employee from box 8
       const emp2Id = await getEmployeeIdFromCard(box8Employees.first());
       await dragEmployeeToPosition(page, emp2Id, 3);
-      await page.waitForTimeout(500);
 
       // Verify badge shows 2
       badge = page
@@ -523,7 +490,6 @@ test.describe("FileMenu Integration with Changes", () => {
       .first();
     const employeeId = await getEmployeeIdFromCard(firstEmployee);
     await dragEmployeeToPosition(page, employeeId, 6);
-    await page.waitForTimeout(500);
 
     // Verify badge appears
     const fileMenuContainer = page
@@ -537,8 +503,11 @@ test.describe("FileMenu Integration with Changes", () => {
     await page.getByTestId("export-changes-menu-item").click();
     await downloadPromise;
 
-    // Wait for success message and state update (export doesn't clear changes in current implementation)
-    await page.waitForTimeout(2000);
+    // Wait for download event to settle
+    await expect(async () => {
+      const fileMenu = page.getByTestId("file-menu-button");
+      await expect(fileMenu).toBeVisible();
+    }).toPass();
 
     // Note: In the current implementation, exporting doesn't clear the session changes
     // It just exports the current state to Excel

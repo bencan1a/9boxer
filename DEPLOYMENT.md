@@ -317,7 +317,7 @@ sudo dnf install fuse fuse-libs  # Fedora
    - macOS: `~/Library/Application Support/9Boxer/backend.log`
    - Linux: `~/.config/9Boxer/backend.log`
 
-2. Check if port 8000 is in use:
+2. Check if port 38000 is in use:
    ```bash
    # Windows
    netstat -ano | findstr :8000
@@ -327,7 +327,7 @@ sudo dnf install fuse fuse-libs  # Fedora
    ```
 
 **Solutions:**
-- Kill process using port 8000
+- Kill process using port 38000
 - Check firewall settings
 - Reinstall application
 
@@ -510,8 +510,8 @@ chmod -R u+rw ~/.config/9Boxer                      # Linux
 
 4. **Access application:**
    - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
+   - Backend API: http://localhost:38000
+   - API Docs: http://localhost:38000/docs
 
 5. **Default credentials:**
    - Username: `bencan`

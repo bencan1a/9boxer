@@ -157,7 +157,7 @@ docs/images/screenshots/
 
 ### Run Details
 - **Command:** `python tools/generate_docs_screenshots.py --viewport 2400x1600`
-- **Backend:** Started successfully (http://localhost:8000)
+- **Backend:** Started successfully (http://localhost:38000)
 - **Frontend:** Started successfully (http://localhost:5173)
 - **Browser:** Chromium launched headless
 - **Sample Data:** Uploaded successfully (sample-employees.xlsx)

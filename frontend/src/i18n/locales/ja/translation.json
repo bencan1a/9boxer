@@ -226,6 +226,7 @@
       "solidPerformers": "安定パフォーマンス",
       "needsAttention": "要注意",
       "distributionByPosition": "ポジション別分布",
+      "visualDistribution": "ビジュアル分布",
       "position": "ポジション",
       "count": "人数",
       "percentage": "割合",

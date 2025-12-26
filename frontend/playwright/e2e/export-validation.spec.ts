@@ -66,10 +66,7 @@ test.describe("Export Excel Content Validation", () => {
     // Move an employee to a new position
     await dragEmployeeToPosition(page, 1, 6);
 
-    // Wait for the state to be fully updated
-    await page.waitForTimeout(1000);
-
-    // File menu badge should show changes
+    // File menu badge should show changes (auto-retrying)
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
     await expect(fileMenuBadge).not.toHaveAttribute("class", /invisible/);
 
@@ -126,10 +123,7 @@ test.describe("Export Excel Content Validation", () => {
     // Move employee
     await dragEmployeeToPosition(page, 1, 6);
 
-    // Small delay to ensure timestamp is set
-    await page.waitForTimeout(500);
-
-    // Export file
+    // Export file (auto-retrying on visibility)
     const downloadPromise = page.waitForEvent("download");
     await page.locator('[data-testid="file-menu-button"]').click();
     const exportMenuItem = page.locator(

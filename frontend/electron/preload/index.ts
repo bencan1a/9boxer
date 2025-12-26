@@ -13,7 +13,7 @@ import { contextBridge, ipcRenderer } from "electron";
  * - Keep context isolation enabled
  * - Validate all IPC messages
  *
- * Note: This app primarily uses HTTP (localhost:8000) for communication,
+ * Note: This app primarily uses HTTP (localhost:38000) for communication,
  * so we don't need many IPC APIs. This is a placeholder for future expansion.
  */
 
@@ -50,7 +50,7 @@ interface ElectronAPI {
   backend: {
     /**
      * Get the actual port the backend is running on.
-     * This may differ from the default port 8000 if there was a port conflict.
+     * This may differ from the default port 38000 if there was a port conflict.
      * @returns Promise resolving to the backend port number
      */
     getPort: () => Promise<number>;
@@ -171,7 +171,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   backend: {
     /**
      * Get the actual port the backend is running on.
-     * This may differ from the default port 8000 if there was a port conflict.
+     * This may differ from the default port 38000 if there was a port conflict.
      *
      * @returns Promise resolving to the backend port number
      *

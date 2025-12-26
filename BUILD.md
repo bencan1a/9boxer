@@ -115,11 +115,11 @@ Test the backend executable before building Electron:
 # or
 ninebox.exe        # Windows
 
-# Should start server on http://localhost:8000
+# Should start server on http://localhost:38000
 # Press Ctrl+C to stop
 ```
 
-Visit http://localhost:8000/docs to verify the API is working.
+Visit http://localhost:38000/docs to verify the API is working.
 
 ### Step 3: Build Electron Application
 
@@ -419,8 +419,8 @@ Solution:
 **Error: Frontend can't connect to backend**
 
 Solution:
-1. Verify backend health check at http://localhost:8000/health
-2. Check if port 8000 is already in use
+1. Verify backend health check at http://localhost:38000/health
+2. Check if port 38000 is already in use
 3. Ensure backend process is spawned correctly in main process
 
 **Error: Database errors**

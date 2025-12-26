@@ -9,7 +9,7 @@ Agent 2 has successfully implemented port discovery in the Electron main process
 ### Global Variables (Main Process)
 ```typescript
 // frontend/electron/main/index.ts
-let BACKEND_PORT = 8000; // Updated dynamically after port discovery
+let BACKEND_PORT = 38000; // Updated dynamically after port discovery
 let BACKEND_URL = `http://localhost:${BACKEND_PORT}`; // Updated dynamically
 ```
 
@@ -61,7 +61,7 @@ function App() {
           axios.defaults.baseURL = backendUrl;
         } else {
           // Web mode fallback
-          axios.defaults.baseURL = 'http://localhost:8000';
+          axios.defaults.baseURL = 'http://localhost:38000';
           console.log('🌐 Running in web mode, using default backend URL');
         }
 
@@ -97,7 +97,7 @@ function App() {
 **File:** `frontend/src/config.ts` (create if doesn't exist)
 
 ```typescript
-let API_BASE_URL = 'http://localhost:8000'; // Default fallback
+let API_BASE_URL = 'http://localhost:38000'; // Default fallback
 let initialized = false;
 
 export async function initializeConfig(): Promise<void> {
@@ -140,7 +140,7 @@ class ApiClient {
   constructor() {
     // Initialize with default, will be updated
     this.client = axios.create({
-      baseURL: 'http://localhost:8000',
+      baseURL: 'http://localhost:38000',
       timeout: 30000,
     });
   }
@@ -225,10 +225,10 @@ interface Window {
    ```bash
    npm run dev
    ```
-   Verify API client falls back to localhost:8000.
+   Verify API client falls back to localhost:38000.
 
 3. **Test with port conflict:**
-   - Start Python server on port 8000
+   - Start Python server on port 38000
    - Start Electron app
    - Verify API client uses alternative port
 
@@ -432,7 +432,7 @@ if (isElectron) {
   const url = await window.electronAPI.backend.getUrl();
 } else {
   // Use default for web mode
-  const url = 'http://localhost:8000';
+  const url = 'http://localhost:38000';
 }
 ```
 
@@ -450,7 +450,7 @@ async function getBackendUrl(): Promise<string> {
   }
 
   // Fallback to default
-  return 'http://localhost:8000';
+  return 'http://localhost:38000';
 }
 ```
 

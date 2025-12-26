@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { uploadExcelFile } from "../helpers";
+import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Employee Exclusions with Quick Filters Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -27,13 +27,12 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Find and expand the Exclusions accordion if it's collapsed
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
 
-    // Wait for the exclusions section to expand
-    await page.waitForTimeout(300);
-
-    // Click "Exclude Employees" button
+    // Click "Exclude Employees" button (auto-retrying on visibility)
     await page.locator('[data-testid="exclude-employees-button"]').click();
 
     // Verify exclusion dialog opens
@@ -84,11 +83,12 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Expand Exclusions accordion
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
-    await page.waitForTimeout(300);
 
-    // Open Manage Exclusions dialog
+    // Open Manage Exclusions dialog (auto-retrying on visibility)
     await page.locator('[data-testid="exclude-employees-button"]').click();
     await expect(
       page.locator('[data-testid="exclusion-dialog"]')
@@ -143,9 +143,10 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Expand Exclusions accordion
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
-    await page.waitForTimeout(300);
 
     await page.locator('[data-testid="exclude-employees-button"]').click();
     await expect(
@@ -208,9 +209,10 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Expand Exclusions accordion
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
-    await page.waitForTimeout(300);
 
     await page.locator('[data-testid="exclude-employees-button"]').click();
     await page.locator('[data-testid="exclude-managers-button"]').click();
@@ -280,9 +282,10 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Expand Exclusions accordion
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
-    await page.waitForTimeout(300);
 
     await page.locator('[data-testid="exclude-employees-button"]').click();
     await expect(
@@ -324,9 +327,10 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
     await expect(drawer).toBeVisible();
 
     // Expand Exclusions accordion
-    const exclusionsAccordion = page.getByText("Exclusions").locator("..");
+    const exclusionsAccordion = page
+      .getByText(t("dashboard.filterDrawer.exclusions"))
+      .locator("..");
     await exclusionsAccordion.click();
-    await page.waitForTimeout(300);
 
     await page.locator('[data-testid="exclude-employees-button"]').click();
     await expect(

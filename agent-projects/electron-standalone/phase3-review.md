@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-Phase 3 implementation has been **completed successfully** with all objectives met. The Electron integration properly loads the frontend via the file:// protocol, configures API communication with localhost:8000, implements native file dialogs, provides comprehensive error handling with a splash screen, and supports both development and production modes.
+Phase 3 implementation has been **completed successfully** with all objectives met. The Electron integration properly loads the frontend via the file:// protocol, configures API communication with localhost:38000, implements native file dialogs, provides comprehensive error handling with a splash screen, and supports both development and production modes.
 
 **Key Achievements**:
 - ✅ All 12 automated integration tests passed
@@ -54,7 +54,7 @@ Phase 3 implementation has been **completed successfully** with all objectives m
 **Evidence**:
 - Created `/home/devcontainers/9boxer/frontend/src/config.ts` with:
   - `isElectron()` detection function (checks for `window.electronAPI`)
-  - `API_BASE_URL` set to `http://localhost:8000` when in Electron
+  - `API_BASE_URL` set to `http://localhost:38000` when in Electron
   - Environment detection (`isDevelopment`, `isProduction`)
   - Centralized configuration object
 - API client properly imports and uses `API_BASE_URL` from config
@@ -500,7 +500,7 @@ app.add_middleware(
 - ⚠️ Uses wildcard `["*"]` for origins
 
 **Security Consideration**:
-In a standalone desktop app, the backend only listens on `localhost:8000` and is not accessible from the network. The wildcard CORS setting is acceptable because:
+In a standalone desktop app, the backend only listens on `localhost:38000` and is not accessible from the network. The wildcard CORS setting is acceptable because:
 1. Backend is not exposed to the internet
 2. Only accessible from localhost
 3. file:// protocol origin cannot be predicted
@@ -660,7 +660,7 @@ None. Phase 3 is complete and ready for approval.
 ### Functionality ✅
 
 - [x] Frontend loads from file:// protocol correctly
-- [x] API calls work with localhost:8000
+- [x] API calls work with localhost:38000
 - [x] Native file dialogs implemented
 - [x] Splash screen shows and closes correctly
 - [x] Error handling works for all scenarios

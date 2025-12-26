@@ -22,7 +22,7 @@ cd c:\Git_Repos\9boxer\frontend
 npm run dev
 ```
 
-Wait for both servers to be ready (backend at http://localhost:8000, frontend at http://localhost:5173)
+Wait for both servers to be ready (backend at http://localhost:38000, frontend at http://localhost:5173)
 
 ### 2. Run Screenshot Tool
 
@@ -268,7 +268,7 @@ mkdocs build --strict
 mkdocs serve
 ```
 
-Open http://localhost:8000 and verify:
+Open http://localhost:38000 and verify:
 - All images load correctly
 - Annotations are clear and helpful
 - Alt text is descriptive

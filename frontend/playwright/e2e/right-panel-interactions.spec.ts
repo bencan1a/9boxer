@@ -39,7 +39,6 @@ test.describe("Right Panel Interactions", () => {
 
       // Click toggle to collapse panel
       await toggleButton.click();
-      await page.waitForTimeout(500); // Wait for collapse animation
 
       // Verify panel is collapsed (not visible or has zero width)
       // Note: Panel might still be in DOM but collapsed
@@ -50,7 +49,6 @@ test.describe("Right Panel Interactions", () => {
 
       // Click toggle to expand panel
       await toggleButton.click();
-      await page.waitForTimeout(500); // Wait for expand animation
 
       // Verify panel is visible again
       await expect(rightPanel).toBeVisible();
@@ -67,14 +65,12 @@ test.describe("Right Panel Interactions", () => {
 
       // Toggle panel closed
       await toggleButton.click();
-      await page.waitForTimeout(300);
 
       // Verify toggle button is still visible
       await expect(toggleButton).toBeVisible();
 
       // Toggle panel open
       await toggleButton.click();
-      await page.waitForTimeout(300);
 
       // Verify toggle button is still visible
       await expect(toggleButton).toBeVisible();
@@ -126,7 +122,7 @@ test.describe("Right Panel Interactions", () => {
 
       // Switch to Changes tab
       await changesTab.click();
-      await page.waitForTimeout(100);
+      await expect(changesTab).toHaveAttribute("aria-selected", "true");
 
       // Verify only Changes panel is visible
       await expect(detailsPanel).toHaveAttribute("hidden", "");
@@ -134,7 +130,7 @@ test.describe("Right Panel Interactions", () => {
 
       // Switch back to Details
       await detailsTab.click();
-      await page.waitForTimeout(100);
+      await expect(detailsTab).toHaveAttribute("aria-selected", "true");
 
       // Verify only Details panel is visible again
       await expect(detailsPanel).toBeVisible();
@@ -146,6 +142,7 @@ test.describe("Right Panel Interactions", () => {
     }) => {
       const statisticsTab = page.locator('[data-testid="statistics-tab"]');
       const toggleButton = page.locator('[data-testid="panel-toggle-button"]');
+      const rightPanel = page.locator('[data-testid="right-panel"]');
 
       // Switch to Statistics tab
       await statisticsTab.click();
@@ -153,11 +150,14 @@ test.describe("Right Panel Interactions", () => {
 
       // Collapse panel
       await toggleButton.click();
-      await page.waitForTimeout(500);
+      const collapsedBox = await rightPanel.boundingBox();
+      if (collapsedBox) {
+        expect(collapsedBox.width).toBeLessThan(10);
+      }
 
       // Expand panel
       await toggleButton.click();
-      await page.waitForTimeout(500);
+      await expect(rightPanel).toBeVisible();
 
       // Verify Statistics tab is still selected
       await expect(statisticsTab).toHaveAttribute("aria-selected", "true");
@@ -172,7 +172,6 @@ test.describe("Right Panel Interactions", () => {
       // Click first employee
       const firstEmployee = page.locator('[data-testid="employee-card-1"]');
       await firstEmployee.click();
-      await page.waitForTimeout(300);
 
       // Verify first employee details are shown
       const detailsPanel = page.locator('[data-testid="tab-panel-0"]');
@@ -183,7 +182,6 @@ test.describe("Right Panel Interactions", () => {
       // Click second employee
       const secondEmployee = page.locator('[data-testid="employee-card-2"]');
       await secondEmployee.click();
-      await page.waitForTimeout(300);
 
       // Verify second employee details are shown (name will depend on test data)
       // Just verify that the panel updated by checking it's still visible
@@ -195,7 +193,6 @@ test.describe("Right Panel Interactions", () => {
     }) => {
       const employeeCard = page.locator('[data-testid="employee-card-1"]');
       await employeeCard.click();
-      await page.waitForTimeout(300);
 
       // Verify all tabs are accessible
       const detailsTab = page.locator('[data-testid="details-tab"]');
@@ -233,15 +230,14 @@ test.describe("Right Panel Interactions", () => {
         initialBox!.y + initialBox!.height / 2
       );
       await page.mouse.up();
-      await page.waitForTimeout(300);
 
-      // Get new panel width
-      const newBox = await rightPanel.boundingBox();
-      expect(newBox).not.toBeNull();
-      const newWidth = newBox!.width;
-
-      // Verify panel width changed
-      expect(Math.abs(newWidth - initialWidth)).toBeGreaterThan(50);
+      // Get new panel width - verify it changed
+      await expect(async () => {
+        const newBox = await rightPanel.boundingBox();
+        expect(newBox).not.toBeNull();
+        const newWidth = newBox!.width;
+        expect(Math.abs(newWidth - initialWidth)).toBeGreaterThan(50);
+      }).toPass();
     });
 
     test("should maintain panel width after tab switching", async ({
@@ -260,15 +256,24 @@ test.describe("Right Panel Interactions", () => {
         initialBox!.y + initialBox!.height / 2
       );
       await page.mouse.up();
+
+      // Wait for panel resize animation to complete (0.2s transition in panel-animations.css)
       await page.waitForTimeout(300);
 
-      // Get resized width
+      // Get resized width - wait for layout to settle
+      await expect(async () => {
+        const resizedBox = await rightPanel.boundingBox();
+        expect(resizedBox).not.toBeNull();
+      }).toPass();
       const resizedBox = await rightPanel.boundingBox();
       const resizedWidth = resizedBox!.width;
 
       // Switch tab
       await changesTab.click();
-      await page.waitForTimeout(300);
+      await expect(changesTab).toHaveAttribute("aria-selected", "true");
+
+      // Wait for any tab content layout changes to settle
+      await page.waitForTimeout(100);
 
       // Verify width is maintained
       const afterTabBox = await rightPanel.boundingBox();

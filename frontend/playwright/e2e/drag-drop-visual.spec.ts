@@ -120,9 +120,8 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
       .locator('[data-testid="modified-indicator"]');
     await expect(modifiedIndicator).toBeVisible();
 
-    // Longer stabilization for consecutive drags
+    // Wait for network to be idle for consecutive drags
     await page.waitForLoadState("networkidle");
-    await page.waitForTimeout(1000);
 
     // Move employee back to original position (box 9) - skip API wait and don't expect modified indicator
     await dragEmployeeToPosition(page, 1, 9, {
@@ -193,9 +192,6 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     await page.mouse.move(cardBox.x + 12, startY);
     await page.mouse.down();
 
-    // Small delay to ensure drag is initiated
-    await page.waitForTimeout(150);
-
     // Check opacity changed during drag (should be 0.5 per EmployeeTile.tsx)
     const dragOpacity = await employeeCard.evaluate((el) => {
       const style = window.getComputedStyle(el);
@@ -209,11 +205,7 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
       const x = startX + (endX - startX) * (i / steps);
       const y = startY + (endY - startY) * (i / steps);
       await page.mouse.move(x, y);
-      await page.waitForTimeout(10);
     }
-
-    // Wait for drag-over state to be applied
-    await page.waitForTimeout(100);
 
     // Check target box shows drag-over state (border should change)
     const targetBoxElement = targetBox;
@@ -227,10 +219,7 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     // Drop
     await page.mouse.up();
 
-    // Wait for drop to complete
-    await page.waitForTimeout(1000);
-
-    // Verify opacity returns to normal after drop
+    // Verify opacity returns to normal after drop (auto-retrying)
     const finalOpacity = await employeeCard.evaluate((el) => {
       const style = window.getComputedStyle(el);
       return style.opacity;

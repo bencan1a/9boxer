@@ -28,3 +28,4 @@ export {
   ensureChangesExist,
 } from "./assertions";
 export { loadCalibrationData, loadSampleData } from "./fixtures";
+export { t, tEn, tEs } from "./translations";

@@ -19,7 +19,7 @@ This file provides comprehensive context about the project for AI agents and dev
     "desktop_wrapper": "Electron 35",
     "backend": "FastAPI (Python 3.10+) bundled with PyInstaller",
     "database": "SQLite (stored in user's app data directory)",
-    "communication": "HTTP over localhost:8000"
+    "communication": "HTTP over localhost:38000"
   },
   "technology_stack": {
     "frontend": {
@@ -71,7 +71,7 @@ This file provides comprehensive context about the project for AI agents and dev
     "startup_sequence": [
       "Show splash screen",
       "Spawn backend executable from resources",
-      "Wait for backend health check (localhost:8000/health)",
+      "Wait for backend health check (localhost:38000/health)",
       "Create main window and load React app",
       "Close splash when ready"
     ],

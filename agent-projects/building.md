@@ -117,7 +117,7 @@ This will:
 - Start Vite dev server on port 5173
 - Launch Electron with hot reload enabled
 - Open DevTools automatically
-- Start backend server on port 8000
+- Start backend server on port 38000
 
 **The app should launch with a splash screen, then open the main window.**
 
@@ -350,14 +350,14 @@ npm install
 1. Check if something else is using port 5173
 2. Try `npm run dev` separately first to verify Vite works
 3. Check browser console (F12) for errors
-4. Verify backend is running: `curl http://localhost:8000/health`
+4. Verify backend is running: `curl http://localhost:38000/health`
 
 ### Backend doesn't start
-**Cause:** Port 8000 already in use or executable permissions
+**Cause:** Port 38000 already in use or executable permissions
 
 **Fix:**
 ```bash
-# Check what's using port 8000
+# Check what's using port 38000
 # Windows: netstat -ano | findstr :8000
 # Linux/macOS: lsof -i :8000
 
@@ -441,7 +441,7 @@ npm install
 
 ## Additional Resources
 
-- **Backend API:** Runs on `http://localhost:8000` when app is running
+- **Backend API:** Runs on `http://localhost:38000` when app is running
 - **Frontend Dev Server:** `http://localhost:5173` (dev mode only)
 - **Backend Source:** `backend/src/ninebox/`
 - **Frontend Source:** `frontend/src/`

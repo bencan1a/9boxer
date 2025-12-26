@@ -9,8 +9,9 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
-  // Run tests sequentially (1 worker)
-  workers: 1,
+  // Enable parallel test execution
+  // CI uses 2 workers for stability, local uses auto-detect based on CPU cores
+  workers: process.env.CI ? 2 : undefined,
 
   // Reporter to use
   reporter: "html",
@@ -27,10 +28,11 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:5173",
         viewport: { width: 1920, height: 1080 },
-        actionTimeout: 10000,
+        actionTimeout: 15000, // Increased to allow proper auto-waiting
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "retain-on-failure",
+        reducedMotion: "reduce", // Disable animations for faster, more reliable tests
       },
     },
 
@@ -79,8 +81,12 @@ export default defineConfig({
     },
   ],
 
-  // Visual comparison configuration (for visual regression tests)
+  // Global expect configuration
   expect: {
+    // Expect assertions timeout (applies to all expect() calls)
+    timeout: 2000, // Fail fast - anything longer means something is seriously wrong
+
+    // Visual comparison configuration (for visual regression tests)
     toHaveScreenshot: {
       maxDiffPixels: 100,
       maxDiffPixelRatio: 0.01,

@@ -103,19 +103,17 @@ export async function generateGoodExample(
   await verifyBadgeCount(changesBadge, 1);
 
   // Try to find and fill a note field
-  // The testid is on the FormControl wrapper, need to get the actual textarea inside
-  const noteFieldWrapper = page
-    .locator('[data-testid^="change-notes-"]')
+  // The testid is now directly on the textarea element (via inputProps)
+  const noteField = page
+    .locator('textarea[data-testid^="change-notes-"]')
     .first();
-  if ((await noteFieldWrapper.count()) > 0) {
+  if ((await noteField.count()) > 0) {
     const exampleNote =
       "Moved to High Potential based on Q4 2024 leadership demonstrated in " +
       "cross-functional API project. Successfully managed team of 5 engineers " +
       "and delivered ahead of schedule. Action: Enroll in leadership development " +
       "program Q1 2025.";
 
-    // Find the textarea within the FormControl
-    const noteField = noteFieldWrapper.locator("textarea").first();
     await noteField.fill(exampleNote);
 
     // Wait for input to settle
@@ -193,11 +191,10 @@ export async function generateDonutMode(
 
   // Add a note to the first change
   await clickTabAndWait(page, "changes-tab", 0.5);
-  const noteFieldWrapper = page
-    .locator('[data-testid^="change-notes-"]')
+  const noteField = page
+    .locator('textarea[data-testid^="change-notes-"]')
     .first();
-  if ((await noteFieldWrapper.count()) > 0) {
-    const noteField = noteFieldWrapper.locator("textarea").first();
+  if ((await noteField.count()) > 0) {
     await noteField.fill("Example note for donut mode demonstration");
     await waitForUiSettle(page, 0.3);
   }

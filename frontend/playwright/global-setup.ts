@@ -10,7 +10,7 @@ import * as path from "path";
 import * as fs from "fs";
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "http://localhost:38000";
 const HEALTH_CHECK_URL = `${BACKEND_URL}/health`;
 const MAX_RETRIES = 60; // 60 seconds max wait
 const RETRY_INTERVAL = 1000; // 1 second between retries
@@ -47,14 +47,28 @@ async function waitForBackend(): Promise<void> {
 }
 
 /**
- * Check if port is already in use
+ * Check if our backend is already running on the port
+ * Validates that it's actually our backend by checking the health response structure
  */
-async function isPortInUse(port: number): Promise<boolean> {
+async function isBackendRunning(port: number): Promise<boolean> {
   try {
     const response = await axios.get(`http://localhost:${port}/health`, {
       timeout: 1000,
     });
-    return response.status === 200;
+
+    // Verify this is our backend by checking the response structure
+    // Our backend returns { "status": "healthy" }
+    if (response.status === 200 && response.data?.status === "healthy") {
+      console.log(
+        "[Global Setup] Verified backend is running (health check passed)"
+      );
+      return true;
+    }
+
+    console.log(
+      "[Global Setup] Port in use but response doesn't match our backend"
+    );
+    return false;
   } catch {
     return false;
   }
@@ -68,23 +82,29 @@ async function startBackend(): Promise<ChildProcess> {
   const projectRoot = path.resolve(__dirname, "../..");
   const backendDir = path.join(projectRoot, "backend");
 
-  // Python executable path (use forward slashes on all platforms)
-  const pythonPath = process.env.CI
-    ? "python"
-    : process.platform === "win32"
-      ? path.join(projectRoot, ".venv/Scripts/python.exe")
-      : path.join(projectRoot, ".venv/bin/python");
+  // Python executable path
+  // In CI: Use 'python' from system PATH (dependencies installed with --system)
+  // Local: Use venv python (dependencies installed in .venv)
+  let pythonPath: string;
+  if (process.env.CI) {
+    pythonPath = "python";
+  } else {
+    pythonPath =
+      process.platform === "win32"
+        ? path.join(projectRoot, ".venv/Scripts/python.exe")
+        : path.join(projectRoot, ".venv/bin/python");
 
-  // Verify Python executable exists (skip check in CI)
-  if (!process.env.CI && !fs.existsSync(pythonPath)) {
-    throw new Error(
-      `Python executable not found at: ${pythonPath}\n` +
-        `Please ensure the virtual environment is set up:\n` +
-        `  cd ${projectRoot}\n` +
-        `  python -m venv .venv\n` +
-        `  .venv\\Scripts\\activate (Windows) or source .venv/bin/activate (Unix)\n` +
-        `  pip install -e '.[dev]'`
-    );
+    // Verify Python executable exists in local development
+    if (!fs.existsSync(pythonPath)) {
+      throw new Error(
+        `Python executable not found at: ${pythonPath}\n` +
+          `Please ensure the virtual environment is set up:\n` +
+          `  cd ${projectRoot}\n` +
+          `  python -m venv .venv\n` +
+          `  .venv\\Scripts\\activate (Windows) or source .venv/bin/activate (Unix)\n` +
+          `  pip install -e '.[dev]'`
+      );
+    }
   }
 
   console.log("[Global Setup] Starting backend server...");
@@ -101,7 +121,7 @@ async function startBackend(): Promise<ChildProcess> {
       "--host",
       "127.0.0.1",
       "--port",
-      "8000",
+      "38000",
     ],
     {
       cwd: backendDir,
@@ -119,15 +139,37 @@ async function startBackend(): Promise<ChildProcess> {
   backend.stdout?.on("data", (data) => {
     const message = data.toString().trim();
     if (message) {
-      console.log(`[Backend] ${message}`);
+      // Parse log level from the message
+      // Format: "YYYY-MM-DD HH:MM:SS,mmm - module - LEVEL - message"
+      const logLevelMatch = message.match(/ - (ERROR|WARNING|CRITICAL) - /);
+
+      // Always show: errors/warnings, JSON port messages, and uvicorn startup
+      if (
+        logLevelMatch ||
+        message.includes('"port"') ||
+        message.includes("Uvicorn running") ||
+        message.includes("Application startup complete")
+      ) {
+        console.log(`[Backend] ${message}`);
+      }
+      // Suppress INFO and DEBUG messages to reduce noise
     }
   });
 
   // Capture stderr for debugging
+  // Note: Python loggers often output to stderr, even for INFO messages
   backend.stderr?.on("data", (data) => {
     const message = data.toString().trim();
     if (message) {
-      console.error(`[Backend Error] ${message}`);
+      // Parse log level from the message
+      // Format: "YYYY-MM-DD HH:MM:SS,mmm - module - LEVEL - message"
+      const logLevelMatch = message.match(/ - (ERROR|WARNING|CRITICAL) - /);
+
+      if (logLevelMatch) {
+        // Only show ERROR, WARNING, CRITICAL
+        console.error(`[Backend Error] ${message}`);
+      }
+      // Suppress INFO and DEBUG messages to reduce noise
     }
   });
 
@@ -159,8 +201,8 @@ export default async function globalSetup(): Promise<void> {
   console.log("========================================\n");
 
   // Check if backend is already running
-  if (await isPortInUse(8000)) {
-    console.log("[Global Setup] ⚠️  Backend already running on port 8000");
+  if (await isBackendRunning(38000)) {
+    console.log("[Global Setup] ⚠️  Backend already running on port 38000");
     console.log("[Global Setup] Using existing backend server");
 
     // Save PID as 0 to indicate we didn't start it

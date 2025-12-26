@@ -10,12 +10,21 @@ interface LoadingSpinnerProps {
   size?: number;
   message?: string;
   overlay?: boolean;
+  color?:
+    | "primary"
+    | "secondary"
+    | "error"
+    | "info"
+    | "success"
+    | "warning"
+    | "inherit";
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 40,
   message,
   overlay = false,
+  color = "primary",
 }) => {
   const theme = useTheme();
 
@@ -29,7 +38,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         gap: 2,
       }}
     >
-      <CircularProgress size={size} />
+      <CircularProgress size={size} color={color} />
       {message && (
         <Typography variant="body2" color="text.secondary">
           {message}

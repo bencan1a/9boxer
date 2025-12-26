@@ -42,7 +42,7 @@ Successfully implemented port discovery in the Electron main process. The app ca
 
 4. **Backward Compatibility:**
    - Falls back gracefully if port parsing fails
-   - Default port 8000 used if discovery fails
+   - Default port 38000 used if discovery fails
 
 #### Updated App Ready Handler (Lines 511-586)
 1. **Port Discovery Integration:**
@@ -112,7 +112,7 @@ npm run electron:compile
   - `window.electronAPI.backend.getUrl()` - Returns `Promise<string>`
 - **Timing:** Both methods are available immediately after app ready
 - **Port Range:** Port will be in range 1024-65535 (ephemeral ports)
-- **Default:** Port 8000 if no conflict, alternative port if conflict detected
+- **Default:** Port 38000 if no conflict, alternative port if conflict detected
 
 #### For Agent 4 (Connection Monitoring):
 - **Global Variables:** `BACKEND_PORT` and `BACKEND_URL` are updated dynamically
@@ -131,22 +131,22 @@ npm run electron:compile
 
 ## Manual Testing Checklist
 
-### ✅ Normal Startup (Port 8000 Available)
-**Test:** Start app with port 8000 free
+### ✅ Normal Startup (Port 38000 Available)
+**Test:** Start app with port 38000 free
 **Expected:**
-- Backend discovers port 8000
-- Console logs: "✅ Backend port discovered: 8000"
-- Console logs: "🔌 Backend URL updated to: http://localhost:8000"
+- Backend discovers port 38000
+- Console logs: "✅ Backend port discovered: 38000"
+- Console logs: "🔌 Backend URL updated to: http://localhost:38000"
 - Health check succeeds
 - App starts normally
 
 **Status:** ⏳ Pending (requires built backend from Agent 1)
 
-### ✅ Port Conflict Scenario (Port 8000 Occupied)
-**Test:** Occupy port 8000, then start app
+### ✅ Port Conflict Scenario (Port 38000 Occupied)
+**Test:** Occupy port 38000, then start app
 ```bash
 # In separate terminal
-python -m http.server 8000
+python -m http.server 38000
 ```
 **Expected:**
 - Backend detects conflict, uses alternative port (e.g., 8001)
@@ -162,10 +162,10 @@ python -m http.server 8000
 ```javascript
 // In browser DevTools console
 await window.electronAPI.backend.getPort()
-// Expected: 8000 (or alternative port)
+// Expected: 38000 (or alternative port)
 
 await window.electronAPI.backend.getUrl()
-// Expected: "http://localhost:8000" (or alternative port)
+// Expected: "http://localhost:38000" (or alternative port)
 ```
 
 **Status:** ⏳ Pending (requires built backend from Agent 1)
@@ -218,7 +218,7 @@ async function initializeApiClient() {
     console.log('API client initialized with:', backendUrl);
   } else {
     // Web mode: Use default
-    axios.defaults.baseURL = 'http://localhost:8000';
+    axios.defaults.baseURL = 'http://localhost:38000';
   }
 }
 
@@ -303,8 +303,8 @@ The existing `waitForBackend()` function already uses dynamic `BACKEND_URL`, so 
 - [x] TypeScript compilation passes with no errors
 
 ### ⏳ Pending Testing (Requires Agent 1 Backend)
-- [ ] Manual test: Normal startup (port 8000 available)
-- [ ] Manual test: Port conflict scenario (port 8000 occupied)
+- [ ] Manual test: Normal startup (port 38000 available)
+- [ ] Manual test: Port conflict scenario (port 38000 occupied)
 - [ ] Manual test: IPC handlers work from renderer
 - [ ] Manual test: Error scenarios (timeout, crash, not found)
 
@@ -312,6 +312,6 @@ The existing `waitForBackend()` function already uses dynamic `BACKEND_URL`, so 
 
 Port discovery implementation is **complete and ready for integration**. All code compiles successfully and follows the project's TypeScript and code quality standards.
 
-The implementation is **backward compatible** (falls back to port 8000 if discovery fails) and **robust** (handles timeouts, errors, and edge cases).
+The implementation is **backward compatible** (falls back to port 38000 if discovery fails) and **robust** (handles timeouts, errors, and edge cases).
 
 Next agent (Agent 3) can now proceed with dynamic API client initialization using the exposed IPC methods.

@@ -63,6 +63,10 @@ describe("StatisticsTab", () => {
     render(<StatisticsTab />);
 
     expect(screen.getByTestId("distribution-chart")).toBeInTheDocument();
-    expect(screen.getByText("Visual Distribution")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        getTranslatedText("panel.statisticsTab.visualDistribution")
+      )
+    ).toBeInTheDocument();
   });
 });

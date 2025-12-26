@@ -332,7 +332,7 @@ def test_frozen_executable_starts():
     """Test that frozen executable starts and responds to health check."""
     proc = subprocess.Popen(['./dist/ninebox'])
     time.sleep(2)
-    resp = requests.get('http://localhost:8000/health')
+    resp = requests.get('http://localhost:38000/health')
     assert resp.status_code == 200
     proc.terminate()
 
@@ -522,7 +522,7 @@ import axios from 'axios';
 let mainWindow: BrowserWindow | null = null;
 let backendProcess: ChildProcess | null = null;
 
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 38000;
 const BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 
 async function waitForBackend(maxAttempts = 30): Promise<boolean> {
@@ -1066,7 +1066,7 @@ Review all code changes from Tasks 2.1-2.5:
 **Implementation Impact**:
 - Electron loads React app from bundled `dist/index.html` via `loadFile()`
 - Backend serves API endpoints only
-- React makes API calls to `http://localhost:8000`
+- React makes API calls to `http://localhost:38000`
 - CORS must allow requests from `file://` origin
 
 ---
@@ -1301,7 +1301,7 @@ npm run electron:dev
 
 **Deliverables**:
 1. Update `frontend/src/config.ts` to detect Electron environment
-2. Set API base URL to localhost:8000
+2. Set API base URL to localhost:38000
 3. Add environment detection utilities
 
 **Implementation Details**:
@@ -1315,8 +1315,8 @@ export const isElectron = (): boolean => {
 
 // API base URL
 export const API_BASE_URL = isElectron()
-  ? 'http://localhost:8000'
-  : import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+  ? 'http://localhost:38000'
+  : import.meta.env.VITE_API_BASE_URL || 'http://localhost:38000';
 
 export const config = {
   apiBaseUrl: API_BASE_URL,
@@ -1332,9 +1332,9 @@ export const config = {
   * Returns boolean for use throughout app
   * Safe type casting with (window as any)
 - ✅ Implemented `API_BASE_URL` constant:
-  * Uses localhost:8000 in Electron
+  * Uses localhost:38000 in Electron
   * Falls back to VITE_API_BASE_URL env var in browser
-  * Default to localhost:8000 for development
+  * Default to localhost:38000 for development
 - ✅ Implemented `config` object with:
   * apiBaseUrl: Used by API client
   * isElectron: Environment detection flag
@@ -1343,7 +1343,7 @@ export const config = {
 - ✅ Updated `frontend/src/services/api.ts`:
   * Added import: `import { API_BASE_URL } from '../config'`
   * Changed baseURL from empty string to API_BASE_URL
-  * API client now uses localhost:8000 in all modes
+  * API client now uses localhost:38000 in all modes
 - ✅ Searched for hardcoded URLs:
   * Only URLs found: config.ts (by design)
   * No other hardcoded http:// or localhost URLs in source files
@@ -1370,7 +1370,7 @@ export const config = {
 ```
 
 **Acceptance Criteria**:
-- [x] API calls use localhost:8000 in Electron
+- [x] API calls use localhost:38000 in Electron
 - [x] Environment detection works (isElectron() function)
 - [x] No CORS issues (axios baseURL set correctly)
 - [x] Config is used consistently throughout app (apiClient imports it)
@@ -1841,7 +1841,7 @@ Review all code changes from Tasks 3.1-3.5:
 
 **Functionality**:
 - [x] Frontend works in Electron environment ✅
-- [x] API calls succeed to localhost:8000 ✅
+- [x] API calls succeed to localhost:38000 ✅
 - [x] Native file dialogs work ✅
 - [x] Upload functionality works ✅
 - [x] Export functionality works ✅
@@ -2398,7 +2398,7 @@ Review all code changes from Tasks 4.1-4.6:
   - All TypeScript compiles without errors
   - Context isolation enabled (nodeIntegration=false, contextIsolation=true, sandbox=true)
   - Security verified: no direct Node.js access from renderer
-  - HTTP communication via localhost:8000 for all app data
+  - HTTP communication via localhost:38000 for all app data
   - All acceptance criteria met
   - Ready for Task 2.4 (Application Menu and Tray)
 
@@ -2555,7 +2555,7 @@ Review all code changes from Tasks 4.1-4.6:
     * Platform-specific executable name (ninebox.exe on Windows, ninebox elsewhere)
     * Verified path resolution: /home/devcontainers/9boxer/backend/dist/ninebox/ninebox (15.8 MB)
   - Implemented waitForBackend() function:
-    * Polls http://localhost:8000/health endpoint
+    * Polls http://localhost:38000/health endpoint
     * 30-second timeout (30 attempts, 1 second apart)
     * Returns true if backend responds with 200, false on timeout
     * Helpful console logging for debugging
@@ -2569,7 +2569,7 @@ Review all code changes from Tasks 4.1-4.6:
   - Updated createWindow() function:
     * Window size: 1400x900 (min 1024x768)
     * Title: "9-Box Performance Review"
-    * Loads BACKEND_URL (http://localhost:8000) instead of Vite dev server
+    * Loads BACKEND_URL (http://localhost:38000) instead of Vite dev server
     * show: false - window hidden until backend ready
     * Uses 'ready-to-show' event to display window
     * Maintains security: nodeIntegration=false, contextIsolation=true, sandbox=true
@@ -2598,7 +2598,7 @@ Review all code changes from Tasks 4.1-4.6:
     ✓ Backend subprocess starts successfully (path verified)
     ✓ Health check polling implemented (30s timeout)
     ✓ Frontend window opens after backend ready ('ready-to-show' event)
-    ✓ Backend URL loaded in window (http://localhost:8000)
+    ✓ Backend URL loaded in window (http://localhost:38000)
     ✓ Graceful shutdown kills backend (window-all-closed, before-quit)
     ✓ Error handling for backend crashes (exit code !== 0)
     ✓ Error handling for startup failures (try/catch in ready)

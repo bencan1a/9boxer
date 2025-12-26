@@ -508,7 +508,7 @@ This document breaks down the remaining frontend implementation and testing into
 #### Pre-Implementation Validation
 - [ ] Backend starts without errors
 - [ ] Database initializes with bencan user
-- [ ] API docs accessible at http://localhost:8000/docs
+- [ ] API docs accessible at http://localhost:38000/docs
 - [ ] Can login via Swagger UI
 - [ ] Can upload sample Excel file via Swagger UI
 - [ ] Sample file parses correctly (check employee count)

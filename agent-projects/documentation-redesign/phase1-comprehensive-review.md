@@ -266,7 +266,7 @@ The flow is complete:
 ### Testing Methodology
 
 1. **Started servers:**
-   - Backend: `http://localhost:8000` (FastAPI)
+   - Backend: `http://localhost:38000` (FastAPI)
    - Frontend: `http://localhost:5177` (Vite dev server)
 
 2. **Reviewed source code:**

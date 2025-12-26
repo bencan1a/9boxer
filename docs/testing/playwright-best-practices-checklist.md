@@ -268,7 +268,7 @@ test('check if badge updates correctly', ...) // Implementation-focused
 1. **Use API setup when possible** (instead of UI upload every time)
    ```typescript
    // Instead of uploading via UI
-   await request.post('http://localhost:8000/api/session/upload', { data });
+   await request.post('http://localhost:38000/api/session/upload', { data });
    ```
 
 2. **Parallelize independent tests** (if you add multi-session support)

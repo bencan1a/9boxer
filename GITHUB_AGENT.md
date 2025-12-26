@@ -35,7 +35,7 @@ The automated setup includes:
 - **Architecture**: Electron wrapper + React frontend + FastAPI backend (bundled with PyInstaller)
 - **Monorepo**: Python backend (`.venv/`) + Node.js frontend (`frontend/node_modules/`)
 - **Database**: SQLite in user's app data directory
-- **Communication**: Backend runs as subprocess, HTTP over localhost:8000
+- **Communication**: Backend runs as subprocess, HTTP over localhost:38000
 - **Platform**: Primary development on **Windows** (see platform constraints below)
 - **Deployment**: Windows/macOS/Linux installers (~300MB each), fully offline
 
@@ -207,7 +207,7 @@ npm run format                   # Prettier
 4. **Add type annotations** (required for all functions)
 5. **Run tests**: `pytest backend/tests/unit/api/`
 6. **Type check**: `mypy backend/src/ && pyright`
-7. **Test manually**: Use Swagger UI at http://localhost:8000/docs
+7. **Test manually**: Use Swagger UI at http://localhost:38000/docs
 
 ### Update Documentation
 
@@ -505,7 +505,7 @@ pip install -e '.[dev]'
 
 ### Frontend Can't Connect to Backend
 **Cause**: Backend not running or wrong port
-**Solution**: Check backend is running on port 8000, check logs
+**Solution**: Check backend is running on port 38000, check logs
 
 ### Pre-commit Hooks Failing
 **Cause**: Code quality issues

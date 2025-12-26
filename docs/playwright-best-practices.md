@@ -351,7 +351,7 @@ export async function checkBackendHealth(page: Page): Promise<void> {
 
   while (retries < maxRetries) {
     try {
-      const response = await context.request.get('http://localhost:8000/health');
+      const response = await context.request.get('http://localhost:38000/health');
       if (response.status() === 200) {
         return;
       }
@@ -482,7 +482,7 @@ export default defineConfig({
       command: process.platform === 'win32'
         ? '..\\.venv\\Scripts\\python.exe -m uvicorn ninebox.main:app --reload'
         : '../.venv/bin/python -m uvicorn ninebox.main:app --reload',
-      url: 'http://localhost:8000/health',
+      url: 'http://localhost:38000/health',
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
       cwd: '../backend',
@@ -620,7 +620,7 @@ export async function checkBackendHealth(page: Page): Promise<void> {
 
   while (retries < maxRetries) {
     try {
-      const response = await context.request.get('http://localhost:8000/health');
+      const response = await context.request.get('http://localhost:38000/health');
       if (response.status() === 200) {
         return;
       }
