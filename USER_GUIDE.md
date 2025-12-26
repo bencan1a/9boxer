@@ -301,7 +301,7 @@ Maximize your workspace by entering fullscreen mode.
 
 **To enter fullscreen:**
 - Press **F11** on your keyboard
-- Your browser enters fullscreen mode, hiding toolbars and tabs
+- The 9Boxer window enters fullscreen mode, maximizing your workspace
 
 **To exit fullscreen:**
 - Press **F11** again
