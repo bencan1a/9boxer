@@ -81,15 +81,16 @@
 
 /* ============================================================================
    TYPOGRAPHY SYSTEM
-   Matches tokens.typography from frontend/src/theme/tokens.ts
+   Optimized for documentation readability (based on GitHub Docs, Material-UI Docs)
+   Reference: frontend/src/theme/tokens.ts (app uses larger UI sizes)
    ============================================================================ */
 
 .md-typeset {
   /* Base font - tokens.typography.fontFamily */
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  font-size: 1rem;        /* 16px - tokens.typography.fontSize.body1 */
+  font-size: 0.875rem;    /* 14px - Documentation standard (body2) */
   font-weight: 400;       /* tokens.typography.fontWeight.regular */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  line-height: 1.6;       /* Slightly relaxed for documentation readability */
 
   /* Improve font rendering to match app */
   -webkit-font-smoothing: antialiased;
@@ -97,79 +98,84 @@
   text-rendering: optimizeLegibility;
 }
 
-/* Headings - Scaled down for documentation readability */
-/* Note: App uses larger sizes for UI, but docs need moderate sizing */
+/* Headings - Documentation-optimized scale (smaller than app UI) */
+/* Follows GitHub Docs / Material-UI Docs sizing patterns */
 .md-typeset h1 {
-  font-size: 2rem;        /* 32px - Scaled down from 2.5rem for documentation */
+  font-size: 1.75rem;     /* 28px - Page titles (down from 32px) */
   font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.3;       /* Slightly relaxed for readability */
+  line-height: 1.3;
   margin-top: 0;
   margin-bottom: 1.5rem;  /* 24px - tokens.spacing.lg */
 }
 
 .md-typeset h2 {
-  font-size: 1.5rem;      /* 24px - Scaled down from 2rem for documentation */
+  font-size: 1.375rem;    /* 22px - Major sections (down from 24px) */
   font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.3;       /* Slightly relaxed for readability */
+  line-height: 1.3;
   margin-top: 2rem;       /* 32px - tokens.spacing.xl */
   margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
 }
 
 .md-typeset h3 {
-  font-size: 1.25rem;     /* 20px - Scaled down from 1.75rem for documentation */
+  font-size: 1.125rem;    /* 18px - Subsections (down from 20px) */
   font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.4;       /* Slightly relaxed for readability */
+  line-height: 1.4;
   margin-top: 1.5rem;     /* 24px - tokens.spacing.lg */
   margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
 }
 
 .md-typeset h4 {
-  font-size: 1.125rem;    /* 18px - Scaled down from 1.5rem for documentation */
+  font-size: 1rem;        /* 16px - Minor headings (down from 18px) */
   font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.4;       /* Slightly relaxed for readability */
+  line-height: 1.4;
   margin-top: 1.5rem;     /* 24px - tokens.spacing.lg */
   margin-bottom: 0.875rem; /* 14px */
 }
 
 .md-typeset h5 {
-  font-size: 1rem;        /* 16px - Scaled down from 1.25rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.5;       /* Normal line height */
+  font-size: 0.875rem;    /* 14px - Inline headings (same as body) */
+  font-weight: 600;       /* tokens.typography.fontWeight.semiBold - bolder to stand out */
+  line-height: 1.5;
   margin-top: 1rem;       /* 16px - tokens.spacing.md */
   margin-bottom: 0.75rem; /* 12px */
 }
 
 .md-typeset h6 {
-  font-size: 0.875rem;    /* 14px - Scaled down from 1rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.5;       /* Normal line height */
+  font-size: 0.8125rem;   /* 13px - Minor inline headings */
+  font-weight: 600;       /* tokens.typography.fontWeight.semiBold */
+  line-height: 1.5;
   margin-top: 1rem;       /* 16px - tokens.spacing.md */
   margin-bottom: 0.75rem; /* 12px */
 }
 
 /* Body text variants */
 .md-typeset p {
-  font-size: 1rem;        /* 16px - tokens.typography.fontSize.body1 */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  font-size: 0.875rem;    /* 14px - Documentation body text */
+  line-height: 1.6;       /* Relaxed for long-form reading */
   margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
 }
 
 .md-typeset .text-small,
 .md-typeset small {
-  font-size: 0.875rem;    /* 14px - tokens.typography.fontSize.body2 */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  font-size: 0.8125rem;   /* 13px - Fine print */
+  line-height: 1.5;
 }
 
 .md-typeset .caption {
   font-size: 0.75rem;     /* 12px - tokens.typography.fontSize.caption */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  line-height: 1.5;
   color: var(--md-default-fg-color--light);
 }
 
 /* Code typography */
 .md-typeset code {
   font-family: "Roboto Mono", monospace;
-  font-size: 0.875rem;    /* 14px - tokens.typography.fontSize.body2 */
+  font-size: 0.8125rem;   /* 13px - Slightly smaller for inline code */
+}
+
+/* Code blocks */
+.md-typeset pre code {
+  font-size: 0.8125rem;   /* 13px - Consistent with inline code */
 }
 
 /* ============================================================================
@@ -403,7 +409,7 @@
 
 /* Header title styling */
 .md-header__title {
-  font-size: 1.25rem;     /* 20px - Moderate size for header */
+  font-size: 1.125rem;    /* 18px - Scaled down for documentation */
   font-weight: 500;       /* Medium weight */
   color: var(--md-default-fg-color);
 }
