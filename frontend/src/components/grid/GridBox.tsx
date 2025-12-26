@@ -24,23 +24,6 @@ import {
 } from "../../constants/positionLabels";
 import { logger } from "../../utils/logger";
 
-// Styling constants
-const BOX_HEIGHTS = {
-  COLLAPSED_MIN: 60,
-  COLLAPSED_MAX: 80,
-  NORMAL_MIN: 150,
-  NORMAL_MAX: 400,
-  EXPANDED_MIN: 200,
-  EXPANDED_VIEWPORT_OFFSET: 250, // Space for headers, margins, other collapsed boxes
-} as const;
-
-const OPACITY = {
-  COLLAPSED_IDLE: 0.7,
-  COLLAPSED_DRAG_OVER: 1,
-  EXPAND_BUTTON_IDLE: 0.6,
-  EXPAND_BUTTON_ACTIVE: 1,
-} as const;
-
 interface GridBoxProps {
   position: number;
   employees: Employee[];
@@ -116,8 +99,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
       backgroundColor: isOver
         ? alpha(theme.palette.primary.main, 0.15)
         : bgColor,
-      transition:
-        "min-height 0.3s ease-in-out, max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, border-style 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+      transition: `min-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, max-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, background-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-style ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, box-shadow ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
       userSelect: "none",
       overflowY: (isCollapsed ? "hidden" : "auto") as const,
     };
@@ -127,9 +109,9 @@ export const GridBox: React.FC<GridBoxProps> = ({
       // Collapsed: Small, no scrolling needed
       return {
         ...baseStyles,
-        minHeight: BOX_HEIGHTS.COLLAPSED_MIN,
-        maxHeight: BOX_HEIGHTS.COLLAPSED_MAX,
-        opacity: isOver ? OPACITY.COLLAPSED_DRAG_OVER : OPACITY.COLLAPSED_IDLE,
+        minHeight: theme.tokens.dimensions.gridBox.collapsedMin,
+        maxHeight: theme.tokens.dimensions.gridBox.collapsedMax,
+        opacity: isOver ? theme.tokens.opacity.gridCollapsedDragOver : theme.tokens.opacity.gridCollapsedIdle,
         backgroundColor: isOver ? "primary.light" : alpha(bgColor, 0.5),
         borderStyle: isOver ? "dashed" : "solid",
         display: "flex",
@@ -142,8 +124,8 @@ export const GridBox: React.FC<GridBoxProps> = ({
       // Expanded: Large, with max-height based on viewport
       return {
         ...baseStyles,
-        minHeight: BOX_HEIGHTS.EXPANDED_MIN,
-        maxHeight: `calc(100vh - ${BOX_HEIGHTS.EXPANDED_VIEWPORT_OFFSET}px)`,
+        minHeight: theme.tokens.dimensions.gridBox.expandedMin,
+        maxHeight: `calc(100vh - ${theme.tokens.dimensions.gridBox.expandedViewportOffset}px)`,
         boxShadow: 4,
       };
     }
@@ -151,8 +133,8 @@ export const GridBox: React.FC<GridBoxProps> = ({
     // Normal mode
     return {
       ...baseStyles,
-      minHeight: BOX_HEIGHTS.NORMAL_MIN,
-      maxHeight: BOX_HEIGHTS.NORMAL_MAX,
+      minHeight: theme.tokens.dimensions.gridBox.normalMin,
+      maxHeight: theme.tokens.dimensions.gridBox.normalMax,
     };
   };
 
@@ -191,10 +173,10 @@ export const GridBox: React.FC<GridBoxProps> = ({
             onClick={onExpand}
             aria-label={t("grid.gridBox.expandBox")}
             sx={{
-              opacity: OPACITY.EXPAND_BUTTON_ACTIVE,
-              transition: "opacity 0.3s ease-in-out",
+              opacity: theme.tokens.opacity.gridExpandButtonActive,
+              transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
               "&:hover": {
-                opacity: OPACITY.EXPAND_BUTTON_ACTIVE,
+                opacity: theme.tokens.opacity.gridExpandButtonActive,
                 backgroundColor: alpha(theme.palette.primary.main, 0.1),
               },
             }}
@@ -256,9 +238,9 @@ export const GridBox: React.FC<GridBoxProps> = ({
               aria-label={t("grid.gridBox.expandBox")}
               sx={{
                 ml: 1,
-                opacity: OPACITY.EXPAND_BUTTON_IDLE,
-                transition: "opacity 0.3s ease-in-out",
-                "&:hover": { opacity: OPACITY.EXPAND_BUTTON_ACTIVE },
+                opacity: theme.tokens.opacity.gridExpandButtonIdle,
+                transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
+                "&:hover": { opacity: theme.tokens.opacity.gridExpandButtonActive },
               }}
             >
               <OpenInFullIcon fontSize="small" />
