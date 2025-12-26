@@ -267,10 +267,10 @@ export const DashboardPage: React.FC = () => {
                   >
                     <Box
                       sx={{
-                        width: 2,
-                        height: 40,
+                        width: `${theme.tokens.spacing.xs / 2}px`,
+                        height: `${theme.tokens.spacing.xl + theme.tokens.spacing.sm}px`,
                         backgroundColor: theme.palette.background.paper,
-                        borderRadius: 1,
+                        borderRadius: `${theme.tokens.radius.sm / 4}px`,
                       }}
                     />
                   </Box>
