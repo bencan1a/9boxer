@@ -360,9 +360,9 @@ def test_update_change_notes_when_notes_added_then_persists_across_moves(
 ) -> None:
     """Test that notes can be updated after multiple moves.
 
-    With the new event architecture, each move creates a discrete GridMoveEvent
-    that tracks the immediate previous -> new position. The event replaces any
-    previous grid_move event for the same employee.
+    With the new event architecture, each move creates/updates a GridMoveEvent
+    that tracks the net change from the original position -> current position.
+    The event replaces any previous grid_move event for the same employee.
     """
     # Upload file and move employee
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
@@ -407,8 +407,8 @@ def test_update_change_notes_when_notes_added_then_persists_across_moves(
 
     assert notes_response.status_code == 200
     assert notes_response.json()["notes"] == final_notes
-    # Event tracks the immediate previous position (M,M) -> current position (L,L)
-    assert notes_response.json()["old_performance"] == "Medium"
+    # Event tracks the net change from original position (H,H) -> current position (L,L)
+    assert notes_response.json()["old_performance"] == "High"
     assert notes_response.json()["new_performance"] == "Low"
 
 

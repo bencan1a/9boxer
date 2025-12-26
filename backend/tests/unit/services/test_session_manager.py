@@ -351,14 +351,14 @@ def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
         new_potential=PotentialLevel.LOW,
     )
 
-    # Should still be only one entry, showing the most recent move (M,M -> L,L)
+    # Should still be only one entry, showing the net change from original (H,H -> L,L)
     session = session_manager.get_session("user1")
     assert session is not None
     assert len(session.events) == 1
-    assert second_change.old_position == 5  # M,M (position before this move)
+    assert second_change.old_position == 9  # H,H (original position)
     assert second_change.new_position == 1  # L,L (final position)
-    assert second_change.old_performance == PerformanceLevel.MEDIUM
-    assert second_change.old_potential == PerformanceLevel.MEDIUM
+    assert second_change.old_performance == PerformanceLevel.HIGH
+    assert second_change.old_potential == PerformanceLevel.HIGH
     assert second_change.new_performance == PerformanceLevel.LOW
     assert second_change.new_potential == PotentialLevel.LOW
 
@@ -692,9 +692,9 @@ def test_move_employee_when_notes_exist_then_creates_new_event(
     change = session.events[0]
     assert isinstance(change, GridMoveEvent)
     assert change.notes is None  # Notes are NOT preserved when creating new event
-    # Verify this is a new event showing the most recent move (M,M -> L,L)
+    # Verify this is a new event showing the net change from original (H,H -> L,L)
     assert change.new_position == 1  # L,L
-    assert change.old_position == 5  # M,M (not original H,H)
+    assert change.old_position == 9  # H,H (original position)
 
 
 # ========== Donut Mode Tests ==========
