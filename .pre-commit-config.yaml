@@ -96,4 +96,4 @@ repos:
         types: [file]
         files: ^frontend/.*\.(ts|tsx|js|jsx)$
         exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage)/
-        pass_filenames: false
+        pass_filenames: true
