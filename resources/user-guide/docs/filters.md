@@ -14,10 +14,11 @@ Focus on specific groups of employees using filters and exclusions. These tools 
 - Click outside drawer to close
 
 **Common Filter Combinations:**
-- Focus on department: Use Organizational Chain filter
-- View high performers: Check "High" under Performance
-- Find discussion topics: Combine Performance + Potential ranges
-- Review manager's team: Select specific Manager name
+- Focus on department: Click manager name to activate Reporting Chain filter
+- View at-risk employees: Check "Flight Risk" flag
+- Find promotion candidates: Check "Promotion Ready" flag
+- Review manager's team: Select specific Manager name or use Reporting Chain filter
+- Critical retention: Combine "Flight Risk" + "High Retention Priority" flags
 
 **Managing Exclusions:**
 - Click Filters → Manage Exclusions → Check individuals to hide
@@ -48,18 +49,22 @@ Filters let you display only employees who match specific criteria. All other em
 2. The filter drawer opens on the left side of the screen
 3. Filter options appear organized by category
 
+![Filter Drawer Overview](images/screenshots/filters/filters-overview.png)
+*Complete filter drawer showing all available filter categories*
+
 ### Available Filter Categories
 
 You can filter employees by:
 
 | Filter Category | Options | Description |
 |----------------|---------|-------------|
-| **Performance** | Low, Medium, High | Current performance rating |
-| **Potential** | Low, Medium, High | Future growth capacity |
-| **Job Levels** | IC, Manager, VP, etc. | Employee job level or grade |
-| **Job Profiles** | Various functions | Job title, role, or function |
+| **Job Levels** | MT1-MT6 | Employee job level or grade |
+| **Job Functions** | Engineering, Product, etc. | Job function or department |
+| **Locations** | USA, Europe, India, etc. | Employee location |
 | **Managers** | Manager names | Direct manager |
-| **Organizational Chain** | Org levels | Department, division, or hierarchy level |
+| **Flags** | 8 flag types | Special status indicators (PIP, Flight Risk, etc.) |
+| **Reporting Chain** | Manager hierarchy | Filter by entire management chain |
+| **Exclusions** | Individual employees | Hide specific employees from view |
 
 ### How Filtering Works
 
@@ -105,6 +110,73 @@ To remove filters and show all employees again:
 - **Click "Clear All"** button (if available in the filter drawer)
 
 The grid returns to showing all employees.
+
+### Filtering by Flags
+
+Flags mark employees with special status indicators like Performance Improvement Plans (PIP), flight risk, promotion readiness, or succession candidates. You can filter employees by these flags to focus on specific groups.
+
+![Flag Filtering](images/screenshots/details-panel/flag-filtering.png)
+*Filter employees by flags with employee counts and checkboxes*
+
+**Available Flags:**
+
+- **Promotion Ready** - Employees ready for promotion
+- **Succession Candidate** - Identified succession candidates
+- **High Retention Priority** - Critical retention focus
+- **Flight Risk** - At risk of leaving
+- **Flagged for Discussion** - Requires manager attention
+- **New Hire** - Recently joined employees
+- **Ready for Lateral Move** - Ready for horizontal moves
+- **PIP** - Performance Improvement Plan
+
+**How to use:**
+
+1. Open the filter drawer
+2. Expand the **Flags** section (🏷️ icon)
+3. Check the boxes for the flags you want to filter by
+4. The count next to each flag shows how many employees have that flag
+5. The grid updates to show only employees with the selected flags
+
+!!! tip "Flag Combinations"
+    You can select multiple flags at once. For example, select both "Flight Risk" and "High Retention Priority" to see employees who need immediate retention action.
+
+### Filtering by Reporting Chain
+
+The reporting chain filter lets you view all employees who report up to a specific manager, including both direct and indirect reports. This is useful for reviewing an entire department or organizational hierarchy.
+
+![Reporting Chain Filter](images/screenshots/details-panel/reporting-chain-filter-active.png)
+*Active reporting chain filter showing manager name with clear button*
+
+**How to activate:**
+
+1. Click on any manager's name in an employee's **Details Panel**
+2. The reporting chain filter activates automatically
+3. A green chip appears showing "Reporting to: [Manager Name]"
+4. The grid updates to show only employees in that manager's reporting chain
+
+**How to clear:**
+
+- Click the **X** button on the reporting chain filter chip
+
+!!! info "Reporting Chain vs Manager Filter"
+    - **Manager filter** shows only direct reports
+    - **Reporting chain filter** shows all direct AND indirect reports through the entire hierarchy
+
+### Combining Multiple Filters
+
+You can combine different filter types to create very specific employee views. All active filters work together using AND logic across categories.
+
+![Multiple Filters Active](images/screenshots/filters/filters-multiple-active.png)
+*Multiple filter types active simultaneously with count badges*
+
+**Example combinations:**
+
+- **Engineering + High Retention Priority flag** - Critical engineering talent
+- **Manager job level + Promotion Ready flag** - Managers ready for advancement
+- **Reporting Chain + Flight Risk flag** - At-risk employees in a specific department
+- **Location: USA + New Hire flag** - Recent US-based hires
+
+Each filter section shows a count badge indicating how many criteria are selected in that category.
 
 ---
 
