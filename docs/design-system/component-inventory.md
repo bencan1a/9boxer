@@ -280,7 +280,7 @@ Alphabetical index of all components with quick reference.
 | AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | AppBar | `dashboard/` | Layout | ❌ No | ❌ |
 | ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ |
-| ConfirmDialog | `common/` | Utility | ✅ Yes | ✅ |
+| ConfirmDialog | `common/` | Utility | ✅ Yes | N/A (new) |
 | ConnectionStatus | `common/` | Global | ⚠️ Moderate | ❌ |
 | DashboardPage | `dashboard/` | Layout | ❌ No | ❌ |
 | DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
@@ -288,7 +288,7 @@ Alphabetical index of all components with quick reference.
 | DevModeIndicator | `common/` | Global | ⚠️ Moderate | ❌ |
 | DistributionChart | `panel/` | Visualization | ✅ Yes | ❌ |
 | DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
-| EmptyState | `common/` | Utility | ✅ Yes | ✅ |
+| EmptyState | `common/` | Utility | ✅ Yes | N/A (new) |
 | EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ |
 | EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ |
 | EmployeeTile | `grid/` | Grid | ✅ Yes | ❌ |
@@ -341,8 +341,11 @@ Alphabetical index of all components with quick reference.
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| **Migrated** | 4 | 12% |
-| **Pending** | 30 | 88% |
+| **Migrated** | 3 | 9% |
+| **New (built with patterns)** | 2 | 6% |
+| **Pending** | 29 | 85% |
+
+**Note:** "Migrated" refers to existing components refactored to use new reusable patterns (DetailsTab, IntelligenceTab, StatisticsTab). "New" refers to newly created reusable components (EmptyState, ConfirmDialog) that were built with design tokens from the start.
 
 ---
 
