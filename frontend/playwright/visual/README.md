@@ -186,7 +186,7 @@ Visual tests run automatically on:
 
 ## Configuration
 
-Visual test settings are in `playwright.visual.config.ts`:
+Visual test settings are in `playwright.config.ts` under the `expect.toHaveScreenshot` section:
 
 ```typescript
 expect: {

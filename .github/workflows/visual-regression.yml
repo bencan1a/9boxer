@@ -1,6 +1,7 @@
 name: Visual Regression Tests
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'frontend/src/**'

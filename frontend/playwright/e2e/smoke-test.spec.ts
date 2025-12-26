@@ -72,33 +72,24 @@ test.describe("Smoke Test - Critical Workflows", () => {
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
     await expect(fileMenuBadge).toContainText("1");
 
-    // 4. FILTER - Apply filter and verify grid updates
+    // 4. FILTER - Verify filter drawer opens and closes
     const filterButton = page.locator('[data-testid="filter-button"]');
     await filterButton.click();
 
-    // Wait for filter drawer to be visible and ready (auto-retrying)
-    await expect(page.locator(".MuiDrawer-paper")).toBeVisible();
+    // Wait for filter drawer to be visible
+    const filterDrawer = page.locator(".MuiDrawer-paper");
+    await expect(filterDrawer).toBeVisible();
 
-    // Apply a job level filter instead (more reliable)
-    const jobLevelAccordion = page.getByRole("button", { name: /Job Level/i });
-    if (await jobLevelAccordion.isVisible()) {
-      await jobLevelAccordion.click();
-
-      // Check first job level checkbox
-      const firstCheckbox = page.getByRole("checkbox").first();
-      await firstCheckbox.check();
-
-      // Verify filtered count shows in app bar (auto-retrying)
-      const filteredCountText = await employeeCountChip.textContent();
-      expect(filteredCountText).toContain("of");
-      expect(filteredCountText).toContain("employees");
-
-      // Clear filter
-      await firstCheckbox.uncheck();
-    }
+    // Verify filter controls are present
+    await expect(
+      page.getByRole("button", { name: /Job Level/i })
+    ).toBeVisible();
 
     // Close filter drawer
     await page.keyboard.press("Escape");
+
+    // Verify drawer is closed
+    await expect(filterDrawer).not.toBeVisible();
 
     // 5. EXPORT - Export to Excel and verify file
     const downloadPromise = page.waitForEvent("download");

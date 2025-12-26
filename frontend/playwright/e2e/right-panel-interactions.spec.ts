@@ -40,22 +40,25 @@ test.describe("Right Panel Interactions", () => {
       // Click toggle to collapse panel
       await toggleButton.click();
 
-      // Verify panel is collapsed (not visible or has zero width)
-      // Note: Panel might still be in DOM but collapsed
-      const panelBox = await rightPanel.boundingBox();
-      if (panelBox) {
-        expect(panelBox.width).toBeLessThan(10); // Collapsed panels have minimal width
-      }
+      // Wait for panel to collapse (auto-retry until width < 10px)
+      await expect(async () => {
+        const panelBox = await rightPanel.boundingBox();
+        expect(panelBox).not.toBeNull();
+        expect(panelBox!.width).toBeLessThan(10); // Collapsed panels have minimal width
+      }).toPass();
 
       // Click toggle to expand panel
       await toggleButton.click();
 
+      // Wait for panel to expand (auto-retry until width > 200px)
+      await expect(async () => {
+        const expandedBox = await rightPanel.boundingBox();
+        expect(expandedBox).not.toBeNull();
+        expect(expandedBox!.width).toBeGreaterThan(200); // Expanded panel has substantial width
+      }).toPass();
+
       // Verify panel is visible again
       await expect(rightPanel).toBeVisible();
-      const expandedBox = await rightPanel.boundingBox();
-      if (expandedBox) {
-        expect(expandedBox.width).toBeGreaterThan(200); // Expanded panel has substantial width
-      }
     });
 
     test("should maintain toggle button visibility when panel is collapsed", async ({
@@ -150,13 +153,24 @@ test.describe("Right Panel Interactions", () => {
 
       // Collapse panel
       await toggleButton.click();
-      const collapsedBox = await rightPanel.boundingBox();
-      if (collapsedBox) {
-        expect(collapsedBox.width).toBeLessThan(10);
-      }
+
+      // Wait for panel to collapse (auto-retry until width < 10px)
+      await expect(async () => {
+        const collapsedBox = await rightPanel.boundingBox();
+        expect(collapsedBox).not.toBeNull();
+        expect(collapsedBox!.width).toBeLessThan(10);
+      }).toPass();
 
       // Expand panel
       await toggleButton.click();
+
+      // Wait for panel to expand
+      await expect(async () => {
+        const expandedBox = await rightPanel.boundingBox();
+        expect(expandedBox).not.toBeNull();
+        expect(expandedBox!.width).toBeGreaterThan(200);
+      }).toPass();
+
       await expect(rightPanel).toBeVisible();
 
       // Verify Statistics tab is still selected
