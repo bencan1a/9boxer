@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-25T23:24:07.866578+00:00
-**Source SHA**: 28faa2e9f4a58f976a83c92bb6b1a34dcb19dbc4
+**Generated**: 2025-12-26T02:41:26.203677+00:00
+**Source SHA**: 52217d75de3bc040d008e348880d7ab9dd6fb3b2
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -270,7 +270,7 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 5 active plan(s):
+There are 6 active plan(s):
 
 ### design-system
 - Owner: Claude Code
@@ -280,6 +280,14 @@ There are 5 active plan(s):
   - Extract hardcoded values into centralized theme tokens
   - Create Storybook for component discovery and validation
   - Establish governance processes for design consistency
+
+### view-controls-consolidation
+- Owner: Claude
+- Created: 2025-12-24
+- Summary:
+  - Consolidate floating view controls into single top-right toolbar
+  - Move language selector from AppBar to Settings dialog
+  - Improve UX by grouping related controls and reducing toolbar clutter
 
 ### i18n-implementation
 - Owner: bencan1a
