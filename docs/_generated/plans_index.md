@@ -1,7 +1,18 @@
 # Active Plans
 
-**Updated**: 2025-12-26T03:41:19.330170+00:00
+**Updated**: 2025-12-26T07:43:37.665680+00:00
 **Showing**: Plans with status=active created within 21 days
+
+## playwright-performance
+- **Status**: active
+- **Owner**: Claude Code
+- **Created**: 2025-12-25
+- **Path**: `agent-projects/playwright-performance/plan.md`
+- **Summary**:
+  - Eliminate 239 hardcoded waitForTimeout calls causing ~95 seconds of unnecessary waiting
+  - Enable test parallelization to reduce total runtime by 60-70%
+  - Replace arbitrary waits with state-based assertions using Playwright best practices
+  - Target runtime reduction from 10-15 minutes to 2-4 minutes
 
 ## design-system
 - **Status**: active
