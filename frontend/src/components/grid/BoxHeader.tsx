@@ -1,5 +1,21 @@
 /**
  * Box header component - displays position label, employee count, and expand/collapse button
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <BoxHeader 
+ *   position={9}
+ *   positionName="Star"
+ *   shortLabel="H,H"
+ *   employeeCount={5}
+ *   isExpanded={false}
+ *   isCollapsed={false}
+ *   onExpand={() => console.log('expand')}
+ *   onCollapse={() => console.log('collapse')}
+ *   positionGuidance="High performers with high potential"
+ * />
+ * ```
  */
 
 import React from "react";
@@ -16,18 +32,40 @@ import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import { useTranslation } from "react-i18next";
 
+/**
+ * Props for the BoxHeader component
+ */
 export interface BoxHeaderProps {
+  /** Grid position (1-9) */
   position: number;
+  /** Name of the position (e.g., 'Star', 'Core Talent') */
   positionName: string;
+  /** Short label showing performance/potential levels (e.g., 'H,H', 'M,M') */
   shortLabel: string;
+  /** Number of employees in this box */
   employeeCount: number;
+  /** Whether the box is in expanded state (full height) */
   isExpanded: boolean;
+  /** Whether the box is in collapsed state (minimal height) */
   isCollapsed: boolean;
+  /** Callback fired when expand button is clicked */
   onExpand?: () => void;
+  /** Callback fired when collapse button is clicked */
   onCollapse?: () => void;
+  /** Tooltip text with guidance for this position */
   positionGuidance?: string;
 }
 
+/**
+ * BoxHeader component - displays grid box header with controls
+ * 
+ * Adapts layout based on expansion state:
+ * - Collapsed: Centered vertical layout with prominent expand button
+ * - Normal/Expanded: Horizontal layout with badge and controls
+ * 
+ * @param props - Component props
+ * @returns The rendered box header
+ */
 export const BoxHeader: React.FC<BoxHeaderProps> = ({
   position,
   positionName,
