@@ -148,7 +148,6 @@ describe("EmployeeTile - Donut Mode", () => {
     );
 
     // Check that card has reduced opacity (0.7) - using inline styles
-    const styles = window.getComputedStyle(card);
     expect(card).toBeInTheDocument();
     // Opacity is set via sx prop, which gets applied as inline styles
   });

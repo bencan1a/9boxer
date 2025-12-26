@@ -4,7 +4,6 @@ import { NineBoxGrid } from "../NineBoxGrid";
 import {
   mockEmployeesByPosition,
   mockEmployees,
-  createMockEmployee,
 } from "../../../test/mockData";
 import { useSessionStore } from "../../../store/sessionStore";
 

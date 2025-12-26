@@ -24,16 +24,6 @@ test.describe("Employee Movement Flow", () => {
     await expect(aliceCard).toHaveAttribute("data-position", "9");
     await expect(aliceCard).toBeVisible();
 
-    // Get initial count of employees in position 9
-    const count9Before = await page
-      .locator('[data-testid="grid-box-9-count"]')
-      .textContent();
-
-    // Get initial count of employees in position 8
-    const count8Before = await page
-      .locator('[data-testid="grid-box-8-count"]')
-      .textContent();
-
     // Note: Drag and drop in E2E tests is complex and can be flaky
     // The actual drag functionality is better tested through backend API tests
     // For now, we verify the employee card exists and has the correct structure
@@ -44,17 +34,6 @@ test.describe("Employee Movement Flow", () => {
   test("should update statistics and counts after employee movement", async ({
     page,
   }) => {
-    // Record initial state
-    const initialCount9Text = await page
-      .locator('[data-testid="grid-box-9-count"]')
-      .textContent();
-    const initialCount9 = parseInt(initialCount9Text || "0", 10);
-
-    const initialCount8Text = await page
-      .locator('[data-testid="grid-box-8-count"]')
-      .textContent();
-    const initialCount8 = parseInt(initialCount8Text || "0", 10);
-
     // Verify employee exists in position 9
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
     const employeeCardsInBox9 = gridBox9.locator(

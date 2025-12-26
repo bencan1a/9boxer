@@ -233,10 +233,6 @@ test.describe("Employee Exclusions with Quick Filters Flow", () => {
       : initialCount;
 
     // If exclusions were applied, count should be different
-    // If the display format is "X of Y", we know exclusions are active
-    const hasExclusionFormat = /\d+\s+of\s+\d+\s+employees?/i.test(
-      excludedCountText || ""
-    );
     expect(excludedCount).toBeLessThanOrEqual(initialCount);
 
     // Reopen dialog

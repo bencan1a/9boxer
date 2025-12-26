@@ -7,7 +7,6 @@
 
 import { test, expect } from "@playwright/test";
 import { uploadExcelFile } from "../helpers";
-import * as path from "path";
 
 test.describe("Employee Upload Flow", () => {
   test.beforeEach(async ({ page }) => {

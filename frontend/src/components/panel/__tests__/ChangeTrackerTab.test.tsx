@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "../../../test/utils";
 import { ChangeTrackerTab } from "../ChangeTrackerTab";
 import { mockChanges } from "../../../test/mockData";
-import { useSessionStore } from "../../../store/sessionStore";
 import { getTranslatedText } from "../../../test/i18nTestUtils";
 
 // Mock date-fns to have consistent timestamps

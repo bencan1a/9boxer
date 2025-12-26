@@ -15,7 +15,6 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { DashboardPage } from "../DashboardPage";
 import { useSession } from "../../../hooks/useSession";
 import { useSessionStore } from "../../../store/sessionStore";
 
