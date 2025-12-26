@@ -35,10 +35,10 @@ export async function generateCurrentAssessmentEnhanced(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeedetails--with-flags-and-assessment",
+    storyId: "panel-employeedetails--default",
     outputPath,
     theme: "light",
-    waitTime: 800,
+    waitTime: 1000,
     selector: '[data-testid="current-assessment-section"]',
   });
 }
@@ -159,8 +159,31 @@ export async function generateFlagFiltering(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Ensure we're on the app page (might be on Storybook from previous screenshot)
+  const currentUrl = page.url();
+  if (currentUrl.includes("localhost:6006")) {
+    // We're on Storybook, need to navigate back to app by reloading
+    // (the page was already on the app initially)
+    await page.goBack({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1000);
+  }
+
   // Load sample data
   await loadSampleData(page);
+
+  // Wait for grid to load with employees
+  await page.waitForSelector('[data-testid="nine-box-grid"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  // Wait for employee cards to be rendered (ensures grid is fully populated)
+  await page.waitForSelector('[data-testid^="employee-card-"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  await waitForUiSettle(page, 1);
 
   // Add flags to employees to show counts
   await page.evaluate(() => {
@@ -182,41 +205,49 @@ export async function generateFlagFiltering(
     }
   });
 
-  await waitForUiSettle(page, 0.5);
+  await waitForUiSettle(page, 1.5);
 
-  // Open FilterDrawer
-  const filterButton = page.locator('[aria-label*="Filter"]');
+  // Wait for toolbar to be ready
+  await page.waitForSelector('[data-testid="app-bar"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  // Open FilterDrawer using the toolbar button
+  const filterButton = page.locator(
+    'button[aria-label*="filter" i], button[aria-label*="Filter" i]'
+  );
+  await filterButton.waitFor({ state: "visible", timeout: 10000 });
   await filterButton.click();
-  await waitForUiSettle(page, 0.5);
+  await waitForUiSettle(page, 1);
+
+  // Wait for drawer to be visible - use MUI Drawer selector
+  const drawer = page.locator('.MuiDrawer-root [role="presentation"]').first();
+  await drawer.waitFor({ state: "visible", timeout: 10000 });
 
   // Scroll to Flags section in drawer
-  const flagsSection = page.locator('text="Flags"').first();
-  await flagsSection.scrollIntoViewIfNeeded();
-  await waitForUiSettle(page, 0.3);
-
-  // Select a couple of flags
-  const promotionCheckbox = page.locator(
-    'input[type="checkbox"][value="promotion_ready"]'
-  );
-  const flightRiskCheckbox = page.locator(
-    'input[type="checkbox"][value="flight_risk"]'
-  );
-
-  if ((await promotionCheckbox.count()) > 0) {
-    await promotionCheckbox.check();
-  }
-  if ((await flightRiskCheckbox.count()) > 0) {
-    await flightRiskCheckbox.check();
+  const flagsSection = page
+    .locator('text="Flags"')
+    .or(page.locator("text=/flags/i"));
+  if ((await flagsSection.count()) > 0) {
+    await flagsSection.first().scrollIntoViewIfNeeded();
+    await waitForUiSettle(page, 0.5);
   }
 
-  await waitForUiSettle(page, 0.5);
+  // Select a couple of flags using label click (more reliable than checkbox)
+  const promotionLabel = page.locator('text="Promotion Ready"').first();
+  if ((await promotionLabel.count()) > 0) {
+    await promotionLabel.click();
+    await waitForUiSettle(page, 0.3);
+  }
+
+  const flightRiskLabel = page.locator('text="Flight Risk"').first();
+  if ((await flightRiskLabel.count()) > 0) {
+    await flightRiskLabel.click();
+    await waitForUiSettle(page, 0.3);
+  }
 
   // Capture the FilterDrawer
-  const drawer = page.locator('[role="dialog"]').or(
-    page.locator('[data-testid="filter-drawer"]')
-  );
-  await drawer.waitFor({ state: "visible", timeout: 5000 });
-
   const boundingBox = await drawer.boundingBox();
   if (!boundingBox) {
     throw new Error("Could not get FilterDrawer bounding box");
@@ -252,10 +283,10 @@ export async function generateReportingChainClickable(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-managementchain--clickable",
+    storyId: "panel-managementchain--with-manager",
     outputPath,
     theme: "light",
-    waitTime: 500,
+    waitTime: 800,
   });
 }
 
@@ -274,28 +305,72 @@ export async function generateReportingChainFilterActive(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Ensure we're on the app page (might be on Storybook from previous screenshot)
+  const currentUrl = page.url();
+  if (currentUrl.includes("localhost:6006")) {
+    // We're on Storybook, need to navigate back to app by reloading
+    // (the page was already on the app initially)
+    await page.goBack({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1000);
+  }
+
   // Load sample data
   await loadSampleData(page);
+
+  // Wait for grid to be fully loaded with employees
+  await page.waitForSelector('[data-testid="nine-box-grid"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  // Wait for employee cards to be rendered (ensures grid is fully populated)
+  await page.waitForSelector('[data-testid^="employee-card-"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  await waitForUiSettle(page, 1.5);
 
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
 
-  // Click an employee to open Details panel
-  const employeeTile = page.locator('[data-testid^="employee-tile-"]').first();
-  await employeeTile.click();
-  await waitForUiSettle(page, 0.5);
+  // Find and click an employee card
+  const employeeCard = page.locator('[data-testid^="employee-card-"]').first();
+  await employeeCard.waitFor({ state: "visible", timeout: 10000 });
+  await employeeCard.click();
+  await waitForUiSettle(page, 1);
 
-  // Click a manager name in the reporting chain
-  const managerLink = page.locator('[data-testid^="manager-link-"]').first();
-  if ((await managerLink.count()) > 0) {
-    await managerLink.click();
+  // Wait for Details panel to open
+  await page.waitForSelector('[data-testid="employee-details-panel"]', {
+    state: "visible",
+    timeout: 10000,
+  });
+
+  // Look for manager chain button (use more flexible selector)
+  const managerButton = page
+    .locator('[data-testid^="manager-chain-button-"]')
+    .first();
+
+  if ((await managerButton.count()) > 0) {
+    await managerButton.waitFor({ state: "visible", timeout: 3000 });
+    await managerButton.click();
     await waitForUiSettle(page, 1);
+  } else {
+    // Fallback: try to find any clickable manager name in the management chain section
+    const managerName = page.locator('button:has-text("Manager")').first();
+    if ((await managerName.count()) > 0) {
+      await managerName.click();
+      await waitForUiSettle(page, 1);
+    }
   }
 
   // Open FilterDrawer to show the active filter
-  const filterButton = page.locator('[aria-label*="Filter"]');
+  const filterButton = page.locator(
+    'button[aria-label*="filter" i], button[aria-label*="Filter" i]'
+  );
+  await filterButton.waitFor({ state: "visible", timeout: 5000 });
   await filterButton.click();
-  await waitForUiSettle(page, 0.5);
+  await waitForUiSettle(page, 1);
 
   // Take screenshot showing both drawer and filtered grid
   await page.screenshot({
