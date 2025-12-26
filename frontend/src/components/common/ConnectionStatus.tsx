@@ -58,7 +58,11 @@ export function ConnectionStatus() {
       }}
     >
       <Chip
-        icon={<span style={{ fontSize: theme.tokens.typography.fontSize.body2 }}>{config.icon}</span>}
+        icon={
+          <span style={{ fontSize: theme.tokens.typography.fontSize.body2 }}>
+            {config.icon}
+          </span>
+        }
         label={config.label}
         color={config.color}
         size="small"

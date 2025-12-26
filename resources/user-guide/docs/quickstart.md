@@ -23,8 +23,6 @@ Your Excel file needs **4 columns** with these exact names:
 - Names are **case-sensitive** - capitalize first letters exactly as shown
 - Performance and Potential must be: `Low`, `Medium`, or `High`
 
-![Sample Excel file showing the 4 required columns highlighted](images/screenshots/quickstart/quickstart-excel-sample.png)
-
 ### Don't have a file ready?
 
 No problem! Use the built-in sample file:

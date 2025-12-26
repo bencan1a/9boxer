@@ -408,8 +408,6 @@ Before exporting, do a final validation:
    - Check "9Boxer Change Notes" column (shows your calibration notes)
    - Verify Performance/Potential ratings are updated
 
-![Exported Excel file showing Modified in Session and calibration notes columns](../images/screenshots/workflow/calibration-export-results.png)
-
 ### Communicate Results
 
 Share the calibrated ratings with stakeholders:

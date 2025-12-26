@@ -41,6 +41,10 @@
       "exclusions": "बहिष्करण",
       "excludeEmployees": "कर्मचारियों को बाहर करें",
       "clearAllFilters": "सभी फ़िल्टर साफ़ करें",
+      "clearSelection": "चयन साफ़ करें",
+      "noExclusions": "कोई कर्मचारी बाहर नहीं किया गया",
+      "removeExclusion": "{{name}} को बहिष्करण से हटाएं",
+      "clearAllExclusions": "सभी बहिष्करण साफ़ करें",
       "flags": "Flags",
       "reportingChain": "Reporting Chain"
     },

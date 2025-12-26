@@ -42,7 +42,11 @@
       "reportingChain": "Reporting Chain",
       "exclusions": "Exclusions",
       "excludeEmployees": "Exclude Employees",
-      "clearAllFilters": "Clear All Filters"
+      "clearAllFilters": "Clear All Filters",
+      "clearSelection": "Clear Selection",
+      "noExclusions": "No employees excluded",
+      "removeExclusion": "Remove {{name}} from exclusions",
+      "clearAllExclusions": "Clear All Exclusions"
     },
     "exclusionDialog": {
       "title": "Exclude Employees",

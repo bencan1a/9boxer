@@ -41,6 +41,10 @@
       "exclusions": "Vyloučení",
       "excludeEmployees": "Vyloučit zaměstnance",
       "clearAllFilters": "Vymazat všechny filtry",
+      "clearSelection": "Vymazat výběr",
+      "noExclusions": "Žádní zaměstnanci vyloučeni",
+      "removeExclusion": "Odebrat {{name}} z vyloučení",
+      "clearAllExclusions": "Vymazat všechna vyloučení",
       "flags": "Flags",
       "reportingChain": "Reporting Chain"
     },
