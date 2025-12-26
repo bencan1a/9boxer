@@ -111,7 +111,9 @@ export const GridBox: React.FC<GridBoxProps> = ({
         ...baseStyles,
         minHeight: theme.tokens.dimensions.gridBox.collapsedMin,
         maxHeight: theme.tokens.dimensions.gridBox.collapsedMax,
-        opacity: isOver ? theme.tokens.opacity.gridCollapsedDragOver : theme.tokens.opacity.gridCollapsedIdle,
+        opacity: isOver
+          ? theme.tokens.opacity.gridCollapsedDragOver
+          : theme.tokens.opacity.gridCollapsedIdle,
         backgroundColor: isOver ? "primary.light" : alpha(bgColor, 0.5),
         borderStyle: isOver ? "dashed" : "solid",
         display: "flex",
@@ -240,7 +242,9 @@ export const GridBox: React.FC<GridBoxProps> = ({
                 ml: 1,
                 opacity: theme.tokens.opacity.gridExpandButtonIdle,
                 transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
-                "&:hover": { opacity: theme.tokens.opacity.gridExpandButtonActive },
+                "&:hover": {
+                  opacity: theme.tokens.opacity.gridExpandButtonActive,
+                },
               }}
             >
               <OpenInFullIcon fontSize="small" />

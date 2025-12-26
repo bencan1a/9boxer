@@ -139,7 +139,7 @@ When visual tests fail in CI:
 
 ## Configuration
 
-Visual test thresholds are configured in `playwright.visual.config.ts`:
+Visual test thresholds are configured in `playwright.config.ts` under the `expect.toHaveScreenshot` section:
 
 ```typescript
 expect: {

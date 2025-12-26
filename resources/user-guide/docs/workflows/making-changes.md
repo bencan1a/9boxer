@@ -95,7 +95,7 @@ After you drop the employee, watch for the **visual feedback** that confirms you
 - A small **"Modified" badge** appears on the tile
 - This border stays visible for the entire session
 
-![Employee tile showing the orange left border and "Modified" badge indicating it has been changed](../images/screenshots/making-changes-orange-border.png)
+![Employee tile showing the orange left border and "Modified" badge indicating it has been changed](../images/screenshots/workflow/making-changes-orange-border.png)
 
 **What this means:**
 - ✅ Your change was successful

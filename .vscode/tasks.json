@@ -2,6 +2,118 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Cleanup Dev Processes",
+      "type": "shell",
+      "windows": {
+        "command": "powershell.exe",
+        "args": [
+          "-ExecutionPolicy", "Bypass",
+          "-File", "${workspaceFolder}\\tools\\cleanup-dev-processes.ps1"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/tools/cleanup-dev-processes.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/tools/cleanup-dev-processes.sh"]
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Backend Server",
+      "type": "shell",
+      "windows": {
+        "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+        "args": [
+          "-m", "uvicorn",
+          "ninebox.main:app",
+          "--reload",
+          "--host", "127.0.0.1",
+          "--port", "38000"
+        ]
+      },
+      "linux": {
+        "command": "${workspaceFolder}/.venv/bin/python",
+        "args": [
+          "-m", "uvicorn",
+          "ninebox.main:app",
+          "--reload",
+          "--host", "127.0.0.1",
+          "--port", "38000"
+        ]
+      },
+      "osx": {
+        "command": "${workspaceFolder}/.venv/bin/python",
+        "args": [
+          "-m", "uvicorn",
+          "ninebox.main:app",
+          "--reload",
+          "--host", "127.0.0.1",
+          "--port", "38000"
+        ]
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/backend/src"
+        }
+      },
+      "dependsOn": ["Cleanup Dev Processes"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "dev-servers"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Started server process",
+          "endsPattern": "Application startup complete"
+        }
+      }
+    },
+    {
+      "label": "Start Frontend Dev Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "dev-servers"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE.*preparing",
+          "endsPattern": "Local:.*http://localhost:5173"
+        }
+      }
+    },
+    {
       "label": "pytest: Run Unit Tests",
       "type": "shell",
       "command": "${workspaceFolder}/.venv/Scripts/python.exe",
