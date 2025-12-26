@@ -43,7 +43,10 @@ interface ChartDataPoint {
   is_significant: boolean;
 }
 
-export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) => {
+export const DeviationChart: React.FC<DeviationChartProps> = ({
+  data,
+  title,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -58,7 +61,7 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          {t('panel.intelligenceTab.chart.noDataAvailable')}
+          {t("panel.intelligenceTab.chart.noDataAvailable")}
         </Typography>
       </Box>
     );
@@ -78,7 +81,8 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
   // Get color based on significance
   const getBarColor = (item: ChartDataPoint): string => {
     if (!item.is_significant) return theme.palette.success.main; // Green - not significant
-    if (item.p_value !== undefined && item.p_value < 0.01) return theme.palette.error.main; // Red - highly significant
+    if (item.p_value !== undefined && item.p_value < 0.01)
+      return theme.palette.error.main; // Red - highly significant
     return theme.palette.warning.main; // Yellow - moderately significant
   };
 
@@ -98,21 +102,22 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
             {data.category}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('panel.intelligenceTab.chart.actual')}: {data.actual}%
+            {t("panel.intelligenceTab.chart.actual")}: {data.actual}%
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('panel.intelligenceTab.chart.expected')}: {data.expected}%
+            {t("panel.intelligenceTab.chart.expected")}: {data.expected}%
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('panel.intelligenceTab.chart.zScore')}: {data.z_score.toFixed(2)}
+            {t("panel.intelligenceTab.chart.zScore")}: {data.z_score.toFixed(2)}
           </Typography>
           {data.p_value !== undefined && (
             <Typography variant="body2" color="text.secondary">
-              {t('panel.intelligenceTab.chart.pValue')}: {data.p_value < 0.001 ? "<0.001" : data.p_value.toFixed(3)}
+              {t("panel.intelligenceTab.chart.pValue")}:{" "}
+              {data.p_value < 0.001 ? "<0.001" : data.p_value.toFixed(3)}
             </Typography>
           )}
           <Typography variant="body2" color="text.secondary">
-            {t('panel.intelligenceTab.chart.sampleSize')}: {data.sample_size}
+            {t("panel.intelligenceTab.chart.sampleSize")}: {data.sample_size}
           </Typography>
         </Paper>
       );
@@ -141,7 +146,11 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
               style={{ fontSize: "12px" }}
             />
             <YAxis
-              label={{ value: t('panel.intelligenceTab.chart.percentage'), angle: -90, position: "insideLeft" }}
+              label={{
+                value: t("panel.intelligenceTab.chart.percentage"),
+                angle: -90,
+                position: "insideLeft",
+              }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
@@ -152,10 +161,14 @@ export const DeviationChart: React.FC<DeviationChartProps> = ({ data, title }) =
             <Bar
               dataKey="expected"
               fill={theme.palette.action.disabled}
-              name={t('panel.intelligenceTab.chart.expectedPercent')}
+              name={t("panel.intelligenceTab.chart.expectedPercent")}
               radius={[4, 4, 0, 0]}
             />
-            <Bar dataKey="actual" name={t('panel.intelligenceTab.chart.actualPercent')} radius={[4, 4, 0, 0]}>
+            <Bar
+              dataKey="actual"
+              name={t("panel.intelligenceTab.chart.actualPercent")}
+              radius={[4, 4, 0, 0]}
+            >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
               ))}

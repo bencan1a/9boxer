@@ -14,7 +14,9 @@ interface IntelligenceSummaryProps {
   data: IntelligenceData;
 }
 
-export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }) => {
+export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
+  data,
+}) => {
   const { t } = useTranslation();
 
   // Determine quality score color and status
@@ -25,18 +27,23 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
   };
 
   const getQualityIcon = (score: number): React.ReactNode => {
-    if (score >= 80) return <CheckCircleIcon sx={{ fontSize: 48, color: "success.main" }} />;
-    if (score >= 50) return <WarningIcon sx={{ fontSize: 48, color: "warning.main" }} />;
+    if (score >= 80)
+      return <CheckCircleIcon sx={{ fontSize: 48, color: "success.main" }} />;
+    if (score >= 50)
+      return <WarningIcon sx={{ fontSize: 48, color: "warning.main" }} />;
     return <ErrorIcon sx={{ fontSize: 48, color: "error.main" }} />;
   };
 
   const getQualityStatus = (score: number): string => {
-    if (score >= 80) return t('panel.intelligenceTab.summary.excellent');
-    if (score >= 50) return t('panel.intelligenceTab.summary.good');
-    return t('panel.intelligenceTab.summary.needsAttention');
+    if (score >= 80) return t("panel.intelligenceTab.summary.excellent");
+    if (score >= 50) return t("panel.intelligenceTab.summary.good");
+    return t("panel.intelligenceTab.summary.needsAttention");
   };
 
-  const totalAnomalies = data.anomaly_count.green + data.anomaly_count.yellow + data.anomaly_count.red;
+  const totalAnomalies =
+    data.anomaly_count.green +
+    data.anomaly_count.yellow +
+    data.anomaly_count.red;
 
   return (
     <Grid container spacing={2}>
@@ -47,16 +54,23 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
               {getQualityIcon(data.quality_score)}
               <Box>
-                <Typography variant="h3" color={getQualityColor(data.quality_score)}>
+                <Typography
+                  variant="h3"
+                  color={getQualityColor(data.quality_score)}
+                >
                   {data.quality_score}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('panel.intelligenceTab.summary.qualityScore')}
+                  {t("panel.intelligenceTab.summary.qualityScore")}
                 </Typography>
               </Box>
             </Box>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-              {t('panel.intelligenceTab.summary.qualityScoreDescription')}
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 1 }}
+            >
+              {t("panel.intelligenceTab.summary.qualityScoreDescription")}
             </Typography>
           </CardContent>
         </Card>
@@ -70,26 +84,26 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
               {totalAnomalies}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              {t('panel.intelligenceTab.summary.totalAnomalies')}
+              {t("panel.intelligenceTab.summary.totalAnomalies")}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 2, flexWrap: "wrap" }}>
               <Chip
                 icon={<CheckCircleIcon />}
-                label={`${data.anomaly_count.green} ${t('panel.intelligenceTab.summary.green')}`}
+                label={`${data.anomaly_count.green} ${t("panel.intelligenceTab.summary.green")}`}
                 color="success"
                 size="small"
                 variant="outlined"
               />
               <Chip
                 icon={<WarningIcon />}
-                label={`${data.anomaly_count.yellow} ${t('panel.intelligenceTab.summary.yellow')}`}
+                label={`${data.anomaly_count.yellow} ${t("panel.intelligenceTab.summary.yellow")}`}
                 color="warning"
                 size="small"
                 variant="outlined"
               />
               <Chip
                 icon={<ErrorIcon />}
-                label={`${data.anomaly_count.red} ${t('panel.intelligenceTab.summary.red')}`}
+                label={`${data.anomaly_count.red} ${t("panel.intelligenceTab.summary.red")}`}
                 color="error"
                 size="small"
                 variant="outlined"
@@ -107,20 +121,20 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({ data }
               {getQualityStatus(data.quality_score)}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              {t('panel.intelligenceTab.summary.overallHealth')}
+              {t("panel.intelligenceTab.summary.overallHealth")}
             </Typography>
             <Box sx={{ mt: 2 }}>
               {data.quality_score >= 80 ? (
                 <Typography variant="body2" color="success.main">
-                  {t('panel.intelligenceTab.summary.wellCalibrated')}
+                  {t("panel.intelligenceTab.summary.wellCalibrated")}
                 </Typography>
               ) : data.quality_score >= 50 ? (
                 <Typography variant="body2" color="warning.main">
-                  {t('panel.intelligenceTab.summary.someAnomalies')}
+                  {t("panel.intelligenceTab.summary.someAnomalies")}
                 </Typography>
               ) : (
                 <Typography variant="body2" color="error.main">
-                  {t('panel.intelligenceTab.summary.significantAnomalies')}
+                  {t("panel.intelligenceTab.summary.significantAnomalies")}
                 </Typography>
               )}
             </Box>

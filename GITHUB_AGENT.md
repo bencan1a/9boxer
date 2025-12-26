@@ -427,6 +427,8 @@ Pre-commit hooks run automatically on `git commit`:
 - ruff check (linting)
 - mypy (type checking)
 - bandit (security scanning)
+- prettier (frontend formatting)
+- eslint (frontend linting)
 
 **If pre-commit fails:**
 ```bash

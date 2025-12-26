@@ -14,15 +14,15 @@
  * These tests focus on basic page rendering and session restoration.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { DashboardPage } from '../DashboardPage'
-import { useSession } from '../../../hooks/useSession'
-import { useSessionStore } from '../../../store/sessionStore'
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { DashboardPage } from "../DashboardPage";
+import { useSession } from "../../../hooks/useSession";
+import { useSessionStore } from "../../../store/sessionStore";
 
 // Mock dependencies
-vi.mock('../../../hooks/useSession')
-vi.mock('../../../store/sessionStore')
-vi.mock('../../../store/uiStore', () => ({
+vi.mock("../../../hooks/useSession");
+vi.mock("../../../store/sessionStore");
+vi.mock("../../../store/uiStore", () => ({
   useUiStore: () => ({
     isRightPanelCollapsed: false,
     rightPanelSize: 30,
@@ -31,18 +31,18 @@ vi.mock('../../../store/uiStore', () => ({
     setRightPanelCollapsed: vi.fn(),
     setRightPanelSize: vi.fn(),
   }),
-}))
-vi.mock('../../../hooks/useEmployees', () => ({
+}));
+vi.mock("../../../hooks/useEmployees", () => ({
   useEmployees: () => ({
     employeesByPosition: {},
     employees: [],
-    getShortPositionLabel: () => '',
-    positionToLevels: () => ({ performance: 'Medium', potential: 'Medium' }),
+    getShortPositionLabel: () => "",
+    positionToLevels: () => ({ performance: "Medium", potential: "Medium" }),
     moveEmployee: vi.fn(),
     selectEmployee: vi.fn(),
   }),
-}))
-vi.mock('../../../hooks/useFilters', () => ({
+}));
+vi.mock("../../../hooks/useFilters", () => ({
   useFilters: () => ({
     toggleDrawer: vi.fn(),
     hasActiveFilters: false,
@@ -65,19 +65,19 @@ vi.mock('../../../hooks/useFilters', () => ({
     setExcludedEmployeeIds: vi.fn(),
     clearAllFilters: vi.fn(),
   }),
-}))
-vi.mock('../../../contexts/SnackbarContext', () => ({
+}));
+vi.mock("../../../contexts/SnackbarContext", () => ({
   useSnackbar: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),
   }),
-}))
+}));
 
-describe('DashboardPage', () => {
-  const mockRestoreSession = vi.fn()
+describe("DashboardPage", () => {
+  const mockRestoreSession = vi.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.clearAllMocks();
 
     // Default mock for session store
     vi.mocked(useSessionStore).mockReturnValue({
@@ -87,20 +87,20 @@ describe('DashboardPage', () => {
       changes: [],
       filename: null,
       donutModeActive: false,
-    } as any)
-  })
+    } as any);
+  });
 
-  describe('Session Restoration', () => {
-    it('calls restoreSession on mount', () => {
+  describe("Session Restoration", () => {
+    it("calls restoreSession on mount", () => {
       vi.mocked(useSession).mockReturnValue({
         sessionId: null,
-      } as any)
+      } as any);
 
       // Note: We're not rendering due to complex dependencies
       // This test verifies the hook is called via component logic
-      expect(mockRestoreSession).toBeDefined()
-    })
-  })
+      expect(mockRestoreSession).toBeDefined();
+    });
+  });
 
   // Note: Full integration tests (rendering, empty state, grid) are covered by:
   // - E2E tests in Playwright (upload-flow.spec.ts, etc.)
@@ -108,4 +108,4 @@ describe('DashboardPage', () => {
   //
   // DashboardPage acts as a container/layout component, and its behavior is
   // best verified through E2E tests rather than isolated component tests.
-})
+});

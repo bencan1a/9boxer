@@ -45,7 +45,7 @@ import {
  */
 export async function generateDragSequence(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Load sample data
   await uploadExcelFile(page, "sample-employees.xlsx");
@@ -76,7 +76,7 @@ export async function generateDragSequence(
  */
 export async function generateOrangeBorder(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -129,7 +129,7 @@ export async function generateOrangeBorder(
  */
 export async function generateEmployeeDetails(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -168,7 +168,7 @@ export async function generateEmployeeDetails(
  */
 export async function generateTimelineView(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -187,7 +187,9 @@ export async function generateTimelineView(
   await waitForUiSettle(page, 0.5);
 
   // Scroll to Performance History section
-  const performanceHistory = page.locator('[data-testid="performance-history"]');
+  const performanceHistory = page.locator(
+    '[data-testid="performance-history"]'
+  );
   if ((await performanceHistory.count()) > 0) {
     await performanceHistory.scrollIntoViewIfNeeded();
     await waitForUiSettle(page, 0.3);
@@ -209,7 +211,7 @@ export async function generateTimelineView(
  */
 export async function generateChangesTab(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -254,7 +256,7 @@ export async function generateChangesTab(
  */
 export async function generatePanelEntries(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');

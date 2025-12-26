@@ -6,11 +6,7 @@
  */
 
 import React, { useEffect } from "react";
-import {
-  ToggleButtonGroup,
-  ToggleButton,
-  Tooltip,
-} from "@mui/material";
+import { ToggleButtonGroup, ToggleButton, Tooltip } from "@mui/material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
 import { useTranslation } from "react-i18next";
@@ -22,19 +18,19 @@ export const ViewModeToggle: React.FC = () => {
 
   const handleViewModeChange = async (
     _event: React.MouseEvent<HTMLElement>,
-    newMode: 'grid' | 'donut' | null
+    newMode: "grid" | "donut" | null
   ) => {
     // Prevent deselecting both buttons (null value)
     if (newMode === null) return;
 
     // Toggle donut mode based on selection
-    const shouldEnableDonut = newMode === 'donut';
+    const shouldEnableDonut = newMode === "donut";
     if (shouldEnableDonut !== donutModeActive) {
       try {
         await toggleDonutMode(shouldEnableDonut);
       } catch (error) {
         // Error handling is managed by the store and AppBar
-        console.error('Failed to toggle view mode:', error);
+        console.error("Failed to toggle view mode:", error);
       }
     }
   };
@@ -49,7 +45,7 @@ export const ViewModeToggle: React.FC = () => {
       // 4. Not typing in an input field
       if (
         sessionId &&
-        event.key.toLowerCase() === 'd' &&
+        event.key.toLowerCase() === "d" &&
         !event.ctrlKey &&
         !event.altKey &&
         !event.shiftKey &&
@@ -60,7 +56,7 @@ export const ViewModeToggle: React.FC = () => {
         const isInputFocused =
           activeElement instanceof HTMLInputElement ||
           activeElement instanceof HTMLTextAreaElement ||
-          activeElement?.getAttribute('contenteditable') === 'true';
+          activeElement?.getAttribute("contenteditable") === "true";
 
         if (!isInputFocused) {
           event.preventDefault();
@@ -69,27 +65,24 @@ export const ViewModeToggle: React.FC = () => {
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
 
     // Cleanup listener on unmount
     return () => {
-      window.removeEventListener('keydown', handleKeyPress);
+      window.removeEventListener("keydown", handleKeyPress);
     };
   }, [sessionId, donutModeActive, toggleDonutMode]);
 
   // Determine current view mode
-  const currentMode: 'grid' | 'donut' = donutModeActive ? 'donut' : 'grid';
+  const currentMode: "grid" | "donut" = donutModeActive ? "donut" : "grid";
 
   // Dynamic tooltip showing active mode
   const tooltipTitle = donutModeActive
-    ? t('grid.viewModeToggle.donutViewActive')
-    : t('grid.viewModeToggle.gridViewActive');
+    ? t("grid.viewModeToggle.donutViewActive")
+    : t("grid.viewModeToggle.gridViewActive");
 
   return (
-    <Tooltip
-      title={tooltipTitle}
-      placement="top"
-    >
+    <Tooltip title={tooltipTitle} placement="top">
       <span>
         <ToggleButtonGroup
           value={currentMode}
@@ -98,14 +91,14 @@ export const ViewModeToggle: React.FC = () => {
           size="small"
           disabled={!sessionId}
           data-testid="view-mode-toggle"
-          aria-label={t('grid.viewModeToggle.ariaLabelToggle')}
+          aria-label={t("grid.viewModeToggle.ariaLabelToggle")}
           sx={{
-            '& .MuiToggleButton-root': {
-              '&.Mui-selected': {
-                backgroundColor: 'secondary.main',
-                color: 'secondary.contrastText',
-                '&:hover': {
-                  backgroundColor: 'secondary.dark',
+            "& .MuiToggleButton-root": {
+              "&.Mui-selected": {
+                backgroundColor: "secondary.main",
+                color: "secondary.contrastText",
+                "&:hover": {
+                  backgroundColor: "secondary.dark",
                 },
               },
             },
@@ -113,7 +106,7 @@ export const ViewModeToggle: React.FC = () => {
         >
           <ToggleButton
             value="grid"
-            aria-label={t('grid.viewModeToggle.ariaLabelGrid')}
+            aria-label={t("grid.viewModeToggle.ariaLabelGrid")}
             aria-pressed={!donutModeActive}
             data-testid="grid-view-button"
           >
@@ -121,7 +114,7 @@ export const ViewModeToggle: React.FC = () => {
           </ToggleButton>
           <ToggleButton
             value="donut"
-            aria-label={t('grid.viewModeToggle.ariaLabelDonut')}
+            aria-label={t("grid.viewModeToggle.ariaLabelDonut")}
             aria-pressed={donutModeActive}
             data-testid="donut-view-button"
           >

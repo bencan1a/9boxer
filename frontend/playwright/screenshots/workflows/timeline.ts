@@ -22,7 +22,7 @@ import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
  */
 export async function generateEmployeeHistory(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Load sample data with historical information
   // Using Sample_People_List.xlsx which has historical data

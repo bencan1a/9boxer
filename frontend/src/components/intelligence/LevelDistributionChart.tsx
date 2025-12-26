@@ -65,7 +65,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          {t('panel.intelligenceTab.chart.noDataAvailable')}
+          {t("panel.intelligenceTab.chart.noDataAvailable")}
         </Typography>
       </Box>
     );
@@ -103,19 +103,22 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
           }}
         >
           <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-            {t('panel.intelligenceTab.chart.level')}: {data.level}
+            {t("panel.intelligenceTab.chart.level")}: {data.level}
           </Typography>
           <Typography variant="body2" sx={{ color: colors.high }}>
-            {t('panel.intelligenceTab.chart.high')}: {data.high}% ({data.high_count})
+            {t("panel.intelligenceTab.chart.high")}: {data.high}% (
+            {data.high_count})
           </Typography>
           <Typography variant="body2" sx={{ color: colors.medium }}>
-            {t('panel.intelligenceTab.chart.medium')}: {data.medium}% ({data.medium_count})
+            {t("panel.intelligenceTab.chart.medium")}: {data.medium}% (
+            {data.medium_count})
           </Typography>
           <Typography variant="body2" sx={{ color: colors.low }}>
-            {t('panel.intelligenceTab.chart.low')}: {data.low}% ({data.low_count})
+            {t("panel.intelligenceTab.chart.low")}: {data.low}% (
+            {data.low_count})
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t('panel.intelligenceTab.chart.total')}: {data.total}
+            {t("panel.intelligenceTab.chart.total")}: {data.total}
           </Typography>
         </Paper>
       );
@@ -135,7 +138,10 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
             margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
             stackOffset="expand"
           >
-            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.charts.gridLines} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={theme.palette.charts.gridLines}
+            />
             <XAxis
               dataKey="level"
               angle={-45}
@@ -147,7 +153,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
             />
             <YAxis
               label={{
-                value: t('panel.intelligenceTab.chart.percentage'),
+                value: t("panel.intelligenceTab.chart.percentage"),
                 angle: -90,
                 position: "insideLeft",
               }}
@@ -167,7 +173,9 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               stroke={theme.palette.text.secondary}
               strokeDasharray="5 5"
               label={{
-                value: t('panel.intelligenceTab.chart.baseline', { percent: baselineHighPct }),
+                value: t("panel.intelligenceTab.chart.baseline", {
+                  percent: baselineHighPct,
+                }),
                 position: "right",
                 fontSize: 11,
                 fill: theme.palette.text.secondary,
@@ -179,21 +187,21 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
               dataKey="low"
               stackId="a"
               fill={colors.low}
-              name={t('panel.intelligenceTab.performanceLevel.low')}
+              name={t("panel.intelligenceTab.performanceLevel.low")}
               radius={[0, 0, 0, 0]}
             />
             <Bar
               dataKey="medium"
               stackId="a"
               fill={colors.medium}
-              name={t('panel.intelligenceTab.performanceLevel.medium')}
+              name={t("panel.intelligenceTab.performanceLevel.medium")}
               radius={[0, 0, 0, 0]}
             />
             <Bar
               dataKey="high"
               stackId="a"
               fill={colors.high}
-              name={t('panel.intelligenceTab.performanceLevel.high')}
+              name={t("panel.intelligenceTab.performanceLevel.high")}
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
@@ -203,7 +211,7 @@ export const LevelDistributionChart: React.FC<LevelDistributionChartProps> = ({
       {/* Additional info */}
       <Box sx={{ mt: 1, px: 2 }}>
         <Typography variant="caption" color="text.secondary">
-          {t('panel.intelligenceTab.chart.baselineNote')}
+          {t("panel.intelligenceTab.chart.baselineNote")}
         </Typography>
       </Box>
     </Box>

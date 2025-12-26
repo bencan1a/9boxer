@@ -35,7 +35,7 @@ import {
  */
 export async function generateFileMenuButton(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Reset to empty state FIRST (no file loaded)
   await resetToEmptyState(page);
@@ -64,7 +64,7 @@ export async function generateFileMenuButton(
  */
 export async function generateUploadDialog(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Navigate to homepage
   await page.goto("http://localhost:5173");
@@ -73,7 +73,7 @@ export async function generateUploadDialog(
 
   // Click empty state import button to open dialog
   const emptyStateButton = page.locator(
-    '[data-testid="empty-state-import-button"]',
+    '[data-testid="empty-state-import-button"]'
   );
   if (await emptyStateButton.isVisible()) {
     await emptyStateButton.click();
@@ -121,7 +121,7 @@ export async function generateUploadDialog(
  */
 export async function generateGridPopulated(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Reload sample data (previous screenshot may have cleared state)
   await loadSampleData(page);
@@ -165,7 +165,7 @@ export async function generateGridPopulated(
  */
 export async function generateSuccessAnnotated(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -209,7 +209,7 @@ export async function generateSuccessAnnotated(
  */
 export async function generateExcelSample(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // This is a placeholder for manual screenshot workflow
   // The actual screenshot must be captured manually from Excel
@@ -219,7 +219,7 @@ export async function generateExcelSample(
       "1. Open resources/Sample_People_List.xlsx in Excel\n" +
       "2. Highlight required columns (Name, Performance, Potential)\n" +
       "3. Capture screenshot showing spreadsheet structure\n" +
-      `4. Save to: ${outputPath}`,
+      `4. Save to: ${outputPath}`
   );
 
   // Return without error to allow generator to continue

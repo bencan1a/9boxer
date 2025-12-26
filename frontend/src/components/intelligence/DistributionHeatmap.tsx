@@ -41,7 +41,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          {t('panel.intelligenceTab.chart.noDataAvailable')}
+          {t("panel.intelligenceTab.chart.noDataAvailable")}
         </Typography>
       </Box>
     );
@@ -60,16 +60,17 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
   // Get color based on percentage (gradient from light to dark)
   const getHeatmapColor = (percentage: number): string => {
     if (percentage === 0) {
-      return theme.palette.mode === 'dark'
+      return theme.palette.mode === "dark"
         ? theme.palette.grey[800]
         : theme.palette.grey[100];
     }
     const intensity = percentage / maxPercentage;
 
     // Use theme primary color for gradient
-    const primaryRgb = theme.palette.mode === 'dark'
-      ? { r: 144, g: 202, b: 249 } // Light blue for dark mode
-      : { r: 25, g: 118, b: 210 }; // Primary blue for light mode
+    const primaryRgb =
+      theme.palette.mode === "dark"
+        ? { r: 144, g: 202, b: 249 } // Light blue for dark mode
+        : { r: 25, g: 118, b: 210 }; // Primary blue for light mode
 
     // Interpolate from light to primary color
     const r = Math.floor(primaryRgb.r + (255 - primaryRgb.r) * (1 - intensity));
@@ -107,7 +108,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 color: theme.palette.text.primary,
               }}
             >
-              {t('panel.intelligenceTab.chart.function')}
+              {t("panel.intelligenceTab.chart.function")}
             </Box>
             {gridPositions.map((pos) => (
               <Box
@@ -121,7 +122,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                   px: 1,
                 }}
               >
-                {t('panel.intelligenceTab.chart.position', { number: pos })}
+                {t("panel.intelligenceTab.chart.position", { number: pos })}
               </Box>
             ))}
             <Box
@@ -133,7 +134,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
                 px: 1,
               }}
             >
-              {t('panel.intelligenceTab.chart.total')}
+              {t("panel.intelligenceTab.chart.total")}
             </Box>
           </Box>
 
@@ -144,7 +145,9 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
               sx={{
                 display: "flex",
                 mb: 0.5,
-                "&:hover": { backgroundColor: alpha(theme.palette.text.primary, 0.02) },
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.text.primary, 0.02),
+                },
               }}
             >
               <Box
@@ -225,7 +228,7 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
         {/* Legend */}
         <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            {t('panel.intelligenceTab.chart.heatIntensity')}
+            {t("panel.intelligenceTab.chart.heatIntensity")}
           </Typography>
           <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
             {[0, 0.25, 0.5, 0.75, 1].map((intensity) => (

@@ -17,17 +17,21 @@ interface RatingsTimelineProps {
   employee: Employee;
 }
 
-export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({ employee }) => {
+export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
+  employee,
+}) => {
   const { t } = useTranslation();
 
   // Sort ratings history by year descending
-  const sortedRatings = [...employee.ratings_history].sort((a, b) => b.year - a.year);
+  const sortedRatings = [...employee.ratings_history].sort(
+    (a, b) => b.year - a.year
+  );
 
   return (
     <Card variant="outlined">
       <CardContent>
         <Typography variant="subtitle2" color="primary" gutterBottom>
-          {t('panel.detailsTab.performanceHistory')}
+          {t("panel.detailsTab.performanceHistory")}
         </Typography>
 
         <Timeline position="right" sx={{ p: 0, m: 0 }}>
@@ -39,16 +43,16 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({ employee }) =>
             </TimelineSeparator>
             <TimelineContent>
               <Typography variant="body2" fontWeight="medium">
-                {t('panel.detailsTab.currentYear', { year: 2025 })}
+                {t("panel.detailsTab.currentYear", { year: 2025 })}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {t('panel.detailsTab.performance')}: {employee.performance}
+                {t("panel.detailsTab.performance")}: {employee.performance}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {t('panel.detailsTab.potentialLabel')}: {employee.potential}
+                {t("panel.detailsTab.potentialLabel")}: {employee.potential}
               </Typography>
               <Typography variant="caption" color="text.disabled">
-                {t('panel.detailsTab.currentAssessment')}
+                {t("panel.detailsTab.currentAssessment")}
               </Typography>
             </TimelineContent>
           </TimelineItem>
@@ -65,7 +69,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({ employee }) =>
                   {rating.year}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('panel.detailsTab.rating')}: {rating.rating}
+                  {t("panel.detailsTab.rating")}: {rating.rating}
                 </Typography>
               </TimelineContent>
             </TimelineItem>
@@ -75,7 +79,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({ employee }) =>
         {sortedRatings.length === 0 && (
           <Box sx={{ py: 2 }}>
             <Typography variant="body2" color="text.secondary" align="center">
-              {t('panel.detailsTab.noHistoricalRatings')}
+              {t("panel.detailsTab.noHistoricalRatings")}
             </Typography>
           </Box>
         )}

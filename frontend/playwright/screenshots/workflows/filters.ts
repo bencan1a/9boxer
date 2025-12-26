@@ -33,7 +33,9 @@ import {
  * Fixed per Phase 3 debugging findings.
  */
 async function selectFirstAvailableFilter(page: Page): Promise<void> {
-  const firstCheckbox = page.locator('[data-testid^="filter-checkbox-job-levels-"]').first();
+  const firstCheckbox = page
+    .locator('[data-testid^="filter-checkbox-job-levels-"]')
+    .first();
   await firstCheckbox.check();
   await waitForUiSettle(page, 0.3);
 }
@@ -55,7 +57,7 @@ async function selectFirstAvailableFilter(page: Page): Promise<void> {
  */
 export async function generateActiveChips(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -88,7 +90,9 @@ export async function generateActiveChips(
 
   // Try to select a second filter for multiple chips demonstration
   try {
-    const secondCheckbox = page.locator('[data-testid^="filter-checkbox-job-levels-"]').nth(1);
+    const secondCheckbox = page
+      .locator('[data-testid^="filter-checkbox-job-levels-"]')
+      .nth(1);
     if (await secondCheckbox.isVisible()) {
       await secondCheckbox.check();
       await waitForUiSettle(page, 0.5);
@@ -139,7 +143,7 @@ export async function generateActiveChips(
  */
 export async function generatePanelExpanded(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -157,7 +161,10 @@ export async function generatePanelExpanded(
   // Wait for drawer open animation to complete
   const filterDrawer = page.locator('[data-testid="filter-drawer"]');
   await filterDrawer.waitFor({ state: "visible" });
-  await waitForCssTransition(filterDrawer, CSS_TRANSITION_DURATIONS.enteringScreen);
+  await waitForCssTransition(
+    filterDrawer,
+    CSS_TRANSITION_DURATIONS.enteringScreen
+  );
 
   // Capture the filter drawer
   await filterDrawer.screenshot({
@@ -181,7 +188,7 @@ export async function generatePanelExpanded(
  */
 export async function generateBeforeAfter(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -204,7 +211,7 @@ export async function generateBeforeAfter(
       '   1. Use this screenshot as "before" panel\n' +
       '   2. Apply filters and capture "after" panel\n' +
       "   3. Create side-by-side comparison in image editor\n" +
-      "   4. Save final composite to output path",
+      "   4. Save final composite to output path"
   );
 }
 
@@ -213,7 +220,7 @@ export async function generateBeforeAfter(
  */
 export async function generateClearAllButton(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
@@ -230,7 +237,10 @@ export async function generateClearAllButton(
 
   // Wait for drawer open animation
   const filterDrawer = page.locator('[data-testid="filter-drawer"]');
-  await waitForCssTransition(filterDrawer, CSS_TRANSITION_DURATIONS.enteringScreen);
+  await waitForCssTransition(
+    filterDrawer,
+    CSS_TRANSITION_DURATIONS.enteringScreen
+  );
 
   // Apply some filters first so Clear All button is visible/enabled
   // Use checkbox selector to match E2E test pattern

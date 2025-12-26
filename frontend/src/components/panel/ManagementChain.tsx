@@ -14,7 +14,9 @@ interface ManagementChainProps {
   employee: Employee;
 }
 
-export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) => {
+export const ManagementChain: React.FC<ManagementChainProps> = ({
+  employee,
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -24,26 +26,44 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
   // Add the employee themselves
   chain.push({
     name: employee.name,
-    level: t('panel.detailsTab.managementChain.employee'),
+    level: t("panel.detailsTab.managementChain.employee"),
   });
 
   // Add direct manager
   if (employee.manager) {
     chain.push({
       name: employee.manager,
-      level: t('panel.detailsTab.managementChain.manager'),
+      level: t("panel.detailsTab.managementChain.manager"),
     });
   }
 
   // Add management chain levels (01-06)
   // According to requirements, the lowest non-empty level is manager's manager
   const chainLevels = [
-    { value: employee.management_chain_01, label: t('panel.detailsTab.managementChain.level01') },
-    { value: employee.management_chain_02, label: t('panel.detailsTab.managementChain.level02') },
-    { value: employee.management_chain_03, label: t('panel.detailsTab.managementChain.level03') },
-    { value: employee.management_chain_04, label: t('panel.detailsTab.managementChain.level04') },
-    { value: employee.management_chain_05, label: t('panel.detailsTab.managementChain.level05') },
-    { value: employee.management_chain_06, label: t('panel.detailsTab.managementChain.level06') },
+    {
+      value: employee.management_chain_01,
+      label: t("panel.detailsTab.managementChain.level01"),
+    },
+    {
+      value: employee.management_chain_02,
+      label: t("panel.detailsTab.managementChain.level02"),
+    },
+    {
+      value: employee.management_chain_03,
+      label: t("panel.detailsTab.managementChain.level03"),
+    },
+    {
+      value: employee.management_chain_04,
+      label: t("panel.detailsTab.managementChain.level04"),
+    },
+    {
+      value: employee.management_chain_05,
+      label: t("panel.detailsTab.managementChain.level05"),
+    },
+    {
+      value: employee.management_chain_06,
+      label: t("panel.detailsTab.managementChain.level06"),
+    },
   ];
 
   chainLevels.forEach((level) => {
@@ -58,7 +78,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
   if (chain.length === 1) {
     return (
       <Typography variant="body2" color="text.secondary">
-        {t('panel.detailsTab.managementChain.noData')}
+        {t("panel.detailsTab.managementChain.noData")}
       </Typography>
     );
   }
@@ -94,8 +114,14 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
             variant="outlined"
             sx={{
               p: 0.75,
-              backgroundColor: index === 0 ? alpha(theme.palette.primary.main, 0.08) : theme.palette.background.paper,
-              borderColor: index === 0 ? theme.palette.primary.main : theme.palette.divider,
+              backgroundColor:
+                index === 0
+                  ? alpha(theme.palette.primary.main, 0.08)
+                  : theme.palette.background.paper,
+              borderColor:
+                index === 0
+                  ? theme.palette.primary.main
+                  : theme.palette.divider,
               borderWidth: index === 0 ? 2 : 1,
             }}
           >
@@ -110,7 +136,11 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({ employee }) =>
             >
               {person.name}
             </Typography>
-            <Typography variant="caption" fontSize="0.688rem" color="text.secondary">
+            <Typography
+              variant="caption"
+              fontSize="0.688rem"
+              color="text.secondary"
+            >
               {person.level}
             </Typography>
           </Paper>

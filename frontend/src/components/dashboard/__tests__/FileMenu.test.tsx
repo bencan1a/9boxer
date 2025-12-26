@@ -1,21 +1,24 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { FileMenu } from '../FileMenu';
-import { useSessionStore } from '../../../store/sessionStore';
-import { ThemeProvider } from '@mui/material/styles';
-import { getTheme } from '../../../theme/theme';
-import { apiClient } from '../../../services/api';
-import { I18nTestWrapper, getTranslatedText } from '../../../test/i18nTestUtils';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { FileMenu } from "../FileMenu";
+import { useSessionStore } from "../../../store/sessionStore";
+import { ThemeProvider } from "@mui/material/styles";
+import { getTheme } from "../../../theme/theme";
+import { apiClient } from "../../../services/api";
+import {
+  I18nTestWrapper,
+  getTranslatedText,
+} from "../../../test/i18nTestUtils";
 
 // Mock dependencies
-vi.mock('../../../store/sessionStore');
-vi.mock('../../../services/api', () => ({
+vi.mock("../../../store/sessionStore");
+vi.mock("../../../services/api", () => ({
   apiClient: {
     exportSession: vi.fn(),
   },
 }));
-vi.mock('../../../contexts/SnackbarContext', () => ({
+vi.mock("../../../contexts/SnackbarContext", () => ({
   useSnackbar: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),
@@ -24,7 +27,7 @@ vi.mock('../../../contexts/SnackbarContext', () => ({
 
 // Wrapper with theme and i18n providers
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const theme = getTheme('light');
+  const theme = getTheme("light");
   return (
     <I18nTestWrapper>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
@@ -32,7 +35,7 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-describe('FileMenu', () => {
+describe("FileMenu", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -50,13 +53,15 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText(getTranslatedText('dashboard.fileMenu.noFileSelected'))).toBeInTheDocument();
+    expect(
+      screen.getByText(getTranslatedText("dashboard.fileMenu.noFileSelected"))
+    ).toBeInTheDocument();
   });
 
-  it('displays filename when session is active', () => {
+  it("displays filename when session is active", () => {
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [],
     } as any);
 
@@ -66,16 +71,28 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('test.xlsx')).toBeInTheDocument();
+    expect(screen.getByText("test.xlsx")).toBeInTheDocument();
   });
 
-  it('displays badge with changes count when changes exist', () => {
+  it("displays badge with changes count when changes exist", () => {
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [
-        { employee_id: 1, old_performance: '3', old_potential: '3', new_performance: '4', new_potential: '4' },
-        { employee_id: 2, old_performance: '3', old_potential: '3', new_performance: '5', new_potential: '5' },
+        {
+          employee_id: 1,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "4",
+          new_potential: "4",
+        },
+        {
+          employee_id: 2,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "5",
+          new_potential: "5",
+        },
       ],
     } as any);
 
@@ -86,14 +103,14 @@ describe('FileMenu', () => {
     );
 
     // Badge should show "2"
-    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
   });
 
-  it('opens menu when button is clicked', async () => {
+  it("opens menu when button is clicked", async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [],
     } as any);
 
@@ -103,21 +120,23 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      expect(screen.getByTestId('file-menu')).toBeInTheDocument();
+      expect(screen.getByTestId("file-menu")).toBeInTheDocument();
     });
 
-    expect(screen.getByText(getTranslatedText('dashboard.fileMenu.importData'))).toBeInTheDocument();
+    expect(
+      screen.getByText(getTranslatedText("dashboard.fileMenu.importData"))
+    ).toBeInTheDocument();
   });
 
   it('displays "Apply 0 Changes to Excel" when no changes exist', async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [],
     } as any);
 
@@ -127,23 +146,45 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText(getTranslatedText('dashboard.fileMenu.exportChanges', { count: 0 }))).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          getTranslatedText("dashboard.fileMenu.exportChanges", { count: 0 })
+        )
+      ).toBeInTheDocument();
     });
   });
 
   it('displays "Apply X Changes to Excel" with correct count', async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [
-        { employee_id: 1, old_performance: '3', old_potential: '3', new_performance: '4', new_potential: '4' },
-        { employee_id: 2, old_performance: '3', old_potential: '3', new_performance: '5', new_potential: '5' },
-        { employee_id: 3, old_performance: '3', old_potential: '3', new_performance: '2', new_potential: '2' },
+        {
+          employee_id: 1,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "4",
+          new_potential: "4",
+        },
+        {
+          employee_id: 2,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "5",
+          new_potential: "5",
+        },
+        {
+          employee_id: 3,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "2",
+          new_potential: "2",
+        },
       ],
     } as any);
 
@@ -153,19 +194,23 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText(getTranslatedText('dashboard.fileMenu.exportChanges', { count: 3 }))).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          getTranslatedText("dashboard.fileMenu.exportChanges", { count: 3 })
+        )
+      ).toBeInTheDocument();
     });
   });
 
-  it('disables export menu item when no changes exist', async () => {
+  it("disables export menu item when no changes exist", async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [],
     } as any);
 
@@ -175,22 +220,28 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      const exportMenuItem = screen.getByTestId('export-changes-menu-item');
-      expect(exportMenuItem).toHaveAttribute('aria-disabled', 'true');
+      const exportMenuItem = screen.getByTestId("export-changes-menu-item");
+      expect(exportMenuItem).toHaveAttribute("aria-disabled", "true");
     });
   });
 
-  it('enables export menu item when changes exist', async () => {
+  it("enables export menu item when changes exist", async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [
-        { employee_id: 1, old_performance: '3', old_potential: '3', new_performance: '4', new_potential: '4' },
+        {
+          employee_id: 1,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "4",
+          new_potential: "4",
+        },
       ],
     } as any);
 
@@ -200,20 +251,20 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      const exportMenuItem = screen.getByTestId('export-changes-menu-item');
-      expect(exportMenuItem).not.toHaveAttribute('aria-disabled', 'true');
+      const exportMenuItem = screen.getByTestId("export-changes-menu-item");
+      expect(exportMenuItem).not.toHaveAttribute("aria-disabled", "true");
     });
   });
 
   it('disables "Open Recent File" menu item (future feature)', async () => {
     const user = userEvent.setup();
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [],
     } as any);
 
@@ -223,30 +274,38 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
     await waitFor(() => {
-      const recentFileMenuItem = screen.getByTestId('recent-file-menu-item');
-      expect(recentFileMenuItem).toHaveAttribute('aria-disabled', 'true');
-      expect(screen.getByText('(Coming Soon)')).toBeInTheDocument();
+      const recentFileMenuItem = screen.getByTestId("recent-file-menu-item");
+      expect(recentFileMenuItem).toHaveAttribute("aria-disabled", "true");
+      expect(screen.getByText("(Coming Soon)")).toBeInTheDocument();
     });
   });
 
-  it('calls exportSession API when export menu item is clicked', async () => {
+  it("calls exportSession API when export menu item is clicked", async () => {
     const user = userEvent.setup();
-    const mockBlob = new Blob(['test'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const mockBlob = new Blob(["test"], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
     vi.mocked(apiClient.exportSession).mockResolvedValue(mockBlob);
 
     // Mock URL.createObjectURL and revokeObjectURL
-    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+    global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
     global.URL.revokeObjectURL = vi.fn();
 
     vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: 'test-session',
-      filename: 'test.xlsx',
+      sessionId: "test-session",
+      filename: "test.xlsx",
       changes: [
-        { employee_id: 1, old_performance: '3', old_potential: '3', new_performance: '4', new_potential: '4' },
+        {
+          employee_id: 1,
+          old_performance: "3",
+          old_potential: "3",
+          new_performance: "4",
+          new_potential: "4",
+        },
       ],
     } as any);
 
@@ -256,10 +315,12 @@ describe('FileMenu', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('file-menu-button');
+    const button = screen.getByTestId("file-menu-button");
     await user.click(button);
 
-    const exportMenuItem = await screen.findByTestId('export-changes-menu-item');
+    const exportMenuItem = await screen.findByTestId(
+      "export-changes-menu-item"
+    );
     await user.click(exportMenuItem);
 
     await waitFor(() => {

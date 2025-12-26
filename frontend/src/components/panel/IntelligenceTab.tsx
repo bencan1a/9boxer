@@ -3,7 +3,13 @@
  */
 
 import React from "react";
-import { Box, CircularProgress, Alert, Button, AlertTitle } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Alert,
+  Button,
+  AlertTitle,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
 import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
@@ -44,17 +50,19 @@ export const IntelligenceTab: React.FC = () => {
           severity={isSessionNotFound ? "warning" : "error"}
           action={
             <Button color="inherit" size="small" onClick={refetch}>
-              {t('panel.intelligenceTab.retry')}
+              {t("panel.intelligenceTab.retry")}
             </Button>
           }
         >
           {isSessionNotFound ? (
             <>
-              <AlertTitle>{t('panel.intelligenceTab.sessionNotFound')}</AlertTitle>
-              {t('panel.intelligenceTab.sessionLostMessage')}
+              <AlertTitle>
+                {t("panel.intelligenceTab.sessionNotFound")}
+              </AlertTitle>
+              {t("panel.intelligenceTab.sessionLostMessage")}
             </>
           ) : (
-            error.message || t('panel.intelligenceTab.failedToLoad')
+            error.message || t("panel.intelligenceTab.failedToLoad")
           )}
         </Alert>
       </Box>
@@ -72,7 +80,9 @@ export const IntelligenceTab: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Alert severity="info">{t('panel.intelligenceTab.noIntelligenceData')}</Alert>
+        <Alert severity="info">
+          {t("panel.intelligenceTab.noIntelligenceData")}
+        </Alert>
       </Box>
     );
   }
@@ -83,10 +93,9 @@ export const IntelligenceTab: React.FC = () => {
     if (levelDeviations.length === 0) return 25; // Default
 
     // Average of all observed high percentages
-    const avgHigh = levelDeviations.reduce(
-      (sum, dev) => sum + dev.observed_high_pct,
-      0
-    ) / levelDeviations.length;
+    const avgHigh =
+      levelDeviations.reduce((sum, dev) => sum + dev.observed_high_pct, 0) /
+      levelDeviations.length;
 
     return avgHigh;
   };
@@ -135,36 +144,36 @@ export const IntelligenceTab: React.FC = () => {
 
       {/* Location Analysis */}
       <AnomalySection
-        title={t('panel.intelligenceTab.locationAnalysis')}
+        title={t("panel.intelligenceTab.locationAnalysis")}
         analysis={data.location_analysis}
         chartComponent={
           <DeviationChart
             data={data.location_analysis.deviations}
-            title={t('panel.intelligenceTab.highPerformerByLocation')}
+            title={t("panel.intelligenceTab.highPerformerByLocation")}
           />
         }
       />
 
       {/* Function Analysis */}
       <AnomalySection
-        title={t('panel.intelligenceTab.functionAnalysis')}
+        title={t("panel.intelligenceTab.functionAnalysis")}
         analysis={data.function_analysis}
         chartComponent={
           <DeviationChart
             data={data.function_analysis.deviations}
-            title={t('panel.intelligenceTab.highPerformerByFunction')}
+            title={t("panel.intelligenceTab.highPerformerByFunction")}
           />
         }
       />
 
       {/* Level Analysis */}
       <AnomalySection
-        title={t('panel.intelligenceTab.levelAnalysis')}
+        title={t("panel.intelligenceTab.levelAnalysis")}
         analysis={data.level_analysis}
         chartComponent={
           <LevelDistributionChart
             data={levelDistributionData}
-            title={t('panel.intelligenceTab.performanceDistributionByLevel')}
+            title={t("panel.intelligenceTab.performanceDistributionByLevel")}
             baselineHighPct={baselineHighPct}
           />
         }
@@ -172,12 +181,12 @@ export const IntelligenceTab: React.FC = () => {
 
       {/* Tenure Analysis */}
       <AnomalySection
-        title={t('panel.intelligenceTab.tenureAnalysis')}
+        title={t("panel.intelligenceTab.tenureAnalysis")}
         analysis={data.tenure_analysis}
         chartComponent={
           <DeviationChart
             data={data.tenure_analysis.deviations}
-            title={t('panel.intelligenceTab.highPerformerByTenure')}
+            title={t("panel.intelligenceTab.highPerformerByTenure")}
           />
         }
       />

@@ -34,37 +34,47 @@ export const EmployeeCount: React.FC = () => {
   // Build display text
   const displayText = useMemo(() => {
     if (!hasActiveFilters || filteredCount === totalCount) {
-      return `${totalCount} ${t('grid.employeeCount.employee', { count: totalCount })}`;
+      return `${totalCount} ${t("grid.employeeCount.employee", { count: totalCount })}`;
     }
-    return `${filteredCount} ${t('grid.employeeCount.of')} ${totalCount} ${t('grid.employeeCount.employee', { count: totalCount })}`;
+    return `${filteredCount} ${t("grid.employeeCount.of")} ${totalCount} ${t("grid.employeeCount.employee", { count: totalCount })}`;
   }, [hasActiveFilters, filteredCount, totalCount, t]);
 
   // Build tooltip content
   const tooltipContent = useMemo(() => {
     if (!hasActiveFilters) {
-      return t('grid.employeeCount.totalEmployeesInSession');
+      return t("grid.employeeCount.totalEmployeesInSession");
     }
 
     const filterParts: string[] = [
-      t('grid.employeeCount.showingCount', { filteredCount, totalCount }),
+      t("grid.employeeCount.showingCount", { filteredCount, totalCount }),
       "",
-      t('grid.employeeCount.activeFilters')
+      t("grid.employeeCount.activeFilters"),
     ];
 
     if (selectedLevels.length > 0) {
-      filterParts.push(`  • ${t('grid.employeeCount.jobLevel')}: ${selectedLevels.join(", ")}`);
+      filterParts.push(
+        `  • ${t("grid.employeeCount.jobLevel")}: ${selectedLevels.join(", ")}`
+      );
     }
     if (selectedJobFunctions.length > 0) {
-      filterParts.push(`  • ${t('grid.employeeCount.jobFunction')}: ${selectedJobFunctions.join(", ")}`);
+      filterParts.push(
+        `  • ${t("grid.employeeCount.jobFunction")}: ${selectedJobFunctions.join(", ")}`
+      );
     }
     if (selectedLocations.length > 0) {
-      filterParts.push(`  • ${t('grid.employeeCount.location')}: ${selectedLocations.join(", ")}`);
+      filterParts.push(
+        `  • ${t("grid.employeeCount.location")}: ${selectedLocations.join(", ")}`
+      );
     }
     if (selectedManagers.length > 0) {
-      filterParts.push(`  • ${t('grid.employeeCount.manager')}: ${selectedManagers.join(", ")}`);
+      filterParts.push(
+        `  • ${t("grid.employeeCount.manager")}: ${selectedManagers.join(", ")}`
+      );
     }
     if (excludedEmployeeIds.length > 0) {
-      filterParts.push(`  • ${t('grid.employeeCount.excluded')}: ${excludedEmployeeIds.length} ${t('grid.employeeCount.employee', { count: excludedEmployeeIds.length })}`);
+      filterParts.push(
+        `  • ${t("grid.employeeCount.excluded")}: ${excludedEmployeeIds.length} ${t("grid.employeeCount.employee", { count: excludedEmployeeIds.length })}`
+      );
     }
 
     return filterParts.join("\n");
@@ -89,21 +99,17 @@ export const EmployeeCount: React.FC = () => {
           color: theme.palette.text.secondary,
           userSelect: "none",
         }}
-        aria-label={t('grid.employeeCount.ariaLabelNoEmployees')}
+        aria-label={t("grid.employeeCount.ariaLabelNoEmployees")}
         data-testid="employee-count"
       >
-        {t('grid.employeeCount.noEmployees')}
+        {t("grid.employeeCount.noEmployees")}
       </Typography>
     );
   }
 
   return (
     <Tooltip
-      title={
-        <Box sx={{ whiteSpace: "pre-line" }}>
-          {tooltipContent}
-        </Box>
-      }
+      title={<Box sx={{ whiteSpace: "pre-line" }}>{tooltipContent}</Box>}
       placement="top"
     >
       <Typography
@@ -115,8 +121,11 @@ export const EmployeeCount: React.FC = () => {
         }}
         aria-label={
           hasActiveFilters
-            ? t('grid.employeeCount.ariaLabelFiltered', { filteredCount, totalCount })
-            : t('grid.employeeCount.ariaLabel', { count: totalCount })
+            ? t("grid.employeeCount.ariaLabelFiltered", {
+                filteredCount,
+                totalCount,
+              })
+            : t("grid.employeeCount.ariaLabel", { count: totalCount })
         }
         data-testid="employee-count"
       >

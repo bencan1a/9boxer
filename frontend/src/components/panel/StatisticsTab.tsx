@@ -75,7 +75,10 @@ export const StatisticsTab: React.FC = () => {
   const { t } = useTranslation();
   const { employees } = useEmployees(); // Get filtered employees
   const donutModeActive = useSessionStore((state) => state.donutModeActive);
-  const { statistics, isLoading, error } = useStatistics(employees, donutModeActive);
+  const { statistics, isLoading, error } = useStatistics(
+    employees,
+    donutModeActive
+  );
 
   if (isLoading) {
     return (
@@ -111,7 +114,7 @@ export const StatisticsTab: React.FC = () => {
         }}
       >
         <Typography variant="body1" color="text.secondary">
-          {t('panel.statisticsTab.noStatisticsAvailable')}
+          {t("panel.statisticsTab.noStatisticsAvailable")}
         </Typography>
       </Box>
     );
@@ -120,9 +123,14 @@ export const StatisticsTab: React.FC = () => {
   // Sort distribution with custom grouping order: 9,8,6, 7,5,3, 4,2,1
   const customOrder = [9, 8, 6, 7, 5, 3, 4, 2, 1];
   const sortedDistribution = [...statistics.distribution]
-    .map(row => ({ ...row, position_label: getPositionLabel(row.grid_position) }))
+    .map((row) => ({
+      ...row,
+      position_label: getPositionLabel(row.grid_position),
+    }))
     .sort(
-      (a, b) => customOrder.indexOf(a.grid_position) - customOrder.indexOf(b.grid_position)
+      (a, b) =>
+        customOrder.indexOf(a.grid_position) -
+        customOrder.indexOf(b.grid_position)
     );
 
   return (
@@ -131,12 +139,20 @@ export const StatisticsTab: React.FC = () => {
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
-            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <CardContent
+              sx={{
+                height: "100%",
+                minHeight: 120,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               <Typography variant="h4" color="primary" gutterBottom>
                 {statistics.total_employees}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {t('panel.statisticsTab.totalEmployees')}
+                {t("panel.statisticsTab.totalEmployees")}
               </Typography>
             </CardContent>
           </Card>
@@ -144,12 +160,20 @@ export const StatisticsTab: React.FC = () => {
 
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
-            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <CardContent
+              sx={{
+                height: "100%",
+                minHeight: 120,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               <Typography variant="h4" color="warning.main" gutterBottom>
                 {statistics.modified_employees}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {t('panel.statisticsTab.modified')}
+                {t("panel.statisticsTab.modified")}
               </Typography>
             </CardContent>
           </Card>
@@ -157,12 +181,20 @@ export const StatisticsTab: React.FC = () => {
 
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
-            <CardContent sx={{ height: "100%", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <CardContent
+              sx={{
+                height: "100%",
+                minHeight: 120,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               <Typography variant="h4" color="success.main" gutterBottom>
                 {statistics.high_performers}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {t('panel.statisticsTab.highPerformers')}
+                {t("panel.statisticsTab.highPerformers")}
               </Typography>
             </CardContent>
           </Card>
@@ -172,19 +204,21 @@ export const StatisticsTab: React.FC = () => {
       {/* Distribution Table */}
       <Box>
         <Typography variant="subtitle2" color="primary" gutterBottom>
-          {t('panel.statisticsTab.distributionByPosition')}
+          {t("panel.statisticsTab.distributionByPosition")}
         </Typography>
         <TableContainer component={Paper} variant="outlined">
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>{t('panel.statisticsTab.position')}</TableCell>
-                <TableCell align="right">{t('panel.statisticsTab.count')}</TableCell>
+                <TableCell>{t("panel.statisticsTab.position")}</TableCell>
+                <TableCell align="right">
+                  {t("panel.statisticsTab.count")}
+                </TableCell>
                 <TableCell align="left" sx={{ minWidth: 200 }}>
-                  {t('panel.statisticsTab.percentage')}
+                  {t("panel.statisticsTab.percentage")}
                 </TableCell>
                 <TableCell align="center" sx={{ width: 120 }}>
-                  {t('panel.statisticsTab.groupPercentage')}
+                  {t("panel.statisticsTab.groupPercentage")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -198,11 +232,12 @@ export const StatisticsTab: React.FC = () => {
                   <TableRow
                     key={row.grid_position}
                     sx={{
-                      backgroundColor: row.count > 0
-                        ? "transparent"
-                        : theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.05)"
-                          : "grey.50",
+                      backgroundColor:
+                        row.count > 0
+                          ? "transparent"
+                          : theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.05)"
+                            : "grey.50",
                     }}
                   >
                     <TableCell component="th" scope="row">
@@ -217,7 +252,9 @@ export const StatisticsTab: React.FC = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="left">
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Box sx={{ flex: 1 }}>
                           <LinearProgress
                             variant="determinate"

@@ -66,10 +66,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   // Quick filter functions
   const excludeVPs = () => {
     const vpIds = employees
-      .filter((emp) =>
-        emp.job_level.includes("MT6") ||
-        emp.job_level.toLowerCase().includes("vp") ||
-        emp.job_level.toLowerCase().includes("vice president")
+      .filter(
+        (emp) =>
+          emp.job_level.includes("MT6") ||
+          emp.job_level.toLowerCase().includes("vp") ||
+          emp.job_level.toLowerCase().includes("vice president")
       )
       .map((emp) => emp.employee_id);
     setSelectedIds(vpIds);
@@ -154,12 +155,18 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth data-testid="exclusion-dialog">
+    <Dialog
+      open={open}
+      onClose={handleCancel}
+      maxWidth="sm"
+      fullWidth
+      data-testid="exclusion-dialog"
+    >
       {/* Header */}
       <DialogTitle>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            {t('dashboard.exclusionDialog.title')}
+            {t("dashboard.exclusionDialog.title")}
           </Typography>
           <IconButton size="small" onClick={handleCancel}>
             <CloseIcon />
@@ -170,14 +177,34 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
       <DialogContent>
         {/* Quick Filters */}
         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-          {t('dashboard.exclusionDialog.quickFilters')}
+          {t("dashboard.exclusionDialog.quickFilters")}
         </Typography>
-        <ButtonGroup variant="outlined" size="small" sx={{ mb: 2, flexWrap: "wrap" }}>
-          <Button onClick={excludeVPs} data-testid="exclude-vps-button">{t('dashboard.exclusionDialog.excludeVPs')}</Button>
-          <Button onClick={excludeDirectorsPlus} data-testid="exclude-directors-plus-button">{t('dashboard.exclusionDialog.excludeDirectorsPlus')}</Button>
-          <Button onClick={excludeManagers} data-testid="exclude-managers-button">{t('dashboard.exclusionDialog.excludeManagers')}</Button>
-          <Button onClick={clearSelections} color="secondary" data-testid="clear-selections-button">
-            {t('dashboard.exclusionDialog.clearAll')}
+        <ButtonGroup
+          variant="outlined"
+          size="small"
+          sx={{ mb: 2, flexWrap: "wrap" }}
+        >
+          <Button onClick={excludeVPs} data-testid="exclude-vps-button">
+            {t("dashboard.exclusionDialog.excludeVPs")}
+          </Button>
+          <Button
+            onClick={excludeDirectorsPlus}
+            data-testid="exclude-directors-plus-button"
+          >
+            {t("dashboard.exclusionDialog.excludeDirectorsPlus")}
+          </Button>
+          <Button
+            onClick={excludeManagers}
+            data-testid="exclude-managers-button"
+          >
+            {t("dashboard.exclusionDialog.excludeManagers")}
+          </Button>
+          <Button
+            onClick={clearSelections}
+            color="secondary"
+            data-testid="clear-selections-button"
+          >
+            {t("dashboard.exclusionDialog.clearAll")}
           </Button>
         </ButtonGroup>
 
@@ -187,11 +214,13 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
         <TextField
           fullWidth
           size="small"
-          placeholder={t('dashboard.exclusionDialog.searchPlaceholder')}
+          placeholder={t("dashboard.exclusionDialog.searchPlaceholder")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
-            startAdornment: <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />,
+            startAdornment: (
+              <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
+            ),
           }}
           sx={{ mb: 2 }}
         />
@@ -213,7 +242,9 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
           }
           label={
             <Typography variant="body2" fontWeight="bold">
-              {t('dashboard.exclusionDialog.selectAll', { count: filteredEmployees.length })}
+              {t("dashboard.exclusionDialog.selectAll", {
+                count: filteredEmployees.length,
+              })}
             </Typography>
           }
         />
@@ -251,12 +282,25 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
 
       {/* Footer */}
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }} data-testid="selected-count">
-          {t('dashboard.exclusionDialog.selectedCount', { count: selectedIds.length })}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ flexGrow: 1 }}
+          data-testid="selected-count"
+        >
+          {t("dashboard.exclusionDialog.selectedCount", {
+            count: selectedIds.length,
+          })}
         </Typography>
-        <Button onClick={handleCancel}>{t('dashboard.exclusionDialog.cancel')}</Button>
-        <Button variant="contained" onClick={handleApply} data-testid="apply-exclusions-button">
-          {t('dashboard.exclusionDialog.applyExclusions')}
+        <Button onClick={handleCancel}>
+          {t("dashboard.exclusionDialog.cancel")}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleApply}
+          data-testid="apply-exclusions-button"
+        >
+          {t("dashboard.exclusionDialog.applyExclusions")}
         </Button>
       </DialogActions>
     </Dialog>

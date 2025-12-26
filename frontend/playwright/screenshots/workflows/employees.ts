@@ -28,7 +28,7 @@ import {
  */
 export async function generateDetailsPanelExpanded(
   page: Page,
-  outputPath: string,
+  outputPath: string
 ): Promise<void> {
   // Ensure sample data is loaded
   await loadSampleData(page);

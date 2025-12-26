@@ -9,7 +9,12 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useTranslation } from "react-i18next";
-import { Panel, PanelGroup, PanelResizeHandle, ImperativePanelHandle } from "react-resizable-panels";
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+  ImperativePanelHandle,
+} from "react-resizable-panels";
 import { AppBar } from "./AppBar";
 import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
@@ -83,7 +88,11 @@ export const DashboardPage: React.FC = () => {
         setRightPanelCollapsed(true, true); // true = isAutoCollapse
       }
       // Auto-reopen if window becomes large enough and panel was auto-collapsed
-      else if (width >= PANEL_COLLAPSE_BREAKPOINT && isRightPanelCollapsed && wasAutoCollapsed) {
+      else if (
+        width >= PANEL_COLLAPSE_BREAKPOINT &&
+        isRightPanelCollapsed &&
+        wasAutoCollapsed
+      ) {
         setRightPanelCollapsed(false, false);
       }
     };
@@ -96,7 +105,12 @@ export const DashboardPage: React.FC = () => {
     }
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [windowWidth, isRightPanelCollapsed, wasAutoCollapsed, setRightPanelCollapsed]);
+  }, [
+    windowWidth,
+    isRightPanelCollapsed,
+    wasAutoCollapsed,
+    setRightPanelCollapsed,
+  ]);
 
   return (
     <Box
@@ -150,17 +164,24 @@ export const DashboardPage: React.FC = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <UploadFileIcon sx={{ fontSize: 60, color: "primary.main" }} />
+                  <UploadFileIcon
+                    sx={{ fontSize: 60, color: "primary.main" }}
+                  />
                 </Box>
 
                 {/* Heading */}
                 <Typography variant="h4" fontWeight="500" textAlign="center">
-                  {t('dashboard.dashboardPage.noFileLoaded')}
+                  {t("dashboard.dashboardPage.noFileLoaded")}
                 </Typography>
 
                 {/* Description */}
-                <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ maxWidth: 500 }}>
-                  {t('dashboard.dashboardPage.emptyStateDescription')}
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  textAlign="center"
+                  sx={{ maxWidth: 500 }}
+                >
+                  {t("dashboard.dashboardPage.emptyStateDescription")}
                 </Typography>
 
                 {/* Import Button */}
@@ -172,12 +193,16 @@ export const DashboardPage: React.FC = () => {
                   data-testid="empty-state-import-button"
                   sx={{ mt: 2 }}
                 >
-                  {t('dashboard.dashboardPage.importData')}
+                  {t("dashboard.dashboardPage.importData")}
                 </Button>
 
                 {/* Optional: Sample data hint */}
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 2 }}>
-                  {t('dashboard.dashboardPage.sampleFileHint')}
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mt: 2 }}
+                >
+                  {t("dashboard.dashboardPage.sampleFileHint")}
                 </Typography>
               </Box>
 
@@ -187,7 +212,9 @@ export const DashboardPage: React.FC = () => {
               />
             </>
           ) : (
-            <Box sx={{ height: "100%", width: "100%", p: 2, position: "relative" }}>
+            <Box
+              sx={{ height: "100%", width: "100%", p: 2, position: "relative" }}
+            >
               <PanelGroup
                 direction="horizontal"
                 onLayout={(sizes) => {
@@ -201,7 +228,16 @@ export const DashboardPage: React.FC = () => {
                 }}
               >
                 <Panel defaultSize={100 - rightPanelSize} minSize={30}>
-                  <Box sx={{ height: "100%", width: "100%", overflow: "auto", pr: 1, display: "flex", flexDirection: "column" }}>
+                  <Box
+                    sx={{
+                      height: "100%",
+                      width: "100%",
+                      overflow: "auto",
+                      pr: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <NineBoxGrid />
                   </Box>
                 </Panel>
@@ -261,7 +297,14 @@ export const DashboardPage: React.FC = () => {
               </PanelGroup>
 
               {/* Toggle button */}
-              <Tooltip title={isRightPanelCollapsed ? t('dashboard.dashboardPage.showPanel') : t('dashboard.dashboardPage.hidePanel')} placement="left">
+              <Tooltip
+                title={
+                  isRightPanelCollapsed
+                    ? t("dashboard.dashboardPage.showPanel")
+                    : t("dashboard.dashboardPage.hidePanel")
+                }
+                placement="left"
+              >
                 <IconButton
                   onClick={toggleRightPanel}
                   data-testid="panel-toggle-button"
@@ -277,7 +320,11 @@ export const DashboardPage: React.FC = () => {
                     },
                   }}
                 >
-                  {isRightPanelCollapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                  {isRightPanelCollapsed ? (
+                    <ChevronLeftIcon />
+                  ) : (
+                    <ChevronRightIcon />
+                  )}
                 </IconButton>
               </Tooltip>
 

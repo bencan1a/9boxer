@@ -33,7 +33,10 @@ interface SessionState {
     performance: string,
     potential: string
   ) => Promise<void>;
-  updateEmployee: (employeeId: number, updates: Partial<Employee>) => Promise<void>;
+  updateEmployee: (
+    employeeId: number,
+    updates: Partial<Employee>
+  ) => Promise<void>;
   updateChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   updateDonutChangeNotes: (employeeId: number, notes: string) => Promise<void>;
   selectEmployee: (employeeId: number | null) => void;
@@ -101,7 +104,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to upload file', error);
+      logger.error("Failed to upload file", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -132,7 +135,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to clear session', error);
+      logger.error("Failed to clear session", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -152,7 +155,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to load employees', error);
+      logger.error("Failed to load employees", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -187,7 +190,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         changes = changes.filter((c) => c.employee_id !== employeeId);
       } else {
         // Employee is modified - update or add change entry
-        const existingChangeIndex = changes.findIndex((c) => c.employee_id === employeeId);
+        const existingChangeIndex = changes.findIndex(
+          (c) => c.employee_id === employeeId
+        );
         if (existingChangeIndex >= 0) {
           // Update existing change entry
           changes = [...changes];
@@ -206,7 +211,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to move employee', error);
+      logger.error("Failed to move employee", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -233,7 +238,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update employee', error);
+      logger.error("Failed to update employee", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -245,7 +250,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   updateChangeNotes: async (employeeId: number, notes: string) => {
     set({ isLoading: true, error: null });
     try {
-      const updatedChange = await apiClient.updateChangeNotes(employeeId, notes);
+      const updatedChange = await apiClient.updateChangeNotes(
+        employeeId,
+        notes
+      );
 
       // Update change in history
       const changes = get().changes.map((change) =>
@@ -259,7 +267,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update change notes', error);
+      logger.error("Failed to update change notes", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -271,7 +279,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   updateDonutChangeNotes: async (employeeId: number, notes: string) => {
     set({ isLoading: true, error: null });
     try {
-      const updatedChange = await apiClient.updateDonutChangeNotes(employeeId, notes);
+      const updatedChange = await apiClient.updateDonutChangeNotes(
+        employeeId,
+        notes
+      );
 
       // Update donut change in history
       const donutChanges = get().donutChanges.map((change) =>
@@ -285,7 +296,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to update donut change notes', error);
+      logger.error("Failed to update donut change notes", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -384,7 +395,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
       return false;
     } catch (error: unknown) {
-      logger.error('Failed to restore session', error);
+      logger.error("Failed to restore session", error);
       set({
         sessionId: null,
         isLoading: false,
@@ -408,7 +419,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to toggle donut mode', error);
+      logger.error("Failed to toggle donut mode", error);
       set({
         isLoading: false,
         error: errorMessage,
@@ -445,7 +456,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutChanges = donutChanges.filter((c) => c.employee_id !== employeeId);
       } else {
         // Employee is modified - update or add change entry
-        const existingChangeIndex = donutChanges.findIndex((c) => c.employee_id === employeeId);
+        const existingChangeIndex = donutChanges.findIndex(
+          (c) => c.employee_id === employeeId
+        );
         if (existingChangeIndex >= 0) {
           // Update existing change entry
           donutChanges = [...donutChanges];
@@ -464,7 +477,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       });
     } catch (error: unknown) {
       const errorMessage = extractErrorMessage(error);
-      logger.error('Failed to move employee in donut mode', error);
+      logger.error("Failed to move employee in donut mode", error);
       set({
         isLoading: false,
         error: errorMessage,

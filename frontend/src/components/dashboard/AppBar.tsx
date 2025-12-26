@@ -45,43 +45,53 @@ export const AppBar: React.FC = () => {
       if (window.electronAPI?.openUserGuide) {
         const result = await window.electronAPI.openUserGuide();
         if (!result.success) {
-          showError(result.error || t('dashboard.appBar.userGuideError'));
+          showError(result.error || t("dashboard.appBar.userGuideError"));
         }
       } else {
         // Fallback for web browser (not typically used)
-        showError(t('dashboard.appBar.userGuideOnlyDesktop'));
+        showError(t("dashboard.appBar.userGuideOnlyDesktop"));
       }
     } catch (error: unknown) {
-      logger.error('Failed to open user guide', error);
-      showError(t('dashboard.appBar.userGuideError'));
+      logger.error("Failed to open user guide", error);
+      showError(t("dashboard.appBar.userGuideError"));
     }
   };
 
   // Build filter tooltip message
   const getFilterTooltip = (): string => {
     if (!hasActiveFilters) {
-      return t('dashboard.appBar.filterEmployees');
+      return t("dashboard.appBar.filterEmployees");
     }
 
     const filterParts: string[] = [];
 
     if (selectedLevels.length > 0) {
-      filterParts.push(`${t('dashboard.appBar.levels')}: ${selectedLevels.join(", ")}`);
+      filterParts.push(
+        `${t("dashboard.appBar.levels")}: ${selectedLevels.join(", ")}`
+      );
     }
     if (selectedJobFunctions.length > 0) {
-      filterParts.push(`${t('dashboard.appBar.functions')}: ${selectedJobFunctions.join(", ")}`);
+      filterParts.push(
+        `${t("dashboard.appBar.functions")}: ${selectedJobFunctions.join(", ")}`
+      );
     }
     if (selectedLocations.length > 0) {
-      filterParts.push(`${t('dashboard.appBar.locations')}: ${selectedLocations.join(", ")}`);
+      filterParts.push(
+        `${t("dashboard.appBar.locations")}: ${selectedLocations.join(", ")}`
+      );
     }
     if (selectedManagers.length > 0) {
-      filterParts.push(`${t('dashboard.appBar.managers')}: ${selectedManagers.join(", ")}`);
+      filterParts.push(
+        `${t("dashboard.appBar.managers")}: ${selectedManagers.join(", ")}`
+      );
     }
     if (excludedEmployeeIds.length > 0) {
-      filterParts.push(`${t('dashboard.appBar.excluded')}: ${excludedEmployeeIds.length} ${t('dashboard.appBar.employees')}`);
+      filterParts.push(
+        `${t("dashboard.appBar.excluded")}: ${excludedEmployeeIds.length} ${t("dashboard.appBar.employees")}`
+      );
     }
 
-    return `${t('dashboard.appBar.activeFilters')}\n${filterParts.join("\n")}`;
+    return `${t("dashboard.appBar.activeFilters")}\n${filterParts.join("\n")}`;
   };
 
   return (
@@ -92,11 +102,11 @@ export const AppBar: React.FC = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <img
               src="/build/icon_32x32.png"
-              alt={t('app.logoAlt')}
+              alt={t("app.logoAlt")}
               style={{ width: 28, height: 28 }}
             />
             <Typography variant="h6" component="div">
-              {t('app.title')}
+              {t("app.title")}
             </Typography>
           </Box>
 
@@ -118,7 +128,7 @@ export const AppBar: React.FC = () => {
                   color="warning"
                   data-testid="filter-badge"
                   sx={{
-                    '& .MuiBadge-badge': {
+                    "& .MuiBadge-badge": {
                       right: -3,
                       top: 8,
                     },
@@ -136,7 +146,7 @@ export const AppBar: React.FC = () => {
               </span>
             </Tooltip>
 
-            <Tooltip title={t('dashboard.appBar.settings')}>
+            <Tooltip title={t("dashboard.appBar.settings")}>
               <IconButton
                 color="inherit"
                 onClick={() => setSettingsDialogOpen(true)}
@@ -146,7 +156,7 @@ export const AppBar: React.FC = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={t('dashboard.appBar.help')}>
+            <Tooltip title={t("dashboard.appBar.help")}>
               <IconButton
                 color="inherit"
                 onClick={handleOpenHelp}

@@ -23,7 +23,10 @@ interface UiState {
 
   // Actions
   toggleRightPanel: () => void;
-  setRightPanelCollapsed: (collapsed: boolean, isAutoCollapse?: boolean) => void;
+  setRightPanelCollapsed: (
+    collapsed: boolean,
+    isAutoCollapse?: boolean
+  ) => void;
   setRightPanelSize: (size: number) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setSystemTheme: (theme: Theme) => void;

@@ -3,7 +3,12 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+} from "@dnd-kit/core";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { GridBox } from "./GridBox";
@@ -29,21 +34,25 @@ export const NineBoxGrid: React.FC = () => {
   const { donutModeActive, moveEmployeeDonut } = useSessionStore();
 
   const [activeEmployee, setActiveEmployee] = useState<Employee | null>(null);
-  const [expandedPosition, setExpandedPosition] = useState<number | null>(() => {
-    // Restore from localStorage on mount
-    const stored = localStorage.getItem(EXPANDED_POSITION_STORAGE_KEY);
-    if (stored) {
-      const parsed = parseInt(stored, 10);
-      // Validate position is 1-9 and not NaN
-      if (!isNaN(parsed) && parsed >= 1 && parsed <= 9) {
-        return parsed;
+  const [expandedPosition, setExpandedPosition] = useState<number | null>(
+    () => {
+      // Restore from localStorage on mount
+      const stored = localStorage.getItem(EXPANDED_POSITION_STORAGE_KEY);
+      if (stored) {
+        const parsed = parseInt(stored, 10);
+        // Validate position is 1-9 and not NaN
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= 9) {
+          return parsed;
+        }
       }
+      return null;
     }
-    return null;
-  });
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
-    const employee = event.active.data.current?.employee as Employee | undefined;
+    const employee = event.active.data.current?.employee as
+      | Employee
+      | undefined;
     if (employee) {
       setActiveEmployee(employee);
     }
@@ -76,7 +85,7 @@ export const NineBoxGrid: React.FC = () => {
         await moveEmployee(employee.employee_id, performance, potential);
       }
     } catch (error) {
-      logger.error('Failed to move employee', error);
+      logger.error("Failed to move employee", error);
     }
   };
 
@@ -178,30 +187,45 @@ export const NineBoxGrid: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <Box sx={{ p: 3, minHeight: "calc(100vh - 80px)", width: "100%", userSelect: "none", display: "flex", flexDirection: "column" }} data-testid="nine-box-grid">
+      <Box
+        sx={{
+          p: 3,
+          minHeight: "calc(100vh - 80px)",
+          width: "100%",
+          userSelect: "none",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        data-testid="nine-box-grid"
+      >
         {/* Header row with Performance label, employee count, and view mode toggle */}
-        <Box sx={{ display: "flex", mb: 2, width: "100%", alignItems: "center" }}>
+        <Box
+          sx={{ display: "flex", mb: 2, width: "100%", alignItems: "center" }}
+        >
           <Box sx={{ width: 80 }} /> {/* Spacer for left label alignment */}
-
-          <Box sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 2
-          }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             {/* Left: Empty for balance */}
             <Box sx={{ width: 120 }} />
 
             {/* Center: Performance label + Employee count */}
-            <Box sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              flexDirection: { xs: "column", sm: "row" }
-            }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+            >
               <Typography variant="h6" fontWeight="bold">
-                {t('grid.axes.performance')}
+                {t("grid.axes.performance")}
               </Typography>
               <EmployeeCount />
             </Box>
@@ -226,7 +250,7 @@ export const NineBoxGrid: React.FC = () => {
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              {t('grid.axes.potential')}
+              {t("grid.axes.potential")}
             </Typography>
           </Box>
 
@@ -250,7 +274,9 @@ export const NineBoxGrid: React.FC = () => {
                 shortLabel={getShortPositionLabel(position)}
                 onSelectEmployee={selectEmployee}
                 isExpanded={expandedPosition === position}
-                isCollapsed={expandedPosition !== null && expandedPosition !== position}
+                isCollapsed={
+                  expandedPosition !== null && expandedPosition !== position
+                }
                 onExpand={() => handleExpandBox(position)}
                 onCollapse={handleCollapseBox}
                 donutModeActive={donutModeActive}
@@ -278,14 +304,29 @@ export const NineBoxGrid: React.FC = () => {
               <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
                 {activeEmployee.name}
               </Typography>
-              <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontSize="0.75rem"
+              >
                 {activeEmployee.business_title}
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
-                <Chip label={activeEmployee.job_level} size="small" sx={{ height: 18 }} />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
+              >
+                <Chip
+                  label={activeEmployee.job_level}
+                  size="small"
+                  sx={{ height: 18 }}
+                />
                 {activeEmployee.modified_in_session && (
                   <Chip
-                    label={t('grid.gridBox.modified')}
+                    label={t("grid.gridBox.modified")}
                     size="small"
                     color="secondary"
                     sx={{ height: 18 }}

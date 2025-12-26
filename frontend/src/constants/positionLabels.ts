@@ -5,7 +5,7 @@
  * translation files under grid.positions.{position}.{field}
  */
 
-import { i18n } from '../i18n';
+import { i18n } from "../i18n";
 
 export interface PositionInfo {
   name: string;
@@ -23,9 +23,9 @@ export function getPositionInfo(position: number): PositionInfo {
   // Validate position is in range
   if (position < 1 || position > 9) {
     return {
-      name: i18n.t('grid.positions.unknown', 'Unknown'),
+      name: i18n.t("grid.positions.unknown", "Unknown"),
       shortLabel: "",
-      fullLabel: i18n.t('grid.positions.unknown', 'Unknown'),
+      fullLabel: i18n.t("grid.positions.unknown", "Unknown"),
       guidance: "",
     };
   }

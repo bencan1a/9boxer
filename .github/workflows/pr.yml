@@ -122,6 +122,21 @@ jobs:
       - name: Check YAML files
         run: make check-yaml
 
+      - name: Setup Node.js for frontend checks
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint frontend with ESLint
+        working-directory: frontend
+        run: npm run lint
+
   type-check:
     name: Type Check
     runs-on: windows-latest

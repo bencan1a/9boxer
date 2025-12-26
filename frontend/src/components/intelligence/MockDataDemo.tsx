@@ -193,8 +193,8 @@ export const MockDataDemo: React.FC = () => {
         Intelligence Tab Visualizations - Mock Data Demo
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        This page demonstrates the three visualization components with mock data.
-        These components will be integrated into the Intelligence Tab.
+        This page demonstrates the three visualization components with mock
+        data. These components will be integrated into the Intelligence Tab.
       </Typography>
 
       <Divider sx={{ my: 3 }} />
@@ -235,9 +235,9 @@ export const MockDataDemo: React.FC = () => {
           3. Level Distribution Chart
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Stacked bar chart showing performance distribution by job level.
-          The baseline represents overall average high performance percentage.
-          Note: MT6 shows 60% high performers which may indicate leniency bias.
+          Stacked bar chart showing performance distribution by job level. The
+          baseline represents overall average high performance percentage. Note:
+          MT6 shows 60% high performers which may indicate leniency bias.
         </Typography>
         <LevelDistributionChart
           data={mockLevelDistributions}

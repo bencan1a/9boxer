@@ -83,14 +83,28 @@ export const FilterDrawer: React.FC = () => {
           },
         }}
       >
-        <Box sx={{ p: 2, height: "100%", display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            p: 2,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <FilterListIcon sx={{ mr: 1, color: theme.palette.text.primary }} />
-            <Typography variant="h6" sx={{ flexGrow: 1, color: theme.palette.text.primary }}>
-              {t('dashboard.filterDrawer.title')}
+            <Typography
+              variant="h6"
+              sx={{ flexGrow: 1, color: theme.palette.text.primary }}
+            >
+              {t("dashboard.filterDrawer.title")}
             </Typography>
-            <IconButton size="small" onClick={toggleDrawer} data-testid="filter-close-button">
+            <IconButton
+              size="small"
+              onClick={toggleDrawer}
+              data-testid="filter-close-button"
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -111,10 +125,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.jobLevels')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.jobLevels")}
                   {selectedLevels.length > 0 && (
-                    <Chip label={selectedLevels.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedLevels.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -150,10 +172,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.jobFunctions')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.jobFunctions")}
                   {selectedJobFunctions.length > 0 && (
-                    <Chip label={selectedJobFunctions.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedJobFunctions.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -171,7 +201,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {jobFunction}
                         </Typography>
                       }
@@ -193,10 +226,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.locations')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.locations")}
                   {selectedLocations.length > 0 && (
-                    <Chip label={selectedLocations.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedLocations.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -214,7 +255,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {location}
                         </Typography>
                       }
@@ -235,10 +279,18 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.managers')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.managers")}
                   {selectedManagers.length > 0 && (
-                    <Chip label={selectedManagers.length} size="small" sx={{ ml: 1 }} />
+                    <Chip
+                      label={selectedManagers.length}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -256,7 +308,10 @@ export const FilterDrawer: React.FC = () => {
                         />
                       }
                       label={
-                        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {manager}
                         </Typography>
                       }
@@ -279,10 +334,19 @@ export const FilterDrawer: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                  {t('dashboard.filterDrawer.exclusions')}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {t("dashboard.filterDrawer.exclusions")}
                   {excludedEmployeeIds.length > 0 && (
-                    <Chip label={excludedEmployeeIds.length} size="small" color="warning" sx={{ ml: 1 }} />
+                    <Chip
+                      label={excludedEmployeeIds.length}
+                      size="small"
+                      color="warning"
+                      sx={{ ml: 1 }}
+                    />
                   )}
                 </Typography>
               </AccordionSummary>
@@ -295,7 +359,7 @@ export const FilterDrawer: React.FC = () => {
                     onClick={() => setExclusionDialogOpen(true)}
                     data-testid="exclude-employees-button"
                   >
-                    {t('dashboard.filterDrawer.excludeEmployees')}
+                    {t("dashboard.filterDrawer.excludeEmployees")}
                   </Button>
                 </Box>
               </AccordionDetails>
@@ -311,7 +375,7 @@ export const FilterDrawer: React.FC = () => {
               onClick={clearAllFilters}
               data-testid="clear-filter-button"
             >
-              {t('dashboard.filterDrawer.clearAllFilters')}
+              {t("dashboard.filterDrawer.clearAllFilters")}
             </Button>
           </Box>
         </Box>

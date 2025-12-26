@@ -59,11 +59,15 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, value }) => {
   );
 };
 
-export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) => {
+export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
+  employee,
+}) => {
   const { t } = useTranslation();
   const updateEmployee = useSessionStore((state) => state.updateEmployee);
 
-  const handlePromotionReadinessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePromotionReadinessChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     updateEmployee(employee.employee_id, {
       promotion_readiness: event.target.checked,
     });
@@ -87,14 +91,29 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
         {/* Employee Information */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" color="primary" gutterBottom>
-            {t('panel.detailsTab.employeeInformation')}
+            {t("panel.detailsTab.employeeInformation")}
           </Typography>
           <Grid container spacing={1} sx={{ mt: 1 }}>
-            <InfoRow label={t('panel.detailsTab.jobFunction')} value={employee.job_function} />
-            <InfoRow label={t('panel.detailsTab.location')} value={employee.location} />
-            <InfoRow label={t('panel.detailsTab.jobLevel')} value={employee.job_level} />
-            <InfoRow label={t('panel.detailsTab.tenure')} value={employee.tenure_category} />
-            <InfoRow label={t('panel.detailsTab.timeInLevel')} value={employee.time_in_job_profile} />
+            <InfoRow
+              label={t("panel.detailsTab.jobFunction")}
+              value={employee.job_function}
+            />
+            <InfoRow
+              label={t("panel.detailsTab.location")}
+              value={employee.location}
+            />
+            <InfoRow
+              label={t("panel.detailsTab.jobLevel")}
+              value={employee.job_level}
+            />
+            <InfoRow
+              label={t("panel.detailsTab.tenure")}
+              value={employee.tenure_category}
+            />
+            <InfoRow
+              label={t("panel.detailsTab.timeInLevel")}
+              value={employee.time_in_job_profile}
+            />
           </Grid>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
@@ -107,7 +126,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
               }
               label={
                 <Typography variant="body2" color="text.secondary">
-                  {t('panel.detailsTab.promotionReady')}
+                  {t("panel.detailsTab.promotionReady")}
                 </Typography>
               }
             />
@@ -119,13 +138,15 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
         {/* Current Assessment */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" color="primary" gutterBottom>
-            {t('panel.detailsTab.currentAssessment')}
+            {t("panel.detailsTab.currentAssessment")}
           </Typography>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+              >
                 <Typography variant="body2" color="text.secondary">
-                  {t('panel.detailsTab.potential')}
+                  {t("panel.detailsTab.potential")}
                 </Typography>
                 <Chip
                   label={employee.potential}
@@ -133,9 +154,11 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
                   size="small"
                 />
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+              >
                 <Typography variant="body2" color="text.secondary">
-                  {t('panel.detailsTab.position')}
+                  {t("panel.detailsTab.position")}
                 </Typography>
                 <Typography variant="body2" fontWeight="medium">
                   {getPositionLabel(employee.grid_position)}
@@ -144,7 +167,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employee }) =>
               {employee.modified_in_session && (
                 <Box sx={{ mt: 2 }}>
                   <Chip
-                    label={t('panel.detailsTab.modifiedInSession')}
+                    label={t("panel.detailsTab.modifiedInSession")}
                     color="warning"
                     size="small"
                     variant="outlined"

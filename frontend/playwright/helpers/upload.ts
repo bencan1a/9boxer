@@ -18,11 +18,11 @@ import * as path from "path";
  */
 export async function uploadExcelFile(
   page: Page,
-  fileName: string,
+  fileName: string
 ): Promise<void> {
   // Try to click the empty state import button first (if no file loaded)
   const emptyStateButton = page.locator(
-    '[data-testid="empty-state-import-button"]',
+    '[data-testid="empty-state-import-button"]'
   );
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
 
@@ -43,7 +43,7 @@ export async function uploadExcelFile(
 
   // Wait for the dialog to open
   await expect(
-    page.locator('[data-testid="file-upload-dialog"]'),
+    page.locator('[data-testid="file-upload-dialog"]')
   ).toBeVisible();
 
   // Construct the path to the fixture file
@@ -57,6 +57,6 @@ export async function uploadExcelFile(
 
   // Wait for upload to complete (dialog should close)
   await expect(
-    page.locator('[data-testid="file-upload-dialog"]'),
+    page.locator('[data-testid="file-upload-dialog"]')
   ).not.toBeVisible({ timeout: 10000 });
 }

@@ -2,8 +2,8 @@
  * Custom hooks for i18n functionality
  */
 
-import { useTranslation } from 'react-i18next';
-import type { TranslationKeys, TranslationOptions } from './types';
+import { useTranslation } from "react-i18next";
+import type { TranslationKeys, TranslationOptions } from "./types";
 
 /**
  * Type-safe wrapper around useTranslation hook
@@ -40,7 +40,11 @@ export const useTranslatedPlural = () => {
   const { t } = useTypedTranslation();
 
   return {
-    translatePlural: (key: TranslationKeys, count: number, options?: TranslationOptions) => {
+    translatePlural: (
+      key: TranslationKeys,
+      count: number,
+      options?: TranslationOptions
+    ) => {
       return t(key, { count, ...options });
     },
   };

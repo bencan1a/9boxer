@@ -181,7 +181,10 @@ class ApiClient {
     return response.data;
   }
 
-  async updateChangeNotes(employeeId: number, notes: string): Promise<EmployeeMove> {
+  async updateChangeNotes(
+    employeeId: number,
+    notes: string
+  ): Promise<EmployeeMove> {
     const response = await this.client.patch<EmployeeMove>(
       `/api/session/changes/${employeeId}/notes`,
       { notes }
@@ -189,7 +192,10 @@ class ApiClient {
     return response.data;
   }
 
-  async updateDonutChangeNotes(employeeId: number, notes: string): Promise<EmployeeMove> {
+  async updateDonutChangeNotes(
+    employeeId: number,
+    notes: string
+  ): Promise<EmployeeMove> {
     const response = await this.client.patch<EmployeeMove>(
       `/api/session/donut-changes/${employeeId}/notes`,
       { notes }
@@ -241,9 +247,12 @@ class ApiClient {
         params.append("potential", filters.potential.join(","));
       }
 
-      const response = await this.client.get<EmployeesResponse>("/api/employees", {
-        params,
-      });
+      const response = await this.client.get<EmployeesResponse>(
+        "/api/employees",
+        {
+          params,
+        }
+      );
       return response.data;
     });
   }
@@ -311,7 +320,8 @@ class ApiClient {
 
   async getStatistics(): Promise<StatisticsResponse> {
     return withRetry(async () => {
-      const response = await this.client.get<StatisticsResponse>("/api/statistics");
+      const response =
+        await this.client.get<StatisticsResponse>("/api/statistics");
       return response.data;
     });
   }
@@ -320,7 +330,8 @@ class ApiClient {
 
   async getIntelligence(): Promise<IntelligenceData> {
     return withRetry(async () => {
-      const response = await this.client.get<IntelligenceData>("/api/intelligence");
+      const response =
+        await this.client.get<IntelligenceData>("/api/intelligence");
       return response.data;
     });
   }

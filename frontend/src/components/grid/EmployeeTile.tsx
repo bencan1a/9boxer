@@ -30,7 +30,11 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     });
 
   const handleCardClick = () => {
-    logger.debug('Card clicked - selecting employee:', employee.employee_id, employee.name);
+    logger.debug(
+      "Card clicked - selecting employee:",
+      employee.employee_id,
+      employee.name
+    );
     onSelect(employee.employee_id);
   };
 
@@ -38,9 +42,10 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   const isDonutModified = donutModeActive && employee.donut_modified;
 
   // Determine which position label to show
-  const displayLabel = donutModeActive && employee.donut_position
-    ? getPositionLabel(employee.donut_position)
-    : getPositionLabel(employee.grid_position);
+  const displayLabel =
+    donutModeActive && employee.donut_position
+      ? getPositionLabel(employee.donut_position)
+      : getPositionLabel(employee.grid_position);
 
   return (
     <Card
@@ -54,7 +59,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         borderLeftColor: "secondary.main",
         cursor: "pointer",
         display: "flex",
-        opacity: isDragging ? 0.5 : (isDonutModified ? 0.7 : 1),
+        opacity: isDragging ? 0.5 : isDonutModified ? 0.7 : 1,
         userSelect: "none",
         border: isDonutModified ? 2 : 0,
         borderStyle: isDonutModified ? "solid" : "none",
@@ -66,7 +71,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       }}
       data-testid={`employee-card-${employee.employee_id}`}
       data-position={employee.grid_position}
-      data-donut-position={employee.donut_position || ''}
+      data-donut-position={employee.donut_position || ""}
     >
       {/* Drag Handle */}
       <Box
@@ -99,7 +104,15 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
           {employee.business_title}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5, flexWrap: "wrap" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            mt: 0.5,
+            flexWrap: "wrap",
+          }}
+        >
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
           {employee.modified_in_session && (
             <Chip

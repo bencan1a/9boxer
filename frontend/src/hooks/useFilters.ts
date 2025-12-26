@@ -14,9 +14,36 @@ export interface FilterOptions {
 
 // European country codes (ISO 3166-1 alpha-3)
 const EUROPEAN_COUNTRIES = new Set([
-  "GBR", "FRA", "DEU", "ITA", "ESP", "NLD", "BEL", "SWE", "NOR", "DNK",
-  "FIN", "POL", "AUT", "CHE", "IRL", "PRT", "GRC", "CZE", "HUN", "ROU",
-  "BGR", "HRV", "SVK", "SVN", "LTU", "LVA", "EST", "LUX", "MLT", "CYP"
+  "GBR",
+  "FRA",
+  "DEU",
+  "ITA",
+  "ESP",
+  "NLD",
+  "BEL",
+  "SWE",
+  "NOR",
+  "DNK",
+  "FIN",
+  "POL",
+  "AUT",
+  "CHE",
+  "IRL",
+  "PRT",
+  "GRC",
+  "CZE",
+  "HUN",
+  "ROU",
+  "BGR",
+  "HRV",
+  "SVK",
+  "SVN",
+  "LTU",
+  "LVA",
+  "EST",
+  "LUX",
+  "MLT",
+  "CYP",
 ]);
 
 /**
@@ -28,10 +55,10 @@ const mapLocationToDisplay = (locationCode: string): string => {
   }
 
   const locationMap: Record<string, string> = {
-    "AUS": "Australia",
-    "IND": "India",
-    "USA": "USA",
-    "CAN": "Canada",
+    AUS: "Australia",
+    IND: "India",
+    USA: "USA",
+    CAN: "Canada",
   };
 
   return locationMap[locationCode] || locationCode;
@@ -118,11 +145,7 @@ export const useFilters = () => {
 
     // Extract unique job functions
     const jobFunctions = Array.from(
-      new Set(
-        employees
-          .map((emp) => emp.job_function)
-          .filter(Boolean)
-      )
+      new Set(employees.map((emp) => emp.job_function).filter(Boolean))
     ).sort();
 
     // Extract unique locations and map to display names

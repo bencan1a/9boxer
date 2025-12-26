@@ -5,15 +5,22 @@
  * Positioned in bottom-left of the grid area, hidden on small screens.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, ButtonGroup, IconButton, Tooltip, Typography, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Box,
+  ButtonGroup,
+  IconButton,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+import { useTranslation } from "react-i18next";
 import {
   zoomIn,
   zoomOut,
@@ -24,21 +31,23 @@ import {
   isAtDefaultZoom,
   saveZoomLevel,
   loadSavedZoom,
-} from '../../services/zoomService';
+} from "../../services/zoomService";
 
 export const ZoomControls: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
 
   // State
-  const [zoomPercentage, setZoomPercentage] = useState(getCurrentZoomPercentage());
+  const [zoomPercentage, setZoomPercentage] = useState(
+    getCurrentZoomPercentage()
+  );
   const [canZoomInState, setCanZoomInState] = useState(canZoomIn());
   const [canZoomOutState, setCanZoomOutState] = useState(canZoomOut());
   const [isDefault, setIsDefault] = useState(isAtDefaultZoom());
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Hide on small screens (< 600px width)
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   /**
    * Update zoom state after any zoom operation.
@@ -82,12 +91,12 @@ export const ZoomControls: React.FC = () => {
     if (!document.fullscreenElement) {
       // Enter full-screen
       document.documentElement.requestFullscreen().catch((err) => {
-        console.error('[ZoomControls] Failed to enter full-screen:', err);
+        console.error("[ZoomControls] Failed to enter full-screen:", err);
       });
     } else {
       // Exit full-screen
       document.exitFullscreen().catch((err) => {
-        console.error('[ZoomControls] Failed to exit full-screen:', err);
+        console.error("[ZoomControls] Failed to exit full-screen:", err);
       });
     }
   }, []);
@@ -98,29 +107,29 @@ export const ZoomControls: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ctrl/Cmd + Plus (Zoom In)
-      if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "+" || e.key === "=")) {
         e.preventDefault();
         handleZoomIn();
       }
       // Ctrl/Cmd + Minus (Zoom Out)
-      else if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+      else if ((e.ctrlKey || e.metaKey) && e.key === "-") {
         e.preventDefault();
         handleZoomOut();
       }
       // Ctrl/Cmd + 0 (Reset Zoom)
-      else if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+      else if ((e.ctrlKey || e.metaKey) && e.key === "0") {
         e.preventDefault();
         handleResetZoom();
       }
       // F11 (Toggle Full-Screen)
-      else if (e.key === 'F11') {
+      else if (e.key === "F11") {
         e.preventDefault();
         handleToggleFullScreen();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleZoomIn, handleZoomOut, handleResetZoom, handleToggleFullScreen]);
 
   /**
@@ -141,8 +150,8 @@ export const ZoomControls: React.FC = () => {
     };
 
     // Use capture phase to intercept before browser's default zoom
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => window.removeEventListener('wheel', handleWheel);
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
   }, [handleZoomIn, handleZoomOut]);
 
   /**
@@ -153,8 +162,9 @@ export const ZoomControls: React.FC = () => {
       setIsFullScreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
   }, []);
 
   /**
@@ -174,22 +184,22 @@ export const ZoomControls: React.FC = () => {
     <Box
       data-testid="zoom-controls"
       sx={{
-        position: 'fixed',
+        position: "fixed",
         bottom: 16,
         left: 16,
         zIndex: 10,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 1,
         boxShadow: 3,
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
         gap: 1,
         p: 0.5,
       }}
     >
       {/* Zoom Controls */}
       <ButtonGroup variant="outlined" size="small">
-        <Tooltip title={t('zoom.zoomOut', 'Zoom Out (Ctrl+-)')}>
+        <Tooltip title={t("zoom.zoomOut", "Zoom Out (Ctrl+-)")}>
           <span>
             <IconButton
               onClick={handleZoomOut}
@@ -202,7 +212,7 @@ export const ZoomControls: React.FC = () => {
           </span>
         </Tooltip>
 
-        <Tooltip title={t('zoom.resetZoom', 'Reset Zoom (Ctrl+0)')}>
+        <Tooltip title={t("zoom.resetZoom", "Reset Zoom (Ctrl+0)")}>
           <span>
             <IconButton
               onClick={handleResetZoom}
@@ -215,7 +225,7 @@ export const ZoomControls: React.FC = () => {
           </span>
         </Tooltip>
 
-        <Tooltip title={t('zoom.zoomIn', 'Zoom In (Ctrl++)')}>
+        <Tooltip title={t("zoom.zoomIn", "Zoom In (Ctrl++)")}>
           <span>
             <IconButton
               onClick={handleZoomIn}
@@ -234,24 +244,34 @@ export const ZoomControls: React.FC = () => {
         variant="caption"
         data-testid="zoom-percentage"
         sx={{
-          minWidth: '45px',
-          textAlign: 'center',
+          minWidth: "45px",
+          textAlign: "center",
           fontWeight: 500,
-          color: 'text.secondary',
+          color: "text.secondary",
         }}
       >
         {zoomPercentage}
       </Typography>
 
       {/* Full-Screen Toggle */}
-      <Tooltip title={isFullScreen ? t('zoom.exitFullScreen', 'Exit Full-Screen (F11)') : t('zoom.enterFullScreen', 'Full-Screen (F11)')}>
+      <Tooltip
+        title={
+          isFullScreen
+            ? t("zoom.exitFullScreen", "Exit Full-Screen (F11)")
+            : t("zoom.enterFullScreen", "Full-Screen (F11)")
+        }
+      >
         <IconButton
           onClick={handleToggleFullScreen}
           data-testid="fullscreen-toggle-button"
           size="small"
           sx={{ ml: 0.5 }}
         >
-          {isFullScreen ? <FullscreenExitIcon fontSize="small" /> : <FullscreenIcon fontSize="small" />}
+          {isFullScreen ? (
+            <FullscreenExitIcon fontSize="small" />
+          ) : (
+            <FullscreenIcon fontSize="small" />
+          )}
         </IconButton>
       </Tooltip>
     </Box>

@@ -329,6 +329,8 @@ The pre-commit hooks run the same checks as CI:
 - **Ruff lint**: Code linting (matches `make lint`)
 - **Mypy**: Type checking (matches `make type-check`)
 - **Bandit**: Security scanning (matches `make security`)
+- **Prettier**: Frontend code formatting
+- **ESLint**: Frontend code linting (TypeScript/JavaScript)
 - **YAML/JSON validation**: File syntax checks
 - **Basic checks**: Trailing whitespace, end-of-file fixers, merge conflicts
 
