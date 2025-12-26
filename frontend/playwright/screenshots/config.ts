@@ -406,6 +406,181 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle",
     storyId: "common-zoomcontrols--default",
   },
+
+  // ViewControls consolidation screenshots (6 screenshots)
+  "view-controls-main-interface": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateMainInterface",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/main-interface.png",
+    description:
+      "Main dashboard showing new simplified AppBar and floating ViewControls in top-right",
+    cropping: "full-page",
+    dimensions: { minWidth: 1200, minHeight: 800 },
+  },
+  "view-controls-grid-view": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateViewControlsGrid",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png",
+    description:
+      "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
+  },
+  "view-controls-donut-view": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateViewControlsDonut",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
+    description: "ViewControls toolbar with Donut view active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
+  },
+  "view-controls-settings-dialog": {
+    source: "storybook",
+    workflow: "view-controls",
+    function: "generateSettingsDialog",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png",
+    description:
+      "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
+    storyId: "settings-settingsdialog--open",
+    cropping: "container",
+    dimensions: { minWidth: 400, minHeight: 300 },
+  },
+  "view-controls-simplified-appbar": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateSimplifiedAppBar",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png",
+    description:
+      "Simplified AppBar showing only Logo, File menu, Help button, and Settings button",
+    cropping: "element",
+    dimensions: { minWidth: 800, minHeight: 64 },
+  },
+  "view-controls-fullscreen": {
+    source: "full-app",
+    workflow: "view-controls",
+    function: "generateFullscreenMode",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/fullscreen-mode.png",
+    description:
+      "Application in fullscreen mode (note: actual fullscreen requires F11, this shows pre-fullscreen view)",
+    cropping: "full-page",
+    dimensions: { minWidth: 1200, minHeight: 800 },
+  },
+
+  // Details Panel enhancements screenshots (6 screenshots)
+  "details-current-assessment": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateCurrentAssessmentEnhanced",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png",
+    description:
+      "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips",
+    storyId: "panel-employeedetails--default",
+    cropping: "element",
+    dimensions: { minWidth: 300, minHeight: 150 },
+  },
+  "details-flags-ui": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateFlagsUI",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flags-ui.png",
+    description:
+      "Flags section in Details panel with Add Flag picker and colored flag chips",
+    storyId: "panel-employeeflags--with-multiple-flags",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
+  },
+  "details-flag-badges": {
+    source: "full-app",
+    workflow: "details-panel-enhancements",
+    function: "generateFlagBadges",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
+    description:
+      "Employee tiles showing flag count badges (🏷️ icon + count) in top-right corner",
+    cropping: "container",
+    dimensions: { minWidth: 400, minHeight: 300 },
+  },
+  "details-flag-filtering": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFlagsFiltering",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-filtering.png",
+    description:
+      "FilterDrawer showing Flags section with checkboxes, employee counts, and active selections",
+    storyId: "dashboard-filterdrawer--flags-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+  "details-reporting-chain-clickable": {
+    source: "storybook",
+    workflow: "details-panel-enhancements",
+    function: "generateReportingChainClickable",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-clickable.png",
+    description:
+      "Reporting Chain section with clickable manager names (blue underlined links)",
+    storyId: "panel-managementchain--with-manager",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
+  },
+  "details-reporting-chain-filter-active": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateReportingChainFilterActive",
+    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-filter-active.png",
+    description:
+      "Active reporting chain filter shown in FilterDrawer with manager chip and dismiss button",
+    storyId: "dashboard-filterdrawer--reporting-chain-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+
+  // FilterDrawer screenshots (4 new screenshots)
+  "filters-overview": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterDrawerOverview",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-overview.png",
+    description:
+      "Complete FilterDrawer anatomy showing all filter sections: Job Levels, Job Functions, Locations, Managers, Flags, Reporting Chain, Exclusions",
+    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 600 },
+  },
+  "filters-multiple-active": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateMultipleFiltersActive",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-multiple-active.png",
+    description:
+      "FilterDrawer with multiple filter types active: Job Functions, Locations, Flags, and Reporting Chain filters with count badges",
+    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 600 },
+  },
+  "filters-flags-section": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFlagsFiltering",
+    path: "resources/user-guide/docs/images/screenshots/filters/flags-section.png",
+    description:
+      "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
+    storyId: "dashboard-filterdrawer--flags-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+  "filters-reporting-chain": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateReportingChainFilterActive",
+    path: "resources/user-guide/docs/images/screenshots/filters/reporting-chain-filter.png",
+    description:
+      "Reporting Chain section in FilterDrawer with active manager filter chip",
+    storyId: "dashboard-filterdrawer--reporting-chain-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 200 },
+  },
 };
 
 /**

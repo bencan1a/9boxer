@@ -996,8 +996,57 @@ app.on("before-quit", async (event) => {
 });
 
 /**
+ * Kill any lingering processes on specific ports.
+ * Used as a fallback to ensure clean shutdown.
+ */
+async function killProcessesOnPorts(ports: number[]): Promise<void> {
+  if (process.platform === "win32") {
+    // Windows: use netstat + taskkill
+    for (const port of ports) {
+      try {
+        const { exec } = require("child_process");
+        const command = `for /f "tokens=5" %a in ('netstat -aon ^| findstr :${port} ^| findstr LISTENING') do taskkill /F /PID %a`;
+        await new Promise<void>((resolve) => {
+          exec(command, { shell: "cmd.exe" }, (error: any) => {
+            if (error) {
+              console.log(`  No processes found on port ${port}`);
+            } else {
+              console.log(`  Killed process on port ${port}`);
+            }
+            resolve();
+          });
+        });
+      } catch (error) {
+        console.error(`Failed to kill process on port ${port}:`, error);
+      }
+    }
+  } else {
+    // Unix: use lsof + kill
+    for (const port of ports) {
+      try {
+        const { exec } = require("child_process");
+        const command = `lsof -ti:${port} | xargs kill -9`;
+        await new Promise<void>((resolve) => {
+          exec(command, (error: any) => {
+            if (error) {
+              console.log(`  No processes found on port ${port}`);
+            } else {
+              console.log(`  Killed process on port ${port}`);
+            }
+            resolve();
+          });
+        });
+      } catch (error) {
+        console.error(`Failed to kill process on port ${port}:`, error);
+      }
+    }
+  }
+}
+
+/**
  * Perform graceful shutdown of the application.
  * Ensures backend has time to save session data before terminating.
+ * Also cleans up any lingering processes on known ports.
  */
 async function gracefulShutdown(): Promise<void> {
   console.log("🛑 Performing graceful shutdown...");
@@ -1019,6 +1068,10 @@ async function gracefulShutdown(): Promise<void> {
       backendProcess.kill("SIGKILL");
     }
   }
+
+  // Fallback: Kill any remaining processes on known ports
+  console.log("🛑 Cleaning up processes on ports 38000 and 5173...");
+  await killProcessesOnPorts([BACKEND_PORT, 5173]);
 
   console.log("✅ Graceful shutdown complete");
 }

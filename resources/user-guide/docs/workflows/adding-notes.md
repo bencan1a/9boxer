@@ -209,8 +209,6 @@ When you export to Excel, your notes are included:
 
 3. **Share with stakeholders** - notes are right there with the rating changes
 
-![Exported Excel file showing the 9Boxer Change Notes column with example notes](../images/screenshots/export-excel-with-notes.png)
-
 !!! info "Notes appear in exported file"
     The export includes:
     - **9Boxer Change Notes** column - Your notes for regular changes

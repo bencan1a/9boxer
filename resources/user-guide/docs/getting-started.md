@@ -39,15 +39,13 @@ An Excel file (`.xlsx` or `.xls`) with these 4 required columns (exact names, ca
     Use the sample file included with 9Boxer: `Sample_People_List.xlsx`
     Look in the Help menu or in the application's resource folder.
 
-![Excel file showing the 4 required columns: Employee ID, Worker, Performance, and Potential](images/screenshots/upload-excel-sample.png)
-
 ### Upload Your File
 
 1. **Click "File"** in the top menu bar, then select **"Import Data"**
 
    (Or, if you're starting fresh, click the **"Import Data"** button in the center of the empty screen)
 
-   ![Upload dialog showing file selection interface](images/screenshots/upload-dialog.png)
+   ![Upload dialog showing file selection interface](images/screenshots/quickstart/quickstart-upload-dialog.png)
 
 2. **Choose your Excel file** in the file picker
 
@@ -65,7 +63,7 @@ You should see:
 - Your employee count displayed in the app (example: "15 employees")
 - Employees organized into boxes based on their ratings
 
-![Grid populated with employee tiles after successful upload](images/screenshots/grid-populated.png)
+![Grid populated with employee tiles after successful upload](images/screenshots/quickstart/quickstart-grid-populated.png)
 
 !!! warning "Don't see your employees?"
     Make sure your column names exactly match the required names (case-sensitive).
@@ -84,7 +82,7 @@ Your grid organizes employees by two factors:
 - **Performance (left to right):** How well they're doing in their current role
 - **Potential (bottom to top):** Their capacity for growth and advancement
 
-![Annotated grid showing Performance axis (horizontal) and Potential axis (vertical)](images/screenshots/grid-axes-labeled.png)
+![Annotated grid showing Performance axis (horizontal) and Potential axis (vertical)](images/screenshots/workflow/workflow-grid-axes-labeled.png)
 
 This creates 9 distinct positions, each with strategic meaning:
 
@@ -118,7 +116,7 @@ POTENTIAL  Too New          Performer         Performer
 
 Click the **Statistics** tab in the right panel to see how your talent is distributed.
 
-![Statistics tab showing distribution table and chart](images/screenshots/statistics-distribution.png)
+![Statistics tab showing distribution table and chart](images/screenshots/statistics/statistics-panel-distribution.png)
 
 **Healthy distribution typically looks like:**
 
@@ -159,11 +157,11 @@ Moving employees is drag and drop:
 2. **Drag** to the new box
 3. **Release** to drop them in place
 
-![Three-panel sequence showing drag and drop: clicking, dragging, and dropping an employee tile](images/screenshots/drag-drop-sequence.png)
+![Three-panel sequence showing drag and drop: clicking, dragging, and dropping an employee tile](images/screenshots/workflow/making-changes-drag-sequence-base.png)
 
 The employee tile gets an **orange left border** to show it's been modified in this session.
 
-![Employee tile with orange left border indicating it has been moved](images/screenshots/employee-modified-orange-border.png)
+![Employee tile with orange left border indicating it has been moved](images/screenshots/workflow/making-changes-orange-border.png)
 
 !!! info "Orange, not yellow?"
     You might hear this called a "yellow highlight" - same thing!
@@ -175,7 +173,7 @@ The employee tile gets an **orange left border** to show it's been modified in t
 
 Click on the employee you just moved to see their details:
 
-![Employee details panel showing the timeline with old and new positions](images/screenshots/employee-timeline.png)
+![Employee details panel showing the timeline with old and new positions](images/screenshots/tracking-changes/timeline-employee-history.png)
 
 The **Timeline** shows:
 - Their previous position
@@ -203,7 +201,7 @@ Adding notes helps you remember why you made changes - crucial for calibration m
 
 3. **Type your explanation** in the Notes field
 
-   ![Changes tab with note field showing example text](images/screenshots/changes-add-note.png)
+   ![Changes tab with note field showing example text](images/screenshots/workflow/workflow-changes-add-note.png)
 
 4. The note saves automatically - you'll see it when you export ✅
 
@@ -237,7 +235,7 @@ When you're ready to save your changes:
 2. **Click "Apply X Changes to Excel"** in the dropdown
    (The number X shows how many changes you've made)
 
-   ![File menu dropdown with 'Apply 3 Changes to Excel' option highlighted](images/screenshots/file-menu-apply-changes.png)
+   ![File menu dropdown with 'Apply 3 Changes to Excel' option highlighted](images/screenshots/exporting/file-menu-apply-changes.png)
 
 3. **Your file downloads automatically**
    File name: `modified_[your-original-filename].xlsx`
@@ -252,8 +250,6 @@ Your exported Excel file includes:
 - ✅ **"Modified in Session" column** - Shows "Yes" for changed employees
 - ✅ **"9Boxer Change Notes" column** - Contains your notes
 - ✅ **All original columns** - Everything from your original file is preserved
-
-![Exported Excel file showing the new columns: Modified in Session and 9Boxer Change Notes](images/screenshots/export-excel-columns.png)
 
 !!! danger "Critical: No Auto-Save!"
     9Boxer does NOT save automatically. Your changes are lost if you close the app without exporting!
