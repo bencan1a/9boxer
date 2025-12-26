@@ -90,7 +90,6 @@ export const DistributionHeatmap: React.FC<DistributionHeatmapProps> = ({
     const g = Math.floor(primaryRgb.g + (255 - primaryRgb.g) * (1 - intensity));
     const b = Math.floor(primaryRgb.b + (255 - primaryRgb.b) * (1 - intensity));
 
-     
     return `rgb(${r}, ${g}, ${b})`;
   };
 
