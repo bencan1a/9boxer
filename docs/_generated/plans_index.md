@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-25T23:24:07.825909+00:00
+**Updated**: 2025-12-26T02:41:26.203338+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## design-system
@@ -13,6 +13,16 @@
   - Extract hardcoded values into centralized theme tokens
   - Create Storybook for component discovery and validation
   - Establish governance processes for design consistency
+
+## view-controls-consolidation
+- **Status**: active
+- **Owner**: Claude
+- **Created**: 2025-12-24
+- **Path**: `agent-projects/view-controls-consolidation/plan.md`
+- **Summary**:
+  - Consolidate floating view controls into single top-right toolbar
+  - Move language selector from AppBar to Settings dialog
+  - Improve UX by grouping related controls and reducing toolbar clutter
 
 ## i18n-implementation
 - **Status**: active
