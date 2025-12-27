@@ -361,16 +361,26 @@ function buildInternalDocsContext(changes, internalDocs, newDocs) {
   // Highlight new docs that may need consolidation
   if (newDocs.length > 0) {
     context.push('\n## 🚨 NEW INTERNAL DOCS DETECTED (May Need Consolidation):');
+    context.push(
+      `\nFound ${newDocs.length} new doc(s). Analyze whether they contain valuable info to consolidate into core docs.\n`
+    );
     newDocs.forEach((doc) => {
-      context.push(`\n### ${doc.path} (Created: ${doc.createdDate}, ${doc.daysOld} days old)`);
-      context.push('**FULL CONTENT:**');
-      context.push(doc.content);
+      context.push(`\n### ${doc.path}`);
+      context.push(`- Created: ${doc.createdDate} (${doc.daysOld} days old)`);
+      context.push(`- Size: ${doc.size} bytes`);
+      context.push('**Content Preview (first 50 lines):**');
+      const lines = doc.content.split('\n').slice(0, 50);
+      context.push(lines.join('\n'));
+      if (doc.content.split('\n').length > 50) {
+        context.push(`...(${doc.content.split('\n').length - 50} more lines)`);
+      }
     });
-    context.push('\n⚠️ **ACTION REQUIRED**: For each new doc above, determine:');
-    context.push('1. What valuable information it contains');
-    context.push('2. Which EXISTING core doc(s) should be updated with this info');
-    context.push('3. What sections to add/update in those core docs');
-    context.push('4. Recommend DELETION of the new doc after consolidation');
+    context.push('\n⚠️ **CONSOLIDATION TASK**: For each new doc above:');
+    context.push('1. Determine if it contains valuable information (vs temporary/obsolete content)');
+    context.push('2. If valuable: Which EXISTING core doc should incorporate this information?');
+    context.push('3. Recommend specific sections/content to extract and where to merge it');
+    context.push('4. Always recommend DELETION of the new doc after successful consolidation');
+    context.push('5. If not valuable: Recommend deletion without consolidation');
   }
 
   return context.join('\n');
@@ -459,6 +469,12 @@ Analyze the recent code changes and current INTERNAL documentation to identify i
 4. **Conflicting Recommendations**: Contradictory guidance in different docs
 5. **Stale Examples**: Code examples that are >30 days old without verification
 6. **NEW DOCS CONSOLIDATION**: For any new internal docs detected, provide specific consolidation plan
+
+**IMPORTANT CONSTRAINTS**:
+- Maximum 15 findings total (prioritize critical and high priority issues)
+- Keep descriptions under 200 characters each
+- Keep action steps under 300 characters each
+- Focus on the most impactful issues
 
 For each issue you find, provide:
 1. **Type**: One of: outdated, missing, conflict, consolidation, stale-example
@@ -583,6 +599,12 @@ Analyze the recent code changes and current USER-FACING documentation to identif
 4. **Cross-Reference Issues**: Features mentioned in multiple guides that need updates
 5. **Accessibility Issues**: Missing alt text, poor heading hierarchy
 6. **Localization Readiness**: Idioms or complex language that won't translate well
+
+**IMPORTANT CONSTRAINTS**:
+- Maximum 20 findings total (prioritize critical and high priority issues)
+- Keep descriptions under 200 characters each
+- Keep action steps under 300 characters each
+- Focus on the most impactful issues for end users
 
 For each issue you find, provide:
 1. **Type**: One of: outdated, missing, incorrect, screenshot-needed, accessibility, localization
