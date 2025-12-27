@@ -288,7 +288,12 @@
         "zScore": "Puntuación Z",
         "significant": "¿Significativo?",
         "yes": "Sí",
-        "no": "No"
+        "no": "No",
+        "viewDetailsAria": "Ver detalles de {{title}}",
+        "affectedEmployees": "Afectados",
+        "employeeCount": "{{count}} empleado",
+        "employeeCount_other": "{{count}} empleados",
+        "suggestion": "Sugerencia"
       },
       "chart": {
         "noDataAvailable": "No hay datos disponibles",
@@ -328,6 +333,69 @@
       }
     }
   },
+  "intelligence": {
+    "severity": {
+      "critical": "Crítico",
+      "warning": "Advertencia",
+      "info": "Información"
+    },
+    "insightType": {
+      "recommendation": "Recomendación",
+      "observation": "Observación",
+      "warning": "Advertencia"
+    },
+    "confidence": {
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja"
+    },
+    "insight": {
+      "confidence": "Confianza",
+      "confidenceLabel": "Confianza {{level}}",
+      "employeeCount": "{{count}} empleado",
+      "employeeCount_other": "{{count}} empleados",
+      "boxCount": "{{count}} caja",
+      "boxCount_other": "{{count}} cajas",
+      "actionAria": "{{action}} - {{type}}",
+      "actionButtonAria": "{{action}}"
+    },
+    "anomaly": {
+      "viewDetailsAria": "Ver detalles de {{title}}",
+      "affectedEmployees": "Afectados",
+      "employeeCount": "{{count}} empleado",
+      "employeeCount_other": "{{count}} empleados",
+      "suggestion": "Sugerencia"
+    },
+    "anomalies": {
+      "title": "Anomalías Detectadas",
+      "tooltip": "Anomalías estadísticas y patrones inusuales detectados en sus datos de talento",
+      "empty": "No se detectaron anomalías",
+      "emptyDescription": "Su distribución de talento parece bien calibrada sin anomalías significativas",
+      "criticalCount": "{{count}} Críticas",
+      "warningCount": "{{count}} Advertencias",
+      "infoCount": "{{count}} Información"
+    },
+    "insights": {
+      "title": "Insights de IA",
+      "tooltip": "Insights y recomendaciones generados por IA basados en sus datos de talento",
+      "empty": "No hay insights disponibles",
+      "emptyDescription": "Los insights aparecerán aquí a medida que el sistema analice sus datos de talento",
+      "recommendationCount": "{{count}} Recomendación",
+      "recommendationCount_other": "{{count}} Recomendaciones",
+      "observationCount": "{{count}} Observación",
+      "observationCount_other": "{{count}} Observaciones",
+      "warningCount": "{{count}} Advertencia",
+      "warningCount_other": "{{count}} Advertencias"
+    },
+    "distribution": {
+      "title": "Distribución de Talento",
+      "tooltip": "Resumen de cómo se distribuyen los empleados en la cuadrícula 9-box",
+      "totalEmployees": "Total: {{count}} empleados"
+    },
+    "section": {
+      "infoAria": "Más información sobre esta sección"
+    }
+  },
   "common": {
     "ok": "Aceptar",
     "cancel": "Cancelar",
@@ -338,6 +406,9 @@
     "retry": "Reintentar",
     "quit": "Salir",
     "retryConnection": "Reintentar conexión",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "dismiss": "Descartar",
     "fileUpload": {
       "dialogTitle": "Importar Archivo de Excel",
       "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",

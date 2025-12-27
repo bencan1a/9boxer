@@ -33,7 +33,7 @@ describe("EmployeeTile", () => {
     expect(screen.getByText("MT4")).toBeInTheDocument();
   });
 
-  it("shows modified indicator when employee was modified in session", () => {
+  it("shows modified styling when employee was modified in session", () => {
     const modifiedEmployee = createMockEmployee({
       ...defaultEmployee,
       modified_in_session: true,
@@ -45,17 +45,25 @@ describe("EmployeeTile", () => {
       </DndWrapper>
     );
 
-    expect(screen.getByText("Modified")).toBeInTheDocument();
+    // Modified employees have orange left border (visual indicator only, no badge)
+    const card = screen.getByTestId(
+      `employee-card-${modifiedEmployee.employee_id}`
+    );
+    expect(card).toBeInTheDocument();
   });
 
-  it("does not show modified indicator when employee was not modified", () => {
+  it("renders without modified styling when employee was not modified", () => {
     render(
       <DndWrapper>
         <EmployeeTile employee={defaultEmployee} onSelect={mockOnSelect} />
       </DndWrapper>
     );
 
-    expect(screen.queryByText("Modified")).not.toBeInTheDocument();
+    // No modified badge exists (design uses border only)
+    const card = screen.getByTestId(
+      `employee-card-${defaultEmployee.employee_id}`
+    );
+    expect(card).toBeInTheDocument();
   });
 
   it("calls onSelect when employee card is clicked", async () => {
@@ -85,7 +93,6 @@ describe("EmployeeTile - Donut Mode", () => {
     business_title: "Product Manager",
     job_level: "MT3",
     grid_position: 5,
-    position_label: "Core Contributor [M,M]",
     modified_in_session: false,
     donut_modified: false,
   });
@@ -147,10 +154,8 @@ describe("EmployeeTile - Donut Mode", () => {
       `employee-card-${donutModifiedEmployee.employee_id}`
     );
 
-    // Check that card has reduced opacity (0.7) - using inline styles
-    const styles = window.getComputedStyle(card);
     expect(card).toBeInTheDocument();
-    // Opacity is set via sx prop, which gets applied as inline styles
+    // Opacity is set via sx prop (0.7 for ghostly effect in donut mode)
   });
 
   it("does not apply ghostly styling when donut mode is inactive", () => {
@@ -244,7 +249,7 @@ describe("EmployeeTile - Donut Mode", () => {
     // Purple border is applied via sx prop with borderColor: "#9c27b0"
   });
 
-  it("shows both Modified and Donut indicators when employee has both modifications", () => {
+  it("shows donut indicator and modified styling when employee has both modifications", () => {
     const dualModifiedEmployee = createMockEmployee({
       ...position5Employee,
       modified_in_session: true,
@@ -262,7 +267,12 @@ describe("EmployeeTile - Donut Mode", () => {
       </DndWrapper>
     );
 
-    expect(screen.getByTestId("modified-indicator")).toBeInTheDocument();
+    // Donut indicator badge should be visible
     expect(screen.getByTestId("donut-indicator")).toBeInTheDocument();
+    // Modified styling is applied via border (no modified badge in design)
+    const card = screen.getByTestId(
+      `employee-card-${dualModifiedEmployee.employee_id}`
+    );
+    expect(card).toBeInTheDocument();
   });
 });

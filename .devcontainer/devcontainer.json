@@ -64,9 +64,9 @@
       ]
     }
   },
-  "postCreateCommand": "python3 -m venv .venv && . .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps",
+  "postCreateCommand": "python3 -m venv .venv && . .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
   "remoteUser": "vscode",
-  "updateContentCommand": ". .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && cd frontend && npm install --legacy-peer-deps",
+  "updateContentCommand": ". .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
   ]

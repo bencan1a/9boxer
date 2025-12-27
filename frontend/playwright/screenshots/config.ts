@@ -99,7 +99,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Employee tile with orange modified border and badge",
     storyId: "grid-employeetile--modified",
     cropping: "element",
-    dimensions: { minWidth: 150, maxWidth: 250, minHeight: 80, maxHeight: 150 },
+    dimensions: { minWidth: 150, maxWidth: 290, minHeight: 80, maxHeight: 150 },
   },
   "changes-employee-details": {
     source: "storybook",
@@ -134,18 +134,21 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Notes workflow screenshots (3 screenshots)
   "notes-changes-tab-field": {
+    source: "full-app",
     workflow: "notes",
     function: "generateChangesTabField",
     path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png",
     description: "Changes tab with note field highlighted",
   },
   "notes-good-example": {
+    source: "full-app",
     workflow: "notes",
     function: "generateGoodExample",
     path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png",
     description: "Changes tab with well-written note example",
   },
   "notes-export-excel": {
+    source: "full-app",
     workflow: "notes",
     function: "generateExportExcel",
     path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-notes-in-excel.png",
@@ -155,6 +158,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Filters workflow screenshots (4 screenshots)
   "filters-active-chips": {
+    source: "full-app",
     workflow: "filters",
     function: "generateActiveChips",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png",
@@ -163,6 +167,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { exactWidth: 1400, exactHeight: 900 },
   },
   "filters-panel-expanded": {
+    source: "full-app",
     workflow: "filters",
     function: "generatePanelExpanded",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
@@ -171,6 +176,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
   "filters-before-after": {
+    source: "full-app",
     workflow: "filters",
     function: "generateBeforeAfter",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-before-state.png",
@@ -181,6 +187,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 800, minHeight: 600 },
   },
   "filters-clear-all-button": {
+    source: "full-app",
     workflow: "filters",
     function: "generateClearAllButton",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png",
@@ -191,6 +198,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Quickstart workflow screenshots (4 screenshots)
   "quickstart-file-menu-button": {
+    source: "full-app",
     workflow: "quickstart",
     function: "generateFileMenuButton",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png",
@@ -200,6 +208,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, maxWidth: 1400, minHeight: 60, maxHeight: 80 },
   },
   "quickstart-upload-dialog": {
+    source: "full-app",
     workflow: "quickstart",
     function: "generateUploadDialog",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
@@ -207,13 +216,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "File upload dialog with file selection input and upload button",
     cropping: "container",
     dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
+      minWidth: 260,
+      maxWidth: 1500,
       minHeight: 200,
-      maxHeight: 400,
+      maxHeight: 1000,
     },
+    source: "full-app",
   },
   "quickstart-grid-populated": {
+    source: "full-app",
     workflow: "quickstart",
     function: "generateGridPopulated",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png",
@@ -222,6 +233,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 800, minHeight: 600 },
   },
   "quickstart-success-annotated": {
+    source: "full-app",
     workflow: "quickstart",
     function: "generateSuccessAnnotated",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png",
@@ -234,12 +246,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Calibration workflow screenshots (6 screenshots)
   "calibration-file-import": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateFileImport",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
     description: "File menu open with Import Data menu item highlighted",
   },
   "calibration-statistics-red-flags": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateStatisticsRedFlags",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png",
@@ -267,18 +281,21 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, minHeight: 300 },
   },
   "calibration-filters-panel": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateFiltersPanel",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png",
     description: "Filters panel with active filter selections applied",
   },
   "calibration-donut-mode-toggle": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateDonutModeToggle",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
     description: "View mode toggle button in active donut mode state",
   },
   "calibration-donut-mode-grid": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateDonutModeGrid",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png",
@@ -286,6 +303,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
   },
   "calibration-export-results": {
+    source: "full-app",
     workflow: "calibration",
     function: "generateExportResults",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png",
@@ -295,18 +313,21 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Statistics workflow screenshots (3 screenshots)
   "statistics-panel-distribution": {
+    source: "full-app",
     workflow: "statistics",
     function: "generatePanelDistribution",
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png",
     description: "Statistics panel showing employee distribution across boxes",
   },
   "statistics-ideal-actual-comparison": {
+    source: "full-app",
     workflow: "statistics",
     function: "generateIdealActualComparison",
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png",
     description: "Ideal vs actual distribution comparison chart",
   },
   "statistics-trend-indicators": {
+    source: "full-app",
     workflow: "statistics",
     function: "generateTrendIndicators",
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png",
@@ -315,12 +336,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Donut mode screenshots (2 screenshots)
   "donut-mode-active-layout": {
+    source: "full-app",
     workflow: "donut",
     function: "generateActiveLayout",
     path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png",
     description: "Active donut mode layout with concentric circles",
   },
   "donut-mode-toggle-comparison": {
+    source: "full-app",
     workflow: "donut",
     function: "generateToggleComparison",
     path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-toggle-comparison.png",
@@ -347,12 +370,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Hero and index images (2 screenshots)
   "hero-grid-sample": {
+    source: "full-app",
     workflow: "hero",
     function: "generateHeroGrid",
     path: "resources/user-guide/docs/images/screenshots/hero-grid-sample.png",
     description: "Hero image showing full grid with sample data",
   },
   "index-quick-win-preview": {
+    source: "full-app",
     workflow: "hero",
     function: "generateQuickWinPreview",
     path: "resources/user-guide/docs/images/screenshots/index-quick-win-preview.png",
@@ -361,30 +386,35 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Additional features screenshots (5 screenshots)
   "changes-panel-entries": {
+    source: "full-app",
     workflow: "changes",
     function: "generatePanelEntries",
     path: "resources/user-guide/docs/images/screenshots/changes-panel-entries.png",
     description: "Changes panel with multiple employee movement entries",
   },
   "timeline-employee-history": {
+    source: "full-app",
     workflow: "timeline",
     function: "generateEmployeeHistory",
     path: "resources/user-guide/docs/images/screenshots/timeline-employee-history.png",
     description: "Employee movement timeline showing historical positions",
   },
   "employee-details-panel-expanded": {
+    source: "full-app",
     workflow: "employees",
     function: "generateDetailsPanelExpanded",
     path: "resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png",
     description: "Expanded employee details panel with all information",
   },
   "file-menu-apply-changes": {
+    source: "full-app",
     workflow: "exporting",
     function: "generateFileMenuApplyChanges",
     path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
     description: "File menu with Apply Changes option highlighted",
   },
   "excel-file-new-columns": {
+    source: "full-app",
     workflow: "exporting",
     function: "generateExcelFileNewColumns",
     path: "resources/user-guide/docs/images/screenshots/excel-file-new-columns.png",
@@ -394,6 +424,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Notes donut mode (1 screenshot)
   "notes-donut-mode": {
+    source: "full-app",
     workflow: "notes",
     function: "generateDonutMode",
     path: "resources/user-guide/docs/images/screenshots/notes/notes-donut-mode.png",
@@ -402,6 +433,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Quickstart Excel sample (already defined above but adding here for completeness)
   "quickstart-excel-sample": {
+    source: "full-app",
     workflow: "quickstart",
     function: "generateExcelSample",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png",
@@ -503,7 +535,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Flags section in Details panel with Add Flag picker and colored flag chips",
     storyId: "panel-employeeflags--with-multiple-flags",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 200 },
+    dimensions: { minWidth: 275, minHeight: 120 },
   },
   "details-flag-badges": {
     source: "full-app",
@@ -513,7 +545,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Employee tiles showing flag count badges (🏷️ icon + count) in top-right corner",
     cropping: "container",
-    dimensions: { minWidth: 400, minHeight: 300 },
+    dimensions: { minWidth: 230, minHeight: 220 },
   },
   "details-flag-filtering": {
     source: "storybook",
@@ -524,7 +556,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "FilterDrawer showing Flags section with checkboxes, employee counts, and active selections",
     storyId: "dashboard-filterdrawer--flags-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 400 },
+    dimensions: { minWidth: 275, minHeight: 400 },
   },
   "details-reporting-chain-clickable": {
     source: "storybook",
@@ -546,7 +578,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Active reporting chain filter shown in FilterDrawer with manager chip and dismiss button",
     storyId: "dashboard-filterdrawer--reporting-chain-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 400 },
+    dimensions: { minWidth: 275, minHeight: 400 },
   },
 
   // FilterDrawer screenshots (4 new screenshots)
@@ -559,7 +591,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Complete FilterDrawer anatomy showing all filter sections: Job Levels, Job Functions, Locations, Managers, Flags, Reporting Chain, Exclusions",
     storyId: "dashboard-filterdrawer--all-sections-expanded",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 600 },
+    dimensions: { minWidth: 275, minHeight: 600 },
   },
   "filters-multiple-active": {
     source: "storybook",

@@ -1,5 +1,19 @@
 /**
  * 9-Box Grid component with drag-and-drop
+ *
+ * Main talent grid visualization component that displays employees
+ * organized by performance and potential levels.
+ *
+ * @component
+ * @screenshots
+ *   - grid-normal: Standard 9-box grid with employee tiles
+ *   - quickstart-grid-populated: Populated grid after successful file upload
+ *   - hero-grid-sample: Hero image showing full grid with sample data
+ *   - donut-mode-active-layout: Active donut mode layout with concentric circles
+ *   - calibration-donut-mode-grid: Grid in donut mode showing ghostly purple-bordered employees
+ *   - changes-drag-sequence: Base grid for 3-panel drag sequence
+ *   - filters-active-chips: Grid view with active filter chips and orange dot indicator
+ *   - filters-before-after: Before/after filtering comparison
  */
 
 import React, { useState, useEffect } from "react";

@@ -1,5 +1,20 @@
 /**
  * Left sidebar filter panel
+ *
+ * Comprehensive filtering controls including job levels, functions,
+ * locations, managers, flags, and reporting chain filters.
+ *
+ * @component
+ * @screenshots
+ *   - filters-panel-expanded: Filter panel expanded showing all filter options
+ *   - filters-clear-all-button: Filter drawer with Clear All button highlighted
+ *   - calibration-filters-panel: Filters panel with active filter selections applied
+ *   - filters-overview: Complete FilterDrawer anatomy showing all sections
+ *   - filters-multiple-active: FilterDrawer with multiple filter types active
+ *   - filters-flags-section: Flags section showing all 8 flag types with checkboxes
+ *   - filters-reporting-chain: Reporting Chain section with active manager filter chip
+ *   - details-flag-filtering: FilterDrawer showing Flags section with active selections
+ *   - details-reporting-chain-filter-active: Active reporting chain filter in FilterDrawer
  */
 
 import React, { useState, useMemo } from "react";

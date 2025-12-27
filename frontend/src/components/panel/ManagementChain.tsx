@@ -1,6 +1,13 @@
 /**
  * Management Chain visualization component
  * Displays the reporting hierarchy from employee to VP
+ *
+ * Shows employee's reporting chain with clickable manager names
+ * that navigate to manager details.
+ *
+ * @component
+ * @screenshots
+ *   - details-reporting-chain-clickable: Reporting Chain section with clickable manager names
  */
 
 import React from "react";

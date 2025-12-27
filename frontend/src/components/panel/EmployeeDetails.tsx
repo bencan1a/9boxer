@@ -1,5 +1,16 @@
 /**
  * Employee information display component
+ *
+ * Displays comprehensive employee information including current assessment,
+ * performance history, reporting chain, and flags.
+ *
+ * @component
+ * @screenshots
+ *   - changes-employee-details: Employee details panel showing updated ratings
+ *   - employee-details-panel-expanded: Expanded employee details panel with all information
+ *   - details-current-assessment: Enhanced Current Assessment section with color-coded chips
+ *   - details-flags-ui: Flags section with Add Flag picker and colored flag chips
+ *   - details-reporting-chain-clickable: Reporting Chain section with clickable manager names
  */
 
 import React from "react";
