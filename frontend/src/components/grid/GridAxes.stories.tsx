@@ -51,8 +51,8 @@ export default meta;
 type Story = StoryObj<typeof GridAxes>;
 
 /**
- * Default axis labels using i18n translations.
- * Shows standard "Performance (Low → High)" and "Potential (Low → High)" labels.
+ * Default Y-axis label using i18n translations.
+ * Shows standard "Potential (Low → High)" Y-axis label. X-axis labels are not rendered by this component.
  */
 export const Default: Story = {
   args: {
