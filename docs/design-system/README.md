@@ -42,7 +42,7 @@ The 9Boxer Design System ensures:
 
 | Document | Purpose |
 |----------|---------|
-| **[component-inventory.md](component-inventory.md)** | Complete catalog of all 32 components |
+| **[component-inventory.md](component-inventory.md)** | Complete catalog of all 53 components |
 | **[component-guidelines.md](component-guidelines.md)** | When to create components, patterns, best practices |
 
 ### ♿ Accessibility

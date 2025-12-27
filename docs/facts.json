@@ -129,7 +129,7 @@
     "frontend": {
       "testing": {
         "unit": "Vitest + React Testing Library",
-        "e2e": "Cypress"
+        "e2e": "Playwright"
       },
       "linting": "ESLint",
       "formatting": "Prettier",
