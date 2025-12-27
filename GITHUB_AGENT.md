@@ -5,7 +5,7 @@
 > **Quick Links:**
 > 🤖 [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)
 > 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
-> 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices
+> 📋 [AGENTS.md](AGENTS.md) - Quick-start checklist
 > 📚 [docs/CONTEXT.md](docs/CONTEXT.md) - Comprehensive project context
 > 🎯 [docs/facts.json](docs/facts.json) - Source of truth (highest authority)
 
@@ -171,7 +171,7 @@ npm run format                   # Prettier
 ├── tools/                       ← Build and automation scripts
 ├── GITHUB_AGENT.md              ← This file
 ├── CLAUDE.md                    ← Detailed technical guidance
-└── AGENTS.md                    ← Development workflow guide
+└── AGENTS.md                    ← Quick-start checklist
 ```
 
 ---
@@ -450,7 +450,7 @@ git commit -m "message"
 |------|---------|-------------|
 | **GITHUB_AGENT.md** | This file | First stop, quick reference |
 | **docs/facts.json** | Source of truth | When information conflicts (highest authority) |
-| **AGENTS.md** | Development workflow | Detailed development guidance |
+| **AGENTS.md** | Quick-start checklist | Essential commands and workflows |
 | **CLAUDE.md** | Technical details | Architecture, build process, quality standards |
 
 ### For Deep Dives
@@ -593,7 +593,7 @@ Before considering yourself onboarded:
 
 1. Check [docs/facts.json](docs/facts.json) - source of truth
 2. Review [CLAUDE.md](CLAUDE.md) - technical details
-3. Check [AGENTS.md](AGENTS.md) - workflow guidance
+3. Check [AGENTS.md](AGENTS.md) - quick-start checklist
 4. Search [docs/CONTEXT.md](docs/CONTEXT.md) - comprehensive context
 5. Review [agent-projects/](agent-projects/) - recent work and patterns
 

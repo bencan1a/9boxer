@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 > **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
-> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for development workflow essentials.
+> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for quick-start checklist.
 
 ## Project Overview
 
@@ -908,10 +908,10 @@ For unavoidable warnings:
 - `# nosec` for security false positives (add explanation)
 
 ## Important Files to Review
-- **`AGENTS.md`** - Comprehensive development workflow guidance
+- **`AGENTS.md`** - Quick-start checklist for all agents
 - **`AGENT_DOCS_CONTRACT.md`** - Documentation system rules and folder structure
 - **`README.md`** - Project overview, features, and quick start
-- **`CONTRIBUTING.md`** - Contribution guidelines
+- **`CONTRIBUTING.md`** - Quality standards and guidelines reference
 - **`docs/CONTEXT.md`** - Main documentation context for AI agents
 - **`docs/facts.json`** - Stable project truths (highest authority)
 - **`pyproject.toml`** - All tool configurations and dependencies

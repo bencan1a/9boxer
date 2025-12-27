@@ -215,7 +215,7 @@ This file provides comprehensive context about the project for AI agents and dev
     "primary_guides": {
       "github_agent": "GITHUB_AGENT.md (streamlined onboarding for GitHub Agent/Copilot)",
       "claude_code": "CLAUDE.md (detailed technical guidance with platform constraints)",
-      "general_agents": "AGENTS.md (development workflow and best practices)",
+      "general_agents": "AGENTS.md (quick-start checklist for all agents)",
       "copilot_workspace": ".github/copilot-instructions.md (GitHub Copilot Workspace config)"
     },
     "critical_first_steps": [

@@ -191,7 +191,7 @@ npm run dev  # http://localhost:5173
 1. **docs/facts.json** - Source of truth (HIGHEST AUTHORITY)
 2. **GITHUB_AGENT.md** - Quick onboarding guide
 3. **CLAUDE.md** - Detailed technical guidance
-4. **AGENTS.md** - Development workflow
+4. **AGENTS.md** - Quick-start checklist
 5. **docs/CONTEXT.md** - Comprehensive project context
 
 **Trust hierarchy when information conflicts:**
