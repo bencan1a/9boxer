@@ -58,10 +58,12 @@ export const HelpButton: React.FC<HelpButtonProps> = ({
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Always capture the button element for menu anchoring,
+    // even when the open state is controlled via onToggle.
+    setAnchorEl(event.currentTarget);
+
     if (onToggle) {
       onToggle();
-    } else {
-      setAnchorEl(event.currentTarget);
     }
   };
 
