@@ -1,0 +1,184 @@
+/**
+ * Pure AppBar component (presentational)
+ * Displays the application bar with file menu, filter, settings, and help buttons
+ */
+
+import React from "react";
+import {
+  AppBar as MuiAppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Tooltip,
+  Badge,
+} from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { FileMenuButton } from "./FileMenuButton";
+import { HelpButton } from "./HelpButton";
+import { useTranslation } from "react-i18next";
+
+/**
+ * Props for the pure AppBar component
+ */
+export interface PureAppBarProps {
+  /** Current file name, or undefined if no file loaded */
+  fileName?: string;
+  /** Number of unsaved changes */
+  changeCount: number;
+  /** Whether the file menu is open */
+  isFileMenuOpen?: boolean;
+  /** Whether the help menu is open */
+  isHelpMenuOpen?: boolean;
+  /** Whether there are active filters */
+  hasActiveFilters: boolean;
+  /** Filter tooltip message */
+  filterTooltip: string;
+  /** Whether filter button is disabled (no session) */
+  isFilterDisabled: boolean;
+  /** Whether export is in progress */
+  isExporting?: boolean;
+  
+  // Callbacks
+  /** Callback when file menu toggle is requested */
+  onFileMenuToggle?: () => void;
+  /** Callback when import is clicked */
+  onImportClick: () => void;
+  /** Callback when export is clicked */
+  onExportClick: () => void;
+  /** Callback when filter button is clicked */
+  onFilterClick: () => void;
+  /** Callback when settings button is clicked */
+  onSettingsClick: () => void;
+  /** Callback when help menu toggle is requested */
+  onHelpMenuToggle?: () => void;
+  /** Callback when user guide is clicked */
+  onUserGuideClick: () => void;
+  /** Callback when about is clicked */
+  onAboutClick: () => void;
+}
+
+/**
+ * Pure AppBar component
+ * 
+ * A presentational component that displays the application toolbar.
+ * All state and logic should be managed by the container component.
+ * 
+ * @example
+ * ```tsx
+ * <PureAppBar
+ *   fileName="employees.xlsx"
+ *   changeCount={3}
+ *   hasActiveFilters={false}
+ *   filterTooltip="Filter employees"
+ *   isFilterDisabled={false}
+ *   onImportClick={() => {}}
+ *   onExportClick={() => {}}
+ *   onFilterClick={() => {}}
+ *   onSettingsClick={() => {}}
+ *   onUserGuideClick={() => {}}
+ *   onAboutClick={() => {}}
+ * />
+ * ```
+ */
+export const PureAppBar: React.FC<PureAppBarProps> = ({
+  fileName,
+  changeCount,
+  isFileMenuOpen,
+  isHelpMenuOpen,
+  hasActiveFilters,
+  filterTooltip,
+  isFilterDisabled,
+  isExporting = false,
+  onFileMenuToggle,
+  onImportClick,
+  onExportClick,
+  onFilterClick,
+  onSettingsClick,
+  onHelpMenuToggle,
+  onUserGuideClick,
+  onAboutClick,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <MuiAppBar position="static" elevation={2} data-testid="app-bar">
+      <Toolbar>
+        {/* Left: App title with logo */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <img
+            src="/build/icon_32x32.png"
+            alt={t("app.logoAlt")}
+            style={{ width: 28, height: 28 }}
+          />
+          <Typography variant="h6" component="div">
+            {t("app.title")}
+          </Typography>
+        </Box>
+
+        {/* Center-left: File menu */}
+        <Box sx={{ ml: 4 }}>
+          <FileMenuButton
+            fileName={fileName}
+            changeCount={changeCount}
+            isOpen={isFileMenuOpen}
+            onToggle={onFileMenuToggle}
+            onImportClick={onImportClick}
+            onExportClick={onExportClick}
+            isExporting={isExporting}
+          />
+        </Box>
+
+        {/* Spacer */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        {/* Right: Action buttons */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Tooltip title={filterTooltip} placement="bottom">
+            <span>
+              <Badge
+                variant="dot"
+                invisible={!hasActiveFilters}
+                color="warning"
+                data-testid="filter-badge"
+                sx={{
+                  "& .MuiBadge-badge": {
+                    right: -3,
+                    top: 8,
+                  },
+                }}
+              >
+                <IconButton
+                  color="inherit"
+                  disabled={isFilterDisabled}
+                  onClick={onFilterClick}
+                  data-testid="filter-button"
+                >
+                  <FilterListIcon />
+                </IconButton>
+              </Badge>
+            </span>
+          </Tooltip>
+
+          <Tooltip title={t("dashboard.appBar.settings")}>
+            <IconButton
+              color="inherit"
+              onClick={onSettingsClick}
+              data-testid="settings-button"
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
+
+          <HelpButton
+            isOpen={isHelpMenuOpen}
+            onToggle={onHelpMenuToggle}
+            onUserGuideClick={onUserGuideClick}
+            onAboutClick={onAboutClick}
+          />
+        </Box>
+      </Toolbar>
+    </MuiAppBar>
+  );
+};

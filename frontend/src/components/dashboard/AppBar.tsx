@@ -1,5 +1,14 @@
 /**
  * Application bar component
+ * 
+ * @deprecated This component is deprecated. Use AppBarContainer instead.
+ * The AppBar has been refactored into a composable system:
+ * - PureAppBar: Pure presentational component
+ * - AppBarContainer: Smart container with state management
+ * 
+ * See AppBar.README.md for details.
+ * 
+ * This file is kept for backward compatibility.
  */
 
 import React, { useState } from "react";
