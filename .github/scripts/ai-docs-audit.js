@@ -431,7 +431,7 @@ ${finding.severity}
  * @param {Object} report - Complete audit report
  */
 function saveAuditReport(report) {
-  const reportPath = path.join(PROJECT_ROOT, '.docs-audit-report.json');
+  const reportPath = path.join(PROJECT_ROOT, 'docs-audit-report.json');
 
   try {
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

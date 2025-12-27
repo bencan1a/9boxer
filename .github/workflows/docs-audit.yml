@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docs-audit-report
-          path: .docs-audit-report.json
+          path: docs-audit-report.json
           retention-days: 30
 
       - name: Post summary comment
@@ -71,7 +71,7 @@ jobs:
             // Read audit report
             let report;
             try {
-              const reportContent = fs.readFileSync('.docs-audit-report.json', 'utf-8');
+              const reportContent = fs.readFileSync('docs-audit-report.json', 'utf-8');
               report = JSON.parse(reportContent);
             } catch (error) {
               console.log('No audit report found or failed to parse');
