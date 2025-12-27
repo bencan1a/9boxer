@@ -14,6 +14,8 @@
       "excluded": "Excluidos",
       "employees": "empleado(s)",
       "help": "Ayuda",
+      "userGuide": "Guía del Usuario",
+      "about": "Acerca de",
       "settings": "Configuración",
       "userGuideError": "Error al abrir la guía del usuario",
       "userGuideOnlyDesktop": "La guía del usuario solo está disponible en la aplicación de escritorio"
