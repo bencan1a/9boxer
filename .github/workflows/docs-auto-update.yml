@@ -195,12 +195,10 @@ jobs:
         run: |
           # Activate venv and start backend in background
           . .venv/bin/activate
-          # Run from backend/src directory for proper Python module resolution
-          cd backend/src
-          uvicorn ninebox.main:app --host 127.0.0.1 --port 38000 > ../../backend.log 2>&1 &
+          # Start uvicorn using --app-dir to avoid fragile directory changes
+          uvicorn --app-dir backend/src ninebox.main:app --host 127.0.0.1 --port 38000 > backend.log 2>&1 &
           BACKEND_PID=$!
           echo "BACKEND_PID=$BACKEND_PID" >> $GITHUB_ENV
-          cd ../..
 
           # Wait for backend with better error handling
           echo "Waiting for backend to start..."
