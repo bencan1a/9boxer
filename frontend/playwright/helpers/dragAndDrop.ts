@@ -96,7 +96,7 @@ export async function dragEmployeeToPosition(
             }
             return matchesEndpoint && is200;
           },
-          { timeout: 15000 } // Increased timeout for donut mode
+          { timeout: 5000 } // 5s timeout per attempt (max 15s total with 3 attempts)
         );
       } else {
         console.log(

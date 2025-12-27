@@ -2,7 +2,6 @@
 
 import sqlite3
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -16,17 +15,20 @@ pytestmark = pytest.mark.unit
 def db_manager(tmp_path: Path) -> DatabaseManager:
     """Create a database manager with a temporary database.
 
-    Uses mock to override get_user_data_dir before creating DatabaseManager.
+    Uses the db_path setter to override the database location.
     Each test gets a fresh database.
     """
-    # Patch get_user_data_dir BEFORE creating DatabaseManager
-    with patch("ninebox.services.database.get_user_data_dir", return_value=tmp_path):
-        manager = DatabaseManager()
+    manager = DatabaseManager()
+    # Set db_path directly to tmp_path (uses setter designed for testing)
+    manager.db_path = tmp_path / "ninebox.db"
     return manager
 
 
 def test_init_when_first_run_then_creates_database(db_manager: DatabaseManager) -> None:
     """Test that database is created on first initialization."""
+    # Trigger database creation by opening a connection
+    with db_manager.get_connection():
+        pass
     assert db_manager.db_path.exists()
     assert db_manager.db_path.is_file()
 

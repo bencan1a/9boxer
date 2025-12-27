@@ -4,6 +4,7 @@ import logging
 import sqlite3
 from collections.abc import Generator
 from contextlib import contextmanager
+from pathlib import Path
 
 from ninebox.utils.paths import get_resource_path, get_user_data_dir
 
@@ -27,14 +28,27 @@ class DatabaseManager:
     """
 
     def __init__(self) -> None:
-        """Initialize database manager and ensure schema exists.
+        """Initialize database manager.
 
-        Creates database file in user data directory if it doesn't exist.
-        Runs schema initialization (idempotent - safe to run multiple times).
+        Database path is resolved lazily on first access to support
+        test fixtures that set APP_DATA_DIR environment variable.
+        Schema initialization is deferred until first connection.
         """
-        self.db_path = get_user_data_dir() / "ninebox.db"
-        logger.info(f"Initializing database at: {self.db_path}")
-        self._ensure_schema()
+        self._db_path_cache: Path | None = None
+        self._schema_initialized = False
+
+    @property
+    def db_path(self) -> Path:
+        """Get database path (lazy resolution for test isolation)."""
+        if self._db_path_cache is None:
+            self._db_path_cache = get_user_data_dir() / "ninebox.db"
+            logger.info(f"Resolved database path: {self._db_path_cache}")
+        return self._db_path_cache
+
+    @db_path.setter
+    def db_path(self, value: Path) -> None:
+        """Set database path (for testing)."""
+        self._db_path_cache = value
 
     @contextmanager
     def get_connection(self) -> Generator[sqlite3.Connection, None, None]:
@@ -44,6 +58,7 @@ class DatabaseManager:
         - Commits on successful completion
         - Rolls back on exception
         - Always closes connection
+        - Ensures schema is initialized on first connection
 
         Yields:
             sqlite3.Connection: Database connection with row_factory set to sqlite3.Row
@@ -53,6 +68,11 @@ class DatabaseManager:
             ...     conn.execute("INSERT INTO sessions VALUES (?)", (data,))
             ...     # Auto-commits here if no exception
         """
+        # Ensure schema is initialized on first connection (avoid recursion)
+        if not self._schema_initialized:
+            self._schema_initialized = True  # Set BEFORE calling _ensure_schema to avoid recursion
+            self._ensure_schema()
+
         conn = sqlite3.connect(str(self.db_path))
         conn.row_factory = sqlite3.Row  # Enable dict-like row access
         try:
@@ -140,6 +160,23 @@ class DatabaseManager:
             conn.execute(
                 "ALTER TABLE sessions ADD COLUMN donut_mode_active INTEGER NOT NULL DEFAULT 0"
             )
+
+        # Migration 4: Drop old 'changes' column if it exists
+        # (Database is ephemeral, no backward compatibility needed)
+        if "changes" in columns:
+            logger.info("Running migration: Dropping obsolete 'changes' column")
+            try:
+                conn.execute("ALTER TABLE sessions DROP COLUMN changes")
+            except sqlite3.OperationalError as e:
+                logger.warning(f"Could not drop 'changes' column (old SQLite version?): {e}")
+
+        # Migration 5: Drop old 'donut_changes' column if it exists
+        if "donut_changes" in columns:
+            logger.info("Running migration: Dropping obsolete 'donut_changes' column")
+            try:
+                conn.execute("ALTER TABLE sessions DROP COLUMN donut_changes")
+            except sqlite3.OperationalError as e:
+                logger.warning(f"Could not drop 'donut_changes' column (old SQLite version?): {e}")
 
 
 # Global database manager instance
