@@ -2,8 +2,8 @@
 
 Complete catalog of all UI components in the 9Boxer application. This inventory helps understand what exists, where components live, and how they relate to each other.
 
-**Last Updated:** 2025-12-26
-**Total Components:** 34
+**Last Updated:** 2025-12-27
+**Total Components:** 53 (34 main components + 19 sub-components)
 
 ---
 
@@ -86,9 +86,25 @@ Main layout components that structure the application.
 |-----------|------|---------|----------|
 | **DashboardPage** | `dashboard/DashboardPage.tsx` | Main app layout, manages panels | AppBar, FilterDrawer, NineBoxGrid, RightPanel |
 | **AppBar** | `dashboard/AppBar.tsx` | Top toolbar with global actions | FileMenu, ViewModeToggle, ZoomControls, LanguageSelector |
+| **AppBarContainer** | `dashboard/AppBarContainer.tsx` | Container for AppBar logic | AppBar |
+| **PureAppBar** | `dashboard/PureAppBar.tsx` | Pure presentational AppBar component | Sub-components |
 | **FileMenu** | `dashboard/FileMenu.tsx` | File operations (New, Open, Save, Export) | ExclusionDialog (modal) |
-| **FilterDrawer** | `dashboard/FilterDrawer.tsx` | Search and filter sidebar | None (form inputs) |
+| **FileMenuButton** | `dashboard/FileMenuButton.tsx` | Button to trigger file menu | None |
+| **FileNameDisplay** | `dashboard/FileNameDisplay.tsx` | Display current file name | None |
+| **FilterDrawer** | `dashboard/FilterDrawer.tsx` | Search and filter sidebar | FilterSection, FlagFilters, etc. |
 | **ExclusionDialog** | `dashboard/ExclusionDialog.tsx` | Manage excluded employees | None (form) |
+| **ChangeIndicator** | `dashboard/ChangeIndicator.tsx` | Indicates unsaved changes | None |
+| **HelpButton** | `dashboard/HelpButton.tsx` | Opens help/user guide | None |
+
+#### Filter Components
+
+| Component | File | Purpose | Reusable |
+|-----------|------|---------|----------|
+| **FilterSection** | `dashboard/filters/FilterSection.tsx` | Container for filter sections | ✅ Yes |
+| **FlagFilters** | `dashboard/filters/FlagFilters.tsx` | Filter by employee flags | ❌ No (app-specific) |
+| **GridPositionFilter** | `dashboard/filters/GridPositionFilter.tsx` | Filter by grid position | ❌ No (app-specific) |
+| **ReportingChainFilter** | `dashboard/filters/ReportingChainFilter.tsx` | Filter by manager | ❌ No (app-specific) |
+| **ExclusionList** | `dashboard/filters/ExclusionList.tsx` | Display excluded employees | ❌ No (app-specific) |
 
 ---
 
@@ -100,8 +116,11 @@ Components for the 9-box grid and employee manipulation.
 |-----------|------|---------|----------|
 | **NineBoxGrid** | `grid/NineBoxGrid.tsx` | Container for 9 grid boxes | ✅ Potentially |
 | **GridBox** | `grid/GridBox.tsx` | Individual 9-box position cell (droppable) | ✅ Yes |
+| **BoxHeader** | `grid/BoxHeader.tsx` | Header for each grid box with position label | ✅ Yes |
 | **EmployeeTile** | `grid/EmployeeTile.tsx` | Draggable employee card | ✅ Yes |
+| **EmployeeTileList** | `grid/EmployeeTileList.tsx` | List container for employee tiles | ✅ Yes |
 | **EmployeeCount** | `grid/EmployeeCount.tsx` | Badge showing employee count | ✅ Yes |
+| **Axis** | `grid/Axis.tsx` | Axis label (Performance/Potential) | ✅ Yes |
 | **ViewModeToggle** | `grid/ViewModeToggle.tsx` | Normal/Donut view switcher | ❌ No (grid-specific) |
 
 ---
@@ -130,9 +149,11 @@ Right panel components for employee details and analysis.
 | Component | File | Purpose | Used In |
 |-----------|------|---------|---------|
 | **EmployeeDetails** | `panel/EmployeeDetails.tsx` | Employee profile card | DetailsTab |
+| **EmployeeFlags** | `panel/EmployeeFlags.tsx` | Display employee flags/badges | DetailsTab |
 | **RatingsTimeline** | `panel/RatingsTimeline.tsx` | Historical performance chart | DetailsTab |
 | **ManagementChain** | `panel/ManagementChain.tsx` | Org chart visualization | DetailsTab |
 | **DistributionChart** | `panel/DistributionChart.tsx` | Pie/Bar charts (Recharts) | StatisticsTab |
+| **EmployeeChangesSummary** | `panel/EmployeeChangesSummary.tsx` | Summary of changes to employees | ChangeTrackerTab |
 
 ---
 
@@ -161,11 +182,22 @@ Highly reusable components that can be used anywhere.
 | **ConfirmDialog** | `common/ConfirmDialog.tsx` | Reusable confirmation dialog for user actions | ✅ Yes |
 | **FileUploadDialog** | `common/FileUploadDialog.tsx` | Excel file upload modal | ✅ Yes |
 | **ZoomControls** | `common/ZoomControls.tsx` | Zoom in/out/reset buttons | ✅ Yes |
+| **ViewControls** | `common/ViewControls.tsx` | View mode and zoom controls container | ✅ Yes |
 | **LanguageSelector** | `common/LanguageSelector.tsx` | i18n language picker | ✅ Yes |
 | **LoadingSpinner** | `common/LoadingSpinner.tsx` | Loading indicator | ✅ Yes |
 | **ErrorBoundary** | `common/ErrorBoundary.tsx` | Error boundary wrapper | ✅ Yes |
 | **ConnectionStatus** | `common/ConnectionStatus.tsx` | Connection indicator | ⚠️ Moderate |
 | **DevModeIndicator** | `common/DevModeIndicator.tsx` | Dev mode badge | ⚠️ Moderate |
+
+---
+
+### 📅 Events
+
+Components for displaying event information.
+
+| Component | File | Purpose | Reusable |
+|-----------|------|---------|----------|
+| **EventDisplay** | `events/EventDisplay.tsx` | Display event/notification | ✅ Yes |
 
 ---
 
@@ -279,6 +311,10 @@ Alphabetical index of all components with quick reference.
 |-----------|----------|------|----------|----------|
 | AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | AppBar | `dashboard/` | Layout | ❌ No | ❌ |
+| AppBarContainer | `dashboard/` | Layout | ❌ No | ❌ |
+| Axis | `grid/` | Grid | ✅ Yes | ❌ |
+| BoxHeader | `grid/` | Grid | ✅ Yes | ❌ |
+| ChangeIndicator | `dashboard/` | Utility | ⚠️ Moderate | ❌ |
 | ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ |
 | ConfirmDialog | `common/` | Utility | ✅ Yes | N/A (new) |
 | ConnectionStatus | `common/` | Global | ⚠️ Moderate | ❌ |
@@ -289,15 +325,26 @@ Alphabetical index of all components with quick reference.
 | DistributionChart | `panel/` | Visualization | ✅ Yes | ❌ |
 | DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
 | EmptyState | `common/` | Utility | ✅ Yes | N/A (new) |
+| EmployeeChangesSummary | `panel/` | Panel Component | ❌ No | ❌ |
 | EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ |
 | EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ |
+| EmployeeFlags | `panel/` | Panel Component | ❌ No | ❌ |
 | EmployeeTile | `grid/` | Grid | ✅ Yes | ❌ |
+| EmployeeTileList | `grid/` | Grid | ✅ Yes | ❌ |
 | ErrorBoundary | `common/` | Global | ✅ Yes | ❌ |
+| EventDisplay | `events/` | Event | ✅ Yes | ❌ |
 | ExclusionDialog | `dashboard/` | Modal | ❌ No | ❌ |
+| ExclusionList | `dashboard/filters/` | Filter | ❌ No | ❌ |
 | FileMenu | `dashboard/` | Menu | ❌ No | ❌ |
+| FileMenuButton | `dashboard/` | Button | ❌ No | ❌ |
+| FileNameDisplay | `dashboard/` | Display | ❌ No | ❌ |
 | FileUploadDialog | `common/` | Modal | ✅ Yes | ❌ |
 | FilterDrawer | `dashboard/` | Sidebar | ❌ No | ❌ |
+| FilterSection | `dashboard/filters/` | Filter | ✅ Yes | ❌ |
+| FlagFilters | `dashboard/filters/` | Filter | ❌ No | ❌ |
 | GridBox | `grid/` | Grid | ⚠️ Moderate | ❌ |
+| GridPositionFilter | `dashboard/filters/` | Filter | ❌ No | ❌ |
+| HelpButton | `dashboard/` | Button | ❌ No | ❌ |
 | IntelligenceSummary | `intelligence/` | Intelligence | ❌ No | ❌ |
 | IntelligenceTab | `panel/` | Panel Tab | ❌ No | ✅ |
 | LanguageSelector | `common/` | Utility | ✅ Yes | ❌ |
@@ -306,10 +353,13 @@ Alphabetical index of all components with quick reference.
 | ManagementChain | `panel/` | Panel Component | ❌ No | ❌ |
 | MockDataDemo | `intelligence/` | Development | ❌ No | ❌ |
 | NineBoxGrid | `grid/` | Grid | ⚠️ Moderate | ❌ |
+| PureAppBar | `dashboard/` | Layout | ❌ No | ❌ |
 | RatingsTimeline | `panel/` | Panel Component | ❌ No | ❌ |
+| ReportingChainFilter | `dashboard/filters/` | Filter | ❌ No | ❌ |
 | RightPanel | `panel/` | Layout | ⚠️ Moderate | ❌ |
 | SettingsDialog | `settings/` | Modal | ❌ No | ❌ |
 | StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
+| ViewControls | `common/` | Control | ✅ Yes | ❌ |
 | ViewModeToggle | `grid/` | Control | ❌ No | ❌ |
 | ZoomControls | `common/` | Control | ✅ Yes | ❌ |
 
@@ -321,13 +371,15 @@ Alphabetical index of all components with quick reference.
 
 | Zone | Count | Purpose |
 |------|-------|---------|
-| **Common** | 9 | Reusable utilities |
-| **Dashboard** | 5 | Layout & navigation |
-| **Grid** | 5 | Employee visualization |
-| **Panel** | 9 | Detailed information |
+| **Common** | 10 | Reusable utilities |
+| **Dashboard** | 11 | Layout & navigation |
+| **Dashboard Filters** | 5 | Filter components |
+| **Grid** | 8 | Employee visualization |
+| **Panel** | 11 | Detailed information |
 | **Intelligence** | 6 | Analytics & insights |
+| **Events** | 1 | Event display |
 | **Settings** | 1 | User preferences |
-| **Total** | 34 | All components |
+| **Total** | 53 | All components |
 
 ### By Reusability
 
