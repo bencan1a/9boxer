@@ -49,6 +49,7 @@ dev = [
     "factory-boy>=3.3.0",
     "faker>=22.0.0",
     "playwright>=1.40.0",  # Used by screenshot generation tool
+    "Pillow>=10.0.0",  # Used by frontend build scripts for icon generation
 
     # Code quality
     "ruff>=0.1.0",
