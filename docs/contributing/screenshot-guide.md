@@ -1,8 +1,21 @@
 # Screenshot Specifications & Annotation Guide
 
-**Purpose:** Standardize screenshot creation and annotation for 9Boxer user documentation
+**Purpose:** Technical standards for screenshot creation and annotation for 9Boxer user documentation
 
 **Version:** 1.0 | **Date:** December 2024
+
+---
+
+## Important: Screenshot Automation
+
+**User documentation screenshot automation** is managed by the self-managing docs system (Issues #51-62). This guide covers **technical standards only** (format, resolution, annotation style).
+
+**For screenshot automation workflows:**
+- See `frontend/playwright/screenshots/HOWTO.md` for screenshot generation automation
+- See `frontend/playwright/screenshots/config.ts` for screenshot registry
+- See `frontend/playwright/screenshots/workflows/` for automation scripts
+
+**This guide provides:** Technical specifications, annotation standards, and quality requirements that the automation system should follow.
 
 ---
 
