@@ -37,7 +37,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 // Constants
 const ANTHROPIC_API_VERSION = '2023-06-01';
-const MODEL = 'claude-3-5-sonnet-20241022';
+const MODEL = 'claude-sonnet-4-20250929';  // Claude Sonnet 4 (current model)
 const MAX_TOKENS = 4096;
 
 /**
