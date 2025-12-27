@@ -1,9 +1,34 @@
-# CLAUDE.md
+# CLAUDE.md - Comprehensive Technical Reference
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This is the complete technical reference for Claude Code agents working with this repository. For quick-start guidance, see [AGENTS.md](AGENTS.md). For GitHub Copilot-specific setup, see [GITHUB_AGENT.md](GITHUB_AGENT.md).
 
-> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
-> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for development workflow essentials.
+---
+
+## 📖 READ THIS FIRST
+
+**New to this project?** Start here:
+
+1. **[Virtual Environment](#critical-virtual-environment)** - ⚠️ MUST activate before any Python work (#1 cause of errors)
+2. **[Windows Platform Constraints](#critical-windows-environment---bash-tool-usage)** - ⚠️ CRITICAL file operation rules (avoid catastrophic failures)
+3. **[Project Overview](#project-overview)** - Understand the architecture (Electron + FastAPI + PyInstaller)
+4. **[Common Commands](#common-commands)** - Quick reference for testing, building, quality checks
+5. **[File Organization](#file-organization-conventions)** - Where to put temporary files and documentation
+
+**Quick Navigation by Task:**
+- 🧪 **Testing** → [Testing (Backend)](#testing-backend) | [Frontend Testing](#frontend-testing) | [Testing Approach](#testing-approach)
+- 🔨 **Building** → [Build Commands](#build-commands-standalone-application)
+- 🎨 **UI Development** → [Design System](#design-system)
+- 📋 **Code Quality** → [Pre-Commit Hooks](#-pre-commit-hooks-required-for-all-commits) | [Code Quality Standards](#code-quality-standards)
+- 📚 **Documentation** → [Documentation System](#documentation-system) | [File Organization](#file-organization-conventions)
+- 🐛 **Debugging** → [Common Issues](#common-issues) (at end of document)
+
+**Trust Hierarchy (when information conflicts):**
+1. **[docs/facts.json](docs/facts.json)** - Highest authority, source of truth
+2. Permanent documentation in `docs/`
+3. This file (CLAUDE.md)
+4. Active plans in `agent-projects/` (hints only)
+
+---
 
 ## Project Overview
 
@@ -926,3 +951,64 @@ For unavoidable warnings:
   - `voice-and-tone-guide.md` - Writing style quick reference (DO's and DON'Ts)
   - `documentation-writing-guide.md` - Comprehensive documentation standards and patterns
   - `screenshot-guide.md` - Screenshot technical specs and annotation standards
+
+---
+
+## Common Issues
+
+Quick solutions to frequent problems:
+
+### "Module not found" Error (Python)
+**Cause:** Virtual environment not activated  
+**Solution:** Run `. .venv/bin/activate` from project root (this is #1 cause of errors!)
+
+### Tests Failing on Import
+**Cause:** Package not installed in development mode  
+**Solution:**
+```bash
+. .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+### Type Checking Errors
+**Cause:** Missing type annotations  
+**Solution:** Add type hints to ALL function parameters and returns (required standard)
+
+### Backend Executable Won't Run
+**Cause:** Missing hidden imports in PyInstaller spec  
+**Solution:** Add missing modules to `backend/build_config/ninebox.spec` hiddenimports
+
+### Electron App Won't Start
+**Cause:** Backend executable not found  
+**Solution:** Build backend FIRST: `cd backend && ./scripts/build_executable.sh`
+
+### Frontend Can't Connect to Backend
+**Cause:** Backend not running or wrong port  
+**Solution:** Verify backend running on port 38000, check logs at backend/logs/
+
+### Pre-commit Hooks Failing
+**Cause:** Code quality issues  
+**Solution:**
+```bash
+make fix                    # Auto-fix format/lint
+pre-commit run --all-files  # Re-check
+```
+
+### Git Tracking Unexpected Files
+**Cause:** Created files in wrong location or used wrong bash commands  
+**Solution:** Use `.gitignore`, clean up with `git rm`, use View/Edit/Create tools instead of bash file operations
+
+### Phantom `nul` File (Windows)
+**Cause:** Used `> "nul"` with quotes (treats as filename, not device)  
+**Solution:** Requires PowerShell admin: `del "\\.\C:\Git_Repos\9boxer\nul"`  
+**Prevention:** Never use quotes around `nul` - use `>nul` or `2>/dev/null`
+
+### Malformed Path Files (Windows)
+**Symptom:** Files like `cGit_Repos9boxeragent-tmpfile.txt` in git status  
+**Cause:** Used absolute Windows path in Bash (`c:\...`)  
+**Solution:** Ask user to clean up; use relative paths or View/Edit/Create tools only  
+**Prevention:** NEVER use Windows absolute paths in Bash commands
+
+---
+
+**For additional help:** Check [docs/facts.json](docs/facts.json) (source of truth), [docs/CONTEXT.md](docs/CONTEXT.md) (comprehensive context), or [.github/agents/](..github/agents/) (specialized profiles).
