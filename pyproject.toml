@@ -69,6 +69,7 @@ dev = [
     "ipython>=8.20.0",
     "ipdb>=0.13.13",
     "pre-commit>=3.6.0",
+    "pyyaml>=6.0",  # Used by pre-commit workflow validation hook
 
     # Documentation
     "mkdocs-material>=9.5.0",

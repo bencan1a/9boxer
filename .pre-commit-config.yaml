@@ -64,7 +64,8 @@ repos:
       - id: check-workflow-yaml
         name: check workflow YAML syntax
         entry: python
-        language: system
+        language: python
+        additional_dependencies: ["pyyaml>=6.0"]
         args: [-c, "import yaml; import sys; from pathlib import Path; [yaml.safe_load(f.read_text(encoding='utf-8')) for f in Path('.github/workflows').glob('*.yml')]"]
         files: ^\.github/workflows/.*\.yml$
         pass_filenames: false
