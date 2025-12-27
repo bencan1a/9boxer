@@ -26,10 +26,6 @@ const meta: Meta<typeof DistributionSection> = {
       control: "boolean",
       description: "Whether to show ideal percentage comparisons",
     },
-    onSegmentClick: {
-      description: "Callback when segment is clicked",
-      action: "segment-click",
-    },
   },
 };
 

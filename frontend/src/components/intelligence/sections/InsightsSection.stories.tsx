@@ -6,6 +6,7 @@ import {
   mockManyInsights,
   mockNoInsights,
   mockRecommendationHigh,
+  mockRecommendationLow,
   mockObservation,
   mockWarning,
 } from "../../../mocks/mockInsights";
@@ -35,6 +36,10 @@ const meta: Meta<typeof InsightsSection> = {
 export default meta;
 type Story = StoryObj<typeof InsightsSection>;
 
+/**
+ * Empty state - no insights available
+ * Displays a helpful message guiding users when no insights have been generated
+ */
 export const Empty: Story = {
   args: {
     insights: mockNoInsights,
@@ -43,6 +48,10 @@ export const Empty: Story = {
   },
 };
 
+/**
+ * Single high-confidence recommendation
+ * Displays a single recommendation insight with action button and confidence indicator
+ */
 export const SingleRecommendation: Story = {
   args: {
     insights: [mockRecommendationHigh],
@@ -51,6 +60,10 @@ export const SingleRecommendation: Story = {
   },
 };
 
+/**
+ * Mixed insight types - recommendations, observations, and warnings
+ * Tests diversity of insight types with type indicators at the top of the section
+ */
 export const MixedTypes: Story = {
   args: {
     insights: mockMixedInsights,
@@ -59,6 +72,10 @@ export const MixedTypes: Story = {
   },
 };
 
+/**
+ * Many insights - stress test with 7+ items
+ * Tests scrolling behavior and performance with a large number of insights
+ */
 export const ManyInsights: Story = {
   args: {
     insights: mockManyInsights,
@@ -67,6 +84,46 @@ export const ManyInsights: Story = {
   },
 };
 
+/**
+ * Low confidence insights - all insights below 0.6 confidence
+ * Tests how confidence indicators appear for less certain insights
+ */
+export const LowConfidence: Story = {
+  args: {
+    insights: [
+      mockRecommendationLow,
+      {
+        ...mockRecommendationLow,
+        id: "rec-low-2",
+        text: "Another low-confidence suggestion based on limited data.",
+      },
+      {
+        ...mockObservation,
+        id: "obs-low",
+        confidence: 0.52,
+        text: "This observation has lower confidence due to small sample size.",
+      },
+    ],
+    onInsightAction: fn(),
+    showConfidence: true,
+  },
+};
+
+/**
+ * Without action handlers - insights with no callback
+ * Tests that insights render correctly even when no onInsightAction callback is provided
+ */
+export const WithoutActions: Story = {
+  args: {
+    insights: mockMixedInsights,
+    showConfidence: true,
+  },
+};
+
+/**
+ * No confidence display - confidence indicators hidden
+ * Displays insights with showConfidence=false, useful when confidence should not be exposed
+ */
 export const NoConfidenceDisplay: Story = {
   args: {
     insights: [mockRecommendationHigh, mockObservation, mockWarning],

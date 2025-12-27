@@ -14,6 +14,7 @@ import {
   Button,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import ErrorIcon from "@mui/icons-material/Error";
 import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
@@ -22,20 +23,60 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type { AnomalyCardProps } from "../../../types/intelligence";
 
 /**
- * Anomaly card component
+ * Displays a single statistical anomaly detected in talent distribution data.
  *
- * Displays an anomaly with appropriate severity styling and optional actions.
- * Can be expanded to show suggestions and additional details.
+ * Shows anomaly severity, affected employees, and optional suggestions for remediation.
+ * Supports interactive features like clicking for details and dismissing anomalies.
+ * The card uses color-coded borders and icons to indicate severity level (critical/warning/info).
  *
+ * @component
  * @example
  * ```tsx
  * <AnomalyCard
- *   anomaly={anomaly}
- *   onDismiss={(id) => console.log('Dismissed:', id)}
- *   onClick={(anomaly) => console.log('Clicked:', anomaly)}
- *   showActions
+ *   anomaly={{
+ *     id: 'anomaly-1',
+ *     type: 'distribution',
+ *     severity: 'warning',
+ *     title: 'Uneven distribution detected',
+ *     description: 'Position 1 has 15% more employees than ideal',
+ *     affectedEmployees: ['emp-1', 'emp-2'],
+ *     suggestion: 'Consider reviewing calibration for this position',
+ *     confidence: 0.85
+ *   }}
+ *   onClick={handleViewDetails}
+ *   onDismiss={handleDismiss}
+ *   showActions={true}
  * />
  * ```
+ *
+ * @param {AnomalyCardProps} props - Component props
+ * @param {Anomaly} props.anomaly - The anomaly data to display
+ * @param {function} [props.onClick] - Optional callback when card is clicked
+ * @param {function} [props.onDismiss] - Optional callback when anomaly is dismissed
+ * @param {boolean} [props.showActions=true] - Whether to show action buttons
+ *
+ * @accessibility
+ * - Keyboard navigation with Enter/Space keys when clickable
+ * - ARIA label describes the anomaly and action
+ * - aria-expanded communicates suggestion toggle state
+ * - Dismiss button has descriptive aria-label
+ * - Role="button" applied when clickable
+ *
+ * @i18n
+ * - intelligence.severity.critical - Critical severity label
+ * - intelligence.severity.warning - Warning severity label
+ * - intelligence.severity.info - Info severity label
+ * - intelligence.anomaly.affectedEmployees - Affected employees label
+ * - intelligence.anomaly.employeeCount - Employee count with pluralization
+ * - intelligence.insight.confidence - Confidence percentage label
+ * - intelligence.anomaly.suggestion - Suggestion label
+ * - intelligence.anomaly.viewDetailsAria - ARIA label for clickable card
+ * - common.show - Show button label
+ * - common.hide - Hide button label
+ * - common.dismiss - Dismiss button label
+ *
+ * @see AnomaliesSection
+ * @see Anomaly type definition
  */
 export const AnomalyCard: React.FC<AnomalyCardProps> = ({
   anomaly,
@@ -44,8 +85,14 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
   showActions = true,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
+  /**
+   * Gets the theme color for the current severity level.
+   *
+   * @returns {string} Theme color for the severity
+   */
   const getSeverityColor = () => {
     switch (anomaly.severity) {
       case "critical":
@@ -59,6 +106,11 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
     }
   };
 
+  /**
+   * Gets the appropriate icon for the current severity level.
+   *
+   * @returns {React.ReactElement} Icon component for the severity
+   */
   const getSeverityIcon = () => {
     switch (anomaly.severity) {
       case "critical":
@@ -72,19 +124,29 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
     }
   };
 
+  /**
+   * Gets the localized label for the current severity level.
+   *
+   * @returns {string} Translated severity label
+   */
   const getSeverityLabel = () => {
     switch (anomaly.severity) {
       case "critical":
-        return "Critical";
+        return t("intelligence.severity.critical");
       case "warning":
-        return "Warning";
+        return t("intelligence.severity.warning");
       case "info":
-        return "Info";
+        return t("intelligence.severity.info");
       default:
-        return "Info";
+        return t("intelligence.severity.info");
     }
   };
 
+  /**
+   * Handles dismiss button click, preventing event propagation.
+   *
+   * @param {React.MouseEvent} e - Mouse event
+   */
   const handleDismiss = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onDismiss) {
@@ -92,15 +154,35 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
     }
   };
 
+  /**
+   * Handles card click to trigger onClick callback.
+   */
   const handleCardClick = () => {
     if (onClick) {
       onClick(anomaly);
     }
   };
 
+  /**
+   * Handles expand/collapse button click for suggestion section.
+   *
+   * @param {React.MouseEvent} e - Mouse event
+   */
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setExpanded(!expanded);
+  };
+
+  /**
+   * Handles keyboard navigation for card interaction.
+   *
+   * @param {React.KeyboardEvent} event - Keyboard event
+   */
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick?.(anomaly);
+    }
   };
 
   return (
@@ -116,6 +198,14 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
           : {},
       }}
       onClick={handleCardClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? handleKeyDown : undefined}
+      aria-label={
+        onClick
+          ? t("intelligence.anomaly.viewDetailsAria", { title: anomaly.title })
+          : undefined
+      }
       data-testid={`anomaly-card-${anomaly.id}`}
     >
       <CardContent>
@@ -150,7 +240,7 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
               <IconButton
                 size="small"
                 onClick={handleDismiss}
-                aria-label="Dismiss anomaly"
+                aria-label={t("common.dismiss")}
                 data-testid={`anomaly-dismiss-${anomaly.id}`}
               >
                 <CloseIcon fontSize="small" />
@@ -166,14 +256,22 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
 
         {/* Metadata */}
         <Box
-          sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}
+          sx={{
+            display: "flex",
+            gap: 2,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
         >
           <Typography variant="caption" color="text.secondary">
-            Affected: {anomaly.affectedEmployees.length} employee
-            {anomaly.affectedEmployees.length !== 1 ? "s" : ""}
+            {t("intelligence.anomaly.affectedEmployees")}:{" "}
+            {t("intelligence.anomaly.employeeCount", {
+              count: anomaly.affectedEmployees.length,
+            })}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Confidence: {(anomaly.confidence * 100).toFixed(0)}%
+            {t("intelligence.insight.confidence")}:{" "}
+            {(anomaly.confidence * 100).toFixed(0)}%
           </Typography>
           <Chip
             label={anomaly.type.charAt(0).toUpperCase() + anomaly.type.slice(1)}
@@ -189,6 +287,8 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
               <Button
                 size="small"
                 onClick={handleExpandClick}
+                aria-expanded={expanded}
+                aria-controls={`anomaly-suggestion-${anomaly.id}`}
                 endIcon={
                   <ExpandMoreIcon
                     sx={{
@@ -200,11 +300,14 @@ export const AnomalyCard: React.FC<AnomalyCardProps> = ({
                   />
                 }
               >
-                {expanded ? "Hide" : "Show"} Suggestion
+                {expanded ? t("common.hide") : t("common.show")}{" "}
+                {t("intelligence.anomaly.suggestion")}
               </Button>
             </Box>
             <Collapse in={expanded}>
               <Box
+                id={`anomaly-suggestion-${anomaly.id}`}
+                role="region"
                 sx={{
                   mt: 1,
                   p: 1.5,
