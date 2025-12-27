@@ -17,26 +17,30 @@ if %ERRORLEVEL% EQU 0 (
 
 cd /d "%~dp0\.."
 
-REM Check for root venv (one level up from backend\)
+REM Check for root venv and activate if present, otherwise use system Python
 set VENV_PATH=..\.venv
-if not exist "%VENV_PATH%" (
-    echo Virtual environment not found at root.
-    echo Please create it first:
-    echo   cd \path\to\9boxer
-    echo   python -m venv .venv
-    echo   .venv\Scripts\activate
-    echo   pip install -e .[dev]
-    exit /b 1
+if exist "%VENV_PATH%" (
+    echo Activating virtual environment from root...
+    call %VENV_PATH%\Scripts\activate.bat
+
+    echo Installing dependencies from root...
+    pip install uv
+    cd ..
+    uv pip install --system -e .
+    cd backend
+) else (
+    echo No virtual environment found - using system Python (CI mode)
+    REM Assume dependencies are already installed in CI
+    REM Just verify PyInstaller is available
+    where pyinstaller >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        echo PyInstaller not found. Installing...
+        pip install uv
+        cd ..
+        uv pip install --system -e .
+        cd backend
+    )
 )
-
-echo Activating virtual environment from root...
-call %VENV_PATH%\Scripts\activate.bat
-
-echo Installing dependencies from root...
-pip install uv
-cd ..
-uv pip install --system -e .
-cd backend
 
 echo Installing PyInstaller...
 uv pip install --system pyinstaller

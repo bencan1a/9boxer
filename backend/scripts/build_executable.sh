@@ -7,27 +7,30 @@ echo "Building 9-Box Backend Executable..."
 
 cd "$(dirname "$0")/.."  # Go to backend directory
 
-# Activate root venv (one level up from backend/)
+# Check for venv and activate if present, otherwise use system Python
 VENV_PATH="../.venv"
-if [ ! -d "$VENV_PATH" ]; then
-    echo "Virtual environment not found at root."
-    echo "Please create it first:"
-    echo "  cd /path/to/9boxer"
-    echo "  python3 -m venv .venv"
-    echo "  . .venv/bin/activate"
-    echo "  pip install -e '.[dev]'"
-    exit 1
+if [ -d "$VENV_PATH" ]; then
+    echo "Activating virtual environment from root..."
+    . "$VENV_PATH/bin/activate"
+
+    # Install dependencies from root (where pyproject.toml is)
+    echo "Installing dependencies..."
+    pip install uv
+    cd ..  # Go to project root
+    uv pip install --system -e .
+    cd backend  # Back to backend directory
+else
+    echo "No virtual environment found - using system Python (CI mode)"
+    # Assume dependencies are already installed in CI
+    # Just verify PyInstaller is available
+    if ! command -v pyinstaller &> /dev/null; then
+        echo "PyInstaller not found. Installing..."
+        pip install uv
+        cd ..  # Go to project root
+        uv pip install --system -e .
+        cd backend  # Back to backend directory
+    fi
 fi
-
-echo "Activating virtual environment from root..."
-. "$VENV_PATH/bin/activate"
-
-# Install dependencies from root (where pyproject.toml is)
-echo "Installing dependencies..."
-pip install uv
-cd ..  # Go to project root
-uv pip install --system -e .
-cd backend  # Back to backend directory
 
 # Install PyInstaller if needed
 echo "Installing PyInstaller..."
