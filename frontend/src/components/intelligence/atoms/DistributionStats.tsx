@@ -29,6 +29,9 @@ export interface DistributionStatsProps {
  * <DistributionStats data={distributionData} showIdeal />
  * ```
  */
+// Threshold for highlighting significant deviations from ideal distribution (percentage points)
+const SIGNIFICANT_DEVIATION_THRESHOLD = 5;
+
 export const DistributionStats: React.FC<DistributionStatsProps> = ({
   data,
   showIdeal = true,
@@ -36,25 +39,28 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
   const theme = useTheme();
 
   // Sort segments by position for consistent display (1-9)
-  const sortedSegments = [...data.segments].sort((a, b) => a.position - b.position);
+  const sortedSegments = React.useMemo(
+    () => [...data.segments].sort((a, b) => a.position - b.position),
+    [data.segments]
+  );
 
   // Get background color based on position (matching grid colors)
   const getPositionColor = (position: number): string => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
     if ([6, 8, 9].includes(position)) {
-      return theme.palette.gridBox?.highPerformer || theme.palette.success.light;
+      return theme.palette.gridBox.highPerformer;
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
     if ([1, 2, 4].includes(position)) {
-      return theme.palette.gridBox?.needsAttention || theme.palette.error.light;
+      return theme.palette.gridBox.needsAttention;
     }
     // Solid Performer: [M,M] = position 5
     if (position === 5) {
-      return theme.palette.gridBox?.solidPerformer || theme.palette.info.light;
+      return theme.palette.gridBox.solidPerformer;
     }
     // Development: [L,H], [H,L] = positions 7, 3
     if ([3, 7].includes(position)) {
-      return theme.palette.gridBox?.development || theme.palette.warning.light;
+      return theme.palette.gridBox.development;
     }
     return theme.palette.action.hover;
   };
@@ -72,7 +78,7 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
       {sortedSegments.map((segment) => {
         const deviation = getDeviation(segment.position, segment.percentage);
         const hasSignificantDeviation =
-          deviation !== null && Math.abs(deviation) > 5;
+          deviation !== null && Math.abs(deviation) > SIGNIFICANT_DEVIATION_THRESHOLD;
 
         return (
           <Grid item xs={6} sm={4} md={4} key={segment.position}>
@@ -109,7 +115,7 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
                     variant="caption"
                     sx={{
                       color:
-                        Math.abs(deviation) < 5
+                        Math.abs(deviation) < SIGNIFICANT_DEVIATION_THRESHOLD
                           ? "text.secondary"
                           : deviation > 0
                             ? theme.palette.warning.dark

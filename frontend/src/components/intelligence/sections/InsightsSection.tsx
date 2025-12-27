@@ -21,9 +21,15 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
   onInsightAction,
   showConfidence = true,
 }) => {
-  const recommendationCount = insights.filter((i) => i.type === "recommendation").length;
-  const observationCount = insights.filter((i) => i.type === "observation").length;
-  const warningCount = insights.filter((i) => i.type === "warning").length;
+  // Count by type - memoized to avoid recalculation on every render
+  const { recommendationCount, observationCount, warningCount } = React.useMemo(
+    () => ({
+      recommendationCount: insights.filter((i) => i.type === "recommendation").length,
+      observationCount: insights.filter((i) => i.type === "observation").length,
+      warningCount: insights.filter((i) => i.type === "warning").length,
+    }),
+    [insights]
+  );
 
   return (
     <Card variant="outlined">

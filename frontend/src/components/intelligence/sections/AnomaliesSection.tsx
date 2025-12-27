@@ -53,10 +53,15 @@ export const AnomaliesSection: React.FC<AnomaliesSectionProps> = ({
   onAnomalyDismiss,
   showActions = true,
 }) => {
-  // Count by severity
-  const criticalCount = anomalies.filter((a) => a.severity === "critical").length;
-  const warningCount = anomalies.filter((a) => a.severity === "warning").length;
-  const infoCount = anomalies.filter((a) => a.severity === "info").length;
+  // Count by severity - memoized to avoid recalculation on every render
+  const { criticalCount, warningCount, infoCount } = React.useMemo(
+    () => ({
+      criticalCount: anomalies.filter((a) => a.severity === "critical").length,
+      warningCount: anomalies.filter((a) => a.severity === "warning").length,
+      infoCount: anomalies.filter((a) => a.severity === "info").length,
+    }),
+    [anomalies]
+  );
 
   return (
     <Card variant="outlined">
