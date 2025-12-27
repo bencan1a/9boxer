@@ -821,7 +821,7 @@ function saveAuditReport(report) {
 /**
  * Print summary report
  *
- * @param {Object} report - Audit report
+ * @param {Object} report - Audit report (new structure with internalDocs and userDocs)
  */
 function printSummary(report) {
   console.log('\n' + '─'.repeat(60));
@@ -829,41 +829,123 @@ function printSummary(report) {
   console.log('─'.repeat(60));
 
   console.log(`\n📅 Audit Period: Last ${report.metadata.daysScanned} days`);
-  console.log(`📝 Total Issues Found: ${report.summary.totalIssues}`);
 
-  console.log('\n📋 By Type:');
-  Object.entries(report.summary.byType).forEach(([type, count]) => {
-    if (count > 0) {
-      console.log(`   - ${type}: ${count}`);
-    }
-  });
+  // Calculate combined totals
+  const internalTotal = report.internalDocs?.summary?.totalIssues || 0;
+  const userTotal = report.userDocs?.summary?.totalIssues || 0;
+  const grandTotal = internalTotal + userTotal;
 
-  console.log('\n🚨 By Severity:');
-  Object.entries(report.summary.bySeverity).forEach(([severity, count]) => {
-    if (count > 0) {
-      const icon = severity === 'high' ? '🔴' : severity === 'medium' ? '🟡' : '🟢';
-      console.log(`   ${icon} ${severity}: ${count}`);
-    }
-  });
+  console.log(`📝 Total Issues Found: ${grandTotal}`);
+  console.log(`   - Internal Docs (for agents): ${internalTotal}`);
+  console.log(`   - User Docs (for end users): ${userTotal}`);
 
-  if (report.findings.length > 0) {
-    console.log('\n📌 Findings:');
-    report.findings.forEach((finding, index) => {
-      const icon = finding.severity === 'high' ? '🔴' : finding.severity === 'medium' ? '🟡' : '🟢';
-      console.log(`\n   ${index + 1}. ${icon} ${finding.title}`);
-      console.log(`      Type: ${finding.type} | Location: ${finding.location}`);
-      console.log(`      ${finding.description.slice(0, 100)}${finding.description.length > 100 ? '...' : ''}`);
+  // Internal docs summary
+  if (internalTotal > 0) {
+    console.log('\n🤖 Internal Documentation Issues:');
+    console.log('   By Type:');
+    Object.entries(report.internalDocs.summary.byType).forEach(([type, count]) => {
+      if (count > 0) {
+        console.log(`      - ${type}: ${count}`);
+      }
+    });
+
+    console.log('   By Priority:');
+    Object.entries(report.internalDocs.summary.byPriority).forEach(([priority, count]) => {
+      if (count > 0) {
+        const icon =
+          priority === 'critical'
+            ? '🔴'
+            : priority === 'high'
+              ? '🟠'
+              : priority === 'medium'
+                ? '🟡'
+                : '🟢';
+        console.log(`      ${icon} ${priority}: ${count}`);
+      }
     });
   }
 
-  if (report.issues.length > 0) {
+  // User docs summary
+  if (userTotal > 0) {
+    console.log('\n📚 User Documentation Issues:');
+    console.log('   By Type:');
+    Object.entries(report.userDocs.summary.byType).forEach(([type, count]) => {
+      if (count > 0) {
+        console.log(`      - ${type}: ${count}`);
+      }
+    });
+
+    console.log('   By Priority:');
+    Object.entries(report.userDocs.summary.byPriority).forEach(([priority, count]) => {
+      if (count > 0) {
+        const icon =
+          priority === 'critical'
+            ? '🔴'
+            : priority === 'high'
+              ? '🟠'
+              : priority === 'medium'
+                ? '🟡'
+                : '🟢';
+        console.log(`      ${icon} ${priority}: ${count}`);
+      }
+    });
+  }
+
+  // Show sample findings (first 5 from each type)
+  if (report.internalDocs?.findings?.length > 0) {
+    console.log('\n📌 Sample Internal Docs Findings:');
+    report.internalDocs.findings.slice(0, 5).forEach((finding, index) => {
+      const icon =
+        finding.priority === 'critical'
+          ? '🔴'
+          : finding.priority === 'high'
+            ? '🟠'
+            : finding.priority === 'medium'
+              ? '🟡'
+              : '🟢';
+      console.log(`   ${index + 1}. ${icon} [${finding.type}] ${finding.title || 'Untitled'}`);
+      if (finding.location) {
+        console.log(`      Location: ${finding.location}`);
+      }
+    });
+    if (report.internalDocs.findings.length > 5) {
+      console.log(`   ... and ${report.internalDocs.findings.length - 5} more`);
+    }
+  }
+
+  if (report.userDocs?.findings?.length > 0) {
+    console.log('\n📌 Sample User Docs Findings:');
+    report.userDocs.findings.slice(0, 5).forEach((finding, index) => {
+      const icon =
+        finding.priority === 'critical'
+          ? '🔴'
+          : finding.priority === 'high'
+            ? '🟠'
+            : finding.priority === 'medium'
+              ? '🟡'
+              : '🟢';
+      console.log(`   ${index + 1}. ${icon} [${finding.type}] ${finding.title || 'Untitled'}`);
+      if (finding.location) {
+        console.log(`      Location: ${finding.location}`);
+      }
+    });
+    if (report.userDocs.findings.length > 5) {
+      console.log(`   ... and ${report.userDocs.findings.length - 5} more`);
+    }
+  }
+
+  // GitHub issues created
+  if (report.issues?.length > 0) {
     console.log('\n\n🎫 GitHub Issues Created:');
     report.issues.forEach((issue) => {
-      console.log(`   - Issue #${issue.number}: ${issue.title}`);
+      const typeLabel = issue.type === 'internal' ? '🤖 Internal' : '📚 User';
+      console.log(`   - ${typeLabel} | Issue #${issue.number}: ${issue.title}`);
       if (issue.url) {
         console.log(`     ${issue.url}`);
       }
     });
+  } else if (report.metadata.dryRun) {
+    console.log('\n\n🏃 DRY RUN: No issues created (would create 2 consolidated issues)');
   }
 
   console.log('\n' + '─'.repeat(60));
