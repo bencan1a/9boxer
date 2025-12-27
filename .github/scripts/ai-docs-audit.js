@@ -474,7 +474,7 @@ For each issue you find, provide:
 - **sectionToUpdate**: Which section of target doc to update
 - **deleteAfter**: true (always recommend deletion after consolidation)
 
-Return your findings in this JSON format:
+Return your findings in this JSON format (CRITICAL: Ensure all strings properly escape quotes and special characters):
 {
   "findings": [
     {
@@ -499,7 +499,14 @@ Return your findings in this JSON format:
     "byType": { "outdated": number, "missing": number, "conflict": number, "consolidation": number, "stale-example": number },
     "byPriority": { "critical": number, "high": number, "medium": number, "low": number }
   }
-}`;
+}
+
+IMPORTANT JSON FORMATTING RULES:
+- Escape all quotes in string values using backslash: \\"
+- Escape all backslashes: \\\\
+- Do not include literal newlines in strings - use \\n instead
+- Keep descriptions and actions concise to avoid JSON parsing issues
+- Return ONLY the JSON object, no additional commentary before or after`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -532,11 +539,27 @@ Return your findings in this JSON format:
     // Extract JSON from response (Claude might wrap it in markdown code blocks)
     const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/({[\s\S]*})/);
     if (!jsonMatch) {
+      console.error('❌ Failed to extract JSON from Claude response');
+      console.error('Response preview:', content.slice(0, 500));
       throw new Error('Failed to extract JSON from Claude response');
     }
 
-    const result = JSON.parse(jsonMatch[1]);
-    return result;
+    const jsonText = jsonMatch[1];
+
+    try {
+      const result = JSON.parse(jsonText);
+      return result;
+    } catch (parseError) {
+      console.error('❌ JSON parsing failed:', parseError.message);
+      console.error('JSON excerpt around error position:');
+      const errorPos = parseInt(parseError.message.match(/position (\d+)/)?.[1] || '0', 10);
+      const start = Math.max(0, errorPos - 200);
+      const end = Math.min(jsonText.length, errorPos + 200);
+      console.error(jsonText.slice(start, end));
+      console.error('Full JSON saved to: /tmp/failed-internal-docs-response.json (for debugging)');
+      // In production, we might want to save this to a file for debugging
+      throw new Error(`JSON parsing failed: ${parseError.message}`);
+    }
   } catch (error) {
     console.error('❌ Internal docs analysis failed:', error.message);
     throw error;
@@ -581,7 +604,7 @@ For each issue you find, provide:
 7. **Flags**: Array of required actions (e.g., ["needs_screenshot", "needs_i18n_review", "needs_tone_review"])
 8. **AffectedPages**: List of ALL doc pages that reference this feature
 
-Return your findings in this JSON format:
+Return your findings in this JSON format (CRITICAL: Ensure all strings properly escape quotes and special characters):
 {
   "findings": [
     {
@@ -600,7 +623,14 @@ Return your findings in this JSON format:
     "byType": { "outdated": number, "missing": number, "incorrect": number, "screenshot-needed": number, "accessibility": number, "localization": number },
     "byPriority": { "critical": number, "high": number, "medium": number, "low": number }
   }
-}`;
+}
+
+IMPORTANT JSON FORMATTING RULES:
+- Escape all quotes in string values using backslash: \\"
+- Escape all backslashes: \\\\
+- Do not include literal newlines in strings - use \\n instead
+- Keep descriptions and actions concise to avoid JSON parsing issues
+- Return ONLY the JSON object, no additional commentary before or after`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -633,11 +663,27 @@ Return your findings in this JSON format:
     // Extract JSON from response (Claude might wrap it in markdown code blocks)
     const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/({[\s\S]*})/);
     if (!jsonMatch) {
+      console.error('❌ Failed to extract JSON from Claude response');
+      console.error('Response preview:', content.slice(0, 500));
       throw new Error('Failed to extract JSON from Claude response');
     }
 
-    const result = JSON.parse(jsonMatch[1]);
-    return result;
+    const jsonText = jsonMatch[1];
+
+    try {
+      const result = JSON.parse(jsonText);
+      return result;
+    } catch (parseError) {
+      console.error('❌ JSON parsing failed:', parseError.message);
+      console.error('JSON excerpt around error position:');
+      const errorPos = parseInt(parseError.message.match(/position (\d+)/)?.[1] || '0', 10);
+      const start = Math.max(0, errorPos - 200);
+      const end = Math.min(jsonText.length, errorPos + 200);
+      console.error(jsonText.slice(start, end));
+      console.error('Full JSON saved to: /tmp/failed-user-docs-response.json (for debugging)');
+      // In production, we might want to save this to a file for debugging
+      throw new Error(`JSON parsing failed: ${parseError.message}`);
+    }
   } catch (error) {
     console.error('❌ User docs analysis failed:', error.message);
     throw error;
