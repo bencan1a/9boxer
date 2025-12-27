@@ -26,8 +26,6 @@ cd frontend
 npm run generate:guide
 ```
 
-For detailed maintenance instructions, see [maintaining-user-guide.md](maintaining-user-guide.md).
-
 ### Developer Documentation
 
 - **CONTEXT.md** - Comprehensive project context for AI agents
@@ -162,7 +160,7 @@ When a project in `agent-projects/` is complete:
 
 ## Additional Resources
 
-- **Maintaining User Guide**: [maintaining-user-guide.md](maintaining-user-guide.md)
+- **Contributing Guides**: [contributing/](contributing/)
 - **Contributing**: [../CONTRIBUTING.md](../CONTRIBUTING.md)
 - **MkDocs Material**: https://squidfunk.github.io/mkdocs-material/
 - **Testing Docs**: [testing/README.md](testing/README.md)
