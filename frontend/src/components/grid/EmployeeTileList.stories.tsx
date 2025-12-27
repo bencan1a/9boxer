@@ -127,7 +127,8 @@ export const Empty: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Empty employee list. Container renders but no tiles are displayed.",
+        story:
+          "Empty employee list. Container renders but no tiles are displayed.",
       },
     },
   },
@@ -178,14 +179,14 @@ export const ExpandedLayout: Story = {
 };
 
 /**
- * Few employees expanded - optimal grid usage.
- * Shows 3 employees in expanded grid layout.
+ * Few employees - optimal grid usage.
+ * Shows 3 employees in normal layout.
  * Demonstrates grid behavior with fewer items.
  */
-export const FewEmployeesExpanded: Story = {
+export const FewEmployees: Story = {
   args: {
     employees: threeEmployees,
-    isExpanded: true,
+    isExpanded: false,
     onSelectEmployee: fn(),
     donutModeActive: false,
   },
@@ -193,7 +194,7 @@ export const FewEmployeesExpanded: Story = {
     docs: {
       description: {
         story:
-          "Expanded layout with only 3 employees. Grid adapts to show fewer columns.",
+          "Normal layout with only 3 employees. Shows typical small box population.",
       },
     },
   },
@@ -252,11 +253,47 @@ export const DonutMode: Story = {
 };
 
 /**
- * With modifications - session changes.
+ * With flags - employees with status indicators.
+ * Shows employees with various flags:
+ * - Flight risk
+ * - New hire
+ * - Promotion ready
+ *
+ * Flags appear as colored chips on tiles.
+ */
+export const WithFlags: Story = {
+  args: {
+    employees: [
+      createEmployee(1, "Alice Johnson", "Senior Software Engineer", {
+        flags: ["flight_risk"],
+      }),
+      createEmployee(2, "Bob Smith", "Product Manager", {
+        flags: ["new_hire"],
+      }),
+      createEmployee(3, "Carol White", "Data Scientist", {
+        flags: ["promotion_ready"],
+      }),
+    ],
+    isExpanded: false,
+    onSelectEmployee: fn(),
+    donutModeActive: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Employees with status flags. Shows colored chips for quick status identification.",
+      },
+    },
+  },
+};
+
+/**
+ * With modified employees - session changes.
  * Shows employees marked as modified in current session.
  * Modified employees have orange left border.
  */
-export const WithModifications: Story = {
+export const WithModifiedEmployees: Story = {
   args: {
     employees: [
       createEmployee(1, "Alice Johnson", "Senior Software Engineer", {

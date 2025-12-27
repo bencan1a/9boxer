@@ -26,7 +26,7 @@ type ViewMode = 'normal' | 'donut' | 'compact';
 
 **States:**
 - `normal` - Standard 3x3 grid with all employees
-- `donut` - Calibration mode, shows only position 5 employees  
+- `donut` - Calibration mode, shows only position 5 employees
 - `compact` - Smaller grid for embedded views (future)
 
 **Transitions:**
@@ -72,7 +72,7 @@ type ExpansionState = 'normal' | 'expanded' | 'collapsed';
 
 ---
 
-**Last Updated:** Phase 1.1 Componentization (December 2024)  
+**Last Updated:** Phase 1.1 Componentization (December 2024)
 **Related Files:**
 - `frontend/src/components/grid/NineBoxGrid.tsx`
 - `frontend/src/components/grid/GridBox.tsx`
