@@ -57,6 +57,22 @@ export default defineConfig({
         hasTouch: false,
       },
     },
+
+    // ===== Documentation Screenshot Visual Regression =====
+    {
+      name: "docs-visual",
+      testDir: "./playwright/visual-regression",
+      timeout: 60000, // Longer timeout for screenshot comparison
+      retries: process.env.CI ? 1 : 0,
+      // Run tests in parallel since they're just comparing static images
+      fullyParallel: true,
+      use: {
+        ...devices["Desktop Chrome"],
+        // No baseURL needed - tests compare existing screenshot files
+        headless: true,
+        trace: "retain-on-failure",
+      },
+    },
   ],
 
   // Global setup/teardown for backend server

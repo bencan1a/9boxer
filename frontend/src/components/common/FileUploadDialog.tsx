@@ -1,5 +1,12 @@
 /**
  * File import dialog component
+ *
+ * Modal dialog for uploading Excel files with drag-and-drop support
+ * and file validation.
+ *
+ * @component
+ * @screenshots
+ *   - quickstart-upload-dialog: Upload dialog showing drag-and-drop area and instructions
  */
 
 import React, { useState } from "react";

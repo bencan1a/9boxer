@@ -1,5 +1,12 @@
 /**
  * Settings dialog component for application preferences
+ *
+ * Modal dialog for configuring application settings including theme,
+ * language, and display preferences.
+ *
+ * @component
+ * @screenshots
+ *   - view-controls-settings-dialog: Settings dialog showing theme and preference options
  */
 
 import React from "react";

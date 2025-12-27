@@ -1,6 +1,13 @@
 /**
  * Pure AppBar component (presentational)
  * Displays the application bar with file menu, filter, settings, and help buttons
+ *
+ * @component
+ * @screenshots
+ *   - quickstart-file-menu-button: File menu button showing "No file selected" empty state
+ *   - view-controls-simplified-appbar: Simplified AppBar showing Logo, File menu, Help, Settings
+ *   - view-controls-main-interface: Main dashboard showing AppBar and floating ViewControls
+ *   - calibration-file-import: File menu open with Import Data menu item highlighted
  */
 
 import React from "react";
@@ -39,7 +46,7 @@ export interface PureAppBarProps {
   isFilterDisabled: boolean;
   /** Whether export is in progress */
   isExporting?: boolean;
-  
+
   // Callbacks
   /** Callback when file menu toggle is requested */
   onFileMenuToggle?: () => void;
@@ -61,10 +68,10 @@ export interface PureAppBarProps {
 
 /**
  * Pure AppBar component
- * 
+ *
  * A presentational component that displays the application toolbar.
  * All state and logic should be managed by the container component.
- * 
+ *
  * @example
  * ```tsx
  * <PureAppBar

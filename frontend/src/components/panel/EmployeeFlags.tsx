@@ -1,5 +1,12 @@
 /**
  * Employee flags component for tagging and categorizing employees
+ *
+ * Shows color-coded flag chips with add/remove functionality for
+ * tracking employee attributes and special considerations.
+ *
+ * @component
+ * @screenshots
+ *   - details-flags-ui: Flags section with Add Flag picker and colored flag chips
  */
 
 import React, { useState } from "react";

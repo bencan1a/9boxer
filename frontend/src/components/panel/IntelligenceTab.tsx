@@ -1,5 +1,13 @@
 /**
  * Intelligence tab - displays statistical anomaly analysis for the full dataset
+ *
+ * Shows AI-generated insights, distribution analysis, and anomaly detection
+ * for talent calibration and performance management.
+ *
+ * @component
+ * @screenshots
+ *   - calibration-intelligence-anomalies: Intelligence tab showing anomaly detection cards
+ *   - distribution-chart-ideal: Distribution chart showing ideal vs actual employee distribution
  */
 
 import React from "react";

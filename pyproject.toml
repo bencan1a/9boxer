@@ -42,6 +42,7 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
     "pytest-xdist>=3.5.0",
+    "pytest-benchmark>=4.0.0",
     "httpx>=0.25.0",
     "requests>=2.31.0",  # Used by e2e tests for frozen executable testing
     "psutil>=5.9.0",  # Used by performance tests for resource monitoring
@@ -68,6 +69,7 @@ dev = [
     "ipython>=8.20.0",
     "ipdb>=0.13.13",
     "pre-commit>=3.6.0",
+    "pyyaml>=6.0",  # Used by pre-commit workflow validation hook
 
     # Documentation
     "mkdocs-material>=9.5.0",
