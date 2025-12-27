@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
+import { Axis } from "./Axis";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { Employee } from "../../types/employee";
@@ -225,9 +226,7 @@ export const NineBoxGrid: React.FC = () => {
                 flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Typography variant="h6" fontWeight="bold">
-                {t("grid.axes.performance")}
-              </Typography>
+              <Axis orientation="horizontal" />
               <EmployeeCount />
             </Box>
 
@@ -238,20 +237,7 @@ export const NineBoxGrid: React.FC = () => {
 
         <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
           {/* Left axis label */}
-          <Box
-            sx={{
-              width: 80,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              writingMode: "vertical-rl",
-              transform: "rotate(180deg)",
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              {t("grid.axes.potential")}
-            </Typography>
-          </Box>
+          <Axis orientation="vertical" />
 
           {/* Grid */}
           <Box
