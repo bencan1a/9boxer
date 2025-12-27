@@ -304,9 +304,8 @@ Right Panel
 **Component Hierarchy (Phase 1.1 Componentization - COMPLETE):**
 ```tsx
 <NineBoxGrid> (container with state)
-├── GridAxes (both X and Y axis labels)
-│   ├── XAxisLabel (Performance, horizontal top)
-│   └── YAxisLabel (Potential, vertical left)
+├── Axis (orientation="horizontal") - Performance label
+├── Axis (orientation="vertical") - Potential label
 ├── GridBox[] (9 instances, positions 1-9)
 │   ├── BoxHeader
 │   │   ├── PositionLabel
@@ -319,11 +318,14 @@ Right Panel
 ```
 
 **New Components (Phase 1.1):**
-1. **GridAxes** - `frontend/src/components/grid/GridAxes.tsx`
-   - Renders both X-axis label (Performance) horizontally at top
-   - Renders Y-axis label (Potential) vertically on left with rotation
+1. **Axis** - `frontend/src/components/grid/Axis.tsx`
+   - Single responsibility: Renders one axis label
+   - Configurable orientation: `horizontal` (Performance) or `vertical` (Potential)
+   - Horizontal: Centered text at top
+   - Vertical: Rotated text on left (writing-mode: vertical-rl)
    - Customizable labels via props
-   - Can be hidden via `showLabels` prop
+   - Can be hidden via `showLabel` prop
+   - **Design improvement:** Replaces previous GridAxes component for better composability
 
 2. **BoxHeader** - `frontend/src/components/grid/BoxHeader.tsx`
    - Position name + short label (e.g., "Star [H,H]")
@@ -369,7 +371,7 @@ Row 3 (Low Potential):     [1: L,L] [2: M,L] [3: H,L]
 - BoxHeader: 6 stories (Normal, Expanded, Collapsed, etc.)
 - EmployeeTileList: 8 stories (Empty, Normal layout, Expanded layout, etc.)
 - EmployeeTile: 7 stories (Default, Modified, Donut mode, etc.)
-- GridAxes: 3 stories (Default, Custom labels, Hidden)
+- Axis: 6 stories (Horizontal, Vertical, Custom labels, Hidden)
 
 ### EmployeeTile Structure
 

@@ -130,7 +130,7 @@ export const Populated: Story = {
  * - Few are exceptional stars (position 9)
  * - Some are in development (positions 4, 7)
  */
-export const Skewed: Story = {
+export const SkewedDistribution: Story = {
   parameters: {
     docs: {
       description: {
@@ -151,7 +151,7 @@ export const Skewed: Story = {
  * - Box expansion behavior
  * - Performance with many tiles
  */
-export const SingleBox: Story = {
+export const SingleBoxConcentration: Story = {
   parameters: {
     docs: {
       description: {
@@ -195,7 +195,7 @@ export const DragActive: Story = {
  * ESC key or collapse button returns to normal view.
  * Expansion state persists in localStorage.
  */
-export const BoxExpanded: Story = {
+export const WithBoxExpanded: Story = {
   parameters: {
     docs: {
       description: {
@@ -239,12 +239,76 @@ export const DonutMode: Story = {
  * - Tracked for session history
  * - Can be reverted or saved
  */
-export const WithModifications: Story = {
+export const WithModifiedEmployees: Story = {
   parameters: {
     docs: {
       description: {
         story:
           "Grid showing employees with session modifications. Orange borders indicate recent moves.",
+      },
+    },
+  },
+};
+
+/**
+ * With flags - employees with status flags.
+ * Shows employees with various status indicators:
+ * - Flight risk
+ * - New hire
+ * - Promotion ready
+ * - Performance concern
+ *
+ * Flags appear as colored chips on employee tiles
+ * for quick visual identification.
+ */
+export const WithFlags: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Grid showing employees with status flags for quick identification of important statuses.",
+      },
+    },
+  },
+};
+
+/**
+ * Loading state - data being fetched.
+ * Shows skeleton loading placeholders while
+ * employee data is being loaded from the backend.
+ *
+ * Displays:
+ * - Skeleton boxes in grid layout
+ * - Loading animation
+ * - Maintains grid structure
+ */
+export const LoadingState: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Loading state with skeleton placeholders. Shows grid structure while data loads.",
+      },
+    },
+  },
+};
+
+/**
+ * Sparse distribution - minimal employee count.
+ * Shows a grid with very few employees (3-5 total)
+ * distributed across different positions.
+ *
+ * Useful for:
+ * - Small team visualization
+ * - Testing edge cases
+ * - Demo purposes
+ */
+export const SparseDistribution: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Sparse distribution with minimal employees. Tests grid behavior with very low data volume.",
       },
     },
   },

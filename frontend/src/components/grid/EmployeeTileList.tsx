@@ -1,6 +1,6 @@
 /**
  * Employee tile list component - wrapper for displaying employee tiles
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -34,11 +34,11 @@ export interface EmployeeTileListProps {
 
 /**
  * EmployeeTileList component - manages layout of employee tiles
- * 
+ *
  * Switches between two layout modes:
  * - Normal: Vertical stack (block layout)
  * - Expanded: Multi-column grid with responsive auto-fill
- * 
+ *
  * @param props - Component props
  * @returns The rendered employee tile list
  */
@@ -50,6 +50,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
 }) => {
   return (
     <Box
+      data-testid="employee-tile-list"
       sx={{
         // Multi-column grid layout when expanded for better space utilization
         display: isExpanded ? "grid" : "block",
@@ -57,6 +58,8 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
           ? "repeat(auto-fill, minmax(280px, 1fr))"
           : undefined,
         gap: isExpanded ? 1.5 : 0, // 12px gap between cards in grid mode
+        // Ensure minimum height when empty for visibility in tests/Storybook
+        minHeight: employees.length === 0 ? "48px" : undefined,
       }}
     >
       {employees.map((employee) => (
