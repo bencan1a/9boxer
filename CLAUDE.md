@@ -773,11 +773,16 @@ See `docs/testing/` for comprehensive testing principles and best practices.
 GitHub Actions workflows in `.github/workflows/`:
 - **`ci.yml`** - Main CI pipeline:
   - Lint, format, type check, security scan
-  - Tests across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.10, 3.11, 3.12)
+  - Tests across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.10, 3.11, 3.12, 3.13)
   - Smart test selection based on changed files
   - Coverage enforcement on changed files (70% threshold)
-- **`nightly.yml`** - Nightly regression testing
-- **`docs.yml`** - Documentation updates
+- **`pr.yml`** - Extended PR validation (frontend tests, Playwright E2E, builds)
+- **`weekly.yml`** - Weekly comprehensive testing and maintenance
+- **`docs.yml`** - Documentation updates and validation
+- **`build-electron.yml`** - Build desktop installers for Windows/macOS/Linux
+- **`visual-regression.yml`** - Screenshot-based UI regression testing
+
+See [docs/WORKFLOWS.md](docs/WORKFLOWS.md) for complete workflow documentation.
 
 The CI uses smart test selection via `.github/scripts/smart_test_selection.py` to only run relevant tests for PRs.
 

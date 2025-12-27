@@ -1,328 +1,300 @@
-# GitHub Workflows Enhancement Documentation
+# GitHub Workflows Documentation
 
-This document describes the enhancements made to the GitHub Actions workflows in this repository using modern CI/CD best practices.
+This document provides an overview of the GitHub Actions workflows used in this repository.
 
-## Latest Updates
+> **Note**: For detailed information about specific workflows, see [.github/workflows/README.md](../.github/workflows/README.md).
+> For Copilot environment setup, see [COPILOT_SETUP.md](COPILOT_SETUP.md).
 
-The following enhancements have been implemented:
+## Overview
 
-- **`uv` for Faster Dependency Installation**: All workflows now use `uv pip install` instead of plain `pip install` for significantly faster dependency installation
-- **Auto-fix Step**: Lint job includes an auto-fix step with `continue-on-error: true` before validation checks
-- **YAML Validation**: Added `make check-yaml` target to validate all workflow YAML files
-- **Makefile Integration**: Workflows use Makefile commands (`make lint`, `make format-check`, `make type-check`, `make security-report`) for consistency
-- **Enhanced CI Summary**: Summary job provides clear status reporting with improved result checking
+The 9Boxer repository uses GitHub Actions for continuous integration, testing, deployment, and documentation maintenance. All workflows use modern CI/CD best practices including:
 
-## Overview of Workflows
+- **Fast dependency installation** with `uv` package manager
+- **Smart caching** for pip, npm, and test results
+- **Parallel execution** where possible
+- **Makefile integration** for consistency with local development
 
-### 1. CI Workflow (`ci.yml`) - Enhanced ✨
+## Active Workflows
 
-**New Features:**
-- **`uv` Package Installer**: Uses `uv pip install --system` for ~10x faster dependency installation
-- **Auto-fix Step**: Runs `make fix` with `continue-on-error: true` before checks to auto-correct issues
-- **YAML Validation**: Validates all workflow YAML files as part of linting
-- **Smart Change Detection**: Automatically detects if only documentation files changed and skips unnecessary tests
-- **Pre-commit Cache**: Caches pre-commit hooks to speed up lint jobs
-- **Pytest Cache**: Caches pytest results for faster test execution
-- **Enhanced Security Scanning**:
-  - Generates JSON security reports for artifacts
-  - Uploads security reports as artifacts for later review
-- **Improved Artifact Management**: Uploads coverage reports, test results, and selection metadata
-- **Job Dependencies**: Tests now depend on lint and type-check passing, saving CI resources
-- **Matrix Optimization**: Reduces matrix size for PRs (excludes some OS/Python combinations)
-- **Makefile Commands**: Uses `make` commands for consistency (`make lint`, `make format-check`, `make type-check`, `make security-report`)
-- **CI Summary Job**: Final summary job renamed to "CI Summary" with improved result checking
-- **Manual Trigger**: Added `workflow_dispatch` for manual runs
+### 1. CI Workflow (`ci.yml`)
 
-**Benefits:**
-- Significantly faster PR checks (~10x faster dependency install with uv)
-- Auto-fixes many common issues before validation
-- Better visibility of issues (job summaries, YAML validation)
-- Resource savings (job dependencies, smart caching)
-- Consistency through Makefile usage
+**Workflow Name**: Continuous Integration
 
-### 2. Nightly Regression Workflow (`nightly.yml`) - Enhanced ✨
+**Purpose**: Primary CI pipeline for all pushes and pull requests
 
-**New Features:**
-- **`uv` Package Installer**: Uses `uv pip install --system` for faster dependency installation
-- **Makefile Commands**: Uses `make security-report` and `make type-check` for consistency
-- **Parameterized Manual Triggers**: Can select specific OS or Python version to test
-- **Enhanced Security Scanning**: Generates JSON security reports
-- **SBOM Generation**: Creates Software Bill of Materials using CycloneDX
-- **Improved Dependency Auditing**:
-  - Uses both `pip-audit` and `safety` for comprehensive scanning
-  - Generates JSON reports for programmatic analysis
-- **Smart Issue Management**:
-  - Checks for existing regression issues before creating new ones
-  - Adds comments to existing issues instead of spam
-  - Includes detailed job status in notifications
-- **Better Artifact Management**: Uploads security scans, coverage, and SBOM
-- **Enhanced Summaries**: Detailed job status table in workflow summary
+**Key Features:**
+- Runs on every push and pull request
+- Multi-platform testing (Ubuntu, Windows, macOS)
+- Python version matrix (3.10, 3.11, 3.12, 3.13)
+- Comprehensive test suite (unit, integration, E2E)
+- Code quality checks (ruff, mypy, bandit)
+- Coverage reporting
+
+**Jobs:**
+- **Lint**: Code formatting and linting
+- **Type Check**: Static type analysis with mypy
+- **Test**: Run pytest test suites across platforms
+- **Security**: Security scanning with bandit
+- **Summary**: Consolidate results
 
 **Benefits:**
-- Faster nightly runs with uv
-- Comprehensive security monitoring
-- Better compliance (SBOM generation)
-- Reduced issue spam
-- More targeted debugging capabilities
-- Consistency with CI workflow through Makefile usage
+- Fast feedback on code changes
+- Catches issues before merge
+- Ensures code quality standards
 
-### 3. Documentation Workflow (`docs.yml`) - Enhanced ✨
+### 2. PR Workflow (`pr.yml`)
 
-**New Features:**
-- **`uv` Package Installer**: Uses `uv pip install --system` for faster dependency installation
-- **Documentation Caching**: Caches built documentation to speed up rebuilds
-- **Validation Step**: Verifies critical files were generated and checks size limits
-- **Parameterized Dispatch**: Can force rebuild all documentation
-- **Artifact Upload**: Documentation artifacts available for download
-- **Enhanced Dependencies**: Added Sphinx for more comprehensive documentation
-- **Better Status Reporting**: Shows whether docs were updated or already current
+**Workflow Name**: Pull Request Validation
 
-**Benefits:**
-- Faster documentation builds with uv
-- Catches documentation generation errors early
-- Downloadable documentation for offline review
+**Purpose**: Extended validation for pull requests
 
-### 4. Dependency Review Workflow (`dependency-review.yml`) - NEW 🆕
+**Key Features:**
+- Frontend testing with Vitest
+- Playwright E2E tests
+- Build verification (backend + frontend)
+- Additional quality gates for PRs
 
-**Purpose:** Automated security review of dependency changes in PRs
+**When it runs:**
+- On pull request creation/update
+- Can be manually triggered
 
-**Features:**
-- Uses GitHub's native dependency-review-action
-- Runs pip-audit and safety checks on new dependencies
-- Comments on PRs with vulnerability summaries
-- Uploads detailed audit reports as artifacts
-- Configurable severity threshold (currently: moderate)
+### 3. Weekly Workflow (`weekly.yml`)
 
-**Benefits:**
-- Catches vulnerable dependencies before merge
-- Automated security feedback in PRs
-- Comprehensive vulnerability scanning
+**Workflow Name**: Weekly Comprehensive Testing
 
-### 5. Code Quality Workflow (`code-quality.yml`) - NEW 🆕
+**Purpose**: Comprehensive testing and maintenance tasks
 
-**Purpose:** Automated code quality analysis and metrics
-
-**Features:**
-- **Complexity Analysis**: Uses radon to calculate:
-  - Cyclomatic complexity
-  - Maintainability index
-  - Raw metrics (LOC, SLOC, comments, etc.)
-- **Dead Code Detection**: Uses vulture to find unused code
-- **PR Comments**: Posts quality metrics directly on PRs
-- **Trend Tracking**: Artifacts allow tracking metrics over time
+**Key Features:**
+- Full test suite across all platforms
+- Dependency updates check
+- Security scanning
+- Documentation validation
+- Runs every Monday at 2 AM UTC
 
 **Benefits:**
-- Proactive code quality monitoring
-- Identifies overly complex code early
-- Helps maintain clean codebase
+- Catches regressions early
+- Monitors dependency health
+- Regular security audits
 
-### 6. Release Workflow (`release.yml`) - NEW 🆕
+### 4. Documentation Workflow (`docs.yml`)
 
-**Purpose:** Automated release process with validation
+**Workflow Name**: Documentation
 
-**Features:**
-- **Validation Stage**:
-  - Runs full test suite before release
-  - Security and type checking
-  - Verifies version consistency between tag and package
-- **Build Stage**:
-  - Creates distribution packages (wheel + sdist)
-  - Validates packages with twine
-- **Release Stage**:
-  - Extracts changelog for release notes
-  - Creates GitHub release with artifacts
-  - Supports pre-release flag
-- **Publish Stage**: Ready for PyPI publishing (currently disabled)
+**Purpose**: Build and deploy project documentation
 
-**Benefits:**
-- Ensures only validated code is released
-- Automated release notes from changelog
-- Consistent release process
+**Key Features:**
+- Builds documentation with MkDocs
+- Generates API documentation
+- Updates documentation on changes
+- Validates documentation links
 
-### 7. Reusable Setup Workflow (`reusable-setup.yml`) - NEW 🆕
+**Triggers:**
+- Changes to docs/ directory
+- Changes to documentation source files
+- Manual trigger available
 
-**Purpose:** Reusable workflow for common Python setup tasks
+### 5. Release Workflow (`release.yml`)
 
-**Features:**
-- Parameterized Python version selection
-- Optional dev dependencies installation
-- Advanced caching with custom keys
-- Cache hit detection output
+**Workflow Name**: Release
 
-**Benefits:**
-- DRY principle for workflow setup
-- Consistent environment across workflows
-- Easier maintenance
+**Purpose**: Automated release creation
 
-## Key Improvements Summary
+**Key Features:**
+- Triggered on version tags (v*.*.*)
+- Creates GitHub releases
+- Generates release notes from CHANGELOG.md
+- Uploads release artifacts
 
-### Performance Optimizations
-1. ✅ **Advanced Caching**:
-   - pip packages
-   - pre-commit hooks
-   - pytest cache
-   - documentation builds
-   - dependency installations
+**Usage:**
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
 
-2. ✅ **Smart Execution**:
-   - Skip tests for docs-only changes
-   - Reduced matrix for PRs
-   - Job dependencies to fail fast
-   - Parallel job execution where possible
+### 6. Feature Checklist Workflow (`feature-checklist.yml`)
 
-### Security Enhancements
-1. ✅ **SARIF Integration**: Security results visible in GitHub Security tab
-2. ✅ **SBOM Generation**: Track all dependencies with bill of materials
-3. ✅ **Multiple Security Tools**: pip-audit, safety, bandit
-4. ✅ **Dependency Review**: Automated scanning on dependency changes
-5. ✅ **Proper Permissions**: Minimal required permissions per job
+**Workflow Name**: Feature Development Checklist
 
-### Developer Experience
-1. ✅ **Rich Summaries**: Job summaries with status tables and metrics
-2. ✅ **PR Comments**: Automated feedback on code quality and dependencies
-3. ✅ **Manual Triggers**: All workflows support manual execution
-4. ✅ **Better Artifacts**: Comprehensive artifact uploads with sensible retention
-5. ✅ **Smart Notifications**: Reduced issue spam, better error messages
+**Purpose**: Automated checklist for feature development
 
-### Reliability
-1. ✅ **Validation Steps**: Verify outputs before committing
-2. ✅ **Continue on Error**: Non-critical steps don't fail entire workflow
-3. ✅ **Artifact Retention**: Different retention periods based on importance
-4. ✅ **Matrix Resilience**: fail-fast: false for comprehensive testing
+**Key Features:**
+- Validates feature implementation completeness
+- Checks documentation updates
+- Verifies test coverage
+- Ensures changelog updates
 
-### Maintainability
-1. ✅ **Reusable Workflows**: Common setup extracted to reusable workflow
-2. ✅ **Clear Job Names**: Descriptive names for better readability
-3. ✅ **Comments**: Inline documentation in workflows
-4. ✅ **Parameterization**: Flexible workflow execution via inputs
 
-## Migration Notes
+### 7. Visual Regression Workflows
 
-### Breaking Changes
-None. All changes are backward compatible.
+**Three related workflows for screenshot testing:**
 
-### Optional Configuration
+#### `screenshots.yml`
+- Generates screenshots for visual regression testing
+- Updates baseline screenshots when UI changes
+- Used by Copilot/Claude for automated screenshot generation
 
-1. **PyPI Publishing**: To enable PyPI publishing in release workflow:
-   ```yaml
-   # In .github/workflows/release.yml, line ~140
-   if: false  # Change to: if: true
-   ```
-   Also add `PYPI_API_TOKEN` to repository secrets.
+#### `visual-regression.yml`
+- Compares current screenshots against baselines
+- Detects unintended UI changes
+- Runs on pull requests
 
-2. **Codecov Token**: For private repositories, add `CODECOV_TOKEN` secret.
+#### `update-visual-baselines.yml`
+- Updates baseline screenshots after approved changes
+- Manual trigger available
+- Ensures baselines stay current
 
-3. **Notification Integrations**: Can add Slack/Discord webhooks to notify job.
+### 8. Copilot Environment Setup (`copilot-setup-steps.yml`)
 
-### Recommended Actions
+**Purpose**: Automated environment setup for GitHub Copilot coding agent
 
-1. **Enable Dependabot**: Create `.github/dependabot.yml`:
-   ```yaml
-   version: 2
-   updates:
-     - package-ecosystem: "pip"
-       directory: "/"
-       schedule:
-         interval: "weekly"
-     - package-ecosystem: "github-actions"
-       directory: "/"
-       schedule:
-         interval: "weekly"
-   ```
+**Key Features:**
+- Sets up Python 3.13 with `uv` package manager
+- Installs all backend dependencies
+- Sets up Node.js 20 with npm
+- Installs all frontend dependencies
+- Installs Playwright browsers for E2E testing
+- Configures pre-commit hooks
+- Validates complete environment
 
-2. **Branch Protection**: Update branch protection rules to require:
-   - CI Success job passing
-   - Dependency Review passing (for dependency changes)
+**When it runs:**
+- Automatically when GitHub Copilot starts a coding session
+- Can be manually triggered for testing
 
-3. **CODEOWNERS**: Add `.github/CODEOWNERS` for automatic review assignments
+**Details**: See [COPILOT_SETUP.md](COPILOT_SETUP.md) for comprehensive documentation.
 
-## Workflow Comparison
+### 9. Build Electron App (`build-electron.yml`)
 
-| Feature | Before | After |
-|---------|--------|-------|
-| Workflows | 3 | 7 |
-| Caching | pip only | pip, pre-commit, pytest, docs |
-| Security Scanning | Basic bandit | SARIF, pip-audit, safety, SBOM |
-| PR Feedback | None | Code quality, dependency review |
-| Release Process | Manual | Automated with validation |
-| Job Dependencies | None | Optimized for fast failure |
-| Matrix Strategy | Full for all | Optimized for PRs |
-| Artifact Retention | Fixed | Smart (7-90 days) |
-| Manual Triggers | Limited | All workflows |
-| Summaries | Basic | Rich with tables and metrics |
+**Purpose**: Build standalone desktop installers for all platforms
 
-## Resource Usage Estimates
+**Key Features:**
+- Builds Windows (NSIS .exe)
+- Builds macOS (DMG for x64 + ARM64)
+- Builds Linux (AppImage)
+- Includes PyInstaller backend bundling
+- Uploads artifacts for download
 
-### CI Workflow (per PR)
-- **Before**: ~15-20 minutes, 9 jobs (3 OS × 3 Python versions)
-- **After**: ~10-15 minutes, 5-7 jobs (reduced matrix, smart skipping)
-- **Savings**: ~30-40% CI time for typical PRs
+**When it runs:**
+- On push to main/standalone_app branches
+- On pull requests
+- Manual trigger available
 
-### Nightly Workflow
-- **Before**: ~20-25 minutes
-- **After**: ~25-30 minutes (more comprehensive checks)
-- **Trade-off**: Slightly longer but much more thorough
+**Details**: See [.github/workflows/README.md](../.github/workflows/README.md) for build documentation.
 
-## Testing the Workflows
+## Common Patterns
 
-To test the enhanced workflows:
+### Fast Dependency Installation
 
-1. **CI Workflow**:
-   ```bash
-   # Create a PR with code changes
-   # Check that all jobs run
+All workflows use `uv` for faster Python package installation:
+```yaml
+- name: Install dependencies
+  run: |
+    pip install uv
+    uv pip install --system -e '.[dev]'
+```
 
-   # Create a PR with only docs changes
-   # Verify jobs are skipped
-   ```
+This provides ~10x faster installation compared to standard pip.
 
-2. **Dependency Review**:
-   ```bash
-   # Update pyproject.toml with a new dependency
-   # Create PR and check for dependency review comments
-   ```
+### Caching Strategy
 
-3. **Code Quality**:
-   ```bash
-   # Create PR with code changes
-   # Check for complexity metrics in comments
-   ```
+Workflows use multiple caching layers:
+- **pip cache**: Python packages
+- **npm cache**: Node.js packages
+- **Playwright cache**: Browser binaries
+- **pre-commit cache**: Pre-commit hooks
 
-4. **Release**:
-   ```bash
-   # Create and push a version tag
-   git tag v0.2.0
-   git push origin v0.2.0
-   # Verify release is created automatically
-   ```
+### Matrix Testing
+
+CI workflows test across:
+- **Platforms**: Ubuntu, Windows, macOS
+- **Python versions**: 3.10, 3.11, 3.12, 3.13
+- Reduced matrix for PRs to save time
+
+### Makefile Integration
+
+Workflows use Makefile commands for consistency:
+```yaml
+- run: make lint
+- run: make type-check
+- run: make test
+```
+
+This ensures CI uses the same commands as local development.
+
+## Workflow Triggers
+
+| Workflow | Push | PR | Schedule | Manual | Tags |
+|----------|------|----|---------| -------|------|
+| CI | ✓ | ✓ | - | ✓ | - |
+| PR | - | ✓ | - | ✓ | - |
+| Weekly | - | - | Mon 2AM | ✓ | - |
+| Docs | ✓ | ✓ | - | ✓ | - |
+| Release | - | - | - | - | v*.*.* |
+| Build Electron | ✓ | ✓ | - | ✓ | - |
+| Visual Regression | - | ✓ | - | ✓ | - |
+
+## Best Practices
+
+### Local Development
+
+Run the same commands locally before pushing:
+```bash
+# Activate virtual environment
+. .venv/bin/activate
+
+# Run checks (same as CI)
+make lint
+make type-check
+make test
+make security-check
+```
+
+### Adding New Workflows
+
+When creating new workflows:
+1. Use `uv` for Python dependencies
+2. Add appropriate caching
+3. Use Makefile commands where possible
+4. Document in this file
+5. Add manual trigger (`workflow_dispatch`)
+
+### Debugging Workflow Failures
+
+1. Check workflow run logs in GitHub Actions
+2. Look for job summaries with detailed status
+3. Download artifacts for detailed reports
+4. Reproduce locally with same commands
 
 ## Maintenance
 
-### Updating Workflows
+### Regular Updates
+
+- **Weekly**: Automated via `weekly.yml`
+- **Dependencies**: Dependabot (if configured)
+- **Workflows**: Review quarterly for best practices
+
+### Documentation
 
 When updating workflows:
-1. Always validate YAML syntax
-2. Test in a fork or feature branch first
-3. Review diff carefully for permission changes
-4. Update this documentation with changes
+1. Update this file
+2. Update [.github/workflows/README.md](../.github/workflows/README.md) if user-facing
+3. Update [COPILOT_SETUP.md](COPILOT_SETUP.md) if environment changes
 
-### Regular Reviews
+## Related Documentation
 
-Recommend reviewing workflows:
-- **Monthly**: Check for action updates (Dependabot helps)
-- **Quarterly**: Review cache hit rates and adjust strategies
-- **Annually**: Audit security configurations and permissions
-
-## Additional Resources
-
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [GitHub Security Features](https://docs.github.com/en/code-security)
-- [Workflow Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
-- [Reusing Workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
+- **[.github/workflows/README.md](../.github/workflows/README.md)** - User-facing workflow guide (Copilot setup, builds)
+- **[COPILOT_SETUP.md](COPILOT_SETUP.md)** - Detailed Copilot environment documentation
+- **[BUILD.md](../BUILD.md)** - Build process documentation
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
 
 ## Support
 
-For issues or questions about these workflows:
-1. Check workflow run logs in Actions tab
+For workflow issues:
+1. Check workflow logs in Actions tab
 2. Review this documentation
-3. Open an issue with the `workflow` label
+3. Check related documentation above
+4. Open issue with `workflow` label
+
+---
+
+**Last Updated**: 2025-12-27
+**Maintained by**: Development Team
