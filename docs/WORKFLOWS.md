@@ -1,22 +1,67 @@
-# GitHub Workflows Enhancement Documentation
+# GitHub Actions Workflows
 
-This document describes the enhancements made to the GitHub Actions workflows in this repository using modern CI/CD best practices.
+This document describes the GitHub Actions workflows in the 9Boxer repository, covering both automated CI/CD pipelines and development environment setup.
 
-## Latest Updates
+## Table of Contents
+- [Development Environment Setup](#development-environment-setup)
+- [CI/CD Workflows](#cicd-workflows)
+- [Enhanced Features](#enhanced-features)
+- [Workflow Reference](#workflow-reference)
 
-The following enhancements have been implemented:
+## Development Environment Setup
 
-- **`uv` for Faster Dependency Installation**: All workflows now use `uv pip install` instead of plain `pip install` for significantly faster dependency installation
-- **Auto-fix Step**: Lint job includes an auto-fix step with `continue-on-error: true` before validation checks
-- **YAML Validation**: Added `make check-yaml` target to validate all workflow YAML files
-- **Makefile Integration**: Workflows use Makefile commands (`make lint`, `make format-check`, `make type-check`, `make security-report`) for consistency
-- **Enhanced CI Summary**: Summary job provides clear status reporting with improved result checking
+### Copilot Environment Setup
 
-## Overview of Workflows
+**Workflow:** `.github/workflows/copilot-setup-steps.yml`
 
-### 1. CI Workflow (`ci.yml`) - Enhanced ✨
+Automatically sets up the development environment for GitHub Copilot's coding agent. This ensures the agent has all necessary dependencies installed before it starts working on tasks.
 
-**New Features:**
+**Key Features:**
+- Sets up Python 3.13 with `uv` package manager
+- Installs all Python backend dependencies (FastAPI, pytest, ruff, etc.)
+- Sets up Node.js 20 with npm
+- Installs all frontend dependencies (React, Vite, TypeScript, etc.)
+- Installs Playwright browsers for E2E testing
+- Configures pre-commit hooks
+- Validates the complete environment
+
+**When it runs:**
+- Automatically invoked by GitHub Copilot when its coding agent starts
+- Manual trigger via workflow_dispatch
+- On push/PR when the workflow file itself is modified
+
+**Important Notes:**
+
+⚠️ **This workflow should NOT include:**
+- `actions/checkout@v4` - Copilot automatically clones the repository before running the setup.
+- `on:` trigger section - Custom setup workflows don't need explicit triggers.
+
+Including these causes "fatal: repository not found" errors due to permissions conflicts with Copilot's automatic checkout process.
+
+**Troubleshooting:**
+
+**Copilot agent fails with "repository not found":**
+- Verify the workflow does NOT contain `actions/checkout@v4`.
+- Verify the workflow does NOT have an `on:` trigger section.
+- Check that the workflow file is named exactly `copilot-setup-steps.yml`.
+
+**Environment setup takes too long:**
+- Cache keys are used for uv, npm, and Playwright to speed up installation.
+- First run may take 5-10 minutes; subsequent runs should be faster.
+
+For complete details, see [docs/COPILOT_SETUP.md](COPILOT_SETUP.md).
+
+---
+
+## CI/CD Workflows
+
+The repository uses modern CI/CD best practices with the following workflows:
+
+### CI Workflow (`ci.yml`)
+
+**Purpose:** Continuous integration for all PRs and pushes to main
+
+**Enhanced Features:**
 - **`uv` Package Installer**: Uses `uv pip install --system` for ~10x faster dependency installation
 - **Auto-fix Step**: Runs `make fix` with `continue-on-error: true` before checks to auto-correct issues
 - **YAML Validation**: Validates all workflow YAML files as part of linting
@@ -40,9 +85,13 @@ The following enhancements have been implemented:
 - Resource savings (job dependencies, smart caching)
 - Consistency through Makefile usage
 
-### 2. Nightly Regression Workflow (`nightly.yml`) - Enhanced ✨
+---
 
-**New Features:**
+### Nightly Regression Workflow (`nightly.yml`)
+
+**Purpose:** Comprehensive nightly testing across all platforms and Python versions
+
+**Enhanced Features:**
 - **`uv` Package Installer**: Uses `uv pip install --system` for faster dependency installation
 - **Makefile Commands**: Uses `make security-report` and `make type-check` for consistency
 - **Parameterized Manual Triggers**: Can select specific OS or Python version to test
@@ -66,9 +115,13 @@ The following enhancements have been implemented:
 - More targeted debugging capabilities
 - Consistency with CI workflow through Makefile usage
 
-### 3. Documentation Workflow (`docs.yml`) - Enhanced ✨
+---
 
-**New Features:**
+### Documentation Workflow (`docs.yml`)
+
+**Purpose:** Automated documentation generation and validation
+
+**Enhanced Features:**
 - **`uv` Package Installer**: Uses `uv pip install --system` for faster dependency installation
 - **Documentation Caching**: Caches built documentation to speed up rebuilds
 - **Validation Step**: Verifies critical files were generated and checks size limits
@@ -82,7 +135,9 @@ The following enhancements have been implemented:
 - Catches documentation generation errors early
 - Downloadable documentation for offline review
 
-### 4. Dependency Review Workflow (`dependency-review.yml`) - NEW 🆕
+---
+
+### Dependency Review Workflow (`dependency-review.yml`)
 
 **Purpose:** Automated security review of dependency changes in PRs
 
@@ -98,7 +153,9 @@ The following enhancements have been implemented:
 - Automated security feedback in PRs
 - Comprehensive vulnerability scanning
 
-### 5. Code Quality Workflow (`code-quality.yml`) - NEW 🆕
+---
+
+### Code Quality Workflow (`code-quality.yml`)
 
 **Purpose:** Automated code quality analysis and metrics
 
@@ -116,7 +173,9 @@ The following enhancements have been implemented:
 - Identifies overly complex code early
 - Helps maintain clean codebase
 
-### 6. Release Workflow (`release.yml`) - NEW 🆕
+---
+
+### Release Workflow (`release.yml`)
 
 **Purpose:** Automated release process with validation
 
@@ -139,7 +198,75 @@ The following enhancements have been implemented:
 - Automated release notes from changelog
 - Consistent release process
 
-### 7. Reusable Setup Workflow (`reusable-setup.yml`) - NEW 🆕
+---
+
+### Build Electron App Workflow (`build-electron.yml`)
+
+**Purpose:** Automatically builds the 9Boxer Electron application for all platforms
+
+Builds standalone desktop installers for:
+- **Windows**: `.exe` installer (NSIS)
+- **macOS**: `.dmg` disk image (x64 + ARM64/Apple Silicon)
+- **Linux**: `.AppImage` portable executable
+
+**When it runs:**
+- **Automatic**: On every push to `main` or `standalone_app` branches
+- **Pull Requests**: On PRs targeting `main` or `standalone_app`
+- **Manual**: Via "Actions" tab → "Build Electron App" → "Run workflow"
+
+**How to download builds:**
+1. Go to **Actions** tab in GitHub
+2. Click the latest workflow run (green ✓ = success)
+3. Scroll to **Artifacts** section
+4. Download:
+   - `9boxer-linux-<sha>.zip` - Contains AppImage
+   - `9boxer-windows-<sha>.zip` - Contains .exe installer
+   - `9boxer-macos-<sha>.zip` - Contains .dmg
+
+**Build process:**
+
+Each platform runs independently:
+
+1. **Backend**: Builds PyInstaller executable
+   - Python 3.12
+   - PyInstaller packages FastAPI + dependencies
+   - Output: `backend/dist/ninebox/ninebox(.exe)`
+
+2. **Frontend**: Builds Electron app
+   - Node.js 20
+   - Vite builds React app
+   - TypeScript compiles Electron main/preload
+   - electron-builder packages everything
+   - Output: `frontend/release/`
+
+**Build times:**
+- **Linux**: ~5-8 minutes
+- **Windows**: ~6-10 minutes
+- **macOS**: ~8-12 minutes (builds both x64 and ARM64)
+
+**Artifact retention:** 90 days
+
+**Troubleshooting:**
+
+**Build fails on Windows:**
+- Check that `signAndEditExecutable: false` is in `frontend/electron-builder.json`
+- Windows builds use native tools (no Wine issues)
+
+**Build fails on macOS:**
+- macOS builds both x64 and ARM64 (Apple Silicon)
+- No code signing by default (users will see "unidentified developer" warning)
+
+**Missing backend executable:**
+- Check backend build step completed successfully
+- Verify PyInstaller spec at `backend/build_config/ninebox.spec`
+
+**Artifacts not uploaded:**
+- Check "List build outputs" step for file paths
+- Verify artifact path patterns match actual output
+
+---
+
+### Reusable Setup Workflow (`reusable-setup.yml`)
 
 **Purpose:** Reusable workflow for common Python setup tasks
 
@@ -154,52 +281,89 @@ The following enhancements have been implemented:
 - Consistent environment across workflows
 - Easier maintenance
 
-## Key Improvements Summary
+---
+
+## Enhanced Features
 
 ### Performance Optimizations
-1. ✅ **Advanced Caching**:
+
+1. **Advanced Caching**:
    - pip packages
    - pre-commit hooks
    - pytest cache
    - documentation builds
    - dependency installations
 
-2. ✅ **Smart Execution**:
+2. **Smart Execution**:
    - Skip tests for docs-only changes
    - Reduced matrix for PRs
    - Job dependencies to fail fast
    - Parallel job execution where possible
 
 ### Security Enhancements
-1. ✅ **SARIF Integration**: Security results visible in GitHub Security tab
-2. ✅ **SBOM Generation**: Track all dependencies with bill of materials
-3. ✅ **Multiple Security Tools**: pip-audit, safety, bandit
-4. ✅ **Dependency Review**: Automated scanning on dependency changes
-5. ✅ **Proper Permissions**: Minimal required permissions per job
+
+1. **SARIF Integration**: Security results visible in GitHub Security tab
+2. **SBOM Generation**: Track all dependencies with bill of materials
+3. **Multiple Security Tools**: pip-audit, safety, bandit
+4. **Dependency Review**: Automated scanning on dependency changes
+5. **Proper Permissions**: Minimal required permissions per job
 
 ### Developer Experience
-1. ✅ **Rich Summaries**: Job summaries with status tables and metrics
-2. ✅ **PR Comments**: Automated feedback on code quality and dependencies
-3. ✅ **Manual Triggers**: All workflows support manual execution
-4. ✅ **Better Artifacts**: Comprehensive artifact uploads with sensible retention
-5. ✅ **Smart Notifications**: Reduced issue spam, better error messages
+
+1. **Rich Summaries**: Job summaries with status tables and metrics
+2. **PR Comments**: Automated feedback on code quality and dependencies
+3. **Manual Triggers**: All workflows support manual execution
+4. **Better Artifacts**: Comprehensive artifact uploads with sensible retention
+5. **Smart Notifications**: Reduced issue spam, better error messages
 
 ### Reliability
-1. ✅ **Validation Steps**: Verify outputs before committing
-2. ✅ **Continue on Error**: Non-critical steps don't fail entire workflow
-3. ✅ **Artifact Retention**: Different retention periods based on importance
-4. ✅ **Matrix Resilience**: fail-fast: false for comprehensive testing
+
+1. **Validation Steps**: Verify outputs before committing
+2. **Continue on Error**: Non-critical steps don't fail entire workflow
+3. **Artifact Retention**: Different retention periods based on importance
+4. **Matrix Resilience**: fail-fast: false for comprehensive testing
 
 ### Maintainability
-1. ✅ **Reusable Workflows**: Common setup extracted to reusable workflow
-2. ✅ **Clear Job Names**: Descriptive names for better readability
-3. ✅ **Comments**: Inline documentation in workflows
-4. ✅ **Parameterization**: Flexible workflow execution via inputs
 
-## Migration Notes
+1. **Reusable Workflows**: Common setup extracted to reusable workflow
+2. **Clear Job Names**: Descriptive names for better readability
+3. **Comments**: Inline documentation in workflows
+4. **Parameterization**: Flexible workflow execution via inputs
 
-### Breaking Changes
-None. All changes are backward compatible.
+---
+
+## Workflow Reference
+
+### Workflow Comparison
+
+| Feature | Before | After |
+|---------|--------|-------|
+| Workflows | 3 | 7 |
+| Caching | pip only | pip, pre-commit, pytest, docs |
+| Security Scanning | Basic bandit | SARIF, pip-audit, safety, SBOM |
+| PR Feedback | None | Code quality, dependency review |
+| Release Process | Manual | Automated with validation |
+| Job Dependencies | None | Optimized for fast failure |
+| Matrix Strategy | Full for all | Optimized for PRs |
+| Artifact Retention | Fixed | Smart (7-90 days) |
+| Manual Triggers | Limited | All workflows |
+| Summaries | Basic | Rich with tables and metrics |
+
+### Resource Usage Estimates
+
+**CI Workflow (per PR):**
+- **Before**: ~15-20 minutes, 9 jobs (3 OS × 3 Python versions)
+- **After**: ~10-15 minutes, 5-7 jobs (reduced matrix, smart skipping)
+- **Savings**: ~30-40% CI time for typical PRs
+
+**Nightly Workflow:**
+- **Before**: ~20-25 minutes
+- **After**: ~25-30 minutes (more comprehensive checks)
+- **Trade-off**: Slightly longer but much more thorough
+
+---
+
+## Configuration
 
 ### Optional Configuration
 
@@ -236,32 +400,7 @@ None. All changes are backward compatible.
 
 3. **CODEOWNERS**: Add `.github/CODEOWNERS` for automatic review assignments
 
-## Workflow Comparison
-
-| Feature | Before | After |
-|---------|--------|-------|
-| Workflows | 3 | 7 |
-| Caching | pip only | pip, pre-commit, pytest, docs |
-| Security Scanning | Basic bandit | SARIF, pip-audit, safety, SBOM |
-| PR Feedback | None | Code quality, dependency review |
-| Release Process | Manual | Automated with validation |
-| Job Dependencies | None | Optimized for fast failure |
-| Matrix Strategy | Full for all | Optimized for PRs |
-| Artifact Retention | Fixed | Smart (7-90 days) |
-| Manual Triggers | Limited | All workflows |
-| Summaries | Basic | Rich with tables and metrics |
-
-## Resource Usage Estimates
-
-### CI Workflow (per PR)
-- **Before**: ~15-20 minutes, 9 jobs (3 OS × 3 Python versions)
-- **After**: ~10-15 minutes, 5-7 jobs (reduced matrix, smart skipping)
-- **Savings**: ~30-40% CI time for typical PRs
-
-### Nightly Workflow
-- **Before**: ~20-25 minutes
-- **After**: ~25-30 minutes (more comprehensive checks)
-- **Trade-off**: Slightly longer but much more thorough
+---
 
 ## Testing the Workflows
 
@@ -296,6 +435,19 @@ To test the enhanced workflows:
    # Verify release is created automatically
    ```
 
+5. **Local Testing**: Test workflows locally with [act](https://github.com/nektos/act):
+   ```bash
+   # Install act
+   brew install act  # macOS
+   # or
+   curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash  # Linux
+
+   # Run workflow locally
+   act -j build
+   ```
+
+---
+
 ## Maintenance
 
 ### Updating Workflows
@@ -313,16 +465,24 @@ Recommend reviewing workflows:
 - **Quarterly**: Review cache hit rates and adjust strategies
 - **Annually**: Audit security configurations and permissions
 
+---
+
 ## Additional Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Security Features](https://docs.github.com/en/code-security)
 - [Workflow Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
 - [Reusing Workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
+- [BUILD.md](../BUILD.md) - Complete build instructions
+- [DEPLOYMENT.md](../DEPLOYMENT.md) - Deployment guide
+- [COPILOT_SETUP.md](COPILOT_SETUP.md) - Copilot environment setup details
+
+---
 
 ## Support
 
 For issues or questions about these workflows:
 1. Check workflow run logs in Actions tab
 2. Review this documentation
-3. Open an issue with the `workflow` label
+3. Check [BUILD.md](../BUILD.md) for build issues
+4. Open an issue with the `workflow` label
