@@ -1,5 +1,13 @@
 /**
  * Statistics tab with summary cards, distribution table, and chart
+ *
+ * Shows employee distribution across performance/potential levels,
+ * trend indicators, and statistical summaries.
+ *
+ * @component
+ * @screenshots
+ *   - statistics-panel-distribution: Statistics panel showing distribution pie charts
+ *   - statistics-trend-indicators: Statistics tab with trend indicators and percentages
  */
 
 import React from "react";

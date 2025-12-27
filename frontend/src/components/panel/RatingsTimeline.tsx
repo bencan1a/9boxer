@@ -1,5 +1,12 @@
 /**
  * Historical ratings timeline component
+ *
+ * Visual timeline showing employee performance and potential ratings
+ * across multiple review periods.
+ *
+ * @component
+ * @screenshots
+ *   - changes-timeline-view: Timeline view showing historical performance changes
  */
 
 import React from "react";

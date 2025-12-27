@@ -12,6 +12,22 @@ from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel
 from ninebox.models.grid_positions import get_position_label_by_number
 
 
+def pytest_configure(config: pytest.Config) -> None:
+    """Configure pytest to disable xdist for performance tests.
+
+    pytest-benchmark requires serial execution for accurate benchmarking.
+    This hook automatically disables xdist (parallel test execution) when
+    running tests from the performance test directory.
+    """
+    # Check if we're running performance tests
+    if config.getoption("file_or_dir"):
+        test_paths = [str(path) for path in config.getoption("file_or_dir")]
+        if any("performance" in path for path in test_paths):
+            # Disable xdist by setting workers to 0
+            config.option.numprocesses = 0
+            config.option.dist = "no"
+
+
 def create_test_employee(
     employee_id: int,
     job_function: str = "Other",

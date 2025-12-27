@@ -1,5 +1,15 @@
 /**
  * Change Tracker tab - displays movement history with notes
+ *
+ * Displays chronological list of all employee position changes with
+ * visual movement indicators and optional notes.
+ *
+ * @component
+ * @screenshots
+ *   - changes-tab: Changes tab with employee movements
+ *   - changes-panel-entries: Changes panel with multiple employee movement entries
+ *   - notes-changes-tab-field: Changes tab with note field highlighted
+ *   - notes-good-example: Changes tab with well-written note example
  */
 
 import React, { useState } from "react";

@@ -1,0 +1,267 @@
+{
+  "componentToScreenshots": {
+    "components/common/FileUploadDialog.tsx": {
+      "component": "FileUploadDialog",
+      "screenshots": [
+        "quickstart-upload-dialog"
+      ]
+    },
+    "components/common/ViewControls.tsx": {
+      "component": "ViewControls",
+      "screenshots": [
+        "view-controls-grid-view",
+        "view-controls-donut-view",
+        "view-controls-main-interface"
+      ]
+    },
+    "components/common/ZoomControls.tsx": {
+      "component": "ZoomControls",
+      "screenshots": [
+        "zoom-controls"
+      ]
+    },
+    "components/dashboard/FilterDrawer.tsx": {
+      "component": "FilterDrawer",
+      "screenshots": [
+        "filters-panel-expanded",
+        "filters-clear-all-button",
+        "calibration-filters-panel",
+        "filters-overview",
+        "filters-multiple-active",
+        "filters-flags-section",
+        "filters-reporting-chain",
+        "details-flag-filtering",
+        "details-reporting-chain-filter-active"
+      ]
+    },
+    "components/dashboard/PureAppBar.tsx": {
+      "component": "PureAppBar",
+      "screenshots": [
+        "quickstart-file-menu-button",
+        "view-controls-simplified-appbar",
+        "view-controls-main-interface",
+        "calibration-file-import"
+      ]
+    },
+    "components/grid/EmployeeTile.tsx": {
+      "component": "EmployeeTile",
+      "screenshots": [
+        "employee-tile-normal",
+        "changes-orange-border",
+        "details-flag-badges"
+      ]
+    },
+    "components/grid/NineBoxGrid.tsx": {
+      "component": "NineBoxGrid",
+      "screenshots": [
+        "grid-normal",
+        "quickstart-grid-populated",
+        "hero-grid-sample",
+        "donut-mode-active-layout",
+        "calibration-donut-mode-grid",
+        "changes-drag-sequence",
+        "filters-active-chips",
+        "filters-before-after"
+      ]
+    },
+    "components/panel/ChangeTrackerTab.tsx": {
+      "component": "ChangeTrackerTab",
+      "screenshots": [
+        "changes-tab",
+        "changes-panel-entries",
+        "notes-changes-tab-field",
+        "notes-good-example"
+      ]
+    },
+    "components/panel/EmployeeDetails.tsx": {
+      "component": "EmployeeDetails",
+      "screenshots": [
+        "changes-employee-details",
+        "employee-details-panel-expanded",
+        "details-current-assessment",
+        "details-flags-ui",
+        "details-reporting-chain-clickable"
+      ]
+    },
+    "components/panel/EmployeeFlags.tsx": {
+      "component": "EmployeeFlags",
+      "screenshots": [
+        "details-flags-ui"
+      ]
+    },
+    "components/panel/IntelligenceTab.tsx": {
+      "component": "IntelligenceTab",
+      "screenshots": [
+        "calibration-intelligence-anomalies",
+        "distribution-chart-ideal"
+      ]
+    },
+    "components/panel/ManagementChain.tsx": {
+      "component": "ManagementChain",
+      "screenshots": [
+        "details-reporting-chain-clickable"
+      ]
+    },
+    "components/panel/RatingsTimeline.tsx": {
+      "component": "RatingsTimeline",
+      "screenshots": [
+        "changes-timeline-view"
+      ]
+    },
+    "components/panel/StatisticsTab.tsx": {
+      "component": "StatisticsTab",
+      "screenshots": [
+        "statistics-panel-distribution",
+        "statistics-trend-indicators"
+      ]
+    },
+    "components/settings/SettingsDialog.tsx": {
+      "component": "SettingsDialog",
+      "screenshots": [
+        "view-controls-settings-dialog"
+      ]
+    }
+  },
+  "screenshotToComponents": {
+    "quickstart-upload-dialog": [
+      "components/common/FileUploadDialog.tsx"
+    ],
+    "view-controls-grid-view": [
+      "components/common/ViewControls.tsx"
+    ],
+    "view-controls-donut-view": [
+      "components/common/ViewControls.tsx"
+    ],
+    "view-controls-main-interface": [
+      "components/common/ViewControls.tsx",
+      "components/dashboard/PureAppBar.tsx"
+    ],
+    "zoom-controls": [
+      "components/common/ZoomControls.tsx"
+    ],
+    "filters-panel-expanded": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "filters-clear-all-button": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "calibration-filters-panel": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "filters-overview": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "filters-multiple-active": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "filters-flags-section": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "filters-reporting-chain": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "details-flag-filtering": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "details-reporting-chain-filter-active": [
+      "components/dashboard/FilterDrawer.tsx"
+    ],
+    "quickstart-file-menu-button": [
+      "components/dashboard/PureAppBar.tsx"
+    ],
+    "view-controls-simplified-appbar": [
+      "components/dashboard/PureAppBar.tsx"
+    ],
+    "calibration-file-import": [
+      "components/dashboard/PureAppBar.tsx"
+    ],
+    "employee-tile-normal": [
+      "components/grid/EmployeeTile.tsx"
+    ],
+    "changes-orange-border": [
+      "components/grid/EmployeeTile.tsx"
+    ],
+    "details-flag-badges": [
+      "components/grid/EmployeeTile.tsx"
+    ],
+    "grid-normal": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "quickstart-grid-populated": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "hero-grid-sample": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "donut-mode-active-layout": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "calibration-donut-mode-grid": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "changes-drag-sequence": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "filters-active-chips": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "filters-before-after": [
+      "components/grid/NineBoxGrid.tsx"
+    ],
+    "changes-tab": [
+      "components/panel/ChangeTrackerTab.tsx"
+    ],
+    "changes-panel-entries": [
+      "components/panel/ChangeTrackerTab.tsx"
+    ],
+    "notes-changes-tab-field": [
+      "components/panel/ChangeTrackerTab.tsx"
+    ],
+    "notes-good-example": [
+      "components/panel/ChangeTrackerTab.tsx"
+    ],
+    "changes-employee-details": [
+      "components/panel/EmployeeDetails.tsx"
+    ],
+    "employee-details-panel-expanded": [
+      "components/panel/EmployeeDetails.tsx"
+    ],
+    "details-current-assessment": [
+      "components/panel/EmployeeDetails.tsx"
+    ],
+    "details-flags-ui": [
+      "components/panel/EmployeeDetails.tsx",
+      "components/panel/EmployeeFlags.tsx"
+    ],
+    "details-reporting-chain-clickable": [
+      "components/panel/EmployeeDetails.tsx",
+      "components/panel/ManagementChain.tsx"
+    ],
+    "calibration-intelligence-anomalies": [
+      "components/panel/IntelligenceTab.tsx"
+    ],
+    "distribution-chart-ideal": [
+      "components/panel/IntelligenceTab.tsx"
+    ],
+    "changes-timeline-view": [
+      "components/panel/RatingsTimeline.tsx"
+    ],
+    "statistics-panel-distribution": [
+      "components/panel/StatisticsTab.tsx"
+    ],
+    "statistics-trend-indicators": [
+      "components/panel/StatisticsTab.tsx"
+    ],
+    "view-controls-settings-dialog": [
+      "components/settings/SettingsDialog.tsx"
+    ]
+  },
+  "metadata": {
+    "generatedAt": "2025-12-27T08:02:59.076Z",
+    "generatedBy": "extract-screenshot-metadata.js",
+    "version": "1.0.0",
+    "totalComponents": 15,
+    "totalScreenshots": 43,
+    "totalMappings": 46
+  }
+}
