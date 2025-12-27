@@ -2,7 +2,14 @@
 
 ## Overview
 
-The AI Documentation Audit System is an automated workflow that uses Claude API to analyze code changes and identify documentation issues. It runs weekly and creates GitHub issues for any problems found.
+The AI Documentation Audit System is an automated workflow that uses Claude API to analyze code changes and identify documentation issues. It runs weekly and creates **two consolidated GitHub issues**: one for internal documentation (for AI agents) and one for user documentation (for end users).
+
+**Key Features:**
+- **Separate Analysis**: Internal docs and user docs analyzed with different contexts and criteria
+- **Active Consolidation**: Identifies new internal docs and recommends merging into core docs
+- **Consolidated Issues**: One issue per documentation type with tasks grouped by priority
+- **Full Context**: User docs analyzed with full content to identify cross-references
+- **Priority Indicators**: Clear visual priority markers in generated issues
 
 ## Components
 
@@ -12,23 +19,112 @@ The core script that performs the documentation audit:
 
 **What it does:**
 - Analyzes recent code changes (default: last 7 days)
-- Reviews all user guide documentation files
-- Uses Claude API to identify documentation issues
-- Creates GitHub issues for findings
-- Generates a detailed audit report
+- Performs **two separate analyses**:
+  1. **Internal docs** (for AI agents): Reviews CLAUDE.md, internal-docs/, agent instructions
+  2. **User docs** (for end users): Reviews resources/user-guide/ with full content
+- Identifies new internal docs created in last 30 days for consolidation
+- Uses Claude API with specialized prompts for each documentation type
+- Creates **two consolidated GitHub issues** (one for internal, one for user)
+- Generates a comprehensive audit report
 
-**Issue types detected:**
-- **outdated**: Documentation that no longer reflects current code
-- **missing**: New features that aren't documented
+**Internal Docs Issue Types:**
+- **outdated**: Agent instructions that no longer match current code
+- **missing**: New features not in CLAUDE.md or internal docs
+- **conflict**: Contradictory guidance in different docs
+- **consolidation**: New docs that should be merged into core docs
+- **stale-example**: Code examples >30 days old without verification
+
+**User Docs Issue Types:**
+- **outdated**: Documentation that no longer reflects current UI/features
+- **missing**: New user-visible features not documented
 - **incorrect**: Instructions that don't match actual behavior
 - **screenshot-needed**: Screenshots that may be outdated
+- **accessibility**: Missing alt text, poor heading hierarchy
+- **localization**: Idioms or complex language that won't translate well
 
-**Severity levels:**
-- **high**: Critical issues (e.g., completely missing docs for major features)
-- **medium**: Important issues (e.g., outdated screenshots)
-- **low**: Minor issues (e.g., typos, formatting)
+**Priority Levels:**
+- **critical**: Completely missing docs for major features, blocking issues
+- **high**: Important issues affecting usability
+- **medium**: Noticeable issues that should be fixed soon
+- **low**: Minor issues, nice-to-have improvements
 
-### 2. GitHub Actions Workflow (`.github/workflows/docs-audit.yml`)
+### 2. Documentation Separation Strategy
+
+**Why Separate Internal and User Docs?**
+
+Internal docs and user docs serve fundamentally different audiences and have different requirements:
+
+| Aspect | Internal Docs (Agents) | User Docs (End Users) |
+|--------|------------------------|----------------------|
+| **Audience** | AI agents working on codebase | End users of the application |
+| **Purpose** | Enable agents to understand and modify code | Help users accomplish tasks |
+| **Style** | Present tense, actionable commands, technical | Conversational, second person, accessible |
+| **Quality Bar** | Factual accuracy, no conflicts, current state only | Screenshots, tone, i18n-ready, accessible |
+| **Update Workflow** | Edit in place, consolidate new docs | Screenshot regeneration, localization |
+| **Key Principle** | Anti-proliferation: update existing, don't add new | Comprehensive coverage with visuals |
+
+**Consequences of Mixing:**
+- ❌ AI analyzes user screenshots with agent criteria (irrelevant)
+- ❌ AI analyzes internal docs with user criteria (misses consolidation opportunities)
+- ❌ Single consolidated issue mixes unrelated tasks
+- ❌ Implementing agent gets confusing, fragmented view
+
+**Solution:**
+- ✅ Two separate Claude API calls with specialized prompts
+- ✅ Internal docs analysis focuses on consolidation and conflicts
+- ✅ User docs analysis focuses on cross-references and accessibility
+- ✅ Two consolidated issues with clear, focused tasks
+
+### 3. Active Documentation Consolidation
+
+**Problem:** Agents often create new internal docs when working on features, leading to proliferation and fragmentation.
+
+**Solution:** The audit system automatically:
+
+1. **Detects new internal docs** (created in last 30 days)
+2. **Analyzes their content** with full context
+3. **Recommends consolidation** into existing core docs
+4. **Provides specific merge plan**:
+   - Which core doc to update
+   - What content to extract
+   - Which section to update
+   - Recommends deletion of new doc after merge
+
+**Example Consolidation Task:**
+```markdown
+### Consolidate new documentation into core docs
+
+**Location:** `internal-docs/new-feature-explanation.md`
+**Type:** consolidation
+
+**Issue:**
+New internal doc created 15 days ago documenting the visual regression system.
+This information should be integrated into existing testing documentation.
+
+**Action:**
+1. Extract valuable info from `internal-docs/new-feature-explanation.md`
+2. Update `internal-docs/testing/visual-regression.md` section "How It Works"
+3. Add any new examples to the existing workflow section
+4. Delete `internal-docs/new-feature-explanation.md` after consolidation
+
+**Consolidation Plan:**
+- Source: `internal-docs/new-feature-explanation.md`
+- Target: `internal-docs/testing/visual-regression.md`
+- Extract: Screenshot detection logic and component metadata details
+- Update Section: "How It Works" and "Component Metadata"
+- ⚠️ **Delete source doc after consolidation**
+```
+
+**Core Internal Docs (Never Consolidated Away):**
+- `CLAUDE.md` - Main entry point for AI agents
+- `AGENTS.md` - Development workflow guidance
+- `internal-docs/architecture/` - System design
+- `internal-docs/design-system/` - UI component guidelines
+- `internal-docs/testing/` - Testing strategies
+- `internal-docs/i18n/` - Internationalization
+- `internal-docs/contributing/` - Writing standards
+
+### 4. GitHub Actions Workflow (`.github/workflows/docs-audit.yml`)
 
 Automated workflow that runs the audit:
 
@@ -41,8 +137,15 @@ Automated workflow that runs the audit:
 - `dry_run`: Run without creating GitHub issues (default: false)
 
 **Outputs:**
-- Creates GitHub issues for each finding
-- Uploads audit report as workflow artifact
+- Creates **two consolidated GitHub issues**:
+  - `Internal Documentation Updates (Week of YYYY-MM-DD)` (label: `internal-documentation`)
+  - `User Documentation Updates (Week of YYYY-MM-DD)` (label: `user-documentation`)
+- Each issue contains:
+  - Tasks grouped by priority (🔴 Critical, 🟠 High, 🟡 Medium, 🟢 Low)
+  - Specific, actionable steps for each task
+  - Consolidation plans for new internal docs
+  - Flags for user docs (needs_screenshot, needs_i18n_review, needs_tone_review)
+- Uploads comprehensive audit report as workflow artifact
 - Posts summary comment with statistics
 
 ### 3. Unit Tests (`.github/scripts/__tests__/ai-docs-audit.test.js`)
@@ -226,16 +329,29 @@ A comprehensive report is saved:
 ## Cost Estimation
 
 **Claude API costs:**
-- Model: `claude-sonnet-4-20250929`
-- Input: ~10,000-20,000 tokens per audit
-- Output: ~2,000-4,000 tokens per audit
-- **Estimated cost**: $0.50-1.00 per audit
-- **Monthly cost** (4 audits): $2.00-4.00
+- Model: `claude-sonnet-4-5-20250929`
+- **Two API calls per audit** (internal + user docs)
+
+**Internal Docs Audit:**
+- Input: ~15,000-25,000 tokens (includes core docs + new docs for consolidation)
+- Output: ~2,000-3,000 tokens
+- Cost: ~$0.30-0.50 per audit
+
+**User Docs Audit:**
+- Input: ~20,000-40,000 tokens (FULL user docs content for cross-reference analysis)
+- Output: ~2,000-4,000 tokens
+- Cost: ~$0.40-0.80 per audit
+
+**Total per Audit:** $0.70-1.30
+**Monthly cost** (4 audits): **$2.80-5.20**
 
 **Note**: Costs may vary based on:
 - Amount of code changes
 - Number of documentation files
+- Number of new internal docs detected
 - Complexity of analysis required
+
+**Cost remains within budget** (~$2-4/month target from Issue #69), though slightly higher due to full user docs content analysis. The improved accuracy and consolidation features justify the marginal cost increase.
 
 ## Troubleshooting
 
