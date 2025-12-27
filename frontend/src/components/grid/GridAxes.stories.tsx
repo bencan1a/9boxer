@@ -2,20 +2,20 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { GridAxes } from "./GridAxes";
 
 /**
- * GridAxes displays the Y-axis (Potential) label for the nine-box grid.
- * - Y-axis: Potential (Low → High, vertical)
- *
- * Note: The X-axis (Performance) label is rendered separately by NineBoxGrid in its header section.
+ * GridAxes displays both X and Y axis labels for the nine-box grid.
+ * - X-axis: Performance (Low → High, horizontal at top)
+ * - Y-axis: Potential (Low → High, vertical on left)
  *
  * The Y-axis label is rendered vertically using CSS transform.
  *
  * **Key Features:**
  * - Internationalization support via i18n
- * - Optional label override
+ * - Optional label override for both axes
  * - Can be hidden via `showLabels` prop
  * - Consistent 80px width for Y-axis spacing
  *
  * **Data Attributes:**
+ * - `data-testid="grid-x-axis"` - X-axis label container
  * - `data-testid="grid-y-axis"` - Y-axis label container
  */
 const meta: Meta<typeof GridAxes> = {
@@ -27,11 +27,15 @@ const meta: Meta<typeof GridAxes> = {
     docs: {
       description: {
         component:
-          "Y-axis label component for the nine-box grid. Displays the Potential (Y) label with vertical text rotation. The X-axis (Performance) label is rendered separately by NineBoxGrid.",
+          "Axis labels component for the nine-box grid. Displays both Performance (X) and Potential (Y) labels with vertical text rotation for Y-axis.",
       },
     },
   },
   argTypes: {
+    xAxisLabel: {
+      control: "text",
+      description: "Custom label for X-axis (Performance). Defaults to i18n value.",
+    },
     yAxisLabel: {
       control: "text",
       description: "Custom label for Y-axis (Potential). Defaults to i18n value.",
@@ -47,8 +51,8 @@ export default meta;
 type Story = StoryObj<typeof GridAxes>;
 
 /**
- * Default Y-axis label using i18n translations.
- * Shows standard "Potential (Low → High)" Y-axis label. X-axis labels are not rendered by this component.
+ * Default axis labels using i18n translations.
+ * Shows standard "Performance (Low → High)" and "Potential (Low → High)" labels.
  */
 export const Default: Story = {
   args: {
@@ -62,6 +66,7 @@ export const Default: Story = {
  */
 export const CustomLabels: Story = {
   args: {
+    xAxisLabel: "Results",
     yAxisLabel: "Capability",
     showLabels: true,
   },
@@ -69,7 +74,7 @@ export const CustomLabels: Story = {
     docs: {
       description: {
         story:
-          "Custom Y-axis label for organizations that use different terminology than Potential.",
+          "Custom axis labels for organizations that use different terminology than Performance/Potential.",
       },
     },
   },
