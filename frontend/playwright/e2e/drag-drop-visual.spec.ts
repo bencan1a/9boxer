@@ -25,11 +25,7 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     await expect(employeeCard).toHaveAttribute("data-position", "9");
     await expect(employeeCard).toBeVisible();
 
-    // Verify employee does NOT have modified indicator before move
-    const modifiedIndicatorBefore = employeeCard.locator(
-      '[data-testid="modified-indicator"]'
-    );
-    await expect(modifiedIndicatorBefore).not.toBeVisible();
+    // Note: Modified indicator chip was removed - modified state is now shown via border styling only
 
     // Get initial count for box 9 (should include Alice Smith)
     const box9CountBefore = page.locator('[data-testid="grid-box-9-count"]');
@@ -45,15 +41,8 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     // Verify employee now appears in box 6
     await expect(employeeCard).toHaveAttribute("data-position", "6");
 
-    // Verify employee card has visual feedback indicators
-    const movedEmployeeCard = page.locator('[data-testid="employee-card-1"]');
-
-    // Check for modified indicator chip
-    const modifiedIndicator = movedEmployeeCard.locator(
-      '[data-testid="modified-indicator"]'
-    );
-    await expect(modifiedIndicator).toBeVisible();
-    await expect(modifiedIndicator).toHaveText("Modified");
+    // Note: Modified state is shown via border styling, not a testable indicator element
+    // Visual feedback is verified through border changes (tested in visual regression tests)
 
     // Verify box counts changed
     const box9CountAfter = page.locator('[data-testid="grid-box-9-count"]');
@@ -114,11 +103,7 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     // Move employee from box 9 to 6
     await dragEmployeeToPosition(page, 1, 6);
 
-    // Verify modified indicator is visible
-    let modifiedIndicator = page
-      .locator('[data-testid="employee-card-1"]')
-      .locator('[data-testid="modified-indicator"]');
-    await expect(modifiedIndicator).toBeVisible();
+    // Note: Modified indicator chip no longer exists - state is shown via border styling only
 
     // Wait for network to be idle for consecutive drags
     await page.waitForLoadState("networkidle");
@@ -133,11 +118,8 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     const employeeCard = page.locator('[data-testid="employee-card-1"]');
     await expect(employeeCard).toHaveAttribute("data-position", "9");
 
-    // Verify modified indicator is no longer visible
-    modifiedIndicator = page
-      .locator('[data-testid="employee-card-1"]')
-      .locator('[data-testid="modified-indicator"]');
-    await expect(modifiedIndicator).not.toBeVisible();
+    // Note: Modified state is no longer visible via indicator chip (removed)
+    // The border styling also returns to normal (tested in visual regression tests)
 
     // Verify file menu badge is no longer visible (no changes)
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');

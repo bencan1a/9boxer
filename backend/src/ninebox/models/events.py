@@ -1,11 +1,11 @@
 """Trackable event models for employee property changes."""
 
 from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import Annotated, ClassVar, Literal
+from datetime import datetime, timezone
+from typing import Annotated, Literal
 from uuid import uuid4
 
-from pydantic import BaseModel, Discriminator, Field
+from pydantic import BaseModel, ConfigDict, Discriminator, Field
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 
@@ -44,7 +44,7 @@ class TrackableEvent(BaseModel, ABC):
     event_id: str = Field(default_factory=lambda: str(uuid4()))
     employee_id: int
     employee_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.utcnow())
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     event_type: str  # Discriminator for polymorphism
     notes: str | None = None
 
@@ -76,12 +76,10 @@ class TrackableEvent(BaseModel, ABC):
         """
         pass
 
-    class Config:
-        """Pydantic config."""
-
-        json_encoders: ClassVar = {
-            datetime: lambda v: v.isoformat(),
-        }
+    model_config = ConfigDict(
+        # Pydantic V2 automatically serializes datetime to ISO format
+        # No need for custom json_encoders
+    )
 
 
 class GridMoveEvent(TrackableEvent):

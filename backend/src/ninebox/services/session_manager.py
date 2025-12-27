@@ -5,7 +5,7 @@ import json
 import logging
 import sqlite3
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.events import (
@@ -89,7 +89,7 @@ class SessionManager:
         session = SessionState(
             session_id=session_id,
             user_id=user_id,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
             original_employees=original_employees,
             original_filename=filename,
             original_file_path=file_path,
@@ -175,7 +175,7 @@ class SessionManager:
 
         # Calculate new position
         new_position = calculate_grid_position(new_performance, new_potential)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Check if there's already a grid move event for this employee
         # If so, preserve the original old_position/old_performance/old_potential to track net change
@@ -362,7 +362,7 @@ class SessionManager:
 
         # Calculate new position
         new_position = calculate_grid_position(new_performance, new_potential)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Position 5 is the center position (Medium/Medium) - moving back here clears donut state
         is_position_5 = new_position == 5
@@ -501,7 +501,7 @@ class SessionManager:
         added_flags = new_flags_set - old_flags
         removed_flags = old_flags - new_flags_set
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Track each added flag
         for flag in added_flags:

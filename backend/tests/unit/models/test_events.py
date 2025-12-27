@@ -1,6 +1,6 @@
 """Tests for TrackableEvent system and event models."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -410,7 +410,7 @@ class TestEventSerialization:
             "event_id": "test-id",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "old_position": 1,
             "new_position": 5,
             "old_performance": "Low",
@@ -432,7 +432,7 @@ class TestEventSerialization:
             "event_id": "test-id",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "flag": "promotion_ready",
         }
 
@@ -449,7 +449,7 @@ class TestEventSerialization:
             "event_id": "test-id-1",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "old_position": 1,
             "new_position": 5,
             "old_performance": "Low",
@@ -463,7 +463,7 @@ class TestEventSerialization:
             "event_id": "test-id-2",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "old_position": 5,
             "new_position": 1,
             "old_performance": "Medium",
@@ -477,7 +477,7 @@ class TestEventSerialization:
             "event_id": "test-id-3",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "flag": "promotion_ready",
         }
 
@@ -486,7 +486,7 @@ class TestEventSerialization:
             "event_id": "test-id-4",
             "employee_id": 1,
             "employee_name": "Alice",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "flag": "promotion_ready",
         }
 

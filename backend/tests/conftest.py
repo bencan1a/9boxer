@@ -3,7 +3,7 @@
 import os
 import tempfile
 from collections.abc import Generator
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import openpyxl
@@ -321,7 +321,7 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
     summary_sheet = workbook.active
     summary_sheet.title = "Summary"
     summary_sheet["A1"] = "9-Box Talent Review"
-    summary_sheet["A2"] = f"Generated: {datetime.utcnow().isoformat()}"
+    summary_sheet["A2"] = f"Generated: {datetime.now(timezone.utc).isoformat()}"
 
     # Second sheet (employee data)
     data_sheet = workbook.create_sheet("Employee Data")

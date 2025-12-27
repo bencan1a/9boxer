@@ -242,11 +242,7 @@ test.describe("Grid Box Expansion Flow", () => {
       );
       await expect(employeeInBox1).toBeVisible();
 
-      // Verify it has the modified indicator
-      const modifiedIndicator = employeeInBox1.locator(
-        '[data-testid="modified-indicator"]'
-      );
-      await expect(modifiedIndicator).toBeVisible();
+      // Note: Modified indicator chip was removed - modified state is shown via border styling only
     }
   });
 

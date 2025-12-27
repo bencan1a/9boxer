@@ -1,7 +1,7 @@
 """Fixtures for performance tests."""
 
 import tempfile
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import openpyxl
@@ -89,7 +89,7 @@ def create_excel_file(employees: list[Employee], file_path: Path) -> None:
     summary_sheet = workbook.active
     summary_sheet.title = "Summary"
     summary_sheet["A1"] = "9-Box Talent Review"
-    summary_sheet["A2"] = f"Generated: {datetime.utcnow().isoformat()}"
+    summary_sheet["A2"] = f"Generated: {datetime.now(timezone.utc).isoformat()}"
 
     # Employee data sheet
     data_sheet = workbook.create_sheet("Employee Data")

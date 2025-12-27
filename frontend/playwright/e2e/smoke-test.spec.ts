@@ -62,11 +62,7 @@ test.describe("Smoke Test - Critical Workflows", () => {
     const box6 = page.locator('[data-testid="grid-box-6"]');
     await expect(box6.getByText("Alice Smith")).toBeVisible();
 
-    // Verify modified indicator appears
-    const movedCard = page.locator('[data-testid="employee-card-1"]');
-    await expect(
-      movedCard.locator('[data-testid="modified-indicator"]')
-    ).toBeVisible();
+    // Note: Modified indicator chip was removed - modified state is shown via border styling only
 
     // Verify file menu badge shows change count
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');

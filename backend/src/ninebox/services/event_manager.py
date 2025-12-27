@@ -6,7 +6,7 @@ original state, querying events for an employee, and persisting events to
 session storage.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 from ninebox.models.employee import Employee
@@ -150,7 +150,7 @@ class EventManager:
 
         if event:
             event.notes = notes
-            event.timestamp = datetime.utcnow()
+            event.timestamp = datetime.now(timezone.utc)
             self.session_manager._persist_session(session)
 
         return event
