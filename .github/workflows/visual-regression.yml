@@ -11,6 +11,10 @@ on:
   # Only run on PRs - no need to re-run on push to main after merge
   # Use update-visual-baselines.yml workflow to update baselines when intentional UI changes are made
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   visual-tests:
     name: Visual Regression Tests

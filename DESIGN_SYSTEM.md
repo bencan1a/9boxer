@@ -297,6 +297,82 @@ Right Panel
 
 ## Component Anatomy Patterns
 
+### NineBoxGrid Component Hierarchy
+
+**Purpose:** Main 9-box talent grid visualization with complete component hierarchy.
+
+**Component Hierarchy (Phase 1.1 Componentization - COMPLETE):**
+```tsx
+<NineBoxGrid> (container with state)
+├── Axis (orientation="horizontal") - Performance label
+├── Axis (orientation="vertical") - Potential label
+├── GridBox[] (9 instances, positions 1-9)
+│   ├── BoxHeader
+│   │   ├── PositionLabel
+│   │   ├── EmployeeCount (badge)
+│   │   └── ExpandCollapseButton
+│   ├── EmployeeTileList
+│   │   └── EmployeeTile[] (draggable cards)
+│   └── DropZone (drag-drop target)
+└── DragOverlay (shows dragged item)
+```
+
+**New Components (Phase 1.1):**
+1. **Axis** - `frontend/src/components/grid/Axis.tsx`
+   - Single responsibility: Renders one axis label
+   - Configurable orientation: `horizontal` (Performance) or `vertical` (Potential)
+   - Horizontal: Centered text at top
+   - Vertical: Rotated text on left (writing-mode: vertical-rl)
+   - Customizable labels via props
+   - Can be hidden via `showLabel` prop
+   - **Design improvement:** Replaces previous GridAxes component for better composability
+
+2. **BoxHeader** - `frontend/src/components/grid/BoxHeader.tsx`
+   - Position name + short label (e.g., "Star [H,H]")
+   - Employee count badge
+   - Expand/collapse button
+   - Position guidance tooltip
+   - Adaptive layout (collapsed vs normal/expanded)
+
+3. **EmployeeTileList** - `frontend/src/components/grid/EmployeeTileList.tsx`
+   - Wrapper for employee tiles
+   - Normal mode: Vertical stack
+   - Expanded mode: Multi-column grid (responsive)
+   - Manages layout only, delegates rendering to EmployeeTile
+
+**Grid States:**
+- **View mode:** `normal` | `donut` | `compact`
+- **Drag state:** `idle` | `dragging` | `dragOver`
+- **Data state:** `empty` | `loading` | `populated`
+
+**GridBox States:**
+- **Expansion:** `expanded` | `collapsed` | `normal`
+- **Employee count:** `empty` | `hasEmployees` (1-5, 6-10, 11+)
+- **Drag state:** `idle` | `dragOver` | `dragAccept` | `dragReject`
+
+**Position Layout:**
+```
+Row 1 (High Potential):    [7: L,H] [8: M,H] [9: H,H]
+Row 2 (Medium Potential):  [4: L,M] [5: M,M] [6: H,M]
+Row 3 (Low Potential):     [1: L,L] [2: M,L] [3: H,L]
+                           ← Performance (Low → High) →
+```
+
+**Benefits of Componentization:**
+- ✅ Isolated, testable components (77 tests total)
+- ✅ Comprehensive Storybook stories (40+ stories)
+- ✅ Clear separation of concerns
+- ✅ Easier to maintain and extend
+- ✅ Better code reuse
+
+**Storybook Stories:**
+- NineBoxGrid: 11 stories (Empty, Populated, Skewed, Donut Mode, etc.)
+- GridBox: 7 stories (Empty, Expanded, Collapsed, etc.)
+- BoxHeader: 6 stories (Normal, Expanded, Collapsed, etc.)
+- EmployeeTileList: 8 stories (Empty, Normal layout, Expanded layout, etc.)
+- EmployeeTile: 7 stories (Default, Modified, Donut mode, etc.)
+- Axis: 6 stories (Horizontal, Vertical, Custom labels, Hidden)
+
 ### EmployeeTile Structure
 
 **Purpose:** Display employee info in grid, support drag-and-drop.
@@ -337,6 +413,31 @@ Right Panel
 
 **Purpose:** Container for employees in a 9-box position.
 
+**Component Hierarchy (NEW - Phase 1.1 Componentization):**
+```tsx
+<GridBox>
+  ├── BoxHeader
+  │   ├── Position Label (e.g., "Star [H,H]")
+  │   ├── Employee Count Badge
+  │   └── Expand/Collapse Button
+  ├── EmployeeTileList
+  │   └── EmployeeTile[] (draggable employee cards)
+  └── Drop Zone (invisible drag-drop target)
+</GridBox>
+```
+
+**Sub-Components:**
+1. **BoxHeader** - `frontend/src/components/grid/BoxHeader.tsx`
+   - Displays position name, short label, and employee count
+   - Shows expand/collapse controls
+   - Tooltip with position guidance
+   - Adapts layout: Collapsed (centered vertical) vs Normal/Expanded (horizontal)
+
+2. **EmployeeTileList** - `frontend/src/components/grid/EmployeeTileList.tsx`
+   - Wraps employee tiles with responsive layout
+   - Normal mode: Vertical stack (block layout)
+   - Expanded mode: Multi-column grid (auto-fill, minmax(280px, 1fr))
+
 **Required Elements:**
 ```tsx
 <GridBox>
@@ -357,6 +458,7 @@ Right Panel
 - ✅ Background color: `theme.palette.gridBox.*` (semantic colors)
 - ✅ Heights: `theme.tokens.dimensions.gridBox.*`
 - ✅ Drag-over state: Opacity 1, border highlight
+- ✅ Use sub-components: BoxHeader, EmployeeTileList
 - ❌ Do NOT add: Export buttons, filters, charts
 
 ### Right Panel Tab Structure
