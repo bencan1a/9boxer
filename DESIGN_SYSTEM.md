@@ -304,9 +304,7 @@ Right Panel
 **Component Hierarchy (Phase 1.1 Componentization - COMPLETE):**
 ```tsx
 <NineBoxGrid> (container with state)
-├── GridAxes
-│   ├── XAxisLabels (Performance)
-│   └── YAxisLabels (Potential)
+├── GridAxes (Y-axis label only)
 ├── GridBox[] (9 instances, positions 1-9)
 │   ├── BoxHeader
 │   │   ├── PositionLabel
@@ -320,8 +318,8 @@ Right Panel
 
 **New Components (Phase 1.1):**
 1. **GridAxes** - `frontend/src/components/grid/GridAxes.tsx`
-   - Y-axis label (Potential) with vertical text
-   - X-axis label (Performance) rendered in NineBoxGrid header
+   - Renders Y-axis label (Potential) with vertical text rotation
+   - X-axis label (Performance) is rendered separately by NineBoxGrid in its header
    - Customizable labels via props
    - Can be hidden via `showLabels` prop
 

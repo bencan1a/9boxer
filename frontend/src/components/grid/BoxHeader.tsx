@@ -142,6 +142,7 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
           <Typography
             variant="caption"
             fontWeight="bold"
+            aria-label={positionGuidance}
             sx={{
               fontSize: isExpanded ? "0.85rem" : "0.7rem",
               display: "block",
