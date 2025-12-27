@@ -1,0 +1,286 @@
+name: Documentation Auto-Update
+
+on:
+  pull_request:
+    paths:
+      # Trigger on frontend component changes
+      - 'frontend/src/components/**'
+      - 'frontend/src/pages/**'
+      - 'frontend/src/theme/**'
+      # Also trigger on metadata changes (to test the system)
+      - '.github/component-screenshot-map.json'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  detect-doc-impact:
+    name: Detect Documentation Impact
+    runs-on: ubuntu-latest
+
+    outputs:
+      screenshots_affected: ${{ steps.analyze.outputs.screenshots_affected }}
+      changed_components: ${{ steps.analyze.outputs.changed_components }}
+      affected_screenshots: ${{ steps.analyze.outputs.affected_screenshots }}
+      screenshot_count: ${{ steps.analyze.outputs.screenshot_count }}
+      component_count: ${{ steps.analyze.outputs.component_count }}
+      theme_changed: ${{ steps.analyze.outputs.theme_changed }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for accurate diff
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Analyze Changed Components
+        id: analyze
+        run: |
+          echo "::group::Analyzing component changes"
+          node .github/scripts/detect-doc-impact.js --base=${{ github.base_ref }}
+          echo "::endgroup::"
+
+      - name: Upload Analysis Results
+        if: steps.analyze.outputs.screenshots_affected == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: affected-screenshots
+          path: .affected-screenshots.json
+          retention-days: 7
+
+      - name: Comment on PR - No Impact
+        if: steps.analyze.outputs.screenshots_affected != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Remove old bot comments
+            for (const comment of comments) {
+              if (comment.user.type === 'Bot' && comment.body.includes('📊 Documentation Impact Analysis')) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+              }
+            }
+
+            // Post new comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '## 📊 Documentation Impact Analysis\n\n' +
+                    '✅ **No documentation screenshots affected by these changes.**\n\n' +
+                    'The changed files do not impact any components with documentation screenshots.'
+            });
+
+      - name: Comment on PR - Impact Detected
+        if: steps.analyze.outputs.screenshots_affected == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Remove old bot comments
+            for (const comment of comments) {
+              if (comment.user.type === 'Bot' && comment.body.includes('📊 Documentation Impact Analysis')) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+              }
+            }
+
+            const screenshotCount = '${{ steps.analyze.outputs.screenshot_count }}';
+            const componentCount = '${{ steps.analyze.outputs.component_count }}';
+            const changedComponents = '${{ steps.analyze.outputs.changed_components }}';
+            const affectedScreenshots = '${{ steps.analyze.outputs.affected_screenshots }}';
+            const themeChanged = '${{ steps.analyze.outputs.theme_changed }}' === 'true';
+
+            const componentsList = changedComponents.split(', ').map(c => '- `' + c + '`').join('\n');
+            const screenshotsList = affectedScreenshots.split(', ').map(s => '- `' + s + '`').join('\n');
+            const themeWarning = themeChanged ? '- **⚠️ Theme Changed:** This may affect more screenshots than detected\n' : '';
+
+            const body = '## 📊 Documentation Impact Analysis\n\n' +
+                    '⚠️ **This PR affects ' + screenshotCount + ' documentation screenshot(s)**\n\n' +
+                    '### 📋 Summary\n' +
+                    '- **Components Changed:** ' + componentCount + '\n' +
+                    '- **Screenshots Affected:** ' + screenshotCount + '\n' +
+                    themeWarning +
+                    '\n### 🧩 Changed Components\n' +
+                    componentsList + '\n\n' +
+                    '### 📸 Affected Screenshots\n' +
+                    screenshotsList + '\n\n' +
+                    '### 🔄 Next Steps\n\n' +
+                    'The documentation auto-update workflow will:\n' +
+                    '1. Regenerate the affected screenshots\n' +
+                    '2. Create a documentation PR for review\n' +
+                    '3. Link the documentation PR to this PR\n\n' +
+                    '---\n' +
+                    '*🤖 Auto-generated by Documentation Auto-Update workflow*';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+
+  regenerate-screenshots:
+    name: Regenerate Affected Screenshots
+    needs: detect-doc-impact
+    if: needs.detect-doc-impact.outputs.screenshots_affected == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install --system -e '.[dev]'
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          cd frontend
+          npx playwright install --with-deps chromium
+
+      - name: Download Analysis Results
+        uses: actions/download-artifact@v4
+        with:
+          name: affected-screenshots
+          path: .
+
+      - name: Start Backend (for screenshot generation)
+        run: |
+          # Activate venv and start backend in background
+          . .venv/bin/activate
+          # Run from backend/src directory for proper Python module resolution
+          cd backend/src
+          uvicorn ninebox.main:app --host 127.0.0.1 --port 38000 > ../../backend.log 2>&1 &
+          BACKEND_PID=$!
+          echo "BACKEND_PID=$BACKEND_PID" >> $GITHUB_ENV
+          cd ../..
+
+          # Wait for backend with better error handling
+          echo "Waiting for backend to start..."
+          if ! timeout 30 bash -c 'until curl -sf http://127.0.0.1:38000/health >/dev/null 2>&1; do echo "...waiting"; sleep 2; done'; then
+            echo "❌ Backend failed to start within 30 seconds"
+            if [ -f backend.log ]; then
+              echo "=== Backend Logs ==="
+              cat backend.log
+            fi
+            exit 1
+          fi
+          echo "✅ Backend started successfully"
+
+      - name: Regenerate Affected Screenshots
+        id: regenerate
+        run: |
+          cd frontend
+          npm run screenshots:generate:affected
+
+      - name: Stop Backend
+        if: always()
+        run: |
+          if [ -n "$BACKEND_PID" ]; then
+            kill $BACKEND_PID || true
+          fi
+          # Capture logs for debugging
+          if [ -f backend.log ]; then
+            echo "=== Backend Logs ==="
+            cat backend.log
+          fi
+
+      - name: Create Documentation PR
+        if: success()
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            docs: auto-update screenshots for PR #${{ github.event.number }}
+
+            🤖 Generated with Claude Code
+          branch: docs/auto-update-pr-${{ github.event.number }}
+          delete-branch: true
+          title: "docs: Auto-update screenshots for PR #${{ github.event.number }}"
+          body: |
+            ## 📸 Automated Documentation Update
+
+            This PR was automatically created because PR #${{ github.event.number }} modified components that affect user documentation.
+
+            ### 📊 Impact Summary
+            - **Changed Components:** ${{ needs.detect-doc-impact.outputs.component_count }}
+            - **Screenshots Regenerated:** ${{ needs.detect-doc-impact.outputs.screenshot_count }}
+
+            ### 🧩 Changed Components
+            ${{ needs.detect-doc-impact.outputs.changed_components }}
+
+            ### 📸 Affected Screenshots
+            ${{ needs.detect-doc-impact.outputs.affected_screenshots }}
+
+            ### ✅ Action Required
+            - [ ] Review visual changes in regenerated screenshots
+            - [ ] Verify screenshots accurately represent current UX
+            - [ ] Update user guide text if component behavior changed
+            - [ ] Merge this PR after the original PR #${{ github.event.number }} is merged
+
+            ### 🔗 Related PR
+            - Original PR: #${{ github.event.number }}
+            - Triggered by: @${{ github.event.pull_request.user.login }}
+
+            ---
+            🤖 Auto-generated by Documentation Auto-Update workflow
+          labels: |
+            documentation
+            automated
+            screenshots
+          assignees: ${{ github.event.pull_request.user.login }}
+
+      - name: Upload Screenshot Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-screenshots
+          path: resources/user-guide/docs/images/screenshots/
+          retention-days: 30

@@ -40,6 +40,7 @@
     "test:all:pw": "playwright test",
     "test:all:pw:ui": "playwright test --ui",
     "screenshots:generate": "npx tsx playwright/screenshots/generate.ts",
+    "screenshots:generate:affected": "node scripts/regenerate-affected-screenshots.js",
     "screenshots:compare": "npx tsx playwright/screenshots/compare.ts",
     "screenshots:validate": "npx tsx playwright/screenshots/compare.ts --fail-on-diff",
     "screenshots:metadata": "node ../.github/scripts/extract-screenshot-metadata.js",
