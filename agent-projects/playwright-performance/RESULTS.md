@@ -247,10 +247,10 @@ Running 164 tests using 6 workers
 - **No wasted time**: Eliminated 95+ seconds of unnecessary waiting
 
 ### Best Practices Alignment
-- ✅ Follows [Playwright Best Practices](https://playwright.dev/docs/best-practices)
-- ✅ Uses [Auto-waiting](https://playwright.dev/docs/actionability)
-- ✅ Leverages [Auto-retrying Assertions](https://playwright.dev/docs/test-assertions)
-- ✅ Enables [Test Parallelization](https://playwright.dev/docs/test-parallel)
+- ✅ Follows [Playwright Best Practices](https://playwright.dev/internal-docs/best-practices)
+- ✅ Uses [Auto-waiting](https://playwright.dev/internal-docs/actionability)
+- ✅ Leverages [Auto-retrying Assertions](https://playwright.dev/internal-docs/test-assertions)
+- ✅ Enables [Test Parallelization](https://playwright.dev/internal-docs/test-parallel)
 
 ---
 

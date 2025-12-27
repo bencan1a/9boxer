@@ -24,7 +24,7 @@
     electron/             # Electron main/preload
     scripts/              # Build scripts
   .github/                # CI/CD workflows
-  docs/                   # Documentation
+  internal-docs/                   # Documentation
   docker/                 # Docker configs
 ```
 

@@ -767,9 +767,9 @@ Add meta descriptions to high-traffic pages (optional enhancement):
 
 URLs are clean and logical:
 
-✅ `docs/getting-started.md` → `/getting-started/`
-✅ `docs/workflows/talent-calibration.md` → `/workflows/talent-calibration/`
-✅ `docs/filters.md` → `/filters/`
+✅ `internal-docs/getting-started.md` → `/getting-started/`
+✅ `internal-docs/workflows/talent-calibration.md` → `/workflows/talent-calibration/`
+✅ `internal-docs/filters.md` → `/filters/`
 
 **Hierarchy:**
 
@@ -992,7 +992,7 @@ The Phase 3 documentation represents a significant upgrade in quality, accessibi
 - ⚠️ Images created: 1/32 (3%) - only grid-normal.png exists
 - 📋 Remaining to capture: 31 screenshots
 
-**Screenshot Specification Document:** `docs/images/screenshots/README.md` (exists, detailed)
+**Screenshot Specification Document:** `internal-docs/images/screenshots/README.md` (exists, detailed)
 
 ---
 

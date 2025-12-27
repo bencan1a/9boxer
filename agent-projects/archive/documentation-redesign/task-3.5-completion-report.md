@@ -230,7 +230,7 @@ All 30 practices follow consistent format:
 
 **Pre-existing warnings (unrelated to this task):** 53
 - Missing screenshot files (images/screenshots/*.png)
-- Links to files outside docs/ directory (CLAUDE.md, CONTRIBUTING.md, etc.)
+- Links to files outside internal-docs/ directory (CLAUDE.md, CONTRIBUTING.md, etc.)
 - These are infrastructure issues, not content issues
 
 **Fix applied:**
@@ -241,7 +241,7 @@ All 30 practices follow consistent format:
 
 ## Success Criteria Checklist
 
-- [x] **docs/best-practices.md created** (revised from tips.md)
+- [x] **internal-docs/best-practices.md created** (revised from tips.md)
 - [x] **All existing tips incorporated** (20/20 preserved, 10 new added)
 - [x] **6 sections with 3-5 practices each** (6 sections × 5 practices = 30 total)
 - [x] **Each practice has What/Why/How structure** (100% compliance)

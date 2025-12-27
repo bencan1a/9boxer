@@ -209,7 +209,7 @@ reporting-chain-clickable-hover.png
 
 ### Storage Location
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 ├── view-controls/
 │   ├── main-interface.png
 │   ├── view-controls-grid.png
@@ -324,5 +324,5 @@ Before marking screenshots as complete:
 
 - ViewControls plan: `agent-projects/view-controls-consolidation/documentation-updates-needed.md`
 - Details Panel plan: `agent-projects/details-panel-ux-overhaul/IMPLEMENTATION_SUMMARY.md`
-- Screenshot guide: `docs/contributing/screenshot-guide.md`
+- Screenshot guide: `internal-docs/contributing/screenshot-guide.md`
 - Playwright config: `frontend/playwright/screenshots/config.ts`

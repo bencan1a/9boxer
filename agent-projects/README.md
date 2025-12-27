@@ -44,12 +44,12 @@ Use descriptive folder names that clearly indicate the project:
 
 1. **Create** - Agent creates a new project folder when starting work
 2. **Update** - Agent updates documentation as work progresses
-3. **Complete** - Move important documentation to `docs/` when finished
+3. **Complete** - Move important documentation to `internal-docs/` when finished
 4. **Archive** - Delete or archive the project folder
 
-## When to Move to `docs/`
+## When to Move to `internal-docs/`
 
-Move documentation to the `docs/` folder when:
+Move documentation to the `internal-docs/` folder when:
 - The project is complete
 - The information has long-term value
 - It should be part of the permanent project documentation

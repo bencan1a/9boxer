@@ -26,25 +26,25 @@ Successfully completed all required fixes and recommended improvements from the 
 **Issue:** Inconsistent terminology - some references still used "Export button" instead of correct "File menu → Apply Changes"
 
 **Files Fixed:**
-1. `docs/workflows/adding-notes.md` line 206
+1. `internal-docs/workflows/adding-notes.md` line 206
    - **Before:** `Click the Export button`
    - **After:** `Open the File menu and click "Apply X Changes to Excel"`
 
-2. `docs/workflows/adding-notes.md` line 344
+2. `internal-docs/workflows/adding-notes.md` line 344
    - **Before:** `Export notes to Excel | Click Export button → Open file → Check "9Boxer Change Notes" column`
    - **After:** `Export notes to Excel | File menu → Apply X Changes to Excel → Open file → Check "9Boxer Change Notes" column`
 
-3. `docs/workflows/making-changes.md` line 334
+3. `internal-docs/workflows/making-changes.md` line 334
    - **Before:** `Save my changes | Click Export button (downloads Excel file)`
    - **After:** `Save my changes | File menu → Apply X Changes to Excel (downloads file)`
 
-4. `docs/troubleshooting.md` line 275
+4. `internal-docs/troubleshooting.md` line 275
    - **Before:** `Export button clicked but file doesn't download`
    - **After:** `File menu "Apply Changes to Excel" clicked but file doesn't download`
 
 **Validation:**
 ```bash
-grep -ri "export button" docs/*.md docs/workflows/*.md
+grep -ri "export button" internal-docs/*.md internal-docs/workflows/*.md
 # Result: 0 instances in user-facing docs (only technical docs remain)
 ```
 
@@ -58,32 +58,32 @@ grep -ri "export button" docs/*.md docs/workflows/*.md
 
 **Files Fixed:**
 
-1. `docs/getting-started.md` lines 164-166
+1. `internal-docs/getting-started.md` lines 164-166
    - **Before:** `The employee tile turns **yellow** to show it's been modified`
    - **After:** `The employee tile gets an **orange left border** to show it's been modified`
    - **Added:** Info box explaining color variation and acknowledging "yellow" terminology
 
-2. `docs/quickstart.md` line 130
+2. `internal-docs/quickstart.md` line 130
    - **Before:** `The tile turns yellow to show it's been modified!`
    - **After:** `The tile gets an orange left border to show it's been modified!`
 
-3. `docs/working-with-employees.md` lines 82-86, 94
+3. `internal-docs/working-with-employees.md` lines 82-86, 94
    - **Before:** Multiple references to "yellow" and "yellow highlight"
    - **After:** Updated to "orange left border"
 
-4. `docs/working-with-employees.md` line 196 (table)
+4. `internal-docs/working-with-employees.md` line 196 (table)
    - **Before:** `**Yellow highlight** | Employee has been moved`
    - **After:** `**Orange left border** | Employee has been moved`
 
-5. `docs/understanding-grid.md` line 318
+5. `internal-docs/understanding-grid.md` line 318
    - **Before:** `**Yellow highlight** - Employee has been moved`
    - **After:** `**Orange left border** - Employee has been moved`
 
-6. `docs/workflows/talent-calibration.md` lines 335, 562
+6. `internal-docs/workflows/talent-calibration.md` lines 335, 562
    - **Before:** References to "yellow" highlights
    - **After:** "orange left border" or "orange border highlights"
 
-7. `docs/donut-mode.md` lines 115, 383
+7. `internal-docs/donut-mode.md` lines 115, 383
    - **Before:** "yellow border" and "Yellow highlight for changes"
    - **After:** "orange border" and "Orange left border for changes"
 
@@ -91,7 +91,7 @@ grep -ri "export button" docs/*.md docs/workflows/*.md
 
 **Validation:**
 ```bash
-grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" docs/*.md docs/workflows/*.md
+grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" internal-docs/*.md internal-docs/workflows/*.md
 # Result: 0 instances (all modification indicators use "orange")
 ```
 
@@ -101,29 +101,29 @@ grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" docs/*.md docs/workflow
 
 **Issue:** Multiple pages referenced calibration workflow as "(coming soon)" even though it exists
 
-**Reality:** `docs/workflows/talent-calibration.md` exists and is complete
+**Reality:** `internal-docs/workflows/talent-calibration.md` exists and is complete
 
 **Files Fixed:**
 
-1. `docs/index.md` line 35
+1. `internal-docs/index.md` line 35
    - **Before:** `**Talent Calibration Workflow** - Run effective calibration sessions (coming soon)`
    - **After:** `**[Talent Calibration Workflow](workflows/talent-calibration.md)** - Run effective calibration sessions`
 
-2. `docs/workflows/making-changes.md` line 318
+2. `internal-docs/workflows/making-changes.md` line 318
    - **Before:** `[Follow the calibration workflow](talent-calibration.md) - use 9Boxer during group talent reviews (coming soon).`
    - **After:** `[Follow the calibration workflow](talent-calibration.md) - use 9Boxer during group talent reviews.`
 
-3. `docs/getting-started.md` lines 287-289
+3. `internal-docs/getting-started.md` lines 287-289
    - **Before:** `(Calibration workflow guide - coming soon)`
    - **After:** `→ [Follow the calibration workflow guide](workflows/talent-calibration.md)`
 
-4. `docs/workflows/adding-notes.md` line 331
+4. `internal-docs/workflows/adding-notes.md` line 331
    - **Before:** `→ Calibration workflow guide (coming soon)`
    - **After:** `→ [Follow the calibration workflow guide](talent-calibration.md)`
 
 **Validation:**
 ```bash
-grep -ri "coming soon" docs/*.md docs/workflows/*.md
+grep -ri "coming soon" internal-docs/*.md internal-docs/workflows/*.md
 # Result: 0 instances
 ```
 
@@ -137,14 +137,14 @@ grep -ri "coming soon" docs/*.md docs/workflows/*.md
 
 **Files Fixed:**
 
-1. `docs/feature-comparison.md` line 75
+1. `internal-docs/feature-comparison.md` line 75
    - **Before:** `[Timeline](working-with-employees.md#performance-history)`
    - **After:** `[Timeline](working-with-employees.md#viewing-employee-timeline)`
    - **Reason:** Anchor `#performance-history` doesn't exist; correct anchor is `#viewing-employee-timeline`
 
 **Additional Fixes:**
 
-2. `docs/workflows/talent-calibration.md` lines 546-547
+2. `internal-docs/workflows/talent-calibration.md` lines 546-547
    - **Before:** Links to `../tasks/making-changes.md` and `../tasks/adding-notes.md` (don't exist)
    - **After:** Links to `making-changes.md` and `adding-notes.md` (correct paths in same directory)
 
@@ -208,19 +208,19 @@ mkdocs build --strict 2>&1 | grep "anchor"
 
 **Files Fixed:**
 
-1. `docs/donut-mode.md` line 266
+1. `internal-docs/donut-mode.md` line 266
    - **Before:** `See [Exporting Your Changes](exporting.md) for more details on the export process.`
    - **After:** `Learn how donut exercise data appears in your exported file in the [Exporting Your Changes guide](exporting.md).`
 
-2. `docs/tips.md` line 52
+2. `internal-docs/tips.md` line 52
    - **Before:** `See [Exporting Your Changes](exporting.md) for details.`
    - **After:** `Learn about naming conventions and file management in the [Exporting Your Changes guide](exporting.md).`
 
-3. `docs/tips.md` line 65
+3. `internal-docs/tips.md` line 65
    - **Before:** `See [Tracking Changes](tracking-changes.md) for details.`
    - **After:** `Learn about the change tracking system in the [Tracking Changes guide](tracking-changes.md).`
 
-4. `docs/tips.md` line 395
+4. `internal-docs/tips.md` line 395
    - **Before:** `See [Donut Mode Exercise](donut-mode.md) for complete workflow.`
    - **After:** `Follow the complete step-by-step process in the [Donut Mode Exercise guide](donut-mode.md).`
 
@@ -236,7 +236,7 @@ mkdocs build --strict 2>&1 | grep "anchor"
 
 **Files Fixed:**
 
-1. `docs/workflows/talent-calibration.md` line 51
+1. `internal-docs/workflows/talent-calibration.md` line 51
    - **Before:** `All employees displayed on the grid`
    - **After:** `The grid displays all employees`
 
@@ -250,19 +250,19 @@ mkdocs build --strict 2>&1 | grep "anchor"
 
 **Files Fixed:**
 
-1. `docs/getting-started.md` line 156
+1. `internal-docs/getting-started.md` line 156
    - **Before:** `Moving employees is simple - just drag and drop!`
    - **After:** `Moving employees is drag and drop:`
 
-2. `docs/workflows/making-changes.md` line 70
+2. `internal-docs/workflows/making-changes.md` line 70
    - **Before:** `moving them is as easy as drag-and-drop:`
    - **After:** `moving them is drag-and-drop:`
 
-3. `docs/workflows/making-changes.md` line 220
+3. `internal-docs/workflows/making-changes.md` line 220
    - **Before:** `Simply drag the employee back to their original position`
    - **After:** `Drag the employee back to their original position`
 
-4. `docs/workflows/adding-notes.md` line 198
+4. `internal-docs/workflows/adding-notes.md` line 198
    - **Before:** `**Edit notes anytime** - just click in the field and type`
    - **After:** `**Edit notes anytime** - click in the field and type`
 
@@ -276,7 +276,7 @@ mkdocs build --strict 2>&1 | grep "anchor"
 
 **Files Fixed:**
 
-1. `docs/workflows/making-changes.md` line 295
+1. `internal-docs/workflows/making-changes.md` line 295
    - **Before:** `There's no limit! You can move as many employees as you need.`
    - **After:** `You can make unlimited changes in one session.`
    - **Reason:** More professional, less exclamatory
@@ -310,25 +310,25 @@ mkdocs build --strict
 
 ### Export Button References
 ```bash
-grep -ri "export button" docs/*.md docs/workflows/*.md
+grep -ri "export button" internal-docs/*.md internal-docs/workflows/*.md
 ```
 **Result:** 0 instances in user-facing docs ✅
 
 ### Yellow Modification Indicators
 ```bash
-grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" docs/*.md docs/workflows/*.md
+grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" internal-docs/*.md internal-docs/workflows/*.md
 ```
 **Result:** 0 instances ✅
 
 ### Coming Soon References
 ```bash
-grep -ri "coming soon" docs/*.md docs/workflows/*.md
+grep -ri "coming soon" internal-docs/*.md internal-docs/workflows/*.md
 ```
 **Result:** 0 instances ✅
 
 ### Condescending Language
 ```bash
-grep -ri "\bsimply\b" docs/workflows/*.md
+grep -ri "\bsimply\b" internal-docs/workflows/*.md
 ```
 **Result:** 0 instances in workflow guides ✅
 
@@ -348,18 +348,18 @@ grep -ri "\bsimply\b" docs/workflows/*.md
 
 | File | Changes |
 |------|---------|
-| `docs/index.md` | 1 (coming soon) |
-| `docs/getting-started.md` | 3 (color, coming soon, condescending) |
-| `docs/quickstart.md` | 1 (color) |
-| `docs/working-with-employees.md` | 4 (color) |
-| `docs/understanding-grid.md` | 1 (color) |
-| `docs/donut-mode.md` | 3 (color, cross-ref) |
-| `docs/feature-comparison.md` | 1 (anchor link) |
-| `docs/tips.md` | 3 (cross-ref) |
-| `docs/troubleshooting.md` | 1 (export button) |
-| `docs/workflows/making-changes.md` | 5 (export, cross-ref, passive, condescending, vague) |
-| `docs/workflows/adding-notes.md` | 3 (export, coming soon, condescending) |
-| `docs/workflows/talent-calibration.md` | 5 (color, passive, links) |
+| `internal-docs/index.md` | 1 (coming soon) |
+| `internal-docs/getting-started.md` | 3 (color, coming soon, condescending) |
+| `internal-docs/quickstart.md` | 1 (color) |
+| `internal-docs/working-with-employees.md` | 4 (color) |
+| `internal-docs/understanding-grid.md` | 1 (color) |
+| `internal-docs/donut-mode.md` | 3 (color, cross-ref) |
+| `internal-docs/feature-comparison.md` | 1 (anchor link) |
+| `internal-docs/tips.md` | 3 (cross-ref) |
+| `internal-docs/troubleshooting.md` | 1 (export button) |
+| `internal-docs/workflows/making-changes.md` | 5 (export, cross-ref, passive, condescending, vague) |
+| `internal-docs/workflows/adding-notes.md` | 3 (export, coming soon, condescending) |
+| `internal-docs/workflows/talent-calibration.md` | 5 (color, passive, links) |
 | `mkdocs.yml` | 1 (navigation) |
 
 **Total Files Modified:** 13
@@ -420,13 +420,13 @@ To verify fixes:
 
 ```bash
 # Verify no export button references
-grep -ri "export button" docs/*.md docs/workflows/*.md
+grep -ri "export button" internal-docs/*.md internal-docs/workflows/*.md
 
 # Verify no yellow modification indicators
-grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" docs/*.md docs/workflows/*.md
+grep -ri "yellow.*moved\|yellow.*modified\|tile.*yellow" internal-docs/*.md internal-docs/workflows/*.md
 
 # Verify no coming soon references
-grep -ri "coming soon" docs/*.md docs/workflows/*.md
+grep -ri "coming soon" internal-docs/*.md internal-docs/workflows/*.md
 
 # Build docs and check for errors
 mkdocs build --strict 2>&1 | grep -E "ERROR|anchor.*not found"

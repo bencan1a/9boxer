@@ -62,7 +62,7 @@ The implementation is broken down into **15 agent-scoped tasks** across **6 phas
 
 ### Phase 6: Documentation (1 hour)
 - [ ] Task 6.1: Update USER_GUIDE.md with big movers feature
-- [ ] Task 6.2: Create developer documentation (docs/features/big-movers.md)
+- [ ] Task 6.2: Create developer documentation (internal-docs/features/big-movers.md)
 - [ ] Task 6.3: Update CHANGELOG.md
 
 ## Technical Approach

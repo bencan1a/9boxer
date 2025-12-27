@@ -166,14 +166,14 @@ All markdown-formatted links resolve to existing files or are appropriately mark
 
 ### Screenshot Directory Structure
 
-Expected location: `docs/images/screenshots/`
+Expected location: `internal-docs/images/screenshots/`
 
 **Current status:**
 - Directory needs to be created if it doesn't exist
 - Screenshots from other pages (quickstart.md, getting-started.md) will also be stored here
 - Suggested structure:
   ```
-  docs/images/screenshots/
+  internal-docs/images/screenshots/
   ├── hero-grid-sample.png (for index.md)
   ├── index-quick-win-preview.png (optional, for index.md)
   ├── quickstart-*.png (for quickstart.md)
@@ -181,7 +181,7 @@ Expected location: `docs/images/screenshots/`
   ```
 
 **Action needed:**
-- Ensure `docs/images/screenshots/` directory exists
+- Ensure `internal-docs/images/screenshots/` directory exists
 - Create `hero-grid-sample.png` per specifications in `index-screenshots.md`
 
 ---

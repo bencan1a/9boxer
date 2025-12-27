@@ -118,8 +118,8 @@ await expect(modified_indicator).toBeVisible()
 - [Screenshot Inventory](../../agent-tmp/screenshot-inventory.md)
 
 ### Best Practices:
-- [Playwright Best Practices Checklist](../../docs/testing/playwright-best-practices-checklist.md)
-- [Test Principles](../../docs/testing/test-principles.md)
+- [Playwright Best Practices Checklist](../../internal-docs/testing/playwright-best-practices-checklist.md)
+- [Test Principles](../../internal-docs/testing/test-principles.md)
 
 ### Related Code:
 - [Screenshot Generator Tool](../../tools/generate_docs_screenshots.py)

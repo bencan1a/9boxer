@@ -425,7 +425,7 @@ Based on test expectations and backend code review:
 ## Recommendations for Next Steps
 
 ### Immediate (Before Task 1.5 - Screenshot Capture)
-1. ✅ Create `docs/images/screenshots/` directory if it doesn't exist
+1. ✅ Create `internal-docs/images/screenshots/` directory if it doesn't exist
 2. ✅ Prepare sample data (use `frontend/playwright/fixtures/sample-employees.xlsx`)
 3. ✅ Review screenshot-specifications.md for annotation standards
 4. ✅ Install/configure screenshot tool (Snagit, Greenshot, or GIMP)

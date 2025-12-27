@@ -13,7 +13,7 @@
 **Issue:** One instance of "orange border" instead of "orange left border"
 
 **Location Found:**
-- `docs/working-with-employees.md` line 121
+- `internal-docs/working-with-employees.md` line 121
 
 **Fix Applied:**
 ```diff
@@ -52,8 +52,8 @@
 **Issue:** Some confusion between UI element name ("Apply button") and action ("export")
 
 **Locations Enhanced:**
-- `docs/exporting.md` - Added clarifying info box at top
-- `docs/getting-started.md` - Added clarifying tip box in Step 5
+- `internal-docs/exporting.md` - Added clarifying info box at top
+- `internal-docs/getting-started.md` - Added clarifying tip box in Step 5
 
 **Clarifications Added:**
 
@@ -133,13 +133,13 @@ All pre-launch fixes complete. Documentation is ready for deployment.
 
 ## Files Modified
 
-1. **docs/working-with-employees.md**
+1. **internal-docs/working-with-employees.md**
    - Line 121: "orange border" → "orange left border"
 
-2. **docs/exporting.md**
+2. **internal-docs/exporting.md**
    - Added info box clarifying Apply button = export action
 
-3. **docs/getting-started.md**
+3. **internal-docs/getting-started.md**
    - Added tip box explaining export process
 
 ---
@@ -155,8 +155,8 @@ mkdocs build --strict
 **Terminology Search:**
 ```bash
 # No instances found:
-grep -r "orange border" docs/  # (without "left")
-grep -r "File button" docs/  # (without "menu")
+grep -r "orange border" internal-docs/  # (without "left")
+grep -r "File button" internal-docs/  # (without "menu")
 ```
 ✅ Terminology consistent
 

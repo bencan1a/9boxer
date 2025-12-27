@@ -1,7 +1,7 @@
 # Screenshot Specifications: Making Your First Changes
 
 **Document Type:** Screenshot Requirements
-**Related Guide:** `docs/workflows/making-changes.md`
+**Related Guide:** `internal-docs/workflows/making-changes.md`
 **Task:** Phase 2, Task 2.2
 **Created:** 2024-12-20
 
@@ -233,7 +233,7 @@ Once screenshots are captured and annotated:
 - [ ] File names match specifications above
 - [ ] All annotations are clear and readable
 - [ ] Images optimized (<500KB each)
-- [ ] Files placed in `docs/images/screenshots/`
+- [ ] Files placed in `internal-docs/images/screenshots/`
 - [ ] Alt text written for each image
 - [ ] Markdown image syntax updated in `making-changes.md`
 - [ ] Images render correctly in MkDocs build

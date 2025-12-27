@@ -92,16 +92,16 @@ After automated captures, perform these manual tasks:
 4. Show columns: Employee ID, Worker, Performance, Potential, Modified in Session, 9Boxer Change Notes
 5. Zoom to 120%
 6. Screenshot showing 3-5 rows
-7. Crop and save to `docs/images/screenshots/workflow/calibration-export-results.png`
+7. Crop and save to `internal-docs/images/screenshots/workflow/calibration-export-results.png`
 
 **File 2:** `export-excel-notes-column.png`
 1. Same as above, but focus on 9Boxer Change Notes column
-2. Save to `docs/images/screenshots/workflow/export-excel-notes-column.png`
+2. Save to `internal-docs/images/screenshots/workflow/export-excel-notes-column.png`
 
 **File 3:** `quickstart-excel-sample.png` (Phase 1, if not done)
 1. Open `resources/Sample_People_List.xlsx`
 2. Show first 10 rows with 4 columns
-3. Save to `docs/images/screenshots/quickstart/quickstart-excel-sample.png`
+3. Save to `internal-docs/images/screenshots/quickstart/quickstart-excel-sample.png`
 
 ### 2. 3-Panel Drag Sequence Composite
 
@@ -167,7 +167,7 @@ After capturing and annotating each screenshot:
 
 ### File Checks
 - [ ] Filename matches specification exactly
-- [ ] Saved in correct directory (`docs/images/screenshots/workflow/` or `quickstart/`)
+- [ ] Saved in correct directory (`internal-docs/images/screenshots/workflow/` or `quickstart/`)
 - [ ] File size <500KB (optimize if needed)
 - [ ] PNG format with transparency if needed
 - [ ] Resolution 2400px width minimum
@@ -251,13 +251,13 @@ After capturing and annotating each screenshot:
 
 Add image references to markdown files:
 
-**docs/workflows/talent-calibration.md:**
+**internal-docs/workflows/talent-calibration.md:**
 - Add 6-7 calibration screenshot references
 
-**docs/workflows/making-changes.md:**
+**internal-docs/workflows/making-changes.md:**
 - Add 5 making-changes screenshot references
 
-**docs/workflows/adding-notes.md:**
+**internal-docs/workflows/adding-notes.md:**
 - Add 3-4 adding-notes screenshot references
 
 ### 2. Build and Test

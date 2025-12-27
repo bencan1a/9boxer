@@ -7,13 +7,13 @@
 
 ## Overview
 
-Identified and migrated reusable documentation design principles from the project folder (`agent-projects/documentation-redesign/`) to the production documentation folder (`docs/contributing/`) for easy reference by documentation contributors and AI agents.
+Identified and migrated reusable documentation design principles from the project folder (`agent-projects/documentation-redesign/`) to the production documentation folder (`internal-docs/contributing/`) for easy reference by documentation contributors and AI agents.
 
 ---
 
 ## Files Migrated
 
-### From `agent-projects/documentation-redesign/` to `docs/contributing/`
+### From `agent-projects/documentation-redesign/` to `internal-docs/contributing/`
 
 1. **documentation-standards-and-assessment.md** → **documentation-writing-guide.md** (40KB)
    - Comprehensive documentation standards for best-in-class user guides
@@ -38,7 +38,7 @@ Identified and migrated reusable documentation design principles from the projec
 
 ### New File Created
 
-4. **docs/contributing/README.md** (4KB)
+4. **internal-docs/contributing/README.md** (4KB)
    - Overview of documentation contributing guidelines
    - Quick summary of key principles
    - Guide to using the three reference documents
@@ -51,7 +51,7 @@ Identified and migrated reusable documentation design principles from the projec
 
 ### 1. Created Documentation Contributing Folder ✅
 
-**Location:** `docs/contributing/`
+**Location:** `internal-docs/contributing/`
 
 **Purpose:** Centralize all documentation writing standards and guidelines
 
@@ -72,7 +72,7 @@ Identified and migrated reusable documentation design principles from the projec
 **Guidance added:**
 ```markdown
 **When writing or revising user documentation:**
-- Follow the comprehensive writing standards in `docs/contributing/`
+- Follow the comprehensive writing standards in `internal-docs/contributing/`
 - Read **Voice & Tone Guide** for writing style (second person, active voice, contractions)
 - Follow **Documentation Writing Guide** for structure patterns and best practices
 - Use **Screenshot Guide** for visual content standards
@@ -86,7 +86,7 @@ Identified and migrated reusable documentation design principles from the projec
 
 **Added:**
 ```markdown
-- **`docs/contributing/`** - User documentation writing standards
+- **`internal-docs/contributing/`** - User documentation writing standards
   - `README.md` - Overview of documentation contributing guidelines
   - `voice-and-tone-guide.md` - Writing style quick reference (DO's and DON'Ts)
   - `documentation-writing-guide.md` - Comprehensive documentation standards and patterns
@@ -137,7 +137,7 @@ mkdocs build --strict
 - screenshot-specifications.md (historical reference)
 - tone-revision-quick-reference.md (historical reference)
 
-**New canonical location:** `docs/contributing/` (production reference)
+**New canonical location:** `internal-docs/contributing/` (production reference)
 
 ---
 
@@ -151,7 +151,7 @@ mkdocs build --strict
 - Had to infer standards from existing content
 
 **After:**
-- Clear reference in CLAUDE.md pointing to `docs/contributing/`
+- Clear reference in CLAUDE.md pointing to `internal-docs/contributing/`
 - Comprehensive writing standards in one location
 - Quick lookup guides for common patterns
 - Explicit quality metrics to target
@@ -214,10 +214,10 @@ mkdocs build --strict
 
 ## Files Modified
 
-1. **Created:** `docs/contributing/README.md`
-2. **Created:** `docs/contributing/voice-and-tone-guide.md`
-3. **Created:** `docs/contributing/documentation-writing-guide.md`
-4. **Created:** `docs/contributing/screenshot-guide.md`
+1. **Created:** `internal-docs/contributing/README.md`
+2. **Created:** `internal-docs/contributing/voice-and-tone-guide.md`
+3. **Created:** `internal-docs/contributing/documentation-writing-guide.md`
+4. **Created:** `internal-docs/contributing/screenshot-guide.md`
 5. **Modified:** `CLAUDE.md` (added documentation writing guidance)
 6. **Modified:** `mkdocs.yml` (added Contributing navigation section)
 
@@ -228,7 +228,7 @@ mkdocs build --strict
 ### For Future Documentation Work
 
 **When writing new documentation:**
-1. Read `docs/contributing/README.md` for overview
+1. Read `internal-docs/contributing/README.md` for overview
 2. Reference `voice-and-tone-guide.md` while writing
 3. Follow structure patterns in `documentation-writing-guide.md`
 4. Use `screenshot-guide.md` for visual content
@@ -242,7 +242,7 @@ mkdocs build --strict
 ### For AI Agents
 
 **CLAUDE.md now instructs agents to:**
-- Follow comprehensive writing standards in `docs/contributing/`
+- Follow comprehensive writing standards in `internal-docs/contributing/`
 - Read Voice & Tone Guide for writing style
 - Follow Documentation Writing Guide for structure patterns
 - Use Screenshot Guide for visual content standards
@@ -254,7 +254,7 @@ mkdocs build --strict
 
 ## Success Criteria
 
-- ✅ Documentation principles accessible in `docs/contributing/`
+- ✅ Documentation principles accessible in `internal-docs/contributing/`
 - ✅ CLAUDE.md updated with clear guidance
 - ✅ mkdocs.yml navigation includes Contributing section
 - ✅ MkDocs builds successfully

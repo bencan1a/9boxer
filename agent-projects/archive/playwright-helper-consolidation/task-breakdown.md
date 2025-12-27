@@ -129,7 +129,7 @@ Run tests to validate: npm run test:e2e:pw toolbar-interactions.spec.ts
 **Prerequisites:** Tasks 2, 3, 4 complete
 **Deliverables:**
 - Full E2E test suite passes
-- Updated `docs/testing/quick-reference.md` with helper usage examples
+- Updated `internal-docs/testing/quick-reference.md` with helper usage examples
 - Validation report documenting improvements
 
 **Success Criteria:**
@@ -144,7 +144,7 @@ Validate the helper consolidation is complete and working.
 
 1. Run full E2E test suite: npm run test:e2e:pw
 2. Verify all tests pass
-3. Update docs/testing/quick-reference.md with helper examples
+3. Update internal-docs/testing/quick-reference.md with helper examples
 4. Create validation report with metrics:
    - Line count reduction
    - Helper coverage
@@ -327,11 +327,11 @@ Validate TypeScript screenshot generator matches Python output.
 
 1. Generate baseline with Python:
    python tools/generate_docs_screenshots.py
-   mv resources/user-guide/docs/images/screenshots screenshots-python
+   mv resources/user-guide/internal-docs/images/screenshots screenshots-python
 
 2. Generate with TypeScript:
    npm run screenshots:generate
-   mv resources/user-guide/docs/images/screenshots screenshots-typescript
+   mv resources/user-guide/internal-docs/images/screenshots screenshots-typescript
 
 3. Compare:
    - File sizes

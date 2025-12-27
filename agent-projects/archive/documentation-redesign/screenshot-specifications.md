@@ -70,7 +70,7 @@ troubleshooting-upload-error-message-01.png
 ### Storage Location
 
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 ├── quickstart/
 │   ├── quickstart-upload-button-highlighted-01.png
 │   ├── quickstart-grid-populated-02.png
@@ -625,7 +625,7 @@ Screenshot Update Log
 Save editable source files separately:
 
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 └── _source/
     ├── quickstart-upload-button-01.snag (Snagit project)
     ├── workflow-drag-drop-sequence-01.xcf (GIMP project)

@@ -98,10 +98,10 @@
 
 ## Documentation Deliverables
 
-### Production Files (in `docs/`)
-- `docs/index.md` - Home page (REVISED)
-- `docs/quickstart.md` - 2-minute quickstart (NEW)
-- `docs/getting-started.md` - 10-minute guide (REVISED)
+### Production Files (in `internal-docs/`)
+- `internal-docs/index.md` - Home page (REVISED)
+- `internal-docs/quickstart.md` - 2-minute quickstart (NEW)
+- `internal-docs/getting-started.md` - 10-minute guide (REVISED)
 - `mkdocs.yml` - Navigation structure (UPDATED)
 
 ### Supporting Files

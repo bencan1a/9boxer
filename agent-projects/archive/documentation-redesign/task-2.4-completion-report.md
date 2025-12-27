@@ -20,7 +20,7 @@ All pages now help users understand **when** to use features, not just **how** t
 
 ## Pages Enhanced
 
-### ✅ 1. docs/filters.md
+### ✅ 1. internal-docs/filters.md
 
 **Use Cases Added:**
 - During calibration meetings - Focus on specific departments
@@ -40,7 +40,7 @@ Sarah filtering 47 employees down to her 12-person team for calibration meeting 
 
 ---
 
-### ✅ 2. docs/donut-mode.md
+### ✅ 2. internal-docs/donut-mode.md
 
 **Use Cases Added:**
 - Before calibration meetings - Validate center box placements
@@ -60,7 +60,7 @@ David discovering 8 High Potentials and 5 Solid Performers hidden in his 45-pers
 
 ---
 
-### ✅ 3. docs/statistics.md
+### ✅ 3. internal-docs/statistics.md
 
 **Use Cases Added:**
 - Checking distribution health - Pre-calibration validation
@@ -80,7 +80,7 @@ Rachel discovering 35% High Performance ratings (target 20%) and Manager Tom rat
 
 ---
 
-### ✅ 4. docs/tracking-changes.md
+### ✅ 4. internal-docs/tracking-changes.md
 
 **Use Cases Added:**
 - During calibration meetings - Real-time tracking
@@ -101,7 +101,7 @@ Kim tracking 23 employee moves during a 2-hour calibration with detailed notes f
 
 ---
 
-### ✅ 5. docs/working-with-employees.md
+### ✅ 5. internal-docs/working-with-employees.md
 
 **Use Cases Added:**
 - Reviewing performance details - Pre-decision context
@@ -122,7 +122,7 @@ James reviewing Maria Santos's details during calibration to validate her High P
 
 ---
 
-### ✅ 6. docs/exporting.md
+### ✅ 6. internal-docs/exporting.md
 
 **Use Cases Added:**
 - Saving your work - No auto-save reminder
@@ -143,7 +143,7 @@ Amanda exporting post-calibration results with 34 changes to share with HR and m
 
 ---
 
-### ✅ 7. docs/settings.md
+### ✅ 7. internal-docs/settings.md
 
 **Use Cases Added:**
 - Adjusting for your environment - Mode switching
@@ -163,7 +163,7 @@ Marcus switching from dark mode to light mode for screen sharing during calibrat
 
 ---
 
-### ✅ 8. docs/understanding-grid.md
+### ✅ 8. internal-docs/understanding-grid.md
 
 **Use Cases Added:**
 - First-time users - Learning the methodology
@@ -371,14 +371,14 @@ Users can now:
 All changes tracked in git:
 
 ```
-docs/filters.md                     - +211 words
-docs/donut-mode.md                  - +223 words
-docs/statistics.md                  - +196 words
-docs/tracking-changes.md            - +207 words
-docs/working-with-employees.md      - +193 words
-docs/exporting.md                   - +188 words
-docs/settings.md                    - +172 words
-docs/understanding-grid.md          - +204 words
+internal-docs/filters.md                     - +211 words
+internal-docs/donut-mode.md                  - +223 words
+internal-docs/statistics.md                  - +196 words
+internal-docs/tracking-changes.md            - +207 words
+internal-docs/working-with-employees.md      - +193 words
+internal-docs/exporting.md                   - +188 words
+internal-docs/settings.md                    - +172 words
+internal-docs/understanding-grid.md          - +204 words
 ```
 
 ---

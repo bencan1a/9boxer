@@ -117,8 +117,8 @@
 
 - [ ] **Reviewed design system docs** - Followed established patterns
   - Read `DESIGN_SYSTEM.md` before implementation
-  - Checked `docs/design-system/component-guidelines.md`
-  - Followed `docs/design-system/design-principles.md`
+  - Checked `internal-docs/design-system/component-guidelines.md`
+  - Followed `internal-docs/design-system/design-principles.md`
 
 - [ ] **Followed UI zones** - Component placed in correct UI zone
   - Top Toolbar → Global actions only

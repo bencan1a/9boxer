@@ -3,9 +3,9 @@
 This document provides comprehensive guidelines for creating and modifying UI components in 9Boxer. Following these standards ensures visual consistency, accessibility, and maintainability.
 
 > **Related Documentation:**
-> - [Design Tokens](docs/design-system/design-tokens.md) - All design constants
+> - [Design Tokens](internal-docs/design-system/design-tokens.md) - All design constants
 > - [CLAUDE.md](CLAUDE.md) - General development guidelines
-> - [Component Guidelines](docs/design-system/component-guidelines.md) - Detailed component patterns
+> - [Component Guidelines](internal-docs/design-system/component-guidelines.md) - Detailed component patterns
 
 ---
 
@@ -41,9 +41,9 @@ This document provides comprehensive guidelines for creating and modifying UI co
    - Settings → User preferences, configuration
 
 4. ✅ **Read design guidelines**
-   - [Design Principles](docs/design-system/design-principles.md)
-   - [Component Guidelines](docs/design-system/component-guidelines.md)
-   - [Accessibility Standards](docs/design-system/accessibility-standards.md)
+   - [Design Principles](internal-docs/design-system/design-principles.md)
+   - [Component Guidelines](internal-docs/design-system/component-guidelines.md)
+   - [Accessibility Standards](internal-docs/design-system/accessibility-standards.md)
 
 ---
 
@@ -783,12 +783,12 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 
 ## Related Documentation
 
-- [Design Tokens](docs/design-system/design-tokens.md) - All design constants
-- [Design Principles](docs/design-system/design-principles.md) - Core UX philosophy
-- [Component Guidelines](docs/design-system/component-guidelines.md) - Detailed component patterns
-- [Accessibility Standards](docs/design-system/accessibility-standards.md) - WCAG compliance
+- [Design Tokens](internal-docs/design-system/design-tokens.md) - All design constants
+- [Design Principles](internal-docs/design-system/design-principles.md) - Core UX philosophy
+- [Component Guidelines](internal-docs/design-system/component-guidelines.md) - Detailed component patterns
+- [Accessibility Standards](internal-docs/design-system/accessibility-standards.md) - WCAG compliance
 - [CLAUDE.md](CLAUDE.md) - General development guidelines
-- [Testing Guide](docs/testing/quick-reference.md) - Testing patterns
+- [Testing Guide](internal-docs/testing/quick-reference.md) - Testing patterns
 
 ---
 

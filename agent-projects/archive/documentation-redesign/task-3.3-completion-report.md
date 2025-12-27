@@ -59,7 +59,7 @@ Added 15 new screenshot capture methods to `tools/generate_docs_screenshots.py`:
 Created subdirectories for organized screenshot storage:
 
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 ├── filters/              ← NEW (Task 3.3)
 ├── statistics/           ← NEW (Task 3.3)
 ├── donut-mode/          ← NEW (Task 3.3)
@@ -77,8 +77,8 @@ docs/images/screenshots/
 
 | File | Size | Path | Notes |
 |------|------|------|-------|
-| `filters-before-state.png` | 59 KB | `docs/images/screenshots/filters/` | Base for before/after comparison |
-| `donut-mode-grid-normal.png` | 55 KB | `docs/images/screenshots/donut-mode/` | Normal grid (base for toggle comparison) |
+| `filters-before-state.png` | 59 KB | `internal-docs/images/screenshots/filters/` | Base for before/after comparison |
+| `donut-mode-grid-normal.png` | 55 KB | `internal-docs/images/screenshots/donut-mode/` | Normal grid (base for toggle comparison) |
 
 **File size compliance:** ✅ Both screenshots are well under 500KB limit
 
@@ -163,7 +163,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Red box around orange dot on Filters button
    - Text label: "Active filter chips show current filters"
 
-**Save as:** `docs/images/screenshots/filters/filters-active-chips.png`
+**Save as:** `internal-docs/images/screenshots/filters/filters-active-chips.png`
 
 ---
 
@@ -179,7 +179,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Text labels: "Performance", "Potential", "Organizational Chain", etc.
    - Red box around "Clear All" button at bottom
 
-**Save as:** `docs/images/screenshots/filters/filters-panel-expanded.png`
+**Save as:** `internal-docs/images/screenshots/filters/filters-panel-expanded.png`
 
 ---
 
@@ -196,7 +196,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Arrow pointing from button to active checkboxes
    - Text label: "Click to remove all filters at once"
 
-**Save as:** `docs/images/screenshots/filters/filters-clear-all-button.png`
+**Save as:** `internal-docs/images/screenshots/filters/filters-clear-all-button.png`
 
 ---
 
@@ -216,7 +216,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Label "After: 23 employees (High Performance)" on right panel
    - Arrow showing transformation
 
-**Save as:** `docs/images/screenshots/filters/filters-before-after-comparison.png`
+**Save as:** `internal-docs/images/screenshots/filters/filters-before-after-comparison.png`
 
 ---
 
@@ -237,7 +237,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Red boxes around key metrics (Stars %, Core Talent %)
    - Text label: "Distribution shows 15% Stars (ideal range)"
 
-**Save as:** `docs/images/screenshots/statistics/statistics-panel-distribution.png`
+**Save as:** `internal-docs/images/screenshots/statistics/statistics-panel-distribution.png`
 
 ---
 
@@ -253,7 +253,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Red on boxes significantly off ideal
    - Text labels: "Ideal", "Actual"
 
-**Save as:** `docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png`
+**Save as:** `internal-docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png`
 
 ---
 
@@ -268,7 +268,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Add text labels: "Too many", "Too few", "Ideal range"
 3. Show what trends to watch for calibration
 
-**Save as:** `docs/images/screenshots/statistics/statistics-trend-indicators.png`
+**Save as:** `internal-docs/images/screenshots/statistics/statistics-trend-indicators.png`
 
 ---
 
@@ -287,7 +287,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Arrows pointing to ghostly employees
    - Text label: "Center box employees shown ghostly - where would they go?"
 
-**Save as:** `docs/images/screenshots/donut-mode/donut-mode-active-layout.png`
+**Save as:** `internal-docs/images/screenshots/donut-mode/donut-mode-active-layout.png`
 
 ---
 
@@ -307,7 +307,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Red boxes around toggle button in both states
    - Arrow showing center box differences
 
-**Save as:** `docs/images/screenshots/donut-mode/donut-mode-toggle-comparison.png`
+**Save as:** `internal-docs/images/screenshots/donut-mode/donut-mode-toggle-comparison.png`
 
 ---
 
@@ -329,7 +329,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Blue numbered callouts (1, 2, 3) on columns: Name, Movement, Notes
    - Text label: "All movements tracked automatically"
 
-**Save as:** `docs/images/screenshots/tracking-changes/changes-panel-entries.png`
+**Save as:** `internal-docs/images/screenshots/tracking-changes/changes-panel-entries.png`
 
 ---
 
@@ -346,7 +346,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Arrows pointing to rating changes over time
    - Text label: "Historical performance shows trends"
 
-**Save as:** `docs/images/screenshots/tracking-changes/timeline-employee-history.png`
+**Save as:** `internal-docs/images/screenshots/tracking-changes/timeline-employee-history.png`
 
 ---
 
@@ -367,7 +367,7 @@ The following screenshots require manual capture. Use the running app and annota
      3. Performance timeline (bottom)
    - Text labels describing each section
 
-**Save as:** `docs/images/screenshots/working-with-employees/employee-details-panel-expanded.png`
+**Save as:** `internal-docs/images/screenshots/working-with-employees/employee-details-panel-expanded.png`
 
 ---
 
@@ -379,7 +379,7 @@ The following screenshots require manual capture. Use the running app and annota
 2. If found: Capture menu showing bulk action options
 3. If NOT found: **Skip this screenshot** or create a mockup showing potential future feature
 
-**Save as:** `docs/images/screenshots/working-with-employees/bulk-actions-menu.png`
+**Save as:** `internal-docs/images/screenshots/working-with-employees/bulk-actions-menu.png`
 **Note:** Mark as "Future Feature" in documentation if doesn't exist
 
 ---
@@ -400,7 +400,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Arrow pointing to badge
    - Text label: "Badge shows number of pending changes"
 
-**Save as:** `docs/images/screenshots/exporting/file-menu-apply-changes.png`
+**Save as:** `internal-docs/images/screenshots/exporting/file-menu-apply-changes.png`
 
 ---
 
@@ -423,7 +423,7 @@ The following screenshots require manual capture. Use the running app and annota
    - Red boxes around new column headers
    - Text labels: "Original columns" | "New columns added by 9Boxer"
 
-**Save as:** `docs/images/screenshots/exporting/excel-file-new-columns.png`
+**Save as:** `internal-docs/images/screenshots/exporting/excel-file-new-columns.png`
 
 ---
 
@@ -472,7 +472,7 @@ After capturing all screenshots, optimize file sizes:
 magick mogrify -strip -quality 85 screenshot.png
 
 # Optimize entire directory
-cd docs/images/screenshots/filters
+cd internal-docs/images/screenshots/filters
 magick mogrify -strip -quality 85 *.png
 ```
 
@@ -482,7 +482,7 @@ magick mogrify -strip -quality 85 *.png
 from PIL import Image
 import os
 
-for root, dirs, files in os.walk("docs/images/screenshots"):
+for root, dirs, files in os.walk("internal-docs/images/screenshots"):
     for file in files:
         if file.endswith(".png"):
             path = os.path.join(root, file)
@@ -538,13 +538,13 @@ Navigate to each feature page and verify screenshots appear:
 | File | Path | Purpose |
 |------|------|---------|
 | `generate_docs_screenshots.py` | `tools/` | Extended with 15 new methods |
-| `filters-before-state.png` | `docs/images/screenshots/filters/` | Baseline for before/after |
-| `donut-mode-grid-normal.png` | `docs/images/screenshots/donut-mode/` | Baseline for toggle comparison |
+| `filters-before-state.png` | `internal-docs/images/screenshots/filters/` | Baseline for before/after |
+| `donut-mode-grid-normal.png` | `internal-docs/images/screenshots/donut-mode/` | Baseline for toggle comparison |
 
 ### Directories Created
 
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 ├── filters/              (ready for 4 screenshots)
 ├── statistics/           (ready for 3 screenshots)
 ├── donut-mode/          (ready for 2 screenshots)

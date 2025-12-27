@@ -41,14 +41,14 @@ Successfully extended the screenshot generation tool (`tools/generate_docs_scree
 
 | Filename | Size | Location | Status |
 |----------|------|----------|--------|
-| grid-normal.png | 68.5 KB | `docs/images/screenshots/` | ✅ Complete |
-| quickstart-upload-dialog.png | 113.9 KB | `docs/images/screenshots/quickstart/` | ✅ Captured |
-| quickstart-grid-populated.png | 70.2 KB | `docs/images/screenshots/quickstart/` | ✅ Captured |
-| quickstart-success-annotated.png | 113.9 KB | `docs/images/screenshots/quickstart/` | ✅ Captured |
-| workflow-grid-axes-labeled.png | 70.2 KB | `docs/images/screenshots/workflow/` | ✅ Captured |
-| workflow-drag-drop-sequence-2.png | 70.2 KB | `docs/images/screenshots/workflow/` | ✅ Captured |
-| hero-grid-sample.png | 70.2 KB | `docs/images/screenshots/index/` | ✅ Captured |
-| index-quick-win-preview.png | 113.9 KB | `docs/images/screenshots/index/` | ✅ Captured |
+| grid-normal.png | 68.5 KB | `internal-docs/images/screenshots/` | ✅ Complete |
+| quickstart-upload-dialog.png | 113.9 KB | `internal-docs/images/screenshots/quickstart/` | ✅ Captured |
+| quickstart-grid-populated.png | 70.2 KB | `internal-docs/images/screenshots/quickstart/` | ✅ Captured |
+| quickstart-success-annotated.png | 113.9 KB | `internal-docs/images/screenshots/quickstart/` | ✅ Captured |
+| workflow-grid-axes-labeled.png | 70.2 KB | `internal-docs/images/screenshots/workflow/` | ✅ Captured |
+| workflow-drag-drop-sequence-2.png | 70.2 KB | `internal-docs/images/screenshots/workflow/` | ✅ Captured |
+| hero-grid-sample.png | 70.2 KB | `internal-docs/images/screenshots/index/` | ✅ Captured |
+| index-quick-win-preview.png | 113.9 KB | `internal-docs/images/screenshots/index/` | ✅ Captured |
 
 **File Size Analysis:**
 - Average size: 84.5 KB
@@ -100,7 +100,7 @@ Successfully extended the screenshot generation tool (`tools/generate_docs_scree
 ## Folder Structure Created
 
 ```
-docs/images/screenshots/
+internal-docs/images/screenshots/
 ├── quickstart/
 │   ├── quickstart-grid-populated.png (✅ 70.2 KB)
 │   ├── quickstart-success-annotated.png (✅ 113.9 KB)
@@ -267,14 +267,14 @@ docs/images/screenshots/
 - ✅ `tools/generate_docs_screenshots.py` - Extended and improved
 
 ### Screenshots (8 files)
-- ✅ `docs/images/screenshots/grid-normal.png`
-- ✅ `docs/images/screenshots/quickstart/quickstart-upload-dialog.png`
-- ✅ `docs/images/screenshots/quickstart/quickstart-grid-populated.png`
-- ✅ `docs/images/screenshots/quickstart/quickstart-success-annotated.png`
-- ✅ `docs/images/screenshots/workflow/workflow-grid-axes-labeled.png`
-- ✅ `docs/images/screenshots/workflow/workflow-drag-drop-sequence-2.png`
-- ✅ `docs/images/screenshots/index/hero-grid-sample.png`
-- ✅ `docs/images/screenshots/index/index-quick-win-preview.png`
+- ✅ `internal-docs/images/screenshots/grid-normal.png`
+- ✅ `internal-docs/images/screenshots/quickstart/quickstart-upload-dialog.png`
+- ✅ `internal-docs/images/screenshots/quickstart/quickstart-grid-populated.png`
+- ✅ `internal-docs/images/screenshots/quickstart/quickstart-success-annotated.png`
+- ✅ `internal-docs/images/screenshots/workflow/workflow-grid-axes-labeled.png`
+- ✅ `internal-docs/images/screenshots/workflow/workflow-drag-drop-sequence-2.png`
+- ✅ `internal-docs/images/screenshots/index/hero-grid-sample.png`
+- ✅ `internal-docs/images/screenshots/index/index-quick-win-preview.png`
 
 ### Documentation (3 files)
 - ✅ `agent-projects/documentation-redesign/annotation-requirements.md`

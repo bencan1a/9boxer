@@ -274,7 +274,7 @@ workflows/making-changes.md → workflows/adding-notes.md → exporting.md
 
 ### Task 2.1: Talent Calibration Workflow
 
-**File:** `docs/workflows/talent-calibration.md`
+**File:** `internal-docs/workflows/talent-calibration.md`
 **Length:** 588 lines
 **Status:** ✅ EXCELLENT
 
@@ -345,7 +345,7 @@ Total estimated time: 20-30 minutes prep matches reality ✅
 
 ### Task 2.2: Making Changes Workflow
 
-**File:** `docs/workflows/making-changes.md`
+**File:** `internal-docs/workflows/making-changes.md`
 **Length:** 339 lines
 **Status:** ✅ EXCELLENT
 
@@ -414,7 +414,7 @@ Quick Reference ✅
 
 ### Task 2.3: Adding Notes Workflow
 
-**File:** `docs/workflows/adding-notes.md`
+**File:** `internal-docs/workflows/adding-notes.md`
 **Length:** 350 lines
 **Status:** ✅ EXCELLENT
 
@@ -560,9 +560,9 @@ Quick Reference ✅
 ### Task 2.5: Decision Trees & Comparison Tables
 
 **Files Created:**
-1. `docs/workflows/workflow-decision-tree.md` (242 lines)
-2. `docs/feature-comparison.md` (395 lines)
-3. `docs/common-decisions.md` (501 lines)
+1. `internal-docs/workflows/workflow-decision-tree.md` (242 lines)
+2. `internal-docs/feature-comparison.md` (395 lines)
+3. `internal-docs/common-decisions.md` (501 lines)
 
 **Status:** ✅ EXCELLENT - ALL 3 DOCUMENTS CREATED
 

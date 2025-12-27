@@ -462,7 +462,7 @@ HEADLESS=false npm run screenshots:generate
   - `workflows/` - Screenshot generation functions by feature area
   - `MANUAL_SCREENSHOTS.md` - Documentation for 8 manual screenshots
 - **Reuses E2E helpers**: Same helper functions from `frontend/playwright/helpers/`
-- **Output**: `resources/user-guide/docs/images/screenshots/`
+- **Output**: `resources/user-guide/internal-docs/images/screenshots/`
 
 **Adding New Screenshots:**
 1. Add entry to `config.ts` with metadata (workflow, function, path, description)
@@ -536,8 +536,8 @@ The backend uses the standard Python `src/` layout:
 **Key Design System Files:**
 - **[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)** - Complete UI guidelines (MUST READ for UI work)
 - **[frontend/src/theme/tokens.ts](frontend/src/theme/tokens.ts)** - All design constants
-- **[docs/design-system/design-tokens.md](docs/design-system/design-tokens.md)** - Token reference
-- **[docs/design-system/](docs/design-system/)** - Detailed design documentation
+- **[internal-docs/design-system/design-tokens.md](internal-docs/design-system/design-tokens.md)** - Token reference
+- **[internal-docs/design-system/](internal-docs/design-system/)** - Detailed design documentation
 
 **Critical Rules for UI Development:**
 - ❌ **NEVER hardcode colors** (use `theme.palette.*` or `theme.tokens.colors.*`)
@@ -578,7 +578,7 @@ const theme = useTheme();
 **Design Governance & Quality Assurance:**
 - **Linting Rules:** `frontend/.eslintrc.cjs` enforces accessibility (WCAG 2.1 AA) and design token usage
   - Run `npm run lint` to check for violations
-  - See [docs/design-system/linting-rules.md](docs/design-system/linting-rules.md) for complete rule documentation
+  - See [internal-docs/design-system/linting-rules.md](internal-docs/design-system/linting-rules.md) for complete rule documentation
 - **Visual Regression Testing:** Storybook + Playwright visual tests catch unintended UI changes
   - All components have Storybook stories at `localhost:6006`
   - Visual tests automatically compare screenshots against baselines
@@ -596,12 +596,12 @@ The project has strict conventions for where files belong (see [AGENT_DOCS_CONTR
 |--------|---------|-------------|-----|
 | `agent-tmp/` | Scratch/debug/intermediates | Ephemeral (7 days) | ❌ No |
 | `agent-projects/<project>/` | Ephemeral plans for refactors/features | Short-lived (21 days active) | ✅ Yes |
-| `docs/` | Permanent documentation | Persistent | ✅ Yes |
-| `docs/_generated/` | Auto-generated docs | Auto-updated | ✅ Yes |
+| `internal-docs/` | Permanent documentation | Persistent | ✅ Yes |
+| `internal-docs/_generated/` | Auto-generated docs | Auto-updated | ✅ Yes |
 
 **Rules:**
 - **DO NOT** create analysis reports or planning documents in the project root
-- **DO NOT** manually edit files in `docs/_generated/` (auto-generated)
+- **DO NOT** manually edit files in `internal-docs/_generated/` (auto-generated)
 - **DO** use `agent-tmp/` for all temporary work
 - **DO** create structured plans in `agent-projects/<project-name>/` with required metadata
 
@@ -646,7 +646,7 @@ All code must have type annotations:
 7. Avoid over-mocking (don't mock business logic)
 8. Aim for >80% coverage
 
-See `.github/agents/test.md` for comprehensive testing guidance and `docs/testing/` for detailed test suite documentation.
+See `.github/agents/test.md` for comprehensive testing guidance and `internal-docs/testing/` for detailed test suite documentation.
 
 ### Frontend Testing
 
@@ -761,13 +761,13 @@ test.describe('Employee Upload Flow', () => {
 - Keep test data realistic and representative
 
 **Comprehensive Testing Documentation:**
-- **`docs/testing/`** - Complete testing guides and templates
+- **`internal-docs/testing/`** - Complete testing guides and templates
   - `test-principles.md` - Core testing philosophy and best practices
   - `quick-reference.md` - Fast lookup for common patterns and commands
   - `testing-checklist.md` - Pre-commit testing checklist
   - `templates/` - Test templates for backend, component, and E2E tests
 
-See `docs/testing/` for comprehensive testing principles and best practices.
+See `internal-docs/testing/` for comprehensive testing principles and best practices.
 
 ### CI/CD Pipeline
 GitHub Actions workflows in `.github/workflows/`:
@@ -795,7 +795,7 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 
 ### What Gets Generated
 The `tools/build_context.py` script automatically:
-1. **Generates API docs** from Python docstrings using pdoc3 → `docs/_generated/api/`
+1. **Generates API docs** from Python docstrings using pdoc3 → `internal-docs/_generated/api/`
 2. **Collects active plans** from `agent-projects/` (status=active, <21 days old)
 3. **Builds CONTEXT.md** - Comprehensive project context for AI agents
 4. **Updates SUMMARY.md** - Quick index of all documentation components
@@ -805,21 +805,21 @@ The `tools/build_context.py` script automatically:
 ### Key Documentation Files
 
 **For AI Agents to Read:**
-- **`docs/CONTEXT.md`** - Main entry point; comprehensive project context (~150KB)
-- **`docs/facts.json`** - Stable, hand-maintained project truths (highest authority)
-- **`docs/SUMMARY.md`** - Quick index of all documentation
-- **`docs/_generated/plans_index.md`** - Summary of active plans
-- **`docs/_generated/api/`** - Auto-generated API documentation
+- **`internal-docs/CONTEXT.md`** - Main entry point; comprehensive project context (~150KB)
+- **`internal-docs/facts.json`** - Stable, hand-maintained project truths (highest authority)
+- **`internal-docs/SUMMARY.md`** - Quick index of all documentation
+- **`internal-docs/_generated/plans_index.md`** - Summary of active plans
+- **`internal-docs/_generated/api/`** - Auto-generated API documentation
 
 **Trust Hierarchy** (when information conflicts):
-1. `docs/facts.json` (highest authority)
-2. Permanent content in `docs/`
+1. `internal-docs/facts.json` (highest authority)
+2. Permanent content in `internal-docs/`
 3. Active plans summaries (hints only)
 
 ### Working with Documentation
 
 **When writing permanent documentation:**
-- Create/update files in `docs/` directory
+- Create/update files in `internal-docs/` directory
 - Use clear, descriptive filenames
 - Update existing docs rather than duplicating
 
@@ -868,10 +868,10 @@ The `tools/build_context.py` script automatically:
   - Examples: Bug investigations, performance profiling, code cleanup
 
 **When writing or revising user documentation:**
-- Follow the comprehensive writing standards in `docs/contributing/`
-- Read **[Voice & Tone Guide](docs/contributing/voice-and-tone-guide.md)** for writing style (second person, active voice, contractions)
-- Follow **[Documentation Writing Guide](docs/contributing/documentation-writing-guide.md)** for structure patterns and best practices
-- Use **[Screenshot Guide](docs/contributing/screenshot-guide.md)** for visual content standards
+- Follow the comprehensive writing standards in `internal-docs/contributing/`
+- Read **[Voice & Tone Guide](internal-docs/contributing/voice-and-tone-guide.md)** for writing style (second person, active voice, contractions)
+- Follow **[Documentation Writing Guide](internal-docs/contributing/documentation-writing-guide.md)** for structure patterns and best practices
+- Use **[Screenshot Guide](internal-docs/contributing/screenshot-guide.md)** for visual content standards
 - Test all workflows in the actual application before documenting
 - Validate accessibility (WCAG 2.1 Level AA): alt text, heading hierarchy, descriptive link text
 - Target readability: Flesch Reading Ease >60 (conversational)
@@ -884,7 +884,7 @@ Environment variables for `tools/build_context.py`:
 - `CLEAN_TMP_AGE_DAYS` - Max age for agent-tmp files (default: 7)
 
 ### Automation
-- **Trigger**: Push to main affecting `src/`, `docs/`, `agent-plans/`, or `tools/build_context.py`
+- **Trigger**: Push to main affecting `src/`, `internal-docs/`, `agent-plans/`, or `tools/build_context.py`
 - **Schedule**: Nightly at 2 AM UTC
 - **Action**: Auto-generates docs and commits changes via GitHub Actions
 
@@ -912,16 +912,16 @@ For unavoidable warnings:
 - **`AGENT_DOCS_CONTRACT.md`** - Documentation system rules and folder structure
 - **`README.md`** - Project overview, features, and quick start
 - **`CONTRIBUTING.md`** - Contribution guidelines
-- **`docs/CONTEXT.md`** - Main documentation context for AI agents
-- **`docs/facts.json`** - Stable project truths (highest authority)
+- **`internal-docs/CONTEXT.md`** - Main documentation context for AI agents
+- **`internal-docs/facts.json`** - Stable project truths (highest authority)
 - **`pyproject.toml`** - All tool configurations and dependencies
 - **`.github/agents/test.md`** - Backend testing strategies (agent profile)
-- **`docs/testing/`** - Comprehensive testing documentation
+- **`internal-docs/testing/`** - Comprehensive testing documentation
   - `test-principles.md` - Testing philosophy and best practices
   - `quick-reference.md` - Quick lookup for testing patterns
   - `testing-checklist.md` - Pre-commit testing checklist
   - `templates/` - Test templates for all test types
-- **`docs/contributing/`** - User documentation writing standards
+- **`internal-docs/contributing/`** - User documentation writing standards
   - `README.md` - Overview of documentation contributing guidelines
   - `voice-and-tone-guide.md` - Writing style quick reference (DO's and DON'Ts)
   - `documentation-writing-guide.md` - Comprehensive documentation standards and patterns

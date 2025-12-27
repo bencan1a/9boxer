@@ -29,7 +29,7 @@
 
 ### ⚠️ Screenshot Creation (Priority: HIGH)
 
-**File:** `docs/images/screenshots/hero-grid-sample.png`
+**File:** `internal-docs/images/screenshots/hero-grid-sample.png`
 
 **Specifications in:** `agent-projects/documentation-redesign\index-screenshots.md`
 
@@ -37,7 +37,7 @@
 1. Load sample data in 9Boxer app
 2. Capture clean grid view (no filters, no selections)
 3. Save as PNG (2400px width, optimized to <500KB)
-4. Place in `docs/images/screenshots/`
+4. Place in `internal-docs/images/screenshots/`
 
 **Optional:** `index-quick-win-preview.png` (annotated version)
 

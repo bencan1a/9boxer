@@ -89,7 +89,7 @@ frontend/src/i18n/
   utils.ts                            # Helper functions
 frontend/src/test/
   i18nTestUtils.ts                    # Test helpers
-docs/i18n/
+internal-docs/i18n/
   README.md                           # Developer guide (initial)
   migration-patterns.md               # Code examples
 ```
@@ -361,7 +361,7 @@ rules: {
 **Goal:** Complete documentation and comprehensive testing
 
 **Subtasks:**
-- [ ] Complete developer guide (`docs/i18n/README.md`)
+- [ ] Complete developer guide (`internal-docs/i18n/README.md`)
 - [ ] Write translator workflow guide
 - [ ] Update `CLAUDE.md` with i18n conventions
 - [ ] Create E2E test for language switching
@@ -371,7 +371,7 @@ rules: {
 
 **Documentation to Create:**
 ```
-docs/i18n/
+internal-docs/i18n/
   README.md                           # Developer guide (complete)
   translation-workflow.md             # For translators
   adding-new-strings.md               # How to add strings
@@ -528,6 +528,6 @@ Before closing this issue, verify:
 ## Questions?
 
 For questions about this implementation, see:
-- Developer guide: `docs/i18n/README.md` (created in Task 9)
-- Migration patterns: `docs/i18n/migration-patterns.md` (created in Task 2)
+- Developer guide: `internal-docs/i18n/README.md` (created in Task 9)
+- Migration patterns: `internal-docs/i18n/migration-patterns.md` (created in Task 2)
 - Project instructions: `CLAUDE.md` (updated in Task 9)

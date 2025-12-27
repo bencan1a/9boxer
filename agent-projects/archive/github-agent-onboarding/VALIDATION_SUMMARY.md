@@ -29,8 +29,8 @@
    - Concise reference for GitHub Copilot Workspace
    - Covers: architecture, monorepo structure, testing, quality, file organization
 
-3. **docs/QUICK_REFERENCE.md** ✅
-   - Location: `/home/runner/work/9boxer/9boxer/docs/QUICK_REFERENCE.md`
+3. **internal-docs/QUICK_REFERENCE.md** ✅
+   - Location: `/home/runner/work/9boxer/9boxer/internal-docs/QUICK_REFERENCE.md`
    - Size: ~7KB
    - Fast command lookup
    - Most used commands
@@ -56,7 +56,7 @@
    - Added references to all agent documentation
    - Listed development guides
 
-7. **docs/facts.json** ✅
+7. **internal-docs/facts.json** ✅
    - Added `agent_onboarding` section
    - Includes primary guides
    - Critical first steps
@@ -78,7 +78,7 @@
 ### File Existence
 - [x] GITHUB_AGENT.md exists
 - [x] .github/copilot-instructions.md exists
-- [x] docs/QUICK_REFERENCE.md exists
+- [x] internal-docs/QUICK_REFERENCE.md exists
 - [x] agent-projects/github-agent-onboarding/plan.md exists
 - [x] All referenced documentation files exist:
   - CLAUDE.md
@@ -87,8 +87,8 @@
   - DEPLOYMENT.md
   - CONTRIBUTING.md
   - USER_GUIDE.md
-  - docs/CONTEXT.md
-  - docs/facts.json
+  - internal-docs/CONTEXT.md
+  - internal-docs/facts.json
 - [x] All referenced agent profiles exist:
   - .github/agents/test.md
   - .github/agents/architecture.md
@@ -100,12 +100,12 @@
 - [x] GITHUB_AGENT.md referenced in AGENTS.md
 - [x] GITHUB_AGENT.md referenced in README.md
 - [x] GITHUB_AGENT.md referenced in .github/copilot-instructions.md
-- [x] GITHUB_AGENT.md referenced in docs/QUICK_REFERENCE.md
+- [x] GITHUB_AGENT.md referenced in internal-docs/QUICK_REFERENCE.md
 - [x] All markdown links properly formatted
 - [x] No broken links detected
 
 ### Content Quality
-- [x] JSON syntax valid (docs/facts.json)
+- [x] JSON syntax valid (internal-docs/facts.json)
 - [x] Consistent terminology across documents
 - [x] Platform constraints documented (Windows)
 - [x] Monorepo structure clearly explained
@@ -152,7 +152,7 @@ From agent-projects/github-agent-onboarding/plan.md:
 
 - [x] Common pitfalls are documented with solutions
   - ✅ "Common Issues & Solutions" section
-  - ✅ Common pitfalls in docs/facts.json
+  - ✅ Common pitfalls in internal-docs/facts.json
   - ✅ Solutions provided for each issue
 
 ## 📊 Coverage Analysis
@@ -290,8 +290,8 @@ The onboarding documentation provides:
 
 To start using the onboarding:
 1. Read [GITHUB_AGENT.md](../GITHUB_AGENT.md) - comprehensive guide
-2. Reference [docs/QUICK_REFERENCE.md](../docs/QUICK_REFERENCE.md) - fast lookups
-3. Check [docs/facts.json](../docs/facts.json) - source of truth
+2. Reference [internal-docs/QUICK_REFERENCE.md](../internal-docs/QUICK_REFERENCE.md) - fast lookups
+3. Check [internal-docs/facts.json](../internal-docs/facts.json) - source of truth
 4. Follow the 5-minute Quick Start to get productive immediately
 
 ---

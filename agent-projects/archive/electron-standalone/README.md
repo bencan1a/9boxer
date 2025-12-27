@@ -46,7 +46,7 @@ Transform the current Docker-based web application into a single distributable e
 2. Agents should update progress section after each task
 3. Code reviews happen at the end of each phase
 4. All temporary work goes to `agent-tmp/`
-5. Final documentation goes to `docs/`
+5. Final documentation goes to `internal-docs/`
 
 ## Status
 

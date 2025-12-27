@@ -13,7 +13,7 @@ Successfully created a comprehensive, task-based workflow guide for HR managers 
 
 **Deliverables:**
 
-1. ✅ **Workflow Guide:** `docs/workflows/talent-calibration.md` (415 lines)
+1. ✅ **Workflow Guide:** `internal-docs/workflows/talent-calibration.md` (415 lines)
 2. ✅ **Screenshot Specifications:** `agent-projects/documentation-redesign/calibration-screenshots.md` (7 screenshots specified)
 3. ✅ **Navigation Updated:** `mkdocs.yml` - Added to Workflows section
 4. ✅ **Build Validation:** MkDocs builds successfully with new content
@@ -177,7 +177,7 @@ Created comprehensive specifications for 7 screenshots needed to support the wor
 Each screenshot specification includes:
 
 ✅ **Exact file name** - Following naming convention
-✅ **Storage location** - `docs/images/screenshots/workflow/`
+✅ **Storage location** - `internal-docs/images/screenshots/workflow/`
 ✅ **UI state description** - Exact application state needed
 ✅ **Test data requirements** - What data setup is needed
 ✅ **Annotation requirements** - Red boxes, callouts, labels, arrows
@@ -285,27 +285,27 @@ The following pages should add links TO the talent calibration workflow:
 
 **Recommended additions:**
 
-1. **`docs/index.md` (Home page):**
+1. **`internal-docs/index.md` (Home page):**
    - Add under "Common Tasks" section (if exists)
    - Or in "What's Next" section
    - Link text: "Preparing for a talent calibration meeting"
 
-2. **`docs/getting-started.md`:**
+2. **`internal-docs/getting-started.md`:**
    - Add in "What to Learn Next" section
    - Under "I'm preparing for a talent calibration meeting"
    - Link to calibration workflow
 
-3. **`docs/statistics.md`:**
+3. **`internal-docs/statistics.md`:**
    - Add "When to Use Statistics" section
    - Include: "Preparing for calibration meetings"
    - Link to calibration workflow
 
-4. **`docs/donut-mode.md`:**
+4. **`internal-docs/donut-mode.md`:**
    - Add "When to Use Donut Mode" section
    - Include: "Talent calibration sessions - Validate center box placements"
    - Link to calibration workflow
 
-5. **`docs/filters.md`:**
+5. **`internal-docs/filters.md`:**
    - Add "Common Use Cases" section
    - Include: "Calibration meetings - Review one manager at a time"
    - Link to calibration workflow
@@ -541,7 +541,7 @@ Evaluating against Task 2.1 success criteria from `phase2-task-breakdown.md`:
 ## Files Created
 
 ### Primary Deliverable
-- **`docs/workflows/talent-calibration.md`** (415 lines)
+- **`internal-docs/workflows/talent-calibration.md`** (415 lines)
   - Comprehensive talent calibration workflow guide
   - Before/During/After meeting structure
   - Real-world scenarios and tips

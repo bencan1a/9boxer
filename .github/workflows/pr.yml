@@ -47,7 +47,7 @@ jobs:
           DEPS_CHANGED=$(echo "$FILES_CHANGED" | grep -E '(pyproject\.toml|requirements.*\.txt)$' || echo "")
           FRONTEND_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/(src/|package.*\.json|tsconfig\.json|vite\.config\.ts)' || echo "")
 
-          # Skip tests if only docs/README/markdown files changed
+          # Skip tests if only internal-docs/README/markdown files changed
           DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt|ts|tsx|js|jsx|json)$' || echo "docs-only")
 
           if [ -n "$PYTHON_CHANGED" ] || [ -n "$WORKFLOW_CHANGED" ] || [ -n "$DEPS_CHANGED" ] || [ -n "$FRONTEND_CHANGED" ]; then

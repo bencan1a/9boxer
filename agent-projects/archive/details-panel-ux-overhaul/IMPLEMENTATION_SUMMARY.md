@@ -183,7 +183,7 @@ Successfully completed a comprehensive UX overhaul of the Details panel (right s
 
 ## Design System Compliance
 
-All features follow the design principles from `docs/design-system/`:
+All features follow the design principles from `internal-docs/design-system/`:
 
 ✅ **Clarity Over Cleverness** - Clear labels, obvious interactions
 ✅ **Data Integrity** - Colors match grid, no misleading information
@@ -348,9 +348,9 @@ reportingChainFilter: string | null
 **Documentation Status:** ⏸️ Pending
 
 **Files to Update:**
-- `resources/user-guide/docs/using-the-details-panel.md` - Document all new features
-- `resources/user-guide/docs/filtering-employees.md` - Document flag filtering and reporting chain filtering
-- `resources/user-guide/docs/exporting-data.md` - Document flags in Excel export
+- `resources/user-guide/internal-docs/using-the-details-panel.md` - Document all new features
+- `resources/user-guide/internal-docs/filtering-employees.md` - Document flag filtering and reporting chain filtering
+- `resources/user-guide/internal-docs/exporting-data.md` - Document flags in Excel export
 
 **Screenshots Needed:**
 - Enhanced Current Assessment section

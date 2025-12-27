@@ -15,7 +15,7 @@ You must respect these folder purposes:
 |--------|---------|-------------|-------|
 | `agent-tmp/` | Scratch / debug / intermediates | Ephemeral (gitignored) | Agents may freely create or delete temporary files. Nothing here is committed. |
 | `agent-plans/<project>/` | Ephemeral plan docs for refactors, experiments, migrations, etc. | Short-lived | Each plan has its own subfolder and a plan.md file with required metadata. |
-| `docs/` | Permanent, canonical documentation for the codebase | Persistent | This is the single source of truth. Agents must prefer this folder when writing long-term docs. |
+| `internal-docs/` | Permanent, canonical documentation for the codebase | Persistent | This is the single source of truth. Agents must prefer this folder when writing long-term docs. |
 
 ---
 
@@ -24,7 +24,7 @@ You must respect these folder purposes:
 ```
 /agent-tmp/                 # scratch (gitignored)
 /agent-plans/               # ephemeral plans
-/docs/
+/internal-docs/
   CONTEXT.md                # main generated context for agents
   SUMMARY.md                # quick index for agent navigation
   facts.json                # stable, hand-maintained truths
@@ -55,7 +55,7 @@ summary:
 
 ### Notes
 
-- Only `status: active` plans less than 21 days old will be summarized into `docs/_generated/plans_index.md`.
+- Only `status: active` plans less than 21 days old will be summarized into `internal-docs/_generated/plans_index.md`.
 - Old or completed plans are ignored but remain in history.
 
 ---
@@ -68,7 +68,7 @@ A GitHub Action (`.github/workflows/docs.yml`) will:
 2. Execute `tools/build_context.py` to:
    - Regenerate API docs (Python via pdoc3, TS via typedoc).
    - Summarize active plans.
-   - Merge everything into `docs/CONTEXT.md` (capped ~150 kB).
+   - Merge everything into `internal-docs/CONTEXT.md` (capped ~150 kB).
    - Update `SUMMARY.md` and append an entry to `CHANGELOG.md`.
    - Prune `agent-tmp/` files older than a week.
 3. Auto-commit updated docs directly to the repo (no manual approval required).
@@ -87,14 +87,14 @@ CLEAN_TMP_AGE_DAYS: "7"
 
 ### Reading
 
-- Primary context: `docs/CONTEXT.md`
+- Primary context: `internal-docs/CONTEXT.md`
 - Trust order:
-  1. `docs/facts.json` → 2. permanent `docs/` content → 3. Active Plans summaries
+  1. `internal-docs/facts.json` → 2. permanent `internal-docs/` content → 3. Active Plans summaries
 - Treat "Active Plans" as hints only; permanent docs override them.
 
 ### Writing
 
-- Permanent knowledge: write or update files under `docs/`.
+- Permanent knowledge: write or update files under `internal-docs/`.
 - Ephemeral tasks or refactors: write to `agent-plans/<project>/`.
 - Never commit anything under `agent-tmp/`.
 - Always include required metadata fields in plan files.
@@ -109,10 +109,10 @@ CLEAN_TMP_AGE_DAYS: "7"
 
 ## Outputs for Agents to Reference
 
-- `docs/CONTEXT.md` → single canonical context file.
-- `docs/_generated/` → sub-components (API, schemas, plans).
-- `docs/SUMMARY.md` → list of components and update timestamp.
-- `docs/CHANGELOG.md` → chronological record of doc rebuilds.
+- `internal-docs/CONTEXT.md` → single canonical context file.
+- `internal-docs/_generated/` → sub-components (API, schemas, plans).
+- `internal-docs/SUMMARY.md` → list of components and update timestamp.
+- `internal-docs/CHANGELOG.md` → chronological record of doc rebuilds.
 
 ---
 
@@ -128,9 +128,9 @@ CLEAN_TMP_AGE_DAYS: "7"
 
 ## Success Criteria
 
-- Running `python tools/build_context.py` locally produces updated `docs/CONTEXT.md` with correct front-matter (`source_sha`, `provenance`).
+- Running `python tools/build_context.py` locally produces updated `internal-docs/CONTEXT.md` with correct front-matter (`source_sha`, `provenance`).
 - GitHub nightly action auto-commits doc updates if any changes occur.
-- Agents writing plans see them appear in `docs/_generated/plans_index.md` within 24 h.
+- Agents writing plans see them appear in `internal-docs/_generated/plans_index.md` within 24 h.
 
 ---
 

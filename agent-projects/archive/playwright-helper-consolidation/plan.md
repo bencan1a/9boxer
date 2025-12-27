@@ -423,7 +423,7 @@ npm run test:e2e:pw
 
 #### Step 3.2: Update Documentation
 
-**Update `docs/testing/quick-reference.md`:**
+**Update `internal-docs/testing/quick-reference.md`:**
 - Add new helper function reference section
 - Include examples of when to use each helper
 - Link to helper source files
@@ -615,13 +615,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
   'quickstart-file-menu-button': {
     workflow: 'quickstart',
     function: 'generateFileMenuButton',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png',
+    path: 'resources/user-guide/internal-docs/images/screenshots/quickstart/quickstart-file-menu-button.png',
     description: 'File menu button in top toolbar',
   },
   'quickstart-grid-populated': {
     workflow: 'quickstart',
     function: 'generateGridPopulated',
-    path: 'resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png',
+    path: 'resources/user-guide/internal-docs/images/screenshots/quickstart/quickstart-grid-populated.png',
     description: 'Grid populated with employee data after upload',
   },
   // ... 39 more screenshot definitions
@@ -723,11 +723,11 @@ npm run screenshots:generate quickstart-file-menu-button changes-tab filters-act
 ```bash
 # Generate with Python (baseline)
 python tools/generate_docs_screenshots.py
-mv resources/user-guide/docs/images/screenshots screenshots-python
+mv resources/user-guide/internal-docs/images/screenshots screenshots-python
 
 # Generate with TypeScript (new)
 npm run screenshots:generate
-mv resources/user-guide/docs/images/screenshots screenshots-typescript
+mv resources/user-guide/internal-docs/images/screenshots screenshots-typescript
 
 # Visual comparison
 # Use image diff tool or manual inspection to verify screenshots match
@@ -786,7 +786,7 @@ jobs:
         run: |
           git config user.name "Screenshot Bot"
           git config user.email "bot@example.com"
-          git add resources/user-guide/docs/images/screenshots/
+          git add resources/user-guide/internal-docs/images/screenshots/
           git commit -m "docs: regenerate screenshots [skip ci]" || true
           git push
 ```
@@ -1014,8 +1014,8 @@ Benefits:
 
 **Prior art:**
 - [Screenshot Generation Overhaul](../screenshot-generation-overhaul/plan.md) - Identified these patterns
-- [Playwright Best Practices Checklist](../../docs/testing/playwright-best-practices-checklist.md) - Selector/wait strategies
-- [Testing Quick Reference](../../docs/testing/quick-reference.md) - Will be updated with new helpers
+- [Playwright Best Practices Checklist](../../internal-docs/testing/playwright-best-practices-checklist.md) - Selector/wait strategies
+- [Testing Quick Reference](../../internal-docs/testing/quick-reference.md) - Will be updated with new helpers
 
 **Future synergies:**
 - Helper improvements benefit both E2E and screenshots

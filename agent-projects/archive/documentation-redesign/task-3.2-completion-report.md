@@ -284,7 +284,7 @@ python -m mkdocs build --strict
 
 ### Requirements Checklist
 
-- [x] **docs/user-personas.md created with 5 personas** ✅
+- [x] **internal-docs/user-personas.md created with 5 personas** ✅
 - [x] **15-20 scenario boxes added across 6+ pages** ✅ (17 scenarios across 8 pages)
 - [x] **Each scenario uses persona names** ✅ (All use Sarah, Marcus, Priya, James, or Alex)
 - [x] **All scenarios achievable in actual app** ✅ (All verified)

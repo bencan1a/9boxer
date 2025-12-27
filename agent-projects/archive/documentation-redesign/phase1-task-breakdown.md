@@ -65,7 +65,7 @@ When identifying screenshot needs:
 **Dependencies:** None
 
 ### Objective
-Create a brand-new `docs/quickstart.md` that gets users to see their first grid in <2 actual minutes.
+Create a brand-new `internal-docs/quickstart.md` that gets users to see their first grid in <2 actual minutes.
 
 ### Requirements
 
@@ -102,7 +102,7 @@ Create a brand-new `docs/quickstart.md` that gets users to see their first grid 
    - Do success indicators match actual app behavior?
 
 ### Deliverable
-- `docs/quickstart.md` - Production-ready page
+- `internal-docs/quickstart.md` - Production-ready page
 - Screenshot specifications document listing 5 required images
 - Validation report confirming all steps work
 
@@ -116,7 +116,7 @@ Create a brand-new `docs/quickstart.md` that gets users to see their first grid 
 **Dependencies:** None
 
 ### Objective
-Transform `docs/getting-started.md` from overwhelming 213-line guide to focused 10-minute workflow tutorial.
+Transform `internal-docs/getting-started.md` from overwhelming 213-line guide to focused 10-minute workflow tutorial.
 
 ### Requirements
 
@@ -154,7 +154,7 @@ Transform `docs/getting-started.md` from overwhelming 213-line guide to focused 
    - Link to understanding-grid.md for methodology
 
 ### Deliverable
-- `docs/getting-started.md` - Revised production page
+- `internal-docs/getting-started.md` - Revised production page
 - Screenshot specifications for 8 images
 - Validation report
 
@@ -168,7 +168,7 @@ Transform `docs/getting-started.md` from overwhelming 213-line guide to focused 
 **Dependencies:** Task 1.1 (needs quickstart.md link)
 
 ### Objective
-Transform `docs/index.md` to prioritize quick start with clear user paths.
+Transform `internal-docs/index.md` to prioritize quick start with clear user paths.
 
 ### Requirements
 
@@ -196,7 +196,7 @@ Transform `docs/index.md` to prioritize quick start with clear user paths.
    - Reduce decision paralysis (fewer options initially)
 
 ### Deliverable
-- `docs/index.md` - Revised home page
+- `internal-docs/index.md` - Revised home page
 - Screenshot specifications for 2 images
 - Link validation report
 
@@ -297,10 +297,10 @@ Capture and annotate 8 critical screenshots identified in Tasks 1.1-1.3.
    - Descriptive alt text for each image
    - Optimized file size (<500KB per image)
    - Proper file naming: [page]-[feature]-[state]-[number].png
-   - Stored in docs/images/screenshots/
+   - Stored in internal-docs/images/screenshots/
 
 ### Deliverable
-- 8 annotated screenshots in docs/images/screenshots/
+- 8 annotated screenshots in internal-docs/images/screenshots/
 - Screenshot manifest with alt text
 - Validation that images render in MkDocs
 

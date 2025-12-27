@@ -13,7 +13,7 @@
 
 ## Completion Notes
 MkDocs Material system fully implemented. Directory structure created at
-resources/user-guide/ with docs/ and site/ directories. Configuration file
+resources/user-guide/ with internal-docs/ and site/ directories. Configuration file
 mkdocs.yml with Material theme. Screenshot generation tool implemented at
 tools/generate_docs_screenshots.py. Git commit shows documentation system
 overhaul complete.
@@ -79,7 +79,7 @@ Automated Playwright script to capture:
 
 ### Phase 1: MkDocs Setup (Agent 1)
 - Install mkdocs-material
-- Create docs/ directory structure
+- Create internal-docs/ directory structure
 - Configure mkdocs.yml with dark theme
 - Set up navigation, search, features
 
@@ -97,7 +97,7 @@ All agents:
 - Create tools/generate_docs_screenshots.py
 - Automated Playwright screenshot capture
 - Image optimization
-- Save to docs/images/screenshots/
+- Save to internal-docs/images/screenshots/
 
 ### Phase 4: Build Integration (Agent 6)
 - Create tools/build_user_guide.py
@@ -106,7 +106,7 @@ All agents:
 - Update Electron IPC handler
 
 ### Phase 5: Documentation (Agent 7, Parallel)
-- Create docs/maintaining-user-guide.md
+- Create internal-docs/maintaining-user-guide.md
 - Update CONTRIBUTING.md
 - Screenshot regeneration guide
 

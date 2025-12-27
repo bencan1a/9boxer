@@ -77,7 +77,7 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 
 **Status:** COMPLETE
 **Grade:** A
-**File:** `docs/workflows/talent-calibration.md`
+**File:** `internal-docs/workflows/talent-calibration.md`
 **Length:** 588 lines
 
 **Key Features:**
@@ -99,7 +99,7 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 
 **Status:** COMPLETE
 **Grade:** A
-**File:** `docs/workflows/making-changes.md`
+**File:** `internal-docs/workflows/making-changes.md`
 **Length:** 339 lines
 
 **Key Features:**
@@ -121,7 +121,7 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 
 **Status:** COMPLETE
 **Grade:** A
-**File:** `docs/workflows/adding-notes.md`
+**File:** `internal-docs/workflows/adding-notes.md`
 **Length:** 350 lines
 
 **Key Features:**
@@ -173,14 +173,14 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 **Grade:** A
 
 **Files Created:**
-1. **Workflow Decision Tree** (`docs/workflows/workflow-decision-tree.md`)
+1. **Workflow Decision Tree** (`internal-docs/workflows/workflow-decision-tree.md`)
    - 242 lines
    - Mermaid decision diagram
    - 5 common scenarios
    - Decision points by user role
    - 3 workflow combinations
 
-2. **Feature Comparison** (`docs/feature-comparison.md`)
+2. **Feature Comparison** (`internal-docs/feature-comparison.md`)
    - 395 lines
    - Mermaid feature selector diagram
    - 6 comprehensive comparison tables
@@ -188,7 +188,7 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
    - 4 feature combinations
    - Common mistakes section
 
-3. **Common Decisions** (`docs/common-decisions.md`)
+3. **Common Decisions** (`internal-docs/common-decisions.md`)
    - 501 lines
    - 8 frequent decision points
    - "Always/Consider/Skip" frameworks
@@ -311,14 +311,14 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 ### New Files (9)
 
 **Workflow Guides:**
-1. `docs/workflows/talent-calibration.md` (588 lines)
-2. `docs/workflows/making-changes.md` (339 lines)
-3. `docs/workflows/adding-notes.md` (350 lines)
+1. `internal-docs/workflows/talent-calibration.md` (588 lines)
+2. `internal-docs/workflows/making-changes.md` (339 lines)
+3. `internal-docs/workflows/adding-notes.md` (350 lines)
 
 **Decision Aids:**
-4. `docs/workflows/workflow-decision-tree.md` (242 lines)
-5. `docs/feature-comparison.md` (395 lines)
-6. `docs/common-decisions.md` (501 lines)
+4. `internal-docs/workflows/workflow-decision-tree.md` (242 lines)
+5. `internal-docs/feature-comparison.md` (395 lines)
+6. `internal-docs/common-decisions.md` (501 lines)
 
 **Screenshot Specifications:**
 7. `agent-projects/documentation-redesign/calibration-screenshots.md`
@@ -328,21 +328,21 @@ Phase 2 successfully delivers comprehensive workflow guides, enhanced feature pa
 ### Enhanced Files (8+)
 
 **Feature Pages (confirmed):**
-1. `docs/filters.md` - Added "When to Use This" section
-2. `docs/donut-mode.md` - Added "When to Use This" section
-3. `docs/statistics.md` - Added "When to Use This" section
-4. `docs/working-with-employees.md` - Added "When to Use This" section
-5. `docs/tracking-changes.md` - Added "When to Use This" section
+1. `internal-docs/filters.md` - Added "When to Use This" section
+2. `internal-docs/donut-mode.md` - Added "When to Use This" section
+3. `internal-docs/statistics.md` - Added "When to Use This" section
+4. `internal-docs/working-with-employees.md` - Added "When to Use This" section
+5. `internal-docs/tracking-changes.md` - Added "When to Use This" section
 
 **Feature Pages (assumed complete):**
-6. `docs/understanding-grid.md`
-7. `docs/exporting.md`
-8. `docs/settings.md`
+6. `internal-docs/understanding-grid.md`
+7. `internal-docs/exporting.md`
+8. `internal-docs/settings.md`
 
 **Phase 1 Fixes:**
-9. `docs/getting-started.md` - Export terminology corrected
-10. `docs/quickstart.md` - Export terminology corrected
-11. `docs/index.md` - Anchor link fixed
+9. `internal-docs/getting-started.md` - Export terminology corrected
+10. `internal-docs/quickstart.md` - Export terminology corrected
+11. `internal-docs/index.md` - Anchor link fixed
 
 ---
 

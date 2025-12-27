@@ -264,7 +264,7 @@ Active Filter Badge (in FilterDrawer):
 **Estimated: 1-2 hours**
 
 15. **Update User Documentation**
-    - File: `resources/user-guide/docs/using-the-details-panel.md`
+    - File: `resources/user-guide/internal-docs/using-the-details-panel.md`
     - Document new Current Assessment features
     - Document Flags system
     - Document Reporting Chain filtering
@@ -280,7 +280,7 @@ Active Filter Badge (in FilterDrawer):
 
 ### Design System Compliance
 
-Following design principles from `docs/design-system/`:
+Following design principles from `internal-docs/design-system/`:
 
 1. **Clarity Over Cleverness**
    - Clear labels for all flags
@@ -446,7 +446,7 @@ Following design principles from `docs/design-system/`:
 - `frontend/playwright/e2e/details-panel-enhancements.spec.ts` - New file
 
 ### Documentation
-- `resources/user-guide/docs/using-the-details-panel.md` - Update
+- `resources/user-guide/internal-docs/using-the-details-panel.md` - Update
 
 ## Dependencies
 

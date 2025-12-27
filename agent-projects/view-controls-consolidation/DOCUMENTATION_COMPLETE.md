@@ -165,7 +165,7 @@ All documentation tasks specified in the issue are complete. Screenshot generati
 
 ## Documentation Quality Standards Met
 
-Following `docs/contributing/documentation-writing-guide.md`:
+Following `internal-docs/contributing/documentation-writing-guide.md`:
 
 ✅ **User-Centric Organization**
 - Organized by user goals and tasks

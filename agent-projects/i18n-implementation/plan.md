@@ -402,11 +402,11 @@ This should be evaluated in Task 2 or 3.
 - `frontend/src/utils/errorMessages.ts` - Example of structured messages
 
 **To Create:**
-- `docs/i18n/README.md` - Developer guide
-- `docs/i18n/translation-workflow.md` - For translators
-- `docs/i18n/migration-patterns.md` - Code examples
-- `docs/i18n/adding-new-strings.md` - How to add strings
-- `docs/i18n/testing-guide.md` - How to test i18n
+- `internal-docs/i18n/README.md` - Developer guide
+- `internal-docs/i18n/translation-workflow.md` - For translators
+- `internal-docs/i18n/migration-patterns.md` - Code examples
+- `internal-docs/i18n/adding-new-strings.md` - How to add strings
+- `internal-docs/i18n/testing-guide.md` - How to test i18n
 
 ## Progress Tracking
 

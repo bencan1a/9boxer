@@ -129,7 +129,7 @@ Reference: `agent-projects/documentation-redesign/screenshot-specifications.md`
 - No sensitive or identifiable data
 
 **Storage:**
-- Save to: `docs/images/screenshots/`
+- Save to: `internal-docs/images/screenshots/`
 - Naming: Use exact filenames specified above
 - Also update any image manifests or indexes
 
@@ -157,6 +157,6 @@ Before considering screenshots complete:
 1. Run screenshot generation script or manually capture
 2. Annotate Screenshot 2 per specifications
 3. Optimize file sizes
-4. Place in `docs/images/screenshots/`
+4. Place in `internal-docs/images/screenshots/`
 5. Verify rendering in MkDocs preview
 6. Update this document with completion status

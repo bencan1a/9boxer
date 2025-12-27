@@ -43,14 +43,14 @@ By the end of this consolidation:
 
 ### Internal Developer/Agent Documentation (This Project)
 
-**Location**: `docs/` → `internal-docs/` (after Issue #67)
+**Location**: `internal-docs/` → `internal-internal-docs/` (after Issue #67)
 **Audience**: AI agents (Claude Code, GitHub Copilot)
 **Purpose**: How to develop, test, build, and maintain the codebase
 **Categories**: Agent instructions, architecture, design system, testing, i18n, contributing
 
 ### User-Facing Documentation (Separate Project)
 
-**Location**: `resources/user-guide/docs/`
+**Location**: `resources/user-guide/internal-docs/`
 **Audience**: End users of the 9Boxer application
 **Purpose**: How to use the application, upload data, export reports
 **Project**: Self-Managing Docs System (Issues #51-#62)
@@ -60,7 +60,7 @@ By the end of this consolidation:
 
 | Aspect | Internal Docs | User Docs |
 |--------|--------------|-----------|
-| **Location** | `internal-docs/` | `resources/user-guide/docs/` |
+| **Location** | `internal-internal-docs/` | `resources/user-guide/internal-docs/` |
 | **Audience** | Agents | End users |
 | **Topics** | Code, architecture, testing | Features, workflows, UI |
 | **Screenshots** | Visual regression tests | UI screenshots |
@@ -106,10 +106,10 @@ Root:
 
 ---
 
-### internal-docs/ (After Rename)
+### internal-internal-docs/ (After Rename)
 
 ```
-internal-docs/
+internal-internal-docs/
 ├── README.md              ← Documentation map
 │   - Overview of all categories
 │   - Quick navigation links
@@ -200,7 +200,7 @@ internal-docs/
 
 ### 2. Architecture & Build (Issue #64)
 
-**Files**: internal-docs/architecture/*, BUILD.md, DEPLOYMENT.md, frontend/BUILD.md
+**Files**: internal-internal-docs/architecture/*, BUILD.md, DEPLOYMENT.md, frontend/BUILD.md
 
 **Success Criteria**:
 - ✅ Architecture docs verified current (check recent commits)
@@ -225,7 +225,7 @@ internal-docs/
 
 ### 3. Design System & Testing (Issue #65)
 
-**Files**: internal-docs/design-system/*, internal-docs/testing/*
+**Files**: internal-internal-docs/design-system/*, internal-internal-docs/testing/*
 
 **Success Criteria**:
 
@@ -236,10 +236,10 @@ internal-docs/
 - ✅ No changes needed - maintain quality
 
 **Testing**:
-- ✅ Remove docs/playwright-best-practices.md (use internal-docs/testing/ versions)
+- ✅ Remove internal-docs/playwright-best-practices.md (use internal-internal-docs/testing/ versions)
 - ✅ Archive stale files: FINAL_SUMMARY.md, OPTION_C_REDESIGN_PLAN.md, PLAYWRIGHT_FIXES_STATUS.md
-- ✅ Verify backend/README_TESTS.md aligns with internal-docs/testing/
-- ✅ Visual regression docs in internal-docs/testing/ (NOT user doc screenshots)
+- ✅ Verify backend/README_TESTS.md aligns with internal-internal-docs/testing/
+- ✅ Visual regression docs in internal-internal-docs/testing/ (NOT user doc screenshots)
 
 **Quality Checklist - Design System**:
 - [ ] Component inventory count matches actual components (verify with glob)
@@ -262,12 +262,12 @@ internal-docs/
 
 ### 4. i18n, Contributing & Screenshot Standards (Issue #66)
 
-**Files**: internal-docs/i18n/*, internal-docs/contributing/*, docs/contributing/screenshot-guide.md
+**Files**: internal-internal-docs/i18n/*, internal-internal-docs/contributing/*, internal-docs/contributing/screenshot-guide.md
 
 **Success Criteria**:
 
 **i18n**:
-- ✅ Verify internal-docs/i18n/* complete (7 files)
+- ✅ Verify internal-internal-docs/i18n/* complete (7 files)
 - ✅ Glossary current and comprehensive
 - ✅ Migration patterns reflect actual i18n implementation
 
@@ -277,9 +277,9 @@ internal-docs/
 - ✅ Voice/tone guide for agent-generated docs
 
 **Screenshot Standards** (CRITICAL - separation of concerns):
-- ✅ Keep docs/contributing/screenshot-guide.md (technical standards for user docs)
+- ✅ Keep internal-docs/contributing/screenshot-guide.md (technical standards for user docs)
 - ✅ **Acknowledge** self-managing system (Issues #51-62) handles user doc screenshot automation
-- ✅ Remove docs/screenshots-readme.md (outdated)
+- ✅ Remove internal-docs/screenshots-readme.md (outdated)
 - ✅ **DO NOT duplicate** frontend/playwright/screenshots/ docs (managed by self-managing system)
 - ✅ Clear separation: user doc automation vs. technical standards
 
@@ -305,7 +305,7 @@ internal-docs/
 
 ---
 
-### 5. Rename docs/ → internal-docs/ (Issue #67)
+### 5. Rename internal-docs/ → internal-internal-docs/ (Issue #67)
 
 **Success Criteria**:
 - ✅ Directory renamed using `git mv docs internal-docs`
@@ -323,7 +323,7 @@ internal-docs/
 - ✅ CI/CD passes
 
 **Quality Checklist**:
-- [ ] Search codebase for `docs/` references (grep -r "docs/" --include="*.md" --include="*.toml" --include="*.yml" --include="*.py")
+- [ ] Search codebase for `internal-docs/` references (grep -r "internal-docs/" --include="*.md" --include="*.toml" --include="*.yml" --include="*.py")
 - [ ] Test build_context.py runs successfully
 - [ ] Test documentation builds (if using MkDocs or similar)
 - [ ] Verify no broken links (check all README.md files)
@@ -349,11 +349,11 @@ internal-docs/
 **Agent Task Template Requirements**:
 
 The template should instruct agents to:
-1. **Inventory**: Find all .md files in internal-docs/ modified since last run
+1. **Inventory**: Find all .md files in internal-internal-docs/ modified since last run
 2. **Detect duplications**: Similar filenames, overlapping content
 3. **Consolidate**: Merge into canonical sources (prefer newer, descending date order)
 4. **Ask user**: For guidance on conflicting recommendations
-5. **Archive**: Move superseded docs → internal-docs/archive/YYYY-MM-DD/
+5. **Archive**: Move superseded docs → internal-internal-docs/archive/YYYY-MM-DD/
 6. **Update**: Run tools/build_context.py
 7. **Report**: Create PR with changes + maintenance report
 
@@ -375,7 +375,7 @@ The template should instruct agents to:
 
 **Success Criteria**:
 - ✅ Extends .github/scripts/ai-docs-audit.js from Issue #57
-- ✅ Analyzes internal-docs/ for drift, conflicts, staleness
+- ✅ Analyzes internal-internal-docs/ for drift, conflicts, staleness
 - ✅ Creates separate issues for user docs vs. internal docs
 - ✅ Weekly audit covers both documentation domains
 - ✅ Cost remains ~$2-4/month (single audit run)
@@ -388,7 +388,7 @@ The template should instruct agents to:
 - Stale examples (>30 days without verification)
 
 **Quality Checklist**:
-- [ ] AI prompt includes internal-docs/ analysis
+- [ ] AI prompt includes internal-internal-docs/ analysis
 - [ ] Separate issue labels: user-documentation vs. internal-documentation
 - [ ] Single weekly audit (combined user + internal)
 - [ ] Test with sample internal docs changes
@@ -413,7 +413,7 @@ git log -1 --format=%ai -- file.md                            # Last modified
 ```
 
 **Prefer established locations**:
-- ✅ `internal-docs/testing/` over root `docs/`
+- ✅ `internal-internal-docs/testing/` over root `internal-docs/`
 - ✅ Category README.md over scattered files
 - ✅ Comprehensive guides over partial coverage
 
@@ -433,8 +433,8 @@ git log -1 --format=%ai -- file.md                            # Last modified
 **Archive rather than delete**:
 ```bash
 # Move to archive with date
-mkdir -p internal-docs/archive/2025-12-26
-git mv old-file.md internal-docs/archive/2025-12-26/
+mkdir -p internal-internal-docs/archive/2025-12-26
+git mv old-file.md internal-internal-docs/archive/2025-12-26/
 ```
 
 **Document your decision**:
@@ -503,7 +503,7 @@ Every category should have:
 ### Self-Managing Docs System (Issues #51-62)
 
 **What it handles**:
-- User documentation screenshots (resources/user-guide/docs/)
+- User documentation screenshots (resources/user-guide/internal-docs/)
 - Storybook componentization for screenshot generation
 - Automated screenshot regeneration on UI changes
 - AI audit for user documentation staleness
@@ -515,7 +515,7 @@ Every category should have:
 
 **What we DON'T touch**:
 - ❌ frontend/playwright/screenshots/ automation docs
-- ❌ resources/user-guide/docs/ content
+- ❌ resources/user-guide/internal-docs/ content
 - ❌ User-facing screenshot generation workflows
 
 ### Weekly Automation (Issue #68)
@@ -539,7 +539,7 @@ Every category should have:
 
 ## Examples of Good Documentation
 
-### ✅ Exemplary: internal-docs/design-system/
+### ✅ Exemplary: internal-internal-docs/design-system/
 
 **Why it's excellent**:
 - Comprehensive (11 files covering all aspects)
@@ -568,7 +568,7 @@ design-system/
 
 ---
 
-### ✅ Good: internal-docs/testing/quick-reference.md
+### ✅ Good: internal-internal-docs/testing/quick-reference.md
 
 **Why it's good**:
 - Fast lookup (commands only, minimal prose)
@@ -602,7 +602,7 @@ See [test-principles.md](test-principles.md) for philosophy.
 **Before consolidation** (4 competing sources):
 - `frontend/playwright/screenshots/HOWTO.md`
 - `frontend/playwright/screenshots/SCREENSHOT_GENERATION_GUIDE.md`
-- `docs/screenshots-readme.md` (outdated)
+- `internal-docs/screenshots-readme.md` (outdated)
 - `agent-projects/screenshot-generation-overhaul/maintenance.md` (archived project)
 
 **Why it's bad**:
@@ -612,7 +612,7 @@ See [test-principles.md](test-principles.md) for philosophy.
 - Context bloat (agents read all 4)
 
 **After consolidation** (clear separation):
-- `internal-docs/contributing/screenshot-guide.md` - Technical standards only
+- `internal-internal-docs/contributing/screenshot-guide.md` - Technical standards only
 - `frontend/playwright/screenshots/*` - Managed by self-managing system (#51-62)
 - User doc screenshots automated, internal docs have standards
 
@@ -622,16 +622,16 @@ See [test-principles.md](test-principles.md) for philosophy.
 
 ### Scenario 1: Found Duplicate Content
 
-**Question**: Found same content in `docs/quick-reference.md` and root `QUICK_REFERENCE.md`. Which to keep?
+**Question**: Found same content in `internal-docs/quick-reference.md` and root `QUICK_REFERENCE.md`. Which to keep?
 
 **Answer**:
 1. Check file dates: `git log --follow --format=%ai -- <file>`
-2. Prefer established location: `internal-docs/QUICK_REFERENCE.md` (after rename)
+2. Prefer established location: `internal-internal-docs/QUICK_REFERENCE.md` (after rename)
 3. Archive root version:
    ```bash
-   git mv QUICK_REFERENCE.md internal-docs/archive/2025-12-26/
+   git mv QUICK_REFERENCE.md internal-internal-docs/archive/2025-12-26/
    ```
-4. Document in PR: "Removed duplicate root QUICK_REFERENCE.md, kept internal-docs/ version"
+4. Document in PR: "Removed duplicate root QUICK_REFERENCE.md, kept internal-internal-docs/ version"
 
 ---
 
@@ -662,7 +662,7 @@ See [test-principles.md](test-principles.md) for philosophy.
 
 ### Scenario 4: Should This Be Archived or Deleted?
 
-**Archive** (move to `internal-docs/archive/YYYY-MM-DD/`) if:
+**Archive** (move to `internal-internal-docs/archive/YYYY-MM-DD/`) if:
 - ✅ Historically useful (shows evolution)
 - ✅ Might be referenced later
 - ✅ Contains unique information worth preserving
@@ -702,7 +702,7 @@ After completing each issue, verify:
 
 ### Issue #65 (Design & Testing)
 - [ ] Design system component count matches actual (verify with glob)
-- [ ] No docs/playwright-best-practices.md
+- [ ] No internal-docs/playwright-best-practices.md
 - [ ] Stale testing files archived
 
 ### Issue #66 (i18n & Contributing)
@@ -711,7 +711,7 @@ After completing each issue, verify:
 - [ ] i18n patterns match actual implementation
 
 ### Issue #67 (Rename)
-- [ ] All `docs/` references updated to `internal-docs/`
+- [ ] All `internal-docs/` references updated to `internal-internal-docs/`
 - [ ] build_context.py runs successfully
 - [ ] CI/CD passes
 
@@ -761,7 +761,7 @@ Track these to measure effectiveness:
 ### How to Ask
 
 **Good**:
-> "Found conflicting pytest recommendations in `docs/testing/quick-reference.md` (says `pytest -v`) and `backend/README_TESTS.md` (says `pytest --verbose`). Both files modified within last month. Which is the preferred standard?"
+> "Found conflicting pytest recommendations in `internal-docs/testing/quick-reference.md` (says `pytest -v`) and `backend/README_TESTS.md` (says `pytest --verbose`). Both files modified within last month. Which is the preferred standard?"
 
 **Bad**:
 > "There's some conflict in the testing docs. What should I do?"
@@ -781,7 +781,7 @@ Before marking consolidation complete:
 - [ ] Weekly maintenance workflow tested
 - [ ] AI audit integration tested
 - [ ] Documentation verified current (<30 days or noted)
-- [ ] This guide archived to internal-docs/ for future reference
+- [ ] This guide archived to internal-internal-docs/ for future reference
 
 ---
 

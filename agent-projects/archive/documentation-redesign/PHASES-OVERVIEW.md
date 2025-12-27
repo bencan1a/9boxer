@@ -24,9 +24,9 @@ This project transforms the 9Boxer user documentation from a feature-focused tec
 **Focus:** Get new users to success in <5 minutes
 
 **Deliverables:**
-- ✅ New 2-minute quickstart page ([docs/quickstart.md](../../docs/quickstart.md))
-- ✅ Revised 10-minute getting started guide ([docs/getting-started.md](../../docs/getting-started.md))
-- ✅ Redesigned home page with clear CTAs ([docs/index.md](../../docs/index.md))
+- ✅ New 2-minute quickstart page ([internal-docs/quickstart.md](../../internal-docs/quickstart.md))
+- ✅ Revised 10-minute getting started guide ([internal-docs/getting-started.md](../../internal-docs/getting-started.md))
+- ✅ Redesigned home page with clear CTAs ([internal-docs/index.md](../../internal-docs/index.md))
 - ✅ Reorganized goal-oriented navigation ([mkdocs.yml](../../mkdocs.yml))
 - ✅ 8 critical screenshots captured (20 total specified)
 - ✅ Extended screenshot automation tool
@@ -231,9 +231,9 @@ Each phase ends with comprehensive review:
 
 ## File Structure
 
-### Production Documentation (docs/)
+### Production Documentation (internal-docs/)
 ```
-docs/
+internal-docs/
 ├── index.md                      ← Home page (revised)
 ├── quickstart.md                 ← NEW (2-min guide)
 ├── getting-started.md            ← Revised (10-min workflow)
@@ -499,9 +499,9 @@ Each phase must pass before proceeding:
 - [phase1-comprehensive-review.md](phase1-comprehensive-review.md) - Detailed Phase 1 review (38KB)
 
 **Production Deliverables:**
-- [docs/quickstart.md](../../docs/quickstart.md) - 2-minute quickstart
-- [docs/getting-started.md](../../docs/getting-started.md) - 10-minute guide
-- [docs/index.md](../../docs/index.md) - Home page
+- [internal-docs/quickstart.md](../../internal-docs/quickstart.md) - 2-minute quickstart
+- [internal-docs/getting-started.md](../../internal-docs/getting-started.md) - 10-minute guide
+- [internal-docs/index.md](../../internal-docs/index.md) - Home page
 - [mkdocs.yml](../../mkdocs.yml) - Navigation structure
 
 ---

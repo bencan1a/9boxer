@@ -530,7 +530,7 @@ The quickstart page has been successfully created and validated against the actu
 
 **Key Achievements:**
 
-1. ✅ Production-ready `docs/quickstart.md` created
+1. ✅ Production-ready `internal-docs/quickstart.md` created
 2. ✅ All UI elements verified against source code
 3. ✅ Workflow accuracy confirmed
 4. ✅ Voice and tone guidelines followed

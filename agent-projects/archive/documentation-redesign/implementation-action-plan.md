@@ -889,7 +889,7 @@ You'll know you've done this correctly when you see:
 ### New Files Created
 
 ```
-docs/
+internal-docs/
 ├── quickstart.md (NEW)
 ├── installation.md (NEW, split from getting-started)
 ├── faq.md (NEW)
@@ -913,7 +913,7 @@ docs/
 ### Revised Files
 
 ```
-docs/
+internal-docs/
 ├── index.md (REVISED)
 ├── getting-started.md (REVISED)
 ├── understanding-grid.md (REVISED - added "When to Use")

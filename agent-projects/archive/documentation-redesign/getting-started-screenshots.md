@@ -1,6 +1,6 @@
 # Getting Started Page - Screenshot Specifications
 
-**Page:** `docs/getting-started.md`
+**Page:** `internal-docs/getting-started.md`
 **Total Screenshots Required:** 8
 **Purpose:** Visual guidance for the complete 10-minute workflow tutorial
 
@@ -309,7 +309,7 @@ Exported Excel file showing original employee data plus two new columns highligh
 - All use 2x resolution (144 DPI)
 - Saved as PNG with alpha channel
 - Optimized file size (<500KB where possible)
-- Stored in `docs/images/screenshots/`
+- Stored in `internal-docs/images/screenshots/`
 - Descriptive alt text for accessibility
 
 ---

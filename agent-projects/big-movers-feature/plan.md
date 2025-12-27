@@ -869,7 +869,7 @@ The Big Mover badge updates in real-time as you move employees:
 ---
 
 #### Task 6.2: Update Developer Documentation
-**File:** `docs/features/big-movers.md` (new file)
+**File:** `internal-docs/features/big-movers.md` (new file)
 
 **Objective:** Document technical implementation for developers.
 

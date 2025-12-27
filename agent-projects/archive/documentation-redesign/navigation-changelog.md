@@ -93,7 +93,7 @@ nav:
 ## Pages Removed from Navigation
 
 ### uploading-data.md
-**Status:** File exists in docs/ but excluded from navigation
+**Status:** File exists in internal-docs/ but excluded from navigation
 **Rationale:** Content likely overlaps with quickstart.md and getting-started.md
 **Recommendation:** Review content and either:
 - Merge into getting-started.md if contains valuable details
@@ -206,7 +206,7 @@ Several pages received clearer, more descriptive labels:
 
 ## Validation Checklist
 
-- [x] All referenced files exist in docs/
+- [x] All referenced files exist in internal-docs/
 - [x] MkDocs builds successfully (no errors)
 - [x] Navigation structure is hierarchical
 - [x] Section names are user-centric

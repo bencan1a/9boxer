@@ -2131,7 +2131,7 @@ du -sh dist/
 **Estimated Effort**: 2-3 hours
 
 **Deliverables**:
-1. Create `docs/USER_GUIDE.md` user manual
+1. Create `internal-docs/USER_GUIDE.md` user manual
 2. Create installation guide
 3. Create troubleshooting guide
 4. Add screenshots/GIFs

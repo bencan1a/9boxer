@@ -133,7 +133,7 @@ jobs:
             - [ ] Verify screenshots are accurate
 
             cc: @${{ github.event.pull_request.user.login }}
-          branch: docs/auto-update-${{ github.event.number }}
+          branch: internal-docs/auto-update-${{ github.event.number }}
           labels: documentation, automated
 ```
 
@@ -747,7 +747,7 @@ function getRecentComponentChanges(days) {
 }
 
 function readUserGuideDocs() {
-  return globSync('resources/user-guide/docs/**/*.md').map(path => ({
+  return globSync('resources/user-guide/internal-docs/**/*.md').map(path => ({
     path,
     content: fs.readFileSync(path, 'utf-8'),
   }));

@@ -55,9 +55,9 @@ The new hierarchical navigation structure has been successfully implemented and 
 
 ---
 
-## Files in docs/ but NOT in Navigation
+## Files in internal-docs/ but NOT in Navigation
 
-The following files exist in docs/ but are intentionally excluded from navigation:
+The following files exist in internal-docs/ but are intentionally excluded from navigation:
 
 | File | Reason for Exclusion | Recommendation |
 |------|---------------------|----------------|

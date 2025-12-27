@@ -177,8 +177,8 @@ jobs:
             } else {
               body += `### 📚 Resources\n\n`;
               body += `- [Feature Development Guide](.github/agents/feature-development.md)\n`;
-              body += `- [Testing Guide](docs/testing/)\n`;
-              body += `- [Documentation Guide](docs/contributing/documentation-writing-guide.md)\n\n`;
+              body += `- [Testing Guide](internal-docs/testing/)\n`;
+              body += `- [Documentation Guide](internal-docs/contributing/documentation-writing-guide.md)\n\n`;
             }
 
             body += `---\n`;

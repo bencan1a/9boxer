@@ -11,7 +11,7 @@
 ### ✅ Fix 1: Export Terminology Update
 **Priority:** ⭐ HIGHEST
 **Estimated Time:** 30 minutes
-**File:** `docs/getting-started.md`
+**File:** `internal-docs/getting-started.md`
 
 **Lines to update:** 228-246 (Step 5: Export Your Updated Ratings)
 
@@ -47,7 +47,7 @@
 ### ✅ Fix 2: Step 2 Skip Link Anchor
 **Priority:** ⭐ HIGH
 **Estimated Time:** 5 minutes
-**File:** `docs/getting-started.md`
+**File:** `internal-docs/getting-started.md`
 
 **Line to update:** 5
 
@@ -71,7 +71,7 @@
 ### ✅ Fix 3: Common Tasks Link
 **Priority:** ⭐ HIGH
 **Estimated Time:** 5 minutes
-**File:** `docs/quickstart.md`
+**File:** `internal-docs/quickstart.md`
 
 **Line to update:** 115
 
@@ -100,7 +100,7 @@
 ### ✅ Fix 4: Troubleshooting Anchor Links
 **Priority:** MEDIUM
 **Estimated Time:** 15 minutes
-**File:** `docs/getting-started.md`
+**File:** `internal-docs/getting-started.md`
 
 **Lines to verify:** 319-322
 
@@ -113,7 +113,7 @@
 ```
 
 **Action:**
-1. Open `docs/troubleshooting.md`
+1. Open `internal-docs/troubleshooting.md`
 2. Find actual heading names for these sections
 3. Update anchor links to match
 
@@ -130,7 +130,7 @@
 ### Fix 5: Add Specific Sample File Paths
 **Priority:** LOW
 **Estimated Time:** 15 minutes
-**File:** `docs/quickstart.md`
+**File:** `internal-docs/quickstart.md`
 
 **Lines to update:** 32-34
 
@@ -159,7 +159,7 @@
 ### Fix 6: Clean Up Passive Voice
 **Priority:** LOW
 **Estimated Time:** 5 minutes
-**File:** `docs/getting-started.md`
+**File:** `internal-docs/getting-started.md`
 
 **Line to update:** 59
 

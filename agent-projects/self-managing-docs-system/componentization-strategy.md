@@ -477,7 +477,7 @@ For each componentized component:
 
 ## Componentization Guidelines Document
 
-**Recommendation:** Create `docs/contributing/componentization-guide.md`
+**Recommendation:** Create `internal-docs/contributing/componentization-guide.md`
 
 **Contents:**
 - When to componentize (Storybook-first approach)

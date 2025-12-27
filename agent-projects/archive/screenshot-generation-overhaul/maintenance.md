@@ -19,7 +19,7 @@
 # Generate all screenshots (recommended)
 python tools/generate_docs_screenshots.py
 
-# Output: resources/user-guide/docs/images/screenshots/
+# Output: resources/user-guide/internal-docs/images/screenshots/
 ```
 
 ### Generating Specific Screenshots
@@ -404,7 +404,7 @@ pkill -f "vite"
 ### Screenshot Output Structure
 
 ```
-resources/user-guide/docs/images/screenshots/
+resources/user-guide/internal-docs/images/screenshots/
 ├── grid-normal.png
 ├── employee-tile-normal.png
 ├── quickstart/
@@ -551,7 +551,7 @@ These require external tools and cannot be automated:
 
 ## Related Documentation
 
-- [Playwright Best Practices Checklist](../../docs/testing/playwright-best-practices-checklist.md)
+- [Playwright Best Practices Checklist](../../internal-docs/testing/playwright-best-practices-checklist.md)
 - [Screenshot Validation Report](../../agent-tmp/screenshot-validation-final.md)
 - [Code Review Report](../../agent-tmp/screenshot-tool-code-review.md)
 - [Project Plan](plan.md)

@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-27T04:27:59.507266+00:00
-**Source SHA**: 6973d7d85b1f37b7b51c35ba71b23a1baaf77171
+**Generated**: 2025-12-27T06:06:21.563948+00:00
+**Source SHA**: 7951ed1513b89f6fa4147e0fac10acad809032a0
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -293,7 +293,7 @@ There are 2 active plan(s):
 
 ## API Documentation
 
-API documentation is available in `docs/_generated/api/`:
+API documentation is available in `internal-docs/_generated/api/`:
 
 
 ## Project README

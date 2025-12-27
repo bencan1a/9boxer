@@ -1,7 +1,7 @@
 # Task 3.4 Completion Report: Create Comprehensive FAQ Page
 
 **Agent:** General-purpose
-**Task:** Create `docs/faq.md` addressing common questions and edge cases
+**Task:** Create `internal-docs/faq.md` addressing common questions and edge cases
 **Status:** ✅ COMPLETE
 **Date:** 2024-12-20
 
@@ -15,7 +15,7 @@ Successfully created a comprehensive FAQ page with 39 questions organized into 6
 
 ## Deliverables Created
 
-### 1. docs/faq.md (NEW)
+### 1. internal-docs/faq.md (NEW)
 - **Total Questions:** 39 (exceeds minimum target of 25-35)
 - **Categories:** 6 (as required)
 - **Format:** Question as H3 heading, concise 2-4 sentence answer, cross-references to detailed docs
@@ -218,7 +218,7 @@ FAQ design is text-focused with cross-references to visual guides, avoiding scre
 ## Success Criteria Validation
 
 ### Required Elements
-- ✅ **docs/faq.md created** with 39 Q&A pairs (exceeds 25-35 target)
+- ✅ **internal-docs/faq.md created** with 39 Q&A pairs (exceeds 25-35 target)
 - ✅ **All 6 categories populated** (5-7 questions each, achieved 6-7 per category)
 - ✅ **All cross-references validated** (39 total links, all working)
 - ✅ **Updated mkdocs.yml** with FAQ in navigation under "Help" section

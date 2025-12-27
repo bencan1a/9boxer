@@ -94,7 +94,7 @@ Prefixes:
    - [ ] Breaking changes are documented
 
 3. **Documentation checklist** (for PRs with user-facing changes):
-   - [ ] User guide pages updated in `docs/`
+   - [ ] User guide pages updated in `internal-docs/`
    - [ ] Screenshots regenerated if UI changed
    - [ ] Built and previewed locally (`mkdocs serve`)
    - [ ] Tested in Electron (`npm run electron:dev`)
@@ -241,12 +241,12 @@ def function_name(param1: str, param2: int) -> bool:
 
 ### Updating Documentation
 
-For detailed guidance on maintaining documentation, see [docs/maintaining-user-guide.md](docs/maintaining-user-guide.md).
+For detailed guidance on maintaining documentation, see [internal-docs/maintaining-user-guide.md](internal-docs/maintaining-user-guide.md).
 
 #### Quick Reference
 
 **I added a new feature**:
-1. Update relevant documentation page in `docs/` (e.g., `docs/working-with-employees.md`)
+1. Update relevant documentation page in `internal-docs/` (e.g., `internal-docs/working-with-employees.md`)
 2. If UI changed, regenerate screenshots: `cd frontend && npm run generate:screenshots`
 3. Build and preview: `cd docs && mkdocs serve`
 4. Test in Electron: `cd frontend && npm run electron:dev`
@@ -257,7 +257,7 @@ For detailed guidance on maintaining documentation, see [docs/maintaining-user-g
 3. Update text if workflow changed
 
 **I added a new major feature**:
-1. Create new documentation page: `docs/my-feature.md`
+1. Create new documentation page: `internal-docs/my-feature.md`
 2. Add to navigation in `mkdocs.yml` (project root)
 3. Add screenshots showing the feature
 4. Link from related pages
@@ -274,15 +274,15 @@ For detailed guidance on maintaining documentation, see [docs/maintaining-user-g
 
 The user guide uses **MkDocs Material** for professional multi-page documentation:
 
-- **Source**: Markdown files in `docs/` directory
+- **Source**: Markdown files in `internal-docs/` directory
 - **Build**: `mkdocs build` creates static HTML site
 - **Bundle**: Included in Electron app as offline documentation
 - **Preview**: `cd docs && mkdocs serve` for live editing
 
 **Key files**:
-- `docs/*.md` - Documentation pages (commit these)
+- `internal-docs/*.md` - Documentation pages (commit these)
 - `mkdocs.yml` - Navigation and configuration (project root, commit this)
-- `docs/images/screenshots/*.png` - Auto-generated screenshots (commit these)
+- `internal-docs/images/screenshots/*.png` - Auto-generated screenshots (commit these)
 - `/site` - Build output (don't commit, git-ignored)
 - `tools/generate_docs_screenshots.py` - Screenshot generator
 - `frontend/scripts/generate-user-guide.cjs` - Build wrapper script
@@ -307,7 +307,7 @@ Screenshots are **first-class artifacts** generated from TypeScript/Playwright w
 
 **Follow documentation-first approach**:
 
-1. **Write Documentation First** (in `resources/user-guide/docs/`):
+1. **Write Documentation First** (in `resources/user-guide/internal-docs/`):
    ```markdown
    ## My New Feature
 
@@ -345,7 +345,7 @@ Screenshots are **first-class artifacts** generated from TypeScript/Playwright w
      'my-feature-overview': {
        workflow: 'my-feature',
        function: 'generateFeatureOverview',
-       path: 'resources/user-guide/docs/images/screenshots/my-feature-overview.png',
+       path: 'resources/user-guide/internal-docs/images/screenshots/my-feature-overview.png',
        description: 'Overview of new feature UI',
        cropping: 'element', // or 'full-page', 'panel', 'grid'
      },
@@ -358,7 +358,7 @@ Screenshots are **first-class artifacts** generated from TypeScript/Playwright w
    npm run screenshots:generate my-feature-overview
 
    # Verify screenshot matches documentation
-   # Check image in resources/user-guide/docs/images/screenshots/
+   # Check image in resources/user-guide/internal-docs/images/screenshots/
    ```
 
 5. **Commit Together**:
@@ -366,8 +366,8 @@ Screenshots are **first-class artifacts** generated from TypeScript/Playwright w
    git add \
      frontend/playwright/screenshots/workflows/my-feature.ts \
      frontend/playwright/screenshots/config.ts \
-     resources/user-guide/docs/my-feature.md \
-     resources/user-guide/docs/images/screenshots/my-feature-*.png
+     resources/user-guide/internal-docs/my-feature.md \
+     resources/user-guide/internal-docs/images/screenshots/my-feature-*.png
 
    git commit -m "feat: add my feature with documentation and screenshots"
    ```

@@ -13,9 +13,9 @@ Successfully created comprehensive decision aids to help users choose the right 
 
 ### Deliverables Created
 
-1. ✅ **Workflow Decision Tree** (`docs/workflows/workflow-decision-tree.md`)
-2. ✅ **Feature Comparison Guide** (`docs/feature-comparison.md`)
-3. ✅ **Common Decisions Guide** (`docs/common-decisions.md`)
+1. ✅ **Workflow Decision Tree** (`internal-docs/workflows/workflow-decision-tree.md`)
+2. ✅ **Feature Comparison Guide** (`internal-docs/feature-comparison.md`)
+3. ✅ **Common Decisions Guide** (`internal-docs/common-decisions.md`)
 4. ✅ **Updated Navigation** (index.md, mkdocs.yml)
 
 ---
@@ -152,7 +152,7 @@ graph TD
 
 ### Updated Files
 
-**1. docs/index.md**
+**1. internal-docs/index.md**
 
 Added new "Decision Aids" section:
 

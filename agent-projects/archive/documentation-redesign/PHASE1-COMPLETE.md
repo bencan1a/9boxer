@@ -23,9 +23,9 @@ Phase 1 of the 9Boxer documentation redesign has been **successfully completed**
 
 | Task | Status | Deliverable | Impact |
 |------|--------|-------------|--------|
-| **1.1** Create Quickstart | ✅ Complete | docs/quickstart.md | 2-min path to success |
-| **1.2** Revise Getting Started | ✅ Complete | docs/getting-started.md | 10-min workflow guide |
-| **1.3** Revise Home Page | ✅ Complete | docs/index.md | Clear user paths |
+| **1.1** Create Quickstart | ✅ Complete | internal-docs/quickstart.md | 2-min path to success |
+| **1.2** Revise Getting Started | ✅ Complete | internal-docs/getting-started.md | 10-min workflow guide |
+| **1.3** Revise Home Page | ✅ Complete | internal-docs/index.md | Clear user paths |
 | **1.4** Update Navigation | ✅ Complete | mkdocs.yml | Goal-oriented structure |
 | **1.5** Capture Screenshots | ✅ Complete | 8 screenshots + tool | Visual guidance |
 | **1.6** User Testing Plan | ✅ Complete | Testing templates | Validation ready |
@@ -38,17 +38,17 @@ Phase 1 of the 9Boxer documentation redesign has been **successfully completed**
 ### 1. Production-Ready Documentation
 
 **Three Revised Pages:**
-- **[docs/quickstart.md](../../docs/quickstart.md)** (164 lines)
+- **[internal-docs/quickstart.md](../../internal-docs/quickstart.md)** (164 lines)
   - 2-minute completion time
   - 5 screenshots specified
   - Validated against actual app
 
-- **[docs/getting-started.md](../../docs/getting-started.md)** (333 lines)
+- **[internal-docs/getting-started.md](../../internal-docs/getting-started.md)** (333 lines)
   - 10-minute workflow tutorial
   - 11 screenshots specified
   - Focused on core workflow only
 
-- **[docs/index.md](../../docs/index.md)** (162 lines)
+- **[internal-docs/index.md](../../internal-docs/index.md)** (162 lines)
   - Hero section with clear CTA
   - "Choose Your Path" navigation
   - Streamlined, inviting tone
@@ -142,7 +142,7 @@ Phase 1 of the 9Boxer documentation redesign has been **successfully completed**
 ### Production Files (4)
 
 ```
-docs/
+internal-docs/
 ├── quickstart.md         ← NEW (164 lines, 2-min guide)
 ├── getting-started.md    ← REVISED (333 lines, 10-min guide)
 ├── index.md              ← REVISED (162 lines, hero + paths)
@@ -326,9 +326,9 @@ See **[FIX-CHECKLIST.md](FIX-CHECKLIST.md)** for step-by-step resolution guide.
 
 | Goal | Target | Achieved | Status |
 |------|--------|----------|--------|
-| New quickstart page created | Yes | ✅ docs/quickstart.md | Complete |
-| Getting Started revised | Yes | ✅ docs/getting-started.md | Complete |
-| Home page redesigned | Yes | ✅ docs/index.md | Complete |
+| New quickstart page created | Yes | ✅ internal-docs/quickstart.md | Complete |
+| Getting Started revised | Yes | ✅ internal-docs/getting-started.md | Complete |
+| Home page redesigned | Yes | ✅ internal-docs/index.md | Complete |
 | Navigation restructured | Yes | ✅ mkdocs.yml | Complete |
 | Critical screenshots captured | 8 min | ✅ 8 captured | Complete |
 | User testing ready | Yes | ✅ Templates ready | Complete |
@@ -508,9 +508,9 @@ This Phase 1 documentation redesign was completed by a coordinated team of 7 spe
 - [FIX-CHECKLIST.md](FIX-CHECKLIST.md) - Action items
 
 **Production Deliverables:**
-- [docs/quickstart.md](../../docs/quickstart.md)
-- [docs/getting-started.md](../../docs/getting-started.md)
-- [docs/index.md](../../docs/index.md)
+- [internal-docs/quickstart.md](../../internal-docs/quickstart.md)
+- [internal-docs/getting-started.md](../../internal-docs/getting-started.md)
+- [internal-docs/index.md](../../internal-docs/index.md)
 - [mkdocs.yml](../../mkdocs.yml)
 
 **Quality Review:**

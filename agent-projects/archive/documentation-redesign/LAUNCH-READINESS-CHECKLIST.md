@@ -16,19 +16,19 @@
   - Files: working-with-employees.md, getting-started.md, quickstart.md, donut-mode.md
   - Find: "orange border", "thick orange border on the left side"
   - Replace: "orange left border" (with note about color variation)
-  - Validation: `grep -ri "orange border" docs/*.md docs/workflows/*.md`
+  - Validation: `grep -ri "orange border" internal-docs/*.md internal-docs/workflows/*.md`
 
 - [ ] **Fix #2: Standardize "File menu button" terminology** (5 min)
   - Files: quickstart.md, getting-started.md, exporting.md
   - Find: "File menu", "the File button"
   - Replace: "File menu button" (when referring to UI element)
-  - Validation: `grep -ri "file button\|file menu[^b]" docs/*.md`
+  - Validation: `grep -ri "file button\|file menu[^b]" internal-docs/*.md`
 
 - [ ] **Fix #3: Clarify "Apply button" vs. "export" action** (15 min)
   - Files: exporting.md, getting-started.md, workflows/talent-calibration.md
   - Rule: Use "Apply button" for UI element, "export" for action
   - Example: "Click the Apply button to export your changes"
-  - Validation: `grep -ri "export button" docs/*.md`
+  - Validation: `grep -ri "export button" internal-docs/*.md`
 
 - [ ] **Final validation:**
   - Run `mkdocs build --strict`
@@ -216,10 +216,10 @@
 cd c:\Git_Repos\9boxer
 
 # Verify terminology fixes
-grep -ri "orange border" docs/*.md docs/workflows/*.md
+grep -ri "orange border" internal-docs/*.md internal-docs/workflows/*.md
 # Should return 0 results after Fix #1
 
-grep -ri "export button" docs/*.md docs/workflows/*.md
+grep -ri "export button" internal-docs/*.md internal-docs/workflows/*.md
 # Should return 0 results after Fix #3
 
 # Build documentation
@@ -245,11 +245,11 @@ python -m mkdocs build --strict
 # Should have fewer warnings (screenshots resolved)
 
 # Verify all images load
-# Check docs/images/screenshots/ directory
-ls -R docs/images/screenshots/
+# Check internal-docs/images/screenshots/ directory
+ls -R internal-docs/images/screenshots/
 
 # Validate file sizes
-find docs/images/screenshots/ -name "*.png" -exec ls -lh {} \;
+find internal-docs/images/screenshots/ -name "*.png" -exec ls -lh {} \;
 # All should be <500KB
 ```
 

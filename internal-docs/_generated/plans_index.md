@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-27T04:27:59.507014+00:00
+**Updated**: 2025-12-27T06:06:21.563622+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## self-managing-docs-system

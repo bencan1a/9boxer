@@ -74,20 +74,20 @@ Fix the 3 important issues identified in the Phase 1 comprehensive review to ens
 1. **Export Terminology Mismatch**
    - **Issue:** Documentation says "Apply button" but UI shows "File menu → Apply X Changes to Excel"
    - **Files to update:**
-     - docs/getting-started.md
+     - internal-docs/getting-started.md
      - Search for all instances of "Apply button" or "Export button"
    - **Fix:** Update to accurately reflect the File menu workflow
    - **Verification:** Check against actual UI in running app
 
 2. **Anchor Link: Skip to Step 2**
    - **Issue:** Link in getting-started.md doesn't jump correctly
-   - **File:** docs/getting-started.md
+   - **File:** internal-docs/getting-started.md
    - **Fix:** Correct anchor name to match actual heading ID
    - **Verification:** Test link in rendered MkDocs
 
 3. **Common Tasks Link**
    - **Issue:** index.md links to non-existent anchor
-   - **File:** docs/index.md
+   - **File:** internal-docs/index.md
    - **Fix:** Remove link or create proper section/anchor
    - **Verification:** Ensure no broken links remain
 
@@ -115,8 +115,8 @@ Fix the 3 important issues identified in the Phase 1 comprehensive review to ens
 ### Deliverables
 
 1. **Fixed files:**
-   - docs/getting-started.md
-   - docs/index.md
+   - internal-docs/getting-started.md
+   - internal-docs/index.md
 
 2. **Validation report:**
    - Create `agent-projects/documentation-redesign/phase1-fixes-validation.md`
@@ -183,7 +183,7 @@ Create a comprehensive workflow guide for preparing, conducting, and following u
 ### Deliverables
 
 1. **New workflow guide:**
-   - Location: `docs/workflows/talent-calibration.md`
+   - Location: `internal-docs/workflows/talent-calibration.md`
    - Create workflows/ subdirectory if needed
 
 2. **Screenshot specifications:**
@@ -256,7 +256,7 @@ Create a focused guide on why and how users change ratings, with common scenario
 ### Deliverables
 
 1. **New task guide:**
-   - Location: `docs/tasks/making-changes.md`
+   - Location: `internal-docs/tasks/making-changes.md`
    - Create tasks/ subdirectory if needed
 
 2. **Screenshot specifications:**
@@ -329,7 +329,7 @@ Create a guide focused on documenting decisions through the notes system.
 ### Deliverables
 
 1. **New task guide:**
-   - Location: `docs/tasks/adding-notes.md`
+   - Location: `internal-docs/tasks/adding-notes.md`
 
 2. **Screenshot specifications:**
    - Create `agent-projects/documentation-redesign/adding-notes-screenshots.md`
@@ -365,12 +365,12 @@ Enhance existing feature pages with contextual "When to Use This" sections and r
 ### Requirements
 
 1. **Pages to update:**
-   - docs/filters.md
-   - docs/donut-mode.md
-   - docs/statistics.md
-   - docs/working-with-employees.md
-   - docs/tracking-changes.md
-   - docs/understanding-grid.md
+   - internal-docs/filters.md
+   - internal-docs/donut-mode.md
+   - internal-docs/statistics.md
+   - internal-docs/working-with-employees.md
+   - internal-docs/tracking-changes.md
+   - internal-docs/understanding-grid.md
 
 2. **Add to each page:**
 
@@ -439,12 +439,12 @@ Enhance existing feature pages with contextual "When to Use This" sections and r
 ### Deliverables
 
 1. **Updated feature pages:**
-   - docs/filters.md
-   - docs/donut-mode.md
-   - docs/statistics.md
-   - docs/working-with-employees.md
-   - docs/tracking-changes.md
-   - docs/understanding-grid.md
+   - internal-docs/filters.md
+   - internal-docs/donut-mode.md
+   - internal-docs/statistics.md
+   - internal-docs/working-with-employees.md
+   - internal-docs/tracking-changes.md
+   - internal-docs/understanding-grid.md
 
 2. **Content audit report:**
    - Create `agent-projects/documentation-redesign/feature-pages-update-report.md`
@@ -479,7 +479,7 @@ Create visual decision trees and comparison tables to help users choose between 
 ### Requirements
 
 1. **Create "Feature Selection Guide":**
-   - Location: `docs/guides/feature-guide.md`
+   - Location: `internal-docs/guides/feature-guide.md`
    - Decision tree: "Which feature should I use?"
    - Comparison tables: Feature vs. Feature
 
@@ -550,7 +550,7 @@ Create visual decision trees and comparison tables to help users choose between 
 ### Deliverables
 
 1. **Feature selection guide:**
-   - Location: `docs/guides/feature-guide.md`
+   - Location: `internal-docs/guides/feature-guide.md`
    - Decision tree with clear paths
    - 3+ comparison tables
    - Mermaid flowchart

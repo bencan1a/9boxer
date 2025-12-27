@@ -68,7 +68,7 @@ These screenshots demonstrate the ideal pattern - fast, reliable, isolated compo
   source: "storybook",  // Change from full-app
   workflow: "storybook-components",
   function: "generateFileUploadDialog",
-  path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
+  path: "resources/user-guide/internal-docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
   description: "File upload dialog with file selection input and upload button",
   storyId: "common-fileuploaddialog--default",
   cropping: "container",

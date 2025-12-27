@@ -248,7 +248,7 @@ All screenshots require post-capture annotation following these standards:
 All Phase 2 screenshots will be saved to:
 
 ```
-docs/images/screenshots/workflow/
+internal-docs/images/screenshots/workflow/
 ├── calibration-file-import.png
 ├── calibration-statistics-red-flags.png
 ├── calibration-intelligence-anomalies.png

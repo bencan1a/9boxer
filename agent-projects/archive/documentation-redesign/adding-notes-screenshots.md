@@ -1,7 +1,7 @@
 # Screenshot Specifications: Adding Notes & Documentation
 
 **Task:** 2.3 - Adding Notes & Documentation
-**Document:** docs/workflows/adding-notes.md
+**Document:** internal-docs/workflows/adding-notes.md
 **Total Screenshots Needed:** 3-4
 
 ---
@@ -237,7 +237,7 @@ Use image editing tool (Snagit, GIMP, Photoshop) to add:
 - [ ] Colors match 9Boxer app theme (dark mode)
 - [ ] File sizes optimized (<500KB each)
 - [ ] Alt text written for accessibility
-- [ ] Screenshots saved in correct directory (docs/images/screenshots/)
+- [ ] Screenshots saved in correct directory (internal-docs/images/screenshots/)
 
 ---
 

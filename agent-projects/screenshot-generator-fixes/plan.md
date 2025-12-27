@@ -305,8 +305,8 @@ After each fix:
 ## References
 
 ### Documentation
-- `docs/testing/playwright-best-practices-checklist.md` - Patterns to follow
-- `docs/testing/playwright-architecture-review.md` - Architecture context
+- `internal-docs/testing/playwright-best-practices-checklist.md` - Patterns to follow
+- `internal-docs/testing/playwright-architecture-review.md` - Architecture context
 - `frontend/playwright/helpers/ui.ts` - Existing helper functions
 
 ### E2E Tests to Reference

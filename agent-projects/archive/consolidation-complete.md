@@ -127,7 +127,7 @@ call %VENV_PATH%\Scripts\activate.bat
     src/                   ← React source
     electron/              ← Electron wrapper
   .github/workflows/       ← Updated CI/CD
-  docs/                    ← Documentation
+  internal-docs/                    ← Documentation
 ```
 
 ---

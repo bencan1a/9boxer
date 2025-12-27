@@ -1,6 +1,6 @@
 # Talent Calibration Workflow - Screenshot Specifications
 
-**Purpose:** Specify screenshots needed for `docs/workflows/talent-calibration.md`
+**Purpose:** Specify screenshots needed for `internal-docs/workflows/talent-calibration.md`
 
 **Created:** 2024-12-20
 **Status:** Specification Complete - Ready for Capture
@@ -17,7 +17,7 @@ This document specifies 6 screenshots needed for the talent calibration workflow
 
 **File Name:** `calibration-file-import.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show where to import data for calibration preparation
 
@@ -57,7 +57,7 @@ This document specifies 6 screenshots needed for the talent calibration workflow
 
 **File Name:** `calibration-statistics-red-flags.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show distribution table with common calibration red flags annotated
 
@@ -107,7 +107,7 @@ Create or use test data that demonstrates calibration issues:
 
 **File Name:** `calibration-intelligence-anomalies.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show Intelligence tab with statistical anomalies highlighted
 
@@ -156,7 +156,7 @@ Use Sample_People_List.xlsx OR create test data with:
 
 **File Name:** `calibration-filters-panel.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show filter panel with calibration-specific selections active
 
@@ -199,7 +199,7 @@ Use Sample_People_List.xlsx OR create test data with:
 
 **File Name:** `calibration-donut-mode-toggle.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show where to activate Donut Mode for center box validation
 
@@ -239,7 +239,7 @@ Use Sample_People_List.xlsx OR create test data with:
 
 **File Name:** `calibration-donut-mode-grid.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show the grid in Donut Mode with ghostly employee tiles and purple styling
 
@@ -293,7 +293,7 @@ Use Sample_People_List.xlsx OR create test data with:
 
 **File Name:** `calibration-export-results.png`
 
-**Location:** `docs/images/screenshots/workflow/`
+**Location:** `internal-docs/images/screenshots/workflow/`
 
 **Purpose:** Show exported Excel file with calibration notes and Modified in Session columns
 
@@ -370,7 +370,7 @@ Before capturing:
 - [ ] Prepare test data with calibration scenarios (grade inflation, anomalies)
 - [ ] Have annotation tools ready (Snagit, Greenshot, or GIMP)
 - [ ] Verify 9Boxer backend and frontend are running
-- [ ] Create `docs/images/screenshots/workflow/` directory if it doesn't exist
+- [ ] Create `internal-docs/images/screenshots/workflow/` directory if it doesn't exist
 
 During capture:
 
@@ -391,7 +391,7 @@ After capture:
 
 ## Integration Status
 
-**Markdown file:** `docs/workflows/talent-calibration.md` - ✅ Created
+**Markdown file:** `internal-docs/workflows/talent-calibration.md` - ✅ Created
 
 **Screenshot placeholders:** All 6 screenshot references added to markdown with:
 - Descriptive alt text

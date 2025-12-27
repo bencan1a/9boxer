@@ -354,7 +354,7 @@ Click Action:
 
 ## Color Palette Reference
 
-From design system (`docs/design-system/design-principles.md`):
+From design system (`internal-docs/design-system/design-principles.md`):
 
 ### Grid Box Colors (to match in Current Assessment)
 - **High Performer** (6, 8, 9): Purple `#d4c4e8` (light), `#4a3a5c` (dark)

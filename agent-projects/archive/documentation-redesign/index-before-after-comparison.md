@@ -1,6 +1,6 @@
 # Home Page Transformation: Before vs. After
 
-**Purpose:** Visual comparison of structural and content changes to `docs/index.md`
+**Purpose:** Visual comparison of structural and content changes to `internal-docs/index.md`
 **Task:** 1.3 - Revise Home Page
 **Date:** 2024-12-20
 

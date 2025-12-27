@@ -342,12 +342,12 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 
 **Development Guides:**
 - [GITHUB_AGENT.md](GITHUB_AGENT.md) - Quick start for AI agents and developers
-- [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - GitHub Copilot environment setup (automated)
+- [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) - GitHub Copilot environment setup (automated)
 - [AGENTS.md](AGENTS.md) - Development workflow and best practices
 - [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [docs/QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md) - Command quick reference
-- [docs/design-system/](docs/design-system/) - **Design system documentation** (UI components, patterns, accessibility)
+- [internal-docs/QUICK_REFERENCE.md](internal-docs/QUICK_REFERENCE.md) - Command quick reference
+- [internal-docs/design-system/](internal-docs/design-system/) - **Design system documentation** (UI components, patterns, accessibility)
 
 ## License
 

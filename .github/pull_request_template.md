@@ -61,7 +61,7 @@ Related to #
 - [ ] Screenshot workflows added/updated in `frontend/playwright/screenshots/workflows/`
 - [ ] Screenshot IDs registered in `frontend/playwright/screenshots/config.ts`
 - [ ] Screenshots generated: `cd frontend && npm run screenshots:generate <screenshot-ids>`
-- [ ] Generated screenshots committed in `resources/user-guide/docs/images/screenshots/`
+- [ ] Generated screenshots committed in `resources/user-guide/internal-docs/images/screenshots/`
 - [ ] Documentation references screenshots with correct paths
 
 ### Visual Verification

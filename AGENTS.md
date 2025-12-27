@@ -111,7 +111,7 @@ This is a monorepo with **two separate ecosystems**:
 - `CLAUDE.md` - Claude Code guidance (you are reading this type of file)
 - `BUILD.md` - Complete build instructions
 - `DEPLOYMENT.md` - Distribution and deployment guide
-- `docs/facts.json` - Highest authority source of truth
+- `internal-docs/facts.json` - Highest authority source of truth
 
 ## 📁 FILE ORGANIZATION
 
@@ -138,7 +138,7 @@ This is a monorepo with **two separate ecosystems**:
     - short bullet point
   ```
 
-### Permanent Documentation → `docs/`
+### Permanent Documentation → `internal-docs/`
 - API documentation
 - Architecture guides
 - Deployment guides
@@ -448,19 +448,19 @@ This project uses an automated documentation generation system.
 |--------|---------|-------------|------------------|
 | `agent-tmp/` | Scratch / debug / intermediates | Ephemeral (auto-cleaned) | ❌ No (gitignored) |
 | `agent-projects/<project>/` | Ephemeral plan docs for refactors, experiments | Short-lived | ✅ Yes |
-| `docs/` | Permanent, canonical documentation | Persistent | ✅ Yes |
-| `docs/_generated/` | Auto-generated documentation | Auto-updated | ✅ Yes (auto-committed) |
+| `internal-docs/` | Permanent, canonical documentation | Persistent | ✅ Yes |
+| `internal-docs/_generated/` | Auto-generated documentation | Auto-updated | ✅ Yes (auto-committed) |
 
 ### Primary Documentation Files for Agents
 
-- **`docs/CONTEXT.md`** - Single canonical context file; main entry point
-- **`docs/facts.json`** - Stable, hand-maintained truths (HIGHEST AUTHORITY)
-- **`docs/SUMMARY.md`** - Quick index of all documentation components
-- **`docs/_generated/`** - Auto-generated API docs, schemas, and active plans
+- **`internal-docs/CONTEXT.md`** - Single canonical context file; main entry point
+- **`internal-docs/facts.json`** - Stable, hand-maintained truths (HIGHEST AUTHORITY)
+- **`internal-docs/SUMMARY.md`** - Quick index of all documentation components
+- **`internal-docs/_generated/`** - Auto-generated API docs, schemas, and active plans
 
 ### Trust Hierarchy (when information conflicts)
-1. `docs/facts.json` (highest authority)
-2. Permanent content in `docs/`
+1. `internal-docs/facts.json` (highest authority)
+2. Permanent content in `internal-docs/`
 3. Active plans summaries (hints only)
 
 ### Documentation Command
@@ -479,7 +479,7 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 - [README.md](README.md) - Project overview and quick start
 - [USER_GUIDE.md](USER_GUIDE.md) - End user guide
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [docs/facts.json](docs/facts.json) - Highest authority source of truth
+- [internal-docs/facts.json](internal-docs/facts.json) - Highest authority source of truth
 - [.github/agents/test.md](.github/agents/test.md) - Comprehensive testing guidance
 
 ## 🎓 PROJECT PHILOSOPHY
@@ -500,4 +500,4 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 2. This is a standalone desktop app, not a web app
 3. Build backend BEFORE building Electron app
 4. Test in Electron app, not just web mode
-5. Trust `docs/facts.json` as highest authority
+5. Trust `internal-docs/facts.json` as highest authority

@@ -84,8 +84,8 @@ Apply all required and recommended fixes identified in the Phase 2 comprehensive
 1. **Fix Export Button Terminology** (10 minutes)
    - **Issue:** 2 references still say "Export button" instead of correct "File menu → Apply Changes"
    - **Locations:**
-     - `docs/workflows/adding-notes.md` lines 206, 344
-     - `docs/workflows/making-changes.md` line 334
+     - `internal-docs/workflows/adding-notes.md` lines 206, 344
+     - `internal-docs/workflows/making-changes.md` line 334
    - **Fix:** Change to "File menu → Apply X Changes to Excel"
    - **Validation:** Search all Phase 2 files for "export button" (case insensitive)
 
@@ -100,7 +100,7 @@ Apply all required and recommended fixes identified in the Phase 2 comprehensive
 
 3. **Remove "Coming Soon" References** (5 minutes)
    - **Issue:** Several pages reference calibration workflow as "(coming soon)"
-   - **Reality:** Workflow exists at `docs/workflows/talent-calibration.md`
+   - **Reality:** Workflow exists at `internal-docs/workflows/talent-calibration.md`
    - **Locations:** Search all files for "coming soon"
    - **Fix:** Remove "(coming soon)" and verify links work
 
@@ -292,7 +292,7 @@ Add realistic user scenarios to each feature page to help users see themselves i
    - Executive (James) - reviewing leadership bench strength
    - First-time User (Alex) - learning the system
 
-   Document these in docs/user-personas.md with:
+   Document these in internal-docs/user-personas.md with:
    - Name and role
    - Primary goals
    - Common workflows
@@ -330,7 +330,7 @@ Add realistic user scenarios to each feature page to help users see themselves i
    - Ensure realistic timeframes mentioned
 
 ### Deliverable
-- docs/user-personas.md (NEW - 5 personas)
+- internal-docs/user-personas.md (NEW - 5 personas)
 - 15-20 scenario boxes added across 6 feature pages
 - Scenario placement map (which persona used where)
 - Validation report confirming scenarios work in app
@@ -395,7 +395,7 @@ Capture remaining screenshots for feature pages and scenario illustrations.
    - PNG format, optimized <500KB per image
    - Descriptive alt text for accessibility
    - File naming: `[page]-[feature]-[state]-[number].png`
-   - Organize in docs/images/screenshots/[page]/ folders
+   - Organize in internal-docs/images/screenshots/[page]/ folders
 
 5. **Manual captures:**
    - Excel screenshots (2) must be done manually outside app
@@ -418,7 +418,7 @@ Capture remaining screenshots for feature pages and scenario illustrations.
 **Dependencies:** None (can run in parallel)
 
 ### Objective
-Create docs/faq.md addressing common questions and edge cases not covered in main documentation.
+Create internal-docs/faq.md addressing common questions and edge cases not covered in main documentation.
 
 ### Requirements
 
@@ -492,7 +492,7 @@ Create docs/faq.md addressing common questions and edge cases not covered in mai
    - Link from index.md and getting-started.md
 
 ### Deliverable
-- docs/faq.md (NEW - 25-35 Q&A pairs)
+- internal-docs/faq.md (NEW - 25-35 Q&A pairs)
 - Updated mkdocs.yml with FAQ in navigation
 - Cross-reference validation report
 - Suggested screenshot list (if any needed)
@@ -585,7 +585,7 @@ Transform tips.md into comprehensive best-practices.md with actionable guidance 
    - Link from getting-started.md "What's Next"
 
 ### Deliverable
-- docs/best-practices.md (REVISED from tips.md)
+- internal-docs/best-practices.md (REVISED from tips.md)
 - Content mapping (old tips → new structure)
 - Cross-reference validation
 - Updated mkdocs.yml navigation

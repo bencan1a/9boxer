@@ -149,7 +149,7 @@ completion_notes: |
 ### Phase 4: Documentation Updates
 
 **Files to update:**
-- `docs/design-system/layout-patterns.md` - Document floating controls exception
+- `internal-docs/design-system/layout-patterns.md` - Document floating controls exception
 - `DESIGN_SYSTEM.md` - Update UI zones section
 - Add note explaining why view controls float vs. toolbar placement
 
@@ -191,7 +191,7 @@ This is an **intentional, documented exception** to the design system, not an ov
 - [ ] `frontend/src/components/common/ZoomControls.tsx`
 - [ ] `frontend/src/i18n/locales/en/translation.json`
 - [ ] `frontend/src/i18n/locales/es/translation.json`
-- [ ] `docs/design-system/layout-patterns.md`
+- [ ] `internal-docs/design-system/layout-patterns.md`
 - [ ] `DESIGN_SYSTEM.md`
 
 ### Tests to Update/Create

@@ -303,11 +303,11 @@ The `<details>` HTML element is well-supported across devices:
 
 **Git status:**
 ```
-M docs/exporting.md
-M docs/filters.md
-M docs/statistics.md
-M docs/tracking-changes.md
-M docs/working-with-employees.md
+M internal-docs/exporting.md
+M internal-docs/filters.md
+M internal-docs/statistics.md
+M internal-docs/tracking-changes.md
+M internal-docs/working-with-employees.md
 ```
 
 ---

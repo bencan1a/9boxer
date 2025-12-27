@@ -48,7 +48,7 @@ jobs:
           FRONTEND_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/(src/|package.*\.json|tsconfig\.json|vite\.config\.ts)' || echo "")
           UI_CHANGED=$(echo "$FILES_CHANGED" | grep -E '^frontend/src/(components/|pages/|App\.tsx)' || echo "")
 
-          # Skip tests if only docs/README/markdown files changed
+          # Skip tests if only internal-docs/README/markdown files changed
           DOCS_ONLY=$(echo "$FILES_CHANGED" | grep -v -E '\.(py|pyi|yml|toml|txt|ts|tsx|js|jsx|json)$' || echo "docs-only")
 
           if [ -n "$PYTHON_CHANGED" ] || [ -n "$WORKFLOW_CHANGED" ] || [ -n "$DEPS_CHANGED" ] || [ -n "$FRONTEND_CHANGED" ]; then

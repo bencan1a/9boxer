@@ -3,7 +3,7 @@
 **Document Version:** 1.0
 **Created:** 2024-12-20
 **For:** Task 1.1 - Quickstart Page
-**Page:** `docs/quickstart.md`
+**Page:** `internal-docs/quickstart.md`
 
 ---
 
@@ -223,7 +223,7 @@ All screenshots must follow these specs (from `screenshot-specifications.md`):
 - **Format:** PNG with transparency
 - **Resolution:** 2400px width, 144 DPI (2x for retina)
 - **File size:** Optimized, ideally <500KB each
-- **Storage:** `docs/images/screenshots/quickstart/` folder
+- **Storage:** `internal-docs/images/screenshots/quickstart/` folder
 
 ### Annotation Colors
 
@@ -268,8 +268,8 @@ Before considering screenshots complete:
 - [ ] All annotations applied per specifications
 - [ ] All files named correctly
 - [ ] All files optimized (<500KB each)
-- [ ] All files saved to `docs/images/screenshots/quickstart/`
-- [ ] All alt text added to `docs/quickstart.md`
+- [ ] All files saved to `internal-docs/images/screenshots/quickstart/`
+- [ ] All alt text added to `internal-docs/quickstart.md`
 - [ ] All screenshots render correctly in MkDocs preview
 - [ ] Annotations are legible when scaled down 50%
 
@@ -279,7 +279,7 @@ Before considering screenshots complete:
 
 1. Create screenshots following these specifications (Task 1.5)
 2. Save to appropriate folder structure
-3. Update `docs/quickstart.md` with final image references
+3. Update `internal-docs/quickstart.md` with final image references
 4. Validate rendering in MkDocs
 
 ---

@@ -64,7 +64,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - **Deliverable:** Fully typed tokens.ts with all design constants
 
 - [ ] **1.2 Document design tokens**
-  - File: `docs/design-system/design-tokens.md`
+  - File: `internal-docs/design-system/design-tokens.md`
   - Document all token categories with usage examples
   - Include light/dark mode color tables with hex codes
   - Add migration guide for converting hardcoded values
@@ -99,14 +99,14 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
 #### Tasks
 
 - [x] **2.1 Write design principles documentation** ✅ COMPLETED
-  - File: `docs/design-system/design-principles.md` (560 lines)
+  - File: `internal-docs/design-system/design-principles.md` (560 lines)
   - Core philosophy (clarity, data integrity, efficiency, accessibility, consistency)
   - Interaction principles (progressive disclosure, feedback, graceful degradation)
   - Visual design principles (color usage, typography, spacing, motion)
   - Component design guidelines (buttons, forms, tables, empty states)
 
 - [x] **2.1.5 Create component inventory** ✅ COMPLETED (BONUS - Inserted)
-  - File: `docs/design-system/component-inventory.md` (450 lines)
+  - File: `internal-docs/design-system/component-inventory.md` (450 lines)
   - Complete catalog of all 32 components
   - Component hierarchy tree (visual nesting)
   - Reusability matrix (generic vs app-specific)
@@ -114,7 +114,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Component index and statistics
 
 - [x] **2.2 Document component patterns and guidelines** ✅ COMPLETED
-  - File: `docs/design-system/component-guidelines.md` (850 lines)
+  - File: `internal-docs/design-system/component-guidelines.md` (850 lines)
   - Component composition patterns (container/presentational, compound, provider)
   - When to create new components (decision tree, size/complexity thresholds)
   - Common UI patterns (empty states, loading, errors, notifications, dialogs, forms, drag-drop)
@@ -125,7 +125,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Testing patterns (unit testing with Vitest)
 
 - [x] **2.3 Create accessibility standards guide** ✅ COMPLETED
-  - File: `docs/design-system/accessibility-standards.md` (820 lines)
+  - File: `internal-docs/design-system/accessibility-standards.md` (820 lines)
   - WCAG 2.1 Level AA requirements (all 4 principles: Perceivable, Operable, Understandable, Robust)
   - ARIA patterns and best practices (labels, states, live regions)
   - Keyboard navigation standards (tab order, focus management, shortcuts)
@@ -137,7 +137,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Priority action items (HIGH/MEDIUM/LOW with implementation guidance)
 
 - [x] **2.4a Document layout patterns** ✅ COMPLETED
-  - File: `docs/design-system/layout-patterns.md` (630 lines)
+  - File: `internal-docs/design-system/layout-patterns.md` (630 lines)
   - Complete application hierarchy (visual component tree)
   - Layout grid system (5-zone layout with dimensions)
   - Detailed UI zone anatomy (Toolbar, FilterDrawer, GridArea, RightPanel)
@@ -147,7 +147,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Responsive considerations (auto-collapse behavior)
 
 - [x] **2.4b Document interaction patterns** ✅ COMPLETED
-  - File: `docs/design-system/interaction-patterns.md` (680 lines)
+  - File: `internal-docs/design-system/interaction-patterns.md` (680 lines)
   - Animation & transition standards (durations, easing, properties)
   - Drag-and-drop patterns (visual feedback, ghost overlay, drop zones)
   - Feedback mechanisms (loading states, notifications, progress indicators)
@@ -231,7 +231,7 @@ Implement a comprehensive design system for 9Boxer to ensure beautiful, consiste
   - Link to design system docs
 
 - [ ] **4.4 Create design system README and index**
-  - File: `docs/design-system/README.md`
+  - File: `internal-docs/design-system/README.md`
   - Overview of design system
   - Link to all documents
   - Quick start guide
@@ -330,13 +330,13 @@ These can be tackled independently:
 **Current Files to Reference:**
 - `frontend/src/theme/theme.ts` - Current theme configuration
 - `frontend/src/components/intelligence/README.md` - Good component docs example
-- `docs/contributing/screenshot-guide.md` - Visual content standards
-- `docs/contributing/voice-and-tone-guide.md` - Writing style guide
+- `internal-docs/contributing/screenshot-guide.md` - Visual content standards
+- `internal-docs/contributing/voice-and-tone-guide.md` - Writing style guide
 
 **External Resources:**
 - [Material-UI Design Tokens](https://mui.com/material-ui/customization/theming/)
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Storybook Best Practices](https://storybook.js.org/docs/react/writing-stories/introduction)
+- [Storybook Best Practices](https://storybook.js.org/internal-docs/react/writing-stories/introduction)
 
 ---
 

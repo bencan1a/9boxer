@@ -3,17 +3,17 @@
 **Welcome to 9Boxer!** This guide helps GitHub Agent (and GitHub Copilot) work efficiently with this repository.
 
 > **Quick Links:**
-> 🤖 [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)
+> 🤖 [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)
 > 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 > 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices
-> 📚 [docs/CONTEXT.md](docs/CONTEXT.md) - Comprehensive project context
-> 🎯 [docs/facts.json](docs/facts.json) - Source of truth (highest authority)
+> 📚 [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) - Comprehensive project context
+> 🎯 [internal-docs/facts.json](internal-docs/facts.json) - Source of truth (highest authority)
 
 ---
 
 ## 🤖 Automated Setup (GitHub Copilot)
 
-**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! See [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) for details.
+**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! See [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) for details.
 
 The automated setup includes:
 - ✅ Python 3.13 virtual environment at `.venv/`
@@ -162,7 +162,7 @@ npm run format                   # Prettier
 │   ├── playwright/              ← E2E tests (12 tests)
 │   ├── dist/                    ← Vite build output
 │   └── release/                 ← Electron Builder output (installers)
-├── docs/                        ← Permanent documentation
+├── internal-docs/                        ← Permanent documentation
 │   ├── facts.json               ← Source of truth (HIGHEST AUTHORITY)
 │   ├── CONTEXT.md               ← Comprehensive project context
 │   └── _generated/              ← Auto-generated docs
@@ -213,11 +213,11 @@ npm run format                   # Prettier
 
 **User Documentation:**
 - Edit `USER_GUIDE.md` in project root
-- Follow voice & tone guide: `docs/contributing/voice-and-tone-guide.md`
+- Follow voice & tone guide: `internal-docs/contributing/voice-and-tone-guide.md`
 - Regenerate HTML: `python tools/convert_user_guide.py`
 
 **Developer Documentation:**
-- Permanent docs → `docs/` directory
+- Permanent docs → `internal-docs/` directory
 - Temporary work → `agent-tmp/` (gitignored)
 - Project plans → `agent-projects/<project-name>/`
 
@@ -449,14 +449,14 @@ git commit -m "message"
 | File | Purpose | When to Use |
 |------|---------|-------------|
 | **GITHUB_AGENT.md** | This file | First stop, quick reference |
-| **docs/facts.json** | Source of truth | When information conflicts (highest authority) |
+| **internal-docs/facts.json** | Source of truth | When information conflicts (highest authority) |
 | **AGENTS.md** | Development workflow | Detailed development guidance |
 | **CLAUDE.md** | Technical details | Architecture, build process, quality standards |
 
 ### For Deep Dives
 | File | Purpose |
 |------|---------|
-| **docs/CONTEXT.md** | Comprehensive project context (~150KB) |
+| **internal-docs/CONTEXT.md** | Comprehensive project context (~150KB) |
 | **BUILD.md** | Complete build instructions |
 | **DEPLOYMENT.md** | Distribution and deployment guide |
 | **USER_GUIDE.md** | End user documentation |
@@ -471,8 +471,8 @@ git commit -m "message"
 | **.github/agents/documentation.md** | Technical writing guide |
 
 ### Trust Hierarchy (when information conflicts)
-1. **docs/facts.json** (HIGHEST AUTHORITY)
-2. Permanent documentation in `docs/`
+1. **internal-docs/facts.json** (HIGHEST AUTHORITY)
+2. Permanent documentation in `internal-docs/`
 3. Active plans in `agent-projects/` (hints only)
 
 ---
@@ -541,8 +541,8 @@ Runs automatically:
 |--------|---------|-------------|-----|
 | `agent-tmp/` | Scratch/debug/intermediates | Ephemeral (7 days) | ❌ No (gitignored) |
 | `agent-projects/<project>/` | Active project plans | Short-lived (<21 days) | ✅ Yes |
-| `docs/` | Permanent documentation | Persistent | ✅ Yes |
-| `docs/_generated/` | Auto-generated docs | Auto-updated | ✅ Yes |
+| `internal-docs/` | Permanent documentation | Persistent | ✅ Yes |
+| `internal-docs/_generated/` | Auto-generated docs | Auto-updated | ✅ Yes |
 
 **Rules:**
 - **DO NOT** create analysis reports in project root
@@ -591,10 +591,10 @@ Before considering yourself onboarded:
 
 ## 📞 Need Help?
 
-1. Check [docs/facts.json](docs/facts.json) - source of truth
+1. Check [internal-docs/facts.json](internal-docs/facts.json) - source of truth
 2. Review [CLAUDE.md](CLAUDE.md) - technical details
 3. Check [AGENTS.md](AGENTS.md) - workflow guidance
-4. Search [docs/CONTEXT.md](docs/CONTEXT.md) - comprehensive context
+4. Search [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) - comprehensive context
 5. Review [agent-projects/](agent-projects/) - recent work and patterns
 
 ---

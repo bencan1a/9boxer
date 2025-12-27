@@ -2,7 +2,7 @@
 
 **Completed:** 2024-12-20
 **Agent:** Claude Code
-**Task:** Transform `docs/index.md` to prioritize quick start with clear user paths
+**Task:** Transform `internal-docs/index.md` to prioritize quick start with clear user paths
 
 ---
 
@@ -451,7 +451,7 @@ mkdocs serve
 
 **Deliverables:**
 
-- ✅ `docs/index.md` - Revised home page
+- ✅ `internal-docs/index.md` - Revised home page
 - ✅ Screenshot specifications document
 - ✅ Link validation report
 - ✅ Task completion summary (this document)

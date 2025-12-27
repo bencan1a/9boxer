@@ -47,8 +47,8 @@
 ### Quickstart Page Screenshots (5)
 
 #### 1. quickstart-excel-sample.png
-**Location:** `docs/images/screenshots/quickstart/`
-**Used in:** `docs/quickstart.md` - Step showing Excel file format
+**Location:** `internal-docs/images/screenshots/quickstart/`
+**Used in:** `internal-docs/quickstart.md` - Step showing Excel file format
 **Status:** MANUAL CAPTURE REQUIRED
 **Dimensions:** 1800px width (detail callout)
 
@@ -74,8 +74,8 @@ Sample Excel spreadsheet showing the 4 required columns with annotations highlig
 ---
 
 #### 2. quickstart-file-menu-button.png
-**Location:** `docs/images/screenshots/quickstart/`
-**Used in:** `docs/quickstart.md` - Showing where to upload
+**Location:** `internal-docs/images/screenshots/quickstart/`
+**Used in:** `internal-docs/quickstart.md` - Showing where to upload
 **Status:** FAILED - selector issue (app-bar not found)
 **Dimensions:** Partial UI (1800px width)
 
@@ -103,8 +103,8 @@ File menu button in empty state, before any data is loaded.
 ---
 
 #### 3. quickstart-upload-dialog.png
-**Location:** `docs/images/screenshots/quickstart/`
-**Used in:** `docs/quickstart.md` - Upload process
+**Location:** `internal-docs/images/screenshots/quickstart/`
+**Used in:** `internal-docs/quickstart.md` - Upload process
 **Status:** ✅ CAPTURED (113.9 KB)
 **Dimensions:** Partial UI (1800px width)
 
@@ -124,8 +124,8 @@ File upload dialog showing file selection interface.
 ---
 
 #### 4. quickstart-grid-populated.png
-**Location:** `docs/images/screenshots/quickstart/`
-**Used in:** `docs/quickstart.md` - Success state
+**Location:** `internal-docs/images/screenshots/quickstart/`
+**Used in:** `internal-docs/quickstart.md` - Success state
 **Status:** ✅ CAPTURED (70.2 KB)
 **Dimensions:** Grid element (2400px viewport)
 
@@ -146,8 +146,8 @@ Populated 9-box grid after successful data upload.
 ---
 
 #### 5. quickstart-success-annotated.png
-**Location:** `docs/images/screenshots/quickstart/`
-**Used in:** `docs/quickstart.md` - Final success confirmation
+**Location:** `internal-docs/images/screenshots/quickstart/`
+**Used in:** `internal-docs/quickstart.md` - Final success confirmation
 **Status:** ✅ CAPTURED (113.9 KB)
 **Dimensions:** Full page (2400x1600)
 
@@ -169,8 +169,8 @@ Success state with checkmarks showing upload completion.
 ### Getting Started / Workflow Screenshots (11)
 
 #### 6. workflow-grid-axes-labeled.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Understanding the grid
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Understanding the grid
 **Status:** ✅ CAPTURED (70.2 KB)
 **Dimensions:** Grid element (2400px)
 
@@ -189,8 +189,8 @@ Grid with annotated axes showing Performance and Potential dimensions.
 ---
 
 #### 7. workflow-statistics-tab.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Reviewing distribution
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Reviewing distribution
 **Status:** FAILED - dialog was blocking interaction
 **Dimensions:** Right panel (1800px)
 
@@ -213,8 +213,8 @@ Statistics tab showing employee distribution across grid positions.
 ---
 
 #### 8-10. workflow-drag-drop-sequence-[1-3].png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - How to move employees
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - How to move employees
 **Status:**
 - Panel 1: FAILED
 - Panel 2: ✅ CAPTURED (70.2 KB) - needs annotations
@@ -239,8 +239,8 @@ Three-panel sequence showing drag-and-drop workflow.
 ---
 
 #### 11. workflow-employee-modified.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Modified state indicator
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Modified state indicator
 **Status:** FAILED
 **Dimensions:** Detail callout (1200px)
 
@@ -260,8 +260,8 @@ Close-up of employee tile with yellow highlight indicating modification.
 ---
 
 #### 12. workflow-employee-timeline.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Viewing change history
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Viewing change history
 **Status:** FAILED
 **Dimensions:** Right panel (1800px)
 
@@ -281,8 +281,8 @@ Employee details panel showing timeline of movements.
 ---
 
 #### 13. workflow-changes-tab.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Adding notes
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Adding notes
 **Status:** FAILED - dialog blocking
 **Dimensions:** Right panel (1800px)
 
@@ -302,8 +302,8 @@ Changes tab with notes field for documenting changes.
 ---
 
 #### 14. workflow-apply-button.png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Exporting changes
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Exporting changes
 **Status:** FAILED - selector issue
 **Dimensions:** Toolbar area (1200px)
 
@@ -323,8 +323,8 @@ Export button with badge showing change count.
 ---
 
 #### 15-16. workflow-export-excel-[1-2].png
-**Location:** `docs/images/screenshots/workflow/`
-**Used in:** `docs/getting-started.md` - Export results
+**Location:** `internal-docs/images/screenshots/workflow/`
+**Used in:** `internal-docs/getting-started.md` - Export results
 **Status:**
 - excel-1: NOT CAPTURED (export dialog)
 - excel-2: MANUAL EXCEL SCREENSHOT NEEDED
@@ -350,8 +350,8 @@ Export button with badge showing change count.
 ### Index/Home Page Screenshots (2)
 
 #### 17. hero-grid-sample.png
-**Location:** `docs/images/screenshots/index/`
-**Used in:** `docs/index.md` - Hero image
+**Location:** `internal-docs/images/screenshots/index/`
+**Used in:** `internal-docs/index.md` - Hero image
 **Status:** ✅ CAPTURED (70.2 KB)
 **Dimensions:** Grid element (2400px)
 
@@ -368,8 +368,8 @@ Clean, professional view of populated grid - NO ANNOTATIONS.
 ---
 
 #### 18. index-quick-win-preview.png
-**Location:** `docs/images/screenshots/index/`
-**Used in:** `docs/index.md` - Quick win preview
+**Location:** `internal-docs/images/screenshots/index/`
+**Used in:** `internal-docs/index.md` - Quick win preview
 **Status:** ✅ CAPTURED (113.9 KB)
 **Dimensions:** Full page (2400x1600)
 
@@ -391,7 +391,7 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 ### Original Screenshots (2)
 
 #### 19. grid-normal.png
-**Location:** `docs/images/screenshots/`
+**Location:** `internal-docs/images/screenshots/`
 **Used in:** (original test screenshot)
 **Status:** ✅ CAPTURED (68.5 KB)
 **Description:** Standard grid view
@@ -399,7 +399,7 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 ---
 
 #### 20. employee-tile-normal.png
-**Location:** `docs/images/screenshots/`
+**Location:** `internal-docs/images/screenshots/`
 **Used in:** (original test screenshot)
 **Status:** FAILED
 **Description:** Close-up of employee tile
@@ -408,14 +408,14 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 
 ## Files by Directory
 
-### `docs/images/screenshots/quickstart/`
+### `internal-docs/images/screenshots/quickstart/`
 1. quickstart-excel-sample.png (MANUAL)
 2. quickstart-file-menu-button.png (FAILED)
 3. quickstart-upload-dialog.png (✅ 113.9 KB)
 4. quickstart-grid-populated.png (✅ 70.2 KB)
 5. quickstart-success-annotated.png (✅ 113.9 KB)
 
-### `docs/images/screenshots/workflow/`
+### `internal-docs/images/screenshots/workflow/`
 1. workflow-grid-axes-labeled.png (✅ 70.2 KB)
 2. workflow-statistics-tab.png (FAILED)
 3. workflow-drag-drop-sequence-1.png (FAILED)
@@ -428,11 +428,11 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 10. workflow-export-excel-1.png (NOT CAPTURED)
 11. workflow-export-excel-2.png (MANUAL)
 
-### `docs/images/screenshots/index/`
+### `internal-docs/images/screenshots/index/`
 1. hero-grid-sample.png (✅ 70.2 KB)
 2. index-quick-win-preview.png (✅ 113.9 KB)
 
-### `docs/images/screenshots/` (root)
+### `internal-docs/images/screenshots/` (root)
 1. grid-normal.png (✅ 68.5 KB)
 2. employee-tile-normal.png (FAILED)
 
@@ -532,7 +532,7 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 **Semi-Automated:** 1 screenshot (donut grid - needs manual drag interaction)
 
 **Tool Methods Added:** 16 new screenshot capture methods
-**File Locations:** All in `docs/images/screenshots/workflow/`
+**File Locations:** All in `internal-docs/images/screenshots/workflow/`
 
 ---
 
@@ -553,7 +553,7 @@ Success state showing "Your grid in 2 minutes" with success indicators.
 5. Zoom to 120-150% for readability
 6. Capture screenshot showing relevant columns
 7. Crop to focus on data (remove Excel ribbon if desired)
-8. Save as PNG in `docs/images/screenshots/workflow/` or `quickstart/`
+8. Save as PNG in `internal-docs/images/screenshots/workflow/` or `quickstart/`
 9. Optimize with TinyPNG (<500KB)
 
 ### 3-Panel Drag Sequence Composite

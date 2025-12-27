@@ -82,7 +82,7 @@
 
 **Your role**: Implement with tests, following established patterns.
 
-**Testing Strategy** (see `.github/agents/test.md` and `docs/testing/`):
+**Testing Strategy** (see `.github/agents/test.md` and `internal-docs/testing/`):
 - **TDD where practical**: Write tests first
 - **Test naming**: `test_function_when_condition_then_expected`
 - **Coverage target**: >80% (enforced by CI on changed files)
@@ -154,16 +154,16 @@ make fix                            # Auto-fix formatting and linting
 
 **Documentation Updates**:
 - [ ] **User documentation** (if user-facing change):
-  - Update `resources/user-guide/docs/*.md`
-  - Follow voice & tone guide (`docs/contributing/voice-and-tone-guide.md`)
-  - Follow documentation writing guide (`docs/contributing/documentation-writing-guide.md`)
+  - Update `resources/user-guide/internal-docs/*.md`
+  - Follow voice & tone guide (`internal-docs/contributing/voice-and-tone-guide.md`)
+  - Follow documentation writing guide (`internal-docs/contributing/documentation-writing-guide.md`)
 - [ ] **Screenshots** (if UI change):
   - Update `frontend/playwright/screenshots/` automation
   - Run `npm run screenshots:generate` to regenerate
-  - Follow screenshot guide (`docs/contributing/screenshot-guide.md`)
+  - Follow screenshot guide (`internal-docs/contributing/screenshot-guide.md`)
 - [ ] **Architecture docs** (if significant architectural change):
-  - Update relevant docs in `docs/`
-  - Add to `docs/facts.json` if it's a stable project truth
+  - Update relevant docs in `internal-docs/`
+  - Add to `internal-docs/facts.json` if it's a stable project truth
 - [ ] **API docs** (auto-generated from docstrings):
   - Ensure docstrings are comprehensive
   - Will auto-update on next `python tools/build_context.py` run
@@ -254,16 +254,16 @@ This allows future agents to pick up where you left off without losing context.
 - `CLAUDE.md` - Project overview and critical context
 - `AGENTS.md` - Development workflow essentials
 - `.github/agents/test.md` - Backend testing strategies
-- `docs/testing/` - Comprehensive testing documentation
+- `internal-docs/testing/` - Comprehensive testing documentation
 
 **For specific tasks**:
 - Architecture decisions → `.github/agents/architecture.md`
 - Debugging → `.github/agents/debug.md`
-- User documentation → `docs/contributing/documentation-writing-guide.md`
+- User documentation → `internal-docs/contributing/documentation-writing-guide.md`
 
 **Generated context**:
-- `docs/CONTEXT.md` - Comprehensive project context (auto-generated)
-- `docs/facts.json` - Stable project truths (highest authority)
+- `internal-docs/CONTEXT.md` - Comprehensive project context (auto-generated)
+- `internal-docs/facts.json` - Stable project truths (highest authority)
 
 ## Remember
 

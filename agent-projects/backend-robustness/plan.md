@@ -833,7 +833,7 @@ app.on("before-quit", async (event) => {
 - Playwright port detection: `frontend/playwright/global-setup.ts:50-56`
 
 ### Documentation
-- [Electron IPC Documentation](https://www.electronjs.org/docs/latest/tutorial/ipc)
+- [Electron IPC Documentation](https://www.electronjs.org/internal-docs/latest/tutorial/ipc)
 - [FastAPI Uvicorn Configuration](https://www.uvicorn.org/settings/)
 - [Axios Retry Patterns](https://github.com/softonic/axios-retry)
 

@@ -26,26 +26,26 @@ Successfully implemented the automated documentation management system as specif
    - Automatic temp file cleanup
 
 3. **.github/workflows/docs.yml** (2,455 bytes)
-   - Triggers on push (src/, docs/, agent-plans/, tools/)
+   - Triggers on push (src/, internal-docs/, agent-plans/, tools/)
    - Scheduled nightly at 2 AM UTC
    - Auto-commits documentation updates
    - Build summary in job output
 
-4. **docs/facts.json** (1,370 bytes)
+4. **internal-docs/facts.json** (1,370 bytes)
    - Stable project truths
    - Tool configuration
    - Folder structure reference
 
-5. **docs/CONTEXT.md** (generated)
+5. **internal-docs/CONTEXT.md** (generated)
    - Main AI agent context file
    - Capped at 150KB
    - Includes facts, plans, README excerpt
 
-6. **docs/SUMMARY.md** (generated)
+6. **internal-docs/SUMMARY.md** (generated)
    - Quick navigation index
    - Component list with timestamps
 
-7. **docs/CHANGELOG.md** (generated)
+7. **internal-docs/CHANGELOG.md** (generated)
    - Build history with timestamps
    - Source SHA tracking
 
@@ -71,7 +71,7 @@ Successfully implemented the automated documentation management system as specif
    - Added linting rule exceptions for tools/
 
 4. **.gitignore**
-   - Added comments about agent-plans/ and docs/_generated/
+   - Added comments about agent-plans/ and internal-docs/_generated/
 
 ### Folder Structure
 
@@ -81,7 +81,7 @@ project/
 ├── agent-plans/            # Ephemeral plans (committed, filtered by age)
 │   └── <project>/
 │       └── plan.md         # Required metadata format
-├── docs/
+├── internal-docs/
 │   ├── CONTEXT.md          # Generated main context
 │   ├── SUMMARY.md          # Generated index
 │   ├── CHANGELOG.md        # Build history
@@ -151,27 +151,27 @@ python tools/build_context.py
 ```
 
 ### Automatic Builds
-- On push to main (if src/, docs/, agent-plans/, or tools/ changed)
+- On push to main (if src/, internal-docs/, agent-plans/, or tools/ changed)
 - Nightly at 2 AM UTC
 - Manual workflow dispatch
 
 ### For Agents
-1. Read `docs/CONTEXT.md` for project context
-2. Check `docs/facts.json` for stable truths
-3. Review `docs/_generated/plans_index.md` for active work
+1. Read `internal-docs/CONTEXT.md` for project context
+2. Check `internal-docs/facts.json` for stable truths
+3. Review `internal-docs/_generated/plans_index.md` for active work
 4. Follow rules in `AGENTS.md`
 
 ### For Developers
-1. Update `docs/facts.json` for project changes
+1. Update `internal-docs/facts.json` for project changes
 2. Create plans in `agent-plans/<project>/plan.md`
 3. Documentation auto-updates on commit
-4. Review `docs/CHANGELOG.md` for build history
+4. Review `internal-docs/CHANGELOG.md` for build history
 
 ## Success Criteria - All Met ✅
 
-✅ Running `python tools/build_context.py` produces `docs/CONTEXT.md` with correct front-matter
+✅ Running `python tools/build_context.py` produces `internal-docs/CONTEXT.md` with correct front-matter
 ✅ GitHub nightly action configured to auto-commit doc updates
-✅ Active plans appear in `docs/_generated/plans_index.md` within 24h
+✅ Active plans appear in `internal-docs/_generated/plans_index.md` within 24h
 ✅ Agents can navigate and update docs following defined rules
 ✅ Old temporary files are automatically cleaned up
 ✅ Documentation stays consistent with code

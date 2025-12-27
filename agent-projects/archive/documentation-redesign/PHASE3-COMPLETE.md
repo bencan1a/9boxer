@@ -108,7 +108,7 @@ Phase 3 successfully transforms the 9Boxer documentation from excellent (93%) to
 **Grade:** A (100%)
 
 **What Was Created:**
-1. **User Personas Document** - `docs/user-personas.md`
+1. **User Personas Document** - `internal-docs/user-personas.md`
    - 5 comprehensive personas (Sarah, Marcus, Priya, James, Alex)
    - Each with role, goals, workflows, pain points, quotes
 
@@ -177,7 +177,7 @@ Phase 3 successfully transforms the 9Boxer documentation from excellent (93%) to
 **Grade:** A (100%)
 
 **What Was Created:**
-- **`docs/faq.md`** - Comprehensive FAQ with 39 Q&A pairs
+- **`internal-docs/faq.md`** - Comprehensive FAQ with 39 Q&A pairs
 
 **Categories (6 total):**
 1. Getting Started (7 questions)
@@ -206,7 +206,7 @@ Phase 3 successfully transforms the 9Boxer documentation from excellent (93%) to
 **Grade:** A (100%)
 
 **What Was Created:**
-- **`docs/best-practices.md`** (623 lines, 30 practices)
+- **`internal-docs/best-practices.md`** (623 lines, 30 practices)
 
 **Organization (6 sections):**
 1. Before You Start (5 practices)
@@ -417,9 +417,9 @@ Phase 3 successfully transforms the 9Boxer documentation from excellent (93%) to
 ### New Files Created (8)
 
 **Production Documentation:**
-1. `docs/faq.md` (39 Q&A pairs)
-2. `docs/best-practices.md` (30 practices, revised from tips.md)
-3. `docs/user-personas.md` (5 personas)
+1. `internal-docs/faq.md` (39 Q&A pairs)
+2. `internal-docs/best-practices.md` (30 practices, revised from tips.md)
+3. `internal-docs/user-personas.md` (5 personas)
 
 **Project Documentation:**
 4. `agent-projects/documentation-redesign/task-3.0-completion-report.md`
@@ -440,22 +440,22 @@ Phase 3 successfully transforms the 9Boxer documentation from excellent (93%) to
 ### Modified Files (18+)
 
 **Documentation:**
-1. `docs/filters.md` - Added quick reference, user scenarios
-2. `docs/statistics.md` - Added quick reference, user scenarios
-3. `docs/tracking-changes.md` - Added quick reference, user scenarios
-4. `docs/donut-mode.md` - Added user scenarios
-5. `docs/working-with-employees.md` - Added quick reference, user scenarios
-6. `docs/exporting.md` - Added quick reference, user scenarios
-7. `docs/settings.md` - Added user scenarios
-8. `docs/understanding-grid.md` - Added user scenarios
-9. `docs/getting-started.md` - Fixed terminology, added link to best-practices
-10. `docs/quickstart.md` - Fixed terminology
-11. `docs/index.md` - Fixed "coming soon" references
-12. `docs/workflows/talent-calibration.md` - Fixed terminology, passive voice
-13. `docs/workflows/making-changes.md` - Fixed terminology, condescending language
-14. `docs/workflows/adding-notes.md` - Fixed terminology
-15. `docs/feature-comparison.md` - Fixed passive voice
-16. `docs/troubleshooting.md` - Fixed export terminology
+1. `internal-docs/filters.md` - Added quick reference, user scenarios
+2. `internal-docs/statistics.md` - Added quick reference, user scenarios
+3. `internal-docs/tracking-changes.md` - Added quick reference, user scenarios
+4. `internal-docs/donut-mode.md` - Added user scenarios
+5. `internal-docs/working-with-employees.md` - Added quick reference, user scenarios
+6. `internal-docs/exporting.md` - Added quick reference, user scenarios
+7. `internal-docs/settings.md` - Added user scenarios
+8. `internal-docs/understanding-grid.md` - Added user scenarios
+9. `internal-docs/getting-started.md` - Fixed terminology, added link to best-practices
+10. `internal-docs/quickstart.md` - Fixed terminology
+11. `internal-docs/index.md` - Fixed "coming soon" references
+12. `internal-docs/workflows/talent-calibration.md` - Fixed terminology, passive voice
+13. `internal-docs/workflows/making-changes.md` - Fixed terminology, condescending language
+14. `internal-docs/workflows/adding-notes.md` - Fixed terminology
+15. `internal-docs/feature-comparison.md` - Fixed passive voice
+16. `internal-docs/troubleshooting.md` - Fixed export terminology
 17. `mkdocs.yml` - Added FAQ, reorganized decision aids
 18. `tools/generate_docs_screenshots.py` - Extended with 15 new methods (+362 lines)
 

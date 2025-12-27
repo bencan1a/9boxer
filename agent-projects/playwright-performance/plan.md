@@ -250,7 +250,7 @@ await expect(animatedElement).toHaveCSS('opacity', '1');
 
 ## References
 
-- [Playwright Auto-waiting](https://playwright.dev/docs/actionability)
-- [Playwright Best Practices](https://playwright.dev/docs/best-practices)
-- [Test Parallelization](https://playwright.dev/docs/test-parallel)
+- [Playwright Auto-waiting](https://playwright.dev/internal-docs/actionability)
+- [Playwright Best Practices](https://playwright.dev/internal-docs/best-practices)
+- [Test Parallelization](https://playwright.dev/internal-docs/test-parallel)
 - Original analysis: See initial review output

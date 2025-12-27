@@ -23,10 +23,10 @@ Successfully created a comprehensive task guide teaching users how to document t
 
 ## Deliverables
 
-### 1. Task Guide: `docs/workflows/adding-notes.md`
+### 1. Task Guide: `internal-docs/workflows/adding-notes.md`
 
 **Status:** ✅ Complete
-**Location:** `c:/Git_Repos/9boxer/docs/workflows/adding-notes.md`
+**Location:** `c:/Git_Repos/9boxer/internal-docs/workflows/adding-notes.md`
 **Line Count:** 254 lines (within target of 200-250)
 
 **Structure:**

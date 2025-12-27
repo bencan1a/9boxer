@@ -499,7 +499,7 @@ mkdocs build
    - **Status:** ✅ Expected - Task 1.5 (screenshot capture) not yet complete
    - **Impact:** None - placeholders are correct, images will be added
 
-2. **Unlinked pages:** 16 pages in docs/ not in nav (CHANGELOG, CONTEXT, testing/, etc.)
+2. **Unlinked pages:** 16 pages in internal-docs/ not in nav (CHANGELOG, CONTEXT, testing/, etc.)
    - **Status:** ✅ Expected - these are internal docs, not user-facing
    - **Impact:** None - correct exclusion
 
@@ -507,7 +507,7 @@ mkdocs build
    - **Status:** ⚠️ Needs minor fixes (listed in Section 2)
    - **Impact:** Low - links navigate to page, just don't jump to section
 
-4. **External doc links:** Links to files outside docs/ (CONTRIBUTING.md, .github/, etc.)
+4. **External doc links:** Links to files outside internal-docs/ (CONTRIBUTING.md, .github/, etc.)
    - **Status:** ✅ Expected - these are valid repository links
    - **Impact:** None - links work in repository context
 

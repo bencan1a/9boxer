@@ -17,7 +17,7 @@ Successfully created a focused, reassuring workflow guide for first-time users m
 
 ## Deliverables
 
-### 1. Workflow Guide: `docs/workflows/making-changes.md`
+### 1. Workflow Guide: `internal-docs/workflows/making-changes.md`
 
 **Location:** `c:\Git_Repos\9boxer\docs\workflows\making-changes.md`
 
@@ -102,12 +102,12 @@ Successfully created a focused, reassuring workflow guide for first-time users m
 - Placed "Making Your First Changes" between talent-calibration and adding-notes
 - Maintained alphabetical and logical flow
 
-**docs/index.md:**
+**internal-docs/index.md:**
 - Added new section "🎯 Ready to Make Changes?"
 - Cross-referenced the making-changes guide
 - Positioned prominently on home page
 
-**docs/getting-started.md:**
+**internal-docs/getting-started.md:**
 - Added "What to Learn Next" section item
 - Cross-referenced making-changes guide
 - Positioned as first "next step" option
@@ -375,7 +375,7 @@ Could consider adding in future:
 
 ### Created Files
 
-1. **`docs/workflows/making-changes.md`** (282 lines)
+1. **`internal-docs/workflows/making-changes.md`** (282 lines)
    - Main deliverable
    - Complete workflow guide
    - Ready for review
@@ -397,12 +397,12 @@ Could consider adding in future:
    - Positioned between talent-calibration and adding-notes
    - Maintains logical flow
 
-2. **`docs/index.md`**
+2. **`internal-docs/index.md`**
    - Added "🎯 Ready to Make Changes?" section
    - Cross-referenced new guide
    - Improved home page navigation
 
-3. **`docs/getting-started.md`**
+3. **`internal-docs/getting-started.md`**
    - Added making-changes to "What to Learn Next"
    - Positioned as first next step
    - Logical progression from basic to advanced
