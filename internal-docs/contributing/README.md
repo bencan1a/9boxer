@@ -32,6 +32,12 @@ If you're writing or updating documentation for 9Boxer, these guides will help e
    - Quality checklist
    - **Follow this** when creating or updating screenshots
 
+4. **[User Personas](user-personas.md)** (12KB)
+   - 5 detailed user personas (HR Manager, Department Head, etc.)
+   - User goals, workflows, and pain points
+   - Realistic scenarios and quotes
+   - **Reference these** when writing documentation to understand target users
+
 ## Key Principles (Quick Summary)
 
 ### Voice & Tone
@@ -58,13 +64,17 @@ If you're writing or updating documentation for 9Boxer, these guides will help e
 
 ## For AI Agents
 
-When writing or revising documentation, always:
+**IMPORTANT:** This project is agent-only. Only AI agents write code and documentation. These guidelines are optimized for agent use.
+
+When writing or revising user documentation, always:
 
 1. **Read the voice & tone guide** to understand writing style
 2. **Follow the documentation writing guide** for structure and patterns
-3. **Reference the screenshot guide** when creating visual content
+3. **Reference the screenshot guide** for technical standards (automation managed by Issues #51-62)
 4. **Test workflows** in the actual application before documenting
 5. **Validate accessibility** (alt text, heading hierarchy, link text)
+
+**Note:** These guidelines apply to **user-facing documentation** only. For internal developer/agent documentation standards, see the main CLAUDE.md and AGENTS.md files.
 
 ## Quality Standards
 

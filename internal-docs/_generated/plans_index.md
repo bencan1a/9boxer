@@ -1,13 +1,13 @@
 # Active Plans
 
-**Updated**: 2025-12-27T04:27:59.507014+00:00
+**Updated**: 2025-12-27T07:13:34.883678+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## self-managing-docs-system
 - **Status**: active
 - **Owner**: Development Team
 - **Created**: 2025-12-26
-- **Path**: `agent-projects/self-managing-docs-system/plan.md`
+- **Path**: `agent-projects\self-managing-docs-system\plan.md`
 - **Summary**:
   - Build self-managing documentation system with automated screenshot updates
   - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
@@ -19,7 +19,7 @@
 - **Status**: active
 - **Owner**: Claude
 - **Created**: 2025-12-21
-- **Path**: `agent-projects/big-movers-feature/plan.md`
+- **Path**: `agent-projects\big-movers-feature\plan.md`
 - **Summary**:
   - Add "big mover" detection for employees who moved significantly between positions
   - Display badge on employee tiles for big movers
