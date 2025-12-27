@@ -1,6 +1,6 @@
 # Screenshot Specifications & Annotation Guide
 
-**Purpose:** Standardize screenshot creation and annotation for 9Boxer user documentation
+**Purpose:** Technical standards for screenshot creation and annotation in 9Boxer user documentation
 
 **Version:** 1.0 | **Date:** December 2024
 
@@ -8,11 +8,13 @@
 
 ## Overview
 
-This guide ensures all documentation screenshots are:
+This guide defines **technical standards only** for documentation screenshots:
 - **Consistent** - Same style, colors, and annotation approach
 - **Clear** - Highlight exactly what users need to see
 - **Accessible** - Include alt text and high contrast
 - **Professional** - Clean, uncluttered, well-composed
+
+> **Note on Screenshot Automation**: User documentation screenshot generation and automation is managed by the self-managing documentation system (GitHub Issues #51-#62). For screenshot generation workflows, see `frontend/playwright/screenshots/`. This guide focuses solely on technical specifications and annotation standards.
 
 ---
 

@@ -28,9 +28,9 @@ If you're writing or updating documentation for 9Boxer, these guides will help e
    - Technical specifications (format, resolution, file size)
    - Annotation standards (colors, callouts, arrows)
    - Screenshot types and when to use them
-   - Capture workflow and tools
    - Quality checklist
-   - **Follow this** when creating or updating screenshots
+   - **Note**: Screenshot generation workflows are managed by the self-managing system (Issues #51-62)
+   - **Follow this** for technical standards and annotation specifications only
 
 ## Key Principles (Quick Summary)
 
@@ -55,6 +55,7 @@ If you're writing or updating documentation for 9Boxer, these guides will help e
 - PNG format, optimized <500KB
 - Descriptive alt text (accessibility)
 - Consistent annotation style (red boxes, blue callouts)
+- **Automation**: See `frontend/playwright/screenshots/` (managed by self-managing system, Issues #51-62)
 
 ## For AI Agents
 

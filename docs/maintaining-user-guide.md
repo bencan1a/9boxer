@@ -281,6 +281,8 @@ Jump to [Donut Mode Exercise](donut-mode.md#starting-donut-mode) for details.
 
 ## Regenerating Screenshots
 
+> **Note**: User documentation screenshot generation and automation is managed by the self-managing documentation system (GitHub Issues #51-#62). For technical screenshot standards and annotation guidelines, see `docs/contributing/screenshot-guide.md`.
+
 ### When to Regenerate
 
 Regenerate screenshots when:

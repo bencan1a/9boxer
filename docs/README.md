@@ -93,6 +93,8 @@ cd frontend
 npm run generate:screenshots
 ```
 
+> **Note**: User documentation screenshot generation and automation is managed by the self-managing documentation system (GitHub Issues #51-#62). For technical screenshot standards and annotation guidelines, see `docs/contributing/screenshot-guide.md`.
+
 ## Documentation Standards
 
 ### Format
@@ -101,6 +103,7 @@ npm run generate:screenshots
 - Use clear headings and subheadings
 - Include code examples and screenshots
 - Use MkDocs admonitions for tips/warnings/notes
+- **Screenshot standards**: See `docs/contributing/screenshot-guide.md` for technical specs and annotation guidelines
 
 ### MkDocs Features
 
