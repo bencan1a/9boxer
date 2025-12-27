@@ -20,13 +20,15 @@ export interface ChangeIndicatorProps {
   children: React.ReactNode;
   /** Custom styling */
   sx?: BadgeProps["sx"];
+  /** Custom test id for the badge */
+  testId?: string;
 }
 
 /**
  * ChangeIndicator component
- * 
+ *
  * A badge that displays the count of unsaved changes.
- * 
+ *
  * @example
  * ```tsx
  * <ChangeIndicator count={5}>
@@ -40,6 +42,7 @@ export const ChangeIndicator: React.FC<ChangeIndicatorProps> = ({
   onClick,
   children,
   sx = {},
+  testId = "change-indicator-badge",
 }) => {
   return (
     <Badge
@@ -47,7 +50,7 @@ export const ChangeIndicator: React.FC<ChangeIndicatorProps> = ({
       color="success"
       invisible={invisible || count === 0}
       onClick={onClick}
-      data-testid="change-indicator-badge"
+      data-testid={testId}
       sx={{
         "& .MuiBadge-badge": {
           fontSize: "0.7rem",
