@@ -242,8 +242,12 @@ frontend/release/
 .vscode/settings.json
 frontend/playwright-report/
 frontend/playwright-report-visual/
+frontend/playwright/visual-regression/__baselines__/
 frontend/coverage/
 frontend/test-results/
+frontend/visual-diff-report.html
+frontend/visual-diff-report.json
+frontend/visual-regression-results.json
 
 # Playwright global setup PID file
 frontend/playwright/.backend.pid

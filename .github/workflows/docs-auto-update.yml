@@ -220,6 +220,64 @@ jobs:
           cd frontend
           npm run screenshots:generate:affected
 
+      - name: Run Visual Regression Tests
+        id: visual-regression
+        continue-on-error: true
+        run: |
+          cd frontend
+          # Run visual regression tests on regenerated screenshots
+          # First run will create baselines, subsequent runs will compare
+          npm run test:docs-visual -- --reporter=json --output-file=visual-regression-results.json || true
+
+          # Check if there are visual differences
+          if [ -f visual-regression-results.json ]; then
+            # Extract test results
+            TESTS_PASSED=$(jq '.stats.expected' visual-regression-results.json 2>/dev/null || echo "0")
+            TESTS_FAILED=$(jq '.stats.unexpected' visual-regression-results.json 2>/dev/null || echo "0")
+
+            echo "visual_tests_passed=$TESTS_PASSED" >> $GITHUB_OUTPUT
+            echo "visual_tests_failed=$TESTS_FAILED" >> $GITHUB_OUTPUT
+
+            if [ "$TESTS_FAILED" -gt 0 ]; then
+              echo "⚠️ Visual regression tests detected differences"
+              echo "visual_regressions_detected=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Visual regression tests passed"
+              echo "visual_regressions_detected=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "⚠️ Visual regression results not found"
+            echo "visual_regressions_detected=unknown" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Visual Diff Report
+        if: always()
+        run: |
+          # Generate HTML visual diff report
+          node .github/scripts/generate-visual-diff-report.js --json
+
+          # Check if report was generated
+          if [ -f frontend/visual-diff-report.html ]; then
+            echo "✅ Visual diff report generated"
+            echo "visual_diff_report_generated=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Visual diff report not generated (no diffs found or error)"
+            echo "visual_diff_report_generated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Visual Regression Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-report
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+            frontend/visual-regression-results.json
+            frontend/visual-diff-report.html
+            frontend/visual-diff-report.json
+          retention-days: 30
+
       - name: Stop Backend
         if: always()
         run: |
@@ -258,6 +316,17 @@ jobs:
 
             ### 📸 Affected Screenshots
             ${{ needs.detect-doc-impact.outputs.affected_screenshots }}
+
+            ### 👁️ Visual Regression Status
+            ${{ steps.visual-regression.outputs.visual_regressions_detected == 'true' && '⚠️ **Visual differences detected** - Review the visual regression report in the workflow artifacts' || steps.visual-regression.outputs.visual_regressions_detected == 'false' && '✅ **No visual regressions detected**' || '❓ **Visual regression status unknown**' }}
+
+            - Tests Passed: ${{ steps.visual-regression.outputs.visual_tests_passed || 'N/A' }}
+            - Tests Failed: ${{ steps.visual-regression.outputs.visual_tests_failed || 'N/A' }}
+
+            ${{ steps.visual-regression.outputs.visual_regressions_detected == 'true' && '**Note:** Visual differences may be intentional if the component UI was deliberately changed. Review the diff report in the workflow artifacts.' || '' }}
+
+            ### 📊 Visual Diff Report
+            ${{ steps.visual-regression.outputs.visual_diff_report_generated == 'true' && '✅ **Visual diff report available** - Download the `visual-regression-report` artifact from the workflow run to view side-by-side comparisons of screenshot changes.' || '✅ No visual diff report needed - all screenshots match baselines.' }}
 
             ### ✅ Action Required
             - [ ] Review visual changes in regenerated screenshots
