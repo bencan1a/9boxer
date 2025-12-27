@@ -49,7 +49,10 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     onSelect(employee.employee_id);
   };
 
-  // Determine if employee has been modified in donut mode
+  // Show donut border only when donut mode is active AND employee has donut position
+  const showDonutBorder = donutModeActive && !!employee.donut_position;
+
+  // Determine if employee has been modified in donut mode (for badge)
   const isDonutModified = donutModeActive && employee.donut_modified;
 
   // Determine which position label to show
@@ -74,17 +77,25 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         mb: 1,
         minWidth: 280, // Minimum width for multi-column grid layout
         maxWidth: 400, // Maximum width for readability
-        borderLeft: employee.modified_in_session ? 4 : 0,
-        borderLeftColor: "secondary.main",
         cursor: "pointer",
         display: "flex",
         opacity: isDragging ? 0.5 : isDonutModified ? 0.7 : 1,
         userSelect: "none",
-        border: isDonutModified ? 2 : 0,
-        borderStyle: isDonutModified ? "solid" : "none",
-        borderColor: isDonutModified
-          ? theme.tokens.colors.semantic.donutMode
-          : undefined,
+        // Donut mode active with donut position: full purple border (takes precedence)
+        // Session modified (when not in donut mode): left orange border
+        // Neither: default card border
+        ...(showDonutBorder
+          ? {
+              border: 2,
+              borderStyle: "solid",
+              borderColor: theme.tokens.colors.semantic.donutMode,
+            }
+          : employee.modified_in_session
+            ? {
+                borderLeft: 4,
+                borderLeftColor: "secondary.main",
+              }
+            : {}),
         boxShadow: isDonutModified ? 2 : 1,
         "&:hover": {
           boxShadow: 3,
@@ -135,15 +146,6 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           }}
         >
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
-          {employee.modified_in_session && (
-            <Chip
-              label={t("grid.employeeTile.modified")}
-              size="small"
-              color="secondary"
-              sx={{ height: 18 }}
-              data-testid="modified-indicator"
-            />
-          )}
           {isDonutModified && (
             <Chip
               label={t("grid.employeeTile.donut")}
@@ -160,29 +162,15 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           {flagCount > 0 && (
             <Tooltip title={flagTooltip} arrow>
               <Chip
-                icon={<LocalOfferIcon />}
+                icon={
+                  <LocalOfferIcon sx={{ fontSize: "0.875rem !important" }} />
+                }
                 label={flagCount}
                 size="small"
                 sx={{
                   height: 18,
                   backgroundColor: theme.palette.info.main,
-                  color: "white",
-                  fontWeight: "medium",
-                  display: "flex",
-                  alignItems: "center",
-                  "& .MuiChip-icon": {
-                    color: "white",
-                    fontSize: theme.tokens.typography.fontSize.body2,
-                    marginLeft: theme.tokens.spacing.xs,
-                    marginTop: 0,
-                    marginBottom: 0,
-                    paddingLeft: theme.tokens.spacing.xs,
-                    paddingRight: theme.tokens.spacing.xs,
-                  },
-                  "& .MuiChip-label": {
-                    paddingLeft: theme.tokens.spacing.xs,
-                    paddingRight: theme.tokens.spacing.sm,
-                  },
+                  color: theme.palette.info.contrastText,
                 }}
                 data-testid="flag-badge"
               />
