@@ -15,7 +15,7 @@ import {
   PanelResizeHandle,
   ImperativePanelHandle,
 } from "react-resizable-panels";
-import { AppBar } from "./AppBar";
+import { AppBarContainer } from "./AppBarContainer";
 import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
@@ -120,7 +120,7 @@ export const DashboardPage: React.FC = () => {
         flexDirection: "column",
       }}
     >
-      <AppBar />
+      <AppBarContainer />
 
       <Box
         sx={{
