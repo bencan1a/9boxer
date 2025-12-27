@@ -247,11 +247,24 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Statistics tab showing distribution table with problematic patterns",
   },
   "calibration-intelligence-anomalies": {
-    workflow: "calibration",
+    source: "full-app",
+    workflow: "intelligence",
     function: "generateIntelligenceAnomalies",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-intelligence-anomalies.png",
     description:
-      "Intelligence tab showing AI-powered anomaly detection results",
+      "Intelligence tab showing AI-powered anomaly detection results with populated anomalies and insights sections",
+    cropping: "panel",
+    dimensions: { minWidth: 300, minHeight: 400 },
+  },
+  "distribution-chart-ideal": {
+    source: "full-app",
+    workflow: "intelligence",
+    function: "captureDistributionChartIdeal",
+    path: "resources/user-guide/docs/images/screenshots/distribution-chart-ideal.png",
+    description:
+      "Distribution section showing ideal talent distribution across 9-box grid",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 300 },
   },
   "calibration-filters-panel": {
     workflow: "calibration",

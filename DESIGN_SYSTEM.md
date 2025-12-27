@@ -250,11 +250,12 @@ Right Panel
 - ✅ Summary metrics (average rating, total employees)
 
 **Intelligence Tab** (`IntelligenceTab.tsx`):
-- ✅ AI-generated insights
-- ✅ Anomaly detection charts
-- ✅ Deviation analysis (expected vs actual distribution)
-- ✅ Heat maps
-- ✅ Recommendations
+- ✅ AI-generated insights (InsightsSection)
+- ✅ Anomaly detection (AnomaliesSection)
+- ✅ Deviation analysis (DeviationChart - expected vs actual distribution)
+- ✅ Distribution statistics (DistributionSection)
+- ✅ Level analysis (LevelDistributionChart)
+- ✅ Location, function, and tenure analysis
 
 **What Does NOT Go Here:**
 - ❌ File operations (toolbar)
@@ -492,6 +493,145 @@ Row 3 (Low Potential):     [1: L,L] [2: M,L] [3: H,L]
 - Content fits logically into Details/Changes/Stats/Intelligence
 - Content is small addition (1-3 fields)
 
+### Intelligence Panel
+
+**Location:** Right Panel → Intelligence Tab
+
+**Purpose:** Displays AI-powered insights, statistical anomalies, and talent distribution analysis to help identify calibration issues and optimization opportunities.
+
+**Components:**
+- **AnomaliesSection** - Shows detected anomalies in talent distribution
+- **InsightsSection** - Displays AI-generated recommendations and observations
+- **DistributionSection** - Visualizes employee distribution across the 9-box grid
+- **AnomalyCard** - Individual anomaly card with severity styling
+- **InsightCard** - Individual insight card with confidence indicator
+- **DistributionStats** - Statistical breakdown of grid position distribution
+
+**Design Patterns:**
+
+**Severity Color Scheme:**
+
+Anomalies use consistent severity colors from theme:
+- **Critical** - `theme.palette.error.main` (red) - Requires immediate attention
+- **Warning** - `theme.palette.warning.main` (orange/yellow) - Should be reviewed
+- **Info** - `theme.palette.info.main` (blue) - Informational, no action needed
+
+```tsx
+const getSeverityColor = () => {
+  switch (anomaly.severity) {
+    case "critical": return theme.palette.error.main;
+    case "warning": return theme.palette.warning.main;
+    case "info": return theme.palette.info.main;
+  }
+};
+```
+
+**Confidence Indicators:**
+
+Insights display AI confidence using a linear progress bar:
+- **High (≥0.8)** - `theme.palette.success.main` (green)
+- **Medium (0.5-0.8)** - `theme.palette.warning.main` (orange/yellow)
+- **Low (<0.5)** - `theme.palette.error.main` (red)
+
+```tsx
+const getConfidenceColor = () => {
+  if (insight.confidence >= 0.8) return theme.palette.success.main;
+  if (insight.confidence >= 0.5) return theme.palette.warning.main;
+  return theme.palette.error.main;
+};
+
+<LinearProgress
+  variant="determinate"
+  value={insight.confidence * 100}
+  sx={{
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: getConfidenceColor(),
+    },
+  }}
+/>
+```
+
+**Summary Badge Pattern:**
+
+Sections use colored dot + count + label pattern:
+
+```tsx
+<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+  <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: color }} />
+  <Typography variant="body2">{count} {label}</Typography>
+</Box>
+```
+
+**Collapsible Content Pattern:**
+
+Anomaly suggestions use expand/collapse with ARIA support:
+
+```tsx
+<Button
+  onClick={handleExpandClick}
+  aria-expanded={expanded}
+  aria-controls="anomaly-suggestion-123"
+  endIcon={<ExpandMoreIcon sx={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }} />}
+>
+  {expanded ? "Hide" : "Show"} Suggestion
+</Button>
+<Collapse in={expanded}>
+  <Box id="anomaly-suggestion-123" role="region">
+    <Typography>{suggestion}</Typography>
+  </Box>
+</Collapse>
+```
+
+**Empty States:**
+
+All sections provide informative empty states:
+- EmptyState component with icon and message
+- Explains why content is empty
+- Uses consistent styling
+
+```tsx
+{items.length === 0 ? (
+  <EmptyState
+    title="No anomalies detected"
+    description="Your talent distribution looks balanced"
+    iconSize="small"
+  />
+) : (
+  // Render items
+)}
+```
+
+**Component Anatomy:**
+
+**AnomalyCard:**
+- Severity badge (color-coded chip)
+- Title and description
+- Affected employee count
+- Confidence percentage
+- Optional suggestion (collapsible)
+- Optional dismiss button
+- Clickable for details (role="button", keyboard support)
+
+**InsightCard:**
+- Type icon (recommendation/observation/warning)
+- Type chip (outlined, color-coded)
+- Insight text
+- Confidence indicator (linear progress bar)
+- Optional metadata (employee count, affected boxes)
+- Optional action button
+
+**DistributionStats:**
+- Position-sorted grid (1-9)
+- Percentage for each position
+- Employee count
+- Color coding by position type (high performer, needs attention, etc.)
+- Deviation warnings (>5% from ideal)
+
+**Section Header:**
+- Title (Typography h6)
+- Info icon with tooltip
+- Consistent spacing and alignment
+
 ---
 
 ## When to Create New Components
@@ -724,6 +864,120 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
     'data-testid': 'employee-name-input',
   }}
 />
+```
+
+### Severity Badge Pattern
+
+Used in Intelligence Panel for anomalies:
+
+```tsx
+const getSeverityColor = () => {
+  switch (severity) {
+    case "critical": return theme.palette.error.main;
+    case "warning": return theme.palette.warning.main;
+    case "info": return theme.palette.info.main;
+  }
+};
+
+<Chip
+  label={getSeverityLabel()}
+  size="small"
+  sx={{
+    backgroundColor: getSeverityColor(),
+    color: "white",
+    fontWeight: "bold",
+  }}
+/>
+```
+
+### Confidence Indicator Pattern
+
+Used in Intelligence Panel for AI insights:
+
+```tsx
+const getConfidenceColor = () => {
+  if (confidence >= 0.8) return theme.palette.success.main;
+  if (confidence >= 0.5) return theme.palette.warning.main;
+  return theme.palette.error.main;
+};
+
+<LinearProgress
+  variant="determinate"
+  value={confidence * 100}
+  sx={{
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: theme.palette.action.hover,
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: getConfidenceColor(),
+    },
+  }}
+/>
+```
+
+### Summary Badge Pattern
+
+Used in Intelligence sections to show counts:
+
+```tsx
+<Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+  {criticalCount > 0 && (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+      <Box
+        sx={{
+          width: 12,
+          height: 12,
+          borderRadius: "50%",
+          bgcolor: theme.palette.error.main,
+        }}
+      />
+      <Typography variant="body2">
+        {criticalCount} Critical
+      </Typography>
+    </Box>
+  )}
+</Box>
+```
+
+### Collapsible Suggestion Pattern
+
+Used in Intelligence Panel for expandable content:
+
+```tsx
+const [expanded, setExpanded] = useState(false);
+
+<Button
+  size="small"
+  onClick={() => setExpanded(!expanded)}
+  aria-expanded={expanded}
+  aria-controls="suggestion-content"
+  endIcon={
+    <ExpandMoreIcon
+      sx={{
+        transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+        transition: theme.transitions.create("transform", {
+          duration: theme.transitions.duration.short,
+        }),
+      }}
+    />
+  }
+>
+  {expanded ? t("common.hide") : t("common.show")} Suggestion
+</Button>
+<Collapse in={expanded}>
+  <Box
+    id="suggestion-content"
+    role="region"
+    sx={{
+      mt: 1,
+      p: 1.5,
+      backgroundColor: theme.palette.action.hover,
+      borderRadius: 1,
+    }}
+  >
+    <Typography variant="body2">{suggestion}</Typography>
+  </Box>
+</Collapse>
 ```
 
 ---
