@@ -48,19 +48,19 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
   const getPositionColor = (position: number): string => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
     if ([6, 8, 9].includes(position)) {
-      return theme.palette.gridBox.highPerformer;
+      return theme.palette.gridBox?.highPerformer || theme.palette.success.light;
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
     if ([1, 2, 4].includes(position)) {
-      return theme.palette.gridBox.needsAttention;
+      return theme.palette.gridBox?.needsAttention || theme.palette.error.light;
     }
     // Solid Performer: [M,M] = position 5
     if (position === 5) {
-      return theme.palette.gridBox.solidPerformer;
+      return theme.palette.gridBox?.solidPerformer || theme.palette.info.light;
     }
     // Development: [L,H], [H,L] = positions 7, 3
     if ([3, 7].includes(position)) {
-      return theme.palette.gridBox.development;
+      return theme.palette.gridBox?.development || theme.palette.warning.light;
     }
     return theme.palette.action.hover;
   };
