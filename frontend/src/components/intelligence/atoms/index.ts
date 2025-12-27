@@ -3,6 +3,9 @@
  */
 
 export { SectionHeader, type SectionHeaderProps } from "./SectionHeader";
-export { AnomalyCard, type AnomalyCardProps } from "./AnomalyCard";
-export { InsightCard, type InsightCardProps } from "./InsightCard";
-export { DistributionStats, type DistributionStatsProps } from "./DistributionStats";
+export { AnomalyCard } from "./AnomalyCard";
+export { InsightCard } from "./InsightCard";
+export {
+  DistributionStats,
+  type DistributionStatsProps,
+} from "./DistributionStats";

@@ -19,18 +19,56 @@ export interface DistributionStatsProps {
   showIdeal?: boolean;
 }
 
+/** Threshold for highlighting significant deviations from ideal distribution (percentage points) */
+const SIGNIFICANT_DEVIATION_THRESHOLD = 5;
+
 /**
- * Distribution stats component
+ * Displays talent distribution statistics across all nine box positions.
  *
- * Displays grid position distribution as percentage cards.
+ * Shows percentage breakdown for each grid position with employee counts, color-coded
+ * backgrounds matching grid colors, and optional comparison to ideal distribution percentages.
+ * Highlights significant deviations from ideal with warning borders.
  *
+ * @component
  * @example
  * ```tsx
- * <DistributionStats data={distributionData} showIdeal />
+ * <DistributionStats
+ *   data={{
+ *     segments: [
+ *       { position: 1, count: 5, percentage: 10.5, label: 'Low/Low' },
+ *       { position: 2, count: 8, percentage: 16.8, label: 'Medium/Low' },
+ *       // ... other positions
+ *     ],
+ *     total: 48,
+ *     idealPercentages: {
+ *       '1': 5.0,
+ *       '2': 10.0,
+ *       // ... other positions
+ *     }
+ *   }}
+ *   showIdeal={true}
+ * />
  * ```
+ *
+ * @param {DistributionStatsProps} props - Component props
+ * @param {DistributionData} props.data - Distribution data with segments and ideal percentages
+ * @param {boolean} [props.showIdeal=true] - Whether to show deviation from ideal percentages
+ *
+ * @accessibility
+ * - Each position card has data-testid for testing
+ * - Color-coded backgrounds with sufficient contrast
+ * - Text labels provide context for visual information
+ * - Employee counts include proper pluralization
+ *
+ * @i18n
+ * - Uses English text for position labels and employee counts
+ * - "Position N" label format
+ * - "N employee(s)" label with pluralization
+ * - "±X% vs ideal" deviation label
+ *
+ * @see DistributionSection
+ * @see DistributionData type definition
  */
-// Threshold for highlighting significant deviations from ideal distribution (percentage points)
-const SIGNIFICANT_DEVIATION_THRESHOLD = 5;
 
 export const DistributionStats: React.FC<DistributionStatsProps> = ({
   data,
@@ -44,11 +82,18 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
     [data.segments]
   );
 
-  // Get background color based on position (matching grid colors)
+  /**
+   * Gets the background color for a grid position, matching the main grid colors.
+   *
+   * @param {number} position - Grid position (1-9)
+   * @returns {string} Theme color for the position
+   */
   const getPositionColor = (position: number): string => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
     if ([6, 8, 9].includes(position)) {
-      return theme.palette.gridBox?.highPerformer || theme.palette.success.light;
+      return (
+        theme.palette.gridBox?.highPerformer || theme.palette.success.light
+      );
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
     if ([1, 2, 4].includes(position)) {
@@ -65,7 +110,13 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
     return theme.palette.action.hover;
   };
 
-  // Calculate deviation from ideal
+  /**
+   * Calculates the deviation from ideal distribution percentage.
+   *
+   * @param {number} position - Grid position (1-9)
+   * @param {number} actual - Actual percentage for this position
+   * @returns {number | null} Deviation in percentage points, or null if not showing ideal
+   */
   const getDeviation = (position: number, actual: number): number | null => {
     if (!showIdeal) return null;
     const ideal = data.idealPercentages[position.toString()];
@@ -78,7 +129,8 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
       {sortedSegments.map((segment) => {
         const deviation = getDeviation(segment.position, segment.percentage);
         const hasSignificantDeviation =
-          deviation !== null && Math.abs(deviation) > SIGNIFICANT_DEVIATION_THRESHOLD;
+          deviation !== null &&
+          Math.abs(deviation) > SIGNIFICANT_DEVIATION_THRESHOLD;
 
         return (
           <Grid item xs={6} sm={4} md={4} key={segment.position}>
