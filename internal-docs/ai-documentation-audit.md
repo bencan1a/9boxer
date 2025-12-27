@@ -212,7 +212,7 @@ const issues = await createGitHubIssues(findings, dryRun);
 A comprehensive report is saved:
 
 ```javascript
-// Saved to: .docs-audit-report.json
+// Saved to: docs-audit-report.json
 {
   "metadata": { generatedAt, generatedBy, daysScanned, dryRun },
   "changes": { stats, recentCommits },
@@ -226,7 +226,7 @@ A comprehensive report is saved:
 ## Cost Estimation
 
 **Claude API costs:**
-- Model: `claude-3-5-sonnet-20241022`
+- Model: `claude-sonnet-4-20250929`
 - Input: ~10,000-20,000 tokens per audit
 - Output: ~2,000-4,000 tokens per audit
 - **Estimated cost**: $0.50-1.00 per audit
