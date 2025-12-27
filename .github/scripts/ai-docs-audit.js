@@ -30,13 +30,13 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
+import Anthropic from '@anthropic-ai/sdk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 // Constants
-const ANTHROPIC_API_VERSION = '2023-06-01';
 const MODEL = 'claude-sonnet-4-5-20250929';  // Claude Sonnet 4 (current model)
 const MAX_TOKENS = 4096;
 
@@ -443,6 +443,8 @@ async function analyzeInternalDocs(context) {
     throw new Error('ANTHROPIC_API_KEY environment variable is required');
   }
 
+  const anthropic = new Anthropic({ apiKey });
+
   const prompt = `${context}
 
 ## Your Task: Internal Documentation Audit
@@ -509,32 +511,18 @@ IMPORTANT JSON FORMATTING RULES:
 - Return ONLY the JSON object, no additional commentary before or after`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': ANTHROPIC_API_VERSION,
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Claude API error: ${response.status} ${error}`);
-    }
-
-    const data = await response.json();
-    const content = data.content[0].text;
+    const content = message.content[0].text;
 
     // Extract JSON from response (Claude might wrap it in markdown code blocks)
     const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/({[\s\S]*})/);
@@ -578,6 +566,8 @@ async function analyzeUserDocs(context) {
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY environment variable is required');
   }
+
+  const anthropic = new Anthropic({ apiKey });
 
   const prompt = `${context}
 
@@ -633,32 +623,18 @@ IMPORTANT JSON FORMATTING RULES:
 - Return ONLY the JSON object, no additional commentary before or after`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': ANTHROPIC_API_VERSION,
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Claude API error: ${response.status} ${error}`);
-    }
-
-    const data = await response.json();
-    const content = data.content[0].text;
+    const content = message.content[0].text;
 
     // Extract JSON from response (Claude might wrap it in markdown code blocks)
     const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/({[\s\S]*})/);
