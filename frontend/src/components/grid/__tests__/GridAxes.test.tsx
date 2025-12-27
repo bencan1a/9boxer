@@ -3,13 +3,25 @@ import { render, screen } from "../../../test/utils";
 import { GridAxes } from "../GridAxes";
 
 describe("GridAxes", () => {
-  it("renders Y-axis label by default", () => {
+  it("renders both X and Y axis labels by default", () => {
     render(<GridAxes />);
 
-    // Y-axis is rendered (X-axis is rendered separately in NineBoxGrid)
+    // X-axis is rendered
+    const xAxis = screen.getByTestId("grid-x-axis");
+    expect(xAxis).toBeInTheDocument();
+    expect(xAxis).toHaveTextContent("Performance (Low → High)");
+
+    // Y-axis is rendered
     const yAxis = screen.getByTestId("grid-y-axis");
     expect(yAxis).toBeInTheDocument();
     expect(yAxis).toHaveTextContent("Potential (Low → High)");
+  });
+
+  it("renders custom X-axis label when provided", () => {
+    render(<GridAxes xAxisLabel="Custom Performance" />);
+
+    const xAxis = screen.getByTestId("grid-x-axis");
+    expect(xAxis).toHaveTextContent("Custom Performance");
   });
 
   it("renders custom Y-axis label when provided", () => {
@@ -21,6 +33,9 @@ describe("GridAxes", () => {
 
   it("hides labels when showLabels is false", () => {
     render(<GridAxes showLabels={false} />);
+
+    const xAxis = screen.queryByTestId("grid-x-axis");
+    expect(xAxis).not.toBeInTheDocument();
 
     const yAxis = screen.queryByTestId("grid-y-axis");
     expect(yAxis).not.toBeInTheDocument();
