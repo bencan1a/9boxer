@@ -1,6 +1,8 @@
 # Contributing to 9Boxer
 
-Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
+> **Note**: This project currently has no external human contributors. This document serves as a **reference for standards and quality guidelines** that AI agents should follow when making changes.
+
+This document provides guidelines and quality standards for code changes, documentation, and testing.
 
 ## 🚀 Getting Started
 
