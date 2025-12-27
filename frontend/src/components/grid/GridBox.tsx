@@ -89,8 +89,8 @@ export const GridBox: React.FC<GridBoxProps> = ({
         ? alpha(theme.palette.primary.main, 0.15)
         : bgColor,
       transition: `min-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, max-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, background-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-style ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, box-shadow ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
-      userSelect: "none",
-      overflowY: (isCollapsed ? "hidden" : "auto") as const,
+      userSelect: "none" as const,
+      overflowY: isCollapsed ? ("hidden" as const) : ("auto" as const),
     };
 
     // Collapsed state takes precedence if both are true (though validation warns about this)
