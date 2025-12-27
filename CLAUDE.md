@@ -615,7 +615,7 @@ const theme = useTheme();
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete UI zone definitions and component patterns.
 
 ### File Organization Conventions
-The project has strict conventions for where files belong (see [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)):
+The project has strict conventions for where files belong:
 
 | Folder | Purpose | Persistence | Git |
 |--------|---------|-------------|-----|
@@ -913,8 +913,6 @@ Environment variables for `tools/build_context.py`:
 - **Schedule**: Nightly at 2 AM UTC
 - **Action**: Auto-generates docs and commits changes via GitHub Actions
 
-See [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) for complete documentation system rules.
-
 ## Code Quality Standards
 
 All code must pass these checks before commit:
@@ -933,8 +931,7 @@ For unavoidable warnings:
 - `# nosec` for security false positives (add explanation)
 
 ## Important Files to Review
-- **`AGENTS.md`** - Comprehensive development workflow guidance
-- **`AGENT_DOCS_CONTRACT.md`** - Documentation system rules and folder structure
+- **`AGENTS.md`** - Quick-start checklist and development workflow
 - **`README.md`** - Project overview, features, and quick start
 - **`CONTRIBUTING.md`** - Contribution guidelines
 - **`docs/CONTEXT.md`** - Main documentation context for AI agents
