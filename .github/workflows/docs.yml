@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'backend/src/**'
-      - 'internal-internal-docs/**'
+      - 'internal-docs/**'
       - 'agent-projects/**'
       - 'tools/build_context.py'
       - '.github/workflows/docs.yml'
@@ -63,9 +63,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            internal-internal-docs/_generated/
-            internal-internal-docs/_build/
-          key: docs-${{ runner.os }}-${{ hashFiles('backend/src/**/*.py', 'internal-internal-docs/**/*.md', 'tools/build_context.py') }}
+            internal-docs/_generated/
+            internal-docs/_build/
+          key: docs-${{ runner.os }}-${{ hashFiles('backend/src/**/*.py', 'internal-docs/**/*.md', 'tools/build_context.py') }}
           restore-keys: |
             docs-${{ runner.os }}-
 
@@ -85,19 +85,19 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          git diff --quiet internal-internal-docs/ || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --quiet internal-docs/ || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Validate generated files
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           # Check if critical files were generated
-          if [ ! -f internal-internal-docs/CONTEXT.md ]; then
+          if [ ! -f internal-docs/CONTEXT.md ]; then
             echo "Error: CONTEXT.md not generated"
             exit 1
           fi
 
           # Check file size isn't too large
-          CONTEXT_SIZE=$(wc -c < internal-internal-docs/CONTEXT.md)
+          CONTEXT_SIZE=$(wc -c < internal-docs/CONTEXT.md)
           if [ "$CONTEXT_SIZE" -gt "$CONTEXT_MAX_CHARS" ]; then
             echo "Warning: CONTEXT.md is larger than ${CONTEXT_MAX_CHARS} characters (${CONTEXT_SIZE})"
           fi
@@ -107,7 +107,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add internal-internal-docs/
+          git add internal-docs/
           git commit -m "chore: auto-update documentation [skip ci]"
           git push
 
@@ -116,8 +116,8 @@ jobs:
         with:
           name: documentation
           path: |
-            internal-internal-docs/
-            !internal-internal-docs/.git
+            internal-docs/
+            !internal-docs/.git
           retention-days: 30
 
       - name: Summary
@@ -133,15 +133,15 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f internal-internal-docs/CONTEXT.md ]; then
-            CONTEXT_SIZE=$(wc -c < internal-internal-docs/CONTEXT.md)
+          if [ -f internal-docs/CONTEXT.md ]; then
+            CONTEXT_SIZE=$(wc -c < internal-docs/CONTEXT.md)
             echo "✅ CONTEXT.md generated (${CONTEXT_SIZE} bytes)" >> $GITHUB_STEP_SUMMARY
           fi
-          if [ -f internal-internal-docs/_generated/plans_index.md ]; then
-            PLAN_COUNT=$(grep -c "^## " internal-internal-docs/_generated/plans_index.md || echo "0")
+          if [ -f internal-docs/_generated/plans_index.md ]; then
+            PLAN_COUNT=$(grep -c "^## " internal-docs/_generated/plans_index.md || echo "0")
             echo "📋 Active plans: ${PLAN_COUNT}" >> $GITHUB_STEP_SUMMARY
           fi
-          if [ -d internal-internal-docs/_generated/api ]; then
-            API_COUNT=$(find internal-internal-docs/_generated/api -name "*.html" -o -name "*.md" | wc -l)
+          if [ -d internal-docs/_generated/api ]; then
+            API_COUNT=$(find internal-docs/_generated/api -name "*.html" -o -name "*.md" | wc -l)
             echo "📚 API docs generated: ${API_COUNT} files" >> $GITHUB_STEP_SUMMARY
           fi
