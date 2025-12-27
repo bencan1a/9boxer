@@ -1,9 +1,25 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides comprehensive guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 > **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
-> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for development workflow essentials.
+> **For Quick Reference**: See [AGENTS.md](AGENTS.md) for command cheatsheet and workflows.
+> **For API Documentation**: See [docs/_generated/api/](docs/_generated/api/) for auto-generated API docs.
+
+## Read This First
+
+This document is organized by category for quick navigation:
+
+1. [Project Overview](#project-overview) - Architecture, deployment, key facts
+2. [Critical Environment Setup](#critical-virtual-environment) - Virtual environment (MUST READ!)
+3. [Windows Constraints](#️-critical-windows-environment---bash-tool-usage) - Platform-specific rules (CRITICAL!)
+4. [Project Structure](#project-structure) - File organization and build outputs
+5. [Common Commands](#common-commands) - Development, testing, building, quality checks
+6. [Architecture](#architecture-overview) - Backend, frontend, design system
+7. [Testing](#testing-approach) - Backend and frontend testing strategies
+8. [Documentation System](#documentation-system) - How docs are generated and organized
+9. [Code Quality](#code-quality-standards) - Standards and tools
+10. [Important Files](#important-files-to-review) - Key documentation references
 
 ## Project Overview
 
@@ -524,70 +540,25 @@ The backend uses the standard Python `src/` layout:
 
 ### Design System
 
-**CRITICAL:** 9Boxer has a comprehensive design system to ensure visual consistency and guide feature development.
+**CRITICAL:** 9Boxer has a comprehensive design system to ensure visual consistency. Before creating or modifying ANY UI component, read [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
 
-**Before creating or modifying ANY UI component:**
+**Key Rules:**
+- ❌ NEVER hardcode colors, spacing, or dimensions - use `theme.tokens.*` or `theme.palette.*`
+- ✅ ALWAYS support light/dark modes, add `data-testid`, use i18n, include ARIA labels
 
-1. ✅ **Read DESIGN_SYSTEM.md** - Complete guidelines for UI development
-2. ✅ **Review design tokens** - `frontend/src/theme/tokens.ts`
-3. ✅ **Check UI zones** - Know where controls should live (toolbar vs grid vs panel)
-4. ✅ **Check existing components** - Don't recreate what exists
+**Key Files:**
+- **[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)** - Complete UI guidelines
+- **[frontend/src/theme/tokens.ts](frontend/src/theme/tokens.ts)** - Design constants
+- **[docs/design-system/](docs/design-system/)** - Detailed documentation
 
-**Key Design System Files:**
-- **[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)** - Complete UI guidelines (MUST READ for UI work)
-- **[frontend/src/theme/tokens.ts](frontend/src/theme/tokens.ts)** - All design constants
-- **[docs/design-system/design-tokens.md](docs/design-system/design-tokens.md)** - Token reference
-- **[docs/design-system/](docs/design-system/)** - Detailed design documentation
+**UI Zones:**
+- Top Toolbar → Global actions | Grid Area → Employee manipulation | Filter Drawer → Search/filtering
+- Right Panel → Details/Changes/Stats/Intelligence tabs | Settings Dialog → User preferences
 
-**Critical Rules for UI Development:**
-- ❌ **NEVER hardcode colors** (use `theme.palette.*` or `theme.tokens.colors.*`)
-- ❌ **NEVER hardcode spacing** (use `theme.tokens.spacing.*` or `theme.spacing(n)`)
-- ❌ **NEVER hardcode dimensions** (use `theme.tokens.dimensions.*`)
-- ✅ **ALWAYS support light and dark modes** (test both)
-- ✅ **ALWAYS add data-testid** for testing
-- ✅ **ALWAYS use i18n** for user-visible text (`useTranslation()`)
-- ✅ **ALWAYS include ARIA labels** for accessibility
-
-**UI Zones - Where Controls Should Live:**
-- **Top Toolbar** → Global actions (File, Export, Settings, Help)
-- **Grid Area** → Employee manipulation (drag-drop, expand/collapse)
-- **Filter Drawer** → Search and filtering
-- **Right Panel** → Detailed information (Details, Changes, Stats, Intelligence tabs)
-- **Settings Dialog** → User preferences and configuration
-
-**Example - Correct Token Usage:**
-```tsx
-// ❌ Wrong - hardcoded values
-<Box sx={{ padding: '16px', color: '#1976d2' }} />
-
-// ✅ Correct - use design tokens
-import { useTheme } from '@mui/material/styles';
-const theme = useTheme();
-
-<Box sx={{
-  padding: theme.tokens.spacing.md,
-  color: theme.palette.primary.main,
-}} />
-```
-
-**Component Anatomy Standards:**
-- **EmployeeTile**: Drag handle, name, ID, quick actions (max 3 icons)
-- **GridBox**: Position label, count badge, employee list, expand/collapse button
-- **Right Panel Tabs**: Header, scrollable content, actions
-
-**Design Governance & Quality Assurance:**
-- **Linting Rules:** `frontend/.eslintrc.cjs` enforces accessibility (WCAG 2.1 AA) and design token usage
-  - Run `npm run lint` to check for violations
-  - See [docs/design-system/linting-rules.md](docs/design-system/linting-rules.md) for complete rule documentation
-- **Visual Regression Testing:** Storybook + Playwright visual tests catch unintended UI changes
-  - All components have Storybook stories at `localhost:6006`
-  - Visual tests automatically compare screenshots against baselines
-  - Run `npm run test:visual` to validate visual consistency
-- **Design Review Checklist:** Use `.github/PULL_REQUEST_TEMPLATE/design-review.md` for UI PRs
-  - Ensures accessibility, theme support, and design token compliance
-  - Mandatory for all PRs with visual changes
-
-See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete UI zone definitions and component patterns.
+**Quality Assurance:**
+- Linting enforces accessibility (WCAG 2.1 AA) and token usage: `npm run lint`
+- Visual regression: Storybook + Playwright (`npm run test:visual`)
+- Design review checklist: `.github/PULL_REQUEST_TEMPLATE/design-review.md`
 
 ### File Organization Conventions
 The project has strict conventions for where files belong (see [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)):

@@ -1,9 +1,10 @@
 # AGENT GUIDANCE FOR 9BOXER PROJECT
 
-This file provides critical guidance for all agents (human and AI) working on this project.
+**Quick-start workflows and command cheatsheet** for AI agents working on this project.
 
-> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
-> **For Claude Code**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance with platform-specific constraints.
+> **For Comprehensive Reference**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance
+> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for streamlined onboarding
+> **For Command Lookup**: See [docs/QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md) for fast command reference
 
 ## 📱 PROJECT OVERVIEW
 
@@ -115,44 +116,13 @@ This is a monorepo with **two separate ecosystems**:
 
 ## 📁 FILE ORGANIZATION
 
-**CRITICAL: Follow these conventions when creating files:**
+**Where to put files:**
+- `agent-tmp/` → Temporary/debug files (gitignored, auto-cleaned after 7 days)
+- `agent-projects/` → Active project plans (requires `plan.md` with status/owner/date metadata)
+- `docs/` → Permanent documentation
+- Root → Configuration files only (pyproject.toml, README.md, etc.)
 
-### Temporary/Debug Files → `agent-tmp/`
-- Debugging scripts
-- Temporary analysis files
-- Work-in-progress experiments
-- Test data samples
-- **Note:** This directory is gitignored, auto-cleaned after 7 days
-
-### Project Documentation → `agent-projects/`
-- Active project folders (e.g., `agent-projects/feature-name/`)
-- Refactoring plans
-- Code analysis reports
-- Each project should have its own subdirectory with a `plan.md`
-- Required metadata in `plan.md`:
-  ```yaml
-  status: active|paused|done
-  owner: <name>
-  created: YYYY-MM-DD
-  summary:
-    - short bullet point
-  ```
-
-### Permanent Documentation → `docs/`
-- API documentation
-- Architecture guides
-- Deployment guides
-- Testing guides
-- Decision records (ADRs)
-
-### Configuration Files → Root Directory
-- README.md
-- This file (AGENTS.md)
-- CLAUDE.md
-- pyproject.toml
-- Other project-level configuration
-
-**DO NOT** create analysis reports, planning documents, or temporary files in the project root.
+**DO NOT** create analysis reports or planning documents in project root. See [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) for complete rules.
 
 ## 🔨 DEVELOPMENT WORKFLOW
 
