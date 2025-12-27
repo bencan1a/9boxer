@@ -1,0 +1,12 @@
+{
+  "name": "9boxer-monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:metadata": "vitest run",
+    "test:metadata:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8"
+  }
+}

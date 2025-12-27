@@ -3,6 +3,10 @@
  *
  * Provides zoom in/out/reset controls and full-screen toggle.
  * Positioned in bottom-left of the grid area, hidden on small screens.
+ *
+ * @component
+ * @screenshots
+ *   - zoom-controls: Zoom controls showing +/- buttons, percentage, and fullscreen toggle
  */
 
 import React, { useState, useEffect, useCallback } from "react";

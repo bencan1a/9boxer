@@ -228,6 +228,37 @@ jobs:
           path: bandit-report.json
           retention-days: 7
 
+  validate-screenshot-metadata:
+    name: Validate Screenshot Metadata
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.frontend-files-changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate screenshot metadata
+        run: node .github/scripts/extract-screenshot-metadata.js --strict
+
+      - name: Check for uncommitted changes
+        shell: bash
+        run: |
+          if ! git diff --quiet .github/component-screenshot-map.json; then
+            echo "❌ Screenshot metadata is out of sync!"
+            echo ""
+            echo "The component annotations have changed but the mapping file wasn't updated."
+            echo "Please run 'npm run screenshots:metadata' from frontend/ and commit the changes."
+            echo ""
+            echo "Diff:"
+            git diff .github/component-screenshot-map.json
+            exit 1
+          fi
+          echo "✅ Screenshot metadata is up to date"
+
   # ============================================================================
   # Stage 2: Unit Testing (fast validation only, PRs already tested thoroughly)
   # ============================================================================
@@ -434,7 +465,7 @@ jobs:
   ci-success:
     name: CI Summary
     runs-on: windows-latest
-    needs: [check-changes, lint, type-check, security, unit-tests, frontend-tests, smoke-test, screenshot-validation]
+    needs: [check-changes, lint, type-check, security, validate-screenshot-metadata, unit-tests, frontend-tests, smoke-test, screenshot-validation]
     if: always()
     steps:
       - name: Check results
@@ -443,6 +474,7 @@ jobs:
           echo "Lint and Format: ${{ needs.lint.result }}"
           echo "Type Check: ${{ needs.type-check.result }}"
           echo "Security Scan: ${{ needs.security.result }}"
+          echo "Screenshot Metadata: ${{ needs.validate-screenshot-metadata.result }}"
           echo "Unit Tests: ${{ needs.unit-tests.result }}"
           echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
           echo "Smoke Test: ${{ needs.smoke-test.result }}"

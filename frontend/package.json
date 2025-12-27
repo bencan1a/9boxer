@@ -42,6 +42,7 @@
     "screenshots:generate": "npx tsx playwright/screenshots/generate.ts",
     "screenshots:compare": "npx tsx playwright/screenshots/compare.ts",
     "screenshots:validate": "npx tsx playwright/screenshots/compare.ts --fail-on-diff",
+    "screenshots:metadata": "node ../.github/scripts/extract-screenshot-metadata.js",
     "format:i18n": "prettier --write \"src/i18n/locales/**/translation.json\"",
     "format:i18n:check": "prettier --check \"src/i18n/locales/**/translation.json\"",
     "storybook": "storybook dev -p 6006",

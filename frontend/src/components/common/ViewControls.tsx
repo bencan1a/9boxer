@@ -8,6 +8,12 @@
  *
  * Positioned at top-right of viewport, above grid content.
  * Replaces separate floating controls for better UX consistency.
+ *
+ * @component
+ * @screenshots
+ *   - view-controls-grid-view: ViewControls showing Grid view active state
+ *   - view-controls-donut-view: ViewControls showing Donut view active state
+ *   - view-controls-main-interface: Main interface showing floating ViewControls position
  */
 
 import React, { useState, useEffect, useCallback } from "react";

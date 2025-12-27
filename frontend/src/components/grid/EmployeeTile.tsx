@@ -1,5 +1,14 @@
 /**
  * Employee tile component (draggable)
+ *
+ * Individual employee card shown within grid boxes. Displays employee
+ * name, ID, flags, and modified status. Supports drag-and-drop.
+ *
+ * @component
+ * @screenshots
+ *   - employee-tile-normal: Individual employee tile showing name and role
+ *   - changes-orange-border: Employee tile with orange modified border and badge
+ *   - details-flag-badges: Employee tiles showing flag count badges in top-right corner
  */
 
 import React from "react";
