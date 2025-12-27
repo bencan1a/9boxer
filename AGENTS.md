@@ -1,9 +1,10 @@
 # AGENT GUIDANCE FOR 9BOXER PROJECT
 
-This file provides critical guidance for all agents (human and AI) working on this project.
+**Quick-start workflows and command cheatsheet** for AI agents working on this project.
 
-> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for a streamlined onboarding guide.
-> **For Claude Code**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance with platform-specific constraints.
+> **For Comprehensive Reference**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance
+> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for streamlined onboarding
+> **For Command Lookup**: See [internal-docs/QUICK_REFERENCE.md](internal-docs/QUICK_REFERENCE.md) for fast command reference
 
 ## 📱 PROJECT OVERVIEW
 
@@ -111,48 +112,17 @@ This is a monorepo with **two separate ecosystems**:
 - `CLAUDE.md` - Claude Code guidance (you are reading this type of file)
 - `BUILD.md` - Complete build instructions
 - `DEPLOYMENT.md` - Distribution and deployment guide
-- `docs/facts.json` - Highest authority source of truth
+- `internal-docs/facts.json` - Highest authority source of truth
 
 ## 📁 FILE ORGANIZATION
 
-**CRITICAL: Follow these conventions when creating files:**
+**Where to put files:**
+- `agent-tmp/` → Temporary/debug files (gitignored, auto-cleaned after 7 days)
+- `agent-projects/` → Active project plans (requires `plan.md` with status/owner/date metadata)
+- `internal-docs/` → Permanent documentation
+- Root → Configuration files only (pyproject.toml, README.md, etc.)
 
-### Temporary/Debug Files → `agent-tmp/`
-- Debugging scripts
-- Temporary analysis files
-- Work-in-progress experiments
-- Test data samples
-- **Note:** This directory is gitignored, auto-cleaned after 7 days
-
-### Project Documentation → `agent-projects/`
-- Active project folders (e.g., `agent-projects/feature-name/`)
-- Refactoring plans
-- Code analysis reports
-- Each project should have its own subdirectory with a `plan.md`
-- Required metadata in `plan.md`:
-  ```yaml
-  status: active|paused|done
-  owner: <name>
-  created: YYYY-MM-DD
-  summary:
-    - short bullet point
-  ```
-
-### Permanent Documentation → `docs/`
-- API documentation
-- Architecture guides
-- Deployment guides
-- Testing guides
-- Decision records (ADRs)
-
-### Configuration Files → Root Directory
-- README.md
-- This file (AGENTS.md)
-- CLAUDE.md
-- pyproject.toml
-- Other project-level configuration
-
-**DO NOT** create analysis reports, planning documents, or temporary files in the project root.
+**DO NOT** create analysis reports or planning documents in project root. See [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) for complete rules.
 
 ## 🔨 DEVELOPMENT WORKFLOW
 
@@ -448,19 +418,19 @@ This project uses an automated documentation generation system.
 |--------|---------|-------------|------------------|
 | `agent-tmp/` | Scratch / debug / intermediates | Ephemeral (auto-cleaned) | ❌ No (gitignored) |
 | `agent-projects/<project>/` | Ephemeral plan docs for refactors, experiments | Short-lived | ✅ Yes |
-| `docs/` | Permanent, canonical documentation | Persistent | ✅ Yes |
-| `docs/_generated/` | Auto-generated documentation | Auto-updated | ✅ Yes (auto-committed) |
+| `internal-docs/` | Permanent, canonical documentation | Persistent | ✅ Yes |
+| `internal-docs/_generated/` | Auto-generated documentation | Auto-updated | ✅ Yes (auto-committed) |
 
 ### Primary Documentation Files for Agents
 
-- **`docs/CONTEXT.md`** - Single canonical context file; main entry point
-- **`docs/facts.json`** - Stable, hand-maintained truths (HIGHEST AUTHORITY)
-- **`docs/SUMMARY.md`** - Quick index of all documentation components
-- **`docs/_generated/`** - Auto-generated API docs, schemas, and active plans
+- **`internal-docs/CONTEXT.md`** - Single canonical context file; main entry point
+- **`internal-docs/facts.json`** - Stable, hand-maintained truths (HIGHEST AUTHORITY)
+- **`internal-docs/SUMMARY.md`** - Quick index of all documentation components
+- **`internal-docs/_generated/`** - Auto-generated API docs, schemas, and active plans
 
 ### Trust Hierarchy (when information conflicts)
-1. `docs/facts.json` (highest authority)
-2. Permanent content in `docs/`
+1. `internal-docs/facts.json` (highest authority)
+2. Permanent content in `internal-docs/`
 3. Active plans summaries (hints only)
 
 ### Documentation Command
@@ -479,7 +449,7 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 - [README.md](README.md) - Project overview and quick start
 - [USER_GUIDE.md](USER_GUIDE.md) - End user guide
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [docs/facts.json](docs/facts.json) - Highest authority source of truth
+- [internal-docs/facts.json](internal-docs/facts.json) - Highest authority source of truth
 - [.github/agents/test.md](.github/agents/test.md) - Comprehensive testing guidance
 
 ## 🎓 PROJECT PHILOSOPHY
@@ -500,4 +470,4 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 2. This is a standalone desktop app, not a web app
 3. Build backend BEFORE building Electron app
 4. Test in Electron app, not just web mode
-5. Trust `docs/facts.json` as highest authority
+5. Trust `internal-docs/facts.json` as highest authority

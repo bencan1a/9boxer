@@ -5,8 +5,8 @@ Build comprehensive documentation context for AI agents and developers.
 This script:
 1. Generates API documentation from Python docstrings (using pdoc3)
 2. Summarizes active agent plans
-3. Merges everything into docs/CONTEXT.md
-4. Updates docs/SUMMARY.md and docs/CHANGELOG.md
+3. Merges everything into internal-docs/CONTEXT.md
+4. Updates internal-docs/SUMMARY.md and internal-docs/CHANGELOG.md
 5. Prunes old files from agent-tmp/
 
 Environment variables (with defaults):
@@ -30,7 +30,7 @@ CLEAN_TMP_AGE_DAYS = int(os.getenv("CLEAN_TMP_AGE_DAYS", "7"))
 
 # Paths
 REPO_ROOT = Path(__file__).parent.parent
-DOCS_DIR = REPO_ROOT / "docs"
+DOCS_DIR = REPO_ROOT / "internal-docs"
 GENERATED_DIR = DOCS_DIR / "_generated"
 AGENT_PLANS_DIR = REPO_ROOT / "agent-projects"
 AGENT_TMP_DIR = REPO_ROOT / "agent-tmp"
@@ -267,7 +267,7 @@ def build_context_file(plans: list[dict[str, Any]], git_sha: str) -> str:
     if api_dir.exists() and list(api_dir.iterdir()):
         sections.append("## API Documentation")
         sections.append("")
-        sections.append("API documentation is available in `docs/_generated/api/`:")
+        sections.append("API documentation is available in `internal-docs/_generated/api/`:")
         sections.append("")
         for api_file in sorted(api_dir.iterdir()):
             if api_file.suffix == ".md":

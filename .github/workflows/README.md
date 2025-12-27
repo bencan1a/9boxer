@@ -1,186 +1,39 @@
 # GitHub Actions Workflows
 
-## Copilot Environment Setup
+This directory contains the GitHub Actions workflows for the 9Boxer repository.
 
-**Workflow:** `copilot-setup-steps.yml`
+For complete workflow documentation, see **[docs/WORKFLOWS.md](../../docs/WORKFLOWS.md)**.
 
-### What it does
+## Quick Reference
 
-Automatically sets up the development environment for GitHub Copilot's coding agent. This ensures the agent has all necessary dependencies installed before it starts working on tasks.
+### CI/CD Workflows
 
-**Key Features:**
-- Sets up Python 3.13 with `uv` package manager
-- Installs all Python backend dependencies (FastAPI, pytest, ruff, etc.)
-- Sets up Node.js 20 with npm
-- Installs all frontend dependencies (React, Vite, TypeScript, etc.)
-- Installs Playwright browsers for E2E testing
-- Configures pre-commit hooks
-- Validates the complete environment
+- **`ci.yml`** - Main CI pipeline (lint, test, coverage)
+- **`nightly.yml`** - Nightly regression testing
+- **`docs.yml`** - Documentation generation
+- **`dependency-review.yml`** - Security review of dependency changes
+- **`code-quality.yml`** - Code quality analysis and metrics
+- **`release.yml`** - Automated release process
 
-### When it runs
+### Build Workflows
 
-This workflow is **automatically invoked by GitHub Copilot** when its coding agent starts. It does not run on regular push/PR events.
+- **`build-electron.yml`** - Build Electron desktop installers for all platforms
 
-### Important Notes
+### Environment Setup
 
-⚠️ **This workflow should NOT include:**
-- `actions/checkout@v4` - Copilot automatically clones the repository before running the setup.
-- `on:` trigger section - Custom setup workflows don't need explicit triggers.
+- **`copilot-setup-steps.yml`** - GitHub Copilot environment setup
+- **`reusable-setup.yml`** - Reusable Python setup workflow
 
-Including these causes "fatal: repository not found" errors due to permissions conflicts with Copilot's automatic checkout process.
+## Documentation
 
-### Troubleshooting
+See **[docs/WORKFLOWS.md](../../docs/WORKFLOWS.md)** for:
+- Detailed workflow descriptions
+- Configuration options
+- Troubleshooting guides
+- Testing instructions
+- Maintenance procedures
 
-**Copilot agent fails with "repository not found":**
-- Verify the workflow does NOT contain `actions/checkout@v4`.
-- Verify the workflow does NOT have an `on:` trigger section.
-- Check that the workflow file is named exactly `copilot-setup-steps.yml`.
-
-**Environment setup takes too long:**
-- Cache keys are used for uv, npm, and Playwright to speed up installation.
-- First run may take 5-10 minutes; subsequent runs should be faster.
-
-## Build Electron App
-
-**Workflow:** `build-electron.yml`
-
-### What it does
-
-Automatically builds the 9-Box Performance Review Electron application for all platforms:
-- **Windows**: `.exe` installer (NSIS)
-- **macOS**: `.dmg` disk image (x64 + ARM64/Apple Silicon)
-- **Linux**: `.AppImage` portable executable
-
-### When it runs
-
-- **Automatic**: On every push to `main` or `standalone_app` branches
-- **Pull Requests**: On PRs targeting `main` or `standalone_app`
-- **Manual**: Via "Actions" tab → "Build Electron App" → "Run workflow"
-
-### How to download builds
-
-1. Go to **Actions** tab in GitHub
-2. Click the latest workflow run (green ✓ = success)
-3. Scroll to **Artifacts** section
-4. Download:
-   - `9boxer-linux-<sha>.zip` - Contains AppImage
-   - `9boxer-windows-<sha>.zip` - Contains .exe installer
-   - `9boxer-macos-<sha>.zip` - Contains .dmg
-
-### Build process
-
-Each platform runs independently:
-
-1. **Backend**: Builds PyInstaller executable
-   - Python 3.12
-   - PyInstaller packages FastAPI + dependencies
-   - Output: `backend/dist/ninebox/ninebox(.exe)`
-
-2. **Frontend**: Builds Electron app
-   - Node.js 20
-   - Vite builds React app
-   - TypeScript compiles Electron main/preload
-   - electron-builder packages everything
-   - Output: `frontend/release/`
-
-### Build times
-
-- **Linux**: ~5-8 minutes
-- **Windows**: ~6-10 minutes
-- **macOS**: ~8-12 minutes (builds both x64 and ARM64)
-
-### Artifact retention
-
-Artifacts are kept for **90 days** after the workflow run.
-
-### Troubleshooting
-
-**Build fails on Windows:**
-- Check that `signAndEditExecutable: false` is in `frontend/electron-builder.json`
-- Windows builds use native tools (no Wine issues)
-
-**Build fails on macOS:**
-- macOS builds both x64 and ARM64 (Apple Silicon)
-- No code signing by default (users will see "unidentified developer" warning)
-
-**Missing backend executable:**
-- Check backend build step completed successfully
-- Verify PyInstaller spec at `backend/build_config/ninebox.spec`
-
-**Artifacts not uploaded:**
-- Check "List build outputs" step for file paths
-- Verify artifact path patterns match actual output
-
-### Local testing
-
-Test the workflow locally with [act](https://github.com/nektos/act):
-
-```bash
-# Install act
-brew install act  # macOS
-# or
-curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash  # Linux
-
-# Run workflow locally
-act -j build
-```
-
-### Adding code signing (production)
-
-For production releases with proper code signing:
-
-1. **Windows**: Get a code signing certificate
-   ```yaml
-   - name: Sign Windows executable
-     env:
-       CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
-       CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-     run: |
-       # Add signing steps
-   ```
-
-2. **macOS**: Get Apple Developer certificate
-   ```yaml
-   - name: Sign macOS app
-     env:
-       APPLE_ID: ${{ secrets.APPLE_ID }}
-       APPLE_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
-     run: |
-       # Add notarization steps
-   ```
-
-3. Update `electron-builder.json`:
-   ```json
-   {
-     "win": {
-       "signAndEditExecutable": true,
-       "certificateFile": "path/to/cert.pfx"
-     }
-   }
-   ```
-
-### Creating releases
-
-To automatically create GitHub Releases with builds attached:
-
-1. Create and push a tag:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-2. Add release step to workflow:
-   ```yaml
-   - name: Create Release
-     if: startsWith(github.ref, 'refs/tags/')
-     uses: softprops/action-gh-release@v1
-     with:
-       files: frontend/release/**/*.{AppImage,exe,dmg}
-   ```
-
-## Support
-
-For issues with the build workflow, check:
-- [electron-builder docs](https://www.electron.build/)
-- [PyInstaller docs](https://pyinstaller.org/)
-- [GitHub Actions docs](https://docs.github.com/actions)
+Also see:
+- **[docs/COPILOT_SETUP.md](../../docs/COPILOT_SETUP.md)** - Copilot environment setup details
+- **[BUILD.md](../../BUILD.md)** - Build instructions
+- **[DEPLOYMENT.md](../../DEPLOYMENT.md)** - Deployment guide
