@@ -15,7 +15,7 @@ export const createSegment = (
 ): DistributionSegment => ({
   position,
   count,
-  percentage: (count / total) * 100,
+  percentage: total === 0 ? 0 : (count / total) * 100,
   label,
 });
 

@@ -18,6 +18,10 @@ import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import type { InsightCardProps } from "../../../types/intelligence";
 
+// Confidence thresholds for categorizing insight reliability
+const CONFIDENCE_THRESHOLD_HIGH = 0.8;
+const CONFIDENCE_THRESHOLD_MEDIUM = 0.5;
+
 /**
  * Insight card component
  *
@@ -79,14 +83,14 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   };
 
   const getConfidenceColor = () => {
-    if (insight.confidence >= 0.8) return theme.palette.success.main;
-    if (insight.confidence >= 0.5) return theme.palette.warning.main;
+    if (insight.confidence >= CONFIDENCE_THRESHOLD_HIGH) return theme.palette.success.main;
+    if (insight.confidence >= CONFIDENCE_THRESHOLD_MEDIUM) return theme.palette.warning.main;
     return theme.palette.error.main;
   };
 
   const getConfidenceLabel = () => {
-    if (insight.confidence >= 0.8) return "High";
-    if (insight.confidence >= 0.5) return "Medium";
+    if (insight.confidence >= CONFIDENCE_THRESHOLD_HIGH) return "High";
+    if (insight.confidence >= CONFIDENCE_THRESHOLD_MEDIUM) return "Medium";
     return "Low";
   };
 

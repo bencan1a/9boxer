@@ -13,14 +13,12 @@ export interface DistributionSectionProps {
   data: DistributionData;
   chartComponent?: React.ReactNode;
   showIdeal?: boolean;
-  onSegmentClick?: (position: number) => void;
 }
 
 export const DistributionSection: React.FC<DistributionSectionProps> = ({
   data,
   chartComponent,
   showIdeal = true,
-  onSegmentClick,
 }) => {
   return (
     <Card variant="outlined">
