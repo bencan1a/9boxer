@@ -1,6 +1,6 @@
 """Tests for EventManager service."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock
 
 import pytest
@@ -56,7 +56,7 @@ def sample_session() -> SessionState:
     return SessionState(
         session_id="test-session",
         user_id="test-user",
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
         original_filename="test.xlsx",
         original_file_path="/tmp/test.xlsx",
         sheet_name="Employee Data",
@@ -405,7 +405,7 @@ class TestGetEmployeeEvents:
         """Test that get_employee_events returns events sorted by timestamp (newest first)."""
         from datetime import timedelta
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         event1 = GridMoveEvent(
             employee_id=1,

@@ -2,9 +2,8 @@
 
 from datetime import date, datetime
 from enum import Enum
-from typing import ClassVar
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from ninebox.models.constants import ALLOWED_FLAGS
 
@@ -117,10 +116,7 @@ class Employee(BaseModel):
 
         return v
 
-    class Config:
-        """Pydantic config."""
-
-        json_encoders: ClassVar = {
-            date: lambda v: v.isoformat(),
-            datetime: lambda v: v.isoformat() if v else None,
-        }
+    model_config = ConfigDict(
+        # Pydantic V2 automatically serializes datetime/date to ISO format
+        # No need for custom json_encoders
+    )

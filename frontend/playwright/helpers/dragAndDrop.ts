@@ -174,20 +174,21 @@ export async function dragEmployeeToPosition(
         continue;
       }
 
-      // 9. Check for visual indicator based on mode
+      // 9. Check for donut indicator in donut mode only
+      // Note: Regular modified state is shown via border styling, not a testable indicator element
       const expectModified = options.expectModified ?? true; // Default: expect it
 
-      if (expectModified) {
-        // In donut mode, check for donut-indicator; otherwise check for modified-indicator
-        const indicatorTestId = isDonutMode
-          ? "donut-indicator"
-          : "modified-indicator";
+      if (expectModified && isDonutMode) {
+        // In donut mode, verify the donut-indicator chip is visible
         const indicator = employeeCard.locator(
-          `[data-testid="${indicatorTestId}"]`
+          `[data-testid="donut-indicator"]`
         );
         await expect(indicator).toBeVisible({ timeout: 2000 });
       }
-      // If expectModified is false, skip the check entirely
+      // For regular (non-donut) moves, we've already verified success via:
+      // - API response (200 status)
+      // - Position attribute update
+      // Visual modified state is shown via border styling only
 
       // Success! Break out of retry loop
       return;

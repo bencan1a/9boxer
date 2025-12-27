@@ -476,12 +476,12 @@ class TestPerformanceBenchmarks:
             employees.append(employee)
 
         # Create session
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         session = SessionState(
             session_id="test_session",
             user_id="test_user",
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
             original_employees=employees,
             current_employees=employees.copy(),
             original_filename="large.xlsx",

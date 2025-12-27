@@ -2,7 +2,7 @@
 
 import sqlite3
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -384,7 +384,7 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
         (
             "corrupt_user",
             "session123",
-            datetime.utcnow().isoformat(),
+            datetime.now(timezone.utc).isoformat(),
             "test.xlsx",
             "/tmp/test.xlsx",
             "Sheet1",
@@ -393,7 +393,7 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
             "INVALID JSON",  # Corrupted JSON
             "[]",
             "[]",
-            datetime.utcnow().isoformat(),
+            datetime.now(timezone.utc).isoformat(),
             "[]",
             0,
         ),

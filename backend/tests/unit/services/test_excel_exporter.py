@@ -1,6 +1,6 @@
 """Tests for Excel exporter service."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import openpyxl
@@ -96,7 +96,7 @@ def test_export_when_employee_modified_then_writes_modified_values(
     """Test that modified employee values are written."""
     # Mark first employee as modified
     sample_employees[0].modified_in_session = True
-    sample_employees[0].last_modified = datetime.utcnow()
+    sample_employees[0].last_modified = datetime.now(timezone.utc)
     sample_employees[0].performance = PerformanceLevel.MEDIUM
     sample_employees[0].potential = PerformanceLevel.LOW
 
@@ -157,9 +157,9 @@ def test_export_when_multiple_employees_modified_then_updates_all(
     """Test that multiple modified employees are updated correctly."""
     # Mark multiple employees as modified
     sample_employees[0].modified_in_session = True
-    sample_employees[0].last_modified = datetime.utcnow()
+    sample_employees[0].last_modified = datetime.now(timezone.utc)
     sample_employees[2].modified_in_session = True
-    sample_employees[2].last_modified = datetime.utcnow()
+    sample_employees[2].last_modified = datetime.now(timezone.utc)
 
     output_path = tmp_path / "output.xlsx"
     excel_exporter.export(sample_excel_file, sample_employees, output_path)
@@ -234,7 +234,7 @@ def test_export_when_modification_date_set_then_writes_date(
     tmp_path: Path,
 ) -> None:
     """Test that modification date is written."""
-    modification_time = datetime.utcnow()
+    modification_time = datetime.now(timezone.utc)
     sample_employees[0].modified_in_session = True
     sample_employees[0].last_modified = modification_time
 
@@ -366,7 +366,7 @@ def test_export_when_donut_data_exists_then_populates_correctly(
     session = SessionState(
         session_id="test-session",
         user_id="user1",
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
         original_employees=sample_employees,
         current_employees=sample_employees,
         original_filename="test.xlsx",
@@ -378,7 +378,7 @@ def test_export_when_donut_data_exists_then_populates_correctly(
             DonutMoveEvent(
                 employee_id=1,
                 employee_name="Alice Smith",
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(timezone.utc),
                 old_performance=PerformanceLevel.HIGH,
                 old_potential=PotentialLevel.HIGH,
                 new_performance=PerformanceLevel.HIGH,

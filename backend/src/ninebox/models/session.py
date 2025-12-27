@@ -1,9 +1,8 @@
 """Session data models."""
 
 from datetime import datetime
-from typing import ClassVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from ninebox.models.employee import Employee
 from ninebox.models.events import Event
@@ -39,9 +38,7 @@ class SessionState(BaseModel):
     donut_events: list[Event] = []
     donut_mode_active: bool = False
 
-    class Config:
-        """Pydantic config."""
-
-        json_encoders: ClassVar = {
-            datetime: lambda v: v.isoformat(),
-        }
+    model_config = ConfigDict(
+        # Pydantic V2 automatically serializes datetime to ISO format
+        # No need for custom json_encoders
+    )
