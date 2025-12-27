@@ -62,10 +62,10 @@ export interface FileMenuButtonProps {
 
 /**
  * FileMenuButton component
- * 
+ *
  * A button with dropdown menu for file operations.
  * Shows file name with change indicator badge.
- * 
+ *
  * @example
  * ```tsx
  * <FileMenuButton
@@ -92,7 +92,8 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // Use controlled state if provided, otherwise use internal state
-  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
+  const isOpen =
+    controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
   const hasChanges = changeCount > 0;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -144,6 +145,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         <ChangeIndicator
           count={changeCount}
           invisible={!hasChanges}
+          testId="file-menu-badge"
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: "success.main",
@@ -167,8 +169,8 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
               maxWidth: { xs: "150px", sm: "200px", md: "250px" },
             }}
           >
-            <FileNameDisplay 
-              fileName={fileName} 
+            <FileNameDisplay
+              fileName={fileName}
               hasUnsavedChanges={hasChanges}
             />
           </Button>
