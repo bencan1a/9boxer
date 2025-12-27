@@ -241,7 +241,7 @@ def function_name(param1: str, param2: int) -> bool:
 
 ### Updating Documentation
 
-For detailed guidance on maintaining documentation, see [docs/maintaining-user-guide.md](docs/maintaining-user-guide.md).
+For detailed guidance on writing user documentation, see [internal-docs/contributing/](internal-docs/contributing/).
 
 #### Quick Reference
 

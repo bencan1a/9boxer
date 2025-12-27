@@ -32,6 +32,12 @@ If you're writing or updating documentation for 9Boxer, these guides will help e
    - Quality checklist
    - **Follow this** when creating or updating screenshots
 
+4. **[User Personas](user-personas.md)** (12KB)
+   - 5 detailed user personas (HR Manager, Department Head, etc.)
+   - User goals, workflows, and pain points
+   - Realistic scenarios and quotes
+   - **Reference these** when writing documentation to understand target users
+
 ## Key Principles (Quick Summary)
 
 ### Voice & Tone
