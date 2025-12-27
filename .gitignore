@@ -251,4 +251,7 @@ frontend/playwright/.backend.pid
 # Storybook build output
 frontend/storybook-static/
 
+# Documentation automation temporary files
+.affected-screenshots.json
+
 agent_tmp/toolbar-ux-redesign-plan.md
