@@ -13,17 +13,121 @@
 
 ## 🤖 Automated Setup (GitHub Copilot)
 
-**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! See [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) for details.
+**If you're using GitHub Copilot's coding agent**, the environment is automatically set up through GitHub's official Copilot environment customization feature. This ensures consistency and eliminates manual setup steps.
+
+### What Gets Set Up Automatically
 
 The automated setup includes:
 - ✅ Python 3.13 virtual environment at `.venv/`
-- ✅ All backend dependencies installed
+- ✅ All backend dependencies installed via `uv` (fast Python package installer)
 - ✅ Node.js 20 with all frontend dependencies
-- ✅ Playwright browsers for E2E testing
+- ✅ Playwright browsers (Chromium) for E2E testing
 - ✅ Pre-commit hooks configured
 - ✅ Environment validated and ready
 
 **Skip to [Common Tasks](#-common-tasks)** if using Copilot.
+
+### How It Works
+
+**Custom Instructions** (`.github/copilot-instructions.md`):
+- Provides project-specific context to GitHub Copilot
+- Includes architecture, monorepo structure, build order, platform constraints
+- Documents testing conventions and code quality standards
+
+**Automated Setup Workflow** (`.github/workflows/copilot-setup-steps.yml`):
+- Automatically executed by GitHub Copilot in ephemeral environment
+- Sets up Python 3.13 with `uv` for fast dependency installation
+- Installs all backend dependencies from `pyproject.toml`
+- Sets up Node.js 20 and installs frontend dependencies
+- Installs and caches Playwright browsers
+- Configures pre-commit hooks
+- Validates all components are correctly installed
+
+### Dependencies Installed
+
+**Python Backend:**
+- Runtime: FastAPI, Uvicorn, Pandas, openpyxl, Pydantic, NumPy, SciPy
+- Testing: pytest, pytest-cov, pytest-asyncio, pytest-mock, pytest-xdist, httpx
+- Quality: ruff, black, mypy, bandit, pyright
+- Tools: ipython, ipdb, pre-commit, mkdocs-material
+
+**Node.js Frontend:**
+- Runtime: React 18, Electron 35, Material-UI 5, Axios, Zustand, React Router
+- Build: TypeScript 5, Vite 7, Electron Builder 26
+- Testing: Vitest 4, Playwright 1.57
+- Quality: ESLint 8
+
+**Playwright Browsers:**
+- Chromium (with system dependencies)
+- Installed via `npx playwright install --with-deps chromium`
+- Cached for faster subsequent runs
+
+### Benefits
+
+1. **Consistency**: Every Copilot session starts with identical environment
+2. **Speed**: Dependencies cached, setup completes in ~5-10 minutes
+3. **Correctness**: Eliminates common errors (wrong Python version, missing deps, venv not activated)
+4. **Documentation as Code**: Setup workflow is executable documentation
+5. **Zero Manual Steps**: No need to remember setup commands
+
+### Troubleshooting
+
+**Python packages not found:**
+- Virtual environment should be auto-activated
+- For manual commands: `. .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows)
+
+**Frontend dependencies missing:**
+- Workflow handles this automatically
+- For manual setup: `cd frontend && npm ci`
+
+**Playwright browsers not found:**
+- Workflow caches browsers automatically
+- For manual setup: `cd frontend && npx playwright install --with-deps chromium`
+
+**Wrong Python version:**
+- Workflow uses Python 3.13
+- For local development: `python --version` should show 3.13+
+
+### Technical Details
+
+**Why `uv pip install --system`?**
+- `uv` is ~10x faster than pip for package installation
+- `--system` installs into GitHub Actions system Python (isolated per job)
+- Matches pattern used in CI workflows
+- No venv management needed in CI environment
+
+**Cache Strategy:**
+- Python packages: `cache: 'pip'` in `setup-python` action
+- Node.js packages: `cache: 'npm'` in `setup-node` action
+- Playwright browsers: Custom caching strategy with `~/.cache/ms-playwright`
+- Significantly speeds up subsequent workflow runs
+
+### For Local Development (Without Copilot)
+
+If not using GitHub Copilot, follow manual setup:
+
+```bash
+# 1. Create virtual environment
+python3 -m venv .venv
+. .venv/bin/activate
+
+# 2. Install backend dependencies into the virtual environment
+pip install uv
+uv pip install -e '.[dev]'
+
+# 3. Install frontend dependencies
+cd frontend
+npm install
+
+# 4. Install pre-commit hooks (from project root, venv still active)
+cd ..
+pre-commit install
+```
+
+### Related Documentation
+- [GitHub Docs: Customize the agent environment](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment)
+- [BUILD.md](BUILD.md) - Complete build instructions
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 
 ---
 

@@ -80,7 +80,6 @@ Quick navigation to all documentation categories:
 - **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
 - **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
 - **[facts.json](facts.json)** - Stable project truths (highest authority)
-- **[COPILOT_SETUP.md](COPILOT_SETUP.md)** - GitHub Copilot environment setup
 - **[CHANGELOG.md](CHANGELOG.md)** - Documentation change history
 - **[ai-documentation-audit.md](ai-documentation-audit.md)** - AI audit findings
 

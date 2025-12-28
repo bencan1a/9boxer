@@ -341,8 +341,7 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 6. Create a Pull Request
 
 **Development Guides:**
-- [GITHUB_AGENT.md](GITHUB_AGENT.md) - Quick start for AI agents and developers
-- [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) - GitHub Copilot environment setup (automated)
+- [GITHUB_AGENT.md](GITHUB_AGENT.md) - GitHub Agent/Copilot onboarding guide (includes automated setup)
 - [AGENTS.md](AGENTS.md) - Development workflow, best practices, and command quick reference
 - [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
