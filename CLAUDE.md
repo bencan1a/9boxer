@@ -510,6 +510,34 @@ See `frontend/playwright/screenshots/MANUAL_SCREENSHOTS.md` for complete list an
 
 ## Architecture Overview
 
+### Architecture Documentation (Agent-Optimized)
+
+**CRITICAL:** Before implementing features or reviewing code, consult the architecture documentation. These docs are optimized for AI agents with pattern catalogs, decision matrices, and quick rules.
+
+**Core Architecture Docs** (in [internal-docs/architecture/](internal-docs/architecture/)):
+- **[ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md)** - Error handling patterns, HTTP status codes, logging requirements
+- **[SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md)** - Security boundaries, threat model, IPC patterns, input validation
+- **[PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md)** - Performance targets, scale constraints, optimization patterns
+- **[MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md)** - Database schema evolution patterns and testing
+- **[OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md)** - Logging patterns, debugging tools, log file locations
+- **[decisions/](internal-docs/architecture/decisions/)** - Architecture Decision Records (ADRs) documenting key decisions
+- **[ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md)** - Quick lookup index for all architecture docs
+
+**When to Use:**
+- **Implementing API endpoint?** → Read [ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md) for API error patterns
+- **Adding security feature?** → Read [SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md) for security boundaries
+- **Optimizing performance?** → Read [PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md) for targets and constraints
+- **Changing database schema?** → Read [MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md) for migration patterns
+- **Adding logging?** → Read [OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md) for log levels and patterns
+- **Understanding past decisions?** → Read [decisions/README.md](internal-docs/architecture/decisions/README.md) for ADR index
+
+**Format:** All architecture docs use agent-optimized format with:
+- Quick Rules (ALWAYS/NEVER statements)
+- Pattern Catalogs (copy-paste ready code)
+- Decision Matrices (if/then tables)
+- Anti-patterns explicitly shown (❌)
+- Tags for searchability (`#api-endpoint`, `#ipc`, etc.)
+
 ### Backend Package Structure
 The backend uses the standard Python `src/` layout:
 - **`backend/src/ninebox/`** - FastAPI backend application
@@ -879,6 +907,8 @@ For unavoidable warnings:
 - `# nosec` for security false positives (add explanation)
 
 ## Important Files to Review
+
+### Core Documentation
 - **`AGENTS.md`** - Comprehensive development workflow guidance
 - **`AGENT_DOCS_CONTRACT.md`** - Documentation system rules and folder structure
 - **`README.md`** - Project overview, features, and quick start
@@ -886,12 +916,25 @@ For unavoidable warnings:
 - **`internal-docs/CONTEXT.md`** - Main documentation context for AI agents
 - **`internal-docs/facts.json`** - Stable project truths (highest authority)
 - **`pyproject.toml`** - All tool configurations and dependencies
+
+### Architecture Documentation (Agent-Optimized)
+- **`internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md`** - Quick lookup index for all architecture docs
+- **`internal-docs/architecture/ERROR_HANDLING.md`** - Error handling patterns and decision matrices
+- **`internal-docs/architecture/SECURITY_MODEL.md`** - Security boundaries and threat model
+- **`internal-docs/architecture/PERFORMANCE.md`** - Performance targets and optimization patterns
+- **`internal-docs/architecture/MIGRATIONS.md`** - Database migration patterns
+- **`internal-docs/architecture/OBSERVABILITY.md`** - Logging and debugging guidance
+- **`internal-docs/architecture/decisions/`** - Architecture Decision Records (ADRs)
+
+### Testing Documentation
 - **`.github/agents/test.md`** - Backend testing strategies (agent profile)
 - **`internal-docs/testing/`** - Comprehensive testing documentation
   - `test-principles.md` - Testing philosophy and best practices
   - `quick-reference.md` - Quick lookup for testing patterns
   - `testing-checklist.md` - Pre-commit testing checklist
   - `templates/` - Test templates for all test types
+
+### Design System & User Documentation
 - **`internal-docs/contributing/`** - User documentation writing standards
   - `README.md` - Overview of documentation contributing guidelines
   - `voice-and-tone-guide.md` - Writing style quick reference (DO's and DON'Ts)

@@ -171,6 +171,6 @@ Example: Bind `Ctrl+Shift+U` to run unit tests.
 
 ## See Also
 
-- [Test Suite Documentation](../docs/testing/test-suites.md)
-- [Test Principles](../docs/testing/test-principles.md)
+- [Test Suite Documentation](../internal-docs/testing/test-suites.md)
+- [Test Principles](../internal-docs/testing/test-principles.md)
 - [pyproject.toml](../pyproject.toml) - Marker definitions

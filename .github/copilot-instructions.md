@@ -177,8 +177,8 @@ npm run dev  # http://localhost:5173
 |--------|---------|-----|
 | `agent-tmp/` | Temporary workspace, auto-cleaned after 7 days | ❌ No (gitignored) |
 | `agent-projects/<name>/` | Active project plans (<21 days) | ✅ Yes |
-| `docs/` | Permanent documentation | ✅ Yes |
-| `docs/_generated/` | Auto-generated documentation | ✅ Yes |
+| `internal-docs/` | Permanent documentation | ✅ Yes |
+| `internal-docs/_generated/` | Auto-generated documentation | ✅ Yes |
 
 **Rules:**
 - DO NOT create analysis reports in project root
@@ -188,15 +188,15 @@ npm run dev  # http://localhost:5173
 ## Documentation
 
 **Primary references:**
-1. **docs/facts.json** - Source of truth (HIGHEST AUTHORITY)
+1. **internal-docs/facts.json** - Source of truth (HIGHEST AUTHORITY)
 2. **GITHUB_AGENT.md** - Quick onboarding guide
 3. **CLAUDE.md** - Detailed technical guidance
 4. **AGENTS.md** - Development workflow
-5. **docs/CONTEXT.md** - Comprehensive project context
+5. **internal-docs/CONTEXT.md** - Comprehensive project context
 
 **Trust hierarchy when information conflicts:**
-1. `docs/facts.json` (highest authority)
-2. Permanent content in `docs/`
+1. `internal-docs/facts.json` (highest authority)
+2. Permanent content in `internal-docs/`
 3. Active plans (hints only)
 
 ## Common Commands

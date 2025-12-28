@@ -34,7 +34,7 @@ The 9Boxer Design System ensures:
 
 | Document | Purpose |
 |----------|---------|
-| **[design-tokens.md](design-tokens.md)** | All design constants (colors, spacing, shadows, etc.) |
+| **[design-tokens.md](design-tokens.md)** | All design constants (colors, spacing, shadows, etc.) - centralized in `frontend/src/theme/tokens.ts` |
 | **[layout-patterns.md](layout-patterns.md)** | Application layout structure and UI zones |
 | **[interaction-patterns.md](interaction-patterns.md)** | Animations, drag-drop, feedback mechanisms |
 
@@ -42,7 +42,7 @@ The 9Boxer Design System ensures:
 
 | Document | Purpose |
 |----------|---------|
-| **[component-inventory.md](component-inventory.md)** | Complete catalog of all 32 components |
+| **[component-inventory.md](component-inventory.md)** | Complete catalog of all components with design token usage status |
 | **[component-guidelines.md](component-guidelines.md)** | When to create components, patterns, best practices |
 
 ### ♿ Accessibility
@@ -268,13 +268,17 @@ For all PRs with UI changes:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-12-25 | Initial design system documentation |
-| | | - Phase 1: Design tokens extracted |
-| | | - Phase 2: Complete documentation |
-| | | - Phase 3: Storybook + visual regression testing |
-| | | - Phase 4: Governance (linting, PR template) |
+| | | - Design tokens centralized in `frontend/src/theme/tokens.ts` |
+| | | - Complete documentation suite created |
+| | | - Storybook + visual regression testing configured |
+| | | - Governance via linting and PR templates |
+| 1.0.1 | 2025-12-27 | Updated component inventory to reflect current state |
+| | | - Documented design token adoption status (27% using tokens) |
+| | | - Removed phase-based migration references |
+| | | - Clarified "as-is" vs "future work" sections |
 
 ---
 
 **Maintained by:** Design System Team
-**Last Updated:** 2025-12-25
+**Last Updated:** 2025-12-27
 **Questions?** Check [CLAUDE.md](../../CLAUDE.md) or [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)

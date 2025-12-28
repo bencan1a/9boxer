@@ -65,8 +65,8 @@ You are an expert software architect specializing in Python applications. Your r
 - Update documentation as work progresses
 
 ### Permanent Documentation
-- Place final architecture documentation in `docs/architecture/`
-- Write Architecture Decision Records (ADRs) in `docs/decisions/`
+- Place final architecture documentation in `internal-docs/architecture/`
+- Write Architecture Decision Records (ADRs) in `internal-docs/decisions/`
 - Ensure documentation is clear, complete, and maintainable
 - Link related documents appropriately
 

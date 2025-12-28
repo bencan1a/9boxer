@@ -162,17 +162,17 @@ def function_name(param1: str, param2: int) -> bool:
 - Update as documentation develops
 
 ### Permanent Documentation
-- Place final documentation in `docs/` organized by topic:
-  - `docs/architecture/` - System architecture and design
-  - `docs/guides/` - User and developer guides
-  - `docs/api/` - API documentation
-  - `docs/decisions/` - Architecture Decision Records (ADRs)
-  - `docs/tutorials/` - Step-by-step tutorials
+- Place final documentation in `internal-internal-docs/` organized by topic:
+  - `internal-internal-docs/architecture/` - System architecture and design
+  - `internal-internal-docs/guides/` - User and developer guides
+  - `internal-internal-docs/api/` - API documentation
+  - `internal-internal-docs/decisions/` - Architecture Decision Records (ADRs)
+  - `internal-internal-docs/tutorials/` - Step-by-step tutorials
 
 ## Documentation Structure
 Organize content logically:
 ```
-docs/
+internal-docs/
 ├── architecture/
 │   ├── overview.md
 │   └── components.md

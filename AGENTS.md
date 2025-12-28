@@ -60,6 +60,27 @@ cd ..
 
 ## 🏗️ ARCHITECTURE UNDERSTANDING
 
+### Architecture Documentation (Agent-Optimized)
+
+**BEFORE implementing features or reviewing code, consult the architecture documentation.**
+
+**Quick Reference:** [internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md)
+
+**Core Architecture Docs:**
+- **[ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md)** - Error patterns, HTTP status codes
+- **[SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md)** - Security boundaries, IPC patterns
+- **[PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md)** - Performance targets, scale constraints
+- **[MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md)** - Database migration patterns
+- **[OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md)** - Logging patterns, debugging tools
+- **[decisions/](internal-docs/architecture/decisions/)** - Architecture Decision Records (ADRs)
+
+**Quick Lookup:**
+- Implementing API endpoint? → [ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md)
+- Adding security feature? → [SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md)
+- Optimizing code? → [PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md)
+- Changing database? → [MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md)
+- Adding logging? → [OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md)
+
 ### Monorepo Structure
 
 This is a monorepo with **two separate ecosystems**:
@@ -443,6 +464,7 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 
 ## 📖 ADDITIONAL RESOURCES
 
+### Core Documentation
 - [CLAUDE.md](CLAUDE.md) - Claude Code guidance with architecture details
 - [BUILD.md](BUILD.md) - Complete build instructions
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Distribution and deployment guide
@@ -450,7 +472,19 @@ This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 - [USER_GUIDE.md](USER_GUIDE.md) - End user guide
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [internal-docs/facts.json](internal-docs/facts.json) - Highest authority source of truth
+
+### Architecture Documentation (Agent-Optimized)
+- [internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md) - Quick lookup index
+- [internal-docs/architecture/ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md) - Error patterns
+- [internal-docs/architecture/SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md) - Security boundaries
+- [internal-docs/architecture/PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md) - Performance targets
+- [internal-docs/architecture/MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md) - Database migrations
+- [internal-docs/architecture/OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md) - Logging & debugging
+- [internal-docs/architecture/decisions/](internal-docs/architecture/decisions/) - ADRs
+
+### Testing Documentation
 - [.github/agents/test.md](.github/agents/test.md) - Comprehensive testing guidance
+- [internal-docs/testing/](internal-docs/testing/) - Testing guides and templates
 
 ## 🎓 PROJECT PHILOSOPHY
 

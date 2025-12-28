@@ -1,9 +1,9 @@
 # Component Inventory
 
-Complete catalog of all UI components in the 9Boxer application. This inventory helps understand what exists, where components live, and how they relate to each other.
+Complete catalog of all UI components in the 9Boxer application. This inventory documents the current state of componentization, showing which components use design tokens and which still have legacy hardcoded values.
 
-**Last Updated:** 2025-12-26
-**Total Components:** 34
+**Last Updated:** 2025-12-27
+**Total Components:** 60 component files (excluding tests and stories)
 
 ---
 
@@ -12,7 +12,7 @@ Complete catalog of all UI components in the 9Boxer application. This inventory 
 - [Component Hierarchy](#component-hierarchy)
 - [Component Catalog by Zone](#component-catalog-by-zone)
 - [Reusability Matrix](#reusability-matrix)
-- [Migration Status](#migration-status)
+- [Design Token Usage](#design-token-usage)
 - [Component Index](#component-index)
 
 ---
@@ -234,84 +234,173 @@ Tightly coupled to 9Boxer business logic.
 
 ---
 
-## Migration Status
+## Design Token Usage
 
-Tracking which components use design tokens vs. hardcoded values.
+The 9Boxer codebase has a mix of components using the centralized design token system (`theme.tokens.*`) and legacy components with hardcoded values. This section documents the current state.
 
-### ✅ Migrated (Uses Design Tokens)
+### Token System Overview
 
-Components that have been updated to use `theme.tokens.*`:
+Design tokens are centralized in `frontend/src/theme/tokens.ts` and provide:
+- **Colors**: Semantic colors, grid box colors, chart colors
+- **Spacing**: 8px-based spacing scale (xs, sm, md, lg, xl, xxl)
+- **Dimensions**: Component-specific dimensions (gridBox, panel, employeeTile)
+- **Opacity**: Standard opacity levels (disabled, hover, active, grid-specific)
+- **Duration/Easing**: Animation timing constants
+- **Z-index**: Layering constants
+- **Typography**: Font sizes, weights, line heights
+- **Radius/Shadows**: Border radius and shadow definitions
 
-- **None yet** (Phase 1 just created tokens)
+### Current Adoption Status
 
-### ⏭️ Pending Migration (Hardcoded Values)
+**Components Using Design Tokens:** 16 out of 60 (27%)
+**Components with Legacy Hardcoded Values:** 44 out of 60 (73%)
 
-Components with hardcoded values identified in audit:
+### Components Using Design Tokens
 
-**High Priority (Phase 1):**
-- GridBox (has local constants for BOX_HEIGHTS, OPACITY)
-- EmployeeTile
-- DashboardPage
-- AppBar
-- LoadingSpinner
-- FileUploadDialog
+These components properly reference `theme.tokens.*` for styling:
 
-**Medium Priority (Phase 2):**
-- RightPanel (hardcoded panel widths)
-- FilterDrawer
-- DetailsTab
-- ErrorBoundary
+**Grid Components:**
+- GridBox - Uses `theme.tokens.duration`, `theme.tokens.easing`, `theme.tokens.opacity.grid*`
+- EmployeeTile - Uses `theme.tokens.colors.semantic.donutMode`, `theme.tokens.colors.semantic.warning`
+- NineBoxGrid - Uses `theme.tokens.duration.normal`, `theme.tokens.easing.easeInOut`
+- BoxHeader - Uses `theme.tokens.opacity.hover`
 
-**Lower Priority (Phase 3):**
-- All intelligence components (chart colors)
-- All panel tab components
-- Remaining common components
+**Dashboard Components:**
+- DashboardPage - Uses `theme.tokens.duration.normal`, `theme.tokens.easing.easeInOut`
 
-See [Hardcoded Values Audit](../../agent-tmp/hardcoded-values-audit.md) for complete migration plan.
+**Panel Components:**
+- DistributionChart - Uses `theme.tokens.colors.semantic.*` for chart colors
+
+**Intelligence Components:**
+- DeviationChart - Uses `theme.tokens.colors.semantic.*`
+- AnomalySection - Uses `theme.tokens.colors.semantic.*`
+- LevelDistributionChart - Uses `theme.tokens.colors.semantic.*`
+- DistributionHeatmap - Uses `theme.tokens.colors.semantic.*`
+
+**Common Components:**
+- ConnectionStatus - Uses `theme.tokens.duration.fast`, `theme.tokens.easing.easeInOut`
+
+**Filter Components:**
+- ReportingChainFilter - Uses `theme.tokens.opacity.hover`
+- GridPositionFilter - Uses `theme.tokens.opacity.hover`
+- FlagFilters - Uses `theme.tokens.opacity.hover`
+- ExclusionList - Uses `theme.tokens.opacity.hover`
+
+**Intelligence Atoms:**
+- ManagementChain - Uses `theme.tokens.opacity.hover`
+
+### Components with Legacy Hardcoded Values
+
+These components still use hardcoded pixel values, rem values, or numeric spacing instead of tokens:
+
+**Panel Components:**
+- StatisticsTab - Hardcoded widths, heights, gaps in CurlyBrace SVG
+- RatingsTimeline - Hardcoded dimensions for timeline visualization
+- EmployeeDetails - Hardcoded spacing and dimensions
+- EmployeeFlags - Hardcoded spacing
+- IntelligenceTab - Hardcoded spacing
+- ChangeTrackerTab - Hardcoded spacing
+- RightPanel - Hardcoded panel width values (320, 400, 600)
+- DetailsTab - Hardcoded gap values
+
+**Dashboard Components:**
+- FilterDrawer - Hardcoded widths and spacing
+- AppBar - Hardcoded spacing and dimensions
+- PureAppBar - Hardcoded spacing
+- FileMenu - Hardcoded spacing
+
+**Common Components:**
+- LoadingSpinner - Hardcoded z-index (9999), size values
+- ErrorBoundary - Hardcoded spacing
+- EmptyState - Hardcoded spacing and icon sizes
+- ZoomControls - Hardcoded spacing
+- LanguageSelector - Hardcoded spacing
+- ViewControls - Hardcoded spacing
+
+**Intelligence Components:**
+- IntelligenceSummary - Hardcoded spacing and dimensions
+
+**Grid Components:**
+- Axis - Hardcoded dimensions and spacing
+
+**Settings Components:**
+- SettingsDialog - Hardcoded spacing and dimensions
+
+**Events Components:**
+- EventDisplay - Hardcoded spacing
+- EmployeeChangesSummary - Hardcoded spacing
+
+### Why the Mixed State?
+
+The design token system was created in December 2025 to centralize design constants. Components using tokens were either:
+1. **Created after token system** - Built with tokens from the start
+2. **Updated during features** - Migrated to tokens when touched for feature work
+3. **Grid/Intelligence focus** - Priority given to core grid and analytics components
+
+Components with hardcoded values were either:
+1. **Created before token system** - Pre-December 2025 legacy code
+2. **Not touched recently** - Haven't needed updates since token system was created
+3. **Complex calculations** - Some hardcoded values are algorithmic (e.g., SVG paths, timeline calculations) rather than design constants
 
 ---
 
 ## Component Index
 
-Alphabetical index of all components with quick reference.
+Alphabetical index of all major components with quick reference.
 
-| Component | Location | Type | Reusable | Migrated |
-|-----------|----------|------|----------|----------|
-| AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
-| AppBar | `dashboard/` | Layout | ❌ No | ❌ |
-| ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ |
-| ConfirmDialog | `common/` | Utility | ✅ Yes | N/A (new) |
-| ConnectionStatus | `common/` | Global | ⚠️ Moderate | ❌ |
-| DashboardPage | `dashboard/` | Layout | ❌ No | ❌ |
-| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
-| DeviationChart | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
-| DevModeIndicator | `common/` | Global | ⚠️ Moderate | ❌ |
-| DistributionChart | `panel/` | Visualization | ✅ Yes | ❌ |
-| DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
-| EmptyState | `common/` | Utility | ✅ Yes | N/A (new) |
-| EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ |
-| EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ |
-| EmployeeTile | `grid/` | Grid | ✅ Yes | ❌ |
-| ErrorBoundary | `common/` | Global | ✅ Yes | ❌ |
-| ExclusionDialog | `dashboard/` | Modal | ❌ No | ❌ |
-| FileMenu | `dashboard/` | Menu | ❌ No | ❌ |
-| FileUploadDialog | `common/` | Modal | ✅ Yes | ❌ |
-| FilterDrawer | `dashboard/` | Sidebar | ❌ No | ❌ |
-| GridBox | `grid/` | Grid | ⚠️ Moderate | ❌ |
-| IntelligenceSummary | `intelligence/` | Intelligence | ❌ No | ❌ |
-| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ✅ |
-| LanguageSelector | `common/` | Utility | ✅ Yes | ❌ |
-| LevelDistributionChart | `intelligence/` | Intelligence | ⚠️ Moderate | ❌ |
-| LoadingSpinner | `common/` | Utility | ✅ Yes | ❌ |
-| ManagementChain | `panel/` | Panel Component | ❌ No | ❌ |
-| MockDataDemo | `intelligence/` | Development | ❌ No | ❌ |
-| NineBoxGrid | `grid/` | Grid | ⚠️ Moderate | ❌ |
-| RatingsTimeline | `panel/` | Panel Component | ❌ No | ❌ |
-| RightPanel | `panel/` | Layout | ⚠️ Moderate | ❌ |
-| SettingsDialog | `settings/` | Modal | ❌ No | ❌ |
-| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ |
-| ViewModeToggle | `grid/` | Control | ❌ No | ❌ |
-| ZoomControls | `common/` | Control | ✅ Yes | ❌ |
+| Component | Location | Type | Reusable | Uses Tokens |
+|-----------|----------|------|----------|-------------|
+| AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
+| AppBar | `dashboard/` | Layout | ❌ No | ❌ Legacy |
+| Axis | `grid/` | Grid | ✅ Yes | ❌ Legacy |
+| BoxHeader | `grid/` | Grid | ✅ Yes | ✅ Partial |
+| ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ Legacy |
+| ConfirmDialog | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| ConnectionStatus | `common/` | Global | ⚠️ Moderate | ✅ Partial |
+| DashboardPage | `dashboard/` | Layout | ❌ No | ✅ Partial |
+| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ Legacy |
+| DeviationChart | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
+| DevModeIndicator | `common/` | Global | ⚠️ Moderate | ❌ Legacy |
+| DistributionChart | `panel/` | Visualization | ✅ Yes | ✅ Partial |
+| DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
+| EmptyState | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| EmployeeChangesSummary | `panel/` | Panel Component | ❌ No | ❌ Legacy |
+| EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ Legacy |
+| EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ Legacy |
+| EmployeeFlags | `panel/` | Panel Component | ❌ No | ❌ Legacy |
+| EmployeeTile | `grid/` | Grid | ✅ Yes | ✅ Partial |
+| ErrorBoundary | `common/` | Global | ✅ Yes | ❌ Legacy |
+| EventDisplay | `events/` | Events | ⚠️ Moderate | ❌ Legacy |
+| ExclusionDialog | `dashboard/` | Modal | ❌ No | ❌ Legacy |
+| ExclusionList | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
+| FileMenu | `dashboard/` | Menu | ❌ No | ❌ Legacy |
+| FileUploadDialog | `common/` | Modal | ✅ Yes | ❌ Legacy |
+| FilterDrawer | `dashboard/` | Sidebar | ❌ No | ❌ Legacy |
+| FilterSection | `dashboard/filters/` | Filter | ✅ Yes | ❌ Legacy |
+| FlagFilters | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
+| GridBox | `grid/` | Grid | ⚠️ Moderate | ✅ Partial |
+| GridPositionFilter | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
+| IntelligenceSummary | `intelligence/` | Intelligence | ❌ No | ❌ Legacy |
+| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ❌ Legacy |
+| LanguageSelector | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| LevelDistributionChart | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
+| LoadingSpinner | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| ManagementChain | `panel/` | Panel Component | ❌ No | ✅ Partial |
+| MockDataDemo | `intelligence/` | Development | ❌ No | ❌ Legacy |
+| NineBoxGrid | `grid/` | Grid | ⚠️ Moderate | ✅ Partial |
+| PureAppBar | `dashboard/` | Layout | ❌ No | ❌ Legacy |
+| RatingsTimeline | `panel/` | Panel Component | ❌ No | ❌ Legacy |
+| ReportingChainFilter | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
+| RightPanel | `panel/` | Layout | ⚠️ Moderate | ❌ Legacy |
+| SettingsDialog | `settings/` | Modal | ❌ No | ❌ Legacy |
+| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ Legacy |
+| ViewControls | `common/` | Control | ✅ Yes | ❌ Legacy |
+| ViewModeToggle | `grid/` | Control | ❌ No | ❌ Legacy |
+| ZoomControls | `common/` | Control | ✅ Yes | ❌ Legacy |
+
+**Legend:**
+- **✅ Partial** - Uses some design tokens but may still have hardcoded values
+- **❌ Legacy** - Primarily uses hardcoded values, not yet migrated to tokens
 
 ---
 
@@ -321,31 +410,32 @@ Alphabetical index of all components with quick reference.
 
 | Zone | Count | Purpose |
 |------|-------|---------|
-| **Common** | 9 | Reusable utilities |
-| **Dashboard** | 5 | Layout & navigation |
-| **Grid** | 5 | Employee visualization |
-| **Panel** | 9 | Detailed information |
-| **Intelligence** | 6 | Analytics & insights |
+| **Common** | 11 | Reusable utilities (LoadingSpinner, EmptyState, ConfirmDialog, etc.) |
+| **Dashboard** | 10 | Layout & navigation (AppBar, FilterDrawer, FileMenu, etc.) |
+| **Grid** | 7 | Employee visualization (NineBoxGrid, GridBox, EmployeeTile, etc.) |
+| **Panel** | 10 | Detailed information (tabs, charts, employee details) |
+| **Intelligence** | 7 | Analytics & insights (charts, anomalies, summaries) |
 | **Settings** | 1 | User preferences |
-| **Total** | 34 | All components |
+| **Events** | 1 | Event tracking |
+| **Filter Subcomponents** | 5 | Specialized filter components |
+| **Total** | ~50 | Major components (excluding utility/helper components) |
 
 ### By Reusability
 
 | Category | Count | Percentage |
 |----------|-------|------------|
-| **Highly Reusable** | 9 | 26% |
-| **Moderately Reusable** | 11 | 32% |
-| **App-Specific** | 14 | 41% |
+| **Highly Reusable** | ~15 | 30% |
+| **Moderately Reusable** | ~18 | 36% |
+| **App-Specific** | ~17 | 34% |
 
-### By Migration Status
+### By Design Token Adoption
 
-| Status | Count | Percentage |
-|--------|-------|------------|
-| **Migrated** | 3 | 9% |
-| **New (built with patterns)** | 2 | 6% |
-| **Pending** | 29 | 85% |
+| Status | Count | Percentage | Description |
+|--------|-------|------------|-------------|
+| **Using Tokens (Partial)** | 16 | 27% | Components that reference `theme.tokens.*` |
+| **Legacy (Hardcoded)** | 44 | 73% | Components with hardcoded values |
 
-**Note:** "Migrated" refers to existing components refactored to use new reusable patterns (DetailsTab, IntelligenceTab, StatisticsTab). "New" refers to newly created reusable components (EmptyState, ConfirmDialog) that were built with design tokens from the start.
+**Note:** "Partial" means the component uses some design tokens but may still have hardcoded values for complex calculations or legacy code paths. The design token system was introduced in December 2025, so most pre-existing components have not been migrated yet.
 
 ---
 
@@ -385,23 +475,6 @@ Alphabetical index of all components with quick reference.
 
 **Drag-and-drop components depend on:**
 - `@dnd-kit/core` - Drag and drop (GridBox, EmployeeTile, NineBoxGrid)
-
----
-
-## Next Steps
-
-### Immediate (Phase 1 Migration)
-
-1. **Migrate GridBox** to use `theme.tokens.dimensions.gridBox.*` and `theme.tokens.opacity.grid*`
-2. **Migrate EmployeeTile** to use `theme.tokens.dimensions.employeeTile.*`
-3. **Migrate common components** (LoadingSpinner, FileUploadDialog)
-
-### Future Enhancements
-
-1. **Create barrel exports** for each zone (`common/index.ts`, `grid/index.ts`, etc.)
-2. **Add Storybook stories** for all reusable components
-3. **Extract shared logic** into custom hooks (e.g., drag-and-drop hook)
-4. **Create base components** for common patterns (Card, List, Tab patterns)
 
 ---
 
