@@ -52,7 +52,7 @@ Find the **File menu button** in the top-left area of the app (it shows "No file
 
 ![File upload dialog showing file selection and Import button](images/screenshots/quickstart/quickstart-upload-dialog.png)
 
-### Watch the Magic Happen
+### View Your Results
 
 Your employees automatically appear on the grid, positioned based on their performance and potential ratings.
 

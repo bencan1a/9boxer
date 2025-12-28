@@ -470,6 +470,8 @@ Your calibration session is successful when you've achieved:
 
     **Show the data visually** - Share your screen so everyone sees the same distribution.
 
+    **Use zoom and full-screen for better visibility** - Press F11 for full-screen mode in large room presentations. Adjust zoom to 125-150% for better readability on projectors and large screens. See [Zoom and Full-Screen Controls](../tips.md#zoom-and-full-screen-controls) for details.
+
     **Document everything** - Add notes for every change made during the meeting.
 
     **Export frequently** - Save progress periodically during long meetings (use different filenames).

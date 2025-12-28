@@ -40,7 +40,7 @@ No. 9Boxer runs entirely offline on your computer with no login or account requi
 
 ### How do I move an employee to a different box?
 
-Click and hold on the employee tile, drag it to the new box, and release. The tile gets an orange left border showing it's been modified. See [Working with Employees](working-with-employees.md) for the complete process.
+Click and hold on the employee tile, drag it to the new box, and release. The tile gets a full orange border showing it's been modified. See [Working with Employees](working-with-employees.md) for the complete process.
 
 ### Can I move multiple employees at once?
 
@@ -56,7 +56,7 @@ No, the grid labels are fixed: Low/Medium/High for both Performance and Potentia
 
 ### What do the colored borders on employee tiles mean?
 
-Orange left border means you've moved that employee in the current session. Purple border with ghostly appearance means the employee has been placed during a Donut Mode exercise. See [Working with Employees](working-with-employees.md) and [Donut Mode](donut-mode.md) for details.
+A full orange border means you've moved that employee in the current session. A full purple border means the employee has been placed during a Donut Mode exercise. Flags appear as colored circular badges in the top-right corner of each tile. See [Working with Employees](working-with-employees.md) and [Donut Mode](donut-mode.md) for details.
 
 ### Why is my grid empty even though upload succeeded?
 

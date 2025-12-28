@@ -166,4 +166,4 @@ Here's what a typical first session looks like:
 
 ---
 
-**Let's get started!** Head to the [2-Minute Quickstart](quickstart.md) and you'll see your team on the grid before you know it.
+**Let's get started!** Head to the [2-Minute Quickstart](quickstart.md) and you'll see your team on the grid in less than 2 minutes.

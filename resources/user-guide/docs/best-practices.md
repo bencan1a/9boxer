@@ -340,7 +340,7 @@ See [Tracking Changes](tracking-changes.md) for change management workflow.
 
 **What:** During calibration, activate Donut Mode to force-rank employees currently rated "Medium Performance, Medium Potential."
 
-**Why:** The center box (Core Performers) becomes a catch-all where managers place anyone they're unsure about. Donut Mode forces you to differentiate: if they can't be Medium/Medium, where do they really belong?
+**Why:** The center box (Core Performers) often becomes a default placement where managers put anyone they're unsure about. Donut Mode forces you to differentiate: if they can't be Medium/Medium, where do they really belong?
 
 **How:** Integrate Donut Mode into calibration:
 
@@ -627,7 +627,7 @@ See [Statistics and Intelligence](statistics.md) for complete anomaly detection 
 
 ---
 
-## Pro Tips for Power Users
+## Advanced Tips for Power Users
 
 ### Use Keyboard Shortcuts for Efficiency
 
