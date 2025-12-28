@@ -108,6 +108,12 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       borderRadius: tokens.radius.md,
     },
     components: {
+      // Configure Modal (Dialog) to use dedicated portal container
+      MuiModal: {
+        defaultProps: {
+          container: () => document.getElementById("modal-root"),
+        },
+      },
       MuiCssBaseline: {
         styleOverrides: {
           body: {

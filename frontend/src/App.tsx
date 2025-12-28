@@ -136,7 +136,12 @@ const App: React.FC = () => {
               backgroundColor: "background.default",
             }}
           >
-            <HashRouter>
+            <HashRouter
+              future={{
+                v7_relativeSplatPath: true,
+                v7_startTransition: true,
+              }}
+            >
               <Routes>
                 <Route
                   path="/"

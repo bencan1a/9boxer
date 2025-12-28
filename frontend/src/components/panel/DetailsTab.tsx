@@ -52,7 +52,9 @@ export const DetailsTab: React.FC = () => {
           <Typography variant="subtitle2" color="primary" gutterBottom>
             {t("panel.detailsTab.reportingChain")}
           </Typography>
-          <Box sx={{ mt: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+          <Box sx={{ mt: theme.tokens.spacing.md / 8 }}>
+            {" "}
+            {/* Convert 16px to 2 */}
             <ManagementChain employee={selectedEmployee} />
           </Box>
         </CardContent>

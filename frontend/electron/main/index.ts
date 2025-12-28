@@ -792,6 +792,34 @@ function createWindow(): void {
 
   mainWindow = new BrowserWindow(windowOptions);
 
+  // Configure Content Security Policy (CSP)
+  // This protects against XSS attacks and injection vulnerabilities
+  // Note: Development mode allows inline scripts for Vite HMR; production is strict
+  mainWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      const isDev = getIsDev();
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          "Content-Security-Policy": [
+            [
+              "default-src 'self'",
+              // Dev: Allow inline scripts for Vite HMR
+              // Prod: Strict - no inline scripts (verified: production build has none)
+              isDev ? "script-src 'self' 'unsafe-inline'" : "script-src 'self'",
+              "style-src 'self' 'unsafe-inline'", // Material-UI uses CSS-in-JS (inline styles)
+              "img-src 'self' data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' localhost:* ws://localhost:*", // Backend API (dynamic port) + Vite HMR
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join("; "),
+          ],
+        },
+      });
+    }
+  );
+
   // Start tracking window state changes
   windowStateManager.track(mainWindow);
 

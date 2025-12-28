@@ -60,7 +60,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   maxWidth = "xs",
 }) => {
   const theme = useTheme();
-  
+
   return (
     <Dialog
       open={open}
@@ -94,10 +94,12 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {message}
         </DialogContentText>
       </DialogContent>
-      <DialogActions sx={{ 
-        px: theme.tokens.spacing.lg / 8, // Convert 24px to 3
-        pb: theme.tokens.spacing.md / 8  // Convert 16px to 2
-      }}>
+      <DialogActions
+        sx={{
+          px: theme.tokens.spacing.lg / 8, // Convert 24px to 3
+          pb: theme.tokens.spacing.md / 8, // Convert 16px to 2
+        }}
+      >
         <Button onClick={onClose} disabled={loading}>
           {cancelLabel}
         </Button>

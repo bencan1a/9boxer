@@ -5,7 +5,7 @@ import * as path from "path";
  * Upload an Excel file through the file upload dialog
  *
  * This helper handles the complete upload flow:
- * 1. Opens the upload dialog (via empty state button or FileMenu)
+ * 1. Opens the upload dialog (via empty state button or file menu)
  * 2. Waits for the file upload dialog to appear
  * 3. Selects the specified file from the fixtures directory
  * 4. Clicks the submit button
@@ -40,7 +40,7 @@ export async function uploadExcelFile(
     // No file loaded - use empty state button
     await emptyStateButton.click();
   } else {
-    // File already loaded - use FileMenu
+    // File already loaded - use file menu
     await fileMenuButton.click();
     // Wait for menu to become visible
     await expect(page.locator('[role="menu"]')).toBeVisible();

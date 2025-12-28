@@ -110,7 +110,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         <Typography
           variant="body1"
           color="text.secondary"
-          sx={{ 
+          sx={{
             mb: action ? theme.tokens.spacing.xl / 8 : 0, // Convert 32px to MUI spacing units (32/8 = 4)
             maxWidth: theme.tokens.dimensions.panel.defaultWidth, // 400px
           }}
