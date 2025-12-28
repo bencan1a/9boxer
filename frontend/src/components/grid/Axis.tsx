@@ -78,7 +78,7 @@ export const Axis: React.FC<AxisProps> = ({
   return (
     <Box
       sx={{
-        width: 80,
+        width: 64,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

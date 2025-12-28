@@ -203,7 +203,7 @@ export const NineBoxGrid: React.FC = () => {
     >
       <Box
         sx={{
-          p: 3,
+          p: 2,
           minHeight: "calc(100vh - 80px)",
           width: "100%",
           userSelect: "none",
@@ -214,9 +214,9 @@ export const NineBoxGrid: React.FC = () => {
       >
         {/* Header row with Performance label, employee count, and view mode toggle */}
         <Box
-          sx={{ display: "flex", mb: 2, width: "100%", alignItems: "center" }}
+          sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
         >
-          <Box sx={{ width: 80 }} /> {/* Spacer for left label alignment */}
+          <Box sx={{ width: 64 }} /> {/* Spacer for left label alignment */}
           <Box
             sx={{
               flex: 1,
