@@ -22,6 +22,7 @@ export interface GenerateSampleResponse {
     locations: string[];
     functions: string[];
   };
+  session_id: string;
 }
 
 /**

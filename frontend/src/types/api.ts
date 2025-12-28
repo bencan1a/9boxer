@@ -31,14 +31,14 @@ export interface UploadResponse {
 }
 
 export interface SessionStatusResponse {
-  session_id: string;
+  session_id: string | null;
   active: boolean;
   employee_count: number;
   changes_count: number;
   events: TrackableEvent[];
-  uploaded_filename: string;
-  created_at: string;
-  donut_mode_active: boolean;
+  uploaded_filename: string | null;
+  created_at: string | null;
+  donut_mode_active?: boolean;
 }
 
 export interface DonutModeToggleResponse {

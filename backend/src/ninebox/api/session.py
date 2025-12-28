@@ -132,14 +132,23 @@ async def upload_file(
 async def get_session_status(
     session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
-    """Get current session status."""
+    """Get current session status.
+
+    Returns session information if active, or a response with active=False if no session exists.
+    This avoids 404 errors during normal operation (e.g., on app startup).
+    """
     session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session",
-        )
+        return {
+            "active": False,
+            "session_id": None,
+            "employee_count": 0,
+            "changes_count": 0,
+            "events": [],
+            "uploaded_filename": None,
+            "created_at": None,
+        }
 
     return {
         "session_id": session.session_id,

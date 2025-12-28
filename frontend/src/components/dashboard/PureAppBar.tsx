@@ -54,6 +54,8 @@ export interface PureAppBarProps {
   onFileMenuToggle?: () => void;
   /** Callback when import is clicked */
   onImportClick: () => void;
+  /** Callback when load sample dataset is clicked */
+  onLoadSampleClick: () => void;
   /** Callback when export is clicked */
   onExportClick: () => void;
   /** Callback when filter button is clicked */
@@ -102,6 +104,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   isExporting = false,
   onFileMenuToggle,
   onImportClick,
+  onLoadSampleClick,
   onExportClick,
   onFilterClick,
   onSettingsClick,
@@ -151,6 +154,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
             isOpen={isFileMenuOpen}
             onToggle={onFileMenuToggle}
             onImportClick={onImportClick}
+            onLoadSampleClick={onLoadSampleClick}
             onExportClick={onExportClick}
             isExporting={isExporting}
           />

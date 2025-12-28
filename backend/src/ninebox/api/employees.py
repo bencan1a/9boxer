@@ -1,5 +1,6 @@
 """Employee management API endpoints."""
 
+import logging
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -11,6 +12,8 @@ from ninebox.models.filters import EmployeeFilters
 from ninebox.services.employee_service import EmployeeService
 from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
 from ninebox.services.session_manager import SessionManager
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/employees", tags=["employees"])
 
@@ -98,6 +101,7 @@ class GenerateSampleResponse(BaseModel):
 
     employees: list[Employee]
     metadata: dict[str, Any]  # Contains: total, bias_patterns, locations, functions
+    session_id: str  # Session identifier for the generated dataset
 
 
 @router.get("", response_model=dict)
@@ -112,13 +116,18 @@ async def get_employees(
     emp_service: EmployeeService = Depends(get_employee_service),
 ) -> dict:
     """Get filtered list of employees."""
+    logger.info(f"GET /employees called for user: {LOCAL_USER_ID}")
     session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
+        logger.error(f"No active session found for user: {LOCAL_USER_ID}")
+        logger.error(f"Available sessions: {list(session_mgr.sessions.keys())}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No active session",
         )
+
+    logger.info(f"Found session with {len(session.current_employees)} employees")
 
     # Parse query parameters using shared filter model
     filters = EmployeeFilters.from_query_params(
@@ -418,6 +427,7 @@ async def move_employee_donut(
 @router.post("/generate-sample", response_model=GenerateSampleResponse)
 async def generate_sample_employees(
     request: GenerateSampleRequest,
+    session_manager: SessionManager = Depends(get_session_manager),
 ) -> GenerateSampleResponse:
     """Generate sample employee dataset for testing and tutorials.
 
@@ -428,8 +438,7 @@ async def generate_sample_employees(
     - Complete coverage of grid positions and flags
     - Reproducible results via seed parameter
 
-    The generated data is NOT saved to any session - it is returned
-    to the caller for use in tutorials, testing, or demonstrations.
+    The generated data IS saved to a new session for immediate use.
 
     Args:
         request: Configuration for dataset generation
@@ -494,7 +503,27 @@ async def generate_sample_employees(
             "bias_patterns": bias_info if request.include_bias else None,
         }
 
-        return GenerateSampleResponse(employees=employees, metadata=metadata)
+        # Create a session with the generated sample data
+        session_id = session_manager.create_session(
+            user_id=LOCAL_USER_ID,
+            filename=f"Sample_Dataset_{request.size}_employees.xlsx",
+            file_path="",  # No actual file for generated data
+            sheet_name="Sample Data",
+            sheet_index=0,
+            employees=employees,
+        )
+
+        # Verify session was created and can be retrieved
+        logger.info(f"Created sample data session: {session_id}")
+        verify_session = session_manager.get_session(LOCAL_USER_ID)
+        if verify_session:
+            logger.info(
+                f"Verified session exists with {len(verify_session.current_employees)} employees"
+            )
+        else:
+            logger.error(f"CRITICAL: Session {session_id} was NOT found after creation!")
+
+        return GenerateSampleResponse(employees=employees, metadata=metadata, session_id=session_id)
 
     except ValueError as e:
         raise HTTPException(

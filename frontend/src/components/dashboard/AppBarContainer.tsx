@@ -9,8 +9,10 @@ import { useSessionStore } from "../../store/sessionStore";
 import { useFilters } from "../../hooks/useFilters";
 import { SettingsDialog } from "../settings/SettingsDialog";
 import { FileUploadDialog } from "../common/FileUploadDialog";
+import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
+import { sampleDataService } from "../../services/sampleDataService";
 import { extractErrorMessage } from "../../types/errors";
 import { logger } from "../../utils/logger";
 import { useTranslation } from "react-i18next";
@@ -23,7 +25,14 @@ import { useTranslation } from "react-i18next";
  */
 export const AppBarContainer: React.FC = () => {
   const { t } = useTranslation();
-  const { sessionId, filename, events } = useSessionStore();
+  const {
+    sessionId,
+    filename,
+    events,
+    employees,
+    clearSession,
+    loadEmployees,
+  } = useSessionStore();
   const {
     toggleDrawer,
     hasActiveFilters,
@@ -38,11 +47,58 @@ export const AppBarContainer: React.FC = () => {
   // Local state for dialogs and menus
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [loadSampleDialogOpen, setLoadSampleDialogOpen] = useState(false);
+  const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
   // Handle import
   const handleImportClick = () => {
+    setFileMenuOpen(false); // Close file menu
     setUploadDialogOpen(true);
+  };
+
+  // Handle load sample dataset
+  const handleLoadSampleClick = () => {
+    setFileMenuOpen(false); // Close file menu
+    setLoadSampleDialogOpen(true);
+  };
+
+  const handleLoadSampleConfirm = async () => {
+    try {
+      // Clear existing session if there is one
+      if (sessionId) {
+        await clearSession();
+      }
+
+      // Generate sample data via API (this creates a session automatically)
+      const response = await sampleDataService.generateSampleDataset({
+        size: 200,
+        include_bias: true,
+      });
+
+      // Store session ID in localStorage so the backend knows which session to use
+      localStorage.setItem("session_id", response.session_id);
+
+      // Reload employees to sync frontend state with the new session
+      await loadEmployees();
+
+      // Close dialog and show success message
+      setLoadSampleDialogOpen(false);
+      showSuccess(
+        `Successfully loaded ${response.metadata.total} sample employees`
+      );
+
+      logger.info("Sample data loaded", {
+        total: response.metadata.total,
+        locations: response.metadata.locations,
+        functions: response.metadata.functions,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error("Failed to load sample data", error);
+      showError(errorMessage);
+      throw error; // Re-throw to let dialog handle error display
+    }
   };
 
   // Handle export
@@ -153,7 +209,10 @@ export const AppBarContainer: React.FC = () => {
         filterTooltip={getFilterTooltip()}
         isFilterDisabled={!sessionId}
         isExporting={isExporting}
+        isFileMenuOpen={fileMenuOpen}
+        onFileMenuToggle={() => setFileMenuOpen(!fileMenuOpen)}
         onImportClick={handleImportClick}
+        onLoadSampleClick={handleLoadSampleClick}
         onExportClick={handleExportClick}
         onFilterClick={toggleDrawer}
         onSettingsClick={() => setSettingsDialogOpen(true)}
@@ -169,6 +228,13 @@ export const AppBarContainer: React.FC = () => {
       <FileUploadDialog
         open={uploadDialogOpen}
         onClose={() => setUploadDialogOpen(false)}
+      />
+
+      <LoadSampleDialog
+        open={loadSampleDialogOpen}
+        onClose={() => setLoadSampleDialogOpen(false)}
+        onConfirm={handleLoadSampleConfirm}
+        hasExistingData={employees.length > 0}
       />
     </>
   );

@@ -18,6 +18,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DownloadIcon from "@mui/icons-material/Download";
 import HistoryIcon from "@mui/icons-material/History";
+import ScienceIcon from "@mui/icons-material/Science";
 import { useTranslation } from "react-i18next";
 import { ChangeIndicator } from "./ChangeIndicator";
 import { FileNameDisplay } from "./FileNameDisplay";
@@ -48,6 +49,8 @@ export interface FileMenuButtonProps {
   onToggle?: () => void;
   /** Callback when import is clicked */
   onImportClick: () => void;
+  /** Callback when load sample dataset is clicked */
+  onLoadSampleClick: () => void;
   /** Callback when export is clicked */
   onExportClick: () => void;
   /** Recent files to display */
@@ -82,6 +85,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   isOpen: controlledIsOpen,
   onToggle,
   onImportClick,
+  onLoadSampleClick,
   onExportClick,
   recentFiles = [],
   onRecentFileClick,
@@ -117,6 +121,11 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   const handleImportClick = () => {
     handleClose();
     onImportClick();
+  };
+
+  const handleLoadSampleClick = () => {
+    handleClose();
+    onLoadSampleClick();
   };
 
   const handleExportClick = () => {
@@ -202,6 +211,14 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         >
           <UploadFileIcon sx={{ mr: 1 }} fontSize="small" />
           {t("dashboard.fileMenu.importData")}
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleLoadSampleClick}
+          data-testid="load-sample-menu-item"
+        >
+          <ScienceIcon sx={{ mr: 1 }} fontSize="small" />
+          Load Sample Dataset...
         </MenuItem>
 
         <Divider />

@@ -5,7 +5,7 @@
  * Warns users if they have existing data that will be replaced.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -45,6 +45,14 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setIsLoading(false);
+      setError(null);
+    }
+  }, [open]);
 
   const handleConfirm = async () => {
     setIsLoading(true);
