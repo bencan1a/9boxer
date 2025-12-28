@@ -195,18 +195,6 @@ Use full-screen mode together with zoom controls for the best presentation exper
     3. Zoom to 125-150% for better readability
     4. Press `Esc` when done to return to normal view
 
-## Future Settings
-
-The Settings dialog is designed to accommodate additional preferences as the application evolves. Potential future settings may include:
-
-- Grid layout preferences
-- Export defaults
-- Notification preferences
-- Language/locale options
-- Data retention settings
-
-Check future releases for additional customization options.
-
 ## Tips
 
 !!! tip "Theme Recommendations"
