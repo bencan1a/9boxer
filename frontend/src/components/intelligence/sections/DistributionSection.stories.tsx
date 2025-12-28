@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from "@storybook/react";
 import { DistributionSection } from "./DistributionSection";
 import {
   mockIdealDistribution,
@@ -8,12 +8,25 @@ import {
   mockSmallDistribution,
 } from "../../../mocks/mockDistribution";
 
+/**
+ * DistributionSection - 🔮 Future Feature
+ *
+ * This section component is planned for AI-powered insights but not yet
+ * implemented in the application. It will display distribution analysis
+ * comparing actual vs ideal employee distributions across the 9-box grid.
+ */
 const meta: Meta<typeof DistributionSection> = {
-  title: "Intelligence/Sections/DistributionSection",
+  title: "Intelligence/Sections/🔮 Future Feature - DistributionSection",
   component: DistributionSection,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    docs: {
+      description: {
+        component:
+          "🔮 **Future Feature** - This component is planned for AI-powered insights but not yet implemented in the application. It will display distribution analysis comparing actual vs ideal employee distributions across the 9-box grid with statistical comparisons.",
+      },
+    },
   },
   argTypes: {
     data: {

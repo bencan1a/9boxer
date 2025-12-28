@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { AnomalyCard } from "./AnomalyCard";
 import {
@@ -8,12 +8,25 @@ import {
   mockOutlierAnomaly,
 } from "../../../mocks/mockAnomalies";
 
+/**
+ * AnomalyCard - 🔮 Future Feature
+ *
+ * This component is planned for AI-powered insights but not yet implemented
+ * in the application. It will display anomalies detected in employee data
+ * distributions with severity indicators and action buttons.
+ */
 const meta: Meta<typeof AnomalyCard> = {
-  title: "Intelligence/Atoms/AnomalyCard",
+  title: "Intelligence/Atoms/🔮 Future Feature - AnomalyCard",
   component: AnomalyCard,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    docs: {
+      description: {
+        component:
+          "🔮 **Future Feature** - This component is planned for AI-powered insights but not yet implemented in the application. It will display anomalies detected in employee data with severity indicators, descriptions, and action buttons.",
+      },
+    },
   },
   argTypes: {
     anomaly: {
