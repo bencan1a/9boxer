@@ -491,6 +491,178 @@ const alice = createEmployee({ name: 'Alice', performance: 5 });
 const bob = createEmployee({ name: 'Bob', performance: 2 });
 ```
 
+### Test Fixture Cleanup Patterns
+
+**Purpose:** Prevent state pollution between tests, especially important for pytest-xdist parallel execution.
+
+#### Environment Cleanup (conftest.py)
+
+The `test_db_path` fixture provides isolated database per worker:
+
+```python
+@pytest.fixture(scope="session")
+def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
+    """Create a temporary database for testing.
+    
+    Supports pytest-xdist by creating separate database files per worker.
+    """
+    # Get worker ID for parallel test execution
+    worker_id = getattr(request.config, 'workerinput', {}).get('workerid', 'master')
+    
+    # Create temporary directory for this worker's database
+    temp_dir = tempfile.mkdtemp(suffix=f"_{worker_id}_ninebox_test")
+    db_path = os.path.join(temp_dir, "ninebox.db")
+    
+    # Save original environment variables (critical for VSCode pytest extension)
+    original_app_data_dir = os.environ.get("APP_DATA_DIR")
+    original_database_path = os.environ.get("DATABASE_PATH")
+    
+    # Set test environment
+    os.environ["APP_DATA_DIR"] = temp_dir
+    os.environ["DATABASE_PATH"] = db_path
+    
+    yield db_path
+    
+    # IMPORTANT: Restore original environment variables FIRST
+    if original_app_data_dir is None:
+        os.environ.pop("APP_DATA_DIR", None)
+    else:
+        os.environ["APP_DATA_DIR"] = original_app_data_dir
+    
+    if original_database_path is None:
+        os.environ.pop("DATABASE_PATH", None)
+    else:
+        os.environ["DATABASE_PATH"] = original_database_path
+    
+    # Then cleanup files
+    try:
+        if os.path.exists(db_path):
+            os.unlink(db_path)
+        if os.path.exists(temp_dir):
+            import shutil
+            shutil.rmtree(temp_dir)
+    except Exception:
+        pass  # Ignore cleanup errors
+```
+
+**Key Points:**
+- Restore environment variables **before** file cleanup (VSCode pytest extension requirement)
+- Use worker-specific temp directories for pytest-xdist
+- Ignore cleanup errors (files may already be deleted)
+
+#### State Cleanup (setup_test_db fixture)
+
+The `setup_test_db` autouse fixture cleans state before and after each test:
+
+```python
+@pytest.fixture(autouse=True)
+def setup_test_db() -> Generator[None, None, None]:
+    """Clean up in-memory state and database before and after each test."""
+    import gc
+    from ninebox.core.dependencies import get_session_manager, get_db_manager
+    
+    # BEFORE test: ensure clean state for xdist robustness
+    try:
+        get_session_manager.cache_clear()
+        get_db_manager.cache_clear()
+    except Exception:
+        pass
+    
+    try:
+        mgr = get_session_manager()
+        mgr._sessions_loaded = False
+        mgr._sessions.clear()
+    except Exception:
+        pass
+    
+    # Force garbage collection before test
+    gc.collect()
+    
+    yield
+    
+    # AFTER test: Clean up openpyxl state to prevent NumberFormat pollution
+    gc.collect()  # Force cleanup of workbook references
+    
+    # Clean up in-memory state from dependency injection cache
+    try:
+        mgr = get_session_manager()
+        mgr._sessions_loaded = False  # Reset lazy loading flag
+        mgr._sessions.clear()  # Clear in-memory session cache
+        get_session_manager.cache_clear()
+        get_db_manager.cache_clear()
+    except Exception:
+        pass
+    
+    # Final garbage collection
+    gc.collect()
+```
+
+**Key Points:**
+- Clears dependency injection caches (@lru_cache) before and after tests
+- Forces garbage collection to prevent openpyxl state pollution
+- Resets session manager state (lazy loading flags, in-memory caches)
+- Uses try-except blocks to handle race conditions in parallel tests
+
+### Excel Export Test Cleanup Patterns
+
+**Problem:** openpyxl's global `NumberFormat` registry can get polluted between tests, causing false failures in parallel test runs.
+
+**Solution:** Force garbage collection after each test to clean up workbook references.
+
+#### Pattern in conftest.py
+
+```python
+@pytest.fixture(autouse=True)
+def setup_test_db() -> Generator[None, None, None]:
+    # ... before test setup ...
+    
+    yield
+    
+    # AFTER test: Clean up openpyxl state to prevent NumberFormat pollution
+    try:
+        import gc
+        # Force garbage collection to clean up any lingering workbook references
+        # This helps prevent openpyxl's NumberFormat registry from getting polluted
+        gc.collect()
+    except Exception:
+        pass
+```
+
+#### Excel Export Test Example
+
+```python
+def test_export_to_excel_when_valid_data_then_creates_workbook(test_client, sample_employees):
+    """Test Excel export creates valid workbook with employee data."""
+    # Arrange: Ensure test data exists
+    response = test_client.post("/api/employees", json=[e.model_dump() for e in sample_employees])
+    assert response.status_code == 200
+    
+    # Act: Export to Excel
+    response = test_client.get("/api/employees/export")
+    
+    # Assert: Verify response
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    
+    # Verify workbook structure
+    import io
+    workbook = openpyxl.load_workbook(io.BytesIO(response.content))
+    assert "Employees" in workbook.sheetnames
+    
+    sheet = workbook["Employees"]
+    assert sheet.cell(1, 1).value == "Employee ID"  # Header row
+    assert sheet.cell(2, 1).value == sample_employees[0].employee_id  # First data row
+    
+    # IMPORTANT: Close workbook to release resources
+    workbook.close()
+```
+
+**Key Points:**
+- Always close workbooks after use: `workbook.close()`
+- Rely on autouse fixture for garbage collection after test
+- Do NOT manually manage NumberFormat registry (let gc handle it)
+- Use `io.BytesIO` for in-memory Excel files (no temp files on disk)
+
 ---
 
 ## Common Commands Summary
