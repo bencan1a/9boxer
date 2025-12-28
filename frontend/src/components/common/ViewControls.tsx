@@ -258,8 +258,8 @@ export const ViewControls: React.FC = () => {
       data-testid="view-controls"
       sx={{
         position: "absolute",
-        top: 16,
-        right: 16,
+        top: 0,
+        right: 24,
         zIndex: 10,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 1,

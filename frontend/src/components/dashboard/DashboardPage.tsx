@@ -162,7 +162,14 @@ export const DashboardPage: React.FC = () => {
             </>
           ) : (
             <Box
-              sx={{ height: "100%", width: "100%", p: 2, position: "relative" }}
+              sx={{
+                height: "100%",
+                width: "100%",
+                pt: 1,
+                px: 2,
+                pb: 2,
+                position: "relative",
+              }}
             >
               <PanelGroup
                 direction="horizontal"
