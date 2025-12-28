@@ -1,0 +1,1114 @@
+{
+  "totalComponents": 68,
+  "componentsWithStories": 52,
+  "componentsWithScreenshots": 20,
+  "totalScreenshots": 64,
+  "storybookScreenshots": 26,
+  "fullAppScreenshots": 30,
+  "manualScreenshots": 8,
+  "componentBreakdown": [
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.tsx",
+      "name": "EmptyState",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.tsx",
+      "name": "Logo",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "view-controls-simplified-appbar",
+          "source": "full-app",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ConfirmDialog.tsx",
+      "name": "ConfirmDialog",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ConnectionStatus.tsx",
+      "name": "ConnectionStatus",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/DevModeIndicator.tsx",
+      "name": "DevModeIndicator",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/EmptyState.tsx",
+      "name": "EmptyState",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ErrorBoundary.tsx",
+      "name": "ErrorBoundary",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/FileUploadDialog.tsx",
+      "name": "FileUploadDialog",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LanguageSelector.tsx",
+      "name": "LanguageSelector",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LoadingSpinner.tsx",
+      "name": "LoadingSpinner",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ViewControls.tsx",
+      "name": "ViewControls",
+      "hasStory": false,
+      "screenshotCount": 3,
+      "screenshots": [
+        {
+          "name": "view-controls-main-interface",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "view-controls-grid-view",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "view-controls-donut-view",
+          "source": "full-app",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ZoomControls.tsx",
+      "name": "ZoomControls",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "zoom-controls",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx",
+      "name": "AppBarContainer",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/ChangeIndicator.tsx",
+      "name": "ChangeIndicator",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/DashboardPage.tsx",
+      "name": "DashboardPage",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/ExclusionDialog.tsx",
+      "name": "ExclusionDialog",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.tsx",
+      "name": "FileMenuButton",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileNameDisplay.tsx",
+      "name": "FileNameDisplay",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FilterDrawer.tsx",
+      "name": "FilterDrawer",
+      "hasStory": true,
+      "screenshotCount": 6,
+      "screenshots": [
+        {
+          "name": "details-flag-filtering",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "details-reporting-chain-filter-active",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filters-overview",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filters-multiple-active",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filters-flags-section",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filters-reporting-chain",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/HelpButton.tsx",
+      "name": "HelpButton",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PureAppBar.tsx",
+      "name": "PureAppBar",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ExclusionList.tsx",
+      "name": "ExclusionList",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/FilterSection.tsx",
+      "name": "FilterSection",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/FlagFilters.tsx",
+      "name": "FlagFilters",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/GridPositionFilter.tsx",
+      "name": "GridPositionFilter",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ReportingChainFilter.tsx",
+      "name": "ReportingChainFilter",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/LoadSampleDialog.tsx",
+      "name": "LoadSampleDialog",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/events/EventDisplay.tsx",
+      "name": "EventDisplay",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/Axis.tsx",
+      "name": "Axis",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/BoxHeader.tsx",
+      "name": "BoxHeader",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/EmployeeCount.tsx",
+      "name": "EmployeeCount",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/EmployeeTile.tsx",
+      "name": "EmployeeTile",
+      "hasStory": true,
+      "screenshotCount": 2,
+      "screenshots": [
+        {
+          "name": "changes-orange-border",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "employee-tile-normal",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/EmployeeTileList.tsx",
+      "name": "EmployeeTileList",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/GridBox.tsx",
+      "name": "GridBox",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.tsx",
+      "name": "NineBoxGrid",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/ViewModeToggle.tsx",
+      "name": "ViewModeToggle",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.tsx",
+      "name": "AnomalySection",
+      "hasStory": true,
+      "screenshotCount": 2,
+      "screenshots": [
+        {
+          "name": "intelligence-anomaly-green",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-anomaly-red",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/DeviationChart.tsx",
+      "name": "DeviationChart",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-deviation-chart",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/DistributionHeatmap.tsx",
+      "name": "DistributionHeatmap",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/IntelligenceSummary.tsx",
+      "name": "IntelligenceSummary",
+      "hasStory": true,
+      "screenshotCount": 2,
+      "screenshots": [
+        {
+          "name": "intelligence-summary-excellent",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-summary-needs-attention",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/LevelDistributionChart.tsx",
+      "name": "LevelDistributionChart",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-level-distribution",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/MockDataDemo.tsx",
+      "name": "MockDataDemo",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/AnomalyCard.tsx",
+      "name": "AnomalyCard",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/DistributionStats.tsx",
+      "name": "DistributionStats",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/InsightCard.tsx",
+      "name": "InsightCard",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/SectionHeader.tsx",
+      "name": "SectionHeader",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/AnomaliesSection.tsx",
+      "name": "AnomaliesSection",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/DistributionSection.tsx",
+      "name": "DistributionSection",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/InsightsSection.tsx",
+      "name": "InsightsSection",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/ChangeTrackerTab.tsx",
+      "name": "ChangeTrackerTab",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "changes-tab",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/DetailsTab.tsx",
+      "name": "DetailsTab",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/DistributionChart.tsx",
+      "name": "DistributionChart",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-level-distribution",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeChangesSummary.tsx",
+      "name": "EmployeeChangesSummary",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeDetails.tsx",
+      "name": "EmployeeDetails",
+      "hasStory": true,
+      "screenshotCount": 2,
+      "screenshots": [
+        {
+          "name": "changes-employee-details",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "details-current-assessment",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeFlags.tsx",
+      "name": "EmployeeFlags",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "details-flags-ui",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/IntelligenceTab.tsx",
+      "name": "IntelligenceTab",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/ManagementChain.tsx",
+      "name": "ManagementChain",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "details-reporting-chain-clickable",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/RatingsTimeline.tsx",
+      "name": "RatingsTimeline",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "changes-timeline-view",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/RightPanel.tsx",
+      "name": "RightPanel",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/StatisticsTab.old.tsx",
+      "name": "StatisticsTab.old",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/StatisticsTab.tsx",
+      "name": "StatisticsTab",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/ColoredPercentageBar.tsx",
+      "name": "ColoredPercentageBar",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "statistics-trend-indicators",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionRow.tsx",
+      "name": "DistributionRow",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.tsx",
+      "name": "DistributionTable",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "statistics-panel-distribution",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/GroupingIndicator.tsx",
+      "name": "GroupingIndicator",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "statistics-grouping-indicators",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/StatisticCard.tsx",
+      "name": "StatisticCard",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/StatisticsSummary.tsx",
+      "name": "StatisticsSummary",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "statistics-summary-cards",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/settings/SettingsDialog.tsx",
+      "name": "SettingsDialog",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "view-controls-settings-dialog",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    }
+  ],
+  "storyBreakdown": [
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.stories.tsx",
+      "componentName": "EmptyState",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.stories.tsx",
+      "componentName": "Logo",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ConfirmDialog.stories.tsx",
+      "componentName": "ConfirmDialog",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ConnectionStatus.stories.tsx",
+      "componentName": "ConnectionStatus",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/EmptyState.stories.tsx",
+      "componentName": "EmptyState",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ErrorBoundary.stories.tsx",
+      "componentName": "ErrorBoundary",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/FileUploadDialog.stories.tsx",
+      "componentName": "FileUploadDialog",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LanguageSelector.stories.tsx",
+      "componentName": "LanguageSelector",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LoadingSpinner.stories.tsx",
+      "componentName": "LoadingSpinner",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ZoomControls.stories.tsx",
+      "componentName": "ZoomControls",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "zoom-controls",
+          "storyId": "common-zoomcontrols--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/ChangeIndicator.stories.tsx",
+      "componentName": "ChangeIndicator",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.stories.tsx",
+      "componentName": "FileMenuButton",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileNameDisplay.stories.tsx",
+      "componentName": "FileNameDisplay",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FilterDrawer.stories.tsx",
+      "componentName": "FilterDrawer",
+      "usedInScreenshots": 6,
+      "screenshots": [
+        {
+          "name": "details-flag-filtering",
+          "storyId": "dashboard-filterdrawer--flags-active"
+        },
+        {
+          "name": "details-reporting-chain-filter-active",
+          "storyId": "dashboard-filterdrawer--reporting-chain-active"
+        },
+        {
+          "name": "filters-overview",
+          "storyId": "dashboard-filterdrawer--all-sections-expanded"
+        },
+        {
+          "name": "filters-multiple-active",
+          "storyId": "dashboard-filterdrawer--multiple-filters-active"
+        },
+        {
+          "name": "filters-flags-section",
+          "storyId": "dashboard-filterdrawer--flags-active"
+        },
+        {
+          "name": "filters-reporting-chain",
+          "storyId": "dashboard-filterdrawer--reporting-chain-active"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/HelpButton.stories.tsx",
+      "componentName": "HelpButton",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PanelToggleButton.stories.tsx",
+      "componentName": "PanelToggleButton",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PureAppBar.stories.tsx",
+      "componentName": "PureAppBar",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ExclusionList.stories.tsx",
+      "componentName": "ExclusionList",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/FilterSection.stories.tsx",
+      "componentName": "FilterSection",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/FlagFilters.stories.tsx",
+      "componentName": "FlagFilters",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/GridPositionFilter.stories.tsx",
+      "componentName": "GridPositionFilter",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ReportingChainFilter.stories.tsx",
+      "componentName": "ReportingChainFilter",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/LoadSampleDialog.stories.tsx",
+      "componentName": "LoadSampleDialog",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/events/EventDisplay.stories.tsx",
+      "componentName": "EventDisplay",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/Axis.stories.tsx",
+      "componentName": "Axis",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/BoxHeader.stories.tsx",
+      "componentName": "BoxHeader",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/EmployeeTile.stories.tsx",
+      "componentName": "EmployeeTile",
+      "usedInScreenshots": 2,
+      "screenshots": [
+        {
+          "name": "changes-orange-border",
+          "storyId": "grid-employeetile--modified"
+        },
+        {
+          "name": "employee-tile-normal",
+          "storyId": "grid-employeetile--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/EmployeeTileList.stories.tsx",
+      "componentName": "EmployeeTileList",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/GridBox.stories.tsx",
+      "componentName": "GridBox",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.stories.tsx",
+      "componentName": "NineBoxGrid",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.stories.tsx",
+      "componentName": "AnomalySection",
+      "usedInScreenshots": 2,
+      "screenshots": [
+        {
+          "name": "intelligence-anomaly-green",
+          "storyId": "intelligence-anomalysection--green-status"
+        },
+        {
+          "name": "intelligence-anomaly-red",
+          "storyId": "intelligence-anomalysection--red-status"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/DeviationChart.stories.tsx",
+      "componentName": "DeviationChart",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-deviation-chart",
+          "storyId": "intelligence-deviationchart--mixed-significance"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/IntelligenceSummary.stories.tsx",
+      "componentName": "IntelligenceSummary",
+      "usedInScreenshots": 2,
+      "screenshots": [
+        {
+          "name": "intelligence-summary-excellent",
+          "storyId": "intelligence-intelligencesummary--excellent-quality"
+        },
+        {
+          "name": "intelligence-summary-needs-attention",
+          "storyId": "intelligence-intelligencesummary--needs-attention"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/LevelDistributionChart.stories.tsx",
+      "componentName": "LevelDistributionChart",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-level-distribution",
+          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/AnomalyCard.stories.tsx",
+      "componentName": "AnomalyCard",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/InsightCard.stories.tsx",
+      "componentName": "InsightCard",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/AnomaliesSection.stories.tsx",
+      "componentName": "AnomaliesSection",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/DistributionSection.stories.tsx",
+      "componentName": "DistributionSection",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/sections/InsightsSection.stories.tsx",
+      "componentName": "InsightsSection",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/ChangeTrackerTab.stories.tsx",
+      "componentName": "ChangeTrackerTab",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "changes-tab",
+          "storyId": "panel-changetrackertab--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/DistributionChart.stories.tsx",
+      "componentName": "DistributionChart",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "intelligence-level-distribution",
+          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeChangesSummary.stories.tsx",
+      "componentName": "EmployeeChangesSummary",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeDetails.stories.tsx",
+      "componentName": "EmployeeDetails",
+      "usedInScreenshots": 2,
+      "screenshots": [
+        {
+          "name": "changes-employee-details",
+          "storyId": "panel-employeedetails--default"
+        },
+        {
+          "name": "details-current-assessment",
+          "storyId": "panel-employeedetails--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeFlags.stories.tsx",
+      "componentName": "EmployeeFlags",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "details-flags-ui",
+          "storyId": "panel-employeeflags--with-multiple-flags"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/ManagementChain.stories.tsx",
+      "componentName": "ManagementChain",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "details-reporting-chain-clickable",
+          "storyId": "panel-managementchain--with-manager"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/RatingsTimeline.stories.tsx",
+      "componentName": "RatingsTimeline",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "changes-timeline-view",
+          "storyId": "panel-ratingstimeline--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/ColoredPercentageBar.stories.tsx",
+      "componentName": "ColoredPercentageBar",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "statistics-trend-indicators",
+          "storyId": "panel-statistics-coloredpercentagebar--all-positions-comparison"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionRow.stories.tsx",
+      "componentName": "DistributionRow",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.stories.tsx",
+      "componentName": "DistributionTable",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "statistics-panel-distribution",
+          "storyId": "panel-statistics-distributiontable--balanced-distribution"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/GroupingIndicator.stories.tsx",
+      "componentName": "GroupingIndicator",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "statistics-grouping-indicators",
+          "storyId": "panel-statistics-groupingindicator--all-groupings-together"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/StatisticCard.stories.tsx",
+      "componentName": "StatisticCard",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/StatisticsSummary.stories.tsx",
+      "componentName": "StatisticsSummary",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "statistics-summary-cards",
+          "storyId": "panel-statistics-statisticssummary--default"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/settings/SettingsDialog.stories.tsx",
+      "componentName": "SettingsDialog",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "view-controls-settings-dialog",
+          "storyId": "settings-settingsdialog--open"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/stories/ThemeTest.stories.tsx",
+      "componentName": "ThemeTest",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    }
+  ]
+}
