@@ -493,6 +493,145 @@ const bob = createEmployee({ name: 'Bob', performance: 2 });
 
 ---
 
+## Test Fixture Cleanup Patterns
+
+The project uses sophisticated test fixtures to ensure clean state and prevent test pollution.
+
+### Environment Cleanup Fixtures
+
+**`test_db_path` fixture** - Temporary database with proper cleanup:
+
+```python
+@pytest.fixture(scope="session")
+def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
+    """Create a temporary database for testing.
+
+    Supports pytest-xdist by creating separate database files per worker.
+    """
+    # Save original environment variables (CRITICAL for VSCode pytest extension)
+    original_app_data_dir = os.environ.get("APP_DATA_DIR")
+    original_database_path = os.environ.get("DATABASE_PATH")
+
+    # Set test environment
+    os.environ["APP_DATA_DIR"] = temp_dir
+    os.environ["DATABASE_PATH"] = db_path
+
+    yield db_path
+
+    # RESTORE original environment variables FIRST (before cleanup)
+    if original_app_data_dir is None:
+        os.environ.pop("APP_DATA_DIR", None)
+    else:
+        os.environ["APP_DATA_DIR"] = original_app_data_dir
+
+    # Then cleanup files
+    # ... cleanup code
+```
+
+**Key Pattern:** Always restore environment variables BEFORE cleaning up files to prevent VSCode pytest extension issues.
+
+**`setup_test_db` fixture** - Auto-cleanup for every test:
+
+```python
+@pytest.fixture(autouse=True)
+def setup_test_db() -> Generator[None, None, None]:
+    """Clean up state before and after each test."""
+    import gc
+
+    # BEFORE test: Clear caches and state
+    from ninebox.core.dependencies import get_session_manager, get_db_manager
+
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
+
+    # Clear session manager state
+    mgr = get_session_manager()
+    mgr._sessions_loaded = False
+    mgr._sessions.clear()
+
+    # Force garbage collection (IMPORTANT for openpyxl cleanup)
+    gc.collect()
+
+    yield
+
+    # AFTER test: Clean up openpyxl state to prevent NumberFormat pollution
+    gc.collect()  # Force cleanup of workbook references
+
+    # Clear dependency injection caches
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
+```
+
+**Key Patterns:**
+- **Garbage collection**: Use `gc.collect()` to clean up openpyxl state and prevent NumberFormat registry pollution
+- **Dependency injection cache clearing**: Clear `lru_cache` to get fresh instances for each test
+- **Session state cleanup**: Reset session manager's lazy loading flag and in-memory cache
+- **Database cleanup**: Delete test data after tests complete
+
+### Excel Export Test Cleanup
+
+When testing Excel exports, explicitly close workbooks to prevent openpyxl state pollution:
+
+```python
+@pytest.fixture
+def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
+    """Create a sample Excel file for testing."""
+    file_path = tmp_path / "test_employees.xlsx"
+
+    workbook = openpyxl.Workbook()
+    # ... populate workbook
+
+    workbook.save(file_path)
+    workbook.close()  # IMPORTANT: Explicitly close to prevent state pollution
+    return file_path
+```
+
+**Key Pattern:** Always call `workbook.close()` after `workbook.save()` to prevent openpyxl's NumberFormat registry from growing across tests.
+
+### State Pollution Prevention
+
+**Common State Pollution Sources:**
+- **openpyxl NumberFormat registry**: Grows with each workbook, slows tests
+- **Dependency injection caches**: Stale instances leak across tests
+- **Session manager state**: In-memory sessions persist across tests
+- **Environment variables**: Test values leak to subsequent tests
+
+**Prevention Strategies:**
+1. **Garbage collection**: Call `gc.collect()` in setup/teardown
+2. **Explicit cleanup**: Close resources (workbooks, files, connections)
+3. **Cache clearing**: Clear `lru_cache` between tests
+4. **Environment restoration**: Save and restore env vars in proper order
+5. **Fresh instances**: Use fixtures with `autouse=True` for automatic cleanup
+
+### Example: Full Cleanup Pattern
+
+```python
+import gc
+import pytest
+
+@pytest.fixture(autouse=True)
+def clean_state():
+    """Ensure clean state for each test."""
+    # BEFORE: Clear caches
+    from myapp.dependencies import get_service
+    get_service.cache_clear()
+
+    # BEFORE: Force garbage collection
+    gc.collect()
+
+    yield
+
+    # AFTER: Cleanup resources
+    gc.collect()
+
+    # AFTER: Clear caches again
+    get_service.cache_clear()
+```
+
+**See:** `backend/tests/conftest.py` for complete fixture implementations.
+
+---
+
 ## Common Commands Summary
 
 ### Python Setup

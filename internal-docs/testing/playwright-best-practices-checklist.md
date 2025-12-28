@@ -17,6 +17,7 @@ Quick reference guide for writing and reviewing E2E tests. Use this checklist be
 
 | ❌ Don't Do This | ✅ Do This Instead |
 |------------------|-------------------|
+| Import from `@playwright/test` directly | Import from `'../fixtures'` (enables worker isolation) |
 | Check CSS properties (`borderWidth === '4px'`) | Check user-visible indicators (`expect(indicator).toBeVisible()`) |
 | Check class names (`toHaveAttribute('class', /invisible/)`) | Check content/visibility (`not.toContainText()`, `.toBeHidden()`) |
 | Use fixed timeouts (`waitForTimeout(300)`) | Use network idle (`waitForLoadState('networkidle')`) |
@@ -234,30 +235,49 @@ test('check if badge updates correctly', ...) // Implementation-focused
 
 ## ⚙️ Configuration Quick Reference
 
-### Current Settings (Good for Development)
+### Current Settings (Production Ready)
 
 ```typescript
 // playwright.config.ts
 {
-  timeout: 30000,           // 30s per test
-  retries: 0,               // ⚠️ Consider enabling (1 local, 2 CI)
-  workers: 1,               // Sequential (good for shared backend)
-  expect: { timeout: 5000 } // 5s for assertions
-}
-```
-
-### Recommended Changes
-
-```typescript
-{
-  retries: process.env.CI ? 2 : 1,  // ✅ Tolerate flaky E2E
+  timeout: 30000,                          // 30s per test
+  retries: process.env.CI ? 2 : 1,        // ✅ Tolerate flaky E2E
+  workers: process.env.CI ? 2 : undefined, // ✅ Parallel with worker isolation
+  expect: { timeout: 2000 },               // 2s for assertions (fail fast)
   use: {
-    trace: 'retain-on-failure',     // ✅ Always capture traces
-    video: 'retain-on-failure',     // ✅ Add video for debugging
-    viewport: { width: 1920, height: 1080 },  // ✅ Larger for grid
+    trace: 'retain-on-failure',            // ✅ Always capture traces
+    video: 'retain-on-failure',            // ✅ Add video for debugging
+    viewport: { width: 1920, height: 1080 }, // ✅ Larger for grid
   }
 }
 ```
+
+### Worker-Scoped Backend Isolation
+
+**NEW:** E2E tests now use worker-scoped backend isolation for true parallel execution:
+
+```typescript
+// Each worker gets its own:
+// - Backend server on unique port (38000 + workerIndex)
+// - Isolated SQLite database
+// - Automatic request routing to worker's backend
+
+// Import from fixtures instead of @playwright/test
+import { test, expect } from '../fixtures';
+
+// No additional setup needed - fixtures handle everything!
+test('my test', async ({ page }) => {
+  // This page automatically routes to worker's backend
+  await page.goto('/');
+  // ... test code
+});
+```
+
+**Benefits:**
+- ✅ No port conflicts between parallel workers
+- ✅ No database interference between tests
+- ✅ True parallel execution (faster CI)
+- ✅ Automatic cleanup after worker completes
 
 ---
 
@@ -265,15 +285,16 @@ test('check if badge updates correctly', ...) // Implementation-focused
 
 ### Faster Test Execution
 
-1. **Use API setup when possible** (instead of UI upload every time)
+1. **✅ ENABLED: Worker isolation for parallel execution**
+   ```typescript
+   // Already configured - tests run in parallel across workers
+   workers: process.env.CI ? 2 : undefined  // Auto-detect locally
+   ```
+
+2. **Use API setup when possible** (instead of UI upload every time)
    ```typescript
    // Instead of uploading via UI
    await request.post('http://localhost:38000/api/session/upload', { data });
-   ```
-
-2. **Parallelize independent tests** (if you add multi-session support)
-   ```typescript
-   workers: process.env.CI ? 2 : 1
    ```
 
 3. **Use `test.describe.configure({ mode: 'serial' })`** for dependent tests
@@ -282,6 +303,64 @@ test('check if badge updates correctly', ...) // Implementation-focused
    test('step 1', ...);
    test('step 2', ...);  // Shares state with step 1
    ```
+
+---
+
+## 📸 Visual Regression Testing
+
+### Documentation Screenshot Validation
+
+**Purpose:** Ensure documentation screenshots don't regress when UI changes.
+
+**Workflow:**
+1. **Generate screenshots** (automated via TypeScript + Playwright)
+2. **Establish baselines** (first run creates baseline snapshots)
+3. **Compare on changes** (subsequent runs detect visual differences)
+4. **Review and approve** (update baselines if changes are intentional)
+
+**Usage:**
+```bash
+# Run visual regression tests
+cd frontend
+npm run test:docs-visual
+
+# Run with UI for debugging
+npm run test:docs-visual:ui
+
+# Update baselines after approving changes
+npm run test:docs-visual:update
+```
+
+**Configuration:**
+```typescript
+// playwright.config.ts
+{
+  name: "docs-visual",
+  testDir: "./playwright/visual-regression",
+  timeout: 60000,
+  fullyParallel: true,  // Screenshots are independent
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 100,        // Max 100 pixels different
+      maxDiffPixelRatio: 0.01,   // Max 1% difference
+      animations: "disabled",     // Disable animations for consistency
+      scale: "css",               // Use CSS pixels
+    }
+  }
+}
+```
+
+**When to Update Baselines:**
+- ✅ Intentional UI changes (design updates, new features)
+- ✅ Design system token changes
+- ✅ After approved design reviews
+- ❌ Unexpected failures (investigate first!)
+- ❌ Random pixel differences (increase tolerance instead)
+
+**Integration:**
+- Screenshots auto-generated weekly (GitHub Actions)
+- Visual regression runs on PRs affecting frontend
+- Baselines stored as test snapshots (platform-specific)
 
 ---
 
@@ -355,11 +434,18 @@ async function dragEmployee(page, id, pos, check, retries, wait) {
 - [Best Practices](https://playwright.dev/docs/best-practices)
 - [Auto-Waiting](https://playwright.dev/docs/actionability)
 - [Test Retries](https://playwright.dev/docs/test-retries)
+- [Visual Comparisons](https://playwright.dev/docs/test-snapshots)
 
 **Internal Docs:**
 - [Architecture Review](./playwright-architecture-review.md) - Comprehensive analysis
 - [Test Principles](./test-principles.md) - General testing philosophy
 - [Quick Reference](./quick-reference.md) - Fast lookup for patterns
+- [Visual Regression README](../../frontend/playwright/visual-regression/README.md) - Screenshot validation
+
+**Key Infrastructure Files:**
+- `frontend/playwright/fixtures/worker-backend.ts` - Worker isolation implementation
+- `frontend/playwright.config.ts` - Comprehensive test configuration
+- `frontend/playwright/global-setup.ts` - Test environment setup
 
 ---
 
@@ -367,6 +453,7 @@ async function dragEmployee(page, id, pos, check, retries, wait) {
 
 Before committing a new test:
 
+- [ ] Test **imports from fixtures** (`import { test, expect } from '../fixtures'`)
 - [ ] Test name describes **expected behavior**, not implementation
 - [ ] Test uses `data-testid` or accessibility selectors (no CSS classes)
 - [ ] Test verifies **user-visible outcomes**, not CSS/classes
@@ -405,6 +492,10 @@ Screenshot test   E2E test
 
 ---
 
-**Last Updated:** December 23, 2024
+**Last Updated:** December 27, 2025
 **Maintainer:** Architecture Review
 **Review Frequency:** After each major test suite change
+**Recent Updates:**
+- Added worker-scoped backend isolation documentation (commit 4c19d6f)
+- Added visual regression testing section
+- Updated configuration reference with current production settings

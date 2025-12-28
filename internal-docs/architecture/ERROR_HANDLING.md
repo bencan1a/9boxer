@@ -11,6 +11,7 @@
 - **API routes MUST raise HTTPException** with appropriate status code (400/404/500)
 - **Services MUST raise ValueError** for business logic errors (caught by API layer)
 - **Frontend MUST use extractErrorMessage()** to normalize all errors
+- **JSON parsing MUST show error position context** when failures occur
 - **NEVER use bare `except:`** - Always specify exception type
 - **NEVER fail silently** - Log errors and inform user
 - **ALWAYS log errors with context** (employee_id, session_id, filename, operation)
@@ -579,6 +580,166 @@ except ValueError as e:
 
 ---
 
+### Pattern: JSON Parsing Error Handling (#json-parsing)
+
+**When:** Parsing JSON from external sources (API responses, file uploads, LLM outputs)
+**Scenario:** Malformed JSON, encoding issues, unexpected format
+
+**Template (TypeScript/JavaScript):**
+```typescript
+function parseJSON<T>(jsonText: string, source: string): T {
+  try {
+    return JSON.parse(jsonText) as T;
+  } catch (error) {
+    const parseError = error as SyntaxError;
+    logger.error(`JSON parsing failed for ${source}:`, parseError.message);
+
+    // Extract error position if available
+    const posMatch = parseError.message.match(/position (\d+)/);
+    if (posMatch) {
+      const errorPos = parseInt(posMatch[1], 10);
+      const start = Math.max(0, errorPos - 100);
+      const end = Math.min(jsonText.length, errorPos + 100);
+      const excerpt = jsonText.slice(start, end);
+
+      logger.error('JSON excerpt around error position:');
+      logger.error(excerpt);
+      logger.error(`Error at position ${errorPos} (excerpt shows chars ${start}-${end})`);
+    }
+
+    // Log preview of full response for debugging
+    logger.error('JSON preview (first 500 chars):');
+    logger.error(jsonText.slice(0, 500));
+
+    throw new Error(`JSON parsing failed for ${source}: ${parseError.message}`);
+  }
+}
+
+// Usage
+const apiResponse = await fetch('/api/data');
+const text = await apiResponse.text();
+const data = parseJSON<MyDataType>(text, 'API response');
+```
+
+**Template (Python):**
+```python
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+
+def parse_json(json_text: str, source: str) -> dict:
+    """Parse JSON with enhanced error reporting.
+
+    Args:
+        json_text: JSON string to parse
+        source: Description of the source (for error messages)
+
+    Returns:
+        Parsed JSON as dictionary
+
+    Raises:
+        ValueError: If JSON parsing fails, with context about error location
+    """
+    try:
+        return json.loads(json_text)
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parsing failed for {source}: {e.msg}")
+
+        # Show excerpt around error position
+        start = max(0, e.pos - 100)
+        end = min(len(json_text), e.pos + 100)
+        excerpt = json_text[start:end]
+
+        logger.error(f"JSON excerpt around error position {e.pos}:")
+        logger.error(f"  Line {e.lineno}, Column {e.colno}")
+        logger.error(f"  Excerpt (chars {start}-{end}): {excerpt}")
+
+        # Log preview of full response
+        logger.error(f"JSON preview (first 500 chars): {json_text[:500]}")
+
+        raise ValueError(
+            f"JSON parsing failed for {source} at line {e.lineno}, col {e.colno}: {e.msg}"
+        ) from e
+
+# Usage
+response = requests.get('/api/data')
+data = parse_json(response.text, 'API response')
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: No context about where error occurred
+try {
+  return JSON.parse(text);
+} catch (error) {
+  throw new Error('Invalid JSON');  // Unhelpful!
+}
+
+// ❌ WRONG: Not logging the problematic JSON
+try {
+  return JSON.parse(text);
+} catch (error) {
+  logger.error('JSON parsing failed');
+  throw error;  // Can't debug without seeing the JSON
+}
+
+// ❌ WRONG: Logging entire response (may be huge)
+try {
+  return JSON.parse(text);
+} catch (error) {
+  logger.error('Full JSON:', text);  // Could be megabytes!
+  throw error;
+}
+```
+
+**When Generating JSON (for LLM APIs):**
+
+If you're instructing an LLM to return JSON, include explicit formatting rules in the prompt:
+
+```typescript
+const prompt = `
+Return your response in JSON format with this structure:
+{
+  "result": "value",
+  "items": ["item1", "item2"]
+}
+
+CRITICAL JSON FORMATTING RULES:
+- Escape all quotes in string values using backslash: \\"
+- Escape all backslashes: \\\\
+- Do not include literal newlines in strings - use \\n instead
+- Return ONLY the JSON object, no commentary before or after
+`;
+```
+
+**Extracting JSON from Markdown Responses:**
+```typescript
+// LLM responses often wrap JSON in markdown code blocks
+function extractJSON(response: string): string {
+  // Try to extract from markdown code block
+  const codeBlockMatch = response.match(/```json\n([\s\S]*?)\n```/);
+  if (codeBlockMatch) {
+    return codeBlockMatch[1];
+  }
+
+  // Try to extract raw JSON object
+  const jsonMatch = response.match(/({[\s\S]*})/);
+  if (jsonMatch) {
+    return jsonMatch[1];
+  }
+
+  throw new Error('No JSON found in response');
+}
+
+// Usage
+const llmResponse = await callLLM(prompt);
+const jsonText = extractJSON(llmResponse);
+const data = parseJSON(jsonText, 'LLM response');
+```
+
+---
+
 ## HTTP Status Code Decision Matrix
 
 | Error Type | Status Code | Use When | Example |
@@ -827,4 +988,4 @@ describe('sessionStore', () => {
 
 ## Tags for Search
 
-`#api-endpoint` `#service-layer` `#validation` `#frontend-errors` `#optimistic-updates` `#retry-logic` `#logging` `#http-status-codes` `#error-messages` `#exception-handling`
+`#api-endpoint` `#service-layer` `#validation` `#frontend-errors` `#optimistic-updates` `#retry-logic` `#logging` `#http-status-codes` `#error-messages` `#exception-handling` `#json-parsing` `#llm-integration`
