@@ -68,7 +68,8 @@ class TestSessionLifecycle:
 
         # Verify data is gone
         response = test_client.get("/api/session/status")
-        assert response.status_code == 404
+        assert response.status_code == 200
+        assert response.json()["active"] is False
 
     def test_session_when_new_upload_then_replaces_data(
         self, test_client: TestClient, sample_excel_file: Path

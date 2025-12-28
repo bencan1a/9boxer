@@ -186,7 +186,8 @@ class TestSessionRestore:
 
         # Verify session is gone from memory
         response = test_client.get("/api/session/status")
-        assert response.status_code == 404
+        assert response.status_code == 200
+        assert response.json()["active"] is False
 
         # Simulate backend restart
         get_session_manager.cache_clear()
