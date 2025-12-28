@@ -124,15 +124,15 @@ export const StatisticsTab: React.FC = () => {
     );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: theme.tokens.spacing.lg / 8 }}> {/* Convert 24px to 3 */}
       {/* Summary Cards */}
-      <Grid container spacing={2}>
+      <Grid container spacing={theme.tokens.spacing.md / 8}> {/* Convert 16px to 2 */}
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: 120,
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -153,7 +153,7 @@ export const StatisticsTab: React.FC = () => {
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: 120,
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -174,7 +174,7 @@ export const StatisticsTab: React.FC = () => {
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: 120,
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -319,7 +319,7 @@ export const StatisticsTab: React.FC = () => {
         <Typography variant="subtitle2" color="primary" gutterBottom>
           {t("panel.statisticsTab.visualDistribution")}
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2 }}>
+        <Paper variant="outlined" sx={{ p: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
           <DistributionChart data={statistics.distribution} />
         </Paper>
       </Box>
