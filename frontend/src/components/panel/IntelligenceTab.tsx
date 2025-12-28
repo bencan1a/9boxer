@@ -18,6 +18,7 @@ import {
   Button,
   AlertTitle,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
 import { EmptyState } from "../common/EmptyState";
@@ -29,6 +30,7 @@ import { ApiError } from "../../services/api";
 
 export const IntelligenceTab: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { data, isLoading, error, refetch } = useIntelligence();
 
   // Loading state
@@ -54,7 +56,7 @@ export const IntelligenceTab: React.FC = () => {
       error instanceof ApiError && error.statusCode === 404;
 
     return (
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
         <Alert
           severity={isSessionNotFound ? "warning" : "error"}
           action={
@@ -139,7 +141,12 @@ export const IntelligenceTab: React.FC = () => {
   const levelDistributionData = transformLevelData();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 2 }}>
+    <Box sx={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      gap: theme.tokens.spacing.lg / 8, // Convert 24px to 3
+      p: theme.tokens.spacing.md / 8 // Convert 16px to 2
+    }}>
       {/* Summary Section */}
       <IntelligenceSummary data={data} />
 
