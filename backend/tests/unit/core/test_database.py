@@ -1,6 +1,7 @@
 """Tests for database module."""
 
 import os
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
@@ -11,6 +12,39 @@ from ninebox.core.database import get_db_path
 
 
 pytestmark = pytest.mark.unit
+
+
+@pytest.fixture(autouse=True)
+def cleanup_env_state() -> Generator[None, None, None]:
+    """Clean up environment state before and after each test.
+
+    Ensures environment variables don't leak between tests.
+    Temporarily removes APP_DATA_DIR so patches can work correctly.
+    """
+    # Save original environment variables
+    original_app_data_dir = os.environ.get("APP_DATA_DIR")
+    original_database_path = os.environ.get("DATABASE_PATH")
+
+    # BEFORE test: Temporarily remove APP_DATA_DIR so patches work
+    # The session-scoped test_db_path fixture sets this, but unit tests need to patch it
+    if "APP_DATA_DIR" in os.environ:
+        del os.environ["APP_DATA_DIR"]
+    if "DATABASE_PATH" in os.environ:
+        del os.environ["DATABASE_PATH"]
+
+    yield
+
+    # AFTER test: Restore original environment variables
+    if original_app_data_dir is None:
+        os.environ.pop("APP_DATA_DIR", None)
+    else:
+        os.environ["APP_DATA_DIR"] = original_app_data_dir
+
+    if original_database_path is None:
+        os.environ.pop("DATABASE_PATH", None)
+    else:
+        os.environ["DATABASE_PATH"] = original_database_path
+
 
 class TestGetDbPath:
     """Test suite for get_db_path function."""

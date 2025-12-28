@@ -119,9 +119,19 @@ def setup_test_db() -> Generator[None, None, None]:
     Note: Integration tests use transaction-based isolation (see integration/conftest.py),
     so this database cleanup only affects unit tests.
     """
+    import gc  # noqa: PLC0415
+
     # BEFORE test: ensure clean state for xdist robustness
     from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
 
+    # Clear caches BEFORE test to ensure fresh instances
+    try:
+        get_session_manager.cache_clear()
+        get_db_manager.cache_clear()
+    except Exception:
+        pass
+
+    # Clear session manager state
     try:
         mgr = get_session_manager()
         mgr._sessions_loaded = False
@@ -129,11 +139,16 @@ def setup_test_db() -> Generator[None, None, None]:
     except Exception:
         pass
 
+    # Force garbage collection before test
+    try:
+        gc.collect()
+    except Exception:
+        pass
+
     yield
 
     # AFTER test: Clean up openpyxl state to prevent NumberFormat pollution
     try:
-        import gc  # noqa: PLC0415
         # Force garbage collection to clean up any lingering workbook references
         # This helps prevent openpyxl's NumberFormat registry from getting polluted
         gc.collect()
@@ -150,18 +165,31 @@ def setup_test_db() -> Generator[None, None, None]:
         pass  # If manager doesn't exist yet, that's fine
 
     # Clear the lru_cache to get fresh instances for next test
-    get_session_manager.cache_clear()
-    get_db_manager.cache_clear()
+    try:
+        get_session_manager.cache_clear()
+        get_db_manager.cache_clear()
+    except Exception:
+        pass
 
     # Clear database sessions (for unit tests that use test_client)
     # Integration tests handle this via transaction rollback
+    # Note: Integration tests patch get_connection, so this cleanup may be a no-op for them
     from ninebox.services.database import DatabaseManager  # noqa: PLC0415
+
     try:
         temp_db = DatabaseManager()
+        # Use a fresh connection that bypasses any patches
+        # This ensures cleanup works even if DatabaseManager.get_connection is patched
         with temp_db.get_connection() as conn:
             conn.execute("DELETE FROM sessions")
     except Exception:
-        # Ignore errors during cleanup (e.g., if database doesn't exist)
+        # Ignore errors during cleanup (e.g., if database doesn't exist, is patched, or transaction-controlled)
+        pass
+
+    # Final garbage collection after all cleanup
+    try:
+        gc.collect()
+    except Exception:
         pass
 
 
