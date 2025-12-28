@@ -1,6 +1,7 @@
 """Tests for database manager service."""
 
 import sqlite3
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -11,8 +12,9 @@ from ninebox.services.database import DatabaseManager
 
 pytestmark = pytest.mark.unit
 
+
 @pytest.fixture
-def db_manager(tmp_path: Path) -> DatabaseManager:
+def db_manager(tmp_path: Path) -> Generator[DatabaseManager, None, None]:
     """Create a database manager with a temporary database.
 
     Uses the db_path setter to override the database location.
@@ -21,7 +23,12 @@ def db_manager(tmp_path: Path) -> DatabaseManager:
     manager = DatabaseManager()
     # Set db_path directly to tmp_path (uses setter designed for testing)
     manager.db_path = tmp_path / "ninebox.db"
-    return manager
+
+    yield manager
+
+    # Cleanup: Force garbage collection to close any lingering connections
+    import gc
+    gc.collect()
 
 
 def test_init_when_first_run_then_creates_database(db_manager: DatabaseManager) -> None:

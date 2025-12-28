@@ -20,10 +20,20 @@ def temp_db() -> Path:
     """Create a temporary database for testing."""
     with tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False) as f:
         db_path = Path(f.name)
+
     yield db_path
-    # Cleanup
-    if db_path.exists():
-        db_path.unlink()
+
+    # Cleanup - ensure database is closed and deleted
+    try:
+        # Close any open connections
+        import gc
+        gc.collect()  # Force cleanup of any lingering connection objects
+
+        # Delete the database file
+        if db_path.exists():
+            db_path.unlink()
+    except Exception:
+        pass  # Ignore cleanup errors
 
 
 @pytest.fixture
@@ -43,6 +53,12 @@ def test_db_manager(temp_db: Path) -> DatabaseManager:
 @pytest.fixture
 def isolated_session_manager(temp_db: Path) -> SessionManager:
     """Create an isolated session manager with temporary database."""
+    # Clear dependency injection cache before creating manager
+    from ninebox.core.dependencies import get_session_manager, get_db_manager
+
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
+
     # Patch both get_user_data_dir and db_manager to use temp db
     with (
         patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
@@ -63,6 +79,14 @@ def isolated_session_manager(temp_db: Path) -> SessionManager:
         manager = SessionManager()
 
         yield manager
+
+        # Cleanup: Reset session manager state
+        manager._sessions_loaded = False
+        manager._sessions.clear()
+
+    # Clear caches again after test
+    get_session_manager.cache_clear()
+    get_db_manager.cache_clear()
 
 
 def test_create_session_when_called_then_persists_to_database(

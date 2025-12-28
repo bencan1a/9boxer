@@ -1,5 +1,6 @@
 """Tests for Excel exporter service."""
 
+from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -12,6 +13,26 @@ from ninebox.services.excel_exporter import ExcelExporter
 
 
 pytestmark = pytest.mark.unit
+
+
+@pytest.fixture(autouse=True)
+def cleanup_openpyxl_state() -> Generator[None, None, None]:
+    """Clean up openpyxl global state before and after each test.
+
+    openpyxl maintains global state in its NumberFormat registry and other
+    internal caches. This fixture ensures tests start with a clean state
+    and don't pollute other tests.
+    """
+    import gc
+
+    # Before test: Force garbage collection to clean up any lingering workbook references
+    gc.collect()
+
+    yield
+
+    # After test: Force garbage collection again
+    gc.collect()
+
 
 @pytest.fixture
 def excel_exporter() -> ExcelExporter:
