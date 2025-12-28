@@ -25,70 +25,90 @@ Let's get started!
 
 ## Loading Sample Data
 
-If you want to explore 9Boxer's features before uploading your own data, you can load a realistic sample dataset with 200 employees.
+If you're new to 9Boxer or want to explore features without creating your own dataset, you can load pre-generated sample data with a single click.
 
 ### What's Included in Sample Data
 
-The sample dataset includes:
+The sample dataset contains **200 employees** with realistic organizational data:
 
-- **Complete performance data**: Performance and potential ratings for all employees
-- **3 years of history**: Historical performance ratings (2023-2024-2025) for most employees
-- **Realistic organizational structure**: 6-level management chain (CEO → VP → Director → Manager → Senior IC → IC)
-- **Diverse profiles**: Multiple locations, job functions, and job levels
-- **Intelligence-ready patterns**: Data designed to showcase intelligence insights and statistics
-- **Example flags**: Performance improvement plans, flight risk, promotion readiness, and more
+- **Complete organizational hierarchy** - 6 management levels from CEO to individual contributors
+- **3 years of performance history** (2023-2024-2025) - Track trends and progression over time
+- **Diverse workforce** - 8 locations, 8 job functions, 6 job levels
+- **All 9 grid positions** - See employees distributed across the full talent matrix
+- **Detectable patterns** - Built-in patterns for the Intelligence panel to analyze
+- **Example flags** - Promotion-ready, flight risk, and other talent indicators
+
+The sample data is designed to showcase 9Boxer's full capabilities, including:
+
+- Filtering by location, function, or level
+- Viewing performance trends over time
+- Analyzing organizational patterns with Intelligence
+- Exporting formatted reports
+- Managing talent moves and succession planning
 
 ### How to Load Sample Data
 
-**From the File menu:**
+You have two ways to load sample data:
 
-1. Click **File** in the top menu bar
-2. Select **Load Sample Dataset...**
-3. Review the confirmation dialog
-4. Click **Confirm** to load 200 sample employees
+#### Option 1: From the Empty State
 
-<!-- TODO: Add screenshot showing File → Load Sample Dataset menu -->
+When you first open 9Boxer (or after clearing your data), you'll see an empty state screen.
 
-**From the empty state** (when no data is loaded):
+<!-- TODO: Add screenshot showing EmptyState with "Load Sample Data (200 employees)" button -->
 
-1. Click the **Load Sample Data (200 employees)** button
-2. Wait for the data to load (typically <3 seconds)
-3. Explore the 9-box grid with realistic employee data
+1. Click the **"Load Sample Data (200 employees)"** button
+2. The app generates 200 employees in a few seconds
+3. Your grid appears populated with realistic employee data
 
-<!-- TODO: Add screenshot showing EmptyState with Load Sample Data button -->
+#### Option 2: From the File Menu
 
-### What to Try with Sample Data
+You can load sample data at any time from the File menu.
 
-Once sample data is loaded, you can:
+<!-- TODO: Add screenshot showing File menu with "Load Sample Dataset..." menu item -->
 
-- **Explore the grid**: See how employees are distributed across the 9-box model
-- **View employee details**: Click any employee card to see complete profiles
-- **Check intelligence insights**: Navigate to the Intelligence tab to see data-driven insights
-- **Test filtering**: Use the filter drawer to search by location, function, or level
-- **Practice drag-and-drop**: Move employees between boxes to simulate performance reviews
-- **Export data**: Export the sample dataset to Excel to see the file format
+1. Click the **File menu** button (top-left, shows your current filename or "No file")
+2. Select **"Load Sample Dataset..."**
+3. If you have existing data, you'll see a warning that loading sample data will replace it
+4. Review the sample data details in the dialog
+5. Click **"Load Sample Data"** to confirm
 
-### Replacing Sample Data
+<!-- TODO: Add screenshot showing LoadSampleDialog with warning and sample data details -->
 
-If you want to upload your own data after exploring with samples:
+The app generates 200 employees in a few seconds and displays them in the 9-box grid.
 
-1. Click **File** → **Import Data**
-2. Select your Excel file
-3. The sample data will be replaced with your organization's data
+### When to Use Sample Data
 
-!!! note "Data Replacement Warning"
-    Loading sample data will replace any existing data in your current session. You'll see a confirmation dialog if you have data loaded.
+Sample data is perfect for:
+
+- **Learning 9Boxer** - Explore features without consequences
+- **Testing workflows** - Try filtering, moving employees, and generating reports
+- **Demonstrating the app** - Show 9Boxer to stakeholders with realistic data
+- **Validating Intelligence insights** - See how the Intelligence panel detects patterns
+- **Training sessions** - Consistent data for tutorials and workshops
+
+### Important Notes
+
+- **Sample data is temporary** - It's generated fresh each time you load it
+- **Not saved between sessions** - Load sample data again if you restart the app
+- **Replaces existing data** - You'll see a warning if you have work in progress
+- **Always the same** - Sample data uses a consistent seed for reproducibility
+
+For production use, upload your own data using the Excel import feature (see [Step 1: Upload Your Employee Data](#step-1-upload-your-employee-data-2-minutes)).
 
 ### Sample Data Characteristics
 
-The sample dataset is designed to demonstrate 9Boxer's capabilities:
+The sample dataset includes realistic organizational diversity:
 
 - **Locations**: USA, Canada, UK, Germany, France, India, Australia, Singapore
 - **Job Functions**: Engineering, Product Management, Sales, Marketing, Operations, Design, Data Analysis, HR
 - **Job Levels**: MT1 (Individual Contributor) through MT6 (Executive)
-- **Realistic patterns**: Some locations and functions may have higher concentrations of high performers, simulating real-world organizational dynamics
+- **Grid distribution**: Employees spread across all 9 positions with realistic patterns
+- **Bias patterns**: Some locations and functions have higher concentrations of high performers, simulating real-world dynamics (perfect for testing Intelligence features)
 
 This data is **completely fictional** and generated for demonstration purposes only.
+
+!!! tip "Try the Intelligence Panel"
+    After loading sample data, click the **Intelligence** tab in the right panel to see detected patterns and anomalies. The sample data includes deliberate bias patterns for the Intelligence engine to find.
 
 ---
 
@@ -381,7 +401,7 @@ Bookmark this for easy access to common actions:
 
 | I want to... | How to do it |
 |--------------|--------------|
-| Load sample data | File menu → Load Sample Dataset (or use empty state button) |
+| Load sample data | File menu → Load Sample Dataset... (or use empty state button) |
 | Upload new data | File menu → Import Data |
 | Move an employee | Drag tile to new box |
 | View employee details | Click the employee tile |

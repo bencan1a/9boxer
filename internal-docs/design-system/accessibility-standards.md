@@ -228,7 +228,7 @@ const handleKeyDown = (e: React.KeyboardEvent, position: number) => {
 // ✅ Page title
 <title>9Boxer - Talent Grid Management</title>
 
-// ✅ Descriptive link text (FileMenu.tsx:249)
+// ✅ Descriptive link text (FileMenuButton.tsx)
 <MenuItem onClick={handleImport}>
   <ListItemIcon><UploadIcon /></ListItemIcon>
   <ListItemText>{t('fileMenu.import')}</ListItemText>  // "Import Employee Data"
@@ -524,7 +524,7 @@ const handleKeyDown = (e: React.KeyboardEvent, position: number) => {
 
 **Logical Tab Sequence:**
 
-1. **Top Toolbar** (AppBar)
+1. **Top Toolbar** (AppBarContainer)
    - File menu button
    - View mode toggle
    - Zoom controls
@@ -635,7 +635,7 @@ useEffect(() => {
 ```tsx
 // Recommended structure
 <Box component="nav" role="navigation">
-  <AppBar />
+  <AppBarContainer />
 </Box>
 
 <Box component="aside" role="complementary">

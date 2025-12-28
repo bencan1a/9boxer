@@ -34,15 +34,17 @@ Full breakdown of component nesting with responsibilities:
         ├── ConnectionStatus (Fixed: Top-Right)
         ├── DevModeIndicator (Fixed: Bottom-Right, dev only)
         │
-        ├── AppBar (Zone 1: Top Toolbar)
-        │   ├── Logo & Title (Left)
-        │   ├── FileMenu (Dropdown)
-        │   │   └── ExclusionDialog (Modal, conditional)
-        │   ├── HelpButton (Documentation)
-        │   └── SettingsButton (Opens SettingsDialog)
-        │       └── SettingsDialog (Modal, conditional)
-        │           ├── Theme Selection (Radio buttons)
-        │           └── Language Selection (Dropdown)
+        ├── AppBarContainer (Zone 1: Top Toolbar)
+        │   ├── PureAppBar (Presentation)
+        │   │   ├── Logo & Title (Left)
+        │   │   ├── FileMenuButton (Dropdown)
+        │   │   ├── HelpButton (Documentation)
+        │   │   └── SettingsButton
+        │   ├── FileUploadDialog (Modal, conditional)
+        │   ├── LoadSampleDialog (Modal, conditional)
+        │   └── SettingsDialog (Modal, conditional)
+        │       ├── Theme Selection (Radio buttons)
+        │       └── Language Selection (Dropdown)
         │
         ├── FilterDrawer (Zone 2: Left Sidebar - Collapsible)
         │   ├── Search Input
@@ -157,7 +159,7 @@ const layoutSpacing = {
 
 Detailed breakdown of each zone's structure and purpose.
 
-### Zone 1: Top Toolbar (AppBar)
+### Zone 1: Top Toolbar (AppBarContainer)
 
 **Purpose:** Global actions that affect the entire application.
 
@@ -180,7 +182,7 @@ Detailed breakdown of each zone's structure and purpose.
 
 **Left Group (Actions):**
 1. **Logo & Title** - Branding (16px padding-right)
-2. **FileMenu** - New, Open, Save, Export (dropdown)
+2. **FileMenuButton** - Import, Load Sample, Export (dropdown)
 
 **Right Group (Settings):**
 3. **HelpButton** - Opens user guide
@@ -188,21 +190,19 @@ Detailed breakdown of each zone's structure and purpose.
 
 **Example Layout:**
 ```tsx
-<AppBar position="sticky" sx={{ height: 64, px: 3 }}>
-  <Toolbar disableGutters sx={{ height: '100%', gap: 1 }}>
-    {/* Left Group - File Operations */}
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', pr: 2 }}>
-      <Typography variant="h6">9Boxer</Typography>
-      <FileMenu />
-    </Box>
-
-    {/* Right Group - Help & Settings */}
-    <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-      <HelpButton />
-      <SettingsButton />
-    </Box>
-  </Toolbar>
-</AppBar>
+<AppBarContainer>
+  {/* Renders PureAppBar with business logic */}
+  <PureAppBar
+    fileName={filename}
+    changeCount={events.length}
+    onImportClick={handleImportClick}
+    onLoadSampleClick={handleLoadSampleClick}
+    onExportClick={handleExportClick}
+    onSettingsClick={() => setSettingsDialogOpen(true)}
+    onUserGuideClick={handleUserGuideClick}
+    onAboutClick={handleAboutClick}
+  />
+</AppBarContainer>
 ```
 
 **What SHOULD Go Here:**
@@ -331,7 +331,7 @@ Detailed breakdown of each zone's structure and purpose.
 - ✅ Filter reset button
 
 **What Should NOT Go Here:**
-- ❌ Export buttons (belongs in FileMenu/Toolbar)
+- ❌ Export buttons (belongs in FileMenuButton/Toolbar)
 - ❌ Employee details (belongs in RightPanel)
 - ❌ Statistics (belongs in RightPanel)
 - ❌ Grid controls (belongs in Toolbar or GridBox)
@@ -517,7 +517,7 @@ ViewControls intentionally floats in the grid area rather than being in the AppB
 4. **Frequent Use** - These controls are used frequently during grid manipulation sessions. A floating, always-visible toolbar provides faster access than tucked-away menu items.
 
 5. **Clean Separation of Concerns:**
-   - **AppBar** → Global file operations and application settings
+   - **AppBarContainer** → Global file operations and application settings
    - **ViewControls** → Grid-specific view manipulation
    - **FilterDrawer** → Data filtering and search
    - **RightPanel** → Detailed information and analysis

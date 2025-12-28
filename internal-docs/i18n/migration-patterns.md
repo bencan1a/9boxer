@@ -315,8 +315,8 @@ Use clear namespaces to organize translations:
 ```
 app.*          - Global app strings (title, logo)
 dashboard.*    - Dashboard-related strings
-  appBar.*     - AppBar component
-  fileMenu.*   - FileMenu component
+  appBar.*     - AppBarContainer component
+  fileMenu.*   - FileMenuButton component
   filters.*    - Filter-related
 grid.*         - Grid components
 panel.*        - Right panel components

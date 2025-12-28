@@ -25,12 +25,19 @@ Your Excel file needs **4 columns** with these exact names:
 
 ### Don't have a file ready?
 
-No problem! Use the built-in sample file:
+No problem! You have two options:
+
+**Option 1: Load Sample Data (Fastest)**
+
+Click the **"Load Sample Data (200 employees)"** button on the empty state screen, or use **File → Load Sample Dataset...** from the menu. This generates realistic sample data instantly - perfect for exploring features.
+
+→ [Learn more about sample data](getting-started.md#loading-sample-data)
+
+**Option 2: Use the Sample Excel File**
 
 1. Look in your 9Boxer installation folder for `Sample_People_List.xlsx`
 2. Or download it from the Help menu inside the app
-
-This sample file has everything you need to explore 9Boxer right now.
+3. Upload it using the instructions below
 
 ---
 

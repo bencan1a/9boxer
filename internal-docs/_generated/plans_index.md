@@ -10,7 +10,7 @@
 - **Path**: `agent-projects/self-managing-docs-system/plan.md`
 - **Summary**:
   - Build self-managing documentation system with automated screenshot updates
-  - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
+  - Componentize key React components (NineBoxGrid, AppBarContainer, IntelligencePanel) for Storybook
   - Implement AI-powered documentation audits and change detection
   - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
   - -
