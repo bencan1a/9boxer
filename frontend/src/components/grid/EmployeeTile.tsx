@@ -2,13 +2,22 @@
  * Employee tile component (draggable)
  *
  * Individual employee card shown within grid boxes. Displays employee
- * name, ID, flags, and modified status. Supports drag-and-drop.
+ * name, title, job level, and flags. Supports drag-and-drop.
+ *
+ * **Movement Highlighting** (Consistent full border approach):
+ * - Session Modified: Full orange border (2px)
+ * - Donut Mode: Full purple border (2px)
+ *
+ * **Flag Display** (Treatment 2 - Badge Strip):
+ * - Individual colored circular badges (16px) at top-right
+ * - Each flag shows its semantic color
+ * - Tooltip shows flag name on hover
  *
  * @component
  * @screenshots
  *   - employee-tile-normal: Individual employee tile showing name and role
- *   - changes-orange-border: Employee tile with orange modified border and badge
- *   - details-flag-badges: Employee tiles showing flag count badges in top-right corner
+ *   - changes-orange-border: Employee tile with orange modified border (full border)
+ *   - details-flag-badges: Employee tiles showing individual flag badges in top-right corner
  */
 
 import React from "react";
@@ -23,12 +32,11 @@ import {
   Tooltip,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { getPositionLabel } from "../../constants/positionLabels";
-import { getFlagDisplayName } from "../../constants/flags";
+import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
 
 interface EmployeeTileProps {
   employee: Employee;
@@ -58,9 +66,6 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     onSelect(employee.employee_id);
   };
 
-  // Show donut border only when donut mode is active AND employee has donut position
-  const showDonutBorder = donutModeActive && !!employee.donut_position;
-
   // Determine if employee has been modified in donut mode (for badge)
   const isDonutModified = donutModeActive && employee.donut_modified;
 
@@ -70,13 +75,23 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       ? getPositionLabel(employee.donut_position)
       : getPositionLabel(employee.grid_position);
 
-  // Get flags count and display names
+  // Get flags
   const flags = employee.flags || [];
-  const flagCount = flags.length;
-  const flagTooltip =
-    flags.length > 0
-      ? flags.map((flag) => getFlagDisplayName(flag)).join(", ")
-      : "";
+
+  // Determine border color based on modification state
+  const getBorderColor = () => {
+    if (donutModeActive && employee.donut_position) {
+      return theme.tokens.colors.semantic.donutMode; // Purple
+    }
+    if (employee.modified_in_session) {
+      return theme.palette.secondary.main; // Orange
+    }
+    return "transparent";
+  };
+
+  const showBorder =
+    (donutModeActive && employee.donut_position) ||
+    employee.modified_in_session;
 
   return (
     <Card
@@ -88,24 +103,14 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         maxWidth: 400, // Maximum width for readability
         cursor: "pointer",
         display: "flex",
-        opacity: isDragging ? 0.5 : isDonutModified ? 0.7 : 1,
+        opacity: isDragging ? 0.5 : 1,
         userSelect: "none",
-        // Donut mode active with donut position: full purple border (takes precedence)
-        // Session modified (when not in donut mode): left orange border
-        // Neither: default card border
-        ...(showDonutBorder
-          ? {
-              border: 2,
-              borderStyle: "solid",
-              borderColor: theme.tokens.colors.semantic.donutMode,
-            }
-          : employee.modified_in_session
-            ? {
-                borderLeft: 4,
-                borderLeftColor: "secondary.main",
-              }
-            : {}),
-        boxShadow: isDonutModified ? 2 : 1,
+        position: "relative",
+        // Consistent full border for both movement types
+        border: 2,
+        borderStyle: "solid",
+        borderColor: showBorder ? getBorderColor() : "divider",
+        boxShadow: 1,
         "&:hover": {
           boxShadow: 3,
         },
@@ -114,6 +119,47 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       data-position={employee.grid_position}
       data-donut-position={employee.donut_position || ""}
     >
+      {/* Flag Badges - Top Right Strip */}
+      {flags.length > 0 && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: theme.tokens.spacing.xs,
+            right: theme.tokens.spacing.xs,
+            display: "flex",
+            flexDirection: "row",
+            gap: 0.5,
+            zIndex: 1,
+          }}
+        >
+          {flags.map((flag, index) => (
+            <Tooltip
+              key={index}
+              title={getFlagDisplayName(flag)}
+              arrow
+              placement="top"
+            >
+              <Box
+                sx={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: "50%",
+                  backgroundColor: getFlagColor(flag),
+                  border: 2,
+                  borderColor: "background.paper",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                role="img"
+                aria-label={getFlagDisplayName(flag)}
+                data-testid={`flag-badge-${index}`}
+              />
+            </Tooltip>
+          ))}
+        </Box>
+      )}
+
       {/* Drag Handle */}
       <Box
         ref={setActivatorNodeRef}
@@ -138,22 +184,14 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       </Box>
 
       {/* Card Content */}
-      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1 }}>
+      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}>
         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
           {employee.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
           {employee.business_title}
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 0.5,
-            mt: 0.5,
-            flexWrap: "wrap",
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
           {isDonutModified && (
             <Chip
@@ -167,23 +205,6 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               }}
               data-testid="donut-indicator"
             />
-          )}
-          {flagCount > 0 && (
-            <Tooltip title={flagTooltip} arrow>
-              <Chip
-                icon={
-                  <LocalOfferIcon sx={{ fontSize: "0.875rem !important" }} />
-                }
-                label={flagCount}
-                size="small"
-                sx={{
-                  height: 18,
-                  backgroundColor: theme.palette.info.main,
-                  color: theme.palette.info.contrastText,
-                }}
-                data-testid="flag-badge"
-              />
-            </Tooltip>
           )}
         </Box>
         {isDonutModified && employee.donut_position && (
