@@ -96,7 +96,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     workflow: "storybook-components",
     function: "generateEmployeeTileModified",
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png",
-    description: "Employee tile with orange modified border and badge",
+    description: "Employee tile with full orange modified border (2px)",
     storyId: "grid-employeetile--modified",
     cropping: "element",
     dimensions: { minWidth: 150, maxWidth: 290, minHeight: 80, maxHeight: 150 },
@@ -543,7 +543,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateFlagBadges",
     path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
     description:
-      "Employee tiles showing flag count badges (🏷️ icon + count) in top-right corner",
+      "Employee tiles showing individual colored flag badges (16px circular) in top-right corner",
     cropping: "container",
     dimensions: { minWidth: 230, minHeight: 220 },
   },

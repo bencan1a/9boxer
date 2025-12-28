@@ -133,7 +133,7 @@ describe("EmployeeTile - Donut Mode", () => {
     expect(screen.getByText(/Donut: Star \[H,H\]/)).toBeInTheDocument();
   });
 
-  it("applies ghostly opacity styling when donut-modified and in donut mode", () => {
+  it("displays full purple border when donut-modified and in donut mode", () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
@@ -155,7 +155,7 @@ describe("EmployeeTile - Donut Mode", () => {
     );
 
     expect(card).toBeInTheDocument();
-    // Opacity is set via sx prop (0.7 for ghostly effect in donut mode)
+    // Full purple border (2px) is applied via sx prop
   });
 
   it("does not apply ghostly styling when donut mode is inactive", () => {
@@ -274,5 +274,94 @@ describe("EmployeeTile - Donut Mode", () => {
       `employee-card-${dualModifiedEmployee.employee_id}`
     );
     expect(card).toBeInTheDocument();
+  });
+});
+
+describe("EmployeeTile - Flag Badges", () => {
+  const mockOnSelect = vi.fn();
+
+  const baseEmployee = createMockEmployee({
+    employee_id: 1,
+    name: "Alice Johnson",
+    business_title: "Senior Engineer",
+    job_level: "MT5",
+  });
+
+  it("displays individual flag badges when employee has flags", () => {
+    const employeeWithFlags = createMockEmployee({
+      ...baseEmployee,
+      flags: ["high_retention_priority", "flight_risk", "new_hire"],
+    });
+
+    render(
+      <DndWrapper>
+        <EmployeeTile employee={employeeWithFlags} onSelect={mockOnSelect} />
+      </DndWrapper>
+    );
+
+    // Should show 3 individual flag badges
+    expect(screen.getByTestId("flag-badge-0")).toBeInTheDocument();
+    expect(screen.getByTestId("flag-badge-1")).toBeInTheDocument();
+    expect(screen.getByTestId("flag-badge-2")).toBeInTheDocument();
+  });
+
+  it("does not display flag badges when employee has no flags", () => {
+    const employeeNoFlags = createMockEmployee({
+      ...baseEmployee,
+      flags: [],
+    });
+
+    render(
+      <DndWrapper>
+        <EmployeeTile employee={employeeNoFlags} onSelect={mockOnSelect} />
+      </DndWrapper>
+    );
+
+    // Should not show any flag badges
+    expect(screen.queryByTestId("flag-badge-0")).not.toBeInTheDocument();
+  });
+
+  it("displays correct number of flag badges for multiple flags", () => {
+    const employeeWithManyFlags = createMockEmployee({
+      ...baseEmployee,
+      flags: [
+        "promotion_ready",
+        "succession_candidate",
+        "high_retention_priority",
+        "flight_risk",
+      ],
+    });
+
+    render(
+      <DndWrapper>
+        <EmployeeTile
+          employee={employeeWithManyFlags}
+          onSelect={mockOnSelect}
+        />
+      </DndWrapper>
+    );
+
+    // Should show 4 flag badges
+    expect(screen.getByTestId("flag-badge-0")).toBeInTheDocument();
+    expect(screen.getByTestId("flag-badge-1")).toBeInTheDocument();
+    expect(screen.getByTestId("flag-badge-2")).toBeInTheDocument();
+    expect(screen.getByTestId("flag-badge-3")).toBeInTheDocument();
+  });
+
+  it("displays single flag badge correctly", () => {
+    const employeeWithOneFlag = createMockEmployee({
+      ...baseEmployee,
+      flags: ["pip"],
+    });
+
+    render(
+      <DndWrapper>
+        <EmployeeTile employee={employeeWithOneFlag} onSelect={mockOnSelect} />
+      </DndWrapper>
+    );
+
+    // Should show exactly 1 flag badge
+    expect(screen.getByTestId("flag-badge-0")).toBeInTheDocument();
+    expect(screen.queryByTestId("flag-badge-1")).not.toBeInTheDocument();
   });
 });

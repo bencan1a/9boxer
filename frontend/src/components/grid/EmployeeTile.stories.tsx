@@ -14,16 +14,19 @@ import type {
  *
  * **Key Features:**
  * - Drag handle for drag-and-drop functionality
- * - Visual indicators for modified employees (orange border)
- * - Donut mode indicator (purple border, 70% opacity)
- * - Flags badge showing employee tags
+ * - Consistent full border for movement highlighting:
+ *   - Session Modified: Full orange border (2px)
+ *   - Donut Mode: Full purple border (2px)
+ * - Individual flag badges (Treatment 2 - Badge Strip):
+ *   - 16px colored circular badges at top-right
+ *   - Each flag shows its semantic color
+ *   - Tooltip displays flag name on hover
  * - Responsive layout with text truncation
  *
  * **Data Attributes:**
  * - `data-testid="employee-card-{employee_id}"` - Main card container
- * - `data-testid="modified-indicator"` - Modified in session chip
  * - `data-testid="donut-indicator"` - Donut mode chip
- * - `data-testid="flag-badge"` - Flags count badge
+ * - `data-testid="flag-badge-{index}"` - Individual flag badges
  */
 const meta: Meta<typeof EmployeeTile> = {
   title: "Grid/EmployeeTile",
@@ -112,7 +115,7 @@ export const Default: Story = {
 
 /**
  * Employee tile with modified_in_session flag set.
- * Displays orange left border and "Modified" chip indicator.
+ * Displays full orange border (2px) to indicate session modification.
  */
 export const Modified: Story = {
   args: {
@@ -128,7 +131,7 @@ export const Modified: Story = {
 
 /**
  * Employee in donut mode with a donut position set.
- * Shows purple border, 70% opacity, and "Donut" chip with position label.
+ * Shows full purple border (2px) and "Donut" chip with position label.
  */
 export const DonutModified: Story = {
   args: {
