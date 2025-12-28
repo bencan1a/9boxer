@@ -475,9 +475,8 @@ export const Logo: React.FC<LogoProps> = ({
   // Variant 11: Gradient Bordered (gradient boxes with clear borders and transparent gaps)
   if (variant === "gradient-bordered") {
     const strokeWidth = size * 0.03; // Border width for clear definition
-    const borderColor = isDark
-      ? "rgba(255, 255, 255, 0.6)"
-      : "rgba(0, 0, 0, 0.3)"; // Dark borders for light mode, light borders for dark mode
+    // Always use light borders since the gradient background is always dark
+    const borderColor = "rgba(255, 255, 255, 0.4)";
 
     return (
       <SvgWrapper>
