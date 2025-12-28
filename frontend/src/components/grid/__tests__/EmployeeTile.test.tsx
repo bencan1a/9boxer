@@ -182,28 +182,6 @@ describe("EmployeeTile - Donut Mode", () => {
     // Should not have reduced opacity when donut mode is off
   });
 
-  it("displays purple donut badge for donut-modified employees when donut mode is active", () => {
-    const donutModifiedEmployee = createMockEmployee({
-      ...position5Employee,
-      donut_modified: true,
-      donut_position: 9,
-    });
-
-    render(
-      <DndWrapper>
-        <EmployeeTile
-          employee={donutModifiedEmployee}
-          onSelect={mockOnSelect}
-          donutModeActive={true}
-        />
-      </DndWrapper>
-    );
-
-    const donutIndicator = screen.getByTestId("donut-indicator");
-    expect(donutIndicator).toBeInTheDocument();
-    expect(donutIndicator).toHaveTextContent("Donut");
-  });
-
   it("does not display donut badge when donut mode is inactive", () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
@@ -249,7 +227,7 @@ describe("EmployeeTile - Donut Mode", () => {
     // Purple border is applied via sx prop with borderColor: "#9c27b0"
   });
 
-  it("shows donut indicator and modified styling when employee has both modifications", () => {
+  it("shows donut border styling when employee is donut-modified (no badge)", () => {
     const dualModifiedEmployee = createMockEmployee({
       ...position5Employee,
       modified_in_session: true,
@@ -267,9 +245,9 @@ describe("EmployeeTile - Donut Mode", () => {
       </DndWrapper>
     );
 
-    // Donut indicator badge should be visible
-    expect(screen.getByTestId("donut-indicator")).toBeInTheDocument();
-    // Modified styling is applied via border (no modified badge in design)
+    // Donut indicator badge should NOT be visible (only border treatment)
+    expect(screen.queryByTestId("donut-indicator")).not.toBeInTheDocument();
+    // Card should be present with purple border styling
     const card = screen.getByTestId(
       `employee-card-${dualModifiedEmployee.employee_id}`
     );

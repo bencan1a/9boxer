@@ -25,7 +25,6 @@ import {
 } from "@dnd-kit/core";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
 import { Axis } from "./Axis";
@@ -38,7 +37,6 @@ const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
-  const { t } = useTranslation();
   const {
     employeesByPosition,
     getShortPositionLabel,
@@ -290,8 +288,19 @@ export const NineBoxGrid: React.FC = () => {
           <Card
             sx={{
               mb: 1,
-              borderLeft: activeEmployee.modified_in_session ? 4 : 0,
-              borderColor: "secondary.main",
+              // Use same border treatment as rest state
+              border: 2,
+              borderStyle: "solid",
+              borderColor: (() => {
+                // Match EmployeeTile border logic
+                if (donutModeActive && activeEmployee.donut_position) {
+                  return theme.tokens.colors.semantic.donutMode; // Purple
+                }
+                if (activeEmployee.modified_in_session) {
+                  return "secondary.main"; // Orange
+                }
+                return "divider"; // Default
+              })(),
               cursor: "grabbing",
               display: "flex",
               opacity: 0.9,
@@ -322,14 +331,6 @@ export const NineBoxGrid: React.FC = () => {
                   size="small"
                   sx={{ height: 18 }}
                 />
-                {activeEmployee.modified_in_session && (
-                  <Chip
-                    label={t("grid.gridBox.modified")}
-                    size="small"
-                    color="secondary"
-                    sx={{ height: 18 }}
-                  />
-                )}
               </Box>
             </CardContent>
           </Card>
