@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-28T18:57:07.967135+00:00
-**Source SHA**: 7dc02dfb8d2734f43e9a19a537f43466b93e176c
+**Generated**: 2025-12-28T21:38:11.054561+00:00
+**Source SHA**: e02fd112fa2615efff4ce052f3bb3077f9f9c28b
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -340,7 +340,7 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 3 active plan(s):
+There are 4 active plan(s):
 
 ### rich-sample-data-generator
 - Owner: claude
@@ -352,12 +352,23 @@ There are 3 active plan(s):
   - Integrate with app UI (empty state + File menu)
   - Support all 28 Excel schema columns
 
+### file-load-save-ux
+- Owner: claude-code
+- Created: 2025-12-28
+- Summary:
+  - Improve file load/save UX with clearer mental model
+  - Add recent files list (last 5 files)
+  - Add unsaved changes protection
+  - Add close file functionality
+  - Standardize on Load/Apply/Close terminology
+  - -
+
 ### self-managing-docs-system
 - Owner: Development Team
 - Created: 2025-12-26
 - Summary:
   - Build self-managing documentation system with automated screenshot updates
-  - Componentize key React components (NineBoxGrid, AppBarContainer, IntelligencePanel) for Storybook
+  - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
   - Implement AI-powered documentation audits and change detection
   - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
   - -

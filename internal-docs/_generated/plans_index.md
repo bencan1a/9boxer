@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-28T18:57:07.966961+00:00
+**Updated**: 2025-12-28T21:38:11.054341+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## rich-sample-data-generator
@@ -15,6 +15,19 @@
   - Integrate with app UI (empty state + File menu)
   - Support all 28 Excel schema columns
 
+## file-load-save-ux
+- **Status**: active
+- **Owner**: claude-code
+- **Created**: 2025-12-28
+- **Path**: `agent-projects/file-load-save-ux/plan.md`
+- **Summary**:
+  - Improve file load/save UX with clearer mental model
+  - Add recent files list (last 5 files)
+  - Add unsaved changes protection
+  - Add close file functionality
+  - Standardize on Load/Apply/Close terminology
+  - -
+
 ## self-managing-docs-system
 - **Status**: active
 - **Owner**: Development Team
@@ -22,7 +35,7 @@
 - **Path**: `agent-projects/self-managing-docs-system/plan.md`
 - **Summary**:
   - Build self-managing documentation system with automated screenshot updates
-  - Componentize key React components (NineBoxGrid, AppBarContainer, IntelligencePanel) for Storybook
+  - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
   - Implement AI-powered documentation audits and change detection
   - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
   - -
