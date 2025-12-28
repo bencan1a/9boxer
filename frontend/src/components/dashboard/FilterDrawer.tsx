@@ -38,8 +38,6 @@ import { useSession } from "../../hooks/useSession";
 import { ExclusionDialog } from "./ExclusionDialog";
 import { FilterSection, FlagFilters, ReportingChainFilter } from "./filters";
 
-const DRAWER_WIDTH = 280;
-
 // Helper function to create valid test IDs from values
 const sanitizeTestId = (value: string): string => {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -103,13 +101,13 @@ export const FilterDrawer: React.FC = () => {
         onClose={toggleDrawer}
         data-testid="filter-drawer"
         sx={{
-          width: DRAWER_WIDTH,
+          width: theme.tokens.dimensions.drawer.width,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: DRAWER_WIDTH,
+            width: theme.tokens.dimensions.drawer.width,
             boxSizing: "border-box",
-            top: "64px", // Height of AppBar
-            height: "calc(100% - 64px)",
+            top: `${theme.tokens.dimensions.appBar.height}px`,
+            height: `calc(100% - ${theme.tokens.dimensions.appBar.height}px)`,
             backgroundColor: theme.palette.background.paper,
             borderRight: `1px solid ${theme.palette.divider}`,
           },
@@ -117,14 +115,14 @@ export const FilterDrawer: React.FC = () => {
       >
         <Box
           sx={{
-            p: 2,
+            p: theme.tokens.spacing.md / 8, // Convert 16px to MUI spacing units (16/8 = 2)
             height: "100%",
             display: "flex",
             flexDirection: "column",
           }}
         >
           {/* Header */}
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
             <FilterListIcon sx={{ mr: 1, color: theme.palette.text.primary }} />
             <Typography
               variant="h6"
@@ -141,7 +139,7 @@ export const FilterDrawer: React.FC = () => {
             </IconButton>
           </Box>
 
-          <Divider sx={{ mb: 2 }} />
+          <Divider sx={{ mb: theme.tokens.spacing.md / 8 }} /> {/* Convert 16px to 2 */}
 
           {/* Scrollable content */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
@@ -276,15 +274,15 @@ export const FilterDrawer: React.FC = () => {
               />
             </FilterSection>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: theme.tokens.spacing.md / 8 }} /> {/* Convert 16px to 2 */}
 
             {/* Reporting Chain Filter Section */}
             {reportingChainFilter && (
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
                 <Typography
                   variant="subtitle2"
                   fontWeight="bold"
-                  sx={{ color: theme.palette.text.primary, mb: 1 }}
+                  sx={{ color: theme.palette.text.primary, mb: theme.tokens.spacing.sm / 8 }} {/* Convert 8px to 1 */}
                 >
                   {t("dashboard.filterDrawer.reportingChain")}
                 </Typography>
@@ -318,7 +316,7 @@ export const FilterDrawer: React.FC = () => {
           </Box>
 
           {/* Footer - Clear All Button */}
-          <Box sx={{ pt: 2, borderTop: 1, borderColor: "divider" }}>
+          <Box sx={{ pt: theme.tokens.spacing.md / 8, borderTop: 1, borderColor: "divider" }}> {/* Convert 16px to 2 */}
             <Button
               variant="outlined"
               color="secondary"

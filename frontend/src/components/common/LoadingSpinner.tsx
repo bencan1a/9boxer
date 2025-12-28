@@ -35,7 +35,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 2,
+        gap: theme.tokens.spacing.md / 8, // Convert 16px to MUI spacing units (16/8 = 2)
       }}
     >
       <CircularProgress size={size} color={color} />
@@ -60,7 +60,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: alpha(theme.palette.background.default, 0.8),
-          zIndex: 9999,
+          zIndex: theme.tokens.zIndex.tooltip, // Use highest z-index for loading overlay
         }}
       >
         {content}
