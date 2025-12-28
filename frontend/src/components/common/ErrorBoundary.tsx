@@ -4,6 +4,7 @@
 
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useTranslation } from "react-i18next";
 import { logger } from "../../utils/logger";
@@ -11,6 +12,7 @@ import { logger } from "../../utils/logger";
 interface Props {
   children: ReactNode;
   t?: (key: string) => string;
+  theme?: any; // Theme object
 }
 
 interface State {
@@ -54,6 +56,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       const t = this.props.t || ((key: string) => key);
+      const theme = this.props.theme;
 
       return (
         <Box
@@ -63,23 +66,23 @@ class ErrorBoundaryClass extends Component<Props, State> {
             justifyContent: "center",
             minHeight: "100vh",
             bgcolor: "background.default",
-            padding: 3,
+            padding: theme?.tokens.spacing.lg / 8 || 3, // Convert 24px to 3
           }}
         >
           <Paper
             elevation={3}
             sx={{
-              maxWidth: 600,
-              padding: 4,
+              maxWidth: theme?.tokens.dimensions.errorBoundary.maxWidth || 600,
+              padding: theme?.tokens.spacing.xl / 8 || 4, // Convert 32px to 4
               textAlign: "center",
               bgcolor: "background.paper",
             }}
           >
             <ErrorOutlineIcon
               sx={{
-                fontSize: 60,
+                fontSize: theme?.tokens.dimensions.errorBoundary.iconSize || 60,
                 color: "error.main",
-                mb: 2,
+                mb: theme?.tokens.spacing.md / 8 || 2, // Convert 16px to 2
               }}
             />
             <Typography variant="h4" gutterBottom>
@@ -92,10 +95,10 @@ class ErrorBoundaryClass extends Component<Props, State> {
             {this.state.error && (
               <Box
                 sx={{
-                  mt: 3,
-                  p: 2,
+                  mt: theme?.tokens.spacing.lg / 8 || 3, // Convert 24px to 3
+                  p: theme?.tokens.spacing.md / 8 || 2, // Convert 16px to 2
                   bgcolor: "action.hover",
-                  borderRadius: 1,
+                  borderRadius: theme?.tokens.radius.sm / 4 || 1, // Convert 4px to 1
                   textAlign: "left",
                 }}
               >
@@ -118,7 +121,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
               variant="contained"
               color="primary"
               onClick={this.handleReset}
-              sx={{ mt: 3 }}
+              sx={{ mt: theme?.tokens.spacing.lg / 8 || 3 }} // Convert 24px to 3
             >
               {t("common.errorBoundary.returnHome")}
             </Button>
@@ -131,8 +134,9 @@ class ErrorBoundaryClass extends Component<Props, State> {
   }
 }
 
-// Wrapper component that provides the translation function to the class component
+// Wrapper component that provides the translation function and theme to the class component
 export function ErrorBoundary({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
-  return <ErrorBoundaryClass t={t}>{children}</ErrorBoundaryClass>;
+  const theme = useTheme();
+  return <ErrorBoundaryClass t={t} theme={theme}>{children}</ErrorBoundaryClass>;
 }

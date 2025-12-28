@@ -169,6 +169,12 @@ export const dimensions = {
     defaultWidth: 400,
   },
 
+  // Error boundary dimensions
+  errorBoundary: {
+    maxWidth: 600, // Error display max width
+    iconSize: 60, // Error icon size
+  },
+
   // Employee tile (draggable cards)
   employeeTile: {
     height: 56,
