@@ -388,7 +388,7 @@ Before finalizing performance reviews, validate your center box.
 |--------|-------------|------------|
 | **Purpose** | Update actual talent ratings | Validate center box placements |
 | **Data Impact** | Changes performance/potential ratings | No impact on actual ratings |
-| **Visual** | Orange left border for changes | Purple border, ghostly appearance, badge |
+| **Visual** | Full orange border for changes | Full purple border + "Donut" badge |
 | **Tracking** | "Regular Changes" tab | "Donut Changes" tab (separate) |
 | **Export** | Updates Performance/Potential columns | Separate "Donut Exercise" columns |
 | **Persistence** | Changes saved to actual ratings | Exercise data saved separately |
