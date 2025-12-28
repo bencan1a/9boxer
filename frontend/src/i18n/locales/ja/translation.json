@@ -391,6 +391,8 @@
     "title": "設定",
     "closeAriaLabel": "設定を閉じる",
     "appearance": "外観",
+    "language": "言語",
+    "selectLanguage": "言語を選択",
     "currentSelection": "現在の選択:",
     "currentTheme": "現在{{theme}}テーマを使用中（システム設定から）",
     "theme": {
@@ -400,8 +402,7 @@
       "darkModeDesc": "常にダークテーマを使用",
       "auto": "自動（システムに従う）",
       "autoDesc": "システムテーマに自動的に合わせる"
-    },
-    "language": "Language"
+    }
   },
   "zoom": {
     "zoomIn": "拡大（Ctrl++）",

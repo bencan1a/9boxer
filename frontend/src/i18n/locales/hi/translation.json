@@ -391,6 +391,8 @@
     "title": "सेटिंग्स",
     "closeAriaLabel": "सेटिंग्स बंद करें",
     "appearance": "दिखावट",
+    "language": "भाषा",
+    "selectLanguage": "भाषा चुनें",
     "currentSelection": "वर्तमान चयन:",
     "currentTheme": "वर्तमान में {{theme}} थीम का उपयोग कर रहे हैं (सिस्टम से)",
     "theme": {
@@ -400,8 +402,7 @@
       "darkModeDesc": "हमेशा डार्क थीम का उपयोग करें",
       "auto": "स्वतः (सिस्टम का अनुसरण करें)",
       "autoDesc": "स्वचालित रूप से अपनी सिस्टम थीम से मिलान करें"
-    },
-    "language": "Language"
+    }
   },
   "zoom": {
     "zoomIn": "ज़ूम इन (Ctrl++)",

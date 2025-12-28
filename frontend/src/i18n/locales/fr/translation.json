@@ -391,6 +391,8 @@
     "title": "Paramètres",
     "closeAriaLabel": "fermer les paramètres",
     "appearance": "Apparence",
+    "language": "Langue",
+    "selectLanguage": "Sélectionner la langue",
     "currentSelection": "Sélection actuelle :",
     "currentTheme": "Utilisation actuelle du thème {{theme}} (depuis le système)",
     "theme": {
@@ -400,8 +402,7 @@
       "darkModeDesc": "Toujours utiliser le thème sombre",
       "auto": "Auto (Suivre le système)",
       "autoDesc": "S'adapter automatiquement au thème de votre système"
-    },
-    "language": "Language"
+    }
   },
   "zoom": {
     "zoomIn": "Agrandir (Ctrl++)",

@@ -455,6 +455,7 @@
     "closeAriaLabel": "close settings",
     "appearance": "Appearance",
     "language": "Language",
+    "selectLanguage": "Select Language",
     "currentSelection": "Current Selection:",
     "currentTheme": "Currently using {{theme}} theme (from system)",
     "theme": {
