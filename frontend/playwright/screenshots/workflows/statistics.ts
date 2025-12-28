@@ -1,8 +1,19 @@
 /**
- * Statistics Screenshot Workflow
+ * Statistics Screenshot Workflow (DEPRECATED)
  *
- * Generates screenshots for the Statistics tab showing distribution analysis,
- * ideal vs actual comparisons, and trend indicators.
+ * ⚠️ DEPRECATED: This full-app workflow has been replaced by Storybook-based screenshots.
+ * See: frontend/playwright/screenshots/workflows/statistics-storybook.ts
+ *
+ * The Storybook approach is 10x faster, 100% reliable, and uses the same
+ * stories as development and testing. This file is kept for reference only.
+ *
+ * Migration completed: 2025-12-28 (Issue #96)
+ *
+ * Old approach: Generated screenshots from full-app workflows with navigation,
+ * state setup, and arbitrary timeouts. Prone to timing issues and flakiness.
+ *
+ * New approach: Generates screenshots directly from Storybook stories with
+ * isolated components and no app state dependencies.
  */
 
 import { Page } from "@playwright/test";

@@ -378,27 +378,42 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     manual: true,
   },
 
-  // Statistics workflow screenshots (3 screenshots)
+  // Statistics workflow screenshots (4 Storybook-based screenshots)
   "statistics-panel-distribution": {
-    source: "full-app",
-    workflow: "statistics",
+    source: "storybook",
+    workflow: "statistics-storybook",
     function: "generatePanelDistribution",
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png",
-    description: "Statistics panel showing employee distribution across boxes",
-  },
-  "statistics-ideal-actual-comparison": {
-    source: "full-app",
-    workflow: "statistics",
-    function: "generateIdealActualComparison",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-ideal-actual-comparison.png",
-    description: "Ideal vs actual distribution comparison chart",
+    description:
+      "Statistics panel distribution table with grouping indicators (balanced distribution)",
+    storyId: "panel-statistics-distributiontable--balanced-distribution",
   },
   "statistics-trend-indicators": {
-    source: "full-app",
-    workflow: "statistics",
+    source: "storybook",
+    workflow: "statistics-storybook",
     function: "generateTrendIndicators",
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png",
-    description: "Trend indicators showing distribution changes over time",
+    description:
+      "Trend indicators showing all 9 position colors with color-coded bars",
+    storyId: "panel-statistics-coloredpercentagebar--all-positions-comparison",
+  },
+  "statistics-grouping-indicators": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateGroupingIndicators",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouping-indicators.png",
+    description:
+      "CSS-based grouping indicators for high/middle/low tiers in distribution table",
+    storyId: "panel-statistics-groupingindicator--all-groupings-together",
+  },
+  "statistics-summary-cards": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateSummaryCards",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-summary-cards.png",
+    description:
+      "Three summary cards showing total employees, modified employees, and high performers",
+    storyId: "panel-statistics-statisticssummary--default",
   },
 
   // Donut mode screenshots (2 screenshots)
