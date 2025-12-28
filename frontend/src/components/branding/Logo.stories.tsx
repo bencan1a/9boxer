@@ -152,7 +152,7 @@ export const GeometricBold: Story = {
  * Continuous gradient across boxes with clear borders and transparent gaps
  * Best of both "Minimal Center" and "Gradient Center Focus"
  * - Gradient flows continuously across all boxes (blue → purple)
- * - Clear borders (dark in light mode, light in dark mode)
+ * - Clear light borders that work well against the dark gradient background
  * - Transparent gaps show page background
  * - Glowing center for emphasis
  */
