@@ -41,18 +41,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   const theme = useTheme();
 
-  // Icon size mapping using design tokens
+  // Icon size mapping - component-specific dimensions
   const iconSizeMap = {
-    small: theme.tokens.spacing.xxl, // 48px
-    medium: theme.tokens.spacing.xxl + theme.tokens.spacing.md, // 64px (48+16)
-    large: theme.tokens.spacing.xxl + theme.tokens.spacing.xl, // 80px (48+32)
+    small: 48,
+    medium: 64,
+    large: 80,
   };
 
-  // Container size for icon circle
+  // Container size for icon circle - component-specific dimensions
   const containerSizeMap = {
-    small: theme.tokens.spacing.xxl + theme.tokens.spacing.xl, // 80px (48+32)
-    medium: theme.tokens.spacing.xxl * 2 + theme.tokens.spacing.lg, // 120px (48*2+24)
-    large: theme.tokens.spacing.xxl * 3 + theme.tokens.spacing.md, // 160px (48*3+16)
+    small: 80,
+    medium: 120,
+    large: 160,
   };
 
   const iconDimension = iconSizeMap[iconSize];

@@ -197,7 +197,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
               p: theme.tokens.spacing.lg / 8, // Convert 24px to 3
               border: "2px dashed",
               borderColor: "primary.main",
-              borderRadius: theme.tokens.radius.md / 4, // Convert 8px to 2
+              borderRadius: theme.tokens.radius.md, // 8px
               textAlign: "center",
               backgroundColor: "background.default",
             }}
@@ -254,7 +254,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           variant="contained"
           disabled={!selectedFile || isLoading}
           startIcon={
-            isLoading ? <CircularProgress size={theme.tokens.spacing.md} /> : null // 16px
+            isLoading ? <CircularProgress size={16} /> : null // 16px - specific UI element size
           }
           data-testid="upload-submit-button"
         >
