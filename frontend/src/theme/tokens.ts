@@ -169,10 +169,27 @@ export const dimensions = {
     defaultWidth: 400,
   },
 
+  // Error boundary dimensions
+  errorBoundary: {
+    maxWidth: 600, // Error display max width
+    iconSize: 60, // Error icon size
+  },
+
   // Employee tile (draggable cards)
   employeeTile: {
     height: 56,
     spacing: 8,
+  },
+
+  // Drawer dimensions (left sidebar filter drawer)
+  drawer: {
+    width: 280, // Filter drawer width
+  },
+
+  // AppBar dimensions
+  appBar: {
+    height: 64, // Standard AppBar height
+    logoSize: 28, // App logo icon size
   },
 
   // Scrollbar dimensions
