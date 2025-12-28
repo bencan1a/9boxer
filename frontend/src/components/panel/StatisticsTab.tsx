@@ -132,7 +132,7 @@ export const StatisticsTab: React.FC = () => {
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: theme.tokens.spacing.xxl * 2.5, // 120px (48*2.5)
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -153,7 +153,7 @@ export const StatisticsTab: React.FC = () => {
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: theme.tokens.spacing.xxl * 2.5, // 120px
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -174,7 +174,7 @@ export const StatisticsTab: React.FC = () => {
             <CardContent
               sx={{
                 height: "100%",
-                minHeight: theme.tokens.spacing.xxl * 2.5, // 120px
+                minHeight: 120, // 120px - specific card height
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",

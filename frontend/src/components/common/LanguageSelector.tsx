@@ -11,14 +11,12 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../i18n";
 import LanguageIcon from "@mui/icons-material/Language";
 
 export const LanguageSelector: React.FC = () => {
   const { i18n } = useTranslation();
-  const theme = useTheme();
 
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {
     const newLanguage = event.target.value as SupportedLanguage;
@@ -34,7 +32,7 @@ export const LanguageSelector: React.FC = () => {
   };
 
   return (
-    <FormControl size="small" sx={{ minWidth: theme.tokens.spacing.xxl * 2.5 }}> {/* 120px (48*2.5) */}
+    <FormControl size="small" sx={{ minWidth: 120 }}> {/* 120px - specific control width */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <LanguageIcon fontSize="small" />
         <Select
