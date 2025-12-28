@@ -9,6 +9,12 @@ on:
       - 'frontend/src/theme/**'
       # Also trigger on metadata changes (to test the system)
       - '.github/component-screenshot-map.json'
+  workflow_dispatch:
+    inputs:
+      screenshots:
+        description: 'Comma-separated list of screenshots to regenerate (leave empty for all)'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -170,7 +176,7 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Install Playwright browsers
         run: |
