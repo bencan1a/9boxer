@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Typography, Button, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -21,6 +21,7 @@ import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { FileUploadDialog } from "../common/FileUploadDialog";
 import { ViewControls } from "../common/ViewControls";
+import { EmptyState } from "../common/EmptyState";
 import { useSession } from "../../hooks/useSession";
 import { useSessionStore } from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
@@ -141,70 +142,18 @@ export const DashboardPage: React.FC = () => {
         >
           {!sessionId ? (
             <>
-              <Box
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 3,
-                  p: 4,
+              <EmptyState
+                icon={<UploadFileIcon />}
+                title={t("dashboard.dashboardPage.noFileLoaded")}
+                description={t("dashboard.dashboardPage.emptyStateDescription")}
+                action={{
+                  label: t("dashboard.dashboardPage.importData"),
+                  onClick: () => setUploadDialogOpen(true),
+                  icon: <UploadFileIcon />,
+                  variant: "contained",
                 }}
-              >
-                {/* Icon */}
-                <Box
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    backgroundColor: "action.hover",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <UploadFileIcon
-                    sx={{ fontSize: 60, color: "primary.main" }}
-                  />
-                </Box>
-
-                {/* Heading */}
-                <Typography variant="h4" fontWeight="500" textAlign="center">
-                  {t("dashboard.dashboardPage.noFileLoaded")}
-                </Typography>
-
-                {/* Description */}
-                <Typography
-                  variant="body1"
-                  color="text.secondary"
-                  textAlign="center"
-                  sx={{ maxWidth: 500 }}
-                >
-                  {t("dashboard.dashboardPage.emptyStateDescription")}
-                </Typography>
-
-                {/* Import Button */}
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<UploadFileIcon />}
-                  onClick={() => setUploadDialogOpen(true)}
-                  data-testid="empty-state-import-button"
-                  sx={{ mt: 2 }}
-                >
-                  {t("dashboard.dashboardPage.importData")}
-                </Button>
-
-                {/* Optional: Sample data hint */}
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mt: 2 }}
-                >
-                  {t("dashboard.dashboardPage.sampleFileHint")}
-                </Typography>
-              </Box>
+                hint={t("dashboard.dashboardPage.sampleFileHint")}
+              />
 
               <FileUploadDialog
                 open={uploadDialogOpen}
@@ -249,6 +198,7 @@ export const DashboardPage: React.FC = () => {
                   <Box
                     data-testid="panel-resize-handle"
                     sx={{
+                      position: "relative",
                       width: theme.tokens.spacing.sm,
                       height: "100%",
                       display: "flex",
@@ -257,10 +207,10 @@ export const DashboardPage: React.FC = () => {
                       cursor: "col-resize",
                       backgroundColor: theme.palette.divider,
                       transition: `background-color ${theme.tokens.duration.fast}`,
-                      "&:hover": {
+                      "&:hover:not(:has(button:hover))": {
                         backgroundColor: theme.palette.primary.main,
                       },
-                      "&:active": {
+                      "&:active:not(:has(button:active))": {
                         backgroundColor: theme.palette.primary.dark,
                       },
                     }}
@@ -271,8 +221,61 @@ export const DashboardPage: React.FC = () => {
                         height: `${theme.tokens.spacing.xl + theme.tokens.spacing.sm}px`,
                         backgroundColor: theme.palette.background.paper,
                         borderRadius: `${theme.tokens.radius.sm / 4}px`,
+                        pointerEvents: "none",
                       }}
                     />
+                    {/* Toggle button integrated into resize handle */}
+                    <Tooltip
+                      title={
+                        isRightPanelCollapsed
+                          ? t("dashboard.dashboardPage.showPanel")
+                          : t("dashboard.dashboardPage.hidePanel")
+                      }
+                      placement="left"
+                    >
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleRightPanel();
+                        }}
+                        data-testid="panel-toggle-button"
+                        sx={{
+                          position: isRightPanelCollapsed
+                            ? "fixed"
+                            : "absolute",
+                          top: isRightPanelCollapsed
+                            ? `calc(50vh + ${theme.tokens.dimensions.appBar.height / 2}px)`
+                            : "50%",
+                          left: isRightPanelCollapsed ? "auto" : "50%",
+                          right: isRightPanelCollapsed ? 16 : "auto",
+                          transform: isRightPanelCollapsed
+                            ? "translateY(-50%)"
+                            : "translate(-50%, -50%)",
+                          zIndex: 10,
+                          pointerEvents: "auto",
+                          isolation: "isolate",
+                          width: theme.tokens.spacing.sm,
+                          height: 48,
+                          borderRadius: isRightPanelCollapsed
+                            ? `${theme.tokens.radius.md}px`
+                            : `${theme.tokens.radius.sm}px`,
+                          backgroundColor: theme.palette.background.paper,
+                          border: `1px solid ${theme.palette.divider}`,
+                          boxShadow: 2,
+                          transition: `all ${theme.tokens.duration.normal}`,
+                          "&:hover": {
+                            backgroundColor: theme.palette.action.hover,
+                            borderColor: theme.palette.primary.main,
+                          },
+                        }}
+                      >
+                        {isRightPanelCollapsed ? (
+                          <ChevronLeftIcon fontSize="small" />
+                        ) : (
+                          <ChevronRightIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                 </PanelResizeHandle>
 
@@ -298,49 +301,6 @@ export const DashboardPage: React.FC = () => {
                   </Box>
                 </Panel>
               </PanelGroup>
-
-              {/* Toggle button - aligned with resize handle */}
-              <Tooltip
-                title={
-                  isRightPanelCollapsed
-                    ? t("dashboard.dashboardPage.showPanel")
-                    : t("dashboard.dashboardPage.hidePanel")
-                }
-                placement="left"
-              >
-                <IconButton
-                  onClick={toggleRightPanel}
-                  data-testid="panel-toggle-button"
-                  sx={{
-                    position: "absolute",
-                    right: isRightPanelCollapsed
-                      ? 16
-                      : `calc(${rightPanelSize}%)`,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    zIndex: 10,
-                    width: theme.tokens.spacing.sm,
-                    height: 48,
-                    borderRadius: isRightPanelCollapsed
-                      ? `${theme.tokens.radius.md}px`
-                      : `${theme.tokens.radius.sm}px`,
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${theme.palette.divider}`,
-                    boxShadow: 2,
-                    transition: `all ${theme.tokens.duration.normal}`,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                      borderColor: theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  {isRightPanelCollapsed ? (
-                    <ChevronLeftIcon fontSize="small" />
-                  ) : (
-                    <ChevronRightIcon fontSize="small" />
-                  )}
-                </IconButton>
-              </Tooltip>
             </Box>
           )}
         </Box>

@@ -16,6 +16,8 @@ def test_generate_sample_employees_when_default_request_then_returns_200_ok(
     data = response.json()
     assert "employees" in data
     assert "metadata" in data
+    assert "session_id" in data
+    assert isinstance(data["session_id"], str)
     assert len(data["employees"]) == 200  # Default size
     assert data["metadata"]["total"] == 200
 
@@ -67,16 +69,12 @@ def test_generate_sample_employees_when_seed_provided_then_reproducible_results(
 ) -> None:
     """Test seed parameter produces reproducible results."""
     # Generate with seed 42
-    response1 = test_client.post(
-        "/api/employees/generate-sample", json={"size": 50, "seed": 42}
-    )
+    response1 = test_client.post("/api/employees/generate-sample", json={"size": 50, "seed": 42})
     assert response1.status_code == 200
     data1 = response1.json()
 
     # Generate again with same seed
-    response2 = test_client.post(
-        "/api/employees/generate-sample", json={"size": 50, "seed": 42}
-    )
+    response2 = test_client.post("/api/employees/generate-sample", json={"size": 50, "seed": 42})
     assert response2.status_code == 200
     data2 = response2.json()
 

@@ -328,6 +328,7 @@ class ApiClient {
       locations: string[];
       functions: string[];
     };
+    session_id: string;
   }> {
     const response = await this.client.post("/api/employees/generate-sample", {
       size,

@@ -150,8 +150,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.getEmployees();
+
+      // Get session ID from localStorage if not already in store
+      const currentSessionId = get().sessionId;
+      const cachedSessionId = localStorage.getItem("session_id");
+
       set({
         employees: response.employees,
+        originalEmployees: response.employees,
+        sessionId: currentSessionId || cachedSessionId,
         isLoading: false,
         error: null,
       });
@@ -331,8 +338,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     try {
       // Try to restore from existing backend session first
       if (cachedSessionId) {
-        try {
-          const sessionStatus = await apiClient.getSessionStatus();
+        const sessionStatus = await apiClient.getSessionStatus();
+
+        // Check if session is actually active
+        if (sessionStatus.active) {
           const employeesResponse = await apiClient.getEmployees();
 
           // Auto-select first employee in box 5 if no employee is selected
@@ -362,7 +371,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
           });
 
           return true;
-        } catch (error) {
+        } else {
           // Session no longer exists, fall through to auto-reload
           logger.debug("Session expired, attempting to reload file from disk");
           localStorage.removeItem("session_id");

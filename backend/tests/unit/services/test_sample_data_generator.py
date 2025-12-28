@@ -116,7 +116,9 @@ class TestManagementChainBuilder:
             # All managers should have at least 1 direct report
             assert count >= 1, f"Manager {manager_id} ({manager_level}) has {count} reports"
             # Most managers should have <= 20 direct reports (reasonable upper bound)
-            assert count <= 20, f"Manager {manager_id} ({manager_level}) has {count} reports (too many)"
+            assert count <= 20, (
+                f"Manager {manager_id} ({manager_level}) has {count} reports (too many)"
+            )
 
     def test_build_org_hierarchy_when_built_then_complete_chain(self) -> None:
         """Test all employees have appropriate management chains."""
@@ -126,9 +128,9 @@ class TestManagementChainBuilder:
         for emp_id, node in hierarchy.items():
             # CEO has no chain
             if node.level == "MT6":
-                assert all(
-                    getattr(node, f"chain_{i:02d}") is None for i in range(1, 7)
-                ), f"CEO {emp_id} should have null chains"
+                assert all(getattr(node, f"chain_{i:02d}") is None for i in range(1, 7)), (
+                    f"CEO {emp_id} should have null chains"
+                )
             else:
                 # All non-CEOs should have at least one chain entry (their manager)
                 has_chain = any(getattr(node, f"chain_{i:02d}") is not None for i in range(1, 7))
@@ -138,7 +140,9 @@ class TestManagementChainBuilder:
                 for i in range(1, 7):
                     chain_val = getattr(node, f"chain_{i:02d}")
                     if chain_val is not None:
-                        assert chain_val in hierarchy, f"{emp_id} chain_{i:02d} points to non-existent {chain_val}"
+                        assert chain_val in hierarchy, (
+                            f"{emp_id} chain_{i:02d} points to non-existent {chain_val}"
+                        )
 
     def test_build_org_hierarchy_when_built_then_realistic_titles(self) -> None:
         """Test titles are realistic for each level."""
@@ -151,14 +155,23 @@ class TestManagementChainBuilder:
             "MT4": ["Director"],
             "MT3": ["Manager", "Lead"],
             "MT2": ["Senior", "Staff", "Principal"],
-            "MT1": ["Engineer", "Analyst", "Associate", "Specialist", "Designer", "Sales", "Marketing", "Operations"],
+            "MT1": [
+                "Engineer",
+                "Analyst",
+                "Associate",
+                "Specialist",
+                "Designer",
+                "Sales",
+                "Marketing",
+                "Operations",
+            ],
         }
 
         for node in hierarchy.values():
             patterns = title_patterns[node.level]
-            assert any(
-                pattern.lower() in node.title.lower() for pattern in patterns
-            ), f"Title '{node.title}' doesn't match patterns for {node.level}"
+            assert any(pattern.lower() in node.title.lower() for pattern in patterns), (
+                f"Title '{node.title}' doesn't match patterns for {node.level}"
+            )
 
 
 class TestPerformanceHistoryGenerator:
@@ -192,9 +205,7 @@ class TestPerformanceHistoryGenerator:
         hire_date = date(2020, 1, 1)
 
         # Generate for multiple employees
-        all_histories = [
-            generator.generate_history(i, hire_date, "Strong") for i in range(1, 21)
-        ]
+        all_histories = [generator.generate_history(i, hire_date, "Strong") for i in range(1, 21)]
 
         # At least some should have varying ratings
         has_variance = False
@@ -264,9 +275,7 @@ class TestRichEmployeeGenerator:
             assert getattr(emp, field) is not None, f"Field {field} is None"
 
         # Management chain fields (at least some should be populated)
-        has_chain = any(
-            getattr(emp, f"management_chain_{i:02d}") is not None for i in range(1, 7)
-        )
+        has_chain = any(getattr(emp, f"management_chain_{i:02d}") is not None for i in range(1, 7))
         assert has_chain or emp.job_level == "MT6", "No management chain found for non-CEO"
 
     def test_generate_dataset_when_generated_then_locations_distributed(self) -> None:
@@ -315,7 +324,9 @@ class TestRichEmployeeGenerator:
         employees = generator.generate_dataset(config)
 
         levels = [emp.job_level for emp in employees]
-        level_counts = {level: levels.count(level) for level in ["MT1", "MT2", "MT3", "MT4", "MT5", "MT6"]}
+        level_counts = {
+            level: levels.count(level) for level in ["MT1", "MT2", "MT3", "MT4", "MT5", "MT6"]
+        }
 
         # Expected: 40% MT1, 25% MT2, 20% MT3, 10% MT4, 4% MT5, 1% MT6
         expected = {
@@ -400,7 +411,9 @@ class TestBiasPatterns:
 
         # Count high performers
         usa_high = sum(1 for emp in usa_employees if emp.performance == PerformanceLevel.HIGH)
-        non_usa_high = sum(1 for emp in non_usa_employees if emp.performance == PerformanceLevel.HIGH)
+        non_usa_high = sum(
+            1 for emp in non_usa_employees if emp.performance == PerformanceLevel.HIGH
+        )
 
         # Chi-square test for independence
         usa_low_med = len(usa_employees) - usa_high
@@ -432,7 +445,9 @@ class TestBiasPatterns:
 
         # Count high performers
         sales_high = sum(1 for emp in sales_employees if emp.performance == PerformanceLevel.HIGH)
-        non_sales_high = sum(1 for emp in non_sales_employees if emp.performance == PerformanceLevel.HIGH)
+        non_sales_high = sum(
+            1 for emp in non_sales_employees if emp.performance == PerformanceLevel.HIGH
+        )
 
         # Chi-square test
         sales_low_med = len(sales_employees) - sales_high
@@ -463,7 +478,9 @@ class TestBiasPatterns:
         non_usa_employees = [emp for emp in employees if emp.location != "USA"]
 
         usa_high = sum(1 for emp in usa_employees if emp.performance == PerformanceLevel.HIGH)
-        non_usa_high = sum(1 for emp in non_usa_employees if emp.performance == PerformanceLevel.HIGH)
+        non_usa_high = sum(
+            1 for emp in non_usa_employees if emp.performance == PerformanceLevel.HIGH
+        )
 
         usa_high_pct = usa_high / len(usa_employees) if usa_employees else 0
         non_usa_high_pct = non_usa_high / len(non_usa_employees) if non_usa_employees else 0
@@ -552,5 +569,9 @@ class TestPublicAPI:
         assert emp.employee_id > 0
         assert emp.name
         assert emp.job_level in ["MT1", "MT2", "MT3", "MT4", "MT5", "MT6"]
-        assert emp.performance in [PerformanceLevel.LOW, PerformanceLevel.MEDIUM, PerformanceLevel.HIGH]
+        assert emp.performance in [
+            PerformanceLevel.LOW,
+            PerformanceLevel.MEDIUM,
+            PerformanceLevel.HIGH,
+        ]
         assert 1 <= emp.grid_position <= 9
