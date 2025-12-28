@@ -59,6 +59,7 @@ Quick reference table of all architecture documentation.
 | **[PERFORMANCE.md](PERFORMANCE.md)** | Performance targets, scale constraints, optimization | Optimizing code, adding features with performance impact | Performance Targets, Scale Constraints, Decision Matrix |
 | **[MIGRATIONS.md](MIGRATIONS.md)** | Database schema evolution, migration patterns | Changing database schema, adding columns/tables | Pattern Catalog, Testing Checklist, Failure Recovery |
 | **[OBSERVABILITY.md](OBSERVABILITY.md)** | Logging patterns, debugging tools, log locations | Adding logging, debugging issues, understanding logs | Log Levels Matrix, Debugging Tools, Common Scenarios |
+| **[SAMPLE_DATA_GENERATION.md](SAMPLE_DATA_GENERATION.md)** | Sample data generator architecture, bias patterns | Generating test data, tutorials, intelligence validation | Components, Bias Patterns, Extension Guide, Troubleshooting |
 | **[decisions/README.md](decisions/README.md)** | ADR index and decision history | Understanding why we made architectural choices | Decision Index, When to Reference |
 
 ---
@@ -79,6 +80,7 @@ Find the right document based on what you're doing.
 | Logging errors with context | [OBSERVABILITY.md](OBSERVABILITY.md) | Pattern: Backend Error Logging | `#error` |
 | Changing database schema | [MIGRATIONS.md](MIGRATIONS.md) | Pattern Catalog | `#add-column`, `#rename-column` |
 | Validating user input | [SECURITY_MODEL.md](SECURITY_MODEL.md) | Pattern: Input Validation | `#input-validation` |
+| Generating test data | [SAMPLE_DATA_GENERATION.md](SAMPLE_DATA_GENERATION.md) | Pattern: Generate Test Data with Seed | `#testing`, `#reproducibility` |
 
 ### Implementing Frontend Features
 
@@ -129,6 +131,8 @@ Quick search by pattern tags used throughout the architecture docs.
 | `#database` | PERFORMANCE.md, MIGRATIONS.md | Database query and schema patterns |
 | `#retry` | ERROR_HANDLING.md | Retry and backoff patterns |
 | `#startup` | OBSERVABILITY.md, PERFORMANCE.md | Backend startup optimization |
+| `#testing` | SAMPLE_DATA_GENERATION.md | Test data generation patterns |
+| `#reproducibility` | SAMPLE_DATA_GENERATION.md | Reproducible test data with seeds |
 
 ### Frontend Tags
 
@@ -320,6 +324,36 @@ Quick search by pattern tags used throughout the architecture docs.
 
 ---
 
+### [SAMPLE_DATA_GENERATION.md](SAMPLE_DATA_GENERATION.md)
+
+**Purpose:** Sample data generator architecture, components, and bias patterns.
+
+**Quick Rules (7 rules):**
+- Always use `generate_rich_dataset()` for test data
+- Always set seed for reproducible tests
+- Enable bias for intelligence testing
+- Generate 50-300 employees
+- Don't use in production sessions
+- Use API endpoint for frontend integration
+- Performance: <2s for 300 employees
+
+**Key Sections:**
+- Components (5 backend, 3 frontend)
+- Bias Patterns (USA +15%, Sales +20%)
+- Extension Guide (add patterns, locations, fields)
+- Performance Benchmarks (<20ms generation)
+- Testing Strategy (96% coverage, 42 tests)
+- Troubleshooting (4 common issues)
+
+**When to Use:**
+- Generating test data with known characteristics
+- Testing intelligence features with ground truth
+- Creating tutorial/demo datasets
+- Performance benchmarking with realistic data
+- Extending generator with new patterns
+
+---
+
 ### [decisions/README.md](decisions/README.md)
 
 **Purpose:** Architecture Decision Records (ADRs) documenting key architectural choices.
@@ -409,7 +443,7 @@ Quick search by pattern tags used throughout the architecture docs.
 
 ---
 
-**Last Updated:** 2025-12-27
-**Document Count:** 6 core docs + 5 ADRs
-**Total Patterns:** 38 documented patterns across all docs
-**Total Tags:** 25+ searchable pattern tags
+**Last Updated:** 2025-12-28
+**Document Count:** 7 core docs + 5 ADRs
+**Total Patterns:** 43 documented patterns across all docs (includes 5 from SAMPLE_DATA_GENERATION.md)
+**Total Tags:** 27+ searchable pattern tags

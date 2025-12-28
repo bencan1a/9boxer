@@ -12,6 +12,7 @@ Welcome! This guide walks you through the complete 9Boxer workflow, from uploadi
 
 In the next 10 minutes, you'll discover how to:
 
+- ✅ Load sample data to explore features (optional)
 - ✅ Upload your employee data from Excel
 - ✅ Read and interpret the 9-box grid
 - ✅ Make rating changes with drag-and-drop
@@ -19,6 +20,75 @@ In the next 10 minutes, you'll discover how to:
 - ✅ Export your updated ratings
 
 Let's get started!
+
+---
+
+## Loading Sample Data
+
+If you want to explore 9Boxer's features before uploading your own data, you can load a realistic sample dataset with 200 employees.
+
+### What's Included in Sample Data
+
+The sample dataset includes:
+
+- **Complete performance data**: Performance and potential ratings for all employees
+- **3 years of history**: Historical performance ratings (2023-2024-2025) for most employees
+- **Realistic organizational structure**: 6-level management chain (CEO → VP → Director → Manager → Senior IC → IC)
+- **Diverse profiles**: Multiple locations, job functions, and job levels
+- **Intelligence-ready patterns**: Data designed to showcase intelligence insights and statistics
+- **Example flags**: Performance improvement plans, flight risk, promotion readiness, and more
+
+### How to Load Sample Data
+
+**From the File menu:**
+
+1. Click **File** in the top menu bar
+2. Select **Load Sample Dataset...**
+3. Review the confirmation dialog
+4. Click **Confirm** to load 200 sample employees
+
+<!-- TODO: Add screenshot showing File → Load Sample Dataset menu -->
+
+**From the empty state** (when no data is loaded):
+
+1. Click the **Load Sample Data (200 employees)** button
+2. Wait for the data to load (typically <3 seconds)
+3. Explore the 9-box grid with realistic employee data
+
+<!-- TODO: Add screenshot showing EmptyState with Load Sample Data button -->
+
+### What to Try with Sample Data
+
+Once sample data is loaded, you can:
+
+- **Explore the grid**: See how employees are distributed across the 9-box model
+- **View employee details**: Click any employee card to see complete profiles
+- **Check intelligence insights**: Navigate to the Intelligence tab to see data-driven insights
+- **Test filtering**: Use the filter drawer to search by location, function, or level
+- **Practice drag-and-drop**: Move employees between boxes to simulate performance reviews
+- **Export data**: Export the sample dataset to Excel to see the file format
+
+### Replacing Sample Data
+
+If you want to upload your own data after exploring with samples:
+
+1. Click **File** → **Import Data**
+2. Select your Excel file
+3. The sample data will be replaced with your organization's data
+
+!!! note "Data Replacement Warning"
+    Loading sample data will replace any existing data in your current session. You'll see a confirmation dialog if you have data loaded.
+
+### Sample Data Characteristics
+
+The sample dataset is designed to demonstrate 9Boxer's capabilities:
+
+- **Locations**: USA, Canada, UK, Germany, France, India, Australia, Singapore
+- **Job Functions**: Engineering, Product Management, Sales, Marketing, Operations, Design, Data Analysis, HR
+- **Job Levels**: MT1 (Individual Contributor) through MT6 (Executive)
+- **Realistic patterns**: Some locations and functions may have higher concentrations of high performers, simulating real-world organizational dynamics
+
+This data is **completely fictional** and generated for demonstration purposes only.
 
 ---
 
@@ -311,6 +381,7 @@ Bookmark this for easy access to common actions:
 
 | I want to... | How to do it |
 |--------------|--------------|
+| Load sample data | File menu → Load Sample Dataset (or use empty state button) |
 | Upload new data | File menu → Import Data |
 | Move an employee | Drag tile to new box |
 | View employee details | Click the employee tile |

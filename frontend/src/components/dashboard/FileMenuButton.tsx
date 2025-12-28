@@ -166,7 +166,16 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
             data-testid="file-menu-button"
             sx={{
               textTransform: "none",
+              minWidth: { xs: "150px", sm: "200px", md: "250px" },
               maxWidth: { xs: "150px", sm: "200px", md: "250px" },
+              width: { xs: "150px", sm: "200px", md: "250px" },
+              justifyContent: "flex-start", // Left-align content to prevent overflow
+              "& .MuiButton-startIcon": {
+                marginRight: 1,
+              },
+              "& .MuiButton-endIcon": {
+                marginLeft: "auto", // Push end icon to the right
+              },
             }}
           >
             <FileNameDisplay

@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -39,22 +39,34 @@ export const FileNameDisplay: React.FC<FileNameDisplayProps> = ({
 
   const displayText = fileName || t("dashboard.fileMenu.noFileSelected");
   const fontWeight = fileName ? 500 : 400;
+  const tooltipText =
+    hasUnsavedChanges && fileName ? `${fileName} *` : displayText;
 
   return (
-    <Box sx={{ display: "inline-flex", alignItems: "center" }}>
-      <Typography
-        variant="body2"
-        noWrap
+    <Tooltip title={tooltipText} arrow placement="bottom">
+      <Box
         sx={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontWeight,
+          display: "inline-flex",
+          alignItems: "center",
+          minWidth: 0, // Allow flex child to shrink below content size
+          flex: 1, // Take available space
         }}
-        data-testid="file-name-display"
       >
-        {displayText}
-        {hasUnsavedChanges && fileName && " *"}
-      </Typography>
-    </Box>
+        <Typography
+          variant="body2"
+          noWrap
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            fontWeight,
+            maxWidth: "100%", // Respect parent container width
+          }}
+          data-testid="file-name-display"
+        >
+          {displayText}
+          {hasUnsavedChanges && fileName && " *"}
+        </Typography>
+      </Box>
+    </Tooltip>
   );
 };

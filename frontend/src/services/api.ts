@@ -316,6 +316,27 @@ class ApiClient {
     });
   }
 
+  async generateSampleData(
+    size: number,
+    include_bias: boolean,
+    seed?: number
+  ): Promise<{
+    employees: Employee[];
+    metadata: {
+      total: number;
+      bias_patterns?: string[];
+      locations: string[];
+      functions: string[];
+    };
+  }> {
+    const response = await this.client.post("/api/employees/generate-sample", {
+      size,
+      include_bias,
+      seed,
+    });
+    return response.data;
+  }
+
   // ==================== Statistics Methods ====================
 
   async getStatistics(): Promise<StatisticsResponse> {

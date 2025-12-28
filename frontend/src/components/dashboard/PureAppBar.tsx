@@ -25,6 +25,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { FileMenuButton } from "./FileMenuButton";
 import { HelpButton } from "./HelpButton";
+import { Logo } from "../branding/Logo";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -114,23 +115,36 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   return (
     <MuiAppBar position="static" elevation={2} data-testid="app-bar">
       <Toolbar>
-        {/* Left: App title with logo */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: theme.tokens.spacing.sm / 8 }}> {/* Convert 8px to 1 */}
-          <img
-            src="/build/icon_32x32.png"
-            alt={t("app.logoAlt")}
-            style={{ 
-              width: theme.tokens.dimensions.appBar.logoSize, 
-              height: theme.tokens.dimensions.appBar.logoSize 
-            }}
+        {/* Left: App title with logo - fixed width to prevent overflow */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: theme.tokens.spacing.sm / 8 /* Convert 8px to 1 */,
+            flexShrink: 0 /* Prevent shrinking */,
+            minWidth: "fit-content",
+          }}
+        >
+          <Logo
+            variant="gradient-bordered"
+            size={theme.tokens.dimensions.appBar.logoSize}
           />
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" noWrap>
             {t("app.title")}
           </Typography>
         </Box>
 
-        {/* Center-left: File menu */}
-        <Box sx={{ ml: theme.tokens.spacing.xl / 8 }}> {/* Convert 32px to 4 */}
+        {/* Center-left: File menu - with responsive margin */}
+        <Box
+          sx={{
+            ml: {
+              xs: theme.tokens.spacing.md / 8,
+              md: theme.tokens.spacing.xl / 8,
+            } /* Convert 16px/32px to 2/4 */,
+            flexShrink: 1 /* Allow shrinking */,
+            minWidth: 0 /* Allow flex child to shrink below content size */,
+          }}
+        >
           <FileMenuButton
             fileName={fileName}
             changeCount={changeCount}
@@ -146,7 +160,15 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
         <Box sx={{ flexGrow: 1 }} />
 
         {/* Right: Action buttons */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: theme.tokens.spacing.sm / 8 }}> {/* Convert 8px to 1 */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: theme.tokens.spacing.sm / 8,
+          }}
+        >
+          {" "}
+          {/* Convert 8px to 1 */}
           <Tooltip title={filterTooltip} placement="bottom">
             <span>
               <Badge
@@ -172,7 +194,6 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
               </Badge>
             </span>
           </Tooltip>
-
           <Tooltip title={t("dashboard.appBar.settings")}>
             <IconButton
               color="inherit"
@@ -182,7 +203,6 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-
           <HelpButton
             isOpen={isHelpMenuOpen}
             onToggle={onHelpMenuToggle}
