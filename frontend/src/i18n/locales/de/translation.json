@@ -391,6 +391,8 @@
     "title": "Einstellungen",
     "closeAriaLabel": "Einstellungen schließen",
     "appearance": "Darstellung",
+    "language": "Sprache",
+    "selectLanguage": "Sprache auswählen",
     "currentSelection": "Aktuelle Auswahl:",
     "currentTheme": "Verwendet derzeit {{theme}}-Design (vom System)",
     "theme": {
@@ -400,8 +402,7 @@
       "darkModeDesc": "Immer dunkles Design verwenden",
       "auto": "Automatisch (System folgen)",
       "autoDesc": "Automatisch an Ihr Systemdesign anpassen"
-    },
-    "language": "Language"
+    }
   },
   "zoom": {
     "zoomIn": "Vergrößern (Strg++)",

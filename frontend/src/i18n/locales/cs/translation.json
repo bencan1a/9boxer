@@ -391,6 +391,8 @@
     "title": "Nastavení",
     "closeAriaLabel": "zavřít nastavení",
     "appearance": "Vzhled",
+    "language": "Jazyk",
+    "selectLanguage": "Vyberte jazyk",
     "currentSelection": "Aktuální výběr:",
     "currentTheme": "Aktuálně používáte motiv {{theme}} (ze systému)",
     "theme": {
@@ -400,8 +402,7 @@
       "darkModeDesc": "Vždy použít tmavý motiv",
       "auto": "Automaticky (Následovat systém)",
       "autoDesc": "Automaticky přizpůsobit systémovému motivu"
-    },
-    "language": "Language"
+    }
   },
   "zoom": {
     "zoomIn": "Přiblížit (Ctrl++)",
