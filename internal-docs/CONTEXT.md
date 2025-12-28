@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-28T05:15:09.739331+00:00
-**Source SHA**: f3967a41616f2664ccc546cf51ca3701ded3635e
+**Generated**: 2025-12-28T18:57:07.967135+00:00
+**Source SHA**: 7dc02dfb8d2734f43e9a19a537f43466b93e176c
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -340,7 +340,17 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 2 active plan(s):
+There are 3 active plan(s):
+
+### rich-sample-data-generator
+- Owner: claude
+- Created: 2025-12-28
+- Summary:
+  - Create comprehensive sample dataset generator (200-300 employees)
+  - Include complete management chains (6 levels), 3-year performance history
+  - Add detectable bias patterns for intelligence statistics validation
+  - Integrate with app UI (empty state + File menu)
+  - Support all 28 Excel schema columns
 
 ### self-managing-docs-system
 - Owner: Development Team
