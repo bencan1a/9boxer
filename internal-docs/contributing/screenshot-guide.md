@@ -14,6 +14,7 @@
 - See `frontend/playwright/screenshots/HOWTO.md` for screenshot generation automation
 - See `frontend/playwright/screenshots/config.ts` for screenshot registry
 - See `frontend/playwright/screenshots/workflows/` for automation scripts
+- See `frontend/playwright/visual-regression/README.md` for quality validation
 
 **This guide provides:** Technical specifications, annotation standards, and quality requirements that the automation system should follow.
 
@@ -43,19 +44,25 @@ This guide ensures all documentation screenshots are:
 
 ### Resolution & Size
 
-| Type | Width | Max Height | DPI |
-|------|-------|------------|-----|
-| **Full application** | 2400px | 1600px | 144 (2x for retina) |
-| **Partial UI** | 1800px | 1200px | 144 (2x for retina) |
-| **Detail callout** | 1200px | 800px | 144 (2x for retina) |
-| **Icon/button** | 600px | 400px | 144 (2x for retina) |
+**Guidelines (actual screenshots use flexible dimensions based on content):**
+
+| Type | Width Range | Max Height | DPI |
+|------|-------------|------------|-----|
+| **Full application** | 1400-2400px | 900-1600px | 144 (2x for retina) |
+| **Partial UI** | 1200-1800px | 600-1200px | 144 (2x for retina) |
+| **Detail callout** | 600-1200px | 400-800px | 144 (2x for retina) |
+| **Icon/button** | 300-600px | 200-400px | 144 (2x for retina) |
 
 **Why 2x resolution?**
 - Renders crisp on retina/high-DPI displays
 - MkDocs automatically scales down for standard displays
 - Better for zooming/accessibility
 
+**Note:** These are guidelines. Actual screenshots may use flexible dimensions based on content and cropping strategy. See `frontend/playwright/screenshots/config.ts` for actual dimension constraints used in automation.
+
 ### File Naming Convention
+
+**Recommended pattern:**
 
 ```
 [page]-[feature]-[state]-[sequence].png
@@ -80,10 +87,12 @@ features-statistics-tab-active-01.png
 troubleshooting-upload-error-message-01.png
 ```
 
+**Note:** Actual screenshot names in the automation system may vary for clarity and brevity (e.g., `changes-orange-border.png`, `filters-panel-expanded.png`). See `frontend/playwright/screenshots/config.ts` for current naming conventions.
+
 ### Storage Location
 
 ```
-docs/images/screenshots/
+resources/user-guide/docs/images/screenshots/
 ├── quickstart/
 │   ├── quickstart-upload-button-highlighted-01.png
 │   ├── quickstart-grid-populated-02.png
@@ -91,11 +100,15 @@ docs/images/screenshots/
 ├── workflow/
 │   ├── workflow-drag-drop-sequence-01.png
 │   └── workflow-employee-details-02.png
-├── features/
-│   ├── features-filters-panel-01.png
-│   └── features-donut-mode-active-01.png
-└── troubleshooting/
-    └── troubleshooting-upload-error-01.png
+├── filters/
+│   ├── filters-panel-expanded.png
+│   └── filters-active-chips.png
+├── statistics/
+│   └── statistics-panel-distribution.png
+├── donut/
+│   └── donut-mode-active-layout.png
+└── view-controls/
+    └── main-interface.png
 ```
 
 ---
@@ -410,6 +423,34 @@ Document different UI states for interactive elements:
 
 ---
 
+## Cropping Strategies
+
+Screenshots use different cropping strategies depending on what's being shown:
+
+- **element** - Capture specific UI element only (button, card, field)
+  - Used for: Individual buttons, badges, icons, small UI components
+  - Example: Zoom controls, employee tile, filter chip
+
+- **container** - Capture container with multiple elements (drawer, panel, dialog)
+  - Used for: Panels, dialogs, drawers, toolbars
+  - Example: Filter drawer, settings dialog, toolbar sections
+
+- **panel** - Capture right/left panel area
+  - Used for: Details panel, Changes tab, Statistics tab, Intelligence tab
+  - Example: Employee details panel, Changes tracker
+
+- **grid** - Capture the 9-box grid area
+  - Used for: Grid view screenshots showing employee distribution
+  - Example: Populated grid, donut mode grid, filtered grid
+
+- **full-page** - Capture entire viewport
+  - Used for: Full application context, overall layout
+  - Example: Main interface, complete workflow views
+
+**Note:** These strategies are defined in the screenshot automation system. See `frontend/playwright/screenshots/config.ts` for implementation details and how each strategy is applied.
+
+---
+
 ## Accessibility Requirements
 
 ### Alt Text
@@ -609,6 +650,33 @@ Before publishing any screenshot, verify:
 **✅ AFTER (with success indicators):**
 ![Grid populated with employees, green checkmarks pointing to: grid, employee count, and tiles, with annotation "Success! Your data is loaded"](examples/after-success-with-checkmarks.png)
 *Improvements: Green checkmarks, labeled success elements, clear confirmation*
+
+---
+
+## Automated Quality Validation
+
+Screenshot quality is validated automatically using visual regression testing:
+
+- **Baseline comparison** - Screenshots are compared against approved baselines with 5% pixel difference tolerance
+  - Detects unintended visual changes during automated regeneration
+  - Highlights differences for review before documentation updates
+  - Ensures consistency across screenshot updates
+
+- **Dimension validation** - Ensures screenshots meet expected size constraints
+  - Validates against minWidth, maxWidth, minHeight, maxHeight specifications
+  - Catches incorrectly sized or cropped screenshots
+  - Enforces consistent dimensions across similar screenshot types
+
+- **Metadata validation** - Verifies all required configuration is present
+  - Checks that all screenshots have proper metadata (source, workflow, description)
+  - Ensures screenshot registry completeness
+  - Validates cropping strategy and dimension constraints are defined
+
+**For details on visual regression testing:**
+- See `frontend/playwright/visual-regression/README.md` for complete guide
+- See `frontend/playwright/visual-regression/screenshot-validation.spec.ts` for test implementation
+- Run locally: `cd frontend && npm run test:docs-visual`
+- Update baselines: `npm run test:docs-visual:update` (after approving intentional changes)
 
 ---
 

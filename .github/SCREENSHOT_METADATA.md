@@ -323,8 +323,6 @@ This metadata system is the foundation for automated documentation updates:
 - Validates screenshot quality
 - Generates visual comparison reports
 
-See [agent-projects/self-managing-docs-system/IMPLEMENTATION_ORDER.md](/workspaces/9boxer/agent-projects/self-managing-docs-system/IMPLEMENTATION_ORDER.md) for complete implementation roadmap.
-
 ## Troubleshooting
 
 ### No components found with annotations

@@ -114,13 +114,13 @@ All agents follow a consistent file organization rubric:
       └── findings.md
   ```
 
-### 📁 `docs/` - Permanent Documentation
+### 📁 `internal-docs/` - Permanent Documentation
 - **Purpose**: Long-term, valuable documentation
 - **Usage**: Final documentation organized by topic
 - **Lifecycle**: Maintained indefinitely, updated as needed
 - **Structure**:
   ```
-  docs/
+  internal-docs/
   ├── architecture/
   ├── guides/
   ├── api/

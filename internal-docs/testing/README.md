@@ -79,6 +79,46 @@ This directory contains comprehensive testing guidance, templates, and best prac
 
 **Use this** as your daily Playwright testing companion.
 
+### Visual Regression Testing
+
+**[frontend/playwright/visual-regression/README.md](../../frontend/playwright/visual-regression/README.md)** - Documentation screenshot quality validation
+
+Documentation screenshots are automatically validated using visual regression testing to ensure quality and catch unintended changes:
+
+- **Baseline comparison** - Screenshots compared against approved baselines (5% pixel difference tolerance)
+- **Dimension validation** - Ensures screenshots meet expected size constraints
+- **Metadata validation** - Verifies all required configuration is present
+- **CI integration** - Runs automatically on PRs affecting frontend components
+
+**Running visual regression tests:**
+```bash
+cd frontend
+
+# Run all documentation visual regression tests
+npm run test:docs-visual
+
+# Run with UI mode (recommended for debugging)
+npm run test:docs-visual:ui
+
+# Update baselines (after approving visual changes)
+npm run test:docs-visual:update
+```
+
+**When to update baselines:**
+- ✅ After intentionally changing component UI
+- ✅ After approved design changes
+- ✅ When fixing design inconsistencies
+- ❌ Never when tests fail unexpectedly
+- ❌ Never without reviewing the visual diff
+
+**Workflow:**
+1. Developer changes component → Change detected (Phase 2.2)
+2. Affected screenshots regenerated → Visual regression tests run (Phase 3.1)
+3. Differences highlighted in report → Review and approve/fix
+4. Documentation PR created with validated screenshots
+
+See the [complete guide](../../frontend/playwright/visual-regression/README.md) for troubleshooting, best practices, and CI integration details.
+
 ## Test Templates
 
 The [templates/](templates/) directory contains starter templates for all test types:

@@ -1,166 +1,209 @@
-# Documentation
+# Internal Developer Documentation
 
-This directory contains **persistent project documentation** that has long-term value.
+This directory contains **internal developer and AI agent documentation** for the 9Boxer codebase.
 
-## Contents
+## Documentation Map
 
-### User Guide (MkDocs Material)
+Quick navigation to all documentation categories:
 
-The main user guide is built with **MkDocs Material** and bundled with the Electron application:
+### Core Entry Points
 
-- **Source files**: `docs/*.md` (index.md, getting-started.md, etc.)
-- **Configuration**: `mkdocs.yml` (project root)
-- **Screenshots**: `docs/images/screenshots/`
-- **Build output**: `/site` (project root, git-ignored)
-- **Bundled version**: `resources/user-guide/` (git-ignored)
+- **[CLAUDE.md](../CLAUDE.md)** - Primary agent entry point (comprehensive guidance)
+- **[AGENTS.md](../AGENTS.md)** - Quick reference (command cheatsheet and workflows)
+- **[GITHUB_AGENT.md](../GITHUB_AGENT.md)** - GitHub Copilot onboarding guide
+- **[README.md](../README.md)** - Project overview
+- **[BUILD.md](../BUILD.md)**, **[DEPLOYMENT.md](../DEPLOYMENT.md)** - Build and deployment guides
 
-**Quick start**:
-```bash
-# Preview documentation locally
-cd docs
-mkdocs serve
-# Open http://localhost:38000
+### Documentation Categories
 
-# Build for production
-cd frontend
-npm run generate:guide
-```
+#### Architecture & System Design
 
-### Developer Documentation
+- **[architecture/](architecture/)** - System architecture, design decisions, patterns
+  - [README.md](architecture/README.md) - Architecture overview
+  - [SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) - Complete system design
 
-- **CONTEXT.md** - Comprehensive project context for AI agents
-- **SUMMARY.md** - Quick index of all documentation
-- **facts.json** - Stable project truths (highest authority)
-- **testing/** - Testing guides and best practices
-- **playwright-best-practices.md** - E2E testing patterns
-- **WORKFLOWS.md** - Development workflows
+#### Design System & UI Guidelines
+
+- **[design-system/](design-system/)** - UI components, design tokens, patterns ✅ EXEMPLARY
+  - [README.md](design-system/README.md) - Design system overview
+  - [design-tokens.md](design-system/design-tokens.md) - All design constants
+  - [component-inventory.md](design-system/component-inventory.md) - 32 components cataloged
+  - [component-guidelines.md](design-system/component-guidelines.md) - Component patterns
+  - [accessibility-standards.md](design-system/accessibility-standards.md) - WCAG 2.1 Level AA
+  - [layout-patterns.md](design-system/layout-patterns.md) - UI zones and layout
+  - [interaction-patterns.md](design-system/interaction-patterns.md) - Animations, drag-drop
+  - [color-palette.md](design-system/color-palette.md) - Color system
+  - [design-principles.md](design-system/design-principles.md) - Design philosophy
+  - [linting-rules.md](design-system/linting-rules.md) - ESLint configuration
+  - [migration-summary.md](design-system/migration-summary.md) - Design system migration history
+
+#### Testing
+
+- **[testing/](testing/)** - Test strategies, patterns, best practices
+  - [README.md](testing/README.md) - Testing overview
+  - [test-principles.md](testing/test-principles.md) - Core testing philosophy
+  - [quick-reference.md](testing/quick-reference.md) - Fast command lookup
+  - [testing-checklist.md](testing/testing-checklist.md) - Pre-commit checklist
+  - [test-suites.md](testing/test-suites.md) - Test suite organization
+  - [playwright-architecture-review.md](testing/playwright-architecture-review.md) - Playwright E2E architecture
+  - [playwright-best-practices-checklist.md](testing/playwright-best-practices-checklist.md) - E2E best practices
+  - [visual-regression-testing.md](testing/visual-regression-testing.md) - Visual testing strategies
+  - [SUITE_SUMMARY.md](testing/SUITE_SUMMARY.md) - Test suite metrics
+  - [PLAYWRIGHT_REVIEW_SUMMARY.md](testing/PLAYWRIGHT_REVIEW_SUMMARY.md) - Playwright implementation review
+  - [templates/](testing/templates/) - Test templates (backend, component, E2E)
+
+#### Internationalization (i18n)
+
+- **[i18n/](i18n/)** - Translation patterns, glossary, testing (5 files)
+  - [README.md](i18n/README.md) - i18n overview
+  - [glossary.md](i18n/glossary.md) - Translation terms
+  - [migration-patterns.md](i18n/migration-patterns.md) - i18n implementation patterns
+  - [i18n-migration-summary.md](i18n/i18n-migration-summary.md) - i18n migration history
+  - [PROGRESS.md](i18n/PROGRESS.md) - i18n implementation progress
+
+#### Contributing & Documentation Writing
+
+- **[contributing/](contributing/)** - Documentation writing standards, style guides (5 files)
+  - [README.md](contributing/README.md) - Contributing overview
+  - [documentation-writing-guide.md](contributing/documentation-writing-guide.md) - Comprehensive writing guide
+  - [voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) - Style reference (DO's and DON'Ts)
+  - [screenshot-guide.md](contributing/screenshot-guide.md) - Technical screenshot standards
+  - [user-personas.md](contributing/user-personas.md) - User personas for documentation
+
+#### Components
+
+- **[components/](components/)** - Component-specific documentation
+  - [ninebox-grid-states.md](components/ninebox-grid-states.md) - Grid state management
+
+### Reference Documentation
+
+- **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
+- **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
+- **[facts.json](facts.json)** - Stable project truths (highest authority)
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Command cheatsheet
+- **[WORKFLOWS.md](WORKFLOWS.md)** - GitHub Actions workflows
+- **[COPILOT_SETUP.md](COPILOT_SETUP.md)** - GitHub Copilot environment setup
+- **[CHANGELOG.md](CHANGELOG.md)** - Documentation change history
+- **[ai-documentation-audit.md](ai-documentation-audit.md)** - AI audit findings
 
 ### Auto-Generated Documentation
 
-- **_generated/api/** - API documentation from Python docstrings (via pdoc3)
-- **_generated/plans_index.md** - Active project plans summary
+- **[_generated/](_generated/)** - Auto-generated docs (DO NOT EDIT MANUALLY)
+  - [api/](_generated/api/) - API documentation from Python docstrings (via pdoc3)
+  - [plans_index.md](_generated/plans_index.md) - Active project plans summary
 
-## User Guide Structure
+### Archive
 
-```
-docs/
-├── mkdocs.yml              # MkDocs configuration
-├── index.md                # Welcome page
-├── getting-started.md      # Quick 5-minute tour
-├── uploading-data.md       # Upload process
-├── understanding-grid.md   # 9-box grid explanation
-├── donut-mode.md          # Donut exercise feature
-├── working-with-employees.md
-├── tracking-changes.md
-├── filters.md
-├── statistics.md
-├── exporting.md
-├── settings.md            # Theme and settings
-├── tips.md
-├── troubleshooting.md
-└── images/
-    └── screenshots/       # Auto-generated screenshots
-        ├── grid-normal.png
-        ├── grid-donut.png
-        └── ...
-```
+- **[archive/](archive/)** - Superseded documentation (organized by date)
 
-## Building Documentation
+---
 
-### Local Development
+## How to Find What You Need
 
-```bash
-# Live preview with auto-reload
-cd docs
-mkdocs serve
-```
+### I want to...
 
-### Production Build
+**...understand the codebase architecture**
+→ Start with [architecture/SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) or [CLAUDE.md](../CLAUDE.md)
 
-```bash
-# Build and bundle for Electron app
-cd frontend
-npm run generate:guide
-```
+**...create or modify UI components**
+→ Read [design-system/README.md](design-system/README.md) first (MANDATORY)
 
-### Screenshot Generation
+**...write tests**
+→ See [testing/test-principles.md](testing/test-principles.md) and [testing/quick-reference.md](testing/quick-reference.md)
 
-```bash
-# Regenerate all screenshots
-cd frontend
-npm run generate:screenshots
-```
+**...add translations**
+→ Follow [i18n/migration-patterns.md](i18n/migration-patterns.md)
 
-## Documentation Standards
+**...write user documentation**
+→ Follow [contributing/voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) and [contributing/documentation-writing-guide.md](contributing/documentation-writing-guide.md)
 
-### Format
-- Use Markdown for all documentation
-- Include table of contents for longer documents
-- Use clear headings and subheadings
-- Include code examples and screenshots
-- Use MkDocs admonitions for tips/warnings/notes
+**...understand GitHub Actions workflows**
+→ See [WORKFLOWS.md](WORKFLOWS.md)
 
-### MkDocs Features
+**...understand agent documentation system**
+→ Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
 
-Available markdown extensions:
-- **Admonitions**: `!!! note`, `!!! tip`, `!!! warning`, `!!! danger`
-- **Code blocks**: With syntax highlighting
-- **Tabbed content**: `=== "Tab 1"` / `=== "Tab 2"`
-- **Keyboard shortcuts**: `++ctrl+f++`
-- **Tables**: GitHub-flavored markdown tables
+**...find quick command references**
+→ See [QUICK_REFERENCE.md](QUICK_REFERENCE.md) or [AGENTS.md](../AGENTS.md)
 
-### API Documentation
-- Document all public APIs with docstrings
-- Include request/response examples
-- Specify error codes and handling
-- Keep in sync with code changes
-- Auto-generated via pdoc3 in CI/CD
+---
+
+## Documentation Principles
+
+This documentation is **optimized for AI agents**, not humans. Only agents write code in this repository.
+
+### Key Principles
+
+1. **Agent-Optimized Language**
+   - Present tense, active voice
+   - Actionable commands (not suggestions)
+   - No unnecessary prose
+   - Examples with actual file paths
+
+2. **Current State Only**
+   - Document "how it works now", not "changed from X to Y"
+   - No migration history in permanent docs
+   - Agents have no memory of past implementations
+
+3. **Single Source of Truth**
+   - One authoritative location per topic
+   - No conflicting versions
+   - Clear cross-references if related
+
+4. **Context Efficiency**
+   - <100KB per main entry point (CLAUDE.md, CONTEXT.md)
+   - Category folders group related docs
+   - Quick navigation with clear hierarchy
+
+5. **Anti-Proliferation**
+   - Update existing docs, don't create new ones
+   - Use `agent-tmp/` for temporary work (auto-deleted after 7 days)
+   - Use `agent-projects/<project>/` for ephemeral plans (<21 days)
+
+### Trust Hierarchy (when information conflicts)
+
+1. **[facts.json](facts.json)** - Highest authority, hand-maintained
+2. **Permanent content in `internal-docs/`** - Established documentation
+3. **Active plans summaries** - Hints only, not authoritative
+
+---
 
 ## Maintenance
 
-### Regular Updates
-- Review documentation when features change
-- Update screenshots after UI changes
-- Keep cross-references accurate
-- Test links and navigation
+### Automated Maintenance
 
-### Regenerating Documentation
+Documentation is automatically maintained via:
 
-```bash
-# Auto-generate API docs, update CONTEXT.md, clean agent-tmp/
-python tools/build_context.py
-```
+- **tools/build_context.py** - Regenerates CONTEXT.md, SUMMARY.md, API docs, cleans agent-tmp/
+- **GitHub Actions** - Runs on push and nightly at 2 AM UTC
+- **Weekly audit** - AI-powered documentation audit (Mondays 2 AM UTC)
 
-This happens automatically:
-- On push to main (if docs/ or src/ changed)
-- Nightly at 2 AM UTC
+### Manual Maintenance
 
-### Migration from agent-projects
+**When creating project plans:**
+- Use `agent-projects/<project-name>/plan.md` with required metadata
+- Mark as `done` when complete (archived after 21 days)
 
-When a project in `agent-projects/` is complete:
+**When doing temporary work:**
+- Use `agent-tmp/` for all scratch work
+- Files auto-deleted after 7 days
 
-1. Review the documentation
-2. Extract permanent, valuable information
-3. Organize it appropriately in `docs/`
-4. Update cross-references
-5. Delete the temporary project folder
+**When updating permanent docs:**
+- Update files in `internal-docs/` directly
+- Never manually edit `_generated/` (auto-regenerated)
+- Follow agent-optimized language principles
 
-## Version Control
+---
 
-**Commit**:
-- `docs/*.md` - Documentation source files
-- `mkdocs.yml` - MkDocs configuration (project root)
-- `docs/images/screenshots/*.png` - Screenshots
-- `tools/generate_docs_screenshots.py` - Screenshot generator
-- `frontend/scripts/generate-user-guide.cjs` - Build wrapper script
+## Related Documentation
 
-**Don't commit** (git-ignored):
-- `/site` - MkDocs build output (project root)
-- `resources/user-guide/` - Bundled documentation (will be created when MkDocs build is implemented)
+- **[AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)** - Documentation system rules
+- **[CLAUDE.md](../CLAUDE.md)** - Main agent entry point
+- **[AGENTS.md](../AGENTS.md)** - Quick reference
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
 
-## Additional Resources
+---
 
-- **Contributing Guides**: [contributing/](contributing/)
-- **Contributing**: [../CONTRIBUTING.md](../CONTRIBUTING.md)
-- **MkDocs Material**: https://squidfunk.github.io/mkdocs-material/
-- **Testing Docs**: [testing/README.md](testing/README.md)
+**Last Updated**: Auto-generated by tools/build_context.py
+**Status**: Active
+**Owner**: Development Team

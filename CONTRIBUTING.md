@@ -2,6 +2,15 @@
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
+## For AI Agents
+
+If you're an AI agent working on this codebase, see the comprehensive internal documentation:
+- **[internal-docs/contributing/](internal-docs/contributing/)** - Agent-optimized contributing guides
+- **[internal-docs/CONTEXT.md](internal-docs/CONTEXT.md)** - Full project context
+- **[CLAUDE.md](CLAUDE.md)** - Main agent entry point
+
+The rest of this document is primarily for human contributors.
+
 ## 🚀 Getting Started
 
 ### Development Setup
@@ -94,7 +103,7 @@ Prefixes:
    - [ ] Breaking changes are documented
 
 3. **Documentation checklist** (for PRs with user-facing changes):
-   - [ ] User guide pages updated in `docs/`
+   - [ ] User guide pages updated in `resources/user-guide/docs/`
    - [ ] Screenshots regenerated if UI changed
    - [ ] Built and previewed locally (`mkdocs serve`)
    - [ ] Tested in Electron (`npm run electron:dev`)
@@ -246,18 +255,18 @@ For detailed guidance on writing user documentation, see [internal-docs/contribu
 #### Quick Reference
 
 **I added a new feature**:
-1. Update relevant documentation page in `docs/` (e.g., `docs/working-with-employees.md`)
-2. If UI changed, regenerate screenshots: `cd frontend && npm run generate:screenshots`
-3. Build and preview: `cd docs && mkdocs serve`
+1. Update relevant documentation page in `resources/user-guide/docs/` (e.g., `resources/user-guide/docs/working-with-employees.md`)
+2. If UI changed, regenerate screenshots: `cd frontend && npm run screenshots:generate`
+3. Build and preview: `mkdocs serve` (from project root)
 4. Test in Electron: `cd frontend && npm run electron:dev`
 
 **I changed the UI**:
-1. Regenerate screenshots: `cd frontend && npm run generate:screenshots`
+1. Regenerate screenshots: `cd frontend && npm run screenshots:generate`
 2. Review affected documentation pages for accuracy
 3. Update text if workflow changed
 
 **I added a new major feature**:
-1. Create new documentation page: `docs/my-feature.md`
+1. Create new documentation page: `resources/user-guide/docs/my-feature.md`
 2. Add to navigation in `mkdocs.yml` (project root)
 3. Add screenshots showing the feature
 4. Link from related pages
@@ -274,18 +283,18 @@ For detailed guidance on writing user documentation, see [internal-docs/contribu
 
 The user guide uses **MkDocs Material** for professional multi-page documentation:
 
-- **Source**: Markdown files in `docs/` directory
+- **Source**: Markdown files in `resources/user-guide/docs/` directory
 - **Build**: `mkdocs build` creates static HTML site
 - **Bundle**: Included in Electron app as offline documentation
-- **Preview**: `cd docs && mkdocs serve` for live editing
+- **Preview**: `mkdocs serve` for live editing (from project root)
 
 **Key files**:
-- `docs/*.md` - Documentation pages (commit these)
+- `resources/user-guide/docs/*.md` - Documentation pages (commit these)
 - `mkdocs.yml` - Navigation and configuration (project root, commit this)
-- `docs/images/screenshots/*.png` - Auto-generated screenshots (commit these)
-- `/site` - Build output (don't commit, git-ignored)
-- `tools/generate_docs_screenshots.py` - Screenshot generator
-- `frontend/scripts/generate-user-guide.cjs` - Build wrapper script
+- `resources/user-guide/docs/images/screenshots/*.png` - Auto-generated screenshots (commit these)
+- `site/` - Build output (don't commit, git-ignored)
+- `frontend/playwright/screenshots/` - Screenshot generation workflows
+- `tools/convert_user_guide.py` - Converts USER_GUIDE.md to HTML for bundling
 
 ### Screenshot Workflow (TypeScript/Playwright)
 

@@ -1,39 +1,44 @@
 # GitHub Actions Workflows
 
-This directory contains the GitHub Actions workflows for the 9Boxer repository.
+This directory contains GitHub Actions workflows for the 9Boxer repository.
 
-For complete workflow documentation, see **[docs/WORKFLOWS.md](../../docs/WORKFLOWS.md)**.
+For complete workflow documentation, see **[internal-docs/WORKFLOWS.md](../../internal-docs/WORKFLOWS.md)**.
 
-## Quick Reference
+## Workflow Files
 
 ### CI/CD Workflows
-
-- **`ci.yml`** - Main CI pipeline (lint, test, coverage)
-- **`nightly.yml`** - Nightly regression testing
-- **`docs.yml`** - Documentation generation
-- **`dependency-review.yml`** - Security review of dependency changes
-- **`code-quality.yml`** - Code quality analysis and metrics
-- **`release.yml`** - Automated release process
+- `ci.yml` - Continuous integration (push to main/develop)
+- `pr.yml` - Pull request validation
+- `weekly.yml` - Weekly comprehensive testing
+- `release.yml` - Automated release process
 
 ### Build Workflows
+- `build-electron.yml` - Electron desktop builds (Windows, macOS, Linux)
 
-- **`build-electron.yml`** - Build Electron desktop installers for all platforms
+### Documentation Workflows
+- `docs.yml` - Documentation generation
+- `docs-audit.yml` - AI documentation audit (weekly)
+- `docs-auto-update.yml` - Documentation impact detection
+- `screenshots.yml` - Screenshot generation (weekly)
+
+### Testing Workflows
+- `visual-regression.yml` - Visual regression tests
+- `update-visual-baselines.yml` - Update visual baselines
+
+### Development Workflows
+- `feature-checklist.yml` - Feature development checklist validation
 
 ### Environment Setup
+- `copilot-setup-steps.yml` - GitHub Copilot environment setup
 
-- **`copilot-setup-steps.yml`** - GitHub Copilot environment setup
-- **`reusable-setup.yml`** - Reusable Python setup workflow
+---
 
-## Documentation
+**Total Workflows:** 13
 
-See **[docs/WORKFLOWS.md](../../docs/WORKFLOWS.md)** for:
+See **[internal-docs/WORKFLOWS.md](../../internal-docs/WORKFLOWS.md)** for:
 - Detailed workflow descriptions
+- Trigger conditions and schedules
+- Key steps and features
 - Configuration options
 - Troubleshooting guides
-- Testing instructions
-- Maintenance procedures
-
-Also see:
-- **[docs/COPILOT_SETUP.md](../../docs/COPILOT_SETUP.md)** - Copilot environment setup details
-- **[BUILD.md](../../BUILD.md)** - Build instructions
-- **[DEPLOYMENT.md](../../DEPLOYMENT.md)** - Deployment guide
+- Cross-references to related documentation

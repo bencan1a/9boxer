@@ -120,7 +120,7 @@ Always aim to fix root causes, not symptoms:
 - Include README.md with investigation status
 
 ### Permanent Documentation
-- Add troubleshooting guides to `docs/guides/troubleshooting.md`
+- Add troubleshooting guides to `internal-docs/guides/troubleshooting.md`
 - Document recurring issues and solutions
 - Create debugging checklists for common problems
 

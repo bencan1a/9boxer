@@ -145,8 +145,8 @@ Use descriptive names that explain the scenario:
 - Include README.md with testing progress and goals
 
 ### Permanent Documentation
-- Place testing guides in `docs/guides/`
-- Document complex testing patterns in `docs/testing/`
+- Place testing guides in `internal-docs/guides/`
+- Document complex testing patterns in `internal-docs/testing/`
 - Include examples of test fixtures and mocks
 
 ## Environment Setup

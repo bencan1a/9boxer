@@ -249,8 +249,9 @@ frontend/visual-diff-report.html
 frontend/visual-diff-report.json
 frontend/visual-regression-results.json
 
-# Playwright global setup PID file
+# Playwright global setup files
 frontend/playwright/.backend.pid
+frontend/playwright/.test_data_dir
 
 # Storybook build output
 frontend/storybook-static/

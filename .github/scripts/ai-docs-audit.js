@@ -58,6 +58,58 @@ const CORE_INTERNAL_DOCS = [
 // Days to consider a doc "new" for consolidation
 const NEW_DOC_THRESHOLD_DAYS = 30;
 
+// Issue preambles
+const INTERNAL_DOCS_PREAMBLE = `## 📖 Documentation References for Agents
+
+Before working on these tasks, review these key resources:
+
+**Core Documentation:**
+- [CLAUDE.md](CLAUDE.md) - Main entry point for AI agents
+- [AGENTS.md](AGENTS.md) - Development workflow and command reference
+- [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) - Documentation system rules
+
+**Key Principles for Internal Docs:**
+- **Anti-Proliferation**: Update existing docs, don't create new ones
+- **Current State Only**: Document "how it works now", not "changed from X to Y"
+- **No Memory Assumption**: Agents have no context of past implementations
+- **Agent-Optimized Language**: Present tense, active voice, actionable commands
+
+**Where Things Live:**
+- Core guides: \`CLAUDE.md\`, \`AGENTS.md\`, \`GITHUB_AGENT.md\`
+- Architecture: \`internal-docs/architecture/\`
+- Design system: \`internal-docs/design-system/\`
+- Testing: \`internal-docs/testing/\`
+- Contributing: \`internal-docs/contributing/\`
+- Auto-generated: \`internal-docs/_generated/\` (don't edit manually)
+
+**For Consolidation Tasks:**
+1. Read both source and target docs fully
+2. Extract valuable, non-redundant information
+3. Update target doc with new content in appropriate section
+4. Delete source doc after consolidation
+5. Verify SUMMARY.md and CONTEXT.md update automatically (via tools/build_context.py)
+
+---`;
+
+const USER_DOCS_PREAMBLE = `## 📖 Documentation References for Agents
+
+Before working on these tasks, review these essential guides:
+
+**Writing Standards:**
+- [Voice & Tone Guide](internal-docs/contributing/voice-and-tone-guide.md) - Writing style DO's and DON'Ts
+- [Documentation Writing Guide](internal-docs/contributing/documentation-writing-guide.md) - Structure patterns and best practices
+
+**Screenshot Standards & Automation:**
+- [Screenshot Guide](internal-docs/contributing/screenshot-guide.md) - Technical specs and annotation standards
+- [Screenshot Automation (HOWTO)](internal-docs/contributing/screenshot-automation-howto.md) - How to generate screenshots (Storybook vs Full-App)
+- [Visual Regression Testing](internal-docs/testing/visual-regression.md) - Quality validation and baseline management
+
+**Quick References:**
+- [Contributing README](internal-docs/contributing/README.md) - Complete documentation guide overview
+- [Testing README](internal-docs/testing/README.md) - Testing guidance including visual regression
+
+---`;
+
 /**
  * Get recent code changes from git history
  *
@@ -716,6 +768,10 @@ async function createConsolidatedIssue(type, findings, auditDate, dryRun = false
 
   // Build issue body
   const sections = [];
+
+  // Add preamble based on documentation type
+  sections.push(isInternal ? INTERNAL_DOCS_PREAMBLE : USER_DOCS_PREAMBLE);
+  sections.push('\n');
 
   sections.push(`## ${isInternal ? '🤖' : '📚'} ${isInternal ? 'Internal' : 'User'} Documentation Audit Results`);
   sections.push(`\n**Audit Period:** Last 7 days`);

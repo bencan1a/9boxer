@@ -146,7 +146,7 @@ cd frontend && npm run test:e2e:pw  # E2E tests
    - Generated screenshot images
 
 **Other documentation updates**:
-- Architecture docs (if significant change): `docs/`
+- Architecture docs (if significant change): `internal-docs/`
 - API docs (auto-generated from docstrings via `tools/build_context.py`)
 - CHANGELOG.md entries
 
@@ -197,9 +197,9 @@ This ensures future agents can pick up where you left off.
 ## References
 
 - **Full workflow guide**: `.github/agents/feature-development.md`
-- **Testing strategies**: `.github/agents/test.md` and `docs/testing/`
-- **Documentation standards**: `docs/contributing/documentation-writing-guide.md`
-- **Project context**: `docs/CONTEXT.md`
+- **Testing strategies**: `.github/agents/test.md` and `internal-docs/testing/`
+- **Documentation standards**: `internal-docs/contributing/documentation-writing-guide.md`
+- **Project context**: `internal-docs/CONTEXT.md`
 
 ---
 
