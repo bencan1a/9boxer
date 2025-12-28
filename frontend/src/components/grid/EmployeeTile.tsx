@@ -32,20 +32,32 @@ import {
   Tooltip,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import HistoryIcon from "@mui/icons-material/History";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
+import { getPositionLabel } from "../../constants/positionLabels";
+
+export type OriginalPositionVariant =
+  | "none"
+  | "chip"
+  | "text"
+  | "text-compact"
+  | "arrow"
+  | "icon-text";
 
 interface EmployeeTileProps {
   employee: Employee;
   onSelect: (employeeId: number) => void;
   donutModeActive?: boolean;
+  originalPositionVariant?: OriginalPositionVariant;
 }
 
 export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
   donutModeActive = false,
+  originalPositionVariant = "icon-text",
 }) => {
   const theme = useTheme();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
@@ -65,6 +77,19 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
 
   // Get flags
   const flags = employee.flags || [];
+
+  // Determine if employee has moved and what the original position was
+  const hasMoved = donutModeActive
+    ? Boolean(employee.donut_position)
+    : employee.modified_in_session;
+
+  const originalPosition = donutModeActive
+    ? employee.grid_position // In donut mode, grid_position is where they started
+    : employee.original_grid_position || null; // In normal mode, use original_grid_position if available
+
+  const originalPositionLabel = originalPosition
+    ? getPositionLabel(originalPosition)
+    : null;
 
   // Determine border color based on modification state
   const getBorderColor = () => {
@@ -173,14 +198,64 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
 
       {/* Card Content */}
       <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}>
+        {/* Row 1: Name */}
         <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
           {employee.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
-          {employee.business_title}
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
-          <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
+
+        {/* Row 2: Title | Level (left) + Original Position (right) */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* Left side: Title | Level inline */}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            fontSize="0.75rem"
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {employee.business_title} | {employee.job_level}
+          </Typography>
+
+          {/* Right side: Original Position Indicator with Tooltip */}
+          {hasMoved &&
+            originalPositionLabel &&
+            originalPositionVariant !== "none" && (
+              <Tooltip
+                title="Original position at session start"
+                arrow
+                placement="top"
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    flexShrink: 0,
+                  }}
+                  data-testid="original-position-icon-text"
+                >
+                  <HistoryIcon
+                    sx={{
+                      fontSize: 12,
+                      color: "text.disabled",
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    fontSize={theme.tokens.typography.fontSize.caption}
+                    sx={{ whiteSpace: "nowrap" }}
+                  >
+                    {originalPositionLabel}
+                  </Typography>
+                </Box>
+              </Tooltip>
+            )}
         </Box>
       </CardContent>
     </Card>

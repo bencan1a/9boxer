@@ -65,6 +65,7 @@ export interface Employee {
   // Metadata
   modified_in_session: boolean;
   last_modified: string | null; // ISO datetime string
+  original_grid_position?: number; // 1-9, position at session start (for tracking moves)
 
   // Flags (tags for employee status)
   flags?: string[];
