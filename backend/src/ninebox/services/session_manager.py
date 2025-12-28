@@ -86,6 +86,10 @@ class SessionManager:
         original_employees = copy.deepcopy(employees)
         current_employees = copy.deepcopy(employees)
 
+        # Set original_grid_position to track starting position for each employee
+        for emp in current_employees:
+            emp.original_grid_position = emp.grid_position
+
         session = SessionState(
             session_id=session_id,
             user_id=user_id,
@@ -540,10 +544,10 @@ class SessionManager:
         return self.event_manager.get_employee_events(session, employee_id)
 
     def _recalculate_modified_flags(self, session: SessionState) -> None:
-        """Recalculate modified_in_session flags based on events.
+        """Recalculate modified_in_session flags and original_grid_position based on events.
 
         Called after session restoration to ensure employees have correct
-        modified_in_session flags based on the events in the session.
+        modified_in_session flags and original_grid_position based on the events in the session.
 
         Args:
             session: Session whose employee flags need recalculation
@@ -552,15 +556,32 @@ class SessionManager:
             >>> session = SessionSerializer.deserialize(row_dict)
             >>> manager._recalculate_modified_flags(session)
             >>> # Employees with events now have modified_in_session=True
+            >>> # Employees with grid moves have original_grid_position from first event
         """
         # Build a set of employee IDs that have events
         modified_employee_ids = set()
+
+        # Build a map of employee_id -> original grid position (from first grid move event)
+        original_positions: dict[int, int] = {}
+
         for event in session.events:
             modified_employee_ids.add(event.employee_id)
 
-        # Update modified_in_session flag for all employees
+            # Track original position from first grid move event
+            if event.event_type == "grid_move" and event.employee_id not in original_positions:
+                # First grid move for this employee - capture original position
+                original_positions[event.employee_id] = event.old_position  # type: ignore
+
+        # Update modified_in_session flag and original_grid_position for all employees
         for employee in session.current_employees:
             employee.modified_in_session = employee.employee_id in modified_employee_ids
+
+            # Set original_grid_position from first move event, or current position if no moves
+            if employee.employee_id in original_positions:
+                employee.original_grid_position = original_positions[employee.employee_id]
+            else:
+                # No moves yet - original position is current position
+                employee.original_grid_position = employee.grid_position
 
     def _restore_sessions(self) -> None:
         """Restore sessions from database on startup.

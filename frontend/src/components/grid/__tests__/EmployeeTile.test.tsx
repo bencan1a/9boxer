@@ -29,8 +29,8 @@ describe("EmployeeTile", () => {
     );
 
     expect(screen.getByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Software Engineer")).toBeInTheDocument();
-    expect(screen.getByText("MT4")).toBeInTheDocument();
+    // Title and job level are now inline with pipe separator
+    expect(screen.getByText(/Software Engineer \| MT4/)).toBeInTheDocument();
   });
 
   it("shows modified styling when employee was modified in session", () => {
@@ -112,7 +112,7 @@ describe("EmployeeTile - Donut Mode", () => {
     expect(screen.queryByText(/Donut:/)).not.toBeInTheDocument();
   });
 
-  it("displays donut position label when employee is donut-modified and donut mode is active", () => {
+  it("displays original position indicator when employee is donut-modified and donut mode is active", () => {
     const donutModifiedEmployee = createMockEmployee({
       ...position5Employee,
       donut_modified: true,
@@ -129,8 +129,17 @@ describe("EmployeeTile - Donut Mode", () => {
       </DndWrapper>
     );
 
-    // Should show donut position label
-    expect(screen.getByText(/Donut: Star \[H,H\]/)).toBeInTheDocument();
+    // Should show original position indicator with history icon
+    const originalPositionIndicator = screen.getByTestId(
+      "original-position-icon-text"
+    );
+    expect(originalPositionIndicator).toBeInTheDocument();
+
+    // Should show the original position label (position 5 = Core Talent [M,M])
+    expect(screen.getByText(/Core Talent \[M,M\]/)).toBeInTheDocument();
+
+    // Should have history icon
+    expect(screen.getByTestId("HistoryIcon")).toBeInTheDocument();
   });
 
   it("displays full purple border when donut-modified and in donut mode", () => {

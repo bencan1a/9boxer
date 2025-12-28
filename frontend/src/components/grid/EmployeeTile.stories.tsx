@@ -265,3 +265,131 @@ export const LowPerformer: Story = {
     donutModeActive: false,
   },
 };
+
+/**
+ * ORIGINAL POSITION VARIANTS - Donut Mode
+ *
+ * These stories showcase different visual designs for displaying where
+ * an employee was originally positioned. Useful for showing movement
+ * history in both donut mode and normal session modifications.
+ *
+ * Employee shown: Moved from position 5 (Solid, M/M) to position 9 (Star, H/H) in donut mode
+ */
+
+const movedEmployeeDonut: Employee = {
+  ...baseEmployee,
+  grid_position: 5, // Original position (Medium/Medium)
+  performance: "Medium" as PerformanceLevel,
+  potential: "Medium" as PotentialLevel,
+  donut_position: 9, // Moved to High/High in donut mode
+  donut_performance: "High" as PerformanceLevel,
+  donut_potential: "High" as PotentialLevel,
+  donut_modified: true,
+};
+
+/**
+ * Variant 1: Chip Badge
+ * Small chip showing "Was: <position>" - subtle but clear
+ */
+export const OriginalPosition_Chip_DonutMode: Story = {
+  name: "Original Position: Chip (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "chip",
+  },
+};
+
+/**
+ * Variant 2: Full Text
+ * Complete text "Originally: <position>" - most descriptive
+ */
+export const OriginalPosition_Text_DonutMode: Story = {
+  name: "Original Position: Text (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "text",
+  },
+};
+
+/**
+ * Variant 3: Compact Text
+ * Minimal text "was <position>" - most space-efficient
+ */
+export const OriginalPosition_TextCompact_DonutMode: Story = {
+  name: "Original Position: Text Compact (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "text-compact",
+  },
+};
+
+/**
+ * Variant 4: Arrow Notation
+ * Shows movement with arrow: "Original → Current"
+ */
+export const OriginalPosition_Arrow_DonutMode: Story = {
+  name: "Original Position: Arrow (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "arrow",
+  },
+};
+
+/**
+ * Variant 5: Icon + Text
+ * History icon with position label - visual indicator
+ */
+export const OriginalPosition_IconText_DonutMode: Story = {
+  name: "Original Position: Icon+Text (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "icon-text",
+  },
+};
+
+/**
+ * COMPARISON: All Variants Side-by-Side (Donut Mode)
+ *
+ * Interactive story with controls to switch between all variants.
+ * Use the "originalPositionVariant" control in Storybook to compare.
+ */
+export const OriginalPosition_AllVariants_DonutMode: Story = {
+  name: "Original Position: All Variants (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "chip",
+  },
+  argTypes: {
+    originalPositionVariant: {
+      control: "select",
+      options: ["none", "chip", "text", "text-compact", "arrow", "icon-text"],
+      description: "Visual style for showing original position",
+    },
+  },
+};
+
+/**
+ * No Original Position Indicator
+ * For comparison - employee moved but no indicator shown (current behavior)
+ */
+export const OriginalPosition_None_DonutMode: Story = {
+  name: "Original Position: None (Donut Mode)",
+  args: {
+    employee: movedEmployeeDonut,
+    onSelect: fn(),
+    donutModeActive: true,
+    originalPositionVariant: "none",
+  },
+};

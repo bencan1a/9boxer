@@ -82,6 +82,7 @@ class Employee(BaseModel):
     # Metadata
     modified_in_session: bool = False
     last_modified: datetime | None = None
+    original_grid_position: int | None = None  # Position at session start (for tracking moves)
 
     # Donut Mode fields (temporary alternative placements)
     donut_performance: PerformanceLevel | None = None
