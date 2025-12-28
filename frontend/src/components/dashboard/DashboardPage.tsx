@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Typography, IconButton, Tooltip, Button } from "@mui/material";
+import { Box, Typography, Button, IconButton, Tooltip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -299,7 +299,7 @@ export const DashboardPage: React.FC = () => {
                 </Panel>
               </PanelGroup>
 
-              {/* Toggle button */}
+              {/* Toggle button - Option 1 with narrower width */}
               <Tooltip
                 title={
                   isRightPanelCollapsed
@@ -313,20 +313,31 @@ export const DashboardPage: React.FC = () => {
                   data-testid="panel-toggle-button"
                   sx={{
                     position: "absolute",
-                    right: 16,
-                    top: 16,
+                    right: isRightPanelCollapsed
+                      ? 16
+                      : `calc(${rightPanelSize}% + 4px)`,
+                    top: "50%",
+                    transform: "translateY(-50%)",
                     zIndex: 10,
+                    width: 16,
+                    height: 48,
+                    borderRadius: isRightPanelCollapsed
+                      ? `${theme.tokens.radius.md}px`
+                      : `${theme.tokens.radius.md}px 0 0 ${theme.tokens.radius.md}px`,
                     backgroundColor: theme.palette.background.paper,
+                    border: `1px solid ${theme.palette.divider}`,
                     boxShadow: 2,
+                    transition: `all ${theme.tokens.duration.normal}`,
                     "&:hover": {
                       backgroundColor: theme.palette.action.hover,
+                      borderColor: theme.palette.primary.main,
                     },
                   }}
                 >
                   {isRightPanelCollapsed ? (
-                    <ChevronLeftIcon />
+                    <ChevronLeftIcon fontSize="small" />
                   ) : (
-                    <ChevronRightIcon />
+                    <ChevronRightIcon fontSize="small" />
                   )}
                 </IconButton>
               </Tooltip>
