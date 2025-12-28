@@ -175,6 +175,17 @@ export const dimensions = {
     spacing: 8,
   },
 
+  // Drawer dimensions (left sidebar filter drawer)
+  drawer: {
+    width: 280, // Filter drawer width
+  },
+
+  // AppBar dimensions
+  appBar: {
+    height: 64, // Standard AppBar height
+    logoSize: 28, // App logo icon size
+  },
+
   // Scrollbar dimensions
   scrollbar: {
     width: 12,
