@@ -1,7 +1,19 @@
 # Active Plans
 
-**Updated**: 2025-12-28T05:15:09.739155+00:00
+**Updated**: 2025-12-28T18:57:07.966961+00:00
 **Showing**: Plans with status=active created within 21 days
+
+## rich-sample-data-generator
+- **Status**: active
+- **Owner**: claude
+- **Created**: 2025-12-28
+- **Path**: `agent-projects/rich-sample-data-generator/plan.md`
+- **Summary**:
+  - Create comprehensive sample dataset generator (200-300 employees)
+  - Include complete management chains (6 levels), 3-year performance history
+  - Add detectable bias patterns for intelligence statistics validation
+  - Integrate with app UI (empty state + File menu)
+  - Support all 28 Excel schema columns
 
 ## self-managing-docs-system
 - **Status**: active
