@@ -33,29 +33,31 @@ def test_calculate_distribution_when_called_then_returns_all_9_boxes(
 def test_calculate_distribution_when_called_then_counts_correctly(
     statistics_service: StatisticsService, sample_employees: list[Employee]
 ) -> None:
-    """Test that employee counts are correct."""
+    """Test that employee counts are correct.
+
+    MIGRATION NOTE (2025-12-28):
+    Updated to work with rich sample data (50 employees) instead of hard-coded 5.
+    Tests now validate that counts match employee attributes instead of hard-coded values.
+    """
     stats = statistics_service.calculate_distribution(sample_employees)
 
     dist = {item["grid_position"]: item for item in stats["distribution"]}
 
-    # Based on sample data:
-    # Position 9 (H,H): 1 employee - Alice
-    # Position 8 (M,H): 1 employee - Eve
-    # Position 7 (L,H): 1 employee - Carol
-    # Position 6 (H,M): 1 employee - David
-    # Position 5 (M,M): 1 employee - Bob
+    # Calculate expected counts from actual data
+    expected_counts = {}
+    for pos in range(1, 10):
+        expected_counts[pos] = sum(1 for e in sample_employees if e.grid_position == pos)
 
-    assert dist[9]["count"] == 1
-    assert dist[8]["count"] == 1
-    assert dist[7]["count"] == 1
-    assert dist[6]["count"] == 1
-    assert dist[5]["count"] == 1
+    # Verify counts match actual employee distribution
+    for pos in range(1, 10):
+        assert dist[pos]["count"] == expected_counts[pos], (
+            f"Position {pos} count mismatch: expected {expected_counts[pos]}, "
+            f"got {dist[pos]['count']}"
+        )
 
-    # Empty boxes
-    assert dist[1]["count"] == 0
-    assert dist[2]["count"] == 0
-    assert dist[3]["count"] == 0
-    assert dist[4]["count"] == 0
+    # Total count should match number of employees
+    total_count = sum(item["count"] for item in stats["distribution"])
+    assert total_count == len(sample_employees)
 
 
 def test_calculate_distribution_when_called_then_percentages_sum_to_100(
@@ -73,29 +75,51 @@ def test_calculate_distribution_when_called_then_percentages_sum_to_100(
 def test_calculate_distribution_when_called_then_aggregates_by_performance(
     statistics_service: StatisticsService, sample_employees: list[Employee]
 ) -> None:
-    """Test aggregation by performance level."""
+    """Test aggregation by performance level.
+
+    MIGRATION NOTE (2025-12-28):
+    Updated to work with rich sample data by calculating expected counts from data.
+    """
     stats = statistics_service.calculate_distribution(sample_employees)
 
     by_perf = stats["by_performance"]
 
-    # Count from sample data
-    assert by_perf["High"] == 2  # Alice, David
-    assert by_perf["Medium"] == 2  # Bob, Eve
-    assert by_perf["Low"] == 1  # Carol
+    # Calculate expected counts from actual data
+    expected_high = sum(1 for e in sample_employees if e.performance == PerformanceLevel.HIGH)
+    expected_medium = sum(1 for e in sample_employees if e.performance == PerformanceLevel.MEDIUM)
+    expected_low = sum(1 for e in sample_employees if e.performance == PerformanceLevel.LOW)
+
+    assert by_perf["High"] == expected_high
+    assert by_perf["Medium"] == expected_medium
+    assert by_perf["Low"] == expected_low
+
+    # Total should match number of employees
+    assert by_perf["High"] + by_perf["Medium"] + by_perf["Low"] == len(sample_employees)
 
 
 def test_calculate_distribution_when_called_then_aggregates_by_potential(
     statistics_service: StatisticsService, sample_employees: list[Employee]
 ) -> None:
-    """Test aggregation by potential level."""
+    """Test aggregation by potential level.
+
+    MIGRATION NOTE (2025-12-28):
+    Updated to work with rich sample data by calculating expected counts from data.
+    """
     stats = statistics_service.calculate_distribution(sample_employees)
 
     by_pot = stats["by_potential"]
 
-    # Count from sample data
-    assert by_pot["High"] == 3  # Alice, Carol, Eve
-    assert by_pot["Medium"] == 2  # Bob, David
-    assert by_pot["Low"] == 0
+    # Calculate expected counts from actual data
+    expected_high = sum(1 for e in sample_employees if e.potential == PotentialLevel.HIGH)
+    expected_medium = sum(1 for e in sample_employees if e.potential == PotentialLevel.MEDIUM)
+    expected_low = sum(1 for e in sample_employees if e.potential == PotentialLevel.LOW)
+
+    assert by_pot["High"] == expected_high
+    assert by_pot["Medium"] == expected_medium
+    assert by_pot["Low"] == expected_low
+
+    # Total should match number of employees
+    assert by_pot["High"] + by_pot["Medium"] + by_pot["Low"] == len(sample_employees)
 
 
 def test_calculate_distribution_when_called_then_tracks_modified_count(
@@ -114,11 +138,19 @@ def test_calculate_distribution_when_called_then_tracks_modified_count(
 def test_calculate_distribution_when_called_then_tracks_high_performers(
     statistics_service: StatisticsService, sample_employees: list[Employee]
 ) -> None:
-    """Test that high performers count is tracked."""
+    """Test that high performers count is tracked.
+
+    MIGRATION NOTE (2025-12-28):
+    Updated to work with rich sample data by calculating expected count from data.
+    """
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    # Count from sample data (employees with High performance)
-    assert stats["high_performers"] == 2  # Alice, David
+    # Calculate expected count from actual data
+    expected_high_performers = sum(
+        1 for e in sample_employees if e.performance == PerformanceLevel.HIGH
+    )
+
+    assert stats["high_performers"] == expected_high_performers
 
 
 def test_calculate_distribution_when_empty_list_then_returns_zero_stats(
@@ -147,18 +179,26 @@ def test_calculate_distribution_when_single_employee_then_returns_100_percent(
 
     assert stats["total_employees"] == 1
     dist = {item["grid_position"]: item for item in stats["distribution"]}
-    assert dist[9]["count"] == 1
-    assert dist[9]["percentage"] == 100.0
+
+    # Find the position of the single employee
+    employee_position = sample_employees[0].grid_position
+
+    assert dist[employee_position]["count"] == 1
+    assert dist[employee_position]["percentage"] == 100.0
 
 
 
 def test_calculate_distribution_when_called_then_includes_total_count(
     statistics_service: StatisticsService, sample_employees: list[Employee]
 ) -> None:
-    """Test that total count is included."""
+    """Test that total count is included.
+
+    MIGRATION NOTE (2025-12-28):
+    Updated to work with rich sample data by using actual employee count.
+    """
     stats = statistics_service.calculate_distribution(sample_employees)
 
-    assert stats["total_employees"] == 5
+    assert stats["total_employees"] == len(sample_employees)
 
 
 def test_get_box_label_when_all_positions_then_returns_correct_labels() -> None:

@@ -25,9 +25,14 @@ def create_test_employee(
 ) -> Employee:
     """Create a minimal Employee for testing with all required fields.
 
-    DEPRECATED: This function is kept for backward compatibility.
-    Consider using create_simple_test_employee() for minimal fixtures,
-    or sample_employees fixture for richer test data.
+    DEPRECATED (2025-12-28): This function is an alias for create_simple_test_employee()
+    and is kept for backward compatibility with existing imports.
+
+    Migration Guide:
+    - For single-employee unit tests → Use create_simple_test_employee()
+    - For integration tests with multiple employees → Use sample_employees fixture
+    - For larger datasets (100+) → Use rich_sample_employees_medium/large fixtures
+    - For intelligence/statistics tests → Use rich_sample_employees_* (includes bias patterns)
 
     Args:
         employee_id: Employee ID (default: 1)
@@ -255,13 +260,14 @@ def setup_test_db() -> Generator[None, None, None]:
 
 @pytest.fixture
 def sample_employees() -> list[Employee]:
-    """Create sample employee data for testing.
+    """Create sample employee data for testing (50 employees).
 
     FIXTURE MIGRATION NOTES (2025-12-28):
     - Migrated to use rich sample data generator (50 employees, seed=42)
     - Previous hard-coded 5-employee fixture replaced with generated data
     - Tests should not depend on specific employee IDs (use attributes instead)
     - For minimal single-employee fixtures, use create_simple_test_employee()
+    - For larger datasets, use rich_sample_employees_medium or rich_sample_employees_large
     - Reproducible via seed=42 for consistent test behavior
 
     Migration rationale:
@@ -286,6 +292,94 @@ def sample_employees() -> list[Employee]:
     employees = generate_rich_dataset(config)
 
     return employees
+
+
+@pytest.fixture
+def rich_sample_employees_small() -> list[Employee]:
+    """Create a small rich sample dataset (50 employees) for tests.
+
+    This is an alias for sample_employees, providing a more explicit name
+    for tests that want to indicate they're using the rich sample generator.
+
+    Use this when:
+    - Testing with realistic organizational hierarchies
+    - Need complete performance history (3 years)
+    - Want to test bias detection patterns
+    - Need coverage of all job levels and grid positions
+
+    For minimal single-employee tests, use create_simple_test_employee() instead.
+    For larger datasets, use rich_sample_employees_medium or rich_sample_employees_large.
+
+    Returns:
+        List of 50 Employee objects with complete organizational data
+    """
+    from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+
+    config = RichDatasetConfig(
+        size=50,
+        include_bias=True,
+        seed=42,  # Fixed seed for test reproducibility
+        locations=["USA", "CAN", "GBR"],
+        job_functions=["Engineering", "Product Manager", "Sales", "Marketing"],
+    )
+
+    return generate_rich_dataset(config)
+
+
+@pytest.fixture
+def rich_sample_employees_medium() -> list[Employee]:
+    """Create a medium rich sample dataset (100 employees) for tests.
+
+    Uses rich data generator with bias patterns for intelligence testing.
+    Provides more employees for statistical significance in analytics tests.
+
+    Use this when:
+    - Testing intelligence/statistics features (need 30+ employees)
+    - Testing large-scale data operations
+    - Need diverse organizational structures
+    - Want to validate bias detection with statistical significance
+
+    Returns:
+        List of 100 Employee objects with complete organizational data
+    """
+    from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+
+    config = RichDatasetConfig(
+        size=100,
+        include_bias=True,
+        seed=42,  # Fixed seed for test reproducibility
+        locations=["USA", "CAN", "GBR", "DEU"],
+        job_functions=["Engineering", "Product Manager", "Sales", "Marketing", "Operations"],
+    )
+
+    return generate_rich_dataset(config)
+
+
+@pytest.fixture
+def rich_sample_employees_large() -> list[Employee]:
+    """Create a large rich sample dataset (200 employees) for tests.
+
+    Uses rich data generator with complete features including all locations
+    and job functions. Ideal for integration tests and performance validation.
+
+    Use this when:
+    - Testing performance with realistic data volumes
+    - Need comprehensive coverage of all edge cases
+    - Testing export/import with large datasets
+    - Validating UI rendering with many employees
+
+    Returns:
+        List of 200 Employee objects with complete organizational data
+    """
+    from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+
+    config = RichDatasetConfig(
+        size=200,
+        include_bias=True,
+        seed=42,  # Fixed seed for test reproducibility
+    )
+
+    return generate_rich_dataset(config)
 
 
 @pytest.fixture
