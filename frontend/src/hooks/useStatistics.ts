@@ -14,6 +14,7 @@ interface StatisticsData {
   distribution: PositionDistribution[];
   groupedStats?: {
     highPerformers: { positions: number[]; count: number; percentage: number };
+    middleTier: { positions: number[]; count: number; percentage: number };
     lowPerformers: { positions: number[]; count: number; percentage: number };
   };
 }
@@ -99,7 +100,16 @@ export const useStatistics = (
     const highPerformerPercentage =
       total > 0 ? (highPerformerCount / total) * 100 : 0;
 
-    // Group 2: Boxes 1, 2, 4 (low performers)
+    // Group 2: Boxes 3, 5, 7 (middle tier)
+    const middleTierPositions = [3, 5, 7];
+    const middleTierCount = middleTierPositions.reduce(
+      (sum, pos) => sum + distributionDict[pos].count,
+      0
+    );
+    const middleTierPercentage =
+      total > 0 ? (middleTierCount / total) * 100 : 0;
+
+    // Group 3: Boxes 1, 2, 4 (low performers)
     const lowPerformerPositions = [1, 2, 4];
     const lowPerformerCount = lowPerformerPositions.reduce(
       (sum, pos) => sum + distributionDict[pos].count,
@@ -118,6 +128,11 @@ export const useStatistics = (
           positions: highPerformerPositions,
           count: highPerformerCount,
           percentage: highPerformerPercentage,
+        },
+        middleTier: {
+          positions: middleTierPositions,
+          count: middleTierCount,
+          percentage: middleTierPercentage,
         },
         lowPerformers: {
           positions: lowPerformerPositions,
