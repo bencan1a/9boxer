@@ -7,7 +7,6 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useTranslation } from "react-i18next";
 import {
   Panel,
@@ -21,10 +20,15 @@ import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { FileUploadDialog } from "../common/FileUploadDialog";
 import { ViewControls } from "../common/ViewControls";
-import { EmptyState } from "../common/EmptyState";
+import { EmptyState } from "../EmptyState";
+import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
 import { useSession } from "../../hooks/useSession";
 import { useSessionStore } from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
+import { useSnackbar } from "../../contexts/SnackbarContext";
+import { sampleDataService } from "../../services/sampleDataService";
+import { extractErrorMessage } from "../../types/errors";
+import { logger } from "../../utils/logger";
 
 const PANEL_COLLAPSE_BREAKPOINT = 1024; // Collapse panel below this width
 
@@ -32,7 +36,8 @@ export const DashboardPage: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { sessionId } = useSession();
-  const restoreSession = useSessionStore((state) => state.restoreSession);
+  const { restoreSession, clearSession, loadEmployees, employees } =
+    useSessionStore();
   const {
     isRightPanelCollapsed,
     rightPanelSize,
@@ -41,10 +46,13 @@ export const DashboardPage: React.FC = () => {
     setRightPanelCollapsed,
     setRightPanelSize,
   } = useUiStore();
+  const { showSuccess, showError } = useSnackbar();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const rightPanelRef = useRef<ImperativePanelHandle>(null);
   const [isPanelMounted, setIsPanelMounted] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [loadSampleDialogOpen, setLoadSampleDialogOpen] = useState(false);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   // Restore session from localStorage on mount
   useEffect(() => {
@@ -113,6 +121,58 @@ export const DashboardPage: React.FC = () => {
     setRightPanelCollapsed,
   ]);
 
+  // Handle load sample data click
+  const handleLoadSampleClick = () => {
+    setLoadSampleDialogOpen(true);
+  };
+
+  // Handle load sample data confirmation
+  const handleLoadSampleConfirm = async () => {
+    setIsLoadingSample(true);
+    try {
+      // Clear existing session if there is one
+      if (sessionId) {
+        await clearSession();
+      }
+
+      // Generate sample data via API (this creates a session automatically)
+      const response = await sampleDataService.generateSampleDataset({
+        size: 200,
+        include_bias: true,
+      });
+
+      // Store session ID in localStorage so the backend knows which session to use
+      localStorage.setItem("session_id", response.session_id);
+
+      // Reload employees to sync frontend state with the new session
+      await loadEmployees();
+
+      // Close dialog and show success message
+      setLoadSampleDialogOpen(false);
+      showSuccess(
+        `Successfully loaded ${response.metadata.total} sample employees`
+      );
+
+      logger.info("Sample data loaded", {
+        total: response.metadata.total,
+        locations: response.metadata.locations,
+        functions: response.metadata.functions,
+      });
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error("Failed to load sample data", error);
+      showError(errorMessage);
+      throw error; // Re-throw to let dialog handle error display
+    } finally {
+      setIsLoadingSample(false);
+    }
+  };
+
+  // Handle upload file click
+  const handleUploadClick = () => {
+    setUploadDialogOpen(true);
+  };
+
   return (
     <Box
       sx={{
@@ -143,21 +203,21 @@ export const DashboardPage: React.FC = () => {
           {!sessionId ? (
             <>
               <EmptyState
-                icon={<UploadFileIcon />}
-                title={t("dashboard.dashboardPage.noFileLoaded")}
-                description={t("dashboard.dashboardPage.emptyStateDescription")}
-                action={{
-                  label: t("dashboard.dashboardPage.importData"),
-                  onClick: () => setUploadDialogOpen(true),
-                  icon: <UploadFileIcon />,
-                  variant: "contained",
-                }}
-                hint={t("dashboard.dashboardPage.sampleFileHint")}
+                onLoadSampleData={handleLoadSampleClick}
+                onUploadFile={handleUploadClick}
+                isLoading={isLoadingSample}
               />
 
               <FileUploadDialog
                 open={uploadDialogOpen}
                 onClose={() => setUploadDialogOpen(false)}
+              />
+
+              <LoadSampleDialog
+                open={loadSampleDialogOpen}
+                onClose={() => setLoadSampleDialogOpen(false)}
+                onConfirm={handleLoadSampleConfirm}
+                hasExistingData={employees.length > 0}
               />
             </>
           ) : (
