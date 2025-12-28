@@ -35,6 +35,7 @@ def test_export_when_valid_file_then_creates_excel(
     # Verify it's a valid Excel file
     workbook = openpyxl.load_workbook(output_path)
     assert len(workbook.worksheets) >= 2
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_called_then_adds_modified_column(
@@ -60,6 +61,7 @@ def test_export_when_called_then_adds_modified_column(
             break
 
     assert modified_col_found
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_called_then_adds_modification_date_column(
@@ -85,6 +87,7 @@ def test_export_when_called_then_adds_modification_date_column(
             break
 
     assert date_col_found
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_employee_modified_then_writes_modified_values(
@@ -119,6 +122,7 @@ def test_export_when_employee_modified_then_writes_modified_values(
 
     # Check first employee row (row 2)
     assert sheet.cell(2, modified_col).value == "Yes"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_employee_not_modified_then_marks_as_no(
@@ -146,6 +150,7 @@ def test_export_when_employee_not_modified_then_marks_as_no(
     # All unmodified employees should be "No"
     for row_idx in range(2, sheet.max_row + 1):
         assert sheet.cell(row_idx, modified_col).value == "No"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_multiple_employees_modified_then_updates_all(
@@ -180,6 +185,7 @@ def test_export_when_multiple_employees_modified_then_updates_all(
     assert sheet.cell(2, modified_col).value == "Yes"  # Employee 1
     assert sheet.cell(3, modified_col).value == "No"  # Employee 2
     assert sheet.cell(4, modified_col).value == "Yes"  # Employee 3
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_file_has_less_than_two_sheets_then_raises_error(
@@ -226,6 +232,7 @@ def test_export_when_performance_updated_then_writes_new_value(
 
     if perf_col:
         assert sheet.cell(2, perf_col).value == "Low"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_modification_date_set_then_writes_date(
@@ -260,6 +267,7 @@ def test_export_when_modification_date_set_then_writes_date(
     # Should have written the ISO format timestamp
     assert date_value is not None
     assert modification_time.isoformat() in str(date_value)
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_find_column_when_column_exists_then_returns_index(
@@ -272,6 +280,7 @@ def test_find_column_when_column_exists_then_returns_index(
     col_idx = excel_exporter._find_column(sheet, "Employee ID")
 
     assert col_idx == 1
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_find_column_when_column_not_exists_and_create_false_then_returns_none(
@@ -284,6 +293,7 @@ def test_find_column_when_column_not_exists_and_create_false_then_returns_none(
     col_idx = excel_exporter._find_column(sheet, "NonExistentColumn", create=False)
 
     assert col_idx is None
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_find_column_when_column_not_exists_and_create_true_then_returns_next_index(
@@ -297,6 +307,7 @@ def test_find_column_when_column_not_exists_and_create_true_then_returns_next_in
     col_idx = excel_exporter._find_column(sheet, "NewColumn", create=True)
 
     assert col_idx == original_max_col + 1
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 # ========== Donut Mode Tests ==========
@@ -343,6 +354,7 @@ def test_export_when_donut_data_exists_then_includes_columns(
     assert donut_label_col_found
     assert donut_description_col_found
     assert donut_notes_col_found
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_donut_data_exists_then_populates_correctly(
@@ -428,6 +440,7 @@ def test_export_when_donut_data_exists_then_populates_correctly(
         sheet.cell(2, donut_description_col).value
     )
     assert sheet.cell(2, donut_notes_col).value == "Exploring management track"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_no_donut_data_then_empty_cells(
@@ -466,6 +479,7 @@ def test_export_when_no_donut_data_then_empty_cells(
         assert donut_desc_val == "" or donut_desc_val is None
         donut_notes_val = sheet.cell(row_idx, donut_position_col + 3).value
         assert donut_notes_val == "" or donut_notes_val is None
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 # ========== Flags Tests ==========
@@ -496,6 +510,7 @@ def test_export_when_flags_exist_then_includes_flags_column(
             break
 
     assert flags_col_found
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_flags_set_then_writes_comma_separated(
@@ -526,6 +541,7 @@ def test_export_when_flags_set_then_writes_comma_separated(
     # Check first employee row (row 2)
     flags_value = sheet.cell(2, flags_col).value
     assert flags_value == "promotion_ready, flight_risk, new_hire"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_no_flags_then_empty_cell(
@@ -556,6 +572,7 @@ def test_export_when_no_flags_then_empty_cell(
     for row_idx in range(2, sheet.max_row + 1):
         flags_value = sheet.cell(row_idx, flags_col).value
         assert flags_value == "" or flags_value is None
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_empty_flags_list_then_empty_cell(
@@ -587,6 +604,7 @@ def test_export_when_empty_flags_list_then_empty_cell(
     flags_value = sheet.cell(2, flags_col).value
     # Excel may return None or empty string for empty cells
     assert flags_value == "" or flags_value is None
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_export_when_single_flag_then_writes_without_comma(
@@ -617,3 +635,4 @@ def test_export_when_single_flag_then_writes_without_comma(
     # Check first employee row (row 2)
     flags_value = sheet.cell(2, flags_col).value
     assert flags_value == "promotion_ready"
+    workbook.close()  # Prevent openpyxl state pollution

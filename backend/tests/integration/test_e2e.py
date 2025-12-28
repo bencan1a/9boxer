@@ -100,6 +100,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     # 7. Clear session
     clear_response = test_client.delete("/api/session/clear", headers=headers)
     assert clear_response.status_code == 200
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_filtering_workflow_when_applied_then_filters_correctly(
@@ -230,6 +231,7 @@ def test_multiple_moves_when_performed_then_all_tracked(
             modified_count += 1
 
     assert modified_count == 3
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 # NOTE: test_session_isolation_when_multiple_users_then_sessions_separate removed
@@ -351,3 +353,4 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
         # The actual row depends on the order in the Excel file
         # So we just verify the file is valid and has data
         assert sheet.cell(2, 1).value is not None  # Has employee ID
+    workbook.close()  # Prevent openpyxl state pollution

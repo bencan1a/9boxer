@@ -15,6 +15,11 @@ on:
         description: 'Comma-separated list of screenshots to regenerate (leave empty for all)'
         required: false
         type: string
+      base_branch:
+        description: 'Base branch to compare against (defaults to main)'
+        required: false
+        type: string
+        default: 'main'
 
 permissions:
   contents: write
@@ -50,7 +55,7 @@ jobs:
         id: analyze
         run: |
           echo "::group::Analyzing component changes"
-          node .github/scripts/detect-doc-impact.js --base=${{ github.base_ref }}
+          node .github/scripts/detect-doc-impact.js --base=${{ github.event_name == 'workflow_dispatch' && inputs.base_branch || github.base_ref }}
           echo "::endgroup::"
 
       - name: Upload Analysis Results

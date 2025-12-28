@@ -564,6 +564,7 @@ def test_frozen_excel_export(
 
     # Should have data rows
     assert data_sheet.max_row >= 4  # Header + 3 employees
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 def test_frozen_excel_export_contains_changes(
@@ -619,6 +620,7 @@ def test_frozen_excel_export_contains_changes(
             break
 
     assert modified_found, "No modified employees found in exported file"
+    workbook.close()  # Prevent openpyxl state pollution
 
 
 # ============================================================================
@@ -873,3 +875,4 @@ def test_frozen_complete_workflow(
     assert len(workbook.worksheets) >= 2
 
     print("\n[OK] Complete workflow test passed")
+    workbook.close()  # Prevent openpyxl state pollution

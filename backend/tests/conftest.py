@@ -131,6 +131,15 @@ def setup_test_db() -> Generator[None, None, None]:
 
     yield
 
+    # AFTER test: Clean up openpyxl state to prevent NumberFormat pollution
+    try:
+        import gc  # noqa: PLC0415
+        # Force garbage collection to clean up any lingering workbook references
+        # This helps prevent openpyxl's NumberFormat registry from getting polluted
+        gc.collect()
+    except Exception:
+        pass
+
     # AFTER test: Clean up in-memory state from dependency injection cache
     # Reset session manager's in-memory state
     try:
@@ -369,7 +378,7 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
         data_sheet.cell(row_idx, 8, emp.management_chain_04)
         data_sheet.cell(row_idx, 9, emp.management_chain_05)
         data_sheet.cell(row_idx, 10, emp.management_chain_06)
-        data_sheet.cell(row_idx, 11, emp.hire_date)
+        data_sheet.cell(row_idx, 11, emp.hire_date.isoformat() if emp.hire_date else None)
         data_sheet.cell(row_idx, 12, emp.tenure_category)
         data_sheet.cell(row_idx, 13, emp.time_in_job_profile)
         data_sheet.cell(row_idx, 14, emp.performance.value)
