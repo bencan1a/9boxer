@@ -2,7 +2,7 @@
 
 This directory contains GitHub Actions workflows for the 9Boxer repository.
 
-For complete workflow documentation, see **[internal-docs/WORKFLOWS.md](../../internal-docs/WORKFLOWS.md)**.
+For complete workflow documentation, see **CI/CD Pipeline section in [CLAUDE.md](../../CLAUDE.md)**.
 
 ## Workflow Files
 
@@ -35,7 +35,7 @@ For complete workflow documentation, see **[internal-docs/WORKFLOWS.md](../../in
 
 **Total Workflows:** 13
 
-See **[internal-docs/WORKFLOWS.md](../../internal-docs/WORKFLOWS.md)** for:
+See **CI/CD Pipeline section in [CLAUDE.md](../../CLAUDE.md)** for:
 - Detailed workflow descriptions
 - Trigger conditions and schedules
 - Key steps and features

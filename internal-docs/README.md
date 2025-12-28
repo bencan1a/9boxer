@@ -80,7 +80,6 @@ Quick navigation to all documentation categories:
 - **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
 - **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
 - **[facts.json](facts.json)** - Stable project truths (highest authority)
-- **[WORKFLOWS.md](WORKFLOWS.md)** - GitHub Actions workflows
 - **[COPILOT_SETUP.md](COPILOT_SETUP.md)** - GitHub Copilot environment setup
 - **[CHANGELOG.md](CHANGELOG.md)** - Documentation change history
 - **[ai-documentation-audit.md](ai-documentation-audit.md)** - AI audit findings
@@ -117,7 +116,7 @@ Quick navigation to all documentation categories:
 → Follow [contributing/voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) and [contributing/documentation-writing-guide.md](contributing/documentation-writing-guide.md)
 
 **...understand GitHub Actions workflows**
-→ See [WORKFLOWS.md](WORKFLOWS.md)
+→ See CI/CD Pipeline section in [CLAUDE.md](../CLAUDE.md)
 
 **...understand agent documentation system**
 → Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)

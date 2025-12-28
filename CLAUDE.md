@@ -769,14 +769,136 @@ test.describe('Employee Upload Flow', () => {
 See `internal-docs/testing/` for comprehensive testing principles and best practices.
 
 ### CI/CD Pipeline
-GitHub Actions workflows in `.github/workflows/`:
-- **`ci.yml`** - Main CI pipeline:
-  - Lint, format, type check, security scan
-  - Tests across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.10, 3.11, 3.12)
-  - Smart test selection based on changed files
-  - Coverage enforcement on changed files (70% threshold)
-- **`nightly.yml`** - Nightly regression testing
-- **`docs.yml`** - Documentation updates
+
+GitHub Actions workflows in `.github/workflows/` automate testing, builds, documentation, and releases.
+
+#### Workflow Overview
+
+**Total Workflows:** 13
+
+| Category | Workflows | Purpose |
+|----------|-----------|---------|
+| CI/CD | ci.yml, pr.yml, weekly.yml, release.yml | Testing, validation, releases |
+| Build | build-electron.yml | Desktop application builds |
+| Documentation | docs.yml, docs-audit.yml, docs-auto-update.yml, screenshots.yml | Doc generation and maintenance |
+| Testing | visual-regression.yml, update-visual-baselines.yml | Visual regression testing |
+| Development | feature-checklist.yml | PR validation |
+| Environment | copilot-setup-steps.yml | GitHub Copilot setup |
+
+#### Key CI/CD Workflows
+
+**CI Workflow (`ci.yml`)** - Main continuous integration:
+- **Triggers:** Push to `main` or `develop` branches
+- **Key steps:** Lint, format, type check, security scan, tests (pytest + Vitest)
+- **Features:** Smart change detection, concurrency control, caching, auto-fix step
+- **Platform matrix:** Windows + Ubuntu, Python 3.12-3.13
+- **Smart test selection:** Skips tests for docs-only changes
+
+**PR Validation (`pr.yml`)** - Fast feedback for pull requests:
+- **Triggers:** PR events (opened, synchronize, reopened)
+- **Optimized:** Runs on Windows only for speed, reduced matrix
+- **Smart selection:** Tests only affected files
+- **Concurrency:** Cancels in-progress runs per PR
+
+**Weekly Testing (`weekly.yml`)** - Comprehensive regression testing:
+- **Schedule:** Every Sunday at 2 AM UTC
+- **Platform matrix:** Ubuntu, Windows, macOS (full coverage)
+- **Features:** Security scanning, dependency auditing, SBOM generation
+- **Issue creation:** Auto-creates issues for detected regressions
+
+**Release Workflow (`release.yml`)** - Automated releases:
+- **Triggers:** Push tags matching `v*.*.*` (e.g., v1.0.0)
+- **Steps:** Validation → Build → GitHub Release → (Optional) PyPI publish
+- **Artifacts:** Distribution packages (wheel + sdist)
+
+#### Build Workflows
+
+**Electron App Builder (`build-electron.yml`)** - Platform-specific installers:
+- **Platforms:** Linux (AppImage), Windows (NSIS .exe), macOS (DMG)
+- **Trigger:** Manual only (workflow_dispatch)
+- **Build times:** 5-12 minutes depending on platform
+- **Artifacts:** Retained 90 days
+- **Build order:** PyInstaller backend → Vite frontend → Electron Builder
+
+#### Documentation Workflows
+
+**Documentation Generation (`docs.yml`)** - Auto-generate docs from source:
+- **Generates:** API docs (pdoc3), CONTEXT.md, SUMMARY.md, plans index
+- **Triggers:** Push to main affecting docs/src/tools
+- **Auto-commit:** Commits changes with [skip ci]
+
+**AI Documentation Audit (`docs-audit.yml`)** - Automated documentation quality:
+- **Schedule:** Weekly Monday 2 AM UTC
+- **Uses:** Anthropic Claude Sonnet 4.5
+- **Analyzes:** Internal docs (agent guidance) + User docs (end-user content)
+- **Creates:** Consolidated GitHub issues per documentation type
+- **Detection:** Conflicts, staleness, missing docs, consolidation opportunities
+- **Cost:** ~$2-4/month
+
+**Screenshot Generation (`screenshots.yml`)** - Automated screenshot updates:
+- **Schedule:** Weekly Monday 2 AM UTC
+- **Trigger:** Manual dispatch with `regenerate_all` option
+- **Uses:** Playwright + E2E test helpers
+- **Auto-commit:** Updates screenshots with [skip ci]
+
+**Documentation Impact Detection (`docs-auto-update.yml`)** - Component change tracking:
+- **Triggers:** PRs affecting components, pages, theme
+- **Analyzes:** Which screenshots need updating
+- **Reports:** PR comments with impact analysis
+
+#### Testing Workflows
+
+**Visual Regression (`visual-regression.yml`)** - Detect unintended UI changes:
+- **Triggers:** PRs affecting frontend/src
+- **Features:** Pixel-perfect comparison, diff image generation
+- **Artifacts:** Diff images uploaded for review
+
+**Update Visual Baselines (`update-visual-baselines.yml`)** - Intentional UI changes:
+- **Trigger:** Manual only (requires reason input)
+- **Purpose:** Update baseline screenshots when UI intentionally changes
+- **Safety:** Manual approval prevents accidental updates
+
+#### Development Workflows
+
+**Feature Checklist (`feature-checklist.yml`)** - PR validation:
+- **Triggers:** PR events, issue comments
+- **Validates:** Feature checklist items in PR body
+- **Auto-comments:** Validation results on PR
+
+**Copilot Setup (`copilot-setup-steps.yml`)** - GitHub Copilot environment:
+- **Automatic:** Invoked by GitHub Copilot coding agent
+- **Setup:** Python 3.13 + Node.js 20 + Playwright + pre-commit
+- **Fast:** ~5-10 minutes with caching
+- **Important:** NO checkout step (Copilot handles it)
+
+#### Configuration & Troubleshooting
+
+**Caching Strategy:**
+- `~/.cache/uv` - uv package cache (~10x faster than pip)
+- `~/.npm` - npm package cache
+- `~/.cache/ms-playwright` - Playwright browsers
+- `~/.cache/pre-commit` - Pre-commit hooks
+
+**Required Secrets:**
+- `ANTHROPIC_API_KEY` - AI documentation audit
+- `PYPI_API_TOKEN` - PyPI publishing (optional)
+- `GITHUB_TOKEN` - Auto-provided by GitHub
+
+**Performance Optimizations:**
+1. **uv package manager:** ~10x faster Python installs
+2. **Smart caching:** Multi-level dependency caching
+3. **Change detection:** Skip unnecessary jobs for docs-only changes
+4. **Concurrency control:** Cancel in-progress runs
+5. **Job dependencies:** Tests wait for lint/type-check
+
+**Common Issues:**
+- **Tests fail after docs-only changes:** Check change detection logic
+- **Workflow doesn't trigger:** Verify branch, paths, schedule conditions
+- **Cache misses:** Check cache key hash values, 7-day expiration
+- **Permission errors:** Verify workflow permissions, GITHUB_TOKEN, secrets
+
+**Manual Triggers:**
+All workflows support manual dispatch via Actions tab → Select workflow → Run workflow
 
 The CI uses smart test selection via `.github/scripts/smart_test_selection.py` to only run relevant tests for PRs.
 
