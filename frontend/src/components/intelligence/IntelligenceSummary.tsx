@@ -46,10 +46,14 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
     data.anomaly_count.red;
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} data-testid="intelligence-summary">
       {/* Quality Score Card */}
       <Grid item xs={12} md={4}>
-        <Card variant="outlined" sx={{ height: "100%" }}>
+        <Card
+          variant="outlined"
+          sx={{ height: "100%" }}
+          data-testid="quality-score-card"
+        >
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
               {getQualityIcon(data.quality_score)}
@@ -57,6 +61,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
                 <Typography
                   variant="h3"
                   color={getQualityColor(data.quality_score)}
+                  data-testid="quality-score-value"
                 >
                   {data.quality_score}
                 </Typography>
@@ -78,9 +83,17 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
 
       {/* Anomaly Count Card */}
       <Grid item xs={12} md={4}>
-        <Card variant="outlined" sx={{ height: "100%" }}>
+        <Card
+          variant="outlined"
+          sx={{ height: "100%" }}
+          data-testid="anomaly-count-card"
+        >
           <CardContent>
-            <Typography variant="h4" gutterBottom>
+            <Typography
+              variant="h4"
+              gutterBottom
+              data-testid="total-anomaly-count"
+            >
               {totalAnomalies}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -93,6 +106,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
                 color="success"
                 size="small"
                 variant="outlined"
+                data-testid="anomaly-chip-green"
               />
               <Chip
                 icon={<WarningIcon />}
@@ -100,6 +114,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
                 color="warning"
                 size="small"
                 variant="outlined"
+                data-testid="anomaly-chip-yellow"
               />
               <Chip
                 icon={<ErrorIcon />}
@@ -107,6 +122,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
                 color="error"
                 size="small"
                 variant="outlined"
+                data-testid="anomaly-chip-red"
               />
             </Box>
           </CardContent>
@@ -115,9 +131,13 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
 
       {/* Status Card */}
       <Grid item xs={12} md={4}>
-        <Card variant="outlined" sx={{ height: "100%" }}>
+        <Card
+          variant="outlined"
+          sx={{ height: "100%" }}
+          data-testid="status-card"
+        >
           <CardContent>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom data-testid="status-heading">
               {getQualityStatus(data.quality_score)}
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -125,15 +145,27 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
             </Typography>
             <Box sx={{ mt: 2 }}>
               {data.quality_score >= 80 ? (
-                <Typography variant="body2" color="success.main">
+                <Typography
+                  variant="body2"
+                  color="success.main"
+                  data-testid="status-message"
+                >
                   {t("panel.intelligenceTab.summary.wellCalibrated")}
                 </Typography>
               ) : data.quality_score >= 50 ? (
-                <Typography variant="body2" color="warning.main">
+                <Typography
+                  variant="body2"
+                  color="warning.main"
+                  data-testid="status-message"
+                >
                   {t("panel.intelligenceTab.summary.someAnomalies")}
                 </Typography>
               ) : (
-                <Typography variant="body2" color="error.main">
+                <Typography
+                  variant="body2"
+                  color="error.main"
+                  data-testid="status-message"
+                >
                   {t("panel.intelligenceTab.summary.significantAnomalies")}
                 </Typography>
               )}

@@ -221,7 +221,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       minHeight: 200,
       maxHeight: 1000,
     },
-    source: "full-app",
   },
   "quickstart-grid-populated": {
     source: "full-app",
@@ -279,6 +278,74 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Distribution section showing ideal talent distribution across 9-box grid",
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 300 },
+  },
+
+  // Intelligence component screenshots (Storybook-based)
+  "intelligence-summary-excellent": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceSummaryExcellent",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-excellent.png",
+    description:
+      "IntelligenceSummary component with excellent quality score (85+), showing green status and low anomaly count",
+    storyId: "intelligence-intelligencesummary--excellent-quality",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 150 },
+  },
+  "intelligence-summary-needs-attention": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceSummaryNeedsAttention",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-needs-attention.png",
+    description:
+      "IntelligenceSummary component with low quality score (<50), showing red status and high anomaly count requiring attention",
+    storyId: "intelligence-intelligencesummary--needs-attention",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 150 },
+  },
+  "intelligence-anomaly-green": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceAnomalyGreen",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-green.png",
+    description:
+      "AnomalySection component with green status (p > 0.05), showing no significant statistical issues",
+    storyId: "intelligence-anomalysection--green-status",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 300 },
+  },
+  "intelligence-anomaly-red": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceAnomalyRed",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-red.png",
+    description:
+      "AnomalySection component with red status (p < 0.01), showing severe statistical anomalies requiring investigation",
+    storyId: "intelligence-anomalysection--red-status",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 300 },
+  },
+  "intelligence-deviation-chart": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceDeviationChart",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-deviation-chart.png",
+    description:
+      "DeviationChart showing expected vs actual performance distribution with mixed significance levels (green/yellow/red bars)",
+    storyId: "intelligence-deviationchart--mixed-significance",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 250 },
+  },
+  "intelligence-level-distribution": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceLevelDistribution",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-level-distribution.png",
+    description:
+      "LevelDistributionChart showing normal distribution of Low/Medium/High performers across job levels",
+    storyId: "intelligence-leveldistributionchart--normal-distribution",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 250 },
   },
   "calibration-filters-panel": {
     source: "full-app",

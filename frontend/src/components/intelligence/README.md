@@ -1,6 +1,29 @@
 # Intelligence Visualization Components
 
-This directory contains the visualization components for the Intelligence Tab feature.
+This directory contains the visualization components for the Intelligence Tab feature. Components are organized into **Current Components** (actively used in the app) and **Future Components** (planned for AI-powered features).
+
+## Component Organization
+
+### Current Components (Active)
+
+The following components are actively used in the Intelligence Tab:
+
+1. **IntelligenceSummary** - Summary cards displaying overall quality metrics
+2. **AnomalySection** - Statistical analysis showing significant deviations
+3. **DeviationChart** - Bar chart with significance indicators
+4. **LevelDistributionChart** - Stacked bar showing performance by level
+
+### Future Components (Planned)
+
+The following components are planned for AI-powered insights but not yet implemented:
+
+1. **AnomalyCard** - Individual anomaly display with actions (Atom)
+2. **InsightCard** - AI-generated insight display with confidence (Atom)
+3. **AnomaliesSection** - Collection of anomalies with filtering (Section)
+4. **InsightsSection** - Collection of AI insights with grouping (Section)
+5. **DistributionSection** - Distribution comparison section (Section)
+
+**Note:** Future components have their Storybook stories marked with 🔮 Future Feature badges for clarity.
 
 ## Components
 
@@ -248,6 +271,153 @@ Will be tested once integrated with backend API and real data.
 
 ---
 
+## Storybook Organization
+
+### Current Component Stories
+
+Stories for active components are located in the root:
+- `IntelligenceSummary.stories.tsx` - Summary card variants
+- `AnomalySection.stories.tsx` - Statistical analysis section variants
+- `DeviationChart.stories.tsx` - Bar chart with different datasets
+- `LevelDistributionChart.stories.tsx` - Stacked bar with performance levels
+
+### Future Component Stories
+
+Stories for planned components are organized by type and marked with "🔮 Future Feature" badges:
+
+**Atoms (atomic components):**
+- `atoms/🔮 Future Feature - AnomalyCard` - Individual anomaly card display
+- `atoms/🔮 Future Feature - InsightCard` - AI insight card display
+
+**Sections (compound components):**
+- `sections/🔮 Future Feature - AnomaliesSection` - Multiple anomalies collection
+- `sections/🔮 Future Feature - InsightsSection` - Multiple insights collection
+- `sections/🔮 Future Feature - DistributionSection` - Distribution comparison
+
+All future component stories include:
+- **JSDoc description block** explaining the component's planned purpose
+- **"🔮 Future Feature" prefix** in the Storybook title
+- **`parameters.docs.description.component`** with detailed information about implementation status
+- **Complete mock data and stories** ready for when the feature is implemented
+
+### Viewing in Storybook
+
+Run Storybook to see the stories:
+
+```bash
+cd frontend
+npm run storybook
+```
+
+Future feature components are clearly marked in the sidebar with the crystal ball emoji (🔮).
+
+---
+
+## Component Development Guidelines
+
+### Adding a New Current Component
+
+1. Create component file: `ComponentName.tsx`
+2. Create story file: `ComponentName.stories.tsx` with JSDoc header:
+   ```typescript
+   /**
+    * ComponentName
+    *
+    * Brief description of what this component does and where it's used.
+    */
+   const meta: Meta<typeof ComponentName> = {
+     title: "Intelligence/ComponentName",
+     // ... rest of meta
+   };
+   ```
+3. Add JSDoc comments to each story explaining the use case
+4. Add to barrel export in `index.ts`
+5. Document in this README
+
+### Adding a Future Component
+
+1. Create component file: `ComponentName.tsx`
+2. Create story file in appropriate subfolder: `atoms/ComponentName.stories.tsx` or `sections/ComponentName.stories.tsx`
+3. Add JSDoc header with "Future Feature" notation:
+   ```typescript
+   /**
+    * ComponentName - 🔮 Future Feature
+    *
+    * This component is planned for [purpose] but not yet implemented
+    * in the application.
+    */
+   const meta: Meta<typeof ComponentName> = {
+     title: "Intelligence/[Type]/🔮 Future Feature - ComponentName",
+     parameters: {
+       docs: {
+         description: {
+           component: "🔮 **Future Feature** - [Detailed description of planned implementation]",
+         },
+       },
+     },
+     // ... rest of meta
+   };
+   ```
+4. Add to the "Future Components" section in this README
+5. Do NOT add to barrel export until feature is implemented
+
+### Storybook Story Best Practices
+
+Each story should include:
+
+- **Clear title**: Describe what scenario/variant it shows
+- **JSDoc comment** (above story export):
+  ```typescript
+  /**
+   * Story name - Brief description
+   * Explains what this story demonstrates
+   */
+  export const StoryName: Story = { ... };
+  ```
+- **Meaningful args**: Use realistic data for the story variant
+- **Complete coverage**: Include common use cases and edge cases
+
+### Example Story Template
+
+```typescript
+/**
+ * Enhanced Performance
+ * Shows component with high performance score (85+)
+ */
+export const Enhanced: Story = {
+  args: {
+    score: 92,
+    title: "Excellent Quality",
+    // ... other props
+  },
+};
+```
+
+---
+
+## Component Hierarchy
+
+```
+Intelligence/
+├── Current Components (Active)
+│   ├── IntelligenceSummary        # Overview cards
+│   ├── AnomalySection             # Statistical anomalies
+│   ├── DeviationChart             # Bar chart
+│   └── LevelDistributionChart     # Stacked bar
+│
+└── Future Components (🔮 Planned)
+    ├── Atoms (Basic building blocks)
+    │   ├── AnomalyCard            # Single anomaly display
+    │   └── InsightCard            # Single insight display
+    │
+    └── Sections (Compound components)
+        ├── AnomaliesSection       # Anomaly collection
+        ├── InsightsSection        # Insight collection
+        └── DistributionSection    # Distribution analysis
+```
+
+---
+
 ## Future Enhancements
 
 Potential improvements for future iterations:
@@ -258,3 +428,4 @@ Potential improvements for future iterations:
 4. **Customization**: Allow color scheme overrides
 5. **Accessibility**: Add ARIA labels for screen readers
 6. **Drill-down**: Click to see detailed employee lists
+7. **AI Integration**: Implement future components with actual AI insights

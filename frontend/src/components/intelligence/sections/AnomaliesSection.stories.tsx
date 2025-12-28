@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { AnomaliesSection } from "./AnomaliesSection";
 import {
@@ -11,12 +11,25 @@ import {
   createMockAnomaly,
 } from "../../../mocks/mockAnomalies";
 
+/**
+ * AnomaliesSection - 🔮 Future Feature
+ *
+ * This section component is planned for AI-powered insights but not yet
+ * implemented in the application. It will display a collection of anomalies
+ * detected in employee data with filtering and severity grouping.
+ */
 const meta: Meta<typeof AnomaliesSection> = {
-  title: "Intelligence/Sections/AnomaliesSection",
+  title: "Intelligence/Sections/🔮 Future Feature - AnomaliesSection",
   component: AnomaliesSection,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    docs: {
+      description: {
+        component:
+          "🔮 **Future Feature** - This component is planned for AI-powered insights but not yet implemented in the application. It will display a collection of detected anomalies in employee data, organized by severity level with grouping and filtering capabilities.",
+      },
+    },
   },
   argTypes: {
     anomalies: {

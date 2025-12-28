@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { InsightsSection } from "./InsightsSection";
 import {
@@ -11,12 +11,25 @@ import {
   mockWarning,
 } from "../../../mocks/mockInsights";
 
+/**
+ * InsightsSection - 🔮 Future Feature
+ *
+ * This section component is planned for AI-powered insights but not yet
+ * implemented in the application. It will display AI-generated insights,
+ * recommendations, and observations about employee performance patterns.
+ */
 const meta: Meta<typeof InsightsSection> = {
-  title: "Intelligence/Sections/InsightsSection",
+  title: "Intelligence/Sections/🔮 Future Feature - InsightsSection",
   component: InsightsSection,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    docs: {
+      description: {
+        component:
+          "🔮 **Future Feature** - This component is planned for AI-powered insights but not yet implemented in the application. It will display AI-generated insights, recommendations, and observations about employee performance and distribution patterns with confidence scoring.",
+      },
+    },
   },
   argTypes: {
     insights: {
