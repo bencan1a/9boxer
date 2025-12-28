@@ -710,6 +710,36 @@ const windowOptions = {
     preload: path.join(__dirname, '../preload/index.js'),
   },
 };
+
+// Configure Content Security Policy (CSP)
+// Environment-aware: strict in production, permissive in development for Vite HMR
+mainWindow.webContents.session.webRequest.onHeadersReceived(
+  (details, callback) => {
+    const isDev = getIsDev();
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          [
+            "default-src 'self'",                                    // Only same-origin resources
+            isDev
+              ? "script-src 'self' 'unsafe-inline'"                 // Dev: Allow Vite HMR inline scripts
+              : "script-src 'self'",                                // Prod: Strict (verified: no inline scripts)
+            "style-src 'self' 'unsafe-inline'",                     // Inline styles for Material-UI
+            "img-src 'self' data: blob:",                           // Images from same origin, data URIs, blobs
+            "font-src 'self' data:",                                // Fonts from same origin, data URIs
+            "connect-src 'self' http://localhost:38000 ws://localhost:*", // Backend API + Vite HMR
+            "base-uri 'self'",                                      // Restrict base URL
+            "form-action 'self'",                                   // Restrict form submissions
+          ].join('; '),
+        ],
+      },
+    });
+  }
+);
+
+// Note: Production build (vite build) generates NO inline scripts.
+// All JavaScript is in external files (verified in frontend/dist/index.html).
 ```
 
 ### Backend Security Configuration

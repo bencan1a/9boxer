@@ -111,7 +111,7 @@ Components belong in specific zones:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Top Toolbar (AppBar)                               │  ← Global actions
+│  Top Toolbar (AppBarContainer)                      │  ← Global actions
 ├────────┬────────────────────────────┬───────────────┤
 │ Filter │  Grid Area                 │ Right Panel   │
 │ Drawer │  (NineBoxGrid)             │ (Employee     │  ← Primary workspace

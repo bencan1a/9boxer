@@ -12,7 +12,10 @@ New to 9Boxer? Let's get you to your first success fast.
 
 **[Start the 2-Minute Quickstart →](quickstart.md)**
 
-Upload your data, see your team on the grid, and understand what it means - all in less time than it takes to make coffee.
+Upload your data or load sample data, see your team on the grid, and understand what it means - all in less time than it takes to make coffee.
+
+!!! tip "Try Sample Data First"
+    Want to explore before uploading your own data? Load our pre-generated sample dataset with 200 realistic employees. Perfect for learning features and testing workflows. [Learn more →](getting-started.md#loading-sample-data)
 
 ![Sample 9-box grid showing employees organized by performance and potential](images/screenshots/index/hero-grid-sample.png)
 

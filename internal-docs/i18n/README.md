@@ -205,7 +205,7 @@ common.*            - Common UI elements (buttons, labels)
 
 ## Language Selector
 
-The `LanguageSelector` component is integrated into the AppBar and allows users to switch languages. The selected language is persisted to localStorage.
+The `LanguageSelector` component is integrated into the AppBarContainer and allows users to switch languages. The selected language is persisted to localStorage.
 
 ## For Translators
 

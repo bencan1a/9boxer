@@ -23,10 +23,14 @@ Visual tree of how components nest within the application.
 
 ```
 DashboardPage (Main Layout)
-├── AppBar (Top Toolbar)
-│   ├── FileMenu
-│   │   └── ExclusionDialog (conditional)
-│   ├── ViewModeToggle (grid area control)
+├── AppBarContainer (Top Toolbar)
+│   ├── PureAppBar (Presentation)
+│   │   ├── FileMenuButton
+│   │   └── HelpButton
+│   └── Dialogs (FileUploadDialog, LoadSampleDialog, SettingsDialog)
+├── FilterDrawer (Filter sidebar)
+│   └── ExclusionDialog (conditional)
+├── ViewModeToggle (grid area control - deprecated, moving to grid)
 │   ├── ZoomControls (grid area control)
 │   ├── LanguageSelector
 │   └── SettingsDialog (conditional)
@@ -84,9 +88,10 @@ Main layout components that structure the application.
 
 | Component | File | Purpose | Children |
 |-----------|------|---------|----------|
-| **DashboardPage** | `dashboard/DashboardPage.tsx` | Main app layout, manages panels | AppBar, FilterDrawer, NineBoxGrid, RightPanel |
-| **AppBar** | `dashboard/AppBar.tsx` | Top toolbar with global actions | FileMenu, ViewModeToggle, ZoomControls, LanguageSelector |
-| **FileMenu** | `dashboard/FileMenu.tsx` | File operations (New, Open, Save, Export) | ExclusionDialog (modal) |
+| **DashboardPage** | `dashboard/DashboardPage.tsx` | Main app layout, manages panels | AppBarContainer, FilterDrawer, NineBoxGrid, RightPanel |
+| **AppBarContainer** | `dashboard/AppBarContainer.tsx` | Top toolbar container with state management | PureAppBar, FileUploadDialog, LoadSampleDialog, SettingsDialog |
+| **PureAppBar** | `dashboard/PureAppBar.tsx` | Pure presentation toolbar | FileMenuButton, HelpButton |
+| **FileMenuButton** | `dashboard/FileMenuButton.tsx` | File operations dropdown (Import, Load Sample, Export) | None (pure component) |
 | **FilterDrawer** | `dashboard/FilterDrawer.tsx` | Search and filter sidebar | None (form inputs) |
 | **ExclusionDialog** | `dashboard/ExclusionDialog.tsx` | Manage excluded employees | None (form) |
 
@@ -217,8 +222,7 @@ Can be adapted for similar talent management apps.
 Tightly coupled to 9Boxer business logic.
 
 - **DashboardPage** - Main app layout
-- **AppBar** - App-specific toolbar
-- **FileMenu** - 9Boxer file operations
+- **AppBarContainer** - App-specific toolbar container
 - **FilterDrawer** - Employee filtering logic
 - **ExclusionDialog** - Employee exclusion feature
 - **ViewModeToggle** - Grid-specific modes
@@ -316,8 +320,7 @@ These components still use hardcoded pixel values, rem values, or numeric spacin
 - RightPanel - Hardcoded panel width values (320, 400, 600)
 
 **Dashboard Components:**
-- AppBar - Hardcoded spacing and dimensions
-- FileMenu - Hardcoded spacing
+- FilterDrawer - Hardcoded spacing
 
 **Common Components:**
 - ZoomControls - Hardcoded spacing
@@ -357,7 +360,7 @@ Alphabetical index of all major components with quick reference.
 | Component | Location | Type | Reusable | Uses Tokens |
 |-----------|----------|------|----------|-------------|
 | AnomalySection | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
-| AppBar | `dashboard/` | Layout | ❌ No | ❌ Legacy |
+| AppBarContainer | `dashboard/` | Layout | ❌ No | ✅ Partial |
 | Axis | `grid/` | Grid | ✅ Yes | ❌ Legacy |
 | BoxHeader | `grid/` | Grid | ✅ Yes | ✅ Partial |
 | ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ Legacy |
@@ -379,7 +382,7 @@ Alphabetical index of all major components with quick reference.
 | EventDisplay | `events/` | Events | ⚠️ Moderate | ❌ Legacy |
 | ExclusionDialog | `dashboard/` | Modal | ❌ No | ❌ Legacy |
 | ExclusionList | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
-| FileMenu | `dashboard/` | Menu | ❌ No | ❌ Legacy |
+| FileMenuButton | `dashboard/` | Menu | ⚠️ Moderate | ✅ Partial |
 | FileUploadDialog | `common/` | Modal | ✅ Yes | ✅ Partial |
 | FilterDrawer | `dashboard/` | Sidebar | ❌ No | ✅ Partial |
 | FilterSection | `dashboard/filters/` | Filter | ✅ Yes | ❌ Legacy |
@@ -417,7 +420,7 @@ Alphabetical index of all major components with quick reference.
 | Zone | Count | Purpose |
 |------|-------|---------|
 | **Common** | 11 | Reusable utilities (LoadingSpinner, EmptyState, ConfirmDialog, etc.) |
-| **Dashboard** | 10 | Layout & navigation (AppBar, FilterDrawer, FileMenu, etc.) |
+| **Dashboard** | 10 | Layout & navigation (AppBarContainer, FilterDrawer, FileMenuButton, etc.) |
 | **Grid** | 7 | Employee visualization (NineBoxGrid, GridBox, EmployeeTile, etc.) |
 | **Panel** | 10 | Detailed information (tabs, charts, employee details) |
 | **Intelligence** | 7 | Analytics & insights (charts, anomalies, summaries) |
@@ -450,8 +453,8 @@ Alphabetical index of all major components with quick reference.
 ### Parent-Child Relationships
 
 **DashboardPage** is the root container:
-- Uses 4 direct children (AppBar, FilterDrawer, NineBoxGrid, RightPanel)
-- Manages 2 modal dialogs (FileUploadDialog, SettingsDialog via AppBar)
+- Uses 4 direct children (AppBarContainer, FilterDrawer, NineBoxGrid, RightPanel)
+- Manages 3 modal dialogs (FileUploadDialog, LoadSampleDialog, SettingsDialog via AppBarContainer)
 - Displays 2 global indicators (ConnectionStatus, DevModeIndicator)
 
 **NineBoxGrid** renders 9 GridBox instances:

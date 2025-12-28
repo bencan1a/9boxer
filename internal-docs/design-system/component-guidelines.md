@@ -57,7 +57,7 @@ export const DashboardPage: React.FC = () => {
   // 4. Layout orchestration
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <AppBar />
+      <AppBarContainer />
       <PanelGroup direction="horizontal">
         <FilterDrawer />
         <NineBoxGrid />  {/* Presentational */}
@@ -324,7 +324,7 @@ Does this UI element appear in 2+ places?
 export const DashboardPage: React.FC = () => {
   return (
     <PanelLayout
-      header={<AppBar />}
+      header={<AppBarContainer />}
       left={<FilterDrawer />}
       center={<NineBoxGrid />}
       right={<RightPanel />}
