@@ -19,15 +19,15 @@ export interface FileNameDisplayProps {
 
 /**
  * FileNameDisplay component
- * 
+ *
  * Displays the current file name or a placeholder if no file is loaded.
  * Shows an asterisk (*) indicator for unsaved changes.
- * 
+ *
  * @example
  * ```tsx
- * <FileNameDisplay 
- *   fileName="employees.xlsx" 
- *   hasUnsavedChanges={true} 
+ * <FileNameDisplay
+ *   fileName="employees.xlsx"
+ *   hasUnsavedChanges={true}
  * />
  * ```
  */

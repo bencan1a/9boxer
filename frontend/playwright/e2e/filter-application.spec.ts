@@ -10,7 +10,7 @@
  * - Visual indicators (employee count)
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Filter Application End-to-End", () => {

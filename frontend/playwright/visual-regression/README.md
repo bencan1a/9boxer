@@ -222,8 +222,6 @@ If screenshot dimensions are wrong:
 
 ## Related Documentation
 
-- [Phase 2.1: Component-Screenshot Metadata](../../agent-projects/self-managing-docs-system/PHASE_2_1_IMPLEMENTATION.md)
-- [Phase 2.2: Change Detection](../../agent-projects/self-managing-docs-system/PHASE_2_2_IMPLEMENTATION.md)
 - [Screenshot Generation System](../screenshots/README.md)
 - [Playwright Visual Testing Docs](https://playwright.dev/docs/test-snapshots)
 

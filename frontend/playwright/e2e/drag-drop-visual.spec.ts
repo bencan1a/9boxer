@@ -3,7 +3,7 @@
  * Tests visual indicators and state changes during employee movement
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 
 test.describe("Drag-and-Drop Visual Feedback Flow", () => {

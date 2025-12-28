@@ -3,7 +3,7 @@
  * Tests the complete flow of viewing statistics, distribution data, and updates after employee movement
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Statistics Tab Display", () => {

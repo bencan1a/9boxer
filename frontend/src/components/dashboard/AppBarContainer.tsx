@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 /**
  * AppBarContainer component
- * 
+ *
  * Container component that manages state and connects the pure AppBar
  * to the application's session store and other contexts.
  */

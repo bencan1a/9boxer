@@ -5,7 +5,7 @@
  * Converted from Cypress test: cypress/e2e/export-flow.cy.ts
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 
 test.describe("Export Flow", () => {

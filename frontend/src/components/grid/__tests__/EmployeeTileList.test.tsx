@@ -166,7 +166,7 @@ describe("EmployeeTileList", () => {
 
     const cards = screen.getAllByTestId(/employee-card-/);
     expect(cards).toHaveLength(3);
-    
+
     // Check order by employee IDs
     expect(cards[0]).toHaveAttribute("data-testid", "employee-card-1");
     expect(cards[1]).toHaveAttribute("data-testid", "employee-card-2");

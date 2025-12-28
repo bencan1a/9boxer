@@ -3,7 +3,7 @@
  * Tests the complete flow of excluding employees using quick filter buttons
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Employee Exclusions with Quick Filters Flow", () => {

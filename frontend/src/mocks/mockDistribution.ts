@@ -2,7 +2,11 @@
  * Mock distribution data for Storybook and testing
  */
 
-import type { DistributionData, DistributionSegment, BoxPosition } from "../types/intelligence";
+import type {
+  DistributionData,
+  DistributionSegment,
+  BoxPosition,
+} from "../types/intelligence";
 
 /**
  * Create a distribution segment

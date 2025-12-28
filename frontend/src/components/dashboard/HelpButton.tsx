@@ -4,12 +4,7 @@
  */
 
 import React, { useState } from "react";
-import {
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import InfoIcon from "@mui/icons-material/Info";
@@ -33,9 +28,9 @@ export interface HelpButtonProps {
 
 /**
  * HelpButton component
- * 
+ *
  * A button with dropdown menu for help-related actions.
- * 
+ *
  * @example
  * ```tsx
  * <HelpButton
@@ -55,7 +50,8 @@ export const HelpButton: React.FC<HelpButtonProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // Use controlled state if provided, otherwise use internal state
-  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
+  const isOpen =
+    controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // Always capture the button element for menu anchoring,
@@ -120,10 +116,7 @@ export const HelpButton: React.FC<HelpButtonProps> = ({
           {t("dashboard.appBar.userGuide")}
         </MenuItem>
 
-        <MenuItem
-          onClick={handleAboutClick}
-          data-testid="about-menu-item"
-        >
+        <MenuItem onClick={handleAboutClick} data-testid="about-menu-item">
           <InfoIcon sx={{ mr: 1 }} fontSize="small" />
           {t("dashboard.appBar.about")}
         </MenuItem>

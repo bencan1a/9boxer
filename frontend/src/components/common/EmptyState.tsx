@@ -97,7 +97,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
       {/* Title */}
       <Typography
-        variant={iconSize === "large" ? "h4" : iconSize === "medium" ? "h5" : "h6"}
+        variant={
+          iconSize === "large" ? "h4" : iconSize === "medium" ? "h5" : "h6"
+        }
         gutterBottom
       >
         {title}

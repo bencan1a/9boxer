@@ -8,7 +8,7 @@
  * - Language preference persistence across reloads
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 
 test.describe("Language Switching", () => {

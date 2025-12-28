@@ -3,7 +3,7 @@
  * Tests panel toggle, tab switching, resize functionality, and visibility
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 
 test.describe("Right Panel Interactions", () => {

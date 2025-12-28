@@ -84,7 +84,9 @@ describe("BoxHeader", () => {
     render(<BoxHeader {...defaultProps} />);
 
     // Check that aria-label is set (for accessibility/tooltip)
-    const element = screen.getByLabelText("High performers with high potential");
+    const element = screen.getByLabelText(
+      "High performers with high potential"
+    );
     expect(element).toBeInTheDocument();
   });
 });

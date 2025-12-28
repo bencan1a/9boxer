@@ -9,7 +9,7 @@
  * - Responsive hiding on small screens
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 
 // Note: Zoom functionality is in ViewControls component (data-testid="view-controls")

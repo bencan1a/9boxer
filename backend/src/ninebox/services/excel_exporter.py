@@ -178,6 +178,7 @@ class ExcelExporter:
 
         # Save modified workbook
         workbook.save(output_path)
+        workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     def _find_column(self, sheet: Worksheet, col_name: str, create: bool = False) -> int | None:
         """Find column index by name."""

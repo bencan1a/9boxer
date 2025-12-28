@@ -5,7 +5,7 @@
  * Converted from Cypress test: cypress/e2e/upload-flow.cy.ts
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 import * as path from "path";
 

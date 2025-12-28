@@ -319,6 +319,7 @@ def sample_excel_file(tmp_path: Path) -> Path:
             data_sheet.cell(row_idx, col_idx, value)
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
     return file_path
 
 

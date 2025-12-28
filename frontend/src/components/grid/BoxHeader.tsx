@@ -1,10 +1,10 @@
 /**
  * Box header component - displays position label, employee count, and expand/collapse button
- * 
+ *
  * @component
  * @example
  * ```tsx
- * <BoxHeader 
+ * <BoxHeader
  *   position={9}
  *   positionName="Star"
  *   shortLabel="H,H"
@@ -58,11 +58,11 @@ export interface BoxHeaderProps {
 
 /**
  * BoxHeader component - displays grid box header with controls
- * 
+ *
  * Adapts layout based on expansion state:
  * - Collapsed: Centered vertical layout with prominent expand button
  * - Normal/Expanded: Horizontal layout with badge and controls
- * 
+ *
  * @param props - Component props
  * @returns The rendered box header
  */

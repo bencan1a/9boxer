@@ -104,6 +104,7 @@ def test_parse_when_valid_file_then_handles_optional_fields_gracefully(tmp_path:
     data_sheet.cell(2, 4, "MT1")
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     parser = ExcelParser()
     result = parser.parse(file_path)
@@ -143,6 +144,7 @@ def test_parse_when_missing_required_columns_then_raises_error(tmp_path: Path) -
     # Missing "Business Title" and "Job Level - Primary Position"
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     parser = ExcelParser()
     with pytest.raises(ValueError, match="Missing required columns"):
@@ -162,6 +164,7 @@ def test_parse_when_no_valid_employees_then_raises_error(tmp_path: Path) -> None
         data_sheet.cell(1, col_idx, header)
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     parser = ExcelParser()
     with pytest.raises(ValueError, match="No valid employees found"):

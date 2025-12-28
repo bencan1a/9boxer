@@ -65,6 +65,7 @@ def upload_sample_data_with_flags(
             sheet.cell(row_idx, col_idx, value)
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     # Upload file
     with open(file_path, "rb") as f:  # noqa: PTH123

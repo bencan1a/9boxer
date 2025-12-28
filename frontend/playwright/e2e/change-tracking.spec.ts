@@ -3,7 +3,7 @@
  * Tests the complete flow of moving employees, viewing changes, and adding notes
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import {
   uploadExcelFile,
   dragEmployeeToPosition,
