@@ -263,6 +263,143 @@ const handleUpload = async () => {
 
 ---
 
+## Component State Management
+
+### State Machine Patterns
+
+For complex UI components with multiple states and transitions, use state machine patterns to ensure predictable behavior.
+
+#### NineBoxGrid Component States
+
+**Component Hierarchy:**
+```
+NineBoxGrid (container)
+├── GridAxes (axis labels)
+├── GridBox[] (9 instances)
+│   ├── BoxHeader (label, count, controls)
+│   ├── EmployeeTileList (layout wrapper)
+│   │   └── EmployeeTile[] (draggable cards)
+│   └── DropZone (drag target)
+└── DragOverlay (active drag item)
+```
+
+#### View Mode State Machine
+
+```typescript
+type ViewMode = 'normal' | 'donut' | 'compact';
+```
+
+**States:**
+- `normal` - Standard 3x3 grid with all employees
+- `donut` - Calibration mode, shows only position 5 employees
+- `compact` - Smaller grid for embedded views (future)
+
+**Transitions:**
+- User clicks "Donut Mode" toggle → `normal` ↔ `donut`
+- Mode persists in session store
+
+**Implementation:**
+```tsx
+const [viewMode, setViewMode] = useState<ViewMode>('normal');
+
+// Transition
+const handleToggleDonut = () => {
+  setViewMode(prev => prev === 'normal' ? 'donut' : 'normal');
+};
+```
+
+#### Drag State Machine
+
+```typescript
+type DragState = 'idle' | 'dragging' | 'dragOver';
+```
+
+**States:**
+- `idle` - No drag operation in progress
+- `dragging` - User is dragging an employee tile
+- `dragOver` - Dragged item is over a drop target
+
+**Transitions:**
+- User starts drag → `idle` → `dragging`
+- User moves over GridBox → `dragging` → `dragOver`
+- User releases or cancels → any state → `idle`
+
+**Implementation:**
+```tsx
+const [dragState, setDragState] = useState<DragState>('idle');
+
+const handleDragStart = () => setDragState('dragging');
+const handleDragOver = () => setDragState('dragOver');
+const handleDragEnd = () => setDragState('idle');
+```
+
+#### GridBox Expansion State Machine
+
+```typescript
+type ExpansionState = 'normal' | 'expanded' | 'collapsed';
+```
+
+**States:**
+- `normal` - Default size (150-400px height)
+- `expanded` - Full viewport height, multi-column layout
+- `collapsed` - Minimal size (60-80px), shows label only
+
+**Transitions:**
+- User clicks expand button → `normal` → `expanded`
+- User clicks collapse button → `expanded` → `normal`
+- Another box expands → `normal` → `collapsed` (automatic)
+- ESC key pressed → `expanded` → `normal` (all boxes)
+
+**Persistence:**
+- Expanded position saved to localStorage (`nineBoxExpandedPosition`)
+- Restored on app reload
+
+**Implementation:**
+```tsx
+const [expandedPosition, setExpandedPosition] = useState<number | null>(null);
+
+const handleExpand = (position: number) => {
+  setExpandedPosition(position);
+  localStorage.setItem('nineBoxExpandedPosition', String(position));
+};
+
+const handleCollapse = () => {
+  setExpandedPosition(null);
+  localStorage.removeItem('nineBoxExpandedPosition');
+};
+
+// Restore on mount
+useEffect(() => {
+  const saved = localStorage.getItem('nineBoxExpandedPosition');
+  if (saved) setExpandedPosition(Number(saved));
+}, []);
+```
+
+### State Management Guidelines
+
+**1. Use State Machines for Complex UI:**
+- Multiple states with defined transitions
+- Prevent invalid state combinations
+- Make behavior predictable and testable
+
+**2. Persist User Preferences:**
+- View mode toggles → Session store
+- Expansion state → localStorage
+- Filter selections → URL params
+
+**3. State Scope:**
+- **Local state** (`useState`): UI-only state (expanded, hovered, open)
+- **Zustand store**: Shared data (employees, session, filters)
+- **Context**: Cross-cutting concerns (theme, i18n, notifications)
+- **localStorage**: User preferences that persist across sessions
+
+**4. State Cleanup:**
+- Reset to initial state on unmount when appropriate
+- Clear localStorage for temporary UI state
+- Document which state persists and why
+
+---
+
 ## When to Create New Components
 
 ### Decision Tree

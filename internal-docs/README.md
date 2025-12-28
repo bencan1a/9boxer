@@ -73,7 +73,7 @@ Quick navigation to all documentation categories:
 #### Components
 
 - **[components/](components/)** - Component-specific documentation
-  - [ninebox-grid-states.md](components/ninebox-grid-states.md) - Grid state management
+  - State management patterns now in [design-system/component-guidelines.md](design-system/component-guidelines.md#component-state-management)
 
 ### Reference Documentation
 
@@ -156,6 +156,43 @@ This documentation is **optimized for AI agents**, not humans. Only agents write
    - Update existing docs, don't create new ones
    - Use `agent-tmp/` for temporary work (auto-deleted after 7 days)
    - Use `agent-projects/<project>/` for ephemeral plans (<21 days)
+
+### Documentation Consolidation Approach
+
+To prevent documentation fragmentation and duplication, we follow a **consolidation-first approach**:
+
+**Core Documentation Files** (update these, don't duplicate):
+- **[CLAUDE.md](../CLAUDE.md)** - Comprehensive technical guidance and architecture
+- **[AGENTS.md](../AGENTS.md)** - Workflow guide, best practices, and command reference
+- **[GITHUB_AGENT.md](../GITHUB_AGENT.md)** - GitHub Copilot/Agent onboarding and automated setup
+
+**When New Docs Are Created:**
+1. **Review**: Check if content belongs in existing core docs
+2. **Extract**: Pull valuable, non-redundant information
+3. **Consolidate**: Update the appropriate core doc
+4. **Delete**: Remove the new doc after consolidation
+5. **Verify**: Auto-generated docs (SUMMARY.md, CONTEXT.md) update automatically
+
+**Category-Specific Docs:**
+- Architecture: `architecture/`
+- Design system: `design-system/`
+- Testing: `testing/`
+- i18n: `i18n/`
+- Contributing: `contributing/`
+
+These category docs are kept when they provide **deep domain expertise** that would make core docs too large.
+
+**What Gets Consolidated:**
+- Command quick references → AGENTS.md
+- CI/CD workflow docs → CLAUDE.md (CI/CD Pipeline section)
+- Setup instructions → GITHUB_AGENT.md (Automated Setup section)
+- High-level overviews of specialized systems → README.md
+
+**Why This Matters:**
+- **Single source of truth**: No conflicting guidance
+- **Efficient context**: Agents find info in predictable locations
+- **Reduced maintenance**: Update one place, not three
+- **No documentation drift**: Changes propagate to dependent docs
 
 ### Trust Hierarchy (when information conflicts)
 
