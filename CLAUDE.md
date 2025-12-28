@@ -768,17 +768,61 @@ test.describe('Employee Upload Flow', () => {
 
 See `internal-docs/testing/` for comprehensive testing principles and best practices.
 
-### CI/CD Pipeline
-GitHub Actions workflows in `.github/workflows/`:
-- **`ci.yml`** - Main CI pipeline:
+### GitHub Actions & CI/CD
+
+**Total Workflows:** 13 (in `.github/workflows/`)
+
+| Category | Workflows | Purpose |
+|----------|-----------|---------|
+| CI/CD | ci.yml, pr.yml, weekly.yml, release.yml | Testing, validation, releases |
+| Build | build-electron.yml | Desktop application builds |
+| Documentation | docs.yml, docs-audit.yml, docs-auto-update.yml, screenshots.yml | Doc generation and maintenance |
+| Testing | visual-regression.yml, update-visual-baselines.yml | Visual regression testing |
+| Development | feature-checklist.yml | PR validation |
+| Environment | copilot-setup-steps.yml | GitHub Copilot setup |
+
+**Key Workflows:**
+
+- **`ci.yml`** - Main CI pipeline (push to main/develop):
   - Lint, format, type check, security scan
   - Tests across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.10, 3.11, 3.12)
   - Smart test selection based on changed files
   - Coverage enforcement on changed files (70% threshold)
-- **`nightly.yml`** - Nightly regression testing
-- **`docs.yml`** - Documentation updates
 
-The CI uses smart test selection via `.github/scripts/smart_test_selection.py` to only run relevant tests for PRs.
+- **`pr.yml`** - PR validation (optimized for speed):
+  - Similar checks to ci.yml but faster (reduced matrix)
+  - Runs on: windows-latest only
+
+- **`weekly.yml`** - Comprehensive weekly testing (Sundays 2 AM UTC):
+  - Full test suite on all platforms
+  - Security scanning with SBOM generation
+  - Dependency auditing (pip-audit + safety)
+  - Creates issues if regressions detected
+
+- **`docs.yml`** - Documentation generation (push to main):
+  - Runs `tools/build_context.py` to generate API docs, CONTEXT.md, SUMMARY.md
+  - Auto-commits changes with [skip ci]
+
+- **`docs-audit.yml`** - AI-powered documentation audit (Mondays 2 AM UTC):
+  - Uses Claude Sonnet 4.5 to detect stale docs, conflicts, missing content
+  - Creates GitHub issues with consolidation tasks
+  - Requires `ANTHROPIC_API_KEY` secret
+
+- **`screenshots.yml`** - Screenshot generation (Mondays 2 AM UTC):
+  - Automated documentation screenshots using Playwright
+  - Auto-commits updated images
+
+- **`build-electron.yml`** - Build desktop installers (manual trigger):
+  - Creates platform-specific installers (Windows .exe, macOS .dmg, Linux .AppImage)
+  - Build time: ~5-12 minutes per platform
+
+**Smart Test Selection:**
+The CI uses `.github/scripts/smart_test_selection.py` to only run relevant tests for PRs based on changed files.
+
+**Secrets Required:**
+- `ANTHROPIC_API_KEY` - For AI documentation audit
+- `PYPI_API_TOKEN` - For PyPI publishing (optional)
+- `GITHUB_TOKEN` - Auto-provided by GitHub Actions
 
 ## Documentation System
 

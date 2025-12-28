@@ -4,7 +4,6 @@
 
 > **For Comprehensive Reference**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance
 > **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for streamlined onboarding
-> **For Command Lookup**: See [internal-docs/QUICK_REFERENCE.md](internal-docs/QUICK_REFERENCE.md) for fast command reference
 
 ## 📱 PROJECT OVERVIEW
 
@@ -18,6 +17,16 @@
 - **No external dependencies**: Everything bundled in installer
 
 **This is NOT a web application.** Docker deployment configuration exists but is legacy.
+
+## 🔥 CRITICAL RULES
+
+**Before starting any work, remember these rules:**
+
+1. **ALWAYS activate venv first** - `. .venv/bin/activate` (90% of issues are from forgetting this)
+2. **Build backend BEFORE frontend** - PyInstaller executable → Electron Builder
+3. **Never use rm/touch/cp/mv** - Use git commands or Read/Edit/Write tools (Windows compatibility)
+4. **Test in Electron app** - Not just web mode (different environment, different bugs)
+5. **Trust facts.json** - Highest authority when docs conflict
 
 ## 🔧 ENVIRONMENT SETUP
 
@@ -401,33 +410,41 @@ git commit -m "Descriptive commit message"
 
 ## 🔍 COMMON ISSUES AND SOLUTIONS
 
-### "Module not found" Error (Python)
-**Cause:** Virtual environment not activated
-**Solution:** Run `. .venv/bin/activate` from project root
+| Issue | Solution |
+|-------|----------|
+| "Module not found" (Python) | Activate venv: `. .venv/bin/activate` |
+| Tests fail on import | Install dev mode: `pip install -e '.[dev]'` |
+| Electron won't start | Build backend first: `cd backend && ./scripts/build_executable.sh` |
+| Type checking errors | Add type hints to all parameters and returns |
+| Pre-commit fails | Run `make fix` then `pre-commit run --all-files` |
+| Frontend can't connect | Check backend running on port 38000 |
+| Backend executable won't run | Add missing modules to `backend/build_config/ninebox.spec` hiddenimports |
 
-### Tests Failing on Import
-**Cause:** Package not installed in development mode
-**Solution:**
+## 🔍 QUICK SEARCH COMMANDS
+
+Useful commands for searching the codebase:
+
 ```bash
-. .venv/bin/activate
-pip install -e '.[dev]'
+# Find files
+git ls-files "*.py"
+find . -name "*.ts" -not -path "*/node_modules/*"
+
+# Search code
+git grep "def process_"
+git grep -n "useState" -- "*.tsx"
+
+# Recent changes
+git log --oneline -10
+git diff HEAD~1
 ```
 
-### Type Checking Errors
-**Cause:** Missing type annotations
-**Solution:** Add type hints to all function parameters and returns
+## 💡 PRO TIPS
 
-### Backend Executable Won't Run
-**Cause:** Missing hidden imports in PyInstaller spec
-**Solution:** Add missing modules to `backend/build_config/ninebox.spec` hiddenimports
-
-### Electron App Won't Start
-**Cause:** Backend executable not found
-**Solution:** Build backend first with build scripts in `backend/scripts/`
-
-### Frontend Can't Connect to Backend
-**Cause:** Backend not running or wrong port
-**Solution:** Check backend is running on port 38000, check logs
+- **Save time**: Use `make check-all` for all quality checks at once
+- **Fast feedback**: Run `pytest backend/tests/unit` (fast) before full suite
+- **Avoid errors**: Always activate venv first (prevents 90% of issues)
+- **Platform safe**: Use Read/Edit/Write tools, not Bash file commands (`rm`, `touch`, `cp`, `mv`)
+- **Trust source**: When docs conflict, trust `internal-docs/facts.json` as highest authority
 
 ## 📚 DOCUMENTATION SYSTEM
 
@@ -462,7 +479,63 @@ python tools/build_context.py
 
 This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 
+### Screenshot Regeneration
+
+The project includes automated documentation screenshot generation with manual trigger capability.
+
+**Automatic Triggers:**
+- **Pull Requests**: Screenshots are automatically regenerated when PRs modify components that affect documentation
+- **Scheduled**: Weekly runs on Mondays at 2 AM UTC (via `.github/workflows/screenshots.yml`)
+
+**Manual Trigger via GitHub Actions:**
+
+You can manually trigger screenshot regeneration using GitHub's workflow dispatch feature:
+
+1. Navigate to **Actions** tab in GitHub repository
+2. Select **Documentation Auto-Update** workflow
+3. Click **Run workflow** button
+4. Configure options:
+   - **Branch**: Select the branch to run on (defaults to `main`)
+   - **Screenshots**: (Optional) Comma-separated list of specific screenshots to regenerate (e.g., `grid-normal,changes-tab`)
+     - Leave empty to regenerate all screenshots
+   - **Base branch**: (Optional) Base branch to compare against (defaults to `main`)
+
+**Local Screenshot Generation:**
+```bash
+cd frontend
+
+# Generate all automated screenshots
+npm run screenshots:generate
+
+# Generate specific screenshots
+npm run screenshots:generate grid-normal changes-tab
+
+# Run in headed mode (show browser)
+HEADLESS=false npm run screenshots:generate
+```
+
+**What Happens:**
+- Screenshots are generated using Playwright and stored in `resources/user-guide/docs/images/screenshots/`
+- When triggered by PR: Creates a documentation PR with regenerated screenshots
+- When triggered manually: Auto-commits updated screenshots to the selected branch
+- Visual regression testing compares new screenshots against baselines
+- Results are uploaded as workflow artifacts for review
+
+See [CLAUDE.md](CLAUDE.md) for complete screenshot generation documentation and architecture details.
+
 ## 📖 ADDITIONAL RESOURCES
+
+### Quick Documentation Lookup
+
+| Need | File |
+|------|------|
+| Quick start | [GITHUB_AGENT.md](GITHUB_AGENT.md) |
+| Source of truth | [internal-docs/facts.json](internal-docs/facts.json) |
+| Technical details | [CLAUDE.md](CLAUDE.md) |
+| Workflow guide | This file ([AGENTS.md](AGENTS.md)) |
+| Full context | [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) |
+| Build instructions | [BUILD.md](BUILD.md) |
+| Testing guide | [.github/agents/test.md](.github/agents/test.md) |
 
 ### Core Documentation
 - [CLAUDE.md](CLAUDE.md) - Claude Code guidance with architecture details

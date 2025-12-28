@@ -1496,6 +1496,138 @@ describe('Button', () => {
 
 ---
 
+## State Management Patterns
+
+### Component State Machines
+
+State machines provide predictable, testable state transitions for complex components. This section documents the state definitions and transitions for key components.
+
+#### NineBoxGrid Component Hierarchy
+
+```
+NineBoxGrid (container)
+├── GridAxes (axis labels)
+├── GridBox[] (9 instances)
+│   ├── BoxHeader (label, count, controls)
+│   ├── EmployeeTileList (layout wrapper)
+│   │   └── EmployeeTile[] (draggable cards)
+│   └── DropZone (drag target)
+└── DragOverlay (active drag item)
+```
+
+### NineBoxGrid States
+
+#### View Mode State
+
+```typescript
+type ViewMode = 'normal' | 'donut' | 'compact';
+```
+
+**State Definitions:**
+- `normal` - Standard 3x3 grid with all employees
+- `donut` - Calibration mode, shows only position 5 employees
+- `compact` - Smaller grid for embedded views (future)
+
+**State Transitions:**
+- User clicks "Donut Mode" toggle → `normal` ↔ `donut`
+- Mode persists in session store
+
+**Implementation:** View mode state is managed by session store and drives conditional rendering of the grid.
+
+#### Drag State
+
+```typescript
+type DragState = 'idle' | 'dragging' | 'dragOver';
+```
+
+**State Definitions:**
+- `idle` - No drag operation in progress
+- `dragging` - User is dragging an employee tile
+- `dragOver` - Dragged item is over a drop target
+
+**State Transitions:**
+- User starts drag → `idle` → `dragging`
+- User moves over GridBox → `dragging` → `dragOver`
+- User releases or cancels → any state → `idle`
+
+**Implementation:** Drag state is managed by `@dnd-kit` library with visual feedback (opacity changes, drop zone highlights).
+
+### GridBox States
+
+#### Expansion State
+
+```typescript
+type ExpansionState = 'normal' | 'expanded' | 'collapsed';
+```
+
+**State Definitions:**
+- `normal` - Default size (150-400px height)
+- `expanded` - Full viewport height, multi-column layout
+- `collapsed` - Minimal size (60-80px), shows label only
+
+**State Transitions:**
+- User clicks expand button → `normal` → `expanded`
+- User clicks collapse button → `expanded` → `normal`
+- Another box expands → `normal` → `collapsed` (automatic)
+- ESC key pressed → `expanded` → `normal` (all boxes)
+
+**Persistence:** Expanded position saved to localStorage (`nineBoxExpandedPosition`) and restored on app reload.
+
+**Implementation Example:**
+
+```tsx
+// In NineBoxGrid.tsx
+const [expandedPosition, setExpandedPosition] = useState<number | null>(null);
+
+// Load from localStorage on mount
+useEffect(() => {
+  const saved = localStorage.getItem('nineBoxExpandedPosition');
+  if (saved) setExpandedPosition(parseInt(saved));
+}, []);
+
+// Save to localStorage on change
+useEffect(() => {
+  if (expandedPosition !== null) {
+    localStorage.setItem('nineBoxExpandedPosition', expandedPosition.toString());
+  } else {
+    localStorage.removeItem('nineBoxExpandedPosition');
+  }
+}, [expandedPosition]);
+
+// Pass to GridBox components
+<GridBox
+  position={1}
+  isExpanded={expandedPosition === 1}
+  isCollapsed={expandedPosition !== null && expandedPosition !== 1}
+  onExpand={() => setExpandedPosition(1)}
+  onCollapse={() => setExpandedPosition(null)}
+/>
+```
+
+### State Management Best Practices
+
+**DO:**
+- ✅ Use TypeScript union types for state enums
+- ✅ Document all valid states and transitions
+- ✅ Handle ESC key for collapsing expanded states
+- ✅ Persist user preferences to localStorage
+- ✅ Restore state on component mount
+- ✅ Clear invalid state on unmount
+
+**DON'T:**
+- ❌ Allow invalid state combinations (use discriminated unions)
+- ❌ Mutate state directly (use setState)
+- ❌ Store derived state (compute from source state)
+- ❌ Forget to handle loading/error states
+
+**Related Files:**
+- [NineBoxGrid.tsx](../../frontend/src/components/grid/NineBoxGrid.tsx) - Main grid container
+- [GridBox.tsx](../../frontend/src/components/grid/GridBox.tsx) - Individual grid boxes
+- [BoxHeader.tsx](../../frontend/src/components/grid/BoxHeader.tsx) - Box headers with expand/collapse controls
+- [EmployeeTileList.tsx](../../frontend/src/components/grid/EmployeeTileList.tsx) - Tile layout wrapper
+
+---
+
 ## Related Documentation
 
 - **[Component Inventory](component-inventory.md)** - Catalog of all components

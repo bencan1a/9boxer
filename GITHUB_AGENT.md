@@ -3,7 +3,6 @@
 **Welcome to 9Boxer!** This guide helps GitHub Agent (and GitHub Copilot) work efficiently with this repository.
 
 > **Quick Links:**
-> 🤖 [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) - Automated environment setup (for Copilot)
 > 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
 > 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices
 > 📚 [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) - Comprehensive project context
@@ -13,15 +12,65 @@
 
 ## 🤖 Automated Setup (GitHub Copilot)
 
-**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! See [internal-docs/COPILOT_SETUP.md](internal-docs/COPILOT_SETUP.md) for details.
+**If you're using GitHub Copilot's coding agent**, the environment is automatically set up! The repository uses GitHub's official Copilot environment customization feature to automatically configure everything.
 
-The automated setup includes:
-- ✅ Python 3.13 virtual environment at `.venv/`
-- ✅ All backend dependencies installed
-- ✅ Node.js 20 with all frontend dependencies
-- ✅ Playwright browsers for E2E testing
-- ✅ Pre-commit hooks configured
-- ✅ Environment validated and ready
+### How It Works
+
+**Custom Instructions**: `.github/copilot-instructions.md` provides context about the repository
+**Automated Workflow**: `.github/workflows/copilot-setup-steps.yml` runs automatically when Copilot starts a coding session
+
+### What Gets Installed
+
+**Python Backend:**
+- Python 3.13 with `uv` (fast package installer)
+- Virtual environment at `.venv/`
+- All backend dependencies from `pyproject.toml`
+- Development tools: pytest, ruff, mypy, pyright, bandit
+
+**Node.js Frontend:**
+- Node.js 20 with npm caching
+- All frontend dependencies from `frontend/package.json`
+- React, Electron, Material-UI, TypeScript, Vite
+
+**Playwright E2E Testing:**
+- Chromium browser with system dependencies
+- Cached for faster subsequent runs
+
+**Pre-commit Hooks:**
+- Code quality checks configured automatically
+
+### Benefits
+
+- **Consistency**: Every Copilot session starts with the exact same environment
+- **Speed**: Dependencies are cached, making setup fast (~5-10 minutes with cache)
+- **Correctness**: Eliminates common errors like forgetting to activate venv
+- **Zero Manual Steps**: No need to remember setup commands
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Python packages not found | Workflow activates venv automatically; for manual commands: `. .venv/bin/activate` |
+| Frontend dependencies not found | Workflow uses `npm ci` for clean install |
+| Playwright browsers not found | Workflow installs and caches automatically |
+| E2E tests fail | Ensure Playwright cache isn't corrupted; workflow rebuilds if needed |
+
+### Technical Details
+
+**Why `uv pip install --system`?**
+- 10x faster than pip
+- Installs directly into GitHub Actions' system Python (isolated per job)
+- Matches pattern used in CI workflows
+
+**Why `npm ci` instead of `npm install`?**
+- Faster installation from package-lock.json
+- Ensures exact versions match lock file
+- Better for CI/CD environments
+
+**Cache Strategy:**
+- Python: `cache: 'pip'` in `setup-python` action
+- Node.js: `cache: 'npm'` in `setup-node` action
+- Playwright: Cached at `~/.cache/ms-playwright`
 
 **Skip to [Common Tasks](#-common-tasks)** if using Copilot.
 

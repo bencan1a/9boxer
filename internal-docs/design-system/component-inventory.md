@@ -2,7 +2,7 @@
 
 Complete catalog of all UI components in the 9Boxer application. This inventory documents the current state of componentization, showing which components use design tokens and which still have legacy hardcoded values.
 
-**Last Updated:** 2025-12-27
+**Last Updated:** 2025-12-28
 **Total Components:** 60 component files (excluding tests and stories)
 
 ---
@@ -252,8 +252,8 @@ Design tokens are centralized in `frontend/src/theme/tokens.ts` and provide:
 
 ### Current Adoption Status
 
-**Components Using Design Tokens:** 16 out of 60 (27%)
-**Components with Legacy Hardcoded Values:** 44 out of 60 (73%)
+**Components Using Design Tokens:** 27 out of 60 (45%)
+**Components with Legacy Hardcoded Values:** 33 out of 60 (55%)
 
 ### Components Using Design Tokens
 
@@ -279,6 +279,21 @@ These components properly reference `theme.tokens.*` for styling:
 
 **Common Components:**
 - ConnectionStatus - Uses `theme.tokens.duration.fast`, `theme.tokens.easing.easeInOut`
+- LoadingSpinner - Uses `theme.tokens.spacing.md`, `theme.tokens.zIndex.tooltip`
+- EmptyState - Uses `theme.tokens.spacing.*`, `theme.tokens.dimensions.*`
+- LanguageSelector - Uses `theme.tokens.spacing.xxl`
+- FileUploadDialog - Uses `theme.tokens.spacing.*`, `theme.tokens.radius.*`
+- ConfirmDialog - Uses `theme.tokens.spacing.*`
+- ErrorBoundary - Uses `theme.tokens.dimensions.errorBoundary.*`, `theme.tokens.spacing.*`
+
+**Dashboard Components:**
+- FilterDrawer - Uses `theme.tokens.dimensions.drawer.width`, `theme.tokens.dimensions.appBar.height`, `theme.tokens.spacing.*`
+- PureAppBar - Uses `theme.tokens.dimensions.appBar.*`, `theme.tokens.spacing.*`
+
+**Panel Components:**
+- DetailsTab - Uses `theme.tokens.spacing.lg`
+- StatisticsTab - Uses `theme.tokens.spacing.*`
+- IntelligenceTab - Uses `theme.tokens.spacing.*`
 
 **Filter Components:**
 - ReportingChainFilter - Uses `theme.tokens.opacity.hover`
@@ -294,27 +309,18 @@ These components properly reference `theme.tokens.*` for styling:
 These components still use hardcoded pixel values, rem values, or numeric spacing instead of tokens:
 
 **Panel Components:**
-- StatisticsTab - Hardcoded widths, heights, gaps in CurlyBrace SVG
 - RatingsTimeline - Hardcoded dimensions for timeline visualization
 - EmployeeDetails - Hardcoded spacing and dimensions
 - EmployeeFlags - Hardcoded spacing
-- IntelligenceTab - Hardcoded spacing
 - ChangeTrackerTab - Hardcoded spacing
 - RightPanel - Hardcoded panel width values (320, 400, 600)
-- DetailsTab - Hardcoded gap values
 
 **Dashboard Components:**
-- FilterDrawer - Hardcoded widths and spacing
 - AppBar - Hardcoded spacing and dimensions
-- PureAppBar - Hardcoded spacing
 - FileMenu - Hardcoded spacing
 
 **Common Components:**
-- LoadingSpinner - Hardcoded z-index (9999), size values
-- ErrorBoundary - Hardcoded spacing
-- EmptyState - Hardcoded spacing and icon sizes
 - ZoomControls - Hardcoded spacing
-- LanguageSelector - Hardcoded spacing
 - ViewControls - Hardcoded spacing
 
 **Intelligence Components:**
@@ -355,45 +361,45 @@ Alphabetical index of all major components with quick reference.
 | Axis | `grid/` | Grid | ✅ Yes | ❌ Legacy |
 | BoxHeader | `grid/` | Grid | ✅ Yes | ✅ Partial |
 | ChangeTrackerTab | `panel/` | Panel Tab | ❌ No | ❌ Legacy |
-| ConfirmDialog | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| ConfirmDialog | `common/` | Utility | ✅ Yes | ✅ Partial |
 | ConnectionStatus | `common/` | Global | ⚠️ Moderate | ✅ Partial |
 | DashboardPage | `dashboard/` | Layout | ❌ No | ✅ Partial |
-| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ Legacy |
+| DetailsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ Partial |
 | DeviationChart | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
 | DevModeIndicator | `common/` | Global | ⚠️ Moderate | ❌ Legacy |
 | DistributionChart | `panel/` | Visualization | ✅ Yes | ✅ Partial |
 | DistributionHeatmap | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
-| EmptyState | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| EmptyState | `common/` | Utility | ✅ Yes | ✅ Partial |
 | EmployeeChangesSummary | `panel/` | Panel Component | ❌ No | ❌ Legacy |
 | EmployeeCount | `grid/` | Grid | ✅ Yes | ❌ Legacy |
 | EmployeeDetails | `panel/` | Panel Component | ❌ No | ❌ Legacy |
 | EmployeeFlags | `panel/` | Panel Component | ❌ No | ❌ Legacy |
 | EmployeeTile | `grid/` | Grid | ✅ Yes | ✅ Partial |
-| ErrorBoundary | `common/` | Global | ✅ Yes | ❌ Legacy |
+| ErrorBoundary | `common/` | Global | ✅ Yes | ✅ Partial |
 | EventDisplay | `events/` | Events | ⚠️ Moderate | ❌ Legacy |
 | ExclusionDialog | `dashboard/` | Modal | ❌ No | ❌ Legacy |
 | ExclusionList | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
 | FileMenu | `dashboard/` | Menu | ❌ No | ❌ Legacy |
-| FileUploadDialog | `common/` | Modal | ✅ Yes | ❌ Legacy |
-| FilterDrawer | `dashboard/` | Sidebar | ❌ No | ❌ Legacy |
+| FileUploadDialog | `common/` | Modal | ✅ Yes | ✅ Partial |
+| FilterDrawer | `dashboard/` | Sidebar | ❌ No | ✅ Partial |
 | FilterSection | `dashboard/filters/` | Filter | ✅ Yes | ❌ Legacy |
 | FlagFilters | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
 | GridBox | `grid/` | Grid | ⚠️ Moderate | ✅ Partial |
 | GridPositionFilter | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
 | IntelligenceSummary | `intelligence/` | Intelligence | ❌ No | ❌ Legacy |
-| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ❌ Legacy |
-| LanguageSelector | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| IntelligenceTab | `panel/` | Panel Tab | ❌ No | ✅ Partial |
+| LanguageSelector | `common/` | Utility | ✅ Yes | ✅ Partial |
 | LevelDistributionChart | `intelligence/` | Intelligence | ⚠️ Moderate | ✅ Partial |
-| LoadingSpinner | `common/` | Utility | ✅ Yes | ❌ Legacy |
+| LoadingSpinner | `common/` | Utility | ✅ Yes | ✅ Partial |
 | ManagementChain | `panel/` | Panel Component | ❌ No | ✅ Partial |
 | MockDataDemo | `intelligence/` | Development | ❌ No | ❌ Legacy |
 | NineBoxGrid | `grid/` | Grid | ⚠️ Moderate | ✅ Partial |
-| PureAppBar | `dashboard/` | Layout | ❌ No | ❌ Legacy |
+| PureAppBar | `dashboard/` | Layout | ❌ No | ✅ Partial |
 | RatingsTimeline | `panel/` | Panel Component | ❌ No | ❌ Legacy |
 | ReportingChainFilter | `dashboard/filters/` | Filter | ❌ No | ✅ Partial |
 | RightPanel | `panel/` | Layout | ⚠️ Moderate | ❌ Legacy |
 | SettingsDialog | `settings/` | Modal | ❌ No | ❌ Legacy |
-| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ❌ Legacy |
+| StatisticsTab | `panel/` | Panel Tab | ⚠️ Moderate | ✅ Partial |
 | ViewControls | `common/` | Control | ✅ Yes | ❌ Legacy |
 | ViewModeToggle | `grid/` | Control | ❌ No | ❌ Legacy |
 | ZoomControls | `common/` | Control | ✅ Yes | ❌ Legacy |
@@ -432,8 +438,8 @@ Alphabetical index of all major components with quick reference.
 
 | Status | Count | Percentage | Description |
 |--------|-------|------------|-------------|
-| **Using Tokens (Partial)** | 16 | 27% | Components that reference `theme.tokens.*` |
-| **Legacy (Hardcoded)** | 44 | 73% | Components with hardcoded values |
+| **Using Tokens (Partial)** | 27 | 45% | Components that reference `theme.tokens.*` |
+| **Legacy (Hardcoded)** | 33 | 55% | Components with hardcoded values |
 
 **Note:** "Partial" means the component uses some design tokens but may still have hardcoded values for complex calculations or legacy code paths. The design token system was introduced in December 2025, so most pre-existing components have not been migrated yet.
 

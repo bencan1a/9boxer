@@ -258,5 +258,6 @@ frontend/storybook-static/
 
 # Documentation automation temporary files
 .affected-screenshots.json
+internal-docs/CHANGELOG.md
 
 agent_tmp/toolbar-ux-redesign-plan.md
