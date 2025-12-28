@@ -224,6 +224,7 @@ class TestExportIntegration:
         workbook = openpyxl.load_workbook(exported_file)
         assert len(workbook.worksheets) >= 2
         assert original_count == 5
+        workbook.close()  # Prevent openpyxl state pollution
 
     def test_export_when_changes_made_then_highlights_modifications(
         self, test_client: TestClient, sample_excel_file: Path
@@ -283,6 +284,7 @@ class TestExportIntegration:
                     modified_found = True
                     break
             assert modified_found, "No modified employees found in exported file"
+        workbook.close()  # Prevent openpyxl state pollution
 
     def test_export_when_multiple_changes_then_all_tracked(
         self, test_client: TestClient, sample_excel_file: Path
@@ -331,3 +333,4 @@ class TestExportIntegration:
                 modified_count += 1
 
         assert modified_count == 3
+        workbook.close()  # Prevent openpyxl state pollution

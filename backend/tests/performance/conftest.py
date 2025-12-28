@@ -137,7 +137,7 @@ def create_excel_file(employees: list[Employee], file_path: Path) -> None:
         data_sheet.cell(row_idx, 8, emp.management_chain_04)
         data_sheet.cell(row_idx, 9, emp.management_chain_05)
         data_sheet.cell(row_idx, 10, emp.management_chain_06)
-        data_sheet.cell(row_idx, 11, emp.hire_date)
+        data_sheet.cell(row_idx, 11, emp.hire_date.isoformat() if emp.hire_date else None)
         data_sheet.cell(row_idx, 12, emp.tenure_category)
         data_sheet.cell(row_idx, 13, emp.time_in_job_profile)
         data_sheet.cell(row_idx, 14, emp.performance.value)
