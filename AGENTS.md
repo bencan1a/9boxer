@@ -525,6 +525,58 @@ python tools/build_context.py
 
 This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
 
+## 📸 SCREENSHOTS & VISUAL TESTING
+
+### Regenerating Documentation Screenshots
+
+Documentation screenshots are generated automatically but can be manually triggered when UI changes occur.
+
+**Automated Generation:**
+- **Schedule:** Weekly on Monday at 2 AM UTC
+- **Workflow:** `.github/workflows/screenshots.yml`
+- **Output:** `resources/user-guide/docs/images/screenshots/`
+- **Auto-commit:** Changes committed with `[skip ci]` flag
+
+**Manual Trigger (Recommended for UI Changes):**
+
+1. Go to **Actions** tab in GitHub
+2. Select **"Generate Documentation Screenshots"** workflow
+3. Click **"Run workflow"**
+4. Select branch (usually `main` or your feature branch)
+5. Click **"Run workflow"** button
+
+**Local Generation:**
+
+```bash
+# 1. Build backend executable (required first)
+cd backend
+. .venv/bin/activate
+./scripts/build_executable.sh  # or .bat on Windows
+
+# 2. Generate screenshots (uses Playwright)
+cd ../frontend
+npm run screenshots:generate
+```
+
+**What Gets Updated:**
+- User guide screenshots in `resources/user-guide/docs/images/screenshots/`
+- Screenshots use Playwright E2E test helpers for consistency
+- Only runs on Ubuntu for consistent rendering
+
+**When to Regenerate:**
+- After UI component changes
+- After theme/design token updates
+- After layout changes
+- Before releasing a new version
+
+**Troubleshooting:**
+- Verify backend build succeeds: `ls backend/dist/ninebox/ninebox`
+- Check Playwright logs: Review workflow run logs in Actions tab
+- Ensure screenshots directory writable
+- Backend must be running for screenshot generation
+
+See [internal-docs/contributing/screenshot-guide.md](internal-docs/contributing/screenshot-guide.md) for technical standards.
+
 ## 📖 ADDITIONAL RESOURCES
 
 ### Core Documentation

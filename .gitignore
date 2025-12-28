@@ -1,6 +1,10 @@
 # Agent temporary files (ephemeral outputs, debug scripts)
 agent-tmp/*
 
+# Auto-generated documentation files
+internal-docs/CHANGELOG.md
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
