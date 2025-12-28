@@ -4,7 +4,6 @@
 
 > **For Comprehensive Reference**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance
 > **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for streamlined onboarding
-> **For Command Lookup**: See [internal-docs/QUICK_REFERENCE.md](internal-docs/QUICK_REFERENCE.md) for fast command reference
 
 ## 📱 PROJECT OVERVIEW
 
@@ -18,6 +17,56 @@
 - **No external dependencies**: Everything bundled in installer
 
 **This is NOT a web application.** Docker deployment configuration exists but is legacy.
+
+## ⚡ QUICK COMMAND REFERENCE
+
+**Most frequently used commands** - copy and run these directly:
+
+```bash
+# FIRST: Activate Python venv (ALWAYS!)
+. .venv/bin/activate              # Linux/macOS
+.venv\Scripts\activate            # Windows
+
+# Run tests
+pytest                            # All backend tests (372)
+pytest backend/tests/unit         # Fast unit tests (~293)
+pytest -m "not slow"              # Skip slow tests
+cd frontend && npm test           # Frontend component tests
+cd frontend && npm run test:e2e:pw # E2E tests (Playwright)
+
+# Code quality
+make check-all                    # All backend checks
+make fix                          # Auto-fix format + lint
+cd frontend && npm run lint       # Frontend lint
+cd frontend && npm run type-check # TypeScript check
+
+# Run application
+cd frontend && npm run electron:dev  # Full Electron app (recommended)
+cd backend/dist/ninebox && ./ninebox # Backend only
+cd frontend && npm run dev           # Frontend only (web mode)
+
+# Build
+cd backend && ./scripts/build_executable.sh  # Backend (Linux/macOS)
+cd backend && .\scripts\build_executable.bat # Backend (Windows)
+cd frontend && npm run electron:build        # Full app installer
+```
+
+### 🔥 Critical Rules
+
+1. **ALWAYS activate venv first** - `. .venv/bin/activate` (90% of errors are from forgetting this)
+2. **Build backend BEFORE frontend** - PyInstaller → Electron Builder (required order)
+3. **Never use rm/touch/cp/mv in Bash** - Use git commands or View/Edit/Create tools (Windows compatibility)
+4. **Test in Electron app** - Not just web mode (backend subprocess, IPC bridge differ)
+5. **Trust facts.json** - Highest authority when docs conflict
+
+### 💡 Pro Tips
+
+- **Save time**: Use `make check-all` for all quality checks in one command
+- **Fast feedback**: Run `pytest backend/tests/unit` (fast) before full test suite
+- **Avoid errors**: Always activate venv first - prevents 90% of module not found issues
+- **Platform safe**: Use View/Edit/Create tools instead of Bash file commands
+- **Trust source**: When docs conflict, trust `internal-docs/facts.json`
+- **Quick search**: Use `git grep` for code search, `git ls-files` for file finding
 
 ## 🔧 ENVIRONMENT SETUP
 
@@ -401,11 +450,25 @@ git commit -m "Descriptive commit message"
 
 ## 🔍 COMMON ISSUES AND SOLUTIONS
 
-### "Module not found" Error (Python)
+**Quick Troubleshooting Table:**
+
+| Issue | Solution |
+|-------|----------|
+| "Module not found" (Python) | Activate venv: `. .venv/bin/activate` |
+| Tests fail on import | Install dev mode: `pip install -e '.[dev]'` |
+| Electron won't start | Build backend first: `cd backend && ./scripts/build_executable.sh` |
+| Type checking errors | Add type hints to all parameters and returns |
+| Pre-commit fails | Run `make fix` then `pre-commit run --all-files` |
+| Frontend can't connect | Check backend running on port 38000 |
+| Backend won't run | Check hidden imports in `backend/build_config/ninebox.spec` |
+
+### Detailed Solutions
+
+#### "Module not found" Error (Python)
 **Cause:** Virtual environment not activated
 **Solution:** Run `. .venv/bin/activate` from project root
 
-### Tests Failing on Import
+#### Tests Failing on Import
 **Cause:** Package not installed in development mode
 **Solution:**
 ```bash
@@ -413,19 +476,19 @@ git commit -m "Descriptive commit message"
 pip install -e '.[dev]'
 ```
 
-### Type Checking Errors
+#### Type Checking Errors
 **Cause:** Missing type annotations
 **Solution:** Add type hints to all function parameters and returns
 
-### Backend Executable Won't Run
+#### Backend Executable Won't Run
 **Cause:** Missing hidden imports in PyInstaller spec
 **Solution:** Add missing modules to `backend/build_config/ninebox.spec` hiddenimports
 
-### Electron App Won't Start
+#### Electron App Won't Start
 **Cause:** Backend executable not found
 **Solution:** Build backend first with build scripts in `backend/scripts/`
 
-### Frontend Can't Connect to Backend
+#### Frontend Can't Connect to Backend
 **Cause:** Backend not running or wrong port
 **Solution:** Check backend is running on port 38000, check logs
 

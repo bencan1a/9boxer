@@ -80,7 +80,6 @@ Quick navigation to all documentation categories:
 - **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
 - **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
 - **[facts.json](facts.json)** - Stable project truths (highest authority)
-- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Command cheatsheet
 - **[WORKFLOWS.md](WORKFLOWS.md)** - GitHub Actions workflows
 - **[COPILOT_SETUP.md](COPILOT_SETUP.md)** - GitHub Copilot environment setup
 - **[CHANGELOG.md](CHANGELOG.md)** - Documentation change history
@@ -124,7 +123,7 @@ Quick navigation to all documentation categories:
 → Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
 
 **...find quick command references**
-→ See [QUICK_REFERENCE.md](QUICK_REFERENCE.md) or [AGENTS.md](../AGENTS.md)
+→ See [AGENTS.md](../AGENTS.md) (includes quick command reference section)
 
 ---
 
