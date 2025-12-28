@@ -171,7 +171,7 @@ Use the Changes tab to ensure all rating changes are documented:
 
 ### Zoom and Full-Screen Controls
 
-Adjust the view for different scenarios using the zoom controls in the bottom-left corner:
+Adjust the view for different scenarios using the view controls in the top-right corner of the grid:
 
 **Zoom In/Out:**
 

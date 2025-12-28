@@ -133,11 +133,15 @@ When an employee has been placed in Donut Mode, they display:
 
     _(Screenshot to be added: Overview of grid in donut mode)_
 
+    **Alt text:** Employee tiles in donut mode with semi-transparent ghostly appearance at 70% opacity, 2px purple borders, purple "Donut" badges, and italic position labels
+
 <!-- Screenshot placeholder -->
 !!! example "Screenshot Placeholder"
     **Employee tile with purple donut badge**
 
     _(Screenshot to be added: Close-up of employee tile in donut mode)_
+
+    **Alt text:** Close-up of single employee tile showing donut mode visual indicators: 70% opacity ghostly effect, 2px solid purple border, purple "Donut" badge, and italic position label text
 
 ## Tracking Donut Changes
 

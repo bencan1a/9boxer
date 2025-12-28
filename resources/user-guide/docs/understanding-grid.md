@@ -336,7 +336,7 @@ When a grid box contains many employees, you can expand it for better viewing:
 
 1. **Click the expand icon** (⛶) on any box
 2. The box expands to show all employees in a larger view
-3. **Multi-column layout automatically arranges** employee cards in 2-4 columns depending on screen size
+3. **Multi-column layout automatically arranges** employee cards in multiple columns (typically 2-4) depending on your screen size and the number of employees
 4. Drag-and-drop continues to work normally
 
 ### How to Collapse a Box

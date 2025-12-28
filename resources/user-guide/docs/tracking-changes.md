@@ -97,6 +97,8 @@ The change tracker has two modes depending on whether you're using Donut Mode:
 
     _(Screenshot to be added: Changes panel showing both tabs when donut changes exist)_
 
+    **Alt text:** Changes panel showing two tabs labeled "Regular Changes" and "Donut Changes" with badge counts next to each tab, demonstrating how changes are separated between actual rating changes and donut exercise placements
+
 ## Understanding the Change Tracker Table
 
 The table has three columns:

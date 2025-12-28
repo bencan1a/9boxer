@@ -68,7 +68,7 @@ Stuck on a decision? This guide addresses frequent questions about which feature
 
 ✅ **You suspect the center box is overcrowded**
 - More than 50% in position 5
-- "Core Talent" feels like a catch-all
+- "Core Talent" feels like a default placement for uncertain ratings
 - Managers avoiding tough rating decisions
 
 ✅ **Validating individual placements**

@@ -214,7 +214,7 @@ When you expand a box containing multiple employees:
 - **Click the expand button** (⛶ icon) on any box to expand it
 - Employee cards automatically arrange in **multiple columns** (instead of a single column)
 - Cards are displayed in a responsive grid that maximizes screen space
-- Up to 3-4 columns may appear depending on your screen size
+- Typically 2-4 columns appear depending on your screen size and the number of employees
 - All drag-and-drop functionality continues to work normally
 - This makes it easier to see and manage boxes with many employees without excessive scrolling
 
@@ -223,6 +223,8 @@ When you expand a box containing multiple employees:
     **Expanded grid box showing multi-column employee layout**
 
     _(Screenshot to be added: Grid box expanded with employees in multiple columns)_
+
+    **Alt text:** Expanded grid box showing employee tiles arranged in 2-4 columns depending on screen size, with drag-and-drop handles visible on each tile
 
 ### Collapsing Boxes
 

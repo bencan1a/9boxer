@@ -194,6 +194,14 @@ If you used [Donut Mode](donut-mode.md), four additional columns are added:
 - The four donut columns are empty
 - Only employees you placed in Donut Mode have donut data
 
+<!-- Screenshot placeholder -->
+!!! example "Screenshot Placeholder"
+    **Excel export showing regular and donut columns side-by-side**
+
+    _(Screenshot to be added: Excel file showing regular Performance/Potential columns, Modified in Session column, 9Boxer Change Notes column, and 4 donut exercise columns side-by-side)_
+
+    **Alt text:** Excel spreadsheet showing employee data with regular columns on the left (Performance, Potential, Modified in Session, 9Boxer Change Notes) and four donut exercise columns on the right (Donut Exercise Position, Donut Exercise Label, Donut Exercise Change Description, Donut Exercise Notes), demonstrating how both regular and donut data appear side-by-side in the export
+
 ### Excluded Employees
 
 !!! warning "Excluded Employees ARE Included in Export"

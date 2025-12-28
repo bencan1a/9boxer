@@ -178,6 +178,9 @@ You can combine different filter types to create very specific employee views. A
 
 Each filter section shows a count badge indicating how many criteria are selected in that category.
 
+!!! info "Filter Section Count Badges"
+    Each filter section header displays a count badge (e.g., "Job Levels (3)") showing how many filter options are currently selected in that category. This helps you quickly see which filter sections are active and how many criteria you've chosen within each.
+
 ---
 
 ## Employee Exclusions

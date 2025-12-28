@@ -306,9 +306,21 @@ Here's how to use 9Boxer during your live calibration session.
 ### Set Up for Screen Sharing
 
 1. **Open 9Boxer** with your data already loaded
-2. **Share your screen** in the video call
-3. **Keep the right panel visible** (Statistics, Intelligence, or Changes)
-4. **Have your discussion list ready** (separate document or notes)
+2. **Adjust your view for presentations**
+   - Press `F11` to enter full-screen mode for maximum screen space
+   - Use zoom controls to adjust to 125-150% for better visibility in large rooms
+   - The zoom and full-screen controls are in the top-right corner of the grid
+3. **Share your screen** in the video call
+4. **Keep the right panel visible** (Statistics, Intelligence, or Changes)
+5. **Have your discussion list ready** (separate document or notes)
+
+!!! tip "Presentation Setup for Large Rooms"
+    For calibration meetings in conference rooms with projectors:
+    
+    - Enter full-screen mode (`F11`) to hide distractions
+    - Zoom to 125-150% (`Ctrl` + `+`) for better readability on big screens
+    - Combine with filters to focus on specific teams
+    - Press `Esc` to exit full-screen when done
 
 ### Work Through Your Discussion List
 
