@@ -229,6 +229,72 @@ Documentation is automatically maintained via:
 
 ---
 
+## Documentation Automation
+
+### AI Documentation Audit System
+
+The repository uses an automated AI-powered documentation audit system to detect drift, conflicts, and consolidation opportunities.
+
+**What It Does:**
+- **Analyzes code changes**: Reviews commits from last 7 days (configurable)
+- **Separate analyses**: Internal docs (agents) vs User docs (end users) evaluated independently
+- **Active consolidation**: Detects new internal docs, recommends merging into core docs
+- **Creates GitHub issues**: One consolidated issue per documentation type with prioritized tasks
+- **Weekly schedule**: Runs automatically every Monday at 2 AM UTC
+
+**Key Components:**
+
+**1. Audit Script** (`.github/scripts/ai-docs-audit.js`):
+- Uses Anthropic Claude Sonnet 4.5
+- Analyzes internal docs for conflicts, staleness, consolidation needs
+- Analyzes user docs for accuracy, screenshots, accessibility
+- Cost: ~$2-4/month
+
+**2. GitHub Actions Workflow** (`.github/workflows/docs-audit.yml`):
+- Automated weekly execution
+- Manual trigger with configurable lookback period
+- Dry run mode for testing
+
+**3. Issue Types Detected:**
+
+**Internal Docs:**
+- `outdated` - Agent instructions no longer match code
+- `missing` - New features not documented
+- `conflict` - Contradictory guidance
+- `consolidation` - New docs that should merge into core docs
+- `stale-example` - Code examples >30 days old
+
+**User Docs:**
+- `outdated` - UI/features changed
+- `missing` - New features undocumented
+- `incorrect` - Instructions don't match behavior
+- `screenshot-needed` - Outdated screenshots
+- `accessibility` - Missing alt text, poor hierarchy
+- `localization` - Non-translatable language
+
+**Manual Trigger:**
+1. Go to Actions tab → "AI Documentation Audit"
+2. Click "Run workflow"
+3. Set days to look back (default: 7)
+4. Enable dry run for testing (optional)
+5. Click "Run workflow"
+
+**Local Testing:**
+```bash
+cd .github/scripts
+export ANTHROPIC_API_KEY="your-key"
+node ai-docs-audit.js --days=7 --dry-run
+```
+
+**Configuration:**
+- Requires `ANTHROPIC_API_KEY` secret in GitHub
+- Customizable lookback period
+- Dry run mode prevents issue creation
+
+See [ai-documentation-audit.md](ai-documentation-audit.md) for complete technical details.
+
+---
+
 ## Related Documentation
 
 - **[AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)** - Documentation system rules
