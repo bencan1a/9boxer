@@ -282,7 +282,10 @@ export const FilterDrawer: React.FC = () => {
                 <Typography
                   variant="subtitle2"
                   fontWeight="bold"
-                  sx={{ color: theme.palette.text.primary, mb: theme.tokens.spacing.sm / 8 }} {/* Convert 8px to 1 */}
+                  sx={{ 
+                    color: theme.palette.text.primary, 
+                    mb: theme.tokens.spacing.sm / 8 // Convert 8px to 1
+                  }}
                 >
                   {t("dashboard.filterDrawer.reportingChain")}
                 </Typography>
