@@ -124,9 +124,19 @@ export const StatisticsTab: React.FC = () => {
     );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: theme.tokens.spacing.lg / 8 }}> {/* Convert 24px to 3 */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: theme.tokens.spacing.lg / 8,
+      }}
+    >
+      {" "}
+      {/* Convert 24px to 3 */}
       {/* Summary Cards */}
-      <Grid container spacing={theme.tokens.spacing.md / 8}> {/* Convert 16px to 2 */}
+      <Grid container spacing={theme.tokens.spacing.md / 8}>
+        {" "}
+        {/* Convert 16px to 2 */}
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
             <CardContent
@@ -147,7 +157,6 @@ export const StatisticsTab: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
             <CardContent
@@ -168,7 +177,6 @@ export const StatisticsTab: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={4}>
           <Card variant="outlined" sx={{ height: "100%" }}>
             <CardContent
@@ -190,7 +198,6 @@ export const StatisticsTab: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
-
       {/* Distribution Table */}
       <Box>
         <Typography variant="subtitle2" color="primary" gutterBottom>
@@ -313,13 +320,14 @@ export const StatisticsTab: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-
       {/* Distribution Chart */}
       <Box>
         <Typography variant="subtitle2" color="primary" gutterBottom>
           {t("panel.statisticsTab.visualDistribution")}
         </Typography>
-        <Paper variant="outlined" sx={{ p: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+        <Paper variant="outlined" sx={{ p: theme.tokens.spacing.md / 8 }}>
+          {" "}
+          {/* Convert 16px to 2 */}
           <DistributionChart data={statistics.distribution} />
         </Paper>
       </Box>

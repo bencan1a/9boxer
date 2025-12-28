@@ -2,7 +2,7 @@
  * E2E tests for Toolbar Interactions (Phase 3B)
  *
  * Tests the redesigned toolbar layout including:
- * - FileMenu component (Import and Apply actions)
+ * - File menu (Import and Apply actions)
  * - ViewModeToggle in grid header
  * - EmployeeCount in grid header
  * - Enhanced empty state with Import button
@@ -19,7 +19,7 @@ import {
   t,
 } from "../helpers";
 
-test.describe("FileMenu Component", () => {
+test.describe("File Menu", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
   });
@@ -430,7 +430,7 @@ test.describe("Toolbar Layout", () => {
   });
 });
 
-test.describe("FileMenu Integration with Changes", () => {
+test.describe("File Menu Integration with Changes", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await uploadExcelFile(page, "sample-employees.xlsx");

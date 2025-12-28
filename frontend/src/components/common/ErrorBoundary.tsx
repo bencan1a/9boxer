@@ -138,5 +138,9 @@ class ErrorBoundaryClass extends Component<Props, State> {
 export function ErrorBoundary({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  return <ErrorBoundaryClass t={t} theme={theme}>{children}</ErrorBoundaryClass>;
+  return (
+    <ErrorBoundaryClass t={t} theme={theme}>
+      {children}
+    </ErrorBoundaryClass>
+  );
 }

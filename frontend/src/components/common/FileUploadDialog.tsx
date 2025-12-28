@@ -174,23 +174,38 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     >
       <DialogTitle>{t("common.fileUpload.dialogTitle")}</DialogTitle>
       <DialogContent>
-        <Box sx={{ py: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+        <Box sx={{ py: theme.tokens.spacing.md / 8 }}>
+          {" "}
+          {/* Convert 16px to 2 */}
           <Typography variant="body2" color="text.secondary" gutterBottom>
             {t("common.fileUpload.description")}
           </Typography>
-
           {error && (
-            <Alert severity="error" sx={{ mt: theme.tokens.spacing.md / 8, mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+            <Alert
+              severity="error"
+              sx={{
+                mt: theme.tokens.spacing.md / 8,
+                mb: theme.tokens.spacing.md / 8,
+              }}
+            >
+              {" "}
+              {/* Convert 16px to 2 */}
               {error}
             </Alert>
           )}
-
           {success && (
-            <Alert severity="success" sx={{ mt: theme.tokens.spacing.md / 8, mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+            <Alert
+              severity="success"
+              sx={{
+                mt: theme.tokens.spacing.md / 8,
+                mb: theme.tokens.spacing.md / 8,
+              }}
+            >
+              {" "}
+              {/* Convert 16px to 2 */}
               {t("common.fileUpload.successMessage")}
             </Alert>
           )}
-
           <Box
             sx={{
               mt: theme.tokens.spacing.lg / 8, // Convert 24px to 3
@@ -237,7 +252,12 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
             )}
 
             {selectedFile && (
-              <Typography variant="body2" sx={{ mt: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+              <Typography
+                variant="body2"
+                sx={{ mt: theme.tokens.spacing.md / 8 }}
+              >
+                {" "}
+                {/* Convert 16px to 2 */}
                 {t("common.fileUpload.selected")}{" "}
                 <strong>{selectedFile.name}</strong>
               </Typography>

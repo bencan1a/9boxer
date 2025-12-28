@@ -122,7 +122,15 @@ export const FilterDrawer: React.FC = () => {
           }}
         >
           {/* Header */}
-          <Box sx={{ display: "flex", alignItems: "center", mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb: theme.tokens.spacing.md / 8,
+            }}
+          >
+            {" "}
+            {/* Convert 16px to 2 */}
             <FilterListIcon sx={{ mr: 1, color: theme.palette.text.primary }} />
             <Typography
               variant="h6"
@@ -138,9 +146,8 @@ export const FilterDrawer: React.FC = () => {
               <CloseIcon />
             </IconButton>
           </Box>
-
-          <Divider sx={{ mb: theme.tokens.spacing.md / 8 }} /> {/* Convert 16px to 2 */}
-
+          <Divider sx={{ mb: theme.tokens.spacing.md / 8 }} />{" "}
+          {/* Convert 16px to 2 */}
           {/* Scrollable content */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
             {/* Job Levels Section */}
@@ -168,7 +175,6 @@ export const FilterDrawer: React.FC = () => {
                 ))}
               </FormGroup>
             </FilterSection>
-
             {/* Job Functions Section */}
             <FilterSection
               title={t("dashboard.filterDrawer.jobFunctions")}
@@ -198,7 +204,6 @@ export const FilterDrawer: React.FC = () => {
                 ))}
               </FormGroup>
             </FilterSection>
-
             {/* Locations Section */}
             <FilterSection
               title={t("dashboard.filterDrawer.locations")}
@@ -228,7 +233,6 @@ export const FilterDrawer: React.FC = () => {
                 ))}
               </FormGroup>
             </FilterSection>
-
             {/* Managers Section */}
             <FilterSection
               title={t("dashboard.filterDrawer.managers")}
@@ -258,7 +262,6 @@ export const FilterDrawer: React.FC = () => {
                 ))}
               </FormGroup>
             </FilterSection>
-
             {/* Flags Section */}
             <FilterSection
               title={`🏷️ ${t("dashboard.filterDrawer.flags")}`}
@@ -273,18 +276,19 @@ export const FilterDrawer: React.FC = () => {
                 onFlagToggle={toggleFlag}
               />
             </FilterSection>
-
-            <Divider sx={{ my: theme.tokens.spacing.md / 8 }} /> {/* Convert 16px to 2 */}
-
+            <Divider sx={{ my: theme.tokens.spacing.md / 8 }} />{" "}
+            {/* Convert 16px to 2 */}
             {/* Reporting Chain Filter Section */}
             {reportingChainFilter && (
-              <Box sx={{ mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
+              <Box sx={{ mb: theme.tokens.spacing.md / 8 }}>
+                {" "}
+                {/* Convert 16px to 2 */}
                 <Typography
                   variant="subtitle2"
                   fontWeight="bold"
-                  sx={{ 
-                    color: theme.palette.text.primary, 
-                    mb: theme.tokens.spacing.sm / 8 // Convert 8px to 1
+                  sx={{
+                    color: theme.palette.text.primary,
+                    mb: theme.tokens.spacing.sm / 8, // Convert 8px to 1
                   }}
                 >
                   {t("dashboard.filterDrawer.reportingChain")}
@@ -295,7 +299,6 @@ export const FilterDrawer: React.FC = () => {
                 />
               </Box>
             )}
-
             {/* Exclusions Section */}
             <FilterSection
               title={t("dashboard.filterDrawer.exclusions")}
@@ -317,9 +320,16 @@ export const FilterDrawer: React.FC = () => {
               </Box>
             </FilterSection>
           </Box>
-
           {/* Footer - Clear All Button */}
-          <Box sx={{ pt: theme.tokens.spacing.md / 8, borderTop: 1, borderColor: "divider" }}> {/* Convert 16px to 2 */}
+          <Box
+            sx={{
+              pt: theme.tokens.spacing.md / 8,
+              borderTop: 1,
+              borderColor: "divider",
+            }}
+          >
+            {" "}
+            {/* Convert 16px to 2 */}
             <Button
               variant="outlined"
               color="secondary"
