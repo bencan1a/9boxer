@@ -190,6 +190,7 @@ def test_export_when_file_has_less_than_two_sheets_then_raises_error(
     single_sheet_file = tmp_path / "single_sheet.xlsx"
     workbook = openpyxl.Workbook()
     workbook.save(single_sheet_file)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
     output_path = tmp_path / "output.xlsx"
 

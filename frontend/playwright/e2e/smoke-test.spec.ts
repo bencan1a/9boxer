@@ -8,7 +8,7 @@
  * Run this before commits to ensure basic functionality works.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 import * as path from "path";
 import * as fs from "fs";

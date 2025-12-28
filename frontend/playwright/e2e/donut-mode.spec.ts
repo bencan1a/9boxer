@@ -5,7 +5,7 @@
  * persistence, and export functionality
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import {
   uploadExcelFile,
   dragEmployeeToPosition,

@@ -16,7 +16,9 @@
       "help": "सहायता",
       "settings": "सेटिंग्स",
       "userGuideError": "उपयोगकर्ता गाइड खोलने में विफल",
-      "userGuideOnlyDesktop": "उपयोगकर्ता गाइड केवल डेस्कटॉप एप्लिकेशन में उपलब्ध है"
+      "userGuideOnlyDesktop": "उपयोगकर्ता गाइड केवल डेस्कटॉप एप्लिकेशन में उपलब्ध है",
+      "about": "About",
+      "userGuide": "User Guide"
     },
     "fileMenu": {
       "noFileSelected": "कोई फ़ाइल चयनित नहीं",
@@ -260,26 +262,31 @@
         "high": "उच्च प्रदर्शन"
       },
       "anomaly": {
-        "noIssues": "कोई समस्या नहीं",
-        "moderateAnomaly": "मध्यम विसंगति",
-        "severeAnomaly": "गंभीर विसंगति",
-        "unknown": "अज्ञात",
-        "statisticalSummary": "सांख्यिकीय सारांश",
-        "pValue": "P-मान",
-        "pValueTooltip": "प्रेक्षित अंतर संयोग से होने की संभावना। p < 0.05 महत्वपूर्ण विचलन को इंगित करता है।",
-        "effectSize": "प्रभाव आकार (Cramér's V)",
-        "effectSizeTooltip": "संबंध की शक्ति (0-1 स्केल)। 0.1=छोटा, 0.3=मध्यम, 0.5=बड़ा",
-        "sampleSize": "नमूना आकार",
-        "degreesOfFreedom": "स्वतंत्रता की डिग्री",
-        "interpretation": "व्याख्या",
-        "detailedDeviations": "विस्तृत विचलन",
-        "category": "श्रेणी",
-        "observedPercent": "प्रेक्षित %",
-        "expectedPercent": "अपेक्षित %",
-        "zScore": "Z-स्कोर",
-        "significant": "महत्वपूर्ण?",
-        "yes": "हाँ",
-        "no": "नहीं"
+        "noIssues": "No Issues",
+        "moderateAnomaly": "Moderate Anomaly",
+        "severeAnomaly": "Severe Anomaly",
+        "unknown": "Unknown",
+        "statisticalSummary": "Statistical Summary",
+        "pValue": "P-value",
+        "pValueTooltip": "Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.",
+        "effectSize": "Effect Size (Cramér's V)",
+        "effectSizeTooltip": "Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large",
+        "sampleSize": "Sample Size",
+        "degreesOfFreedom": "Degrees of Freedom",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detailed Deviations",
+        "category": "Category",
+        "observedPercent": "Observed %",
+        "expectedPercent": "Expected %",
+        "zScore": "Z-Score",
+        "significant": "Significant?",
+        "yes": "Yes",
+        "no": "No",
+        "viewDetailsAria": "View details for {{title}}",
+        "affectedEmployees": "Affected",
+        "employeeCount": "{{count}} employee",
+        "employeeCount_other": "{{count}} employees",
+        "suggestion": "Suggestion"
       },
       "chart": {
         "noDataAvailable": "कोई डेटा उपलब्ध नहीं",
@@ -369,7 +376,10 @@
       "title": "ओह! कुछ गलत हो गया",
       "message": "एक अप्रत्याशित त्रुटि हुई। कृपया पृष्ठ को पुनः लोड करने का प्रयास करें।",
       "returnHome": "होम पर लौटें"
-    }
+    },
+    "hide": "Hide",
+    "show": "Show",
+    "dismiss": "Dismiss"
   },
   "messages": {
     "success": "सफलता",
@@ -399,5 +409,68 @@
     "resetZoom": "ज़ूम रीसेट करें (Ctrl+0)",
     "enterFullScreen": "पूर्ण-स्क्रीन (F11)",
     "exitFullScreen": "पूर्ण-स्क्रीन से बाहर निकलें (F11)"
+  },
+  "intelligence": {
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "insightType": {
+      "recommendation": "Recommendation",
+      "observation": "Observation",
+      "warning": "Warning"
+    },
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "insight": {
+      "confidence": "Confidence",
+      "confidenceLabel": "{{level}} Confidence",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "boxCount": "{{count}} box",
+      "boxCount_other": "{{count}} boxes",
+      "actionAria": "{{action}} - {{type}}",
+      "actionButtonAria": "{{action}}"
+    },
+    "anomaly": {
+      "viewDetailsAria": "View details for {{title}}",
+      "affectedEmployees": "Affected",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "suggestion": "Suggestion"
+    },
+    "anomalies": {
+      "title": "Anomalies Detected",
+      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
+      "empty": "No anomalies detected",
+      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
+      "criticalCount": "{{count}} Critical",
+      "warningCount": "{{count}} Warning",
+      "infoCount": "{{count}} Info"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "tooltip": "AI-generated insights and recommendations based on your talent data",
+      "empty": "No insights available",
+      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
+      "recommendationCount": "{{count}} Recommendation",
+      "recommendationCount_other": "{{count}} Recommendations",
+      "observationCount": "{{count}} Observation",
+      "observationCount_other": "{{count}} Observations",
+      "warningCount": "{{count}} Warning",
+      "warningCount_other": "{{count}} Warnings"
+    },
+    "distribution": {
+      "title": "Talent Distribution",
+      "tooltip": "Overview of how employees are distributed across the 9-box grid",
+      "totalEmployees": "Total: {{count}} employees"
+    },
+    "section": {
+      "infoAria": "More information about this section"
+    }
   }
 }

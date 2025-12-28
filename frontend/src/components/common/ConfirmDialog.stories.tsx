@@ -75,7 +75,8 @@ export const DeleteConfirmation: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
     title: "Delete Employee",
-    message: "Are you sure you want to delete this employee? This action cannot be undone.",
+    message:
+      "Are you sure you want to delete this employee? This action cannot be undone.",
     confirmLabel: "Delete",
     cancelLabel: "Cancel",
     confirmColor: "error",

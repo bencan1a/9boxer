@@ -3,7 +3,7 @@
  * Tests moving employees between grid positions and verification of modifications
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
 
 test.describe("Employee Movement Flow", () => {

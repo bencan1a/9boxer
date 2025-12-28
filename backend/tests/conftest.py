@@ -392,6 +392,7 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
         data_sheet.cell(row_idx, 24, emp.promotion_status)
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
     return file_path
 
 

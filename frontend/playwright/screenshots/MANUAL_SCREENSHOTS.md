@@ -269,12 +269,12 @@ However, manual creation often provides better quality and flexibility for:
 If you encounter issues with manual screenshots:
 1. Check this documentation for updated instructions
 2. Review existing screenshots for style consistency
-3. Consult the Screenshot Guide (`docs/contributing/screenshot-guide.md`)
+3. Consult the Screenshot Guide (`internal-docs/contributing/screenshot-guide.md`)
 4. Ask in team chat or create GitHub issue
 
 ## Related Documentation
 
 - [Screenshot Generator README](README.md) - Automated screenshot system
 - [Screenshot Configuration](config.ts) - Complete screenshot registry
-- [Screenshot Guide](../../../docs/contributing/screenshot-guide.md) - Style standards
+- [Screenshot Guide](../../../internal-docs/contributing/screenshot-guide.md) - Style standards
 - [User Guide](../../../resources/user-guide/) - Where screenshots are used

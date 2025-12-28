@@ -48,7 +48,7 @@ describe("EmptyState", () => {
         }}
       />
     );
-    
+
     const button = screen.getByRole("button", { name: "Upload File" });
     expect(button).toBeInTheDocument();
   });
@@ -56,7 +56,7 @@ describe("EmptyState", () => {
   it("calls action onClick when button is clicked", async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();
-    
+
     render(
       <EmptyState
         title="No data"
@@ -66,10 +66,10 @@ describe("EmptyState", () => {
         }}
       />
     );
-    
+
     const button = screen.getByRole("button", { name: "Upload File" });
     await user.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
@@ -84,7 +84,7 @@ describe("EmptyState", () => {
         }}
       />
     );
-    
+
     expect(screen.getByTestId("upload-icon")).toBeInTheDocument();
   });
 
@@ -99,7 +99,7 @@ describe("EmptyState", () => {
         hint="Supported formats: .xlsx, .xls"
       />
     );
-    
+
     expect(
       screen.getByText("Supported formats: .xlsx, .xls")
     ).toBeInTheDocument();
@@ -116,10 +116,10 @@ describe("EmptyState", () => {
         }}
       />
     );
-    
+
     const button = screen.getByRole("button", { name: "Upload File" });
     expect(button).toHaveClass("MuiButton-contained");
-    
+
     rerender(
       <EmptyState
         title="No data"
@@ -130,7 +130,7 @@ describe("EmptyState", () => {
         }}
       />
     );
-    
+
     expect(button).toHaveClass("MuiButton-outlined");
   });
 
@@ -142,10 +142,10 @@ describe("EmptyState", () => {
         iconSize="small"
       />
     );
-    
+
     // Check that component renders with small size
     expect(container.firstChild).toBeInTheDocument();
-    
+
     rerender(
       <EmptyState
         title="No data"
@@ -153,14 +153,14 @@ describe("EmptyState", () => {
         iconSize="large"
       />
     );
-    
+
     // Check that component re-renders with large size
     expect(container.firstChild).toBeInTheDocument();
   });
 
   it("renders without icon", () => {
     render(<EmptyState title="No data" description="Some description" />);
-    
+
     expect(screen.getByText("No data")).toBeInTheDocument();
     expect(screen.getByText("Some description")).toBeInTheDocument();
     // Icon container should not be present
@@ -169,12 +169,9 @@ describe("EmptyState", () => {
 
   it("applies custom sx styles", () => {
     const { container } = render(
-      <EmptyState
-        title="No data"
-        sx={{ backgroundColor: "red", padding: 8 }}
-      />
+      <EmptyState title="No data" sx={{ backgroundColor: "red", padding: 8 }} />
     );
-    
+
     const emptyStateContainer = container.firstChild as HTMLElement;
     expect(emptyStateContainer).toBeInTheDocument();
   });

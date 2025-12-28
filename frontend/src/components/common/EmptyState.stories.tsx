@@ -124,7 +124,8 @@ export const DetailsPanel: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Example usage in the Details panel when no employee is selected",
+        story:
+          "Example usage in the Details panel when no employee is selected",
       },
     },
   },

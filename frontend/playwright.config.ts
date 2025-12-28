@@ -19,11 +19,15 @@ export default defineConfig({
   // Configure projects for different test suites
   projects: [
     // ===== E2E Tests =====
+    // NOTE: E2E tests use worker-scoped backend isolation (see fixtures/worker-backend.ts)
+    // Each worker gets its own backend server + database for true parallel execution
     {
       name: "e2e",
       testDir: "./playwright/e2e",
       timeout: 30000,
       retries: process.env.CI ? 2 : 1,
+      // Tests within a file run sequentially, but different files run in parallel
+      fullyParallel: false,
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:5173",
@@ -33,6 +37,8 @@ export default defineConfig({
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "retain-on-failure",
+        // Clear storage state between test contexts for isolation
+        storageState: undefined,
       },
     },
 
@@ -55,6 +61,8 @@ export default defineConfig({
         video: "off",
         deviceScaleFactor: 1,
         hasTouch: false,
+        // Clear storage state between test contexts for isolation
+        storageState: undefined,
       },
     },
 
@@ -71,6 +79,8 @@ export default defineConfig({
         // No baseURL needed - tests compare existing screenshot files
         headless: true,
         trace: "retain-on-failure",
+        // Clear storage state between test contexts for isolation
+        storageState: undefined,
       },
     },
   ],

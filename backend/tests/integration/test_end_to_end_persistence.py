@@ -358,6 +358,7 @@ class TestPerformanceBenchmarks:
             data_sheet.cell(row_idx, 17, f"[{performances[i % 3][0]},{potentials[i % 3][0]}]")
 
         workbook.save(file_path)
+        workbook.close()  # Explicitly close to prevent openpyxl state pollution
         return file_path
 
     def test_performance_session_restore_100_employees(

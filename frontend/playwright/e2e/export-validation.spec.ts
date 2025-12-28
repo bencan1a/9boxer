@@ -13,7 +13,7 @@
  * only updates columns when it finds exact matches, so some tests are adjusted accordingly.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 import * as path from "path";
 import * as fs from "fs";

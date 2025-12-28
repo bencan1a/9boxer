@@ -92,7 +92,8 @@ export const Normal: Story = {
     isCollapsed: false,
     onExpand: fn(),
     onCollapse: fn(),
-    positionGuidance: "High performers with high potential - your future leaders",
+    positionGuidance:
+      "High performers with high potential - your future leaders",
   },
   parameters: {
     docs: {
@@ -123,7 +124,8 @@ export const Expanded: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Expanded state with collapse button visible. Text is slightly larger (0.85rem).",
+        story:
+          "Expanded state with collapse button visible. Text is slightly larger (0.85rem).",
       },
     },
   },
@@ -170,12 +172,14 @@ export const Empty: Story = {
     isCollapsed: false,
     onExpand: fn(),
     onCollapse: fn(),
-    positionGuidance: "Low performance and potential - requires immediate attention",
+    positionGuidance:
+      "Low performance and potential - requires immediate attention",
   },
   parameters: {
     docs: {
       description: {
-        story: "Empty box showing 0 count. Still shows all controls for consistency.",
+        story:
+          "Empty box showing 0 count. Still shows all controls for consistency.",
       },
     },
   },
@@ -200,7 +204,8 @@ export const ManyEmployees: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Box with many employees (20+) showing scrollable content indication.",
+        story:
+          "Box with many employees (20+) showing scrollable content indication.",
       },
     },
   },
@@ -220,7 +225,8 @@ export const DevelopmentPosition: Story = {
     isCollapsed: false,
     onExpand: fn(),
     onCollapse: fn(),
-    positionGuidance: "High potential with low performance - development opportunity",
+    positionGuidance:
+      "High potential with low performance - development opportunity",
   },
   parameters: {
     docs: {

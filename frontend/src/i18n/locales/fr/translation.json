@@ -16,7 +16,9 @@
       "help": "Aide",
       "settings": "Paramètres",
       "userGuideError": "Impossible d'ouvrir le guide utilisateur",
-      "userGuideOnlyDesktop": "Le guide utilisateur n'est disponible que dans l'application de bureau"
+      "userGuideOnlyDesktop": "Le guide utilisateur n'est disponible que dans l'application de bureau",
+      "about": "About",
+      "userGuide": "User Guide"
     },
     "fileMenu": {
       "noFileSelected": "Aucun fichier sélectionné",
@@ -260,26 +262,31 @@
         "high": "Performance élevée"
       },
       "anomaly": {
-        "noIssues": "Aucun problème",
-        "moderateAnomaly": "Anomalie modérée",
-        "severeAnomaly": "Anomalie sévère",
-        "unknown": "Inconnu",
-        "statisticalSummary": "Résumé statistique",
-        "pValue": "Valeur p",
-        "pValueTooltip": "Probabilité que les différences observées soient dues au hasard. p < 0,05 indique une déviation significative.",
-        "effectSize": "Taille d'effet (V de Cramér)",
-        "effectSizeTooltip": "Force de l'association (échelle 0-1). 0,1=petit, 0,3=moyen, 0,5=grand",
-        "sampleSize": "Taille de l'échantillon",
-        "degreesOfFreedom": "Degrés de liberté",
-        "interpretation": "Interprétation",
-        "detailedDeviations": "Déviations détaillées",
-        "category": "Catégorie",
-        "observedPercent": "% Observé",
-        "expectedPercent": "% Attendu",
-        "zScore": "Score Z",
-        "significant": "Significatif ?",
-        "yes": "Oui",
-        "no": "Non"
+        "noIssues": "No Issues",
+        "moderateAnomaly": "Moderate Anomaly",
+        "severeAnomaly": "Severe Anomaly",
+        "unknown": "Unknown",
+        "statisticalSummary": "Statistical Summary",
+        "pValue": "P-value",
+        "pValueTooltip": "Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.",
+        "effectSize": "Effect Size (Cramér's V)",
+        "effectSizeTooltip": "Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large",
+        "sampleSize": "Sample Size",
+        "degreesOfFreedom": "Degrees of Freedom",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detailed Deviations",
+        "category": "Category",
+        "observedPercent": "Observed %",
+        "expectedPercent": "Expected %",
+        "zScore": "Z-Score",
+        "significant": "Significant?",
+        "yes": "Yes",
+        "no": "No",
+        "viewDetailsAria": "View details for {{title}}",
+        "affectedEmployees": "Affected",
+        "employeeCount": "{{count}} employee",
+        "employeeCount_other": "{{count}} employees",
+        "suggestion": "Suggestion"
       },
       "chart": {
         "noDataAvailable": "Aucune donnée disponible",
@@ -369,7 +376,10 @@
       "title": "Oups ! Une erreur s'est produite",
       "message": "Une erreur inattendue s'est produite. Veuillez essayer de recharger la page.",
       "returnHome": "Retour à l'accueil"
-    }
+    },
+    "hide": "Hide",
+    "show": "Show",
+    "dismiss": "Dismiss"
   },
   "messages": {
     "success": "Succès",
@@ -399,5 +409,68 @@
     "resetZoom": "Réinitialiser le zoom (Ctrl+0)",
     "enterFullScreen": "Plein écran (F11)",
     "exitFullScreen": "Quitter le plein écran (F11)"
+  },
+  "intelligence": {
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "insightType": {
+      "recommendation": "Recommendation",
+      "observation": "Observation",
+      "warning": "Warning"
+    },
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "insight": {
+      "confidence": "Confidence",
+      "confidenceLabel": "{{level}} Confidence",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "boxCount": "{{count}} box",
+      "boxCount_other": "{{count}} boxes",
+      "actionAria": "{{action}} - {{type}}",
+      "actionButtonAria": "{{action}}"
+    },
+    "anomaly": {
+      "viewDetailsAria": "View details for {{title}}",
+      "affectedEmployees": "Affected",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "suggestion": "Suggestion"
+    },
+    "anomalies": {
+      "title": "Anomalies Detected",
+      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
+      "empty": "No anomalies detected",
+      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
+      "criticalCount": "{{count}} Critical",
+      "warningCount": "{{count}} Warning",
+      "infoCount": "{{count}} Info"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "tooltip": "AI-generated insights and recommendations based on your talent data",
+      "empty": "No insights available",
+      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
+      "recommendationCount": "{{count}} Recommendation",
+      "recommendationCount_other": "{{count}} Recommendations",
+      "observationCount": "{{count}} Observation",
+      "observationCount_other": "{{count}} Observations",
+      "warningCount": "{{count}} Warning",
+      "warningCount_other": "{{count}} Warnings"
+    },
+    "distribution": {
+      "title": "Talent Distribution",
+      "tooltip": "Overview of how employees are distributed across the 9-box grid",
+      "totalEmployees": "Total: {{count}} employees"
+    },
+    "section": {
+      "infoAria": "More information about this section"
+    }
   }
 }

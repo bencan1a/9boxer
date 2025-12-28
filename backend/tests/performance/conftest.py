@@ -160,6 +160,7 @@ def create_excel_file(employees: list[Employee], file_path: Path) -> None:
         data_sheet.cell(row_idx, 24, emp.promotion_status)
 
     workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
 
 
 @pytest.fixture

@@ -16,7 +16,9 @@
       "help": "ヘルプ",
       "settings": "設定",
       "userGuideError": "ユーザーガイドを開けませんでした",
-      "userGuideOnlyDesktop": "ユーザーガイドはデスクトップアプリケーションでのみご利用いただけます"
+      "userGuideOnlyDesktop": "ユーザーガイドはデスクトップアプリケーションでのみご利用いただけます",
+      "about": "About",
+      "userGuide": "User Guide"
     },
     "fileMenu": {
       "noFileSelected": "ファイルが選択されていません",
@@ -260,26 +262,31 @@
         "high": "高パフォーマンス"
       },
       "anomaly": {
-        "noIssues": "問題なし",
-        "moderateAnomaly": "中程度の異常",
-        "severeAnomaly": "深刻な異常",
-        "unknown": "不明",
-        "statisticalSummary": "統計サマリー",
-        "pValue": "P値",
-        "pValueTooltip": "観測された差異が偶然による確率。p < 0.05は有意な偏差を示します。",
-        "effectSize": "効果量（クラメールのV）",
-        "effectSizeTooltip": "関連の強さ（0-1スケール）。0.1=小、0.3=中、0.5=大",
-        "sampleSize": "サンプルサイズ",
-        "degreesOfFreedom": "自由度",
-        "interpretation": "解釈",
-        "detailedDeviations": "詳細な偏差",
-        "category": "カテゴリ",
-        "observedPercent": "観測値%",
-        "expectedPercent": "期待値%",
-        "zScore": "Z スコア",
-        "significant": "有意？",
-        "yes": "はい",
-        "no": "いいえ"
+        "noIssues": "No Issues",
+        "moderateAnomaly": "Moderate Anomaly",
+        "severeAnomaly": "Severe Anomaly",
+        "unknown": "Unknown",
+        "statisticalSummary": "Statistical Summary",
+        "pValue": "P-value",
+        "pValueTooltip": "Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.",
+        "effectSize": "Effect Size (Cramér's V)",
+        "effectSizeTooltip": "Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large",
+        "sampleSize": "Sample Size",
+        "degreesOfFreedom": "Degrees of Freedom",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detailed Deviations",
+        "category": "Category",
+        "observedPercent": "Observed %",
+        "expectedPercent": "Expected %",
+        "zScore": "Z-Score",
+        "significant": "Significant?",
+        "yes": "Yes",
+        "no": "No",
+        "viewDetailsAria": "View details for {{title}}",
+        "affectedEmployees": "Affected",
+        "employeeCount": "{{count}} employee",
+        "employeeCount_other": "{{count}} employees",
+        "suggestion": "Suggestion"
       },
       "chart": {
         "noDataAvailable": "データがありません",
@@ -369,7 +376,10 @@
       "title": "エラーが発生しました",
       "message": "予期しないエラーが発生しました。ページを再読み込みしてください。",
       "returnHome": "ホームに戻る"
-    }
+    },
+    "hide": "Hide",
+    "show": "Show",
+    "dismiss": "Dismiss"
   },
   "messages": {
     "success": "成功",
@@ -399,5 +409,68 @@
     "resetZoom": "ズームをリセット（Ctrl+0）",
     "enterFullScreen": "全画面表示（F11）",
     "exitFullScreen": "全画面表示を終了（F11）"
+  },
+  "intelligence": {
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "insightType": {
+      "recommendation": "Recommendation",
+      "observation": "Observation",
+      "warning": "Warning"
+    },
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "insight": {
+      "confidence": "Confidence",
+      "confidenceLabel": "{{level}} Confidence",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "boxCount": "{{count}} box",
+      "boxCount_other": "{{count}} boxes",
+      "actionAria": "{{action}} - {{type}}",
+      "actionButtonAria": "{{action}}"
+    },
+    "anomaly": {
+      "viewDetailsAria": "View details for {{title}}",
+      "affectedEmployees": "Affected",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "suggestion": "Suggestion"
+    },
+    "anomalies": {
+      "title": "Anomalies Detected",
+      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
+      "empty": "No anomalies detected",
+      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
+      "criticalCount": "{{count}} Critical",
+      "warningCount": "{{count}} Warning",
+      "infoCount": "{{count}} Info"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "tooltip": "AI-generated insights and recommendations based on your talent data",
+      "empty": "No insights available",
+      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
+      "recommendationCount": "{{count}} Recommendation",
+      "recommendationCount_other": "{{count}} Recommendations",
+      "observationCount": "{{count}} Observation",
+      "observationCount_other": "{{count}} Observations",
+      "warningCount": "{{count}} Warning",
+      "warningCount_other": "{{count}} Warnings"
+    },
+    "distribution": {
+      "title": "Talent Distribution",
+      "tooltip": "Overview of how employees are distributed across the 9-box grid",
+      "totalEmployees": "Total: {{count}} employees"
+    },
+    "section": {
+      "infoAria": "More information about this section"
+    }
   }
 }

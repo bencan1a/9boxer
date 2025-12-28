@@ -16,7 +16,9 @@
       "help": "Nápověda",
       "settings": "Nastavení",
       "userGuideError": "Nepodařilo se otevřít uživatelskou příručku",
-      "userGuideOnlyDesktop": "Uživatelská příručka je dostupná pouze v desktopové aplikaci"
+      "userGuideOnlyDesktop": "Uživatelská příručka je dostupná pouze v desktopové aplikaci",
+      "about": "About",
+      "userGuide": "User Guide"
     },
     "fileMenu": {
       "noFileSelected": "Není vybrán žádný soubor",
@@ -260,26 +262,31 @@
         "high": "Vysoký výkon"
       },
       "anomaly": {
-        "noIssues": "Žádné problémy",
-        "moderateAnomaly": "Mírná anomálie",
-        "severeAnomaly": "Závažná anomálie",
-        "unknown": "Neznámé",
-        "statisticalSummary": "Statistické shrnutí",
-        "pValue": "P-hodnota",
-        "pValueTooltip": "Pravděpodobnost, že pozorované rozdíly jsou způsobeny náhodou. p < 0,05 indikuje významnou odchylku.",
-        "effectSize": "Velikost efektu (Cramérovo V)",
-        "effectSizeTooltip": "Síla asociace (škála 0-1). 0,1=malá, 0,3=střední, 0,5=velká",
-        "sampleSize": "Velikost vzorku",
-        "degreesOfFreedom": "Stupně volnosti",
-        "interpretation": "Interpretace",
-        "detailedDeviations": "Podrobné odchylky",
-        "category": "Kategorie",
-        "observedPercent": "Pozorované %",
-        "expectedPercent": "Očekávané %",
-        "zScore": "Z-skóre",
-        "significant": "Významné?",
-        "yes": "Ano",
-        "no": "Ne"
+        "noIssues": "No Issues",
+        "moderateAnomaly": "Moderate Anomaly",
+        "severeAnomaly": "Severe Anomaly",
+        "unknown": "Unknown",
+        "statisticalSummary": "Statistical Summary",
+        "pValue": "P-value",
+        "pValueTooltip": "Probability that observed differences are due to chance. p < 0.05 indicates significant deviation.",
+        "effectSize": "Effect Size (Cramér's V)",
+        "effectSizeTooltip": "Strength of association (0-1 scale). 0.1=small, 0.3=medium, 0.5=large",
+        "sampleSize": "Sample Size",
+        "degreesOfFreedom": "Degrees of Freedom",
+        "interpretation": "Interpretation",
+        "detailedDeviations": "Detailed Deviations",
+        "category": "Category",
+        "observedPercent": "Observed %",
+        "expectedPercent": "Expected %",
+        "zScore": "Z-Score",
+        "significant": "Significant?",
+        "yes": "Yes",
+        "no": "No",
+        "viewDetailsAria": "View details for {{title}}",
+        "affectedEmployees": "Affected",
+        "employeeCount": "{{count}} employee",
+        "employeeCount_other": "{{count}} employees",
+        "suggestion": "Suggestion"
       },
       "chart": {
         "noDataAvailable": "Nejsou k dispozici žádná data",
@@ -369,7 +376,10 @@
       "title": "Ajaj! Něco se pokazilo",
       "message": "Došlo k neočekávané chybě. Prosím, zkuste stránku znovu načíst.",
       "returnHome": "Vrátit se domů"
-    }
+    },
+    "hide": "Hide",
+    "show": "Show",
+    "dismiss": "Dismiss"
   },
   "messages": {
     "success": "Úspěch",
@@ -399,5 +409,68 @@
     "resetZoom": "Resetovat přiblížení (Ctrl+0)",
     "enterFullScreen": "Celá obrazovka (F11)",
     "exitFullScreen": "Ukončit celou obrazovku (F11)"
+  },
+  "intelligence": {
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "insightType": {
+      "recommendation": "Recommendation",
+      "observation": "Observation",
+      "warning": "Warning"
+    },
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "insight": {
+      "confidence": "Confidence",
+      "confidenceLabel": "{{level}} Confidence",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "boxCount": "{{count}} box",
+      "boxCount_other": "{{count}} boxes",
+      "actionAria": "{{action}} - {{type}}",
+      "actionButtonAria": "{{action}}"
+    },
+    "anomaly": {
+      "viewDetailsAria": "View details for {{title}}",
+      "affectedEmployees": "Affected",
+      "employeeCount": "{{count}} employee",
+      "employeeCount_other": "{{count}} employees",
+      "suggestion": "Suggestion"
+    },
+    "anomalies": {
+      "title": "Anomalies Detected",
+      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
+      "empty": "No anomalies detected",
+      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
+      "criticalCount": "{{count}} Critical",
+      "warningCount": "{{count}} Warning",
+      "infoCount": "{{count}} Info"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "tooltip": "AI-generated insights and recommendations based on your talent data",
+      "empty": "No insights available",
+      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
+      "recommendationCount": "{{count}} Recommendation",
+      "recommendationCount_other": "{{count}} Recommendations",
+      "observationCount": "{{count}} Observation",
+      "observationCount_other": "{{count}} Observations",
+      "warningCount": "{{count}} Warning",
+      "warningCount_other": "{{count}} Warnings"
+    },
+    "distribution": {
+      "title": "Talent Distribution",
+      "tooltip": "Overview of how employees are distributed across the 9-box grid",
+      "totalEmployees": "Total: {{count}} employees"
+    },
+    "section": {
+      "infoAria": "More information about this section"
+    }
   }
 }

@@ -17,7 +17,7 @@
  * - Shared helpers for common operations
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Details Panel - Core Functionality", () => {

@@ -2,7 +2,11 @@
  * Mock anomaly data for Storybook and testing
  */
 
-import type { Anomaly, AnomalySeverity, AnomalyType } from "../types/intelligence";
+import type {
+  Anomaly,
+  AnomalySeverity,
+  AnomalyType,
+} from "../types/intelligence";
 
 /**
  * Create a mock anomaly with specified parameters
@@ -22,7 +26,10 @@ export const createMockAnomaly = (
   severity,
   title,
   description,
-  affectedEmployees: Array.from({ length: affectedCount }, (_, i) => `emp-${id}-${i}`),
+  affectedEmployees: Array.from(
+    { length: affectedCount },
+    (_, i) => `emp-${id}-${i}`
+  ),
   suggestion,
   confidence,
 });

@@ -19,10 +19,7 @@ describe("HelpButton", () => {
   it("renders help button", () => {
     render(
       <TestWrapper>
-        <HelpButton
-          onUserGuideClick={vi.fn()}
-          onAboutClick={vi.fn()}
-        />
+        <HelpButton onUserGuideClick={vi.fn()} onAboutClick={vi.fn()} />
       </TestWrapper>
     );
 
@@ -33,10 +30,7 @@ describe("HelpButton", () => {
     const user = userEvent.setup();
     render(
       <TestWrapper>
-        <HelpButton
-          onUserGuideClick={vi.fn()}
-          onAboutClick={vi.fn()}
-        />
+        <HelpButton onUserGuideClick={vi.fn()} onAboutClick={vi.fn()} />
       </TestWrapper>
     );
 
@@ -80,10 +74,7 @@ describe("HelpButton", () => {
 
     render(
       <TestWrapper>
-        <HelpButton
-          onUserGuideClick={vi.fn()}
-          onAboutClick={onAboutClick}
-        />
+        <HelpButton onUserGuideClick={vi.fn()} onAboutClick={onAboutClick} />
       </TestWrapper>
     );
 
@@ -120,10 +111,7 @@ describe("HelpButton", () => {
 
     render(
       <TestWrapper>
-        <HelpButton
-          onUserGuideClick={vi.fn()}
-          onAboutClick={vi.fn()}
-        />
+        <HelpButton onUserGuideClick={vi.fn()} onAboutClick={vi.fn()} />
       </TestWrapper>
     );
 

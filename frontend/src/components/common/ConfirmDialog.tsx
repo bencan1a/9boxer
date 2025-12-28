@@ -32,7 +32,14 @@ export interface ConfirmDialogProps {
   /** Cancel button label (default: "Cancel") */
   cancelLabel?: string;
   /** Confirm button color (default: "primary") */
-  confirmColor?: "inherit" | "primary" | "secondary" | "error" | "warning" | "info" | "success";
+  confirmColor?:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "error"
+    | "warning"
+    | "info"
+    | "success";
   /** Whether to show loading state on confirm button */
   loading?: boolean;
   /** Maximum width of the dialog */
@@ -61,7 +68,13 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       aria-describedby="confirm-dialog-description"
     >
       <DialogTitle id="confirm-dialog-title">
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           {title}
           <IconButton
             aria-label="close"

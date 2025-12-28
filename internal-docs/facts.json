@@ -200,12 +200,81 @@
       "app:openUserGuide - Open USER_GUIDE.html in browser"
     ]
   },
+  "architecture_documentation": {
+    "location": "internal-docs/architecture/",
+    "format": "Agent-optimized (scannable tables, pattern catalogs, decision matrices)",
+    "quick_reference": "internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md",
+    "core_documents": {
+      "error_handling": {
+        "file": "ERROR_HANDLING.md",
+        "purpose": "Error handling patterns, HTTP status codes, logging requirements",
+        "when_to_use": "Implementing API endpoints, service layer logic, frontend errors",
+        "key_sections": ["Quick Rules", "Pattern Catalog", "HTTP Status Matrix", "Logging Checklist"],
+        "pattern_tags": ["#api-endpoint", "#service-layer", "#validation", "#frontend-errors", "#optimistic-update", "#retry"]
+      },
+      "security_model": {
+        "file": "SECURITY_MODEL.md",
+        "purpose": "Security boundaries, threat model, IPC patterns, input validation",
+        "when_to_use": "Adding IPC handlers, file access, input validation, security reviews",
+        "key_sections": ["Security Boundaries Table", "Threat Model Matrix", "Pattern Catalog", "Security Checklist"],
+        "pattern_tags": ["#ipc", "#filesystem", "#input-validation", "#sql-injection"]
+      },
+      "performance": {
+        "file": "PERFORMANCE.md",
+        "purpose": "Performance targets, scale constraints, optimization patterns",
+        "when_to_use": "Optimizing code, understanding scale limits, performance reviews",
+        "key_sections": ["Performance Targets", "Scale Constraints", "Accepted Trade-offs", "Decision Matrix"],
+        "pattern_tags": ["#database", "#rendering", "#frontend", "#backend", "#startup"]
+      },
+      "migrations": {
+        "file": "MIGRATIONS.md",
+        "purpose": "Database schema evolution patterns and testing",
+        "when_to_use": "Changing database schema, adding columns/tables, data migrations",
+        "key_sections": ["Pattern Catalog", "Testing Checklist", "Failure Recovery", "Version Compatibility"],
+        "pattern_tags": ["#add-column", "#rename-column", "#data-migration", "#change-column-type", "#add-index"]
+      },
+      "observability": {
+        "file": "OBSERVABILITY.md",
+        "purpose": "Logging patterns, debugging tools, log file locations",
+        "when_to_use": "Adding logging, debugging issues, understanding log locations",
+        "key_sections": ["Log Levels Matrix", "Debugging Tools", "Common Scenarios", "Logging Checklist"],
+        "pattern_tags": ["#error", "#debug", "#performance", "#memory", "#startup"]
+      }
+    },
+    "architecture_decision_records": {
+      "location": "internal-docs/architecture/decisions/",
+      "index": "decisions/README.md",
+      "format": "Agent-optimized (decision matrices, not narrative prose)",
+      "adrs": {
+        "001": "electron-desktop-architecture.md - Why Electron over Tauri/native",
+        "002": "pyinstaller-backend-bundling.md - Why PyInstaller over Docker",
+        "003": "http-ipc-communication.md - Why HTTP over Electron IPC",
+        "004": "zustand-state-management.md - Why Zustand over Redux",
+        "005": "sqlite-embedded-database.md - Why SQLite over PostgreSQL"
+      }
+    },
+    "agent_optimized_format": {
+      "quick_rules": "ALWAYS/NEVER statements for immediate guidance",
+      "pattern_catalogs": "Copy-paste ready code with When/Template/Don't format",
+      "decision_matrices": "If/then tables for quick decisions",
+      "anti_patterns": "Explicitly shown with ❌ to prevent mistakes",
+      "pattern_tags": "Searchable tags like #api-endpoint, #ipc for quick lookup",
+      "contextual_triggers": "When implementing X, use pattern Y guidance"
+    },
+    "usage_guidance": {
+      "before_implementation": "ALWAYS consult relevant architecture docs before coding",
+      "during_code_review": "Use checklists and anti-patterns sections",
+      "when_debugging": "Check Common Scenarios and Debugging Tools sections",
+      "understanding_decisions": "Read ADRs to understand past architectural choices"
+    }
+  },
   "agent_onboarding": {
     "primary_guides": {
       "github_agent": "GITHUB_AGENT.md (streamlined onboarding for GitHub Agent/Copilot)",
       "claude_code": "CLAUDE.md (detailed technical guidance with platform constraints)",
       "general_agents": "AGENTS.md (development workflow and best practices)",
-      "copilot_workspace": ".github/copilot-instructions.md (GitHub Copilot Workspace config)"
+      "copilot_workspace": ".github/copilot-instructions.md (GitHub Copilot Workspace config)",
+      "architecture_reference": "internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md (agent-optimized architecture docs index)"
     },
     "critical_first_steps": [
       "Activate Python virtual environment: . .venv/bin/activate",
@@ -237,10 +306,11 @@
       }
     },
     "documentation_hierarchy": {
-      "highest_authority": "docs/facts.json (this file)",
-      "permanent_docs": "docs/ directory",
+      "highest_authority": "internal-docs/facts.json (this file)",
+      "architecture_docs": "internal-docs/architecture/ (agent-optimized patterns and decisions)",
+      "permanent_docs": "internal-docs/ directory",
       "active_plans": "agent-projects/ (hints only, <21 days old)",
-      "auto_generated": "docs/_generated/ (regenerated automatically)"
+      "auto_generated": "internal-docs/_generated/ (regenerated automatically)"
     },
     "quick_commands": {
       "activate_venv": ". .venv/bin/activate",

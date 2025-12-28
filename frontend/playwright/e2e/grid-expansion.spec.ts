@@ -3,7 +3,7 @@
  * Tests the complete flow of expanding/collapsing grid boxes with keyboard shortcuts
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
 
 test.describe("Grid Box Expansion Flow", () => {

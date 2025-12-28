@@ -5,7 +5,7 @@
  * Converted from Cypress test: cypress/e2e/filter-flow.cy.ts
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 import { uploadExcelFile, t } from "../helpers";
 
 test.describe("Filter Application Flow", () => {
