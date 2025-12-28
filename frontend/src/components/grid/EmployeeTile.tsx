@@ -32,10 +32,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
-import { getPositionLabel } from "../../constants/positionLabels";
 import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
 
 interface EmployeeTileProps {
@@ -49,7 +47,6 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   onSelect,
   donutModeActive = false,
 }) => {
-  const { t } = useTranslation();
   const theme = useTheme();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
@@ -65,15 +62,6 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     );
     onSelect(employee.employee_id);
   };
-
-  // Determine if employee has been modified in donut mode (for badge)
-  const isDonutModified = donutModeActive && employee.donut_modified;
-
-  // Determine which position label to show
-  const displayLabel =
-    donutModeActive && employee.donut_position
-      ? getPositionLabel(employee.donut_position)
-      : getPositionLabel(employee.grid_position);
 
   // Get flags
   const flags = employee.flags || [];
@@ -193,30 +181,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
           <Chip label={employee.job_level} size="small" sx={{ height: 18 }} />
-          {isDonutModified && (
-            <Chip
-              label={t("grid.employeeTile.donut")}
-              size="small"
-              sx={{
-                height: 18,
-                backgroundColor: theme.tokens.colors.semantic.donutMode,
-                color: "white",
-                fontWeight: "bold",
-              }}
-              data-testid="donut-indicator"
-            />
-          )}
         </Box>
-        {isDonutModified && employee.donut_position && (
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            fontSize={theme.tokens.typography.fontSize.caption}
-            sx={{ mt: 0.5, display: "block", fontStyle: "italic" }}
-          >
-            {t("grid.employeeTile.donutLabel")} {displayLabel}
-          </Typography>
-        )}
       </CardContent>
     </Card>
   );
