@@ -1,12 +1,15 @@
 """Employee management API endpoints."""
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from ninebox.core.dependencies import get_employee_service, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.filters import EmployeeFilters
 from ninebox.services.employee_service import EmployeeService
+from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
 from ninebox.services.session_manager import SessionManager
 
 router = APIRouter(prefix="/employees", tags=["employees"])
@@ -80,6 +83,21 @@ class DonutMoveRequest(BaseModel):
     performance: str  # "Low", "Medium", "High"
     potential: str  # "Low", "Medium", "High"
     notes: str | None = None
+
+
+class GenerateSampleRequest(BaseModel):
+    """Request to generate sample employee dataset."""
+
+    size: int = Field(default=200, ge=50, le=300, description="Number of employees to generate")
+    include_bias: bool = Field(default=True, description="Include detectable bias patterns")
+    seed: int | None = Field(default=None, description="Random seed for reproducibility")
+
+
+class GenerateSampleResponse(BaseModel):
+    """Response containing generated sample dataset."""
+
+    employees: list[Employee]
+    metadata: dict[str, Any]  # Contains: total, bias_patterns, locations, functions
 
 
 @router.get("", response_model=dict)
@@ -395,3 +413,96 @@ async def move_employee_donut(
         "change": change.model_dump(),
         "success": True,
     }
+
+
+@router.post("/generate-sample", response_model=GenerateSampleResponse)
+async def generate_sample_employees(
+    request: GenerateSampleRequest,
+) -> GenerateSampleResponse:
+    """Generate sample employee dataset for testing and tutorials.
+
+    This endpoint generates realistic employee data with:
+    - Organizational hierarchy (6 management levels)
+    - Performance history over 3 years
+    - Statistical bias patterns (if enabled)
+    - Complete coverage of grid positions and flags
+    - Reproducible results via seed parameter
+
+    The generated data is NOT saved to any session - it is returned
+    to the caller for use in tutorials, testing, or demonstrations.
+
+    Args:
+        request: Configuration for dataset generation
+
+    Returns:
+        GenerateSampleResponse containing employees and metadata
+
+    Raises:
+        HTTPException: 400 if size is out of range (50-300)
+        HTTPException: 500 if generation fails
+
+    Example:
+        >>> # Generate 200 employees with default settings
+        >>> POST /api/employees/generate-sample {"size": 200}
+        >>> # Generate 100 employees with custom config
+        >>> POST /api/employees/generate-sample {"size": 100, "include_bias": false, "seed": 42}
+    """
+    try:
+        # Create configuration from request
+        config = RichDatasetConfig(
+            size=request.size,
+            include_bias=request.include_bias,
+            seed=request.seed,
+        )
+
+        # Generate employees
+        employees = generate_rich_dataset(config)
+
+        # Extract metadata for response
+        locations = {emp.location for emp in employees}
+        functions = {emp.job_function for emp in employees}
+        grid_positions = {emp.grid_position for emp in employees}
+
+        # Count bias patterns if enabled
+        bias_info = {}
+        if request.include_bias:
+            usa_employees = [emp for emp in employees if emp.location == "USA"]
+            sales_employees = [emp for emp in employees if emp.job_function == "Sales"]
+
+            # Count high performers
+            usa_high_perf = sum(1 for emp in usa_employees if emp.performance.value == "High")
+            sales_high_perf = sum(1 for emp in sales_employees if emp.performance.value == "High")
+
+            bias_info = {
+                "usa_employees": len(usa_employees),
+                "usa_high_performers": usa_high_perf,
+                "usa_high_performer_rate": usa_high_perf / len(usa_employees)
+                if usa_employees
+                else 0,
+                "sales_employees": len(sales_employees),
+                "sales_high_performers": sales_high_perf,
+                "sales_high_performer_rate": (
+                    sales_high_perf / len(sales_employees) if sales_employees else 0
+                ),
+            }
+
+        metadata: dict[str, Any] = {
+            "total": len(employees),
+            "locations": sorted(locations),
+            "functions": sorted(functions),
+            "grid_positions": sorted(grid_positions),
+            "bias_patterns": bias_info if request.include_bias else None,
+        }
+
+        return GenerateSampleResponse(employees=employees, metadata=metadata)
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid request parameters: {e!s}",
+        ) from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate sample dataset: {e!s}",
+        ) from e

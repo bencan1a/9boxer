@@ -299,7 +299,7 @@ export const DashboardPage: React.FC = () => {
                 </Panel>
               </PanelGroup>
 
-              {/* Toggle button - Option 1 with narrower width */}
+              {/* Toggle button - aligned with resize handle */}
               <Tooltip
                 title={
                   isRightPanelCollapsed
@@ -315,15 +315,15 @@ export const DashboardPage: React.FC = () => {
                     position: "absolute",
                     right: isRightPanelCollapsed
                       ? 16
-                      : `calc(${rightPanelSize}% + 4px)`,
+                      : `calc(${rightPanelSize}%)`,
                     top: "50%",
                     transform: "translateY(-50%)",
                     zIndex: 10,
-                    width: 16,
+                    width: theme.tokens.spacing.sm,
                     height: 48,
                     borderRadius: isRightPanelCollapsed
                       ? `${theme.tokens.radius.md}px`
-                      : `${theme.tokens.radius.md}px 0 0 ${theme.tokens.radius.md}px`,
+                      : `${theme.tokens.radius.sm}px`,
                     backgroundColor: theme.palette.background.paper,
                     border: `1px solid ${theme.palette.divider}`,
                     boxShadow: 2,

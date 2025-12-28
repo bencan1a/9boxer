@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from ninebox.models.constants import ALLOWED_FLAGS
-from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.grid_positions import get_position_label_by_number
 
 
@@ -24,6 +24,10 @@ def create_test_employee(
     grid_position: int = 5,
 ) -> Employee:
     """Create a minimal Employee for testing with all required fields.
+
+    DEPRECATED: This function is kept for backward compatibility.
+    Consider using create_simple_test_employee() for minimal fixtures,
+    or sample_employees fixture for richer test data.
 
     Args:
         employee_id: Employee ID (default: 1)
@@ -57,6 +61,61 @@ def create_test_employee(
     )
 
 
+def create_simple_test_employee(
+    employee_id: int = 1,
+    name: str = "Alice",
+    performance: PerformanceLevel = PerformanceLevel.MEDIUM,
+    potential: PotentialLevel = PotentialLevel.MEDIUM,
+    flags: list[str] | None = None,
+    grid_position: int = 5,
+) -> Employee:
+    """Create a minimal Employee for testing with all required fields.
+
+    Use this function when you need:
+    - Single employee instances for unit tests
+    - Full control over employee attributes
+    - Minimal test fixtures without organizational hierarchy
+
+    For integration tests or tests requiring multiple employees,
+    use the sample_employees fixture instead.
+
+    Args:
+        employee_id: Employee ID (default: 1)
+        name: Employee name (default: "Alice")
+        performance: Performance level (default: MEDIUM)
+        potential: Potential level (default: MEDIUM)
+        flags: Employee flags, must be from ALLOWED_FLAGS (default: None)
+        grid_position: Grid position 1-9 (default: 5)
+
+    Returns:
+        Employee object with all required fields populated
+
+    Example:
+        >>> employee = create_simple_test_employee(employee_id=99, name="Test User")
+        >>> employee.employee_id
+        99
+    """
+    return Employee(
+        employee_id=employee_id,
+        name=name,
+        business_title="Test Title",
+        job_title="Test Job",
+        job_profile="Test ProfileUSA",
+        job_level="MT4",
+        job_function="Other",
+        location="USA",
+        manager="Test Manager",
+        hire_date=date(2020, 1, 1),
+        tenure_category="3-5 years",
+        time_in_job_profile="2 years",
+        performance=performance,
+        potential=potential,
+        grid_position=grid_position,
+        talent_indicator="Solid Contributor",
+        flags=flags,
+    )
+
+
 @pytest.fixture(scope="session")
 def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
     """Create a temporary database for testing.
@@ -64,7 +123,7 @@ def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
     Supports pytest-xdist by creating separate database files per worker.
     """
     # Get worker ID for parallel test execution (pytest-xdist)
-    worker_id = getattr(request.config, 'workerinput', {}).get('workerid', 'master')
+    worker_id = getattr(request.config, "workerinput", {}).get("workerid", "master")
 
     # Create a temporary directory for this worker's database
     temp_dir = tempfile.mkdtemp(suffix=f"_{worker_id}_ninebox_test")
@@ -104,6 +163,7 @@ def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
     try:
         if os.path.exists(temp_dir):  # noqa: PTH110
             import shutil  # noqa: PLC0415
+
             shutil.rmtree(temp_dir)  # Remove directory and any remaining contents
     except Exception:
         pass  # Ignore cleanup errors
@@ -195,155 +255,37 @@ def setup_test_db() -> Generator[None, None, None]:
 
 @pytest.fixture
 def sample_employees() -> list[Employee]:
-    """Create sample employee data for testing."""
-    return [
-        Employee(
-            employee_id=1,
-            name="Alice Smith",
-            business_title="Senior Engineer",
-            job_title="Software Engineer",
-            job_profile="Software EngineeringUSA",
-            job_level="MT4",
-            job_function="Other",
-            location="USA",
-            manager="Bob Manager",
-            management_chain_04="Bob Manager",
-            management_chain_05="Carol Director",
-            management_chain_06=None,
-            hire_date=date(2020, 1, 15),
-            tenure_category="3-5 years",
-            time_in_job_profile="2 years",
-            performance=PerformanceLevel.HIGH,
-            potential=PotentialLevel.HIGH,
-            grid_position=9,
-            position_label="Star [H,H]",
-            talent_indicator="High Potential",
-            ratings_history=[
-                HistoricalRating(year=2023, rating="Strong"),
-                HistoricalRating(year=2024, rating="Leading"),
-            ],
-            development_focus="Leadership skills",
-            development_action="Executive coaching",
-            notes="Top performer",
-            promotion_status="Ready now",
-            modified_in_session=False,
-        ),
-        Employee(
-            employee_id=2,
-            name="Bob Jones",
-            business_title="Engineer",
-            job_title="Software Engineer",
-            job_profile="Software EngineeringCAN",
-            job_level="MT2",
-            job_function="Other",
-            location="CAN",
-            manager="Bob Manager",
-            management_chain_04="Bob Manager",
-            management_chain_05="Carol Director",
-            management_chain_06=None,
-            hire_date=date(2021, 6, 1),
-            tenure_category="1-3 years",
-            time_in_job_profile="1 year",
-            performance=PerformanceLevel.MEDIUM,
-            potential=PotentialLevel.MEDIUM,
-            grid_position=5,
-            position_label="Core Talent [M,M]",
-            talent_indicator="Solid Contributor",
-            ratings_history=[HistoricalRating(year=2024, rating="Solid")],
-            development_focus=None,
-            development_action=None,
-            notes=None,
-            promotion_status=None,
-            modified_in_session=False,
-        ),
-        Employee(
-            employee_id=3,
-            name="Carol Williams",
-            business_title="Junior Engineer",
-            job_title="Software Engineer",
-            job_profile="Software EngineeringGBR",
-            job_level="MT1",
-            job_function="Other",
-            location="GBR",
-            manager="Dave Lead",
-            management_chain_04="Dave Lead",
-            management_chain_05="Carol Director",
-            management_chain_06=None,
-            hire_date=date(2023, 1, 10),
-            tenure_category="0-1 year",
-            time_in_job_profile="6 months",
-            performance=PerformanceLevel.LOW,
-            potential=PotentialLevel.HIGH,
-            grid_position=7,
-            position_label="Enigma [L,H]",
-            talent_indicator="Emerging",
-            ratings_history=[],
-            development_focus="Technical skills",
-            development_action="Mentorship program",
-            notes="New hire, high potential",
-            promotion_status=None,
-            modified_in_session=False,
-        ),
-        Employee(
-            employee_id=4,
-            name="David Brown",
-            business_title="Staff Engineer",
-            job_title="Staff Software Engineer",
-            job_profile="Software EngineeringUSA",
-            job_level="MT5",
-            job_function="Other",
-            location="USA",
-            manager="Eve VP",
-            management_chain_04="Eve VP",
-            management_chain_05=None,
-            management_chain_06=None,
-            hire_date=date(2018, 3, 20),
-            tenure_category="5+ years",
-            time_in_job_profile="3 years",
-            performance=PerformanceLevel.HIGH,
-            potential=PotentialLevel.MEDIUM,
-            grid_position=6,
-            position_label="High Impact [H,M]",
-            talent_indicator="High Impact",
-            ratings_history=[
-                HistoricalRating(year=2023, rating="Strong"),
-                HistoricalRating(year=2024, rating="Strong"),
-            ],
-            development_focus=None,
-            development_action=None,
-            notes=None,
-            promotion_status="In consideration",
-            modified_in_session=False,
-        ),
-        Employee(
-            employee_id=5,
-            name="Eve Davis",
-            business_title="Product Manager",
-            job_title="Product Manager",
-            job_profile="Product ManagementUSA",
-            job_level="MT4",
-            job_function="Product Management",
-            location="USA",
-            manager="Frank Director",
-            management_chain_04="Frank Director",
-            management_chain_05="Carol Director",
-            management_chain_06=None,
-            hire_date=date(2019, 9, 15),
-            tenure_category="3-5 years",
-            time_in_job_profile="2 years",
-            performance=PerformanceLevel.MEDIUM,
-            potential=PotentialLevel.HIGH,
-            grid_position=8,
-            position_label="Growth [M,H]",
-            talent_indicator="Growth",
-            ratings_history=[HistoricalRating(year=2024, rating="Solid")],
-            development_focus="Strategic thinking",
-            development_action="Leadership training",
-            notes=None,
-            promotion_status=None,
-            modified_in_session=False,
-        ),
-    ]
+    """Create sample employee data for testing.
+
+    FIXTURE MIGRATION NOTES (2025-12-28):
+    - Migrated to use rich sample data generator (50 employees, seed=42)
+    - Previous hard-coded 5-employee fixture replaced with generated data
+    - Tests should not depend on specific employee IDs (use attributes instead)
+    - For minimal single-employee fixtures, use create_simple_test_employee()
+    - Reproducible via seed=42 for consistent test behavior
+
+    Migration rationale:
+    - Provides richer, more realistic test data
+    - Better coverage of edge cases (all job levels, locations, grid positions)
+    - Includes organizational hierarchy and performance history
+    - Maintains test reproducibility via fixed seed
+
+    Returns:
+        List of 50 Employee objects with complete organizational data
+    """
+    from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+
+    config = RichDatasetConfig(
+        size=50,
+        include_bias=True,
+        seed=42,  # Fixed seed for test reproducibility
+        locations=["USA", "CAN", "GBR"],
+        job_functions=["Engineering", "Product Manager", "Sales", "Marketing"],
+    )
+
+    employees = generate_rich_dataset(config)
+
+    return employees
 
 
 @pytest.fixture
