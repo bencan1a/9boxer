@@ -20,6 +20,7 @@ import {
   Tooltip,
   Badge,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { FileMenuButton } from "./FileMenuButton";
@@ -108,16 +109,20 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   onAboutClick,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
     <MuiAppBar position="static" elevation={2} data-testid="app-bar">
       <Toolbar>
         {/* Left: App title with logo */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: theme.tokens.spacing.sm / 8 }}> {/* Convert 8px to 1 */}
           <img
             src="/build/icon_32x32.png"
             alt={t("app.logoAlt")}
-            style={{ width: 28, height: 28 }}
+            style={{ 
+              width: theme.tokens.dimensions.appBar.logoSize, 
+              height: theme.tokens.dimensions.appBar.logoSize 
+            }}
           />
           <Typography variant="h6" component="div">
             {t("app.title")}
@@ -125,7 +130,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
         </Box>
 
         {/* Center-left: File menu */}
-        <Box sx={{ ml: 4 }}>
+        <Box sx={{ ml: theme.tokens.spacing.xl / 8 }}> {/* Convert 32px to 4 */}
           <FileMenuButton
             fileName={fileName}
             changeCount={changeCount}
@@ -141,7 +146,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
         <Box sx={{ flexGrow: 1 }} />
 
         {/* Right: Action buttons */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: theme.tokens.spacing.sm / 8 }}> {/* Convert 8px to 1 */}
           <Tooltip title={filterTooltip} placement="bottom">
             <span>
               <Badge

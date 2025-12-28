@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
@@ -37,6 +38,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
   onClose,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { uploadFile, isLoading } = useSessionStore();
   const { showSuccess, showError } = useSnackbar();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -172,30 +174,30 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     >
       <DialogTitle>{t("common.fileUpload.dialogTitle")}</DialogTitle>
       <DialogContent>
-        <Box sx={{ py: 2 }}>
+        <Box sx={{ py: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
           <Typography variant="body2" color="text.secondary" gutterBottom>
             {t("common.fileUpload.description")}
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+            <Alert severity="error" sx={{ mt: theme.tokens.spacing.md / 8, mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
               {error}
             </Alert>
           )}
 
           {success && (
-            <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
+            <Alert severity="success" sx={{ mt: theme.tokens.spacing.md / 8, mb: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
               {t("common.fileUpload.successMessage")}
             </Alert>
           )}
 
           <Box
             sx={{
-              mt: 3,
-              p: 3,
+              mt: theme.tokens.spacing.lg / 8, // Convert 24px to 3
+              p: theme.tokens.spacing.lg / 8, // Convert 24px to 3
               border: "2px dashed",
               borderColor: "primary.main",
-              borderRadius: 2,
+              borderRadius: theme.tokens.radius.md, // 8px
               textAlign: "center",
               backgroundColor: "background.default",
             }}
@@ -235,7 +237,7 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
             )}
 
             {selectedFile && (
-              <Typography variant="body2" sx={{ mt: 2 }}>
+              <Typography variant="body2" sx={{ mt: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
                 {t("common.fileUpload.selected")}{" "}
                 <strong>{selectedFile.name}</strong>
               </Typography>
@@ -251,7 +253,9 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
           onClick={handleImport}
           variant="contained"
           disabled={!selectedFile || isLoading}
-          startIcon={isLoading ? <CircularProgress size={16} /> : null}
+          startIcon={
+            isLoading ? <CircularProgress size={16} /> : null // 16px - specific UI element size
+          }
           data-testid="upload-submit-button"
         >
           {isLoading

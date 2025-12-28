@@ -41,14 +41,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   const theme = useTheme();
 
-  // Icon size mapping
+  // Icon size mapping - component-specific dimensions
   const iconSizeMap = {
     small: 48,
     medium: 64,
     large: 80,
   };
 
-  // Container size for icon circle
+  // Container size for icon circle - component-specific dimensions
   const containerSizeMap = {
     small: 80,
     medium: 120,
@@ -67,7 +67,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         justifyContent: "center",
         height: "100%",
         textAlign: "center",
-        p: 4,
+        p: theme.tokens.spacing.xl / 8, // Convert 32px to MUI spacing units (32/8 = 4)
         ...sx,
       }}
     >
@@ -82,7 +82,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            mb: 3,
+            mb: theme.tokens.spacing.lg / 8, // Convert 24px to MUI spacing units (24/8 = 3)
           }}
         >
           {React.cloneElement(icon, {
@@ -110,7 +110,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         <Typography
           variant="body1"
           color="text.secondary"
-          sx={{ mb: action ? 4 : 0, maxWidth: 400 }}
+          sx={{ 
+            mb: action ? theme.tokens.spacing.xl / 8 : 0, // Convert 32px to MUI spacing units (32/8 = 4)
+            maxWidth: theme.tokens.dimensions.panel.defaultWidth, // 400px
+          }}
         >
           {description}
         </Typography>
@@ -123,7 +126,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           size="large"
           startIcon={action.icon}
           onClick={action.onClick}
-          sx={{ mb: hint ? 2 : 0 }}
+          sx={{ mb: hint ? theme.tokens.spacing.md / 8 : 0 }} // Convert 16px to MUI spacing units (16/8 = 2)
         >
           {action.label}
         </Button>

@@ -32,7 +32,7 @@ export const LanguageSelector: React.FC = () => {
   };
 
   return (
-    <FormControl size="small" sx={{ minWidth: 120 }}>
+    <FormControl size="small" sx={{ minWidth: 120 }}> {/* 120px - specific control width */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <LanguageIcon fontSize="small" />
         <Select

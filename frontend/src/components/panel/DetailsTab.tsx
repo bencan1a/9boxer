@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
@@ -14,6 +15,7 @@ import { ManagementChain } from "./ManagementChain";
 
 export const DetailsTab: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const selectedEmployeeId = useSessionStore(
     (state) => state.selectedEmployeeId
   );
@@ -38,7 +40,7 @@ export const DetailsTab: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 3,
+        gap: theme.tokens.spacing.lg / 8, // Convert 24px to 3
       }}
     >
       <EmployeeDetails employee={selectedEmployee} />
@@ -50,7 +52,7 @@ export const DetailsTab: React.FC = () => {
           <Typography variant="subtitle2" color="primary" gutterBottom>
             {t("panel.detailsTab.reportingChain")}
           </Typography>
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: theme.tokens.spacing.md / 8 }}> {/* Convert 16px to 2 */}
             <ManagementChain employee={selectedEmployee} />
           </Box>
         </CardContent>
