@@ -1,0 +1,117 @@
+name: Screenshot Coverage Report
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/components/**'
+      - 'frontend/playwright/screenshots/config.ts'
+      - '.github/scripts/screenshot-coverage.js'
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight UTC
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  coverage:
+    name: Generate Coverage Report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+
+      - name: Generate Coverage Report
+        run: node .github/scripts/screenshot-coverage.js
+
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-coverage-report
+          path: |
+            .screenshot-coverage-report.json
+            .screenshot-coverage-report.md
+            .screenshot-coverage-badge.json
+          retention-days: 90
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          # Only commit if reports have meaningful changes
+          if [ -f .screenshot-coverage-report.json ]; then
+            # Check if report file exists in repo
+            if git ls-files --error-unmatch .screenshot-coverage-report.json >/dev/null 2>&1; then
+              # File exists, check for changes
+              git diff --exit-code .screenshot-coverage-report.json || echo "changes=true" >> $GITHUB_OUTPUT
+            else
+              # New file
+              echo "changes=true" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Commit coverage report
+        if: steps.git-check.outputs.changes == 'true' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "Coverage Bot"
+          git config user.email "bot@9boxer.com"
+          git add .screenshot-coverage-report.json .screenshot-coverage-report.md .screenshot-coverage-badge.json
+          git commit -m "docs: update screenshot coverage report [skip ci]"
+          git push
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          if [ -f .screenshot-coverage-report.json ]; then
+            echo "### 📊 Screenshot Coverage Report" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Extract key metrics using jq
+            TOTAL_SCREENSHOTS=$(jq '.totalScreenshots' .screenshot-coverage-report.json)
+            STORYBOOK_SCREENSHOTS=$(jq '.storybookScreenshots' .screenshot-coverage-report.json)
+            TOTAL_COMPONENTS=$(jq '.totalComponents' .screenshot-coverage-report.json)
+            COMPONENTS_WITH_STORIES=$(jq '.componentsWithStories' .screenshot-coverage-report.json)
+
+            # Calculate percentages
+            STORYBOOK_PERCENT=$(echo "scale=1; $STORYBOOK_SCREENSHOTS * 100 / $TOTAL_SCREENSHOTS" | bc)
+            STORY_PERCENT=$(echo "scale=1; $COMPONENTS_WITH_STORIES * 100 / $TOTAL_COMPONENTS" | bc)
+
+            echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Total Components | $TOTAL_COMPONENTS |" >> $GITHUB_STEP_SUMMARY
+            echo "| Components with Stories | $COMPONENTS_WITH_STORIES ($STORY_PERCENT%) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Total Screenshots | $TOTAL_SCREENSHOTS |" >> $GITHUB_STEP_SUMMARY
+            echo "| Storybook Screenshots | $STORYBOOK_SCREENSHOTS ($STORYBOOK_PERCENT%) |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Coverage goals status
+            if (( $(echo "$STORYBOOK_PERCENT >= 40" | bc -l) )); then
+              echo "✅ **Storybook Coverage Goal Met** (${STORYBOOK_PERCENT}% >= 40%)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Storybook Coverage Below Target** (${STORYBOOK_PERCENT}% < 40%)" >> $GITHUB_STEP_SUMMARY
+            fi
+
+            if (( $(echo "$STORY_PERCENT >= 50" | bc -l) )); then
+              echo "✅ **Component Story Coverage Goal Met** (${STORY_PERCENT}% >= 50%)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Component Story Coverage Below Target** (${STORY_PERCENT}% < 50%)" >> $GITHUB_STEP_SUMMARY
+            fi
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📄 [View Full Report](.screenshot-coverage-report.md)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Coverage report not generated" >> $GITHUB_STEP_SUMMARY
+          fi
