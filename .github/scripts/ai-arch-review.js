@@ -427,16 +427,20 @@ An "event" is a significant change or addition that has architectural impact:
 - **Maximum 10 findings total** (prioritize critical and high priority)
 - **Keep descriptions under 200 characters**
 - **Keep remediation under 400 characters**
-- **Provide specific code references** (file:line)
+- **Use file references, NOT code snippets**: Reference files/lines, don't paste code
+- **Simple strings only**: Avoid complex punctuation, code examples, or special characters in JSON strings
 
 **For each finding, provide:**
 1. **Type**: One of: duplication, drift, violation, security, performance, missing-docs
 2. **Priority**: One of: critical, high, medium (DO NOT include low priority)
 3. **Title**: Brief description (max 80 chars)
-4. **Impact**: Why this matters (business/technical impact)
-5. **Evidence**: Specific code locations and snippets
-6. **Remediation**: Concrete refactoring steps with file references
+4. **Impact**: Why this matters (business/technical impact) - SIMPLE TEXT ONLY
+5. **Evidence**: File locations like "filename.ts:123-145" - NO CODE SNIPPETS, NO QUOTES
+6. **Remediation**: Concrete steps - SIMPLE TEXT ONLY, NO CODE EXAMPLES
 7. **Effort**: Estimated effort (small: <2h, medium: 2-8h, large: >8h)
+
+**CRITICAL**: Evidence and Remediation fields must be PLAIN TEXT with file references only.
+DO NOT include code snippets, quotes, or special characters that need escaping.
 
 **For documentation update recommendations:**
 1. **Doc**: Path to architecture doc to update
@@ -511,20 +515,24 @@ An "event" is a significant change or addition that has architectural impact:
 }
 
 **CRITICAL JSON FORMATTING RULES:**
-- **ALL quotes in strings MUST be escaped:** Use \\" not "
-- **ALL backslashes MUST be escaped:** Use \\\\ not \\
-- **NO literal newlines in strings:** Use \\n instead
-- **Return ONLY valid JSON:** No commentary, no markdown formatting
-- **Double-check all escape sequences:** Incomplete escapes will cause parsing to fail
-- **If a string contains code examples:** Escape ALL special characters properly
+- **Use SIMPLE TEXT ONLY in all string fields**
+- **NO code snippets, NO quotes, NO special characters**
+- **File references**: Use forward slashes like "backend/src/file.ts:123"
+- **Return ONLY valid JSON**: No commentary, no markdown formatting
+- **Keep strings simple**: Avoid anything that needs escaping
 
-**Common mistakes to AVOID:**
-- ❌ \\"data-testid=\\" (incomplete escape sequence)
-- ✅ \\"data-testid=\\\\\\"selector\\\\\\"\\" (properly escaped)
-- ❌ C:\\\\Users\\\\file.txt (insufficient escaping)
-- ✅ C:\\\\\\\\Users\\\\\\\\file.txt (properly escaped for JSON)
+**What to INCLUDE:**
+- ✅ "See backend/src/ninebox/api/employees.py lines 45-67"
+- ✅ "Refactor validation logic into service layer"
+- ✅ "Affects 3 API endpoints in api/ directory"
 
-Return ONLY the JSON object, no markdown fences, no commentary:`;
+**What to AVOID:**
+- ❌ Code snippets like "if condition: do_something()"
+- ❌ Quoted strings like 'data-testid="selector"'
+- ❌ Windows paths with backslashes
+- ❌ Any text that contains quotes or special characters
+
+Return ONLY the JSON object:`;
 
   try {
     const message = await anthropic.messages.create({
