@@ -373,7 +373,7 @@ An "event" is a significant change or addition that has architectural impact:
 6. **Alignment**: How well it aligns with established patterns (max 200 chars)
 
 **Example:**
-```json
+\`\`\`json
 {
   "title": "Migrated screenshot generation from Python to TypeScript",
   "category": "migration",
@@ -382,7 +382,7 @@ An "event" is a significant change or addition that has architectural impact:
   "description": "Consolidated screenshot generation into Playwright TypeScript workflows. Eliminates Python dependency and shares helpers with E2E tests. Better maintainability.",
   "alignment": "Follows testing architecture patterns. Shares code between E2E and screenshot workflows (DRY principle)."
 }
-```
+\`\`\`
 
 ---
 
