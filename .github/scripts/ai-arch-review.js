@@ -388,18 +388,43 @@ An "event" is a significant change or addition that has architectural impact:
 
 ## Part 2: Architectural Issues
 
-**Now, analyze for architectural problems (Focus Areas prioritized):**
+**PRIORITY RULES (Apply in this order):**
+
+This project has **multiple AI agents working independently**, creating high risk of duplication and drift.
+
+**ALWAYS flag (Critical/High priority):**
+1. **Security vulnerabilities** - Input validation missing, XSS, injection risks, insecure IPC
+2. **Code duplication across agent work** - Same logic in 2+ files (>70% similar)
+3. **Architectural drift** - Violates ERROR_HANDLING.md, SECURITY_MODEL.md, or PERFORMANCE.md patterns
+4. **Pattern violations** - Uses anti-patterns explicitly documented as "NEVER do this"
+
+**Flag if significant (High/Medium priority):**
+5. **Missing documentation** - New patterns used but not documented in architecture/
+6. **Performance anti-patterns** - Violates performance targets or introduces O(n²) where O(n) exists
+
+**DO NOT flag:**
+- Minor style issues or formatting
+- Subjective preferences
+- Issues already caught by linters (Ruff, ESLint, Prettier)
+- Low-priority refactoring suggestions
+
+---
+
+**Now, analyze for architectural problems using these priority rules:**
 
 1. **Code Duplication** - Same or very similar logic in multiple files
+   - Priority: CRITICAL if security-related, HIGH otherwise
    - Check for: Duplicate validation logic, duplicate API patterns, duplicate state management
    - Flag when: >70% similar code in 2+ locations
 
 2. **Architectural Drift** - Code not following documented patterns
+   - Priority: CRITICAL if security violation, HIGH if drift from documented patterns
    - Check for: Error handling not matching ERROR_HANDLING.md patterns
    - Check for: Security violations not matching SECURITY_MODEL.md
    - Check for: Performance anti-patterns violating PERFORMANCE.md targets
 
 3. **SOLID Principles Violations**
+   - Priority: HIGH if causes duplication/security issues, MEDIUM otherwise
    - Single Responsibility: Functions/classes doing too much
    - Open/Closed: Modifications instead of extensions
    - Liskov Substitution: Subtypes breaking contracts
@@ -407,18 +432,21 @@ An "event" is a significant change or addition that has architectural impact:
    - Dependency Inversion: Depending on concretions instead of abstractions
 
 4. **Security Boundary Violations**
+   - Priority: CRITICAL (security is top priority)
    - Renderer accessing Node.js APIs directly
    - IPC handlers without input validation
    - File paths using string concatenation instead of path.join()
    - Backend binding to 0.0.0.0 instead of 127.0.0.1
 
 5. **Performance Regressions**
+   - Priority: HIGH if violates documented targets, MEDIUM otherwise
    - API responses >500ms
    - Grid rendering >2s
    - Missing database indexes on queries
    - N+1 query patterns
 
 6. **Missing Architectural Documentation**
+   - Priority: MEDIUM (important for agent coordination but not immediate risk)
    - New patterns emerging in code that should be documented
    - Obsolete patterns still in docs but no longer used in code
 
@@ -538,6 +566,7 @@ Return ONLY the JSON object:`;
     const message = await anthropic.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
+      temperature: 0.3,  // Low temperature for consistent, deterministic output
       messages: [
         {
           role: 'user',
