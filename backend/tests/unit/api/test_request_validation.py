@@ -11,8 +11,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-
 pytestmark = pytest.mark.unit
+
 
 @pytest.fixture
 def session_with_data(

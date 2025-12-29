@@ -12,6 +12,7 @@ from ninebox.services.session_serializer import SessionSerializer
 
 pytestmark = pytest.mark.unit
 
+
 def test_serialize_when_complete_session_then_creates_valid_dict(
     sample_employees: list[Employee],
 ) -> None:

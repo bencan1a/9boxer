@@ -142,9 +142,14 @@ class ApiClient {
 
   // ==================== Session Methods ====================
 
-  async upload(file: File): Promise<UploadResponse> {
+  async upload(file: File, filePath?: string): Promise<UploadResponse> {
     const formData = new FormData();
     formData.append("file", file);
+
+    // Include original file path if provided (for Electron app)
+    if (filePath) {
+      formData.append("original_file_path", filePath);
+    }
 
     const response = await this.client.post<UploadResponse>(
       "/api/session/upload",
@@ -174,10 +179,31 @@ class ApiClient {
     return response.data;
   }
 
-  async exportSession(): Promise<Blob> {
-    const response = await this.client.post("/api/session/export", null, {
-      responseType: "blob",
-    });
+  async closeSession(): Promise<{ success: boolean; message: string }> {
+    const response = await this.client.post<{
+      success: boolean;
+      message: string;
+    }>("/api/session/close");
+    return response.data;
+  }
+
+  async exportSession(request?: {
+    mode?: "update_original" | "save_new";
+    new_path?: string;
+  }): Promise<{
+    success: boolean;
+    message?: string;
+    file_path?: string;
+    error?: string;
+    fallback_to_save_new?: boolean;
+  }> {
+    const response = await this.client.post<{
+      success: boolean;
+      message?: string;
+      file_path?: string;
+      error?: string;
+      fallback_to_save_new?: boolean;
+    }>("/api/session/export", request || { mode: "update_original" });
     return response.data;
   }
 
@@ -329,6 +355,7 @@ class ApiClient {
       functions: string[];
     };
     session_id: string;
+    filename: string;
   }> {
     const response = await this.client.post("/api/employees/generate-sample", {
       size,
@@ -357,6 +384,42 @@ class ApiClient {
       return response.data;
     });
   }
+
+  // ==================== Preferences Methods ====================
+
+  async getRecentFiles(): Promise<RecentFile[]> {
+    const response = await this.client.get<RecentFile[]>(
+      "/api/preferences/recent-files"
+    );
+    return response.data;
+  }
+
+  async addRecentFile(
+    path: string,
+    name: string
+  ): Promise<{ success: boolean }> {
+    const response = await this.client.post<{ success: boolean }>(
+      "/api/preferences/recent-files",
+      {
+        path,
+        name,
+      }
+    );
+    return response.data;
+  }
+
+  async clearRecentFiles(): Promise<{ success: boolean }> {
+    const response = await this.client.delete<{ success: boolean }>(
+      "/api/preferences/recent-files"
+    );
+    return response.data;
+  }
+}
+
+export interface RecentFile {
+  path: string;
+  name: string;
+  lastAccessed: number;
 }
 
 export const apiClient = new ApiClient();

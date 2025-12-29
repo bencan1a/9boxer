@@ -44,7 +44,9 @@ def test_filter_employees_when_by_manager_then_filters_correctly(
 ) -> None:
     """Test filtering by manager."""
     # Find a manager that exists in sample data
-    test_manager = sample_employees[10].manager if len(sample_employees) > 10 else sample_employees[0].manager
+    test_manager = (
+        sample_employees[10].manager if len(sample_employees) > 10 else sample_employees[0].manager
+    )
     expected_count = sum(1 for emp in sample_employees if emp.manager == test_manager)
 
     filtered = employee_service.filter_employees(sample_employees, managers=[test_manager])
@@ -79,8 +81,7 @@ def test_filter_employees_when_combined_filters_then_applies_and_logic(
     # Use the manager of the first MT4 employee
     test_manager = mt4_employees[0].manager
     expected_count = sum(
-        1 for emp in sample_employees
-        if emp.job_level == "MT4" and emp.manager == test_manager
+        1 for emp in sample_employees if emp.job_level == "MT4" and emp.manager == test_manager
     )
 
     filtered = employee_service.filter_employees(
@@ -124,7 +125,8 @@ def test_filter_employees_when_by_multiple_performance_levels_then_filters_corre
 ) -> None:
     """Test filtering by multiple performance levels."""
     expected_count = sum(
-        1 for emp in sample_employees
+        1
+        for emp in sample_employees
         if emp.performance in [PerformanceLevel.HIGH, PerformanceLevel.MEDIUM]
     )
 
@@ -171,7 +173,9 @@ def test_get_filter_options_when_called_then_returns_correct_options(
     # Extract actual values from sample data
     actual_levels = {emp.job_level for emp in sample_employees}
     actual_functions = {emp.job_function for emp in sample_employees}
-    actual_managers = {emp.manager for emp in sample_employees if emp.manager and emp.manager != "None"}
+    actual_managers = {
+        emp.manager for emp in sample_employees if emp.manager and emp.manager != "None"
+    }
 
     # Check levels - should match what's in sample data
     assert set(options["levels"]) == actual_levels
@@ -257,7 +261,8 @@ def test_filter_employees_when_complex_combination_then_applies_all_filters(
 
     # Calculate expected count
     expected_count = sum(
-        1 for emp in sample_employees
+        1
+        for emp in sample_employees
         if emp.job_level in ["MT4", "MT5"]
         and emp.performance == PerformanceLevel.HIGH
         and emp.employee_id != exclude_id

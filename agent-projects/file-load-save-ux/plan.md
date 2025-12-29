@@ -1,13 +1,16 @@
 ---
-status: active
+status: done
 owner: claude-code
 created: 2025-12-28
+completed: 2025-12-28
 summary:
-  - Improve file load/save UX with clearer mental model
-  - Add recent files list (last 5 files)
-  - Add unsaved changes protection
-  - Add close file functionality
-  - Standardize on Load/Apply/Close terminology
+  - ✅ Improved file load/save UX with clearer mental model
+  - ✅ Added recent files list (last 5 files)
+  - ✅ Added unsaved changes protection
+  - ✅ Added close file functionality
+  - ✅ Implemented "Save as new file" option
+  - ✅ Added error handling with auto-fallback
+  - 📝 Documentation tracked in issue #122
 ---
 
 # File Load/Save UX Improvements

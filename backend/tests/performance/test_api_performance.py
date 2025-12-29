@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 # Check if pytest-benchmark is available
 try:
     import pytest_benchmark  # noqa: F401
+
     BENCHMARK_AVAILABLE = True
 except ImportError:
     BENCHMARK_AVAILABLE = False
@@ -21,9 +22,10 @@ pytestmark = [
     pytest.mark.slow,
     pytest.mark.skipif(
         not BENCHMARK_AVAILABLE,
-        reason="pytest-benchmark not installed. Install with: pip install pytest-benchmark"
-    )
+        reason="pytest-benchmark not installed. Install with: pip install pytest-benchmark",
+    ),
 ]
+
 
 class TestUploadPerformance:
     """Performance tests for file upload endpoint."""
@@ -41,7 +43,13 @@ class TestUploadPerformance:
 
         def upload_small_file() -> None:
             with small_excel_file.open("rb") as f:
-                files = {"file": (small_excel_file.name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+                files = {
+                    "file": (
+                        small_excel_file.name,
+                        f,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                }
                 response = test_client.post("/api/session/upload", files=files)
                 assert response.status_code == 200
 
@@ -60,7 +68,13 @@ class TestUploadPerformance:
 
         def upload_large_file() -> None:
             with large_excel_file.open("rb") as f:
-                files = {"file": (large_excel_file.name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+                files = {
+                    "file": (
+                        large_excel_file.name,
+                        f,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                }
                 response = test_client.post("/api/session/upload", files=files)
                 assert response.status_code == 200
 

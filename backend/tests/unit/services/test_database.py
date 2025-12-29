@@ -9,7 +9,6 @@ import pytest
 from ninebox.services.database import DatabaseManager
 
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -28,6 +27,7 @@ def db_manager(tmp_path: Path) -> Generator[DatabaseManager, None, None]:
 
     # Cleanup: Force garbage collection to close any lingering connections
     import gc
+
     gc.collect()
 
 

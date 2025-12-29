@@ -10,8 +10,8 @@ from ninebox.models.grid_positions import calculate_grid_position, get_position_
 from ninebox.services.excel_parser import ExcelParser
 
 
-
 pytestmark = pytest.mark.unit
+
 
 def test_parse_when_valid_file_then_returns_employees(sample_excel_file: Path) -> None:
     """Test parsing a valid Excel file."""
@@ -197,23 +197,11 @@ def test_calculate_position_when_all_combinations_then_returns_correct_positions
 def test_get_position_label_when_all_combinations_then_returns_correct_labels() -> None:
     """Test position label generation."""
     assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.HIGH) == "Star [H,H]"
-    assert (
-        get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
-    )
+    assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.MEDIUM) == "High Impact [H,M]"
     assert get_position_label(PerformanceLevel.HIGH, PotentialLevel.LOW) == "Workhorse [H,L]"
     assert get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.HIGH) == "Growth [M,H]"
-    assert (
-        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM)
-        == "Core Talent [M,M]"
-    )
-    assert (
-        get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW)
-        == "Effective Pro [M,L]"
-    )
+    assert get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.MEDIUM) == "Core Talent [M,M]"
+    assert get_position_label(PerformanceLevel.MEDIUM, PotentialLevel.LOW) == "Effective Pro [M,L]"
     assert get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
-    assert (
-        get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
-    )
-    assert (
-        get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
-    )
+    assert get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
+    assert get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"

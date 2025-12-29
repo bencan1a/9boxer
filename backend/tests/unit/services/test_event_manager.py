@@ -308,9 +308,7 @@ class TestTrackEvent:
             new_potential=PotentialLevel.LOW,
         )
 
-        event_manager.track_event(
-            sample_session, event, original_employee, is_donut=True
-        )
+        event_manager.track_event(sample_session, event, original_employee, is_donut=True)
 
         assert len(sample_session.donut_events) == 1
         assert sample_session.donut_events[0] == event
@@ -336,9 +334,7 @@ class TestTrackEvent:
             new_potential=PotentialLevel.MEDIUM,
         )
 
-        event_manager.track_event(
-            sample_session, event, original_employee, is_donut=True
-        )
+        event_manager.track_event(sample_session, event, original_employee, is_donut=True)
 
         assert len(sample_session.donut_events) == 0
 

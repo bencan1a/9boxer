@@ -1,6 +1,5 @@
 """End-to-end integration tests for the full application workflow."""
 
-import io
 from pathlib import Path
 
 import openpyxl
@@ -8,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
+
 
 def test_full_workflow_when_complete_session_then_all_operations_succeed(
     test_client: TestClient, sample_excel_file: Path
@@ -40,13 +40,13 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
         }
         upload_response = test_client.post("/api/session/upload", files=files, headers=headers)
     assert upload_response.status_code == 200
-    assert upload_response.json()["employee_count"] == 5
+    assert upload_response.json()["employee_count"] == 50
 
     # 2. Get employees
     employees_response = test_client.get("/api/employees", headers=headers)
     assert employees_response.status_code == 200
     employees = employees_response.json()["employees"]
-    assert len(employees) == 5
+    assert len(employees) == 50
 
     # Find first employee
     first_employee = employees[0]
@@ -70,13 +70,17 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     assert stats["by_potential"]["Medium"] > 0
 
     # 5. Export file
-    export_response = test_client.post("/api/session/export", headers=headers)
+    export_response = test_client.post(
+        "/api/session/export", json={"mode": "update_original"}, headers=headers
+    )
     assert export_response.status_code == 200
-    assert len(export_response.content) > 0
+    export_data = export_response.json()
+    assert export_data["success"] is True
+    assert "file_path" in export_data
 
     # 6. Verify exported file has modifications
-    exported_file = io.BytesIO(export_response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    exported_file_path = export_data["file_path"]
+    workbook = openpyxl.load_workbook(exported_file_path)
     sheet = workbook.worksheets[1]
 
     # Find "Modified in Session" column
@@ -210,11 +214,15 @@ def test_multiple_moves_when_performed_then_all_tracked(
     assert stats["modified_employees"] == 3
 
     # 5. Export and verify all changes in file
-    export_response = test_client.post("/api/session/export", headers=auth_headers)
+    export_response = test_client.post(
+        "/api/session/export", json={"mode": "update_original"}, headers=auth_headers
+    )
     assert export_response.status_code == 200
+    export_data = export_response.json()
+    assert export_data["success"] is True
 
-    exported_file = io.BytesIO(export_response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    exported_file_path = export_data["file_path"]
+    workbook = openpyxl.load_workbook(exported_file_path)
     sheet = workbook.worksheets[1]
 
     # Count modified employees
@@ -286,7 +294,7 @@ def test_error_recovery_when_invalid_operations_then_session_intact(
     # 5. Verify everything works
     employees = test_client.get("/api/employees", headers=auth_headers)
     assert employees.status_code == 200
-    assert len(employees.json()["employees"]) == 5
+    assert len(employees.json()["employees"]) == 50
 
 
 def test_export_preserves_original_formatting_when_exported_then_data_intact(
@@ -321,12 +329,16 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
     )
 
     # 3. Export file
-    export_response = test_client.post("/api/session/export", headers=auth_headers)
+    export_response = test_client.post(
+        "/api/session/export", json={"mode": "update_original"}, headers=auth_headers
+    )
     assert export_response.status_code == 200
+    export_data = export_response.json()
+    assert export_data["success"] is True
 
     # 4. Verify original data preserved
-    exported_file = io.BytesIO(export_response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    exported_file_path = export_data["file_path"]
+    workbook = openpyxl.load_workbook(exported_file_path)
 
     # Should have at least 2 sheets
     assert len(workbook.worksheets) >= 2

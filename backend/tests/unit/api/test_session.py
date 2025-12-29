@@ -79,7 +79,7 @@ def test_get_status_when_active_session_then_returns_200(
 def test_export_when_active_session_then_returns_file(
     test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
-    """Test POST /api/session/export with active session returns file."""
+    """Test POST /api/session/export with active session returns success."""
     # Upload file first
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -91,15 +91,14 @@ def test_export_when_active_session_then_returns_file(
         }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
-    # Export
-    response = test_client.post("/api/session/export", headers=auth_headers)
+    # Export with default mode (update_original)
+    response = test_client.post("/api/session/export", json={}, headers=auth_headers)
 
     assert response.status_code == 200
-    assert (
-        response.headers["content-type"]
-        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-    assert len(response.content) > 0
+    data = response.json()
+    assert data["success"] is True
+    assert "file_path" in data
+    assert "message" in data
 
 
 def test_clear_session_when_session_exists_then_returns_200(
@@ -170,7 +169,7 @@ def test_session_workflow_when_complete_then_all_operations_succeed(
     assert status_response.json()["active"] is True
 
     # 3. Export
-    export_response = test_client.post("/api/session/export", headers=auth_headers)
+    export_response = test_client.post("/api/session/export", json={}, headers=auth_headers)
     assert export_response.status_code == 200
 
     # 4. Clear
@@ -179,7 +178,8 @@ def test_session_workflow_when_complete_then_all_operations_succeed(
 
     # 5. Verify cleared
     final_status = test_client.get("/api/session/status", headers=auth_headers)
-    assert final_status.status_code == 404
+    assert final_status.status_code == 200
+    assert final_status.json()["active"] is False
 
 
 def test_update_change_notes_when_valid_employee_then_returns_updated_move(

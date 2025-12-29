@@ -10,8 +10,8 @@ import pytest
 from ninebox.utils.paths import get_resource_path, get_user_data_dir
 
 
-
 pytestmark = pytest.mark.unit
+
 
 class TestGetResourcePath:
     """Test suite for get_resource_path function."""

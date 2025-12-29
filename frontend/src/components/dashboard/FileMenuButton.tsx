@@ -11,7 +11,9 @@ import {
   CircularProgress,
   Divider,
   Box,
-  Typography,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
 } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -19,6 +21,8 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DownloadIcon from "@mui/icons-material/Download";
 import HistoryIcon from "@mui/icons-material/History";
 import ScienceIcon from "@mui/icons-material/Science";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { ChangeIndicator } from "./ChangeIndicator";
 import { FileNameDisplay } from "./FileNameDisplay";
@@ -57,6 +61,10 @@ export interface FileMenuButtonProps {
   recentFiles?: RecentFile[];
   /** Callback when a recent file is clicked */
   onRecentFileClick?: (filePath: string) => void;
+  /** Callback when close file is clicked */
+  onCloseFile?: () => void;
+  /** Callback when clear recent files is clicked */
+  onClearRecentFiles?: () => void;
   /** Whether the button is disabled */
   disabled?: boolean;
   /** Whether export is currently in progress */
@@ -89,6 +97,8 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   onExportClick,
   recentFiles = [],
   onRecentFileClick,
+  onCloseFile,
+  onClearRecentFiles,
   disabled = false,
   isExporting = false,
 }) => {
@@ -137,6 +147,20 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
     handleClose();
     if (onRecentFileClick) {
       onRecentFileClick(filePath);
+    }
+  };
+
+  const handleCloseFileClick = () => {
+    handleClose();
+    if (onCloseFile) {
+      onCloseFile();
+    }
+  };
+
+  const handleClearRecentFilesClick = () => {
+    handleClose();
+    if (onClearRecentFiles) {
+      onClearRecentFiles();
     }
   };
 
@@ -205,6 +229,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         }}
         data-testid="file-menu"
       >
+        {/* Group 1: File Input Actions */}
         <MenuItem
           onClick={handleImportClick}
           data-testid="import-data-menu-item"
@@ -221,39 +246,81 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
           Load Sample Dataset...
         </MenuItem>
 
-        <Divider />
+        {/* Divider: Separates input actions from file management */}
+        {(hasChanges || fileName) && <Divider />}
 
-        <MenuItem
-          onClick={handleExportClick}
-          disabled={!hasChanges || isExporting}
-          data-testid="export-changes-menu-item"
-        >
-          {isExporting ? (
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-          ) : (
-            <DownloadIcon sx={{ mr: 1 }} fontSize="small" />
-          )}
-          {isExporting
-            ? t("dashboard.fileMenu.exporting")
-            : t("dashboard.fileMenu.exportChanges", { count: changeCount })}
-        </MenuItem>
-
-        <Divider />
-
-        <MenuItem
-          onClick={() => handleRecentFileClick("")}
-          disabled
-          data-testid="recent-file-menu-item"
-        >
-          <HistoryIcon sx={{ mr: 1 }} fontSize="small" />
-          {t("dashboard.fileMenu.openRecentFile")}
-          <Typography
-            variant="caption"
-            sx={{ ml: 1, fontStyle: "italic", opacity: 0.6 }}
+        {/* Group 2: File Management Actions (conditional) */}
+        {hasChanges && (
+          <MenuItem
+            onClick={handleExportClick}
+            disabled={isExporting}
+            data-testid="export-changes-menu-item"
           >
-            {t("dashboard.fileMenu.comingSoon")}
-          </Typography>
-        </MenuItem>
+            {isExporting ? (
+              <CircularProgress size={20} sx={{ mr: 1 }} />
+            ) : (
+              <DownloadIcon sx={{ mr: 1 }} fontSize="small" />
+            )}
+            {isExporting
+              ? t("dashboard.fileMenu.exporting")
+              : t("dashboard.fileMenu.exportChanges", { count: changeCount })}
+          </MenuItem>
+        )}
+
+        {fileName && (
+          <MenuItem
+            onClick={handleCloseFileClick}
+            data-testid="close-file-menu-item"
+          >
+            <CloseIcon sx={{ mr: 1 }} fontSize="small" />
+            {t("dashboard.fileMenu.closeFile", "Close File")}
+          </MenuItem>
+        )}
+
+        {/* Group 3: Recent Files (conditional) */}
+        {recentFiles && recentFiles.length > 0 && (
+          <>
+            {/* Only show divider if there are file management items above */}
+            {(hasChanges || fileName) && <Divider />}
+
+            <ListSubheader sx={{ lineHeight: "32px" }}>
+              {t("dashboard.fileMenu.recentFiles", "Recent Files")}
+            </ListSubheader>
+
+            {recentFiles.slice(0, 5).map((file) => (
+              <MenuItem
+                key={file.path}
+                onClick={() => handleRecentFileClick(file.path)}
+                data-testid={`recent-file-${file.name}`}
+              >
+                <ListItemIcon>
+                  <HistoryIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={file.name}
+                  secondary={new Date(file.lastAccessed).toLocaleDateString()}
+                  primaryTypographyProps={{ noWrap: true }}
+                />
+              </MenuItem>
+            ))}
+
+            {onClearRecentFiles && (
+              <>
+                <Divider />
+                <MenuItem
+                  onClick={handleClearRecentFilesClick}
+                  data-testid="clear-recent-files-menu-item"
+                >
+                  <DeleteSweepIcon sx={{ mr: 1 }} fontSize="small" />
+                  {t(
+                    "dashboard.fileMenu.clearRecentFiles",
+                    "Clear Recent Files"
+                  )}
+                </MenuItem>
+              </>
+            )}
+          </>
+        )}
       </Menu>
     </>
   );

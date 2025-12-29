@@ -32,8 +32,8 @@ pytestmark = [
     pytest.mark.unit,
     pytest.mark.skipif(
         not FIXTURES_DIR.exists(),
-        reason="Excel edge case fixtures not yet created. See agent-projects/excel-fixtures/ for generation plan."
-    )
+        reason="Excel edge case fixtures not yet created. See agent-projects/excel-fixtures/ for generation plan.",
+    ),
 ]
 
 
@@ -89,7 +89,9 @@ class TestUnicodeCharacters:
         employees = parser.parse(file_path).employees
 
         # Find employees with accented names
-        has_accents = any("é" in emp.name or "ü" in emp.name or "ø" in emp.name for emp in employees)
+        has_accents = any(
+            "é" in emp.name or "ü" in emp.name or "ø" in emp.name for emp in employees
+        )
         assert has_accents
 
     def test_parse_when_emoji_characters_then_handles_correctly(self) -> None:

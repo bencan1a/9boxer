@@ -6,10 +6,10 @@ import shutil
 import time
 import uuid
 from pathlib import Path
+from typing import Literal
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, UploadFile, status
+from pydantic import BaseModel, Field, field_validator
 
 from ninebox.core.dependencies import get_session_manager
 from ninebox.models.events import Event
@@ -36,12 +36,47 @@ class ToggleDonutModeRequest(BaseModel):
     enabled: bool
 
 
+class ExportSessionRequest(BaseModel):
+    """Request model for exporting session with validation."""
+
+    mode: Literal["update_original", "save_new"] = "update_original"
+    new_path: str | None = Field(
+        None, max_length=500, description="Path to save file (max 500 chars)"
+    )
+
+    @field_validator("new_path")
+    @classmethod
+    def validate_excel_extension(cls, v: str | None) -> str | None:
+        """Validate new_path has Excel extension if provided."""
+        if v is None:
+            return v
+        if not v.lower().endswith((".xlsx", ".xls")):
+            raise ValueError("new_path must be an Excel file (.xlsx or .xls)")
+        return v
+
+    @field_validator("mode")
+    @classmethod
+    def validate_mode(cls, v: str) -> str:
+        """Validate mode is a valid option."""
+        # Literal type handles this, but keep for clarity
+        if v not in ("update_original", "save_new"):
+            raise ValueError(f"Invalid mode: {v}. Must be 'update_original' or 'save_new'")
+        return v
+
+
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),
+    original_file_path: str | None = Form(None),
     session_mgr: SessionManager = Depends(get_session_manager),
 ) -> dict:
-    """Upload Excel file and create session."""
+    """Upload Excel file and create session.
+
+    Args:
+        file: The Excel file to upload
+        original_file_path: Optional path to the original file on disk (for Electron app)
+        session_mgr: Session manager dependency
+    """
     # Validate file type
     if not file.filename or not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(
@@ -100,15 +135,19 @@ async def upload_file(
         ) from e
 
     # Create session
+    # Use original_file_path if provided (Electron app), otherwise use uploaded copy path
+    actual_file_path = original_file_path if original_file_path else str(permanent_path)
+
     logger.info(
-        f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, filename={file.filename}"
+        f"Creating session for user_id={LOCAL_USER_ID}, employees={len(employees)}, "
+        f"filename={file.filename}, original_path={original_file_path or 'None'}"
     )
 
     session_mgr.create_session(
         user_id=LOCAL_USER_ID,
         employees=employees,
         filename=file.filename,
-        file_path=str(permanent_path),
+        file_path=actual_file_path,
         sheet_name=result.metadata.sheet_name,
         sheet_index=result.metadata.sheet_index,
         job_function_config=result.metadata.job_function_config,
@@ -197,11 +236,78 @@ async def clear_session(
     return {"success": True}
 
 
-@router.post("/export")
-async def export_session(
+@router.post("/close")
+async def close_session(
     session_mgr: SessionManager = Depends(get_session_manager),
-) -> FileResponse:
-    """Export current session data to Excel."""
+) -> dict:
+    """Close current session and clear state.
+
+    This endpoint provides a clean way to close an active session without
+    deleting the uploaded file (unlike /clear which removes all traces).
+
+    Returns:
+        dict: Success response with message, or error response
+
+    Examples:
+        Success response:
+        {"success": True, "message": "Session closed"}
+
+        Error response (no session):
+        {"success": False, "error": "No active session to close"}
+    """
+    logger = logging.getLogger(__name__)
+
+    try:
+        session = session_mgr.get_session(LOCAL_USER_ID)
+
+        if not session:
+            return {"success": False, "error": "No active session to close"}
+
+        # Delete session from manager
+        session_mgr.delete_session(LOCAL_USER_ID)
+
+        # Force garbage collection to release file handles
+        gc.collect()
+
+        logger.info(f"Session closed successfully: session_id={session.session_id}")
+
+        return {"success": True, "message": "Session closed"}
+
+    except Exception as e:
+        logger.error(f"Close session failed: {e}")
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/export")
+async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches needed for error handling
+    request: ExportSessionRequest = Body(
+        default=ExportSessionRequest(mode="update_original", new_path=None)
+    ),
+    session_mgr: SessionManager = Depends(get_session_manager),
+) -> dict:
+    """
+    Export current session data to Excel file.
+
+    Args:
+        request: Export request with mode and optional new_path
+        session_mgr: Session manager dependency
+
+    Returns:
+        Success: {"success": True, "file_path": str, "message": str}
+        Error: {"success": False, "error": str}
+
+    Raises:
+        HTTPException: If session not found or export fails
+
+    Example:
+        >>> # Update original file
+        >>> request = ExportSessionRequest(mode="update_original")
+        >>> response = await export_session(request)
+        >>> # Save to new file
+        >>> request = ExportSessionRequest(mode="save_new", new_path="/path/to/new.xlsx")
+        >>> response = await export_session(request)
+    """
+    logger = logging.getLogger(__name__)
     session = session_mgr.get_session(LOCAL_USER_ID)
 
     if not session:
@@ -210,12 +316,34 @@ async def export_session(
             detail="No active session",
         )
 
-    # Create output path
-    output_dir = get_user_data_dir() / "temp"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Validate parameters
+    if request.mode == "save_new" and not request.new_path:
+        return {
+            "success": False,
+            "error": "new_path is required when mode='save_new'",
+        }
 
-    output_filename = f"modified_{session.original_filename}"
-    output_path = output_dir / output_filename
+    # Determine target path
+    target_path: str
+    if request.mode == "save_new":
+        # Type checker knows new_path is not None here due to earlier check
+        assert request.new_path is not None  # nosec B101  # Type narrowing after validation
+
+        # Validate new_path for path traversal
+        try:
+            validated_path = Path(request.new_path).resolve()
+            allowed_dirs = [Path.home().resolve(), get_user_data_dir().resolve()]
+            if not any(validated_path.is_relative_to(d) for d in allowed_dirs):
+                return {
+                    "success": False,
+                    "error": "Path must be within user home or application directory",
+                }
+            target_path = str(validated_path)
+        except (ValueError, OSError) as e:
+            return {"success": False, "error": f"Invalid path: {e}"}
+    else:
+        # Default to update_original mode
+        target_path = session.original_file_path
 
     # Export to Excel
     exporter = ExcelExporter()
@@ -223,22 +351,72 @@ async def export_session(
         exporter.export(
             original_file=session.original_file_path,
             employees=session.current_employees,
-            output_path=str(output_path),
+            output_path=target_path,
             sheet_index=session.sheet_index,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to export Excel file: {e!s}",
-        ) from e
 
-    # Return file
-    return FileResponse(
-        path=str(output_path),
-        filename=output_filename,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
+        # Use original filename for update_original mode, or extract from path for save_new mode
+        if request.mode == "save_new":
+            filename = Path(target_path).name
+        else:
+            filename = session.original_filename
+
+        # Reset session baseline after successful export
+        # Current state becomes the new baseline with zero unsaved changes
+        session.events = []
+        session.donut_events = []
+        # Deep copy current employees to make them the new baseline
+        import copy
+
+        session.original_employees = copy.deepcopy(session.current_employees)
+        # Clear modified_in_session flags since changes are now saved
+        for emp in session.current_employees:
+            emp.modified_in_session = False
+
+        logger.info(f"Session baseline reset after export to {filename}")
+
+        # Return success response with file path and message
+        return {
+            "success": True,
+            "file_path": target_path,
+            "message": f"Changes applied to {filename}",
+        }
+
+    except FileNotFoundError as e:
+        logger.warning(f"Original file not found: {e}")
+        filename = Path(target_path).name
+        return {
+            "success": False,
+            "error": f"Could not find {filename}. Please save to a new location.",
+            "fallback_to_save_new": True,
+        }
+
+    except PermissionError as e:
+        logger.warning(f"Permission denied: {e}")
+        filename = Path(target_path).name
+        return {
+            "success": False,
+            "error": f"Cannot write to {filename} (permission denied). Please save to a new location.",
+            "fallback_to_save_new": True,
+        }
+
+    except OSError as e:
+        logger.warning(f"File operation failed: {e}")
+        filename = Path(target_path).name
+        return {
+            "success": False,
+            "error": f"Cannot write to {filename} (file may be read-only or locked). Please save to a new location.",
+            "fallback_to_save_new": True,
+        }
+
+    except Exception as e:
+        logger.error(f"Unexpected export error: {e}")
+        return {
+            "success": False,
+            "error": f"Export failed: {e!s}",
+            "fallback_to_save_new": False,
+        }
 
 
 @router.patch("/changes/{employee_id}/notes")

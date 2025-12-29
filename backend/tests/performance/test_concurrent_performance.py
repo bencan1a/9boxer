@@ -8,8 +8,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-
 pytestmark = [pytest.mark.performance, pytest.mark.slow]
+
 
 class TestConcurrentRequests:
     """Performance tests for concurrent API requests."""
@@ -139,7 +139,9 @@ class TestMemoryUsage:
 
         # Assert
         # Allow up to 200MB increase for large dataset operations
-        assert memory_increase < 200, f"Memory increased by {memory_increase:.1f}MB (target: <200MB)"
+        assert memory_increase < 200, (
+            f"Memory increased by {memory_increase:.1f}MB (target: <200MB)"
+        )
 
 
 class TestConcurrentReadWrite:
@@ -172,7 +174,9 @@ class TestConcurrentReadWrite:
             return response.json()
 
         # Act
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_readers + num_writers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=num_readers + num_writers
+        ) as executor:
             # Submit read operations
             read_futures = [executor.submit(read_employee, i % 5 + 1) for i in range(num_readers)]
 
@@ -180,8 +184,12 @@ class TestConcurrentReadWrite:
             write_futures = [executor.submit(write_employee, i % 5 + 1) for i in range(num_writers)]
 
             # Collect results
-            read_results = [future.result() for future in concurrent.futures.as_completed(read_futures)]
-            write_results = [future.result() for future in concurrent.futures.as_completed(write_futures)]
+            read_results = [
+                future.result() for future in concurrent.futures.as_completed(read_futures)
+            ]
+            write_results = [
+                future.result() for future in concurrent.futures.as_completed(write_futures)
+            ]
 
         # Assert
         assert len(read_results) == num_readers

@@ -556,5 +556,7 @@ class TestEventTypeValidation:
         flag_add_event = FlagAddEvent(employee_id=1, employee_name="Alice", flag="promotion_ready")
         assert flag_add_event.event_type == "flag_add"
 
-        flag_remove_event = FlagRemoveEvent(employee_id=1, employee_name="Alice", flag="promotion_ready")
+        flag_remove_event = FlagRemoveEvent(
+            employee_id=1, employee_name="Alice", flag="promotion_ready"
+        )
         assert flag_remove_event.event_type == "flag_remove"

@@ -27,6 +27,7 @@ interface SessionState {
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
+  closeSession: () => Promise<void>;
   loadEmployees: () => Promise<void>;
   moveEmployee: (
     employeeId: number,
@@ -71,7 +72,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.upload(file);
+      // Pass filePath to backend so it knows the real file location
+      const response = await apiClient.upload(file, filePath);
 
       // Load employees after upload
       const employeesResponse = await apiClient.getEmployees();
@@ -142,6 +144,39 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         isLoading: false,
         error: errorMessage,
       });
+      throw error;
+    }
+  },
+
+  closeSession: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      await apiClient.closeSession();
+
+      // Clear all session state
+      set({
+        sessionId: null,
+        employees: [],
+        originalEmployees: [],
+        events: [],
+        filename: null,
+        filePath: null,
+        selectedEmployeeId: null,
+        donutModeActive: false,
+        donutEvents: [],
+        isLoading: false,
+        error: null,
+      });
+
+      // Clear localStorage
+      localStorage.removeItem("session_id");
+      localStorage.removeItem("last_file_path");
+
+      logger.info("Session closed successfully");
+    } catch (error: unknown) {
+      const errorMessage = extractErrorMessage(error);
+      logger.error("Failed to close session:", errorMessage);
+      set({ error: errorMessage, isLoading: false });
       throw error;
     }
   },
