@@ -660,19 +660,23 @@ class TestOriginalValueTracking:
         workbook = openpyxl.load_workbook(export_path)
         sheet = workbook.worksheets[1]
 
-        # Find Original Performance column
+        # Find Original Performance and Original Potential columns
         original_perf_col = None
+        original_pot_col = None
         for col_idx in range(1, sheet.max_column + 1):
-            if sheet.cell(1, col_idx).value == "Original Performance":
+            cell_value = sheet.cell(1, col_idx).value
+            if cell_value == "Original Performance":
                 original_perf_col = col_idx
-                break
+            elif cell_value == "Original Potential":
+                original_pot_col = col_idx
 
         assert original_perf_col is not None
+        assert original_pot_col is not None
 
         # All employees should have empty original value columns
         for row_idx in range(2, sheet.max_row + 1):
             original_perf_value = sheet.cell(row_idx, original_perf_col).value
-            original_pot_value = sheet.cell(row_idx, original_perf_col + 1).value
+            original_pot_value = sheet.cell(row_idx, original_pot_col).value
             # Empty cells can be "" or None
             assert original_perf_value in ("", None), (
                 f"Row {row_idx} has non-empty original performance: {original_perf_value}"
