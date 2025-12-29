@@ -675,6 +675,86 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 200 },
   },
+
+  // File Operations workflow screenshots (5 screenshots)
+  "file-menu-recent-files": {
+    source: "full-app",
+    workflow: "file-operations",
+    function: "generateFileMenuWithRecents",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-recent-files.png",
+    description:
+      "File menu dropdown showing recent files list, import, apply changes, and close options",
+    cropping: "container",
+    dimensions: {
+      minWidth: 250,
+      maxWidth: 400,
+      minHeight: 300,
+      maxHeight: 600,
+    },
+  },
+  "unsaved-changes-dialog": {
+    source: "full-app",
+    workflow: "file-operations",
+    function: "generateUnsavedChangesDialog",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/unsaved-changes-dialog.png",
+    description:
+      "Unsaved Changes protection dialog with Apply Changes, Discard, and Cancel options",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 200,
+      maxHeight: 400,
+    },
+  },
+  "apply-changes-dialog-default": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateApplyChangesDialogDefault",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-default.png",
+    description:
+      "Apply Changes dialog in default mode (update original file, checkbox unchecked)",
+    storyId: "dialogs-applychangesdialog--default",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 250,
+      maxHeight: 450,
+    },
+  },
+  "apply-changes-dialog-save-as": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateApplyChangesDialogSaveAs",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-save-as.png",
+    description:
+      "Apply Changes dialog in save-as mode (save to different file, checkbox checked)",
+    storyId: "dialogs-applychangesdialog--default",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 250,
+      maxHeight: 450,
+    },
+  },
+  "file-error-fallback": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateFileErrorFallback",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/file-error-fallback.png",
+    description:
+      "File error fallback - error message when original file can't be updated",
+    storyId: "dialogs-applychangesdialog--with-error",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 250,
+      maxHeight: 450,
+    },
+  },
 };
 
 /**

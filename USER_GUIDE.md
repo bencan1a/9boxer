@@ -66,7 +66,7 @@ Once uploaded, you'll see employee tiles arranged in a 3×3 grid based on their 
 - Release to drop
 - Changed employees turn yellow
 
-The "Apply" button shows how many changes you've made.
+The File menu shows "Apply X Changes" where X is the number of changes you've made.
 
 ### 3. Filter Your View (1 minute)
 
@@ -85,14 +85,14 @@ The employee count updates to show how many are currently displayed.
 - **Statistics** - Distribution charts showing your talent spread
 - **Intelligence** - Advanced analytics identifying patterns and anomalies
 
-### 5. Export Changes (30 seconds)
+### 5. Apply Changes (30 seconds)
 
-**Click the "Apply" button** to save your changes:
-- Downloads a new Excel file named `modified_[original_filename].xlsx`
+**Click File menu → Apply X Changes** to save your work:
+- Choose to update your original file OR save to a different file
 - Contains all employees with updated performance/potential ratings
-- Original file remains unchanged
+- Recent files list shows files you've worked with for quick access
 
-**Important**: Your changes are NOT auto-saved. Always export before closing the application.
+**Important**: Your changes are NOT auto-saved. Always apply changes before closing. 9Boxer warns you if you try to close with unsaved changes!
 
 ---
 
@@ -126,6 +126,30 @@ Your Excel file must contain these columns (column names are case-sensitive):
    - You'll see a success notification
    - The grid populates with employee tiles
    - Employee count appears in the top bar
+
+### Recent Files
+
+The File menu maintains a list of your recently used files for quick access.
+
+**How it works:**
+- The last 5 files you've worked with appear in the File menu
+- Each file shows its name and when you last used it
+- Click any recent file to quickly reload it
+- Recent files persist across sessions (saved locally)
+
+**To open a recent file:**
+1. Click **File menu** (top-left)
+2. Look for the **Recent Files** section
+3. Click the file you want to reload
+4. The file loads automatically
+
+**To clear recent files:**
+1. Click **File menu**
+2. Click **"Clear Recent Files"** at the bottom of the recent files list
+3. All recent files are removed from the list
+
+!!! info "Recent Files and Unsaved Changes"
+    If you have unsaved changes when you click a recent file, 9Boxer will warn you before loading the new file. You can choose to apply your changes, discard them, or cancel the operation.
 
 ### Upload Errors
 
@@ -567,7 +591,7 @@ This makes it easy to drill down from individual employees to their full team co
 2. **Drag** to the desired box on the grid
 3. **Release** to drop the employee
 4. The tile turns **yellow** to indicate it's been modified
-5. A badge on the "Apply" button shows your total change count
+5. The File menu shows "Apply X Changes" with your total change count
 
 #### What Happens When You Move
 
@@ -760,7 +784,7 @@ When in normal mode, employees appear at their actual positions, NOT their donut
 
 ### Exporting Donut Data
 
-When you export your changes (click "Apply" button), the Excel file includes donut exercise data in dedicated columns.
+When you apply your changes (File menu → Apply X Changes), the Excel file includes donut exercise data in dedicated columns.
 
 **Four new columns are added:**
 
@@ -1229,25 +1253,34 @@ This helps ensure:
 
 ## Exporting Your Changes
 
-### When to Export
+### When to Apply Changes
 
-Export your changes when you:
+Apply your changes when you:
 - Have moved employees to their correct boxes
 - Want to save your current session
 - Are ready to share updated ratings
 - Need a backup before making more changes
 
-**Critical**: The application does NOT auto-save. You must export to save your work.
+**Critical**: The application does NOT auto-save. You must apply changes to save your work. 9Boxer warns you if you try to import data or close the file with unsaved changes.
 
-### Export Process
+### Apply Changes Process
 
 1. **Make changes** by dragging employees to different boxes
-2. **Check the badge** on the "Apply" button - it shows how many changes you've made
-3. **Click the "Apply" button**
-4. **File downloads automatically** to your default download folder
-   - File name format: `modified_[original_filename].xlsx`
-   - Contains all employees with updated ratings
-   - All original columns are preserved
+2. **Open the File menu** (top-left of application bar)
+3. **Click "Apply X Changes"** (where X is the number of pending changes)
+4. **Choose your save option:**
+   - **Update original file** (default) - Saves back to the file you loaded
+   - **Save to different file** - Choose a new location and filename
+5. **Click "Apply Changes"** to save
+6. Your work is now saved to the Excel file!
+
+**File Menu Options:**
+- **Import Data** - Load a new Excel file
+- **Load Sample Dataset** - Load demo data to explore 9Boxer
+- **Recent Files** - Quickly reopen your last 5 files
+- **Apply X Changes** - Save your work (appears when you have changes)
+- **Close File** - Close the current file (warns if unsaved changes)
+- **Clear Recent Files** - Remove all files from recent files list
 
 ### What's in the Export
 
@@ -1398,10 +1431,11 @@ Your original file remains completely unchanged.
 
 ### Changes not saving
 
-- **Click "Apply"** - Changes are NOT saved until you click the Apply button
-- **Check download folder** - The exported file downloads to your default location
-- **Look for the file** - Search for files starting with `modified_`
-- **Check permissions** - Ensure you have write access to your download folder
+- **Click File menu → Apply X Changes** - Changes are NOT saved until you apply them
+- **If you chose "Update original file"** - Check the same location as your original file
+- **If you chose "Save to different file"** - Check the location you selected in the save dialog
+- **Check Recent Files** - The File menu shows recently saved files
+- **Check permissions** - Ensure you have write access to the file location
 
 ### Right panel won't open
 

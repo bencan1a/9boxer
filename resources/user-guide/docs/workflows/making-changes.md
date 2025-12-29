@@ -188,8 +188,8 @@ During a long session with many moves:
 
 !!! warning "Remember: No auto-save!"
     Your changes are stored in your browser while you work, but they're NOT saved to a file automatically.
-    Click **Export** when you're done to download your updated ratings.
-    [Learn about exporting](../exporting.md)
+    Click **Apply Changes** (in the File menu) when you're done to save your updated ratings.
+    [Learn about applying changes](../exporting.md)
 
 ---
 
@@ -223,13 +223,22 @@ Made a mistake? No problem!
 4. The Changes tab shows the full history (both moves)
 
 **To cancel all changes:**
-- Reload the page (without exporting)
-- Upload a fresh copy of your data file
-- Your original data remains unchanged
+- Use File menu → Close File (you'll be warned if you have unsaved changes)
+- Import new data (you'll be warned about unsaved changes)
+- Your original file remains unchanged until you explicitly apply changes
 
-!!! danger "Closing without exporting loses all changes!"
-    If you close 9Boxer without clicking Export, ALL your changes are lost.
-    There's no "Save" button - exporting IS saving!
+!!! danger "Unsaved Changes Protection"
+    9Boxer now warns you before discarding unsaved changes! If you try to:
+    - Import new data
+    - Load sample data
+    - Close the file
+
+    You'll see a dialog with three options:
+    - **Apply Changes** - Save your work first, then proceed
+    - **Discard Changes** - Lose all changes and proceed
+    - **Cancel** - Return to your work without losing anything
+
+    This protection ensures you don't accidentally lose hours of work!
 
 ---
 
@@ -331,7 +340,9 @@ Now that you know how to make changes, consider these next steps:
 | Verify a change was saved | Check Changes tab for the employee |
 | Undo a move | Drag employee back to original position |
 | Add a note explaining the change | Click employee → Changes tab → Type in Notes field |
-| Save my changes | File menu → Apply X Changes to Excel (downloads file) |
+| Save my changes to original file | File menu → Apply X Changes → Keep "Update original file" selected |
+| Save my changes to new file | File menu → Apply X Changes → Check "Save to different file" |
+| Cancel without losing work | Click Cancel if warned about unsaved changes |
 
 ---
 
