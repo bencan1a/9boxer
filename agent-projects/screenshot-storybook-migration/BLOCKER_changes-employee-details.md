@@ -1,6 +1,24 @@
 # Blocker: changes-employee-details Screenshot
 
-## Issue
+## ✅ RESOLVED (2025-12-28)
+
+**Root Cause**: Storybook couldn't resolve `@/` path alias imports for `@/store/sessionStore` and `@/types/*`
+
+**Solution**: Changed to relative imports in EmployeeDetails.stories.tsx:
+- `@/store/sessionStore` → `../../store/sessionStore`
+- `@/types/events` → `../../types/events`
+- `@/types/employee` → `../../types/employee`
+
+**Result**:
+- ✓ Story renders successfully in Storybook
+- ✓ Screenshot generates (39.4 KB)
+- ✓ Commit: `7fc2793` - "fix(screenshots): resolve changes-employee-details import error with relative paths"
+
+---
+
+## Original Issue (Historical Record)
+
+### Issue
 The `panel-employeedetails--with-changes` Storybook story fails to render, causing screenshot generation timeouts.
 
 ## Error
