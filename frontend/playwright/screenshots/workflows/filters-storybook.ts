@@ -13,6 +13,8 @@
 
 import { Page } from "@playwright/test";
 import { captureStorybookScreenshot } from "../storybook-screenshot";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Generate flags filtering screenshot
@@ -24,6 +26,7 @@ import { captureStorybookScreenshot } from "../storybook-screenshot";
  * - Count badge showing active filters
  *
  * Uses Storybook story: dashboard-filterdrawer--flags-active
+ * Expands the Flags section before capturing screenshot
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -32,24 +35,44 @@ export async function generateFlagsFiltering(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--flags-active",
-    outputPath,
-    theme: "light",
-    waitTime: 1500,
-    selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
+  // Navigate to story using the helper (ensures Storybook is running)
+  const { navigateToStory } = await import("../storybook-screenshot");
+  await navigateToStory(page, "dashboard-filterdrawer--flags-active", "light");
+
+  // Wait for drawer to be visible
+  await page.waitForSelector('[data-testid="filter-drawer"]', {
+    state: "visible",
+    timeout: 5000,
   });
+
+  // Click to expand the Flags section (it's collapsed by default)
+  const flagsAccordion = page.locator('[data-testid="filter-accordion-flags"]');
+  await flagsAccordion.click();
+
+  // Wait for expansion animation to complete
+  await page.waitForTimeout(500);
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Take screenshot of the drawer
+  const drawer = page.locator('[data-testid="filter-drawer"]');
+  await drawer.screenshot({ path: outputPath });
+
+  console.log(`  ✓ Captured flags section screenshot (expanded)`);
 }
 
 /**
  * Generate reporting chain filter active screenshot
  *
  * Shows the FilterDrawer with Reporting Chain section:
- * - Green chip with manager icon
- * - Manager name displayed in chip
+ * - Green chip with manager icon (AccountTree)
+ * - Manager name displayed in chip ("Reporting to: Jane Smith")
  * - Chip can be dismissed with X button
  *
  * Uses Storybook story: dashboard-filterdrawer--reporting-chain-active
+ * Verifies reporting chain chip is visible before capturing
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -58,13 +81,38 @@ export async function generateReportingChainFilterActive(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--reporting-chain-active",
-    outputPath,
-    theme: "light",
-    waitTime: 1500,
-    selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
+  // Navigate to story using the helper (ensures Storybook is running)
+  const { navigateToStory } = await import("../storybook-screenshot");
+  await navigateToStory(
+    page,
+    "dashboard-filterdrawer--reporting-chain-active",
+    "light"
+  );
+
+  // Wait for drawer to be visible
+  await page.waitForSelector('[data-testid="filter-drawer"]', {
+    state: "visible",
+    timeout: 5000,
   });
+
+  // Verify the reporting chain filter chip is visible
+  await page.waitForSelector('[data-testid="reporting-chain-filter-chip"]', {
+    state: "visible",
+    timeout: 5000,
+  });
+
+  // Additional wait to ensure rendering is complete
+  await page.waitForTimeout(500);
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Take screenshot of the drawer
+  const drawer = page.locator('[data-testid="filter-drawer"]');
+  await drawer.screenshot({ path: outputPath });
+
+  console.log(`  ✓ Captured reporting chain filter screenshot (active)`);
 }
 
 /**
