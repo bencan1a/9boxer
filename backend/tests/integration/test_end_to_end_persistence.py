@@ -686,3 +686,201 @@ class TestOriginalValueTracking:
             )
 
         workbook.close()
+
+
+class TestFlagsAndDonutPersistence:
+    """Test that flags and donut exercise data persist across export/reload cycles."""
+
+    def test_flags_persist_across_export_reload(
+        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+    ) -> None:
+        """Test that flags are written to Excel and read back correctly."""
+        # Upload file
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "test.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            test_client.post("/api/session/upload", files=files)
+
+        # Get first employee and add flags
+        response = test_client.get("/api/employees")
+        employees = response.json()["employees"]
+        employee_id = employees[0]["employee_id"]
+
+        # Add flags via API (assuming there's an endpoint for this)
+        # For now, we'll test by directly using the exporter with flagged employees
+        from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+        from ninebox.services.excel_exporter import ExcelExporter
+        from ninebox.services.excel_parser import ExcelParser
+        from ninebox.services.session_manager import SessionManager
+        from datetime import datetime, timezone
+
+        # Get session
+        from ninebox.core.dependencies import get_session_manager
+        session_mgr = get_session_manager()
+        session = session_mgr.get_session("local-user")
+        assert session is not None
+
+        # Add flags to first employee
+        session.current_employees[0].flags = ["promotion_ready", "flight_risk"]
+
+        # Export to new file
+        export_path = tmp_path / "exported_with_flags.xlsx"
+        exporter = ExcelExporter()
+        exporter.export(
+            sample_excel_file,
+            session.current_employees,
+            export_path,
+            sheet_index=1,
+            session=session,
+        )
+
+        # Reload file and verify flags persisted
+        parser = ExcelParser()
+        result = parser.parse(export_path)
+
+        # Find the employee
+        reloaded_employee = next(
+            (e for e in result.employees if e.employee_id == employee_id), None
+        )
+        assert reloaded_employee is not None
+        assert reloaded_employee.flags is not None
+        assert set(reloaded_employee.flags) == {"promotion_ready", "flight_risk"}
+
+    def test_donut_data_persists_across_export_reload(
+        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+    ) -> None:
+        """Test that donut exercise data is written to Excel and read back correctly."""
+        # Upload file
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "test.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            test_client.post("/api/session/upload", files=files)
+
+        # Get employee and add donut placement
+        from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+        from ninebox.services.excel_exporter import ExcelExporter
+        from ninebox.services.excel_parser import ExcelParser
+        from datetime import datetime, timezone
+
+        # Get session
+        from ninebox.core.dependencies import get_session_manager
+        session_mgr = get_session_manager()
+        session = session_mgr.get_session("local-user")
+        assert session is not None
+
+        # Get first employee
+        response = test_client.get("/api/employees")
+        employees = response.json()["employees"]
+        employee_id = employees[0]["employee_id"]
+
+        # Add donut placement to first employee
+        session.current_employees[0].donut_modified = True
+        session.current_employees[0].donut_position = 6  # High performance, Medium potential
+        session.current_employees[0].donut_performance = PerformanceLevel.HIGH
+        session.current_employees[0].donut_potential = PotentialLevel.MEDIUM
+        session.current_employees[0].donut_notes = "Hypothetical placement for leadership track"
+
+        # Export to new file
+        export_path = tmp_path / "exported_with_donut.xlsx"
+        exporter = ExcelExporter()
+        exporter.export(
+            sample_excel_file,
+            session.current_employees,
+            export_path,
+            sheet_index=1,
+            session=session,
+        )
+
+        # Reload file and verify donut data persisted
+        parser = ExcelParser()
+        result = parser.parse(export_path)
+
+        # Find the employee
+        reloaded_employee = next(
+            (e for e in result.employees if e.employee_id == employee_id), None
+        )
+        assert reloaded_employee is not None
+        assert reloaded_employee.donut_modified is True
+        assert reloaded_employee.donut_position == 6
+        assert reloaded_employee.donut_performance == PerformanceLevel.HIGH
+        assert reloaded_employee.donut_potential == PotentialLevel.MEDIUM
+        assert reloaded_employee.donut_notes == "Hypothetical placement for leadership track"
+
+    def test_flags_and_donut_together_persist(
+        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+    ) -> None:
+        """Test that both flags and donut data can coexist and persist together."""
+        # Upload file
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "test.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            test_client.post("/api/session/upload", files=files)
+
+        from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+        from ninebox.services.excel_exporter import ExcelExporter
+        from ninebox.services.excel_parser import ExcelParser
+
+        # Get session
+        from ninebox.core.dependencies import get_session_manager
+        session_mgr = get_session_manager()
+        session = session_mgr.get_session("local-user")
+        assert session is not None
+
+        # Get first employee
+        response = test_client.get("/api/employees")
+        employees = response.json()["employees"]
+        employee_id = employees[0]["employee_id"]
+
+        # Add both flags and donut placement
+        session.current_employees[0].flags = ["high_potential", "new_hire"]
+        session.current_employees[0].donut_modified = True
+        session.current_employees[0].donut_position = 9
+        session.current_employees[0].donut_performance = PerformanceLevel.HIGH
+        session.current_employees[0].donut_potential = PotentialLevel.HIGH
+        session.current_employees[0].donut_notes = "Star performer potential"
+
+        # Export
+        export_path = tmp_path / "exported_with_both.xlsx"
+        exporter = ExcelExporter()
+        exporter.export(
+            sample_excel_file,
+            session.current_employees,
+            export_path,
+            sheet_index=1,
+            session=session,
+        )
+
+        # Reload and verify both persisted
+        parser = ExcelParser()
+        result = parser.parse(export_path)
+
+        reloaded_employee = next(
+            (e for e in result.employees if e.employee_id == employee_id), None
+        )
+        assert reloaded_employee is not None
+
+        # Check flags
+        assert reloaded_employee.flags is not None
+        assert set(reloaded_employee.flags) == {"high_potential", "new_hire"}
+
+        # Check donut data
+        assert reloaded_employee.donut_modified is True
+        assert reloaded_employee.donut_position == 9
+        assert reloaded_employee.donut_performance == PerformanceLevel.HIGH
+        assert reloaded_employee.donut_potential == PotentialLevel.HIGH
+        assert reloaded_employee.donut_notes == "Star performer potential"
