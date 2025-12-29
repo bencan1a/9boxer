@@ -22,7 +22,7 @@ test.describe("Sample Data Loading Flow", () => {
 
   test("should load sample data from File menu", async ({ page }) => {
     // Verify we start with no data (empty state)
-    await expect(page.getByText("No File Loaded")).toBeVisible();
+    await expect(page.getByText("No Employees Loaded")).toBeVisible();
 
     // Click File menu
     await page.locator('[data-testid="file-menu-button"]').click();

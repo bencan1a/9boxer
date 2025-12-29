@@ -5,6 +5,37 @@
 
 import { test, expect } from "../fixtures";
 import { loadSampleData, dragEmployeeToPosition } from "../helpers";
+import type { Page, Locator } from "@playwright/test";
+
+/**
+ * Helper to find any employee in the grid
+ * Returns the first employee found in any box (prioritizing likely populated boxes)
+ */
+async function findAnyEmployee(page: Page): Promise<{
+  employeeCard: Locator;
+  employeeId: string;
+  boxNumber: number;
+}> {
+  // Check boxes in order of likelihood (high performers first)
+  for (const box of [9, 8, 6, 5, 7, 4, 3, 2, 1]) {
+    const gridBox = page.locator(`[data-testid="grid-box-${box}"]`);
+    const employees = gridBox.locator('[data-testid^="employee-card-"]');
+    const count = await employees.count();
+
+    if (count > 0) {
+      const firstEmployee = employees.first();
+      const testId = await firstEmployee.getAttribute("data-testid");
+      const employeeId = testId?.replace("employee-card-", "") || "";
+      return {
+        employeeCard: firstEmployee,
+        employeeId,
+        boxNumber: box,
+      };
+    }
+  }
+
+  throw new Error("No employees found in any grid box");
+}
 
 test.describe("Drag-and-Drop Visual Feedback Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -19,45 +50,67 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
   });
 
   test("should move employee and show visual feedback", async ({ page }) => {
-    // Verify employee ID 1 (Alice Smith) is in box 9 initially
-    const employeeCard = page.locator('[data-testid="employee-card-1"]');
+    // Find any employee in the grid
+    const { employeeCard, employeeId, boxNumber } = await findAnyEmployee(page);
 
-    await expect(employeeCard).toHaveAttribute("data-position", "9");
+    // Verify employee is visible in their current position
     await expect(employeeCard).toBeVisible();
+    await expect(employeeCard).toHaveAttribute(
+      "data-position",
+      boxNumber.toString()
+    );
 
     // Note: Modified indicator chip was removed - modified state is now shown via border styling only
 
-    // Get initial count for box 9 (should include Alice Smith)
-    const box9CountBefore = page.locator('[data-testid="grid-box-9-count"]');
-    const box9InitialCount = await box9CountBefore.textContent();
+    // Choose a target box different from current position
+    const targetBox = boxNumber === 6 ? 3 : 6;
 
-    // Get initial count for box 6 (target box)
-    const box6CountBefore = page.locator('[data-testid="grid-box-6-count"]');
-    const box6InitialCount = await box6CountBefore.textContent();
+    // Get initial counts for source and target boxes
+    const sourceCountBefore = page.locator(
+      `[data-testid="grid-box-${boxNumber}-count"]`
+    );
+    const sourceInitialCount = await sourceCountBefore.textContent();
 
-    // Move employee from box 9 to box 6
-    await dragEmployeeToPosition(page, 1, 6);
+    const targetCountBefore = page.locator(
+      `[data-testid="grid-box-${targetBox}-count"]`
+    );
+    const targetInitialCount = await targetCountBefore.textContent();
 
-    // Verify employee now appears in box 6
-    await expect(employeeCard).toHaveAttribute("data-position", "6");
+    // Move employee to target box
+    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
+
+    // Re-find employee by ID after drag (locator is scoped to original box)
+    const movedCard = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
+
+    // Verify employee now appears in target box
+    await expect(movedCard).toHaveAttribute(
+      "data-position",
+      targetBox.toString()
+    );
 
     // Note: Modified state is shown via border styling, not a testable indicator element
     // Visual feedback is verified through border changes (tested in visual regression tests)
 
     // Verify box counts changed
-    const box9CountAfter = page.locator('[data-testid="grid-box-9-count"]');
-    const box6CountAfter = page.locator('[data-testid="grid-box-6-count"]');
-
-    // Box 9 should have decreased by 1
-    const box9FinalCount = await box9CountAfter.textContent();
-    expect(parseInt(box9FinalCount || "0")).toBe(
-      parseInt(box9InitialCount || "0") - 1
+    const sourceCountAfter = page.locator(
+      `[data-testid="grid-box-${boxNumber}-count"]`
+    );
+    const targetCountAfter = page.locator(
+      `[data-testid="grid-box-${targetBox}-count"]`
     );
 
-    // Box 6 should have increased by 1
-    const box6FinalCount = await box6CountAfter.textContent();
-    expect(parseInt(box6FinalCount || "0")).toBe(
-      parseInt(box6InitialCount || "0") + 1
+    // Source box should have decreased by 1
+    const sourceFinalCount = await sourceCountAfter.textContent();
+    expect(parseInt(sourceFinalCount || "0")).toBe(
+      parseInt(sourceInitialCount || "0") - 1
+    );
+
+    // Target box should have increased by 1
+    const targetFinalCount = await targetCountAfter.textContent();
+    expect(parseInt(targetFinalCount || "0")).toBe(
+      parseInt(targetInitialCount || "0") + 1
     );
   });
 
@@ -71,27 +124,33 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
     await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
-    // Open file menu to check export menu item is disabled
+    // Verify export menu item is hidden when no changes
     await page.locator('[data-testid="file-menu-button"]').click();
-    const exportMenuItem = page.locator(
+    await expect(page.locator('[role="menu"]')).toBeVisible();
+    const exportMenuItemBefore = page.locator(
       '[data-testid="export-changes-menu-item"]'
     );
-    await expect(exportMenuItem).toBeDisabled();
-
-    // Close menu
+    await expect(exportMenuItemBefore).not.toBeVisible();
     await page.keyboard.press("Escape");
 
-    // Move employee using dragEmployeeToPosition
-    await dragEmployeeToPosition(page, 1, 6);
+    // Find any employee and move them
+    const { employeeId, boxNumber } = await findAnyEmployee(page);
+    const targetBox = boxNumber === 6 ? 3 : 6;
+    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
 
     // Verify file menu badge becomes visible (showing 1 change)
     await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);
     await expect(fileMenuBadge).toContainText("1");
 
-    // Open file menu and verify export menu item is now enabled
+    // Open file menu and verify export menu item is now visible and enabled
     await page.locator('[data-testid="file-menu-button"]').click();
-    await expect(exportMenuItem).toBeEnabled();
-    await expect(exportMenuItem).toContainText("Apply 1 Change");
+    await expect(page.locator('[role="menu"]')).toBeVisible();
+    const exportMenuItemAfterDrag = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
+    await expect(exportMenuItemAfterDrag).toBeVisible();
+    await expect(exportMenuItemAfterDrag).toBeEnabled();
+    await expect(exportMenuItemAfterDrag).toContainText("Apply 1 Change");
 
     // Close menu
     await page.keyboard.press("Escape");
@@ -100,23 +159,35 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
   test("should remove visual indicators when employee is moved back to original position", async ({
     page,
   }) => {
-    // Move employee from box 9 to 6
-    await dragEmployeeToPosition(page, 1, 6);
+    // Find any employee and record their original position
+    const { employeeCard, employeeId, boxNumber } = await findAnyEmployee(page);
+    const originalBox = boxNumber;
+    const targetBox = boxNumber === 6 ? 3 : 6;
+
+    // Move employee to target box
+    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
 
     // Note: Modified indicator chip no longer exists - state is shown via border styling only
 
     // Wait for network to be idle for consecutive drags
     await page.waitForLoadState("networkidle");
 
-    // Move employee back to original position (box 9) - skip API wait and don't expect modified indicator
-    await dragEmployeeToPosition(page, 1, 9, {
+    // Move employee back to original position - skip API wait and don't expect modified indicator
+    await dragEmployeeToPosition(page, parseInt(employeeId), originalBox, {
       skipApiWait: true,
       expectModified: false,
     });
 
-    // Verify employee is back in box 9
-    const employeeCard = page.locator('[data-testid="employee-card-1"]');
-    await expect(employeeCard).toHaveAttribute("data-position", "9");
+    // Re-find employee by ID after second drag (locator is scoped to intermediate box)
+    const movedBackCard = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
+
+    // Verify employee is back in original box
+    await expect(movedBackCard).toHaveAttribute(
+      "data-position",
+      originalBox.toString()
+    );
 
     // Note: Modified state is no longer visible via indicator chip (removed)
     // The border styling also returns to normal (tested in visual regression tests)
@@ -128,20 +199,20 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
     const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
     await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
 
-    // Verify export menu item is disabled again
+    // Verify export menu item is hidden when no changes (conditionally rendered)
     await page.locator('[data-testid="file-menu-button"]').click();
     const exportMenuItem = page.locator(
       '[data-testid="export-changes-menu-item"]'
     );
-    await expect(exportMenuItem).toBeDisabled();
+    await expect(exportMenuItem).not.toBeVisible();
     await page.keyboard.press("Escape");
   });
 
   test("should show visual feedback during drag operation", async ({
     page,
   }) => {
-    // Get the employee card
-    const employeeCard = page.locator('[data-testid="employee-card-1"]');
+    // Find any employee in the grid
+    const { employeeCard, boxNumber } = await findAnyEmployee(page);
     await expect(employeeCard).toBeVisible();
 
     // Get initial opacity
@@ -157,8 +228,11 @@ test.describe("Drag-and-Drop Visual Feedback Flow", () => {
       throw new Error("Employee card not found");
     }
 
-    // Get target box
-    const targetBox = page.locator('[data-testid="grid-box-6"]');
+    // Get target box (choose different from current box)
+    const targetBoxNumber = boxNumber === 6 ? 3 : 6;
+    const targetBox = page.locator(
+      `[data-testid="grid-box-${targetBoxNumber}"]`
+    );
     const targetBoxBounds = await targetBox.boundingBox();
     if (!targetBoxBounds) {
       throw new Error("Target box not found");

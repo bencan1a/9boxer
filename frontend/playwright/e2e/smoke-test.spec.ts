@@ -10,8 +10,39 @@
 
 import { test, expect } from "../fixtures";
 import { loadSampleData, dragEmployeeToPosition } from "../helpers";
+import type { Page, Locator } from "@playwright/test";
 import * as path from "path";
 import * as fs from "fs";
+
+/**
+ * Helper to find any employee in the grid
+ * Returns the first employee found in any box (prioritizing likely populated boxes)
+ */
+async function findAnyEmployee(page: Page): Promise<{
+  employeeCard: Locator;
+  employeeId: string;
+  boxNumber: number;
+}> {
+  // Check boxes in order of likelihood (high performers first)
+  for (const box of [9, 8, 6, 5, 7, 4, 3, 2, 1]) {
+    const gridBox = page.locator(`[data-testid="grid-box-${box}"]`);
+    const employees = gridBox.locator('[data-testid^="employee-card-"]');
+    const count = await employees.count();
+
+    if (count > 0) {
+      const firstEmployee = employees.first();
+      const testId = await firstEmployee.getAttribute("data-testid");
+      const employeeId = testId?.replace("employee-card-", "") || "";
+      return {
+        employeeCard: firstEmployee,
+        employeeId,
+        boxNumber: box,
+      };
+    }
+  }
+
+  throw new Error("No employees found in any grid box");
+}
 
 test.describe("Smoke Test - Critical Workflows", () => {
   test.beforeEach(async ({ page }) => {
@@ -42,7 +73,7 @@ test.describe("Smoke Test - Critical Workflows", () => {
     expect(initialCountText).toContain("employees");
 
     // 2. VIEW DETAILS - Click employee and view details panel
-    const employeeCard = page.locator('[data-testid="employee-card-1"]');
+    const { employeeCard, employeeId } = await findAnyEmployee(page);
     await employeeCard.click();
 
     // Verify Details tab opens with employee information
@@ -50,17 +81,20 @@ test.describe("Smoke Test - Critical Workflows", () => {
       "aria-selected",
       "true"
     );
-    await expect(
-      page.getByRole("heading", { name: "Alice Smith" }).first()
-    ).toBeVisible();
-    await expect(page.getByText(/Engineer/i).first()).toBeVisible();
+    // Verify details panel shows content (name and job info will vary)
+    const detailsPanel = page.locator('[data-testid="tab-panel-0"]');
+    const headings = detailsPanel.locator("h2, h3, h4, h5, h6");
+    await expect(headings.first()).toBeVisible();
 
     // 3. DRAG & DROP - Move employee and verify visual feedback
-    await dragEmployeeToPosition(page, 1, 6);
+    await dragEmployeeToPosition(page, parseInt(employeeId), 6);
 
     // Verify employee moved to box 6
     const box6 = page.locator('[data-testid="grid-box-6"]');
-    await expect(box6.getByText("Alice Smith")).toBeVisible();
+    const movedEmployee = box6.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
+    await expect(movedEmployee).toBeVisible();
 
     // Note: Modified indicator chip was removed - modified state is shown via border styling only
 
@@ -88,15 +122,24 @@ test.describe("Smoke Test - Critical Workflows", () => {
     await expect(filterDrawer).not.toBeVisible();
 
     // 5. EXPORT - Export to Excel and verify file
-    const downloadPromise = page.waitForEvent("download");
-
     // Open file menu and click export
     await page.locator('[data-testid="file-menu-button"]').click();
     // Wait for export menu item to be visible and enabled
+    const exportMenuItem = page.locator(
+      '[data-testid="export-changes-menu-item"]'
+    );
+    await expect(exportMenuItem).toBeVisible();
+    await expect(exportMenuItem).toBeEnabled();
+    await exportMenuItem.click();
+
+    // Verify ApplyChangesDialog appears
     await expect(
-      page.locator('[data-testid="export-changes-menu-item"]')
-    ).toBeEnabled();
-    await page.locator('[data-testid="export-changes-menu-item"]').click();
+      page.locator('[data-testid="apply-changes-dialog"]')
+    ).toBeVisible();
+
+    // Click Apply Changes button and wait for download
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Apply Changes" }).click();
 
     const download = await downloadPromise;
 
@@ -133,19 +176,21 @@ test.describe("Smoke Test - Critical Workflows", () => {
     await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Move employee
-    await dragEmployeeToPosition(page, 1, 6);
+    // Find and move employee
+    const { employeeId } = await findAnyEmployee(page);
+    await dragEmployeeToPosition(page, parseInt(employeeId), 6);
 
     // Navigate to Changes tab
     await page.locator('[data-testid="changes-tab"]').click();
 
     // Verify change appears (auto-retrying)
-    const changeRow = page.locator('[data-testid="change-row-1"]');
+    const changeRow = page.locator(`[data-testid="change-row-${employeeId}"]`);
     await expect(changeRow).toBeVisible();
-    await expect(changeRow.getByText("Alice Smith")).toBeVisible();
 
     // Add notes
-    const notesField = page.locator('textarea[data-testid="change-notes-1"]');
+    const notesField = page.locator(
+      `textarea[data-testid="change-notes-${employeeId}"]`
+    );
     await notesField.click();
     await notesField.fill("Smoke test - verified change tracking");
 

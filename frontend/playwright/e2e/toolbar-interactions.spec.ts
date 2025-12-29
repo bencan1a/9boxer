@@ -37,7 +37,7 @@ test.describe("File Menu", () => {
     // Verify FileMenu shows filename
     const fileMenu = page.getByTestId("file-menu-button");
     await expect(fileMenu).toBeVisible();
-    await expect(fileMenu).toContainText("sample-employees.xlsx");
+    await expect(fileMenu).toContainText("Sample_Dataset_200_employees.xlsx");
   });
 
   test("shows pending changes badge after employee move", async ({ page }) => {
@@ -78,20 +78,22 @@ test.describe("File Menu", () => {
 
     // Verify menu items
     await expect(page.getByTestId("import-data-menu-item")).toBeVisible();
-    await expect(page.getByTestId("export-changes-menu-item")).toBeVisible();
-    await expect(page.getByTestId("recent-file-menu-item")).toBeVisible();
+
+    // Export Changes menu item is hidden when there are no changes (new UX)
+    await expect(
+      page.getByTestId("export-changes-menu-item")
+    ).not.toBeVisible();
+
+    // Load Sample Dataset menu item should be visible
+    await expect(page.getByTestId("load-sample-menu-item")).toBeVisible();
 
     // Verify Import Data item is enabled
     await expect(page.getByTestId("import-data-menu-item")).toBeEnabled();
-
-    // Verify Export Changes is disabled (no changes yet)
-    await expect(page.getByTestId("export-changes-menu-item")).toBeDisabled();
-
-    // Verify Recent File is disabled (coming soon)
-    await expect(page.getByTestId("recent-file-menu-item")).toBeDisabled();
   });
 
-  test("Apply Changes exports file successfully", async ({ page }) => {
+  test("Apply Changes opens ApplyChangesDialog successfully", async ({
+    page,
+  }) => {
     // Load file
     await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
@@ -118,19 +120,19 @@ test.describe("File Menu", () => {
     await expect(applyChangesItem).toBeEnabled();
     await expect(applyChangesItem).toContainText("Apply 1 Change to Excel");
 
-    // Set up download listener
-    const downloadPromise = page.waitForEvent("download");
-
     // Click Apply Changes
     await applyChangesItem.click();
 
-    // Wait for download
-    const download = await downloadPromise;
+    // Wait for ApplyChangesDialog
+    const dialog = page.locator('[data-testid="apply-changes-dialog"]');
+    await expect(dialog).toBeVisible();
 
-    // Verify download filename
-    expect(download.suggestedFilename()).toMatch(
-      /modified_sample-employees\.xlsx$/
-    );
+    // Verify dialog shows filename
+    await expect(dialog).toContainText("Sample_Dataset_200_employees.xlsx");
+
+    // Cancel dialog (sample data has no original file to update)
+    await page.locator('button:has-text("Cancel")').click();
+    await expect(dialog).not.toBeVisible();
   });
 
   test("Import Data from FileMenu opens upload dialog", async ({ page }) => {
@@ -327,26 +329,27 @@ test.describe("Enhanced Empty State", () => {
   });
 
   test("displays enhanced empty state on first load", async ({ page }) => {
-    // Verify empty state heading
-    await expect(
-      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
-    ).toBeVisible();
+    // Verify empty state heading (updated text)
+    await expect(page.getByText("No Employees Loaded")).toBeVisible();
 
     // Verify description text
     await expect(
-      page.getByText(/Drop an Excel file here or click Import Data/i)
+      page.getByText(/Load sample data to explore features/i)
     ).toBeVisible();
 
-    // Verify Import button exists
-    await expect(page.getByTestId("empty-state-import-button")).toBeVisible();
+    // Verify action buttons exist (updated testids)
+    await expect(page.getByTestId("load-sample-data-button")).toBeVisible();
+    await expect(page.getByTestId("upload-file-button")).toBeVisible();
 
-    // Verify help text about sample file
-    await expect(page.getByText(/New to 9Boxer/i)).toBeVisible();
+    // Verify tutorial hint text
+    await expect(
+      page.getByText(/Sample data includes diverse employees/i)
+    ).toBeVisible();
   });
 
-  test("Import button in empty state opens upload dialog", async ({ page }) => {
-    // Click the Import button in empty state
-    await page.getByTestId("empty-state-import-button").click();
+  test("Upload button in empty state opens upload dialog", async ({ page }) => {
+    // Click the Upload Excel File button in empty state (updated testid)
+    await page.getByTestId("upload-file-button").click();
 
     // Verify upload dialog appears
     const dialog = page.getByTestId("file-upload-dialog");
@@ -361,19 +364,15 @@ test.describe("Enhanced Empty State", () => {
     await expect(dialog).toContainText(/upload|import|select|drag|drop/i);
   });
 
-  test("empty state disappears after file upload", async ({ page }) => {
-    // Verify empty state is visible initially
-    await expect(
-      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
-    ).toBeVisible();
+  test("empty state disappears after loading sample data", async ({ page }) => {
+    // Verify empty state is visible initially (updated text)
+    await expect(page.getByText("No Employees Loaded")).toBeVisible();
 
-    // Load file
+    // Load sample data
     await loadSampleData(page);
 
     // Verify empty state is gone
-    await expect(
-      page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
-    ).not.toBeVisible();
+    await expect(page.getByText("No Employees Loaded")).not.toBeVisible();
 
     // Verify grid is now visible
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
@@ -426,7 +425,7 @@ test.describe("Toolbar Layout", () => {
 
     // Verify FileMenu shows filename
     const fileMenu = page.getByTestId("file-menu-button");
-    await expect(fileMenu).toContainText("sample-employees.xlsx");
+    await expect(fileMenu).toContainText("Sample_Dataset_200_employees.xlsx");
   });
 });
 
@@ -499,8 +498,16 @@ test.describe("File Menu Integration with Changes", () => {
 
     // Apply changes
     await openFileMenu(page);
-    const downloadPromise = page.waitForEvent("download");
     await page.getByTestId("export-changes-menu-item").click();
+
+    // Wait for ApplyChangesDialog
+    await expect(
+      page.locator('[data-testid="apply-changes-dialog"]')
+    ).toBeVisible();
+
+    // Set up download listener and click Apply
+    const downloadPromise = page.waitForEvent("download");
+    await page.locator('button:has-text("Apply Changes")').click();
     await downloadPromise;
 
     // Wait for download event to settle

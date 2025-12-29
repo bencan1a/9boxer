@@ -17,9 +17,7 @@ import { openFileMenu } from "./ui";
  */
 export async function uploadFile(page: Page, fileName: string): Promise<void> {
   // Try empty state button first, fall back to file menu
-  const emptyStateButton = page.locator(
-    '[data-testid="empty-state-import-button"]'
-  );
+  const emptyStateButton = page.locator('[data-testid="upload-file-button"]');
   const isEmptyState = await emptyStateButton.isVisible().catch(() => false);
 
   if (isEmptyState) {
@@ -82,28 +80,28 @@ export async function makeChange(page: Page): Promise<void> {
 
 /**
  * Click the export button to trigger apply changes dialog or direct download
+ * Note: "Apply Changes" menu item only appears when there ARE changes
  *
  * @param page - Playwright Page object
  */
 export async function clickExport(page: Page): Promise<void> {
   await openFileMenu(page);
 
-  // Try export-changes-menu-item first (when changes exist)
-  const exportChangesItem = page.locator(
-    '[data-testid="export-changes-menu-item"]'
-  );
-  const exportItem = page.locator('[data-testid="export-menu-item"]');
-
   // Wait for menu to be visible
   await expect(page.locator('[role="menu"]')).toBeVisible();
 
-  // Click whichever export item is visible and enabled
-  if (await exportChangesItem.isVisible().catch(() => false)) {
+  // "Apply Changes" menu item only appears when there ARE changes
+  const exportChangesItem = page.locator(
+    '[data-testid="export-changes-menu-item"]'
+  );
+
+  // Check if export changes item is visible (means there are changes)
+  const hasChanges = await exportChangesItem.isVisible().catch(() => false);
+
+  if (hasChanges) {
     await exportChangesItem.click();
-  } else if (await exportItem.isVisible().catch(() => false)) {
-    await exportItem.click();
   } else {
-    throw new Error("No export menu item found");
+    throw new Error("Export Changes menu item not found - no changes to apply");
   }
 }
 
@@ -137,8 +135,8 @@ export async function applyChanges(
     }, newPath);
   }
 
-  // Click Apply button
-  const applyButton = page.locator('button:has-text("Apply Changes")');
+  // Click Apply button (use getByRole for reliability)
+  const applyButton = page.getByRole("button", { name: "Apply Changes" });
   await applyButton.click();
 
   // Wait for dialog to close (indicates success)

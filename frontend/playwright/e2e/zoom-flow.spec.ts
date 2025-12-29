@@ -11,6 +11,37 @@
 
 import { test, expect } from "../fixtures";
 import { loadSampleData } from "../helpers";
+import type { Page, Locator } from "@playwright/test";
+
+/**
+ * Helper to find any employee in the grid
+ * Returns the first employee found in any box (prioritizing likely populated boxes)
+ */
+async function findAnyEmployee(page: Page): Promise<{
+  employeeCard: Locator;
+  employeeId: string;
+  boxNumber: number;
+}> {
+  // Check boxes in order of likelihood (high performers first)
+  for (const box of [9, 8, 6, 5, 7, 4, 3, 2, 1]) {
+    const gridBox = page.locator(`[data-testid="grid-box-${box}"]`);
+    const employees = gridBox.locator('[data-testid^="employee-card-"]');
+    const count = await employees.count();
+
+    if (count > 0) {
+      const firstEmployee = employees.first();
+      const testId = await firstEmployee.getAttribute("data-testid");
+      const employeeId = testId?.replace("employee-card-", "") || "";
+      return {
+        employeeCard: firstEmployee,
+        employeeId,
+        boxNumber: box,
+      };
+    }
+  }
+
+  throw new Error("No employees found in any grid box");
+}
 
 // Note: Zoom functionality is in ViewControls component (data-testid="view-controls")
 // ViewControls is a unified toolbar that includes view mode toggle AND zoom controls
@@ -250,8 +281,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
     const grid = page.locator('[data-testid="nine-box-grid"]');
     await expect(grid).toBeVisible();
 
-    // Verify employee cards are still visible
-    const employeeCard = page.locator('[data-testid="employee-card-1"]');
+    // Find and verify employee cards are still visible
+    const { employeeCard } = await findAnyEmployee(page);
     await expect(employeeCard).toBeVisible();
 
     // Click employee to verify interactivity
