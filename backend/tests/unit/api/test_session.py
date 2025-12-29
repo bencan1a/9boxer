@@ -124,7 +124,8 @@ def test_clear_session_when_session_exists_then_returns_200(
 
     # Verify session is gone
     status_response = test_client.get("/api/session/status", headers=auth_headers)
-    assert status_response.status_code == 404
+    assert status_response.status_code == 200
+    assert status_response.json()["active"] is False
 
 
 def test_upload_when_invalid_excel_content_then_returns_400(

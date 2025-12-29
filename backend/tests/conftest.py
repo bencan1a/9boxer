@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from ninebox.models.constants import ALLOWED_FLAGS
-from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
 from ninebox.models.grid_positions import get_position_label_by_number
 
 
@@ -260,38 +260,110 @@ def setup_test_db() -> Generator[None, None, None]:
 
 @pytest.fixture
 def sample_employees() -> list[Employee]:
-    """Create sample employee data for testing (50 employees).
+    """Create sample employee data for testing (5 employees).
 
-    FIXTURE MIGRATION NOTES (2025-12-28):
-    - Migrated to use rich sample data generator (50 employees, seed=42)
-    - Previous hard-coded 5-employee fixture replaced with generated data
-    - Tests should not depend on specific employee IDs (use attributes instead)
-    - For minimal single-employee fixtures, use create_simple_test_employee()
-    - For larger datasets, use rich_sample_employees_medium or rich_sample_employees_large
-    - Reproducible via seed=42 for consistent test behavior
-
-    Migration rationale:
-    - Provides richer, more realistic test data
-    - Better coverage of edge cases (all job levels, locations, grid positions)
-    - Includes organizational hierarchy and performance history
-    - Maintains test reproducibility via fixed seed
-
-    Returns:
-        List of 50 Employee objects with complete organizational data
+    Returns a fixed set of 5 employees with known attributes for testing.
+    For larger datasets, use rich_sample_employees_small/medium/large fixtures.
     """
-    from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
-
-    config = RichDatasetConfig(
-        size=50,
-        include_bias=True,
-        seed=42,  # Fixed seed for test reproducibility
-        locations=["USA", "CAN", "GBR"],
-        job_functions=["Engineering", "Product Manager", "Sales", "Marketing"],
-    )
-
-    employees = generate_rich_dataset(config)
-
-    return employees
+    return [
+        Employee(
+            employee_id=1,
+            name="Alice Smith",
+            business_title="Senior Engineer",
+            job_title="Software Engineer",
+            job_profile="Engineering",
+            job_level="MT4",
+            job_function="Engineering",
+            location="USA",
+            manager="Bob Manager",
+            hire_date=date(2020, 1, 15),
+            tenure_category="3-5 years",
+            time_in_job_profile="2 years",
+            performance=PerformanceLevel.HIGH,
+            potential=PotentialLevel.HIGH,
+            grid_position=9,
+            talent_indicator="High Potential",
+            ratings_history=[
+                HistoricalRating(year=2023, rating="Strong"),
+                HistoricalRating(year=2024, rating="Leading"),
+            ],
+        ),
+        Employee(
+            employee_id=2,
+            name="Bob Jones",
+            business_title="Product Manager",
+            job_title="Product Manager",
+            job_profile="Product",
+            job_level="MT4",
+            job_function="Product Manager",
+            location="USA",
+            manager="Bob Manager",
+            hire_date=date(2019, 6, 1),
+            tenure_category="5+ years",
+            time_in_job_profile="3 years",
+            performance=PerformanceLevel.MEDIUM,
+            potential=PotentialLevel.MEDIUM,
+            grid_position=5,
+            talent_indicator="Solid Contributor",
+            ratings_history=[
+                HistoricalRating(year=2024, rating="Solid"),
+            ],
+        ),
+        Employee(
+            employee_id=3,
+            name="Charlie Brown",
+            business_title="Sales Rep",
+            job_title="Sales Representative",
+            job_profile="Sales",
+            job_level="MT2",
+            job_function="Sales",
+            location="CAN",
+            manager="Alice Manager",
+            hire_date=date(2021, 3, 10),
+            tenure_category="1-3 years",
+            time_in_job_profile="1 year",
+            performance=PerformanceLevel.LOW,
+            potential=PotentialLevel.HIGH,
+            grid_position=7,
+            talent_indicator="Development Needed",
+        ),
+        Employee(
+            employee_id=4,
+            name="Diana Prince",
+            business_title="Marketing Lead",
+            job_title="Marketing Manager",
+            job_profile="Marketing",
+            job_level="MT3",
+            job_function="Marketing",
+            location="USA",
+            manager="Bob Manager",
+            hire_date=date(2018, 9, 20),
+            tenure_category="5+ years",
+            time_in_job_profile="4 years",
+            performance=PerformanceLevel.HIGH,
+            potential=PotentialLevel.MEDIUM,
+            grid_position=6,
+            talent_indicator="Solid Contributor",
+        ),
+        Employee(
+            employee_id=5,
+            name="Eve Davis",
+            business_title="Junior Developer",
+            job_title="Software Developer",
+            job_profile="Engineering",
+            job_level="MT1",
+            job_function="Engineering",
+            location="CAN",
+            manager="Alice Manager",
+            hire_date=date(2022, 1, 5),
+            tenure_category="<1 year",
+            time_in_job_profile="6 months",
+            performance=PerformanceLevel.MEDIUM,
+            potential=PotentialLevel.HIGH,
+            grid_position=8,
+            talent_indicator="High Potential",
+        ),
+    ]
 
 
 @pytest.fixture

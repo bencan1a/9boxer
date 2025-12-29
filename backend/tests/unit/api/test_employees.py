@@ -61,7 +61,7 @@ def test_get_employees_when_filter_by_manager_then_filters_correctly(
 
     assert response.status_code == 200
     data = response.json()
-    assert data["filtered"] == 2
+    assert data["filtered"] == 3
     assert all(emp["manager"] == "Bob Manager" for emp in data["employees"])
 
 
@@ -180,7 +180,8 @@ def test_get_employees_when_multiple_filters_then_applies_all(
     assert response.status_code == 200
     data = response.json()
     # Should match employees that are (MT4 or MT5) AND High performance
-    assert data["filtered"] == 2
+    # Only Alice Smith (MT4, High) matches
+    assert data["filtered"] == 1
     for emp in data["employees"]:
         assert emp["job_level"] in ["MT4", "MT5"]
         assert emp["performance"] == "High"

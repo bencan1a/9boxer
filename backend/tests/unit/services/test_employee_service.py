@@ -183,10 +183,10 @@ def test_get_filter_options_when_called_then_returns_correct_options(
     # Check job functions - should match what's in sample data
     assert set(options["job_functions"]) == actual_functions
 
-    # Check locations - should have at least the configured locations (USA, CAN, GBR -> USA, Canada, Europe)
+    # Check locations - should match what's in sample data (USA and CAN)
     assert "USA" in options["locations"]
     assert "Canada" in options["locations"]
-    assert "Europe" in options["locations"]
+    # sample_employees fixture only contains USA and CAN locations (no GBR/Europe)
 
     # Check managers - should have managers from sample data (options returns list, actual_managers is set)
     assert set(options["managers"]) == actual_managers

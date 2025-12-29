@@ -39,8 +39,8 @@ def test_create_session_when_valid_data_then_creates_new_session(
     assert session is not None
     assert session.session_id == session_id
     assert session.user_id == "user1"
-    assert len(session.original_employees) == 5
-    assert len(session.current_employees) == 5
+    assert len(session.original_employees) == len(sample_employees)
+    assert len(session.current_employees) == len(sample_employees)
 
 
 def test_get_session_when_exists_then_retrieves_session(
@@ -83,30 +83,30 @@ def test_move_employee_when_valid_then_updates_employee_position(
         sheet_index=1,
     )
 
-    # Move first employee from H,H to M,M
+    # Employee 1 starts at H,H (position 9), move to M,L (position 2)
     event = session_manager.move_employee(
         user_id="user1",
         employee_id=1,
         new_performance=PerformanceLevel.MEDIUM,
-        new_potential=PotentialLevel.MEDIUM,
+        new_potential=PotentialLevel.LOW,
     )
 
-    # Verify event details
+    # Verify event
     assert event.employee_id == 1
     assert event.old_performance == PerformanceLevel.HIGH
     assert event.old_potential == PotentialLevel.HIGH
     assert event.new_performance == PerformanceLevel.MEDIUM
-    assert event.new_potential == PotentialLevel.MEDIUM
-    assert event.old_position == 9
-    assert event.new_position == 5
+    assert event.new_potential == PotentialLevel.LOW
+    assert event.old_position == 9  # H,H
+    assert event.new_position == 2  # M,L
 
-    # Verify employee was updated
+    # Verify employee was updated in the session
     session = session_manager.get_session("user1")
     assert session is not None
-    emp = session.current_employees[0]
+    emp = next(e for e in session.current_employees if e.employee_id == 1)
     assert emp.performance == PerformanceLevel.MEDIUM
-    assert emp.potential == PotentialLevel.MEDIUM
-    assert emp.grid_position == 5
+    assert emp.potential == PotentialLevel.LOW
+    assert emp.grid_position == 2
     assert emp.modified_in_session is True
     assert emp.last_modified is not None
 
@@ -358,7 +358,7 @@ def test_move_employee_when_moved_twice_then_single_entry_with_net_change(
     assert second_change.old_position == 9  # H,H (original position)
     assert second_change.new_position == 1  # L,L (final position)
     assert second_change.old_performance == PerformanceLevel.HIGH
-    assert second_change.old_potential == PerformanceLevel.HIGH
+    assert second_change.old_potential == PotentialLevel.HIGH
     assert second_change.new_performance == PerformanceLevel.LOW
     assert second_change.new_potential == PotentialLevel.LOW
 

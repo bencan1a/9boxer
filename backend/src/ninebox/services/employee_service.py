@@ -119,8 +119,8 @@ class EmployeeService:
         # Extract unique locations and map to display names
         locations = sorted({map_location_to_display(e.location) for e in employees if e.location})
 
-        # Extract unique managers
-        managers = sorted({e.manager for e in employees if e.manager})
+        # Extract unique managers (exclude None and literal string "None")
+        managers = sorted({e.manager for e in employees if e.manager and e.manager != "None"})
 
         # List all employees for exclusion selector
         employee_list = [
