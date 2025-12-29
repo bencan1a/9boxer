@@ -45,7 +45,9 @@ export const AppBarContainer: React.FC = () => {
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
+    selectedFlags,
     excludedEmployeeIds,
+    reportingChainFilter,
   } = useFilters();
   const { showSuccess, showError } = useSnackbar();
   const recentFiles = useUiStore((state) => state.recentFiles);
@@ -403,6 +405,16 @@ export const AppBarContainer: React.FC = () => {
     if (selectedManagers.length > 0) {
       filterParts.push(
         `${t("dashboard.appBar.managers")}: ${selectedManagers.join(", ")}`
+      );
+    }
+    if (reportingChainFilter) {
+      filterParts.push(
+        `${t("dashboard.filterDrawer.reportingChain")}: ${reportingChainFilter}`
+      );
+    }
+    if (selectedFlags.length > 0) {
+      filterParts.push(
+        `${t("dashboard.filterDrawer.flags")}: ${selectedFlags.join(", ")}`
       );
     }
     if (excludedEmployeeIds.length > 0) {
