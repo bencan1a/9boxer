@@ -632,20 +632,78 @@ All code must have type annotations:
 - Both passing ensures consistency between CLI and IDE
 
 ### Testing Approach
-1. **Run existing tests first** to establish baseline
-2. Follow TDD approach when practical
-3. **Test suite organization** - Tests organized by suite type in folders:
-   - `backend/tests/unit/` - Fast isolated tests (use for most new tests)
-   - `backend/tests/integration/` - Multi-component integration tests
-   - `backend/tests/e2e/` - Full frozen executable tests
-   - `backend/tests/performance/` - Benchmark tests
-4. Test naming: `test_function_when_condition_then_expected`
-5. No conditional logic in test bodies (no `if` statements)
-6. Avoid testing types - test behavior instead
-7. Avoid over-mocking (don't mock business logic)
-8. Aim for >80% coverage
 
-See `.github/agents/test.md` for comprehensive testing guidance and `internal-docs/testing/` for detailed test suite documentation.
+**IMPORTANT**: This project uses specialized testing agents to maintain a robust, anti-fragile test suite in a multi-agent development environment.
+
+#### Testing Agent System
+
+**When to Use Testing Agents**:
+- **Before implementing features**: Consult Test Architect for test strategy
+- **Writing backend tests**: Use Backend Testing Expert
+- **Writing component tests**: Use Frontend Testing Expert
+- **Writing E2E tests**: Use E2E Testing Expert
+- **Weekly reviews**: Use Test Architect for architecture review
+- **Refactoring tests**: Use appropriate domain expert
+
+**Available Testing Agents** (in `.github/agents/`):
+1. **test-architect** - Strategic orchestrator, maintains test architecture and documentation
+2. **test-backend-expert** - Pytest specialist for FastAPI/SQLAlchemy testing
+3. **test-frontend-expert** - Vitest/React Testing Library specialist
+4. **test-e2e-expert** - Playwright specialist for user workflows
+
+**Slash Commands** (quick access):
+- `/test-review` - Weekly test architecture review
+- `/test-backend` - Backend testing consultation
+- `/test-frontend` - Frontend testing consultation
+- `/test-e2e` - E2E testing consultation
+
+See `.github/agents/README-TESTING-AGENTS.md` for complete testing agent guide.
+
+#### Core Testing Principles (Anti-Fragile Testing)
+
+Tests should survive:
+- ✅ Design system changes (colors, spacing, fonts)
+- ✅ UI string changes (button labels, error messages)
+- ✅ Component refactoring (internal structure changes)
+- ✅ Minor API response format changes
+
+Tests should fail on:
+- ❌ Breaking behavior changes
+- ❌ Logic errors
+- ❌ Data integrity issues
+
+**Key Anti-Patterns to Avoid**:
+1. ❌ Hardcoded strings → ✅ Use `data-testid`
+2. ❌ Design system specifics (colors, spacing) → ✅ Test semantic state
+3. ❌ Arbitrary timeouts → ✅ Event-driven waits
+4. ❌ Hardcoded test data → ✅ Use factories/fixtures
+5. ❌ Over-mocking business logic → ✅ Mock I/O boundaries only
+
+#### Test Suite Organization
+
+**Speed Segmentation**:
+- **Fast tests (<60s)**: Unit + component tests - run on every save
+- **Comprehensive tests (<10min)**: Integration + E2E + performance - run in CI
+
+**Backend Tests** (pytest):
+- `backend/tests/unit/` - Fast isolated tests (<30s total)
+- `backend/tests/integration/` - Multi-component tests (<2min total)
+- `backend/tests/e2e/` - Full frozen executable tests (<3min total)
+- `backend/tests/performance/` - Benchmark tests (<5min total)
+
+**Frontend Tests**:
+- Component tests: Vitest + React Testing Library (<30s total)
+- E2E tests: Playwright (<5min total)
+
+#### Standard Testing Patterns
+
+1. **Test naming**: `test_function_when_condition_then_expected`
+2. **No conditional logic** in test bodies (no `if` statements)
+3. **Test behavior**, not implementation details
+4. **Strategic mocking**: Mock I/O boundaries (HTTP, DB, filesystem), NOT business logic
+5. **Coverage target**: >80% overall, 100% for critical paths
+
+See `.github/agents/README-TESTING-AGENTS.md` for comprehensive testing agent guide and `internal-docs/testing/` for detailed test suite documentation.
 
 ### Frontend Testing
 
