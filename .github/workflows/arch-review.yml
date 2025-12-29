@@ -1,0 +1,141 @@
+name: AI Architectural Review
+
+on:
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      days:
+        description: 'Number of days to look back for changes'
+        required: false
+        default: '7'
+      significance_threshold:
+        description: 'Minimum lines changed to be considered significant'
+        required: false
+        default: '10'
+      dry_run:
+        description: 'Dry run (do not create issues)'
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: '0 2 * * 3'  # Weekly on Wednesday at 2 AM UTC
+
+permissions:
+  contents: read
+  issues: write  # Required for creating GitHub issues
+
+jobs:
+  arch-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for git log and diff analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd .github/scripts
+          npm install --no-save @anthropic-ai/sdk
+
+      - name: Run AI architectural review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DAYS="${{ github.event.inputs.days || '7' }}"
+          SIGNIFICANCE_THRESHOLD="${{ github.event.inputs.significance_threshold || '10' }}"
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            node .github/scripts/ai-arch-review.js --days=$DAYS --significance-threshold=$SIGNIFICANCE_THRESHOLD --dry-run
+          else
+            node .github/scripts/ai-arch-review.js --days=$DAYS --significance-threshold=$SIGNIFICANCE_THRESHOLD
+          fi
+
+      - name: Upload architectural review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arch-review-report
+          path: arch-review-report.json
+          retention-days: 90
+
+      - name: Post summary comment
+        if: always() && !github.event.inputs.dry_run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Read architectural review report
+            let report;
+            try {
+              const reportContent = fs.readFileSync('arch-review-report.json', 'utf-8');
+              report = JSON.parse(reportContent);
+            } catch (error) {
+              console.log('No architectural review report found or failed to parse');
+              return;
+            }
+
+            // Build summary comment
+            const summary = `## 🏗️ AI Architectural Review Summary
+
+            **Review Period:** Last ${report.metadata.daysScanned} days
+            **Generated:** ${new Date(report.metadata.generatedAt).toLocaleString()}
+
+            ### 📊 Code Analysis
+            - **Commits Analyzed:** ${report.codeChanges.totalCommits}
+            - **Significant Changes:** ${report.codeChanges.significantChanges}
+            - **Files Analyzed:** ${report.codeChanges.filesAnalyzed}
+
+            ### 🔍 Architectural Findings
+            - **Total Findings:** ${report.summary.totalFindings}
+            ${report.summary.criticalIssues > 0 ? `- **🔴 Critical Issues:** ${report.summary.criticalIssues}` : ''}
+            - **GitHub Issues Created:** ${report.summary.issuesCreated}
+            - **Documentation Updates Recommended:** ${report.summary.docsToUpdate}
+
+            ### 📋 By Finding Type
+            ${Object.entries(report.summary.byType || {})
+              .filter(([_, count]) => count > 0)
+              .map(([type, count]) => {
+                const icons = {
+                  'duplication': '🔄',
+                  'drift': '📐',
+                  'violation': '⚠️',
+                  'security': '🔒',
+                  'performance': '⚡',
+                  'missing-docs': '📝'
+                };
+                const icon = icons[type] || '•';
+                return `${icon} **${type}:** ${count}`;
+              })
+              .join('\n')}
+
+            ${report.issues.length > 0 ? `
+            ### 🎫 Issues Created
+            ${report.issues.slice(0, 10).map(issue => `- #${issue.number}: ${issue.title}`).join('\n')}
+            ${report.issues.length > 10 ? `\n...and ${report.issues.length - 10} more` : ''}
+            ` : ''}
+
+            ${report.documentationUpdates && report.documentationUpdates.length > 0 ? `
+            ### 📚 Documentation Updates Recommended
+            ${report.documentationUpdates.slice(0, 5).map(update =>
+              `- ${update.doc}: ${update.recommendation}`
+            ).join('\n')}
+            ${report.documentationUpdates.length > 5 ? `\n...and ${report.documentationUpdates.length - 5} more` : ''}
+            ` : ''}
+
+            ---
+            *View the [full review report](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) in the workflow artifacts.*
+            *This review uses a principal-engineer agent to detect architectural drift, duplication, and pattern violations.*`;
+
+            // Log the summary
+            console.log(summary);
+
+            // Optionally, you could create a GitHub Discussion or post to Slack/Discord here
