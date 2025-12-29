@@ -97,7 +97,13 @@ The Intelligence tab uses statistical analysis to spot anomalies you should disc
    - Red = Significantly above/below baseline (discuss immediately)
    - Yellow = Moderately different (worth reviewing)
 
-![Intelligence tab showing anomalies in location and function analysis](../images/screenshots/workflow/calibration-intelligence-anomalies.png)
+The Intelligence tab provides a quality score and anomaly count summary:
+
+![Intelligence summary showing quality score and anomaly count](../images/screenshots/workflow/intelligence-summary-anomalies.png)
+
+For each dimension (Location, Function, Level, Tenure), you'll see detailed statistical analysis:
+
+![Anomaly section showing statistical analysis with red status](../images/screenshots/workflow/intelligence-anomaly-details.png)
 
 !!! warning "Common Patterns to Investigate"
     - One manager rates everyone "High" - Leniency bias
