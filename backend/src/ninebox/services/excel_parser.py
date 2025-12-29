@@ -599,6 +599,46 @@ class ExcelParser:
                 else "Unknown"
             )
 
+        # Parse flags from tracking column (comma-separated list)
+        flags_value = row.get("Flags")
+        flags = None
+        if pd.notna(flags_value) and str(flags_value).strip():
+            # Split by comma and strip whitespace from each flag
+            flags = [f.strip() for f in str(flags_value).split(",") if f.strip()]
+
+        # Parse donut exercise data from tracking columns
+        donut_position = None
+        donut_performance = None
+        donut_potential = None
+        donut_notes = None
+        donut_modified = False
+
+        donut_pos_value = row.get("Donut Exercise Position")
+        if pd.notna(donut_pos_value) and str(donut_pos_value).strip():
+            try:
+                donut_position = int(donut_pos_value)
+                donut_modified = True
+
+                # Parse donut performance/potential from position if available
+                # Position 1-9 maps to performance/potential combinations
+                if 1 <= donut_position <= 9:
+                    # Calculate performance and potential from grid position
+                    # Grid is 3x3: positions 1-3 (Low perf), 4-6 (Med perf), 7-9 (High perf)
+                    # Within each group: Low pot, Med pot, High pot
+                    perf_idx = (donut_position - 1) // 3  # 0, 1, 2
+                    pot_idx = (donut_position - 1) % 3  # 0, 1, 2
+                    perf_levels = [PerformanceLevel.LOW, PerformanceLevel.MEDIUM, PerformanceLevel.HIGH]
+                    pot_levels = [PotentialLevel.LOW, PotentialLevel.MEDIUM, PotentialLevel.HIGH]
+                    donut_performance = perf_levels[perf_idx]
+                    donut_potential = pot_levels[pot_idx]
+            except (ValueError, TypeError):
+                # If conversion fails, leave donut data as None
+                pass
+
+        donut_notes_value = row.get("Donut Exercise Notes")
+        if pd.notna(donut_notes_value) and str(donut_notes_value).strip():
+            donut_notes = str(donut_notes_value).strip()
+
         employee = Employee(
             employee_id=int(row["Employee ID"]),
             name=str(row["Worker"]).strip(),
@@ -657,6 +697,12 @@ class ExcelParser:
             else None,
             promotion_readiness=self._parse_promotion_readiness(row.get("Promotion Readiness")),
             modified_in_session=False,
+            flags=flags,
+            donut_position=donut_position,
+            donut_performance=donut_performance,
+            donut_potential=donut_potential,
+            donut_modified=donut_modified,
+            donut_notes=donut_notes,
         )
 
         return employee

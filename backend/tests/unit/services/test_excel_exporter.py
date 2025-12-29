@@ -659,3 +659,182 @@ def test_export_when_single_flag_then_writes_without_comma(
     flags_value = sheet.cell(2, flags_col).value
     assert flags_value == "promotion_ready"
     workbook.close()  # Prevent openpyxl state pollution
+
+
+# ========== Original Values Tracking Tests ==========
+
+
+def test_export_when_employee_modified_then_tracks_original_values(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that original Performance/Potential values are preserved in tracking columns."""
+    from datetime import datetime, timezone
+
+    from ninebox.models.events import GridMoveEvent
+    from ninebox.models.session import SessionState
+
+    # Mark first employee as modified with different performance/potential
+    original_performance = sample_employees[0].performance
+    original_potential = sample_employees[0].potential
+
+    sample_employees[0].modified_in_session = True
+    sample_employees[0].last_modified = datetime.now(timezone.utc)
+    sample_employees[0].performance = PerformanceLevel.HIGH
+    sample_employees[0].potential = PotentialLevel.HIGH
+
+    # Create session with original employees (before changes)
+    original_employees = [emp.model_copy() for emp in sample_employees]
+    original_employees[0].performance = original_performance
+    original_employees[0].potential = original_potential
+    original_employees[0].modified_in_session = False
+
+    session = SessionState(
+        session_id="test-session",
+        user_id="user1",
+        created_at=datetime.now(timezone.utc),
+        original_employees=original_employees,
+        current_employees=sample_employees,
+        original_filename="test.xlsx",
+        original_file_path=str(sample_excel_file),
+        sheet_name="Employee Data",
+        sheet_index=1,
+        events=[
+            GridMoveEvent(
+                employee_id=sample_employees[0].employee_id,
+                employee_name=sample_employees[0].name,
+                timestamp=datetime.now(timezone.utc),
+                old_performance=original_performance,
+                old_potential=original_potential,
+                new_performance=PerformanceLevel.HIGH,
+                new_potential=PotentialLevel.HIGH,
+                old_position=1,
+                new_position=9,
+            )
+        ],
+    )
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path, session=session)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Original Performance and Original Potential columns
+    original_perf_col = None
+    original_pot_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value == "Original Performance":
+            original_perf_col = col_idx
+        elif cell_value == "Original Potential":
+            original_pot_col = col_idx
+
+    assert original_perf_col is not None, "Original Performance column not found"
+    assert original_pot_col is not None, "Original Potential column not found"
+
+    # Check first employee row (row 2) has original values
+    assert sheet.cell(2, original_perf_col).value == original_performance.value
+    assert sheet.cell(2, original_pot_col).value == original_potential.value
+    workbook.close()
+
+
+def test_export_when_employee_not_modified_then_no_original_values(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that unmodified employees have empty original value tracking columns."""
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find Original Performance and Original Potential columns
+    original_perf_col = None
+    original_pot_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = sheet.cell(1, col_idx).value
+        if cell_value == "Original Performance":
+            original_perf_col = col_idx
+        elif cell_value == "Original Potential":
+            original_pot_col = col_idx
+
+    assert original_perf_col is not None
+    assert original_pot_col is not None
+
+    # All unmodified employees should have empty original value columns
+    for row_idx in range(2, sheet.max_row + 1):
+        original_perf_value = sheet.cell(row_idx, original_perf_col).value
+        original_pot_value = sheet.cell(row_idx, original_pot_col).value
+        assert original_perf_value == "" or original_perf_value is None
+        assert original_pot_value == "" or original_pot_value is None
+    workbook.close()
+
+
+def test_export_when_current_values_updated_then_main_columns_have_new_values(
+    excel_exporter: ExcelExporter,
+    sample_excel_file: Path,
+    sample_employees: list[Employee],
+    tmp_path: Path,
+) -> None:
+    """Test that main Performance/Potential columns have the NEW values after export."""
+    from datetime import datetime, timezone
+
+    from ninebox.models.session import SessionState
+
+    # Change employee values
+    original_performance = sample_employees[0].performance
+    original_potential = sample_employees[0].potential
+
+    sample_employees[0].modified_in_session = True
+    sample_employees[0].last_modified = datetime.now(timezone.utc)
+    sample_employees[0].performance = PerformanceLevel.LOW
+    sample_employees[0].potential = PotentialLevel.HIGH
+
+    # Create session with original employees
+    original_employees = [emp.model_copy() for emp in sample_employees]
+    original_employees[0].performance = original_performance
+    original_employees[0].potential = original_potential
+    original_employees[0].modified_in_session = False
+
+    session = SessionState(
+        session_id="test-session",
+        user_id="user1",
+        created_at=datetime.now(timezone.utc),
+        original_employees=original_employees,
+        current_employees=sample_employees,
+        original_filename="test.xlsx",
+        original_file_path=str(sample_excel_file),
+        sheet_name="Employee Data",
+        sheet_index=1,
+        events=[],
+    )
+
+    output_path = tmp_path / "output.xlsx"
+    excel_exporter.export(sample_excel_file, sample_employees, output_path, session=session)
+
+    workbook = openpyxl.load_workbook(output_path)
+    sheet = workbook.worksheets[1]
+
+    # Find main Performance and Potential columns
+    perf_col = None
+    pot_col = None
+    for col_idx in range(1, sheet.max_column + 1):
+        cell_value = str(sheet.cell(1, col_idx).value or "")
+        if "Aug 2025 Talent Assessment Performance" in cell_value:
+            perf_col = col_idx
+        elif "Aug 2025  Talent Assessment Potential" in cell_value:
+            pot_col = col_idx
+
+    assert perf_col is not None
+    assert pot_col is not None
+
+    # Check first employee row (row 2) has NEW values in main columns
+    assert sheet.cell(2, perf_col).value == "Low"
+    assert sheet.cell(2, pot_col).value == "High"
+    workbook.close()
