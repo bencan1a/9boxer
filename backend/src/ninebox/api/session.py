@@ -2,6 +2,7 @@
 
 import gc
 import logging
+import os
 import shutil
 import time
 import uuid
@@ -22,6 +23,9 @@ router = APIRouter(prefix="/session", tags=["session"])
 
 # Constant user ID for local-only app (no authentication)
 LOCAL_USER_ID = "local-user"
+
+# Maximum file upload size in bytes (default: 50MB, configurable via env var)
+MAX_FILE_SIZE = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50")) * 1024 * 1024
 
 
 class UpdateNotesRequest(BaseModel):
@@ -82,6 +86,19 @@ async def upload_file(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="File must be an Excel file (.xlsx or .xls)",
+        )
+
+    # Validate file size to prevent DOS attacks via memory exhaustion
+    file.file.seek(0, 2)  # Seek to end of file
+    file_size = file.file.tell()  # Get file size
+    file.file.seek(0)  # Seek back to beginning
+
+    if file_size > MAX_FILE_SIZE:
+        max_size_mb = MAX_FILE_SIZE / (1024 * 1024)
+        actual_size_mb = file_size / (1024 * 1024)
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail=f"File size ({actual_size_mb:.1f}MB) exceeds maximum allowed size ({max_size_mb:.0f}MB)",
         )
 
     logger = logging.getLogger(__name__)

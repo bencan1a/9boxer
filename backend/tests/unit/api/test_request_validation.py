@@ -279,12 +279,12 @@ class TestSpecialCharacters:
 class TestLargePayloads:
     """Test handling of very large request payloads."""
 
-    def test_upload_when_file_very_large_then_handles_or_rejects(
+    def test_upload_when_file_very_large_then_rejects_with_413(
         self, test_client: TestClient, auth_headers: dict[str, str]
     ) -> None:
-        """Test file upload with large file."""
-        # Create large fake file content (5MB)
-        large_content = b"x" * (5 * 1024 * 1024)  # 5 MB
+        """Test file upload rejects files exceeding 50MB limit with HTTP 413."""
+        # Create file larger than 50MB limit (55MB)
+        large_content = b"x" * (55 * 1024 * 1024)  # 55 MB
 
         response = test_client.post(
             "/api/session/upload",
@@ -298,8 +298,27 @@ class TestLargePayloads:
             headers=auth_headers,
         )
 
-        # Should either accept or reject with appropriate error
-        assert response.status_code in [200, 400, 413, 500]
+        # Should reject with HTTP 413 (Payload Too Large)
+        assert response.status_code == 413
+        assert "exceeds maximum allowed size" in response.json()["detail"]
+
+    def test_upload_when_file_just_under_limit_then_accepts(
+        self, test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+    ) -> None:
+        """Test file upload accepts files just under 50MB limit."""
+        # Use real sample file (should be well under limit)
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "under_limit.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            response = test_client.post("/api/session/upload", files=files, headers=auth_headers)
+
+        # Should accept file under limit
+        assert response.status_code == 200
 
     def test_update_when_huge_string_then_handles_or_rejects(
         self, test_client: TestClient, session_with_data: dict[str, str]
