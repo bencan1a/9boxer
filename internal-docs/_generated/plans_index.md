@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2025-12-29T05:31:46.199910+00:00
+**Updated**: 2025-12-29T10:44:14.342516+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## rich-sample-data-generator
@@ -14,19 +14,6 @@
   - Add detectable bias patterns for intelligence statistics validation
   - Integrate with app UI (empty state + File menu)
   - Support all 28 Excel schema columns
-
-## file-load-save-ux
-- **Status**: active
-- **Owner**: claude-code
-- **Created**: 2025-12-28
-- **Path**: `agent-projects/file-load-save-ux/plan.md`
-- **Summary**:
-  - Improve file load/save UX with clearer mental model
-  - Add recent files list (last 5 files)
-  - Add unsaved changes protection
-  - Add close file functionality
-  - Standardize on Load/Apply/Close terminology
-  - -
 
 ## self-managing-docs-system
 - **Status**: active

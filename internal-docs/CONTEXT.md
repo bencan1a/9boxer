@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-29T05:31:46.200096+00:00
-**Source SHA**: 94420d1a048252bf43595b90099b4c7b6f2e27f0
+**Generated**: 2025-12-29T10:44:14.342681+00:00
+**Source SHA**: 029dd2741fc49e4fc2ac0e82e74a25b9fb7c7d5f
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -340,7 +340,7 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 4 active plan(s):
+There are 3 active plan(s):
 
 ### rich-sample-data-generator
 - Owner: claude
@@ -351,17 +351,6 @@ There are 4 active plan(s):
   - Add detectable bias patterns for intelligence statistics validation
   - Integrate with app UI (empty state + File menu)
   - Support all 28 Excel schema columns
-
-### file-load-save-ux
-- Owner: claude-code
-- Created: 2025-12-28
-- Summary:
-  - Improve file load/save UX with clearer mental model
-  - Add recent files list (last 5 files)
-  - Add unsaved changes protection
-  - Add close file functionality
-  - Standardize on Load/Apply/Close terminology
-  - -
 
 ### self-managing-docs-system
 - Owner: Development Team
