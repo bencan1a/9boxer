@@ -96,10 +96,10 @@ export async function generateEmployeeDetailsPanel(
  * Generate ratings timeline screenshot
  *
  * Captures the RatingsTimeline component showing performance history
- * over multiple years.
+ * over multiple years with actual historical data.
  *
  * Replaces: Full app workflow that loaded data, selected employee, opened details, switched tabs
- * Story: panel-ratingstimeline--default
+ * Story: panel-ratingstimeline--with-history
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -109,7 +109,7 @@ export async function generateRatingsTimeline(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-ratingstimeline--default",
+    storyId: "panel-ratingstimeline--with-history",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -143,10 +143,10 @@ export async function generateManagementChain(
  * Generate changes tab screenshot
  *
  * Captures the ChangeTrackerTab component showing employee movements
- * and modifications.
+ * and modifications with grid changes.
  *
  * Replaces: Full app workflow that loaded data, made changes, opened panel, switched tabs
- * Story: panel-changetrackertab--default
+ * Story: components-panel-changetrackertab--grid-changes-only
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -156,7 +156,7 @@ export async function generateChangesTab(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-changetrackertab--default",
+    storyId: "components-panel-changetrackertab--grid-changes-only",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -260,9 +260,9 @@ export async function generateZoomControls(
  * Generate file upload dialog screenshot
  *
  * Captures the FileUploadDialog component showing the file
- * selection interface and upload button.
+ * selection interface and upload button in open state.
  *
- * Story: common-fileuploaddialog--default
+ * Story: common-fileuploaddialog--open
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -272,7 +272,7 @@ export async function generateFileUploadDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "common-fileuploaddialog--default",
+    storyId: "common-fileuploaddialog--open",
     outputPath,
     theme: "light",
     fullPage: false,
@@ -369,5 +369,329 @@ export async function generateEmployeeChangesSummary(
     outputPath,
     theme: "light",
     waitTime: 500,
+  });
+}
+
+/**
+ * Generate employee tile with flags screenshot
+ *
+ * Captures the EmployeeTile component showing individual colored
+ * flag badges (16px circular) in the top-right corner.
+ *
+ * Replaces: Full app workflow that loaded data and captured employee tiles with flags
+ * Story: grid-employeetile--with-flags
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateEmployeeTileFlagged(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "grid-employeetile--with-flags",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate FileMenuButton no file screenshot
+ *
+ * Captures the FileMenuButton component showing "No file selected"
+ * empty state. Used for quickstart-file-menu-button screenshot.
+ *
+ * Replaces: Full app workflow that loaded empty state
+ * Story: dashboard-appbar-filemenubutton--no-file
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFileMenuButtonNoFile(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-appbar-filemenubutton--no-file",
+    outputPath,
+    theme: "light",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate FileMenuButton with changes screenshot
+ *
+ * Captures the FileMenuButton component showing file loaded with
+ * change count badge. Used for file-menu-apply-changes screenshot.
+ *
+ * Replaces: Full app workflow that loaded data and made changes
+ * Story: dashboard-appbar-filemenubutton--with-changes
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFileMenuButtonWithChanges(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-appbar-filemenubutton--with-changes",
+    outputPath,
+    theme: "light",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate FileMenuButton with Import menu item highlighted
+ *
+ * Captures the FileMenuButton component with menu open and Import Data
+ * menu item highlighted (via hover). This demonstrates how to access
+ * the data import functionality.
+ *
+ * Hybrid approach: Uses Storybook to render the menu open state,
+ * then uses Playwright to hover over Import item before screenshot.
+ *
+ * Replaces: calibration.ts generateFileImport() full-app workflow
+ * Story: dashboard-appbar-filemenubutton--menu-open
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFileMenuImport(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  // Navigate to MenuOpen story
+  await navigateToStory(
+    page,
+    "dashboard-appbar-filemenubutton--menu-open",
+    "light"
+  );
+
+  // Wait for menu to be visible
+  await page.waitForSelector('[data-testid="file-menu"]', { state: "visible" });
+  await page.waitForTimeout(500);
+
+  // Hover over Import Data menu item to highlight it
+  const importItem = page.locator('[data-testid="import-data-menu-item"]');
+  if ((await importItem.count()) > 0) {
+    await importItem.hover();
+    await page.waitForTimeout(200);
+  }
+
+  // Capture screenshot of the menu
+  const menu = page.locator('[data-testid="file-menu"]');
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+  await menu.screenshot({ path: outputPath });
+
+  console.log(
+    `  ✓ Captured from Storybook with hover: dashboard-appbar-filemenubutton--menu-open (light theme)`
+  );
+}
+
+/**
+ * Generate FileMenuButton with Apply Changes menu item
+ *
+ * Captures the FileMenuButton component with menu open showing Apply Changes option.
+ * This demonstrates how to apply changes before exporting.
+ *
+ * Hybrid approach: Uses Storybook to render the menu open state with changes,
+ * then captures the menu showing the Apply Changes option.
+ *
+ * Story: dashboard-appbar-filemenubutton--menu-open-with-changes
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFileMenuApplyChanges(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  // Navigate to MenuOpenWithChanges story
+  await navigateToStory(
+    page,
+    "dashboard-appbar-filemenubutton--menu-open-with-changes",
+    "light"
+  );
+
+  // Wait for menu to be visible
+  await page.waitForSelector('[data-testid="file-menu"]', { state: "visible" });
+  await page.waitForTimeout(500);
+
+  // Hover over Apply Changes menu item to highlight it
+  const applyChangesItem = page.locator(
+    '[data-testid="apply-changes-menu-item"]'
+  );
+  if ((await applyChangesItem.count()) > 0) {
+    await applyChangesItem.hover();
+    await page.waitForTimeout(200);
+  }
+
+  // Capture screenshot of the menu
+  const menu = page.locator('[data-testid="file-menu"]');
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+  await menu.screenshot({ path: outputPath });
+
+  console.log(
+    `  ✓ Captured from Storybook with hover: dashboard-appbar-filemenubutton--menu-open-with-changes (light theme)`
+  );
+}
+
+/**
+ * Generate populated grid screenshot (normal mode)
+ *
+ * Captures the NineBoxGrid component in Populated story state, showing
+ * all 9 boxes with employees distributed across performance/potential levels.
+ *
+ * Used for both:
+ * - quickstart-grid-populated: Shows initial populated state after upload
+ * - grid-normal: Standard grid documentation screenshot
+ *
+ * Replaces: Full app workflow that loaded sample data and captured grid
+ * Story: grid-nineboxgrid--populated
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateGridPopulated(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport to ensure entire 9-box grid is visible (not clipped at bottom)
+  // Grid needs ~900px height to show all 9 boxes without clipping
+  await page.setViewportSize({ width: 1200, height: 1000 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "grid-nineboxgrid--populated",
+    outputPath,
+    theme: "light",
+    waitTime: 1000, // Grid has animations and drag-drop setup
+  });
+}
+
+/**
+ * Generate donut mode active layout screenshot
+ *
+ * Captures the NineBoxGrid component in DonutMode story state, showing
+ * the calibration mode with concentric circles and ghost tiles for
+ * moved employees.
+ *
+ * Shows:
+ * - Donut mode layout (concentric circles)
+ * - Only position 5 employees visible
+ * - Ghost tile at position 8 (original position of modified employee)
+ * - Purple/teal color scheme
+ *
+ * Replaces: Full app workflow that activated donut mode
+ * Story: grid-nineboxgrid--donut-mode
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateDonutModeActive(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport to ensure entire grid is visible (donut mode needs same space as normal grid)
+  await page.setViewportSize({ width: 1200, height: 1000 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "grid-nineboxgrid--donut-mode",
+    outputPath,
+    theme: "light",
+    waitTime: 1000, // Grid animations
+  });
+}
+
+/**
+ * Generate simplified AppBar screenshot
+ *
+ * Captures the PureAppBar component showing the simplified interface with:
+ * - Logo
+ * - File menu button
+ * - Help button
+ * - Settings button
+ *
+ * Used for view-controls-simplified-appbar screenshot.
+ * Replaces: Full app workflow that loaded data and captured AppBar element
+ * Story: dashboard-appbar-pureappbar--file-loaded
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateSimplifiedAppBar(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-appbar-pureappbar--file-loaded",
+    outputPath,
+    theme: "light",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate ViewControls with Grid view active screenshot
+ *
+ * Captures the ViewControls toolbar showing Grid view active state with
+ * standard 100% zoom level. Shows all control groups: view mode toggle,
+ * zoom controls, and fullscreen button.
+ *
+ * Used for view-controls-grid-view screenshot.
+ * Replaces: Full app workflow that loaded data and captured ViewControls
+ * Story: common-viewcontrols--grid-view-active
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateViewControlsGridView(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "light",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate ViewControls with Donut view active screenshot
+ *
+ * Captures the ViewControls toolbar showing Donut view active state with
+ * the toggle switched to donut mode. Demonstrates the visual difference
+ * when donut mode is enabled.
+ *
+ * Used for view-controls-donut-view screenshot.
+ * Replaces: Full app workflow that activated donut mode
+ * Story: common-viewcontrols--donut-view-active
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateViewControlsDonutView(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "common-viewcontrols--donut-view-active",
+    outputPath,
+    theme: "light",
+    waitTime: 300,
   });
 }
