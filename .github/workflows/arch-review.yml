@@ -10,7 +10,7 @@ on:
       significance_threshold:
         description: 'Minimum lines changed to be considered significant'
         required: false
-        default: '10'
+        default: '50'
       dry_run:
         description: 'Dry run (do not create issues)'
         required: false

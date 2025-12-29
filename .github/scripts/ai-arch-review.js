@@ -53,7 +53,7 @@ const ARCHITECTURE_DOCS_PATHS = [
 ];
 
 // Significant change thresholds
-const DEFAULT_SIGNIFICANCE_THRESHOLD = 10;  // Minimum lines changed
+const DEFAULT_SIGNIFICANCE_THRESHOLD = 50;  // Minimum lines changed (realistic for architectural review)
 
 // Issue preamble
 const ARCHITECTURE_ISSUE_PREAMBLE = `## 🏗️ Architectural Review Context
@@ -105,14 +105,33 @@ function getSignificantChanges(days, significanceThreshold = DEFAULT_SIGNIFICANC
         return { hash, subject, author, date };
       });
 
-    // Get changed files with line counts
-    const changedFilesRaw = execSync(
-      `git diff --numstat --since="${since}" HEAD`,
-      {
-        cwd: PROJECT_ROOT,
-        encoding: 'utf-8',
+    // Get the oldest commit from the time range to use as base for diff
+    let baseCommit = 'HEAD';
+    if (commits.length > 0) {
+      const oldestCommitHash = commits[commits.length - 1].hash;
+      // Get the parent of the oldest commit in range
+      try {
+        baseCommit = execSync(`git rev-parse ${oldestCommitHash}^`, {
+          cwd: PROJECT_ROOT,
+          encoding: 'utf-8',
+        }).trim();
+      } catch (error) {
+        // If no parent (first commit), use the commit itself
+        baseCommit = oldestCommitHash;
       }
-    );
+    }
+
+    // Get changed files with line counts using proper git diff
+    let changedFilesRaw = '';
+    if (commits.length > 0) {
+      changedFilesRaw = execSync(
+        `git diff --numstat ${baseCommit}..HEAD`,
+        {
+          cwd: PROJECT_ROOT,
+          encoding: 'utf-8',
+        }
+      );
+    }
 
     const changedFiles = changedFilesRaw
       .split('\n')
@@ -143,7 +162,7 @@ function getSignificantChanges(days, significanceThreshold = DEFAULT_SIGNIFICANC
     for (const fileInfo of significantFiles) {
       try {
         const diff = execSync(
-          `git diff --since="${since}" HEAD -- "${fileInfo.file}"`,
+          `git diff ${baseCommit}..HEAD -- "${fileInfo.file}"`,
           {
             cwd: PROJECT_ROOT,
             encoding: 'utf-8',
