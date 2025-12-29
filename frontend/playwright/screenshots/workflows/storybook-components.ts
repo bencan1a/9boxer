@@ -696,3 +696,49 @@ export async function generateViewControlsDonutView(
     waitTime: 300,
   });
 }
+
+/**
+ * Generate empty state with sample data button screenshot
+ *
+ * Captures the EmptyState component showing the "Load Sample Data" button
+ * for the quickstart guided tour.
+ *
+ * Story: components-emptystate--default
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateEmptyStateWithSampleButton(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "components-emptystate--default",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate load sample dialog screenshot
+ *
+ * Captures the LoadSampleDialog component in its initial state
+ * (no existing data warning).
+ *
+ * Story: dialogs-loadsampledialog--no-existing-data
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateLoadSampleDialog(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dialogs-loadsampledialog--no-existing-data",
+    outputPath,
+    theme: "light",
+    waitTime: 800, // Dialog has animations
+  });
+}
