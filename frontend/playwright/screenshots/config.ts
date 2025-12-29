@@ -182,7 +182,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
 
-  // Quickstart workflow screenshots (4 screenshots)
+  // Quickstart workflow screenshots (10 screenshots - guided tour)
   "quickstart-file-menu-button": {
     source: "storybook",
     workflow: "storybook-components",
@@ -219,6 +219,82 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId: "grid-nineboxgrid--populated",
     cropping: "container",
     dimensions: { minWidth: 800, minHeight: 600 },
+  },
+  "quickstart-empty-state-sample-button": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmptyStateWithSampleButton",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-empty-state-sample-button.png",
+    description:
+      "Empty state showing 'Load Sample Data' button for quick onboarding (quickstart tour step 1)",
+    storyId: "components-emptystate--default",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 800,
+      minHeight: 300,
+      maxHeight: 600,
+    },
+  },
+  "quickstart-load-sample-dialog": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateLoadSampleDialog",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-load-sample-dialog.png",
+    description:
+      "Load Sample Data confirmation dialog explaining the 200-employee dataset (quickstart tour step 1)",
+    storyId: "dialogs-loadsampledialog--no-existing-data",
+    cropping: "container",
+    dimensions: {
+      minWidth: 400,
+      maxWidth: 600,
+      minHeight: 250,
+      maxHeight: 400,
+    },
+  },
+  "quickstart-employee-details-with-history": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeDetailsPanel",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-employee-details-with-history.png",
+    description:
+      "Employee details panel showing flags, reporting chain, and complete job information (quickstart tour step 2)",
+    storyId: "panel-employeedetails--default",
+    cropping: "panel",
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
+  },
+  "quickstart-timeline-history": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateRatingsTimeline",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-timeline-history.png",
+    description:
+      "Performance history timeline showing 3-year rating progression (quickstart tour step 3)",
+    storyId: "panel-ratingstimeline--with-history",
+    cropping: "panel",
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
+  },
+  "quickstart-intelligence-bias-detected": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceAnomalyRed",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-intelligence-bias-detected.png",
+    description:
+      "Intelligence panel showing detected bias patterns in sample data (USA +15%, Sales +20%) - quickstart tour step 5",
+    storyId: "intelligence-anomalysection--red-status",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 300 },
+  },
+  "quickstart-statistics-distribution": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generatePanelDistribution",
+    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-statistics-distribution.png",
+    description:
+      "Statistics tab showing healthy distribution patterns in sample data (quickstart tour step 4)",
+    storyId: "panel-statistics-distributiontable--balanced-distribution",
+    cropping: "panel",
+    dimensions: { minWidth: 300, minHeight: 300 },
   },
   // Calibration workflow screenshots (6 screenshots)
   "calibration-file-import": {

@@ -254,7 +254,7 @@ What does "Star" vs "Core Talent" vs "Enigma" actually mean? Strategic context f
 
 ### I Want to Try Specific Features
 
-[Jump to feature documentation](index.md#features-reference)
+[Jump to feature documentation](index.md#need-specific-help)
 
 Filters, Donut Mode, Statistics, Intelligence, Change Tracking, Exporting - pick what you need.
 
@@ -311,7 +311,7 @@ A: Absolutely! Load your data, share your screen, and use filters to review one 
 ## Need Help?
 
 - **Stuck on something?** Check [Troubleshooting](troubleshooting.md) for common issues
-- **Want to learn a specific feature?** Browse the [Feature Reference](index.md#features-reference)
+- **Want to learn a specific feature?** Browse the [Feature Reference](index.md#need-specific-help)
 - **Tooltips everywhere!** Hover over any button for helpful hints
 
 ---
