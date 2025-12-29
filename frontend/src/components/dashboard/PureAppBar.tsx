@@ -23,7 +23,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { FileMenuButton } from "./FileMenuButton";
+import { FileMenuButton, RecentFile } from "./FileMenuButton";
 import { HelpButton } from "./HelpButton";
 import { Logo } from "../branding/Logo";
 import { useTranslation } from "react-i18next";
@@ -48,6 +48,8 @@ export interface PureAppBarProps {
   isFilterDisabled: boolean;
   /** Whether export is in progress */
   isExporting?: boolean;
+  /** Recent files to display */
+  recentFiles?: RecentFile[];
 
   // Callbacks
   /** Callback when file menu toggle is requested */
@@ -58,6 +60,12 @@ export interface PureAppBarProps {
   onLoadSampleClick: () => void;
   /** Callback when export is clicked */
   onExportClick: () => void;
+  /** Callback when close file is clicked */
+  onCloseFile?: () => void;
+  /** Callback when a recent file is clicked */
+  onRecentFileClick?: (filePath: string) => void;
+  /** Callback when clear recent files is clicked */
+  onClearRecentFiles?: () => void;
   /** Callback when filter button is clicked */
   onFilterClick: () => void;
   /** Callback when settings button is clicked */
@@ -102,10 +110,14 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   filterTooltip,
   isFilterDisabled,
   isExporting = false,
+  recentFiles,
   onFileMenuToggle,
   onImportClick,
   onLoadSampleClick,
   onExportClick,
+  onCloseFile,
+  onRecentFileClick,
+  onClearRecentFiles,
   onFilterClick,
   onSettingsClick,
   onHelpMenuToggle,
@@ -156,6 +168,10 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
             onImportClick={onImportClick}
             onLoadSampleClick={onLoadSampleClick}
             onExportClick={onExportClick}
+            recentFiles={recentFiles}
+            onRecentFileClick={onRecentFileClick}
+            onCloseFile={onCloseFile}
+            onClearRecentFiles={onClearRecentFiles}
             isExporting={isExporting}
           />
         </Box>
