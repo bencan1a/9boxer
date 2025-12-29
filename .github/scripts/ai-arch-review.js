@@ -55,6 +55,9 @@ const ARCHITECTURE_DOCS_PATHS = [
 // Significant change thresholds
 const DEFAULT_SIGNIFICANCE_THRESHOLD = 50;  // Minimum lines changed (realistic for architectural review)
 
+// Historical findings
+const FINDINGS_HISTORY_FILE = path.join(PROJECT_ROOT, '.github', 'arch-review-findings.json');
+
 // Issue preamble
 const ARCHITECTURE_ISSUE_PREAMBLE = `## 🏗️ Architectural Review Context
 
@@ -76,6 +79,46 @@ Before addressing these architectural concerns, review:
 - **KISS (Keep It Simple)**: Simplicity requires discipline
 
 ---`;
+
+/**
+ * Read previous architectural review findings from history file
+ * @returns {Array} Previous findings or empty array if none exist
+ */
+function readPreviousFindings() {
+  try {
+    if (fs.existsSync(FINDINGS_HISTORY_FILE)) {
+      const content = fs.readFileSync(FINDINGS_HISTORY_FILE, 'utf-8');
+      const data = JSON.parse(content);
+      return data.findings || [];
+    }
+  } catch (error) {
+    console.warn('⚠️  Could not read previous findings:', error.message);
+  }
+  return [];
+}
+
+/**
+ * Save current findings to history file for next review
+ * @param {Array} findings - Current architectural findings
+ * @param {string} reviewDate - Review date ISO string
+ */
+function saveFindingsHistory(findings, reviewDate) {
+  try {
+    const data = {
+      lastReview: reviewDate,
+      findings: findings.map(f => ({
+        type: f.type,
+        priority: f.priority,
+        title: f.title,
+        evidence: f.evidence,
+      })),
+    };
+    fs.writeFileSync(FINDINGS_HISTORY_FILE, JSON.stringify(data, null, 2));
+    console.log(`📝 Saved ${findings.length} findings to history: ${FINDINGS_HISTORY_FILE}`);
+  } catch (error) {
+    console.warn('⚠️  Could not save findings history:', error.message);
+  }
+}
 
 /**
  * Get recent code changes from git history with diffs
@@ -330,7 +373,7 @@ function buildArchitectureContext(changes, archDocs) {
  * @param {string} context - Architectural review context
  * @returns {Promise<Object>} Review results
  */
-async function analyzeArchitecture(context) {
+async function analyzeArchitecture(context, previousFindings = []) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
@@ -339,7 +382,27 @@ async function analyzeArchitecture(context) {
 
   const anthropic = new Anthropic({ apiKey });
 
-  const prompt = `${context}
+  // Build historical context section
+  let historicalContext = '';
+  if (previousFindings.length > 0) {
+    historicalContext = `
+
+## Previous Week's Findings (Historical Context)
+
+**These issues were flagged in the last review.** Avoid re-flagging the same issues unless they've gotten worse or spread to new files.
+
+${previousFindings.slice(0, 10).map((f, i) => `${i + 1}. **[${f.priority.toUpperCase()}] ${f.title}**
+   - Type: ${f.type}
+   - Evidence: ${f.evidence}`).join('\n\n')}
+
+${previousFindings.length > 10 ? `\n...and ${previousFindings.length - 10} more (see full history)` : ''}
+
+**Focus on NEW issues or significant changes to existing issues.**
+
+---`;
+  }
+
+  const prompt = `${context}${historicalContext}
 
 ## Your Task: Architectural Review
 
@@ -452,7 +515,13 @@ This project has **multiple AI agents working independently**, creating high ris
 
 **IMPORTANT CONSTRAINTS:**
 - **High bar for issues**: Only flag SIGNIFICANT architectural concerns (not minor style issues)
-- **Maximum 10 findings total** (prioritize critical and high priority)
+- **NO LIMIT on findings**: Return ALL significant issues you detect (prioritize by severity)
+- **Focus areas** (in priority order):
+  1. Security vulnerabilities and boundary violations
+  2. Code duplication across agent work (>70% similar)
+  3. Anti-patterns and stupid implementations (violates documented patterns)
+  4. Performance regressions and O(n²) where O(n) exists
+- **DE-EMPHASIZE missing-docs**: We have a separate docs-audit workflow for that
 - **Keep descriptions under 200 characters**
 - **Keep remediation under 400 characters**
 - **Use file references, NOT code snippets**: Reference files/lines, don't paste code
@@ -923,9 +992,14 @@ async function main() {
   const context = buildArchitectureContext(changes, archDocs);
   console.log(`   Context size: ${context.length} characters`);
 
+  // Load previous findings for historical context
+  console.log('\n📋 Loading previous review findings...');
+  const previousFindings = readPreviousFindings();
+  console.log(`   Found ${previousFindings.length} previous finding(s) for context`);
+
   // Analyze with Claude
   console.log('\n🤖 Analyzing architecture with principal-engineer agent...');
-  const results = await analyzeArchitecture(context);
+  const results = await analyzeArchitecture(context, previousFindings);
   console.log(`   Analysis complete: ${results.summary.totalEvents || 0} event(s), ${results.summary.totalFindings} finding(s)`);
   if (results.summary.criticalIssues > 0) {
     console.log(`   ⚠️  ${results.summary.criticalIssues} CRITICAL issue(s) detected!`);
@@ -975,6 +1049,9 @@ async function main() {
 
   // Save report
   saveReviewReport(report);
+
+  // Save findings history for next review
+  saveFindingsHistory(results.findings, reviewDate);
 
   // Print summary
   printSummary(report);
