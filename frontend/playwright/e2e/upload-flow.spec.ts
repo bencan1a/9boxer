@@ -15,7 +15,7 @@ test.describe("Employee Upload Flow", () => {
     await page.goto("/");
 
     // Verify we start with no data (enhanced empty state)
-    await expect(page.getByText("No File Loaded")).toBeVisible();
+    await expect(page.getByText("No Employees Loaded")).toBeVisible();
   });
 
   test("should upload Excel file and view employees in the grid", async ({
@@ -45,7 +45,7 @@ test.describe("Employee Upload Flow", () => {
 
   test("should show error for invalid file format", async ({ page }) => {
     // Click empty state import button
-    await page.locator('[data-testid="empty-state-import-button"]').click();
+    await page.locator('[data-testid="upload-file-button"]').click();
 
     // Create and select an invalid file (text file)
     const invalidFileContent = Buffer.from("This is not an Excel file");

@@ -179,12 +179,12 @@ test.describe("Donut Mode Workflow", () => {
     // Since donut placements alone don't enable export, we'll verify the menu item state
     // In a real scenario, you'd make a regular modification to enable export
 
-    // Verify export menu item is disabled (as expected with only donut placements)
+    // Verify export menu item is hidden (as expected with only donut placements)
     await page.locator('[data-testid="file-menu-button"]').click();
     const exportMenuItem = page.locator(
       '[data-testid="export-changes-menu-item"]'
     );
-    await expect(exportMenuItem).toBeDisabled();
+    await expect(exportMenuItem).not.toBeVisible();
     await page.keyboard.press("Escape");
 
     // To actually test export with donut data, we'd need to:
@@ -245,12 +245,10 @@ test.describe("Donut Mode Workflow", () => {
 
     // 6. Verify file menu badge shows changes
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
-    await expect(fileMenuBadge).not.toHaveAttribute("class", /invisible/);
+    const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
+    await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);
 
-    // 7. Set up download listener
-    const downloadPromise = page.waitForEvent("download");
-
-    // 8. Open file menu and click export menu item
+    // 7. Open file menu and click export menu item
     await page.locator('[data-testid="file-menu-button"]').click();
     const exportMenuItem = page.locator(
       '[data-testid="export-changes-menu-item"]'
@@ -258,13 +256,22 @@ test.describe("Donut Mode Workflow", () => {
     await expect(exportMenuItem).toBeEnabled();
     await exportMenuItem.click();
 
-    // 9. Wait for download to complete
+    // 8. Verify ApplyChangesDialog appears
+    await expect(
+      page.locator('[data-testid="apply-changes-dialog"]')
+    ).toBeVisible();
+
+    // 9. Click Apply Changes button
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Apply Changes" }).click();
+
+    // 10. Wait for download to complete
     const download = await downloadPromise;
 
-    // 10. Verify filename pattern
+    // 11. Verify filename pattern
     expect(download.suggestedFilename()).toMatch(/modified_.*\.xlsx$/);
 
-    // 11. Save the downloaded file temporarily
+    // 12. Save the downloaded file temporarily
     const downloadPath = path.join(
       __dirname,
       "..",

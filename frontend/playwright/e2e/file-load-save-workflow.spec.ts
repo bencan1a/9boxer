@@ -85,25 +85,12 @@ test.describe("File Load/Save/Apply Workflows", () => {
     ).toBeVisible();
   });
 
-  test("export without changes: triggers direct download", async ({ page }) => {
-    // 1. Upload file (no changes)
-    await uploadFile(page, "sample-employees.xlsx");
-    await verifyChangeCount(page, 0);
-
-    // 2. Set up download listener
-    const downloadPromise = page.waitForEvent("download");
-
-    // 3. Click export
-    await clickExport(page);
-
-    // 4. Verify download starts (no dialog shown)
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toContain(".xlsx");
-
-    // Verify ApplyChangesDialog does NOT appear
-    await expect(
-      page.locator('[data-testid="apply-changes-dialog"]')
-    ).not.toBeVisible();
+  test.skip("export without changes: not applicable in new UX", async ({
+    page,
+  }) => {
+    // NOTE: In the new UX, "Apply Changes" menu item ONLY appears when there ARE changes.
+    // When there are no changes, there is no export menu item visible.
+    // This test is no longer applicable and has been skipped.
   });
 
   test("import new file with unsaved changes: shows UnsavedChangesDialog", async ({
@@ -131,13 +118,9 @@ test.describe("File Load/Save/Apply Workflows", () => {
       .textContent();
     expect(dialogText).toContain("1");
 
-    // Verify dialog shows correct options
-    await expect(
-      page.locator('[data-testid="unsaved-changes-dialog"]')
-    ).toContainText("Discard Changes and Continue");
-    await expect(
-      page.locator('[data-testid="unsaved-changes-dialog"]')
-    ).toContainText("Apply Changes and Continue");
+    // Verify dialog shows correct options (using testids for reliability)
+    await expect(page.locator('[data-testid="discard-button"]')).toBeVisible();
+    await expect(page.locator('[data-testid="apply-button"]')).toBeVisible();
   });
 
   test("unsaved changes dialog: cancel keeps session active", async ({
@@ -155,8 +138,8 @@ test.describe("File Load/Save/Apply Workflows", () => {
       page.locator('[data-testid="unsaved-changes-dialog"]')
     ).toBeVisible();
 
-    // 4. Click Cancel
-    await page.locator('button:has-text("Cancel")').click();
+    // 4. Click Cancel (use testid for reliability)
+    await page.locator('[data-testid="cancel-button"]').click();
 
     // 5. Verify dialog closes, session still active
     await expect(
@@ -181,10 +164,8 @@ test.describe("File Load/Save/Apply Workflows", () => {
       page.locator('[data-testid="unsaved-changes-dialog"]')
     ).toBeVisible();
 
-    // 4. Click "Discard Changes and Continue"
-    await page
-      .locator('button:has-text("Discard Changes and Continue")')
-      .click();
+    // 4. Click "Discard Changes" (use testid for reliability)
+    await page.locator('[data-testid="discard-button"]').click();
 
     // 5. Verify session is closed
     await verifySessionClosed(page);
@@ -224,14 +205,12 @@ test.describe("File Load/Save/Apply Workflows", () => {
       page.locator('[data-testid="unsaved-changes-dialog"]')
     ).toBeVisible();
 
-    // 4. Click "Discard Changes and Continue"
-    await page
-      .locator('button:has-text("Discard Changes and Continue")')
-      .click();
+    // 4. Click "Discard Changes" (use testid for reliability)
+    await page.locator('[data-testid="discard-button"]').click();
 
-    // 5. Verify sample data dialog opens
+    // 5. Verify sample data dialog opens (correct testid)
     await expect(
-      page.locator('[data-testid="sample-data-dialog"]')
+      page.locator('[data-testid="load-sample-dialog"]')
     ).toBeVisible();
   });
 
@@ -248,10 +227,10 @@ test.describe("File Load/Save/Apply Workflows", () => {
       page.locator('[data-testid="apply-changes-dialog"]')
     ).toBeVisible();
 
-    // 4. Click Cancel
+    // 4. Click Cancel button in ApplyChangesDialog
     await page
       .locator('[data-testid="apply-changes-dialog"]')
-      .locator('button:has-text("Cancel")')
+      .getByRole("button", { name: "Cancel" })
       .click();
 
     // 5. Verify dialog closes
@@ -361,8 +340,8 @@ test.describe("File Load/Save/Apply Workflows", () => {
     await openFileMenu(page);
     await page.locator('[data-testid="import-data-menu-item"]').click();
 
-    // Click "Apply Changes and Continue"
-    await page.locator('button:has-text("Apply Changes and Continue")').click();
+    // Click "Apply Changes" (use testid for reliability)
+    await page.locator('[data-testid="apply-button"]').click();
 
     // Verify ApplyChangesDialog appears
     await expect(

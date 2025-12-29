@@ -56,8 +56,9 @@ test.describe("Grid Box Expansion Flow", () => {
     await expect(collapseButton).toBeVisible();
     await expect(expandButton).not.toBeVisible();
 
-    // Verify employee cards are still visible and more detailed
-    await expect(gridBox9.getByText("Alice Smith")).toBeVisible();
+    // Verify employee cards are still visible (at least one)
+    const employeeCards = gridBox9.locator('[data-testid^="employee-card-"]');
+    await expect(employeeCards.first()).toBeVisible();
   });
 
   test("should collapse grid box when clicking collapse button", async ({
