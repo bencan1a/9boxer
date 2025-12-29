@@ -39,9 +39,8 @@ describe("StatisticsTab", () => {
     expect(
       screen.getByText(getTranslatedText("panel.statisticsTab.modified"))
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(getTranslatedText("panel.statisticsTab.highPerformers"))
-    ).toBeInTheDocument();
+    // Use testid since "High Performers" appears in multiple places (summary card + grouping indicator)
+    expect(screen.getByTestId("high-performers-card")).toBeInTheDocument();
   });
 
   it("renders distribution table", () => {
@@ -63,10 +62,6 @@ describe("StatisticsTab", () => {
     render(<StatisticsTab />);
 
     expect(screen.getByTestId("distribution-chart")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        getTranslatedText("panel.statisticsTab.visualDistribution")
-      )
-    ).toBeInTheDocument();
+    // Chart component renders without a title, so no text assertion needed
   });
 });

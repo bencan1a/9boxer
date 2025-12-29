@@ -92,7 +92,7 @@ describe("Recent Files Workflow Integration", () => {
     });
   });
 
-  it('shows "No recent files" message when list is empty', async () => {
+  it("hides recent files section when list is empty", async () => {
     vi.mocked(api.apiClient.getRecentFiles).mockResolvedValue([]);
 
     const { user } = render(<AppBarContainer />);
@@ -106,9 +106,11 @@ describe("Recent Files Workflow Integration", () => {
     const fileButton = screen.getByTestId("file-menu-button");
     await user.click(fileButton);
 
-    // Verify "No recent files" message is displayed
+    // Verify recent files section is not shown (no "Recent Files" subheader)
     await waitFor(() => {
-      expect(screen.getByText(/no recent files/i)).toBeInTheDocument();
+      const menu = screen.getByTestId("file-menu");
+      expect(menu).toBeInTheDocument();
+      expect(screen.queryByText(/recent files/i)).not.toBeInTheDocument();
     });
   });
 
@@ -167,9 +169,11 @@ describe("Recent Files Workflow Integration", () => {
     const fileButton = screen.getByTestId("file-menu-button");
     await user.click(fileButton);
 
-    // Verify "No recent files" message is shown
+    // Verify recent files section is not shown (graceful degradation)
     await waitFor(() => {
-      expect(screen.getByText(/no recent files/i)).toBeInTheDocument();
+      const menu = screen.getByTestId("file-menu");
+      expect(menu).toBeInTheDocument();
+      expect(screen.queryByText(/recent files/i)).not.toBeInTheDocument();
     });
 
     consoleError.mockRestore();

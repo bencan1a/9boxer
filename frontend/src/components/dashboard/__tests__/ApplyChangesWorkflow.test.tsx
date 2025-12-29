@@ -139,9 +139,18 @@ describe("Apply Changes Workflow Integration", () => {
       message: "Changes applied successfully",
       file_path: "/path/to/employees.xlsx",
     });
-    vi.mocked(api.apiClient.addRecentFile).mockResolvedValue({ success: true });
+    vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
+      session_id: "test-session-123",
+      uploaded_filename: "employees.xlsx",
+      events: [],
+      total_employees: 100,
+      modified_employees: 0,
+    });
 
     localStorage.setItem("last_file_path", "/path/to/employees.xlsx");
+
+    // Mock loadEmployees
+    const mockLoadEmployees = vi.fn().mockResolvedValue(undefined);
 
     // Set up initial state with loaded file
     const { result: sessionStore } = renderHook(() => useSessionStore());
@@ -158,6 +167,7 @@ describe("Apply Changes Workflow Integration", () => {
           notes: null,
         },
       ];
+      sessionStore.current.loadEmployees = mockLoadEmployees;
     });
 
     const { user } = render(<AppBarContainer />);
@@ -196,7 +206,16 @@ describe("Apply Changes Workflow Integration", () => {
       message: "Changes saved to new file",
       file_path: newPath,
     });
-    vi.mocked(api.apiClient.addRecentFile).mockResolvedValue({ success: true });
+    vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
+      session_id: "test-session-123",
+      uploaded_filename: "new_file.xlsx",
+      events: [],
+      total_employees: 100,
+      modified_employees: 0,
+    });
+
+    // Mock loadEmployees
+    const mockLoadEmployees = vi.fn().mockResolvedValue(undefined);
 
     // Set up initial state with loaded file
     const { result: sessionStore } = renderHook(() => useSessionStore());
@@ -213,6 +232,7 @@ describe("Apply Changes Workflow Integration", () => {
           notes: null,
         },
       ];
+      sessionStore.current.loadEmployees = mockLoadEmployees;
     });
 
     const { user } = render(<AppBarContainer />);
@@ -251,7 +271,7 @@ describe("Apply Changes Workflow Integration", () => {
     });
   });
 
-  it("updates recent files and shows success message on successful apply", async () => {
+  it("shows success message and closes dialog on successful apply", async () => {
     const filePath = "/path/to/employees.xlsx";
     vi.mocked(api.apiClient.getRecentFiles).mockResolvedValue([]);
     vi.mocked(api.apiClient.exportSession).mockResolvedValue({
@@ -259,9 +279,18 @@ describe("Apply Changes Workflow Integration", () => {
       message: "Changes applied successfully",
       file_path: filePath,
     });
-    vi.mocked(api.apiClient.addRecentFile).mockResolvedValue({ success: true });
+    vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
+      session_id: "test-session-123",
+      uploaded_filename: "employees.xlsx",
+      events: [],
+      total_employees: 100,
+      modified_employees: 0,
+    });
 
     localStorage.setItem("last_file_path", filePath);
+
+    // Mock loadEmployees
+    const mockLoadEmployees = vi.fn().mockResolvedValue(undefined);
 
     // Set up initial state with loaded file
     const { result: sessionStore } = renderHook(() => useSessionStore());
@@ -278,6 +307,7 @@ describe("Apply Changes Workflow Integration", () => {
           notes: null,
         },
       ];
+      sessionStore.current.loadEmployees = mockLoadEmployees;
     });
 
     const { user } = render(<AppBarContainer />);
@@ -297,14 +327,6 @@ describe("Apply Changes Workflow Integration", () => {
     // Click Apply
     const applyButton = screen.getByRole("button", { name: /apply changes/i });
     await user.click(applyButton);
-
-    // Verify recent files was updated
-    await waitFor(() => {
-      expect(api.apiClient.addRecentFile).toHaveBeenCalledWith(
-        filePath,
-        "employees.xlsx"
-      );
-    });
 
     // Verify success message was shown
     await waitFor(() => {

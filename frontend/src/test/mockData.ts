@@ -175,8 +175,9 @@ export const mockStatistics = {
     },
   ],
   groupedStats: {
-    highPerformers: { positions: [6, 8, 9], count: 2, percentage: 40 },
-    lowPerformers: { positions: [1, 2, 4], count: 1, percentage: 20 },
+    highPerformers: { positions: [6, 8, 9], count: 3, percentage: 60 },
+    middleTier: { positions: [3, 5, 7], count: 2, percentage: 40 },
+    lowPerformers: { positions: [1, 2, 4], count: 0, percentage: 0 },
   },
 };
 

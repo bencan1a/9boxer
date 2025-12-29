@@ -111,16 +111,31 @@ describe("RecentFileLoadingWorkflow", () => {
   });
 
   describe("Load recent file with no session", () => {
-    it("should call clearSession, loadFile, and loadEmployees when loading a recent file", async () => {
+    it("should call readFile, uploadFile, and loadEmployees when loading a recent file", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi.fn().mockResolvedValue(true);
-      const mockLoadFile = vi.fn().mockResolvedValue({ success: true });
+      const mockReadFile = vi.fn().mockResolvedValue({
+        success: true,
+        buffer: new Uint8Array([1, 2, 3]).buffer,
+        fileName: "file1.xlsx",
+      });
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: mockLoadFile,
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile in session store
+      const mockUploadFile = vi.fn().mockResolvedValue(undefined);
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -147,23 +162,16 @@ describe("RecentFileLoadingWorkflow", () => {
       const recentFileItem = await screen.findByText("file1.xlsx");
       await user.click(recentFileItem);
 
-      // Verify file existence check
+      // Verify readFile was called
       await waitFor(() => {
-        expect(mockCheckFileExists).toHaveBeenCalledWith(
+        expect(mockReadFile).toHaveBeenCalledWith(
           "C:\\Users\\test\\file1.xlsx"
         );
       });
 
-      // Verify load file was called
+      // Verify uploadFile was called
       await waitFor(() => {
-        expect(mockLoadFile).toHaveBeenCalledWith(
-          "C:\\Users\\test\\file1.xlsx"
-        );
-      });
-
-      // Verify employees were loaded
-      await waitFor(() => {
-        expect(mockLoadEmployees).toHaveBeenCalled();
+        expect(mockUploadFile).toHaveBeenCalled();
       });
 
       // Verify success message
@@ -176,14 +184,20 @@ describe("RecentFileLoadingWorkflow", () => {
   describe("Load recent file with existing session", () => {
     it("should clear session before loading a new file", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi.fn().mockResolvedValue(true);
-      const mockLoadFile = vi.fn().mockResolvedValue({ success: true });
+      const mockReadFile = vi.fn().mockResolvedValue({
+        success: true,
+        buffer: new Uint8Array([1, 2, 3]).buffer,
+        fileName: "new-file.xlsx",
+      });
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: mockLoadFile,
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile
+      const mockUploadFile = vi.fn().mockResolvedValue(undefined);
+      mockClearSession.mockResolvedValue(undefined);
 
       // Mock session store with existing session
       vi.mocked(sessionStore.useSessionStore).mockReturnValue({
@@ -194,6 +208,7 @@ describe("RecentFileLoadingWorkflow", () => {
         clearSession: mockClearSession,
         closeSession: mockCloseSession,
         loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
       } as any);
 
       // Mock UI store with recent files
@@ -211,8 +226,6 @@ describe("RecentFileLoadingWorkflow", () => {
         return selector ? selector(state) : state;
       });
 
-      mockClearSession.mockResolvedValue(undefined);
-
       renderWithProviders(<AppBarContainer />);
 
       // Open file menu
@@ -228,26 +241,38 @@ describe("RecentFileLoadingWorkflow", () => {
         expect(mockClearSession).toHaveBeenCalled();
       });
 
-      // Verify load file was called after clearing
+      // Verify uploadFile was called after clearing
       await waitFor(() => {
-        expect(mockLoadFile).toHaveBeenCalledWith(
-          "C:\\Users\\test\\new-file.xlsx"
-        );
+        expect(mockUploadFile).toHaveBeenCalled();
       });
     });
   });
 
-  describe("File exists check fails", () => {
-    it("should show file not found error when file does not exist", async () => {
+  describe("File read fails", () => {
+    it("should show error when readFile fails", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi.fn().mockResolvedValue(false);
-      const mockLoadFile = vi.fn();
+      const mockReadFile = vi.fn().mockResolvedValue({
+        success: false,
+        error: "File not found",
+      });
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: mockLoadFile,
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile
+      const mockUploadFile = vi.fn();
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -274,36 +299,51 @@ describe("RecentFileLoadingWorkflow", () => {
       const recentFileItem = await screen.findByText("missing.xlsx");
       await user.click(recentFileItem);
 
-      // Verify file existence check
+      // Verify readFile was called
       await waitFor(() => {
-        expect(mockCheckFileExists).toHaveBeenCalledWith(
+        expect(mockReadFile).toHaveBeenCalledWith(
           "C:\\Users\\test\\missing.xlsx"
         );
       });
 
-      // Verify loadFile was NOT called
-      expect(mockLoadFile).not.toHaveBeenCalled();
+      // Verify uploadFile was NOT called
+      expect(mockUploadFile).not.toHaveBeenCalled();
 
       // Verify error message
       await waitFor(() => {
-        expect(
-          screen.getByText(/File not found: missing.xlsx/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/File not found/i)).toBeInTheDocument();
       });
     });
   });
 
   describe("Load file success", () => {
-    it("should show success message and load employees on successful file load", async () => {
+    it("should show success message and call uploadFile on successful file read", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi.fn().mockResolvedValue(true);
-      const mockLoadFile = vi.fn().mockResolvedValue({ success: true });
+      const mockReadFile = vi.fn().mockResolvedValue({
+        success: true,
+        buffer: new Uint8Array([1, 2, 3]).buffer,
+        fileName: "success.xlsx",
+      });
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: mockLoadFile,
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile
+      const mockUploadFile = vi.fn().mockResolvedValue(undefined);
+      mockLoadEmployees.mockResolvedValue(undefined);
+
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -320,8 +360,6 @@ describe("RecentFileLoadingWorkflow", () => {
         return selector ? selector(state) : state;
       });
 
-      mockLoadEmployees.mockResolvedValue(undefined);
-
       renderWithProviders(<AppBarContainer />);
 
       // Open file menu
@@ -337,24 +375,40 @@ describe("RecentFileLoadingWorkflow", () => {
         expect(screen.getByText(/Loaded success.xlsx/i)).toBeInTheDocument();
       });
 
-      // Verify loadEmployees was called
-      expect(mockLoadEmployees).toHaveBeenCalled();
+      // Verify uploadFile was called
+      expect(mockUploadFile).toHaveBeenCalled();
     });
   });
 
-  describe("Load file failure", () => {
-    it("should show error message from API when file load fails", async () => {
+  describe("Upload file failure", () => {
+    it("should show error message when uploadFile fails", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi.fn().mockResolvedValue(true);
-      const mockLoadFile = vi
-        .fn()
-        .mockResolvedValue({ success: false, error: "Invalid file format" });
+      const mockReadFile = vi.fn().mockResolvedValue({
+        success: true,
+        buffer: new Uint8Array([1, 2, 3]).buffer,
+        fileName: "invalid.xlsx",
+      });
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: mockLoadFile,
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile to throw error
+      const mockUploadFile = vi
+        .fn()
+        .mockRejectedValue(new Error("Invalid file format"));
+
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -385,9 +439,6 @@ describe("RecentFileLoadingWorkflow", () => {
       await waitFor(() => {
         expect(screen.getByText(/Invalid file format/i)).toBeInTheDocument();
       });
-
-      // Verify loadEmployees was NOT called
-      expect(mockLoadEmployees).not.toHaveBeenCalled();
     });
   });
 
@@ -396,6 +447,19 @@ describe("RecentFileLoadingWorkflow", () => {
       const user = userEvent.setup();
 
       // No Electron API mock (window.electronAPI is undefined)
+
+      // Mock uploadFile
+      const mockUploadFile = vi.fn();
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -422,11 +486,9 @@ describe("RecentFileLoadingWorkflow", () => {
       const recentFileItem = await screen.findByText("file.xlsx");
       await user.click(recentFileItem);
 
-      // Verify error message
+      // Verify error message (dashboard.fileMenu.electronApiRequired)
       await waitFor(() => {
-        expect(
-          screen.getByText(/File loading requires desktop application/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/desktop application/i)).toBeInTheDocument();
       });
     });
   });
@@ -434,15 +496,27 @@ describe("RecentFileLoadingWorkflow", () => {
   describe("File loading error", () => {
     it("should log error and show user-friendly message on file loading error", async () => {
       const user = userEvent.setup();
-      const mockCheckFileExists = vi
+      const mockReadFile = vi
         .fn()
         .mockRejectedValue(new Error("Permission denied"));
 
       // Mock Electron API
       (window as any).electronAPI = {
-        checkFileExists: mockCheckFileExists,
-        loadFile: vi.fn(),
+        readFile: mockReadFile,
       };
+
+      // Mock uploadFile
+      const mockUploadFile = vi.fn();
+      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
+        sessionId: null,
+        filename: null,
+        events: [],
+        employees: [],
+        clearSession: mockClearSession,
+        closeSession: mockCloseSession,
+        loadEmployees: mockLoadEmployees,
+        uploadFile: mockUploadFile,
+      } as any);
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
