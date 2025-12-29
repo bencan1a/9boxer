@@ -86,6 +86,23 @@ class ExcelExporter:
                 sheet.cell(1, modified_col + 9, "Original Performance")
                 sheet.cell(1, modified_col + 10, "Original Potential")
 
+            # Ensure "Original Performance" and "Original Potential" columns exist even for
+            # workbooks exported with older versions that only had "Modified in Session".
+            original_perf_col = self._find_column(sheet, "Original Performance")
+            if original_perf_col is None:
+                original_perf_col = self._find_column(sheet, "Original Performance", create=True)
+                assert (
+                    original_perf_col is not None
+                ), "original_perf_col should not be None when create=True"  # nosec B101
+                sheet.cell(1, original_perf_col, "Original Performance")
+
+            original_pot_col = self._find_column(sheet, "Original Potential")
+            if original_pot_col is None:
+                original_pot_col = self._find_column(sheet, "Original Potential", create=True)
+                assert (
+                    original_pot_col is not None
+                ), "original_pot_col should not be None when create=True"  # nosec B101
+                sheet.cell(1, original_pot_col, "Original Potential")
             # Create employee lookup by ID
             employee_map = {e.employee_id: e for e in employees}
 
