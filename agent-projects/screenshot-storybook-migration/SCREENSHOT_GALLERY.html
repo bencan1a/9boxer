@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9Boxer Screenshot Gallery - Complete Registry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #1976d2; margin-bottom: 10px; font-size: 32px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 16px; }
+        .stats { background: #e3f2fd; padding: 20px; border-radius: 6px; margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #1976d2; }
+        .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
+        h2 { color: #1976d2; margin-top: 40px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #1976d2; font-size: 24px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        thead { background: #1976d2; color: white; }
+        th { padding: 12px; text-align: left; font-weight: 600; }
+        td { padding: 15px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        tbody tr:hover { background: #f5f5f5; }
+        .description-cell { width: 40%; }
+        .image-cell { width: 60%; text-align: center; }
+        .screenshot-name { font-weight: 600; color: #1976d2; font-size: 16px; margin-bottom: 8px; }
+        .screenshot-desc { color: #555; margin-bottom: 8px; }
+        .screenshot-meta { font-size: 12px; color: #999; margin-top: 8px; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-right: 5px; margin-top: 5px; }
+        .badge-storybook { background: #4caf50; color: white; }
+        .badge-fullapp { background: #ff9800; color: white; }
+        .badge-manual { background: #f44336; color: white; }
+        .badge-automated { background: #2196f3; color: white; }
+        .screenshot-img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .screenshot-img:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; }
+        .path { font-family: 'Courier New', monospace; font-size: 11px; color: #666; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 5px; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin-top: 8px; font-size: 13px; color: #856404; }
+        .category-count { color: #999; font-size: 14px; font-weight: normal; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>9Boxer Screenshot Gallery</h1>
+        <p class="subtitle">Complete visual registry of all documentation screenshots</p>
+
+        <div class="stats">
+            <div class="stat"><div class="stat-number">58</div><div class="stat-label">Total Screenshots</div></div>
+            <div class="stat"><div class="stat-number">48</div><div class="stat-label">Storybook (83%)</div></div>
+            <div class="stat"><div class="stat-number">10</div><div class="stat-label">Full-App (17%)</div></div>
+            <div class="stat"><div class="stat-number">4</div><div class="stat-label">Manual (7%)</div></div>
+            <div class="stat"><div class="stat-number">54</div><div class="stat-label">Automated (93%)</div></div>
+        </div>
+
+        <h2 id="changes-workflow">Changes Workflow <span class="category-count">(6 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-drag-sequence</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-manual">Manual</span>
+                        </div>
+
+                        <div class="path">workflow/making-changes-drag-sequence-base.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png"
+                             alt="changes-drag-sequence"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-orange-border</div>
+                        <div class="screenshot-desc">Employee tile with full orange modified border (2px)</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-employeetile--modified</div>
+                        <div class="path">workflow/making-changes-orange-border.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png"
+                             alt="changes-orange-border"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-employee-details</div>
+                        <div class="screenshot-desc">Employee details panel showing updated ratings</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-employeedetails--default</div>
+                        <div class="path">workflow/making-changes-employee-details.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png"
+                             alt="changes-employee-details"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-timeline-view</div>
+                        <div class="screenshot-desc">Performance History timeline in employee details</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-ratingstimeline--default</div>
+                        <div class="path">workflow/making-changes-timeline.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png"
+                             alt="changes-timeline-view"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-tab</div>
+                        <div class="screenshot-desc">Changes tab with employee movements</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-changetrackertab--default</div>
+                        <div class="path">workflow/making-changes-changes-tab.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png"
+                             alt="changes-tab"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">changes-panel-entries</div>
+                        <div class="screenshot-desc">Changes panel with multiple employee movement entries</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: components-panel-changetrackertab--grid-changes-only</div>
+                        <div class="path">changes-panel-entries.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/changes-panel-entries.png"
+                             alt="changes-panel-entries"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="notes-workflow">Notes Workflow <span class="category-count">(1 screenshot)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">notes-changes-tab-field</div>
+                        <div class="screenshot-desc">Changes tab with note field highlighted</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: components-panel-changetrackertab--grid-changes-only</div>
+                        <div class="path">workflow/workflow-changes-add-note.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png"
+                             alt="notes-changes-tab-field"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="filters-workflow">Filters Workflow <span class="category-count">(7 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-active-chips</div>
+                        <div class="screenshot-desc">Grid view with active filter chips and orange dot indicator</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">filters/filters-active-chips.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png"
+                             alt="filters-active-chips"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-panel-expanded</div>
+                        <div class="screenshot-desc">Filter panel expanded showing all filter options</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--all-sections-expanded</div>
+                        <div class="path">filters/filters-panel-expanded.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png"
+                             alt="filters-panel-expanded"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-clear-all-button</div>
+                        <div class="screenshot-desc">Filter drawer with Clear All button highlighted</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--multiple-filters-active</div>
+                        <div class="path">filters/filters-clear-all-button.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png"
+                             alt="filters-clear-all-button"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-overview</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--all-sections-expanded</div>
+                        <div class="path">filters/filters-overview.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/filters-overview.png"
+                             alt="filters-overview"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-multiple-active</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--multiple-filters-active</div>
+                        <div class="path">filters/filters-multiple-active.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/filters-multiple-active.png"
+                             alt="filters-multiple-active"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-flags-section</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--flags-active</div>
+                        <div class="path">filters/flags-section.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/flags-section.png"
+                             alt="filters-flags-section"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">filters-reporting-chain</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--reporting-chain-active</div>
+                        <div class="path">filters/reporting-chain-filter.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/filters/reporting-chain-filter.png"
+                             alt="filters-reporting-chain"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="quickstart-workflow">Quickstart Workflow <span class="category-count">(5 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-file-menu-button</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-appbar-filemenubutton--no-file</div>
+                        <div class="path">quickstart/quickstart-file-menu-button.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png"
+                             alt="quickstart-file-menu-button"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-upload-dialog</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: common-fileuploaddialog--open</div>
+                        <div class="path">quickstart/quickstart-upload-dialog.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png"
+                             alt="quickstart-upload-dialog"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-grid-populated</div>
+                        <div class="screenshot-desc">Populated 9-box grid after successful file upload</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-nineboxgrid--populated</div>
+                        <div class="path">quickstart/quickstart-grid-populated.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png"
+                             alt="quickstart-grid-populated"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-success-annotated</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-manual">Manual</span>
+                        </div>
+
+                        <div class="path">quickstart/quickstart-success-annotated.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png"
+                             alt="quickstart-success-annotated"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-excel-sample</div>
+                        <div class="screenshot-desc">Sample Excel file format showing required columns</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-manual">Manual</span>
+                        </div>
+
+                        <div class="path">quickstart/quickstart-excel-sample.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png"
+                             alt="quickstart-excel-sample"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="calibration-workflow">Calibration Workflow <span class="category-count">(6 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-file-import</div>
+                        <div class="screenshot-desc">File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">workflow/calibration-file-import.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png"
+                             alt="calibration-file-import"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-statistics-red-flags</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-statistics-distributiontable--skewed-distribution</div>
+                        <div class="path">workflow/calibration-statistics-red-flags.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png"
+                             alt="calibration-statistics-red-flags"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-filters-panel</div>
+                        <div class="screenshot-desc">Filters panel with active filter selections applied</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--multiple-filters-active</div>
+                        <div class="path">workflow/calibration-filters-panel.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png"
+                             alt="calibration-filters-panel"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-donut-mode-toggle</div>
+                        <div class="screenshot-desc">View mode toggle button in active donut mode state</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">workflow/calibration-donut-mode-toggle.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png"
+                             alt="calibration-donut-mode-toggle"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-donut-mode-grid</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">workflow/calibration-donut-mode-grid.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png"
+                             alt="calibration-donut-mode-grid"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">calibration-export-results</div>
+                        <div class="screenshot-desc">Exported Excel file with changes applied</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-manual">Manual</span>
+                        </div>
+
+                        <div class="path">workflow/calibration-export-results.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png"
+                             alt="calibration-export-results"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="intelligence-components">Intelligence Components <span class="category-count">(8 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-summary-anomalies</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--needs-attention</div>
+                        <div class="path">workflow/intelligence-summary-anomalies.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-anomalies.png"
+                             alt="intelligence-summary-anomalies"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-anomaly-details</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-anomalysection--red-status</div>
+                        <div class="path">workflow/intelligence-anomaly-details.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-details.png"
+                             alt="intelligence-anomaly-details"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-summary-excellent</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--excellent-quality</div>
+                        <div class="path">workflow/intelligence-summary-excellent.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-excellent.png"
+                             alt="intelligence-summary-excellent"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-summary-needs-attention</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--needs-attention</div>
+                        <div class="path">workflow/intelligence-summary-needs-attention.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-needs-attention.png"
+                             alt="intelligence-summary-needs-attention"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-anomaly-green</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-anomalysection--green-status</div>
+                        <div class="path">workflow/intelligence-anomaly-green.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-green.png"
+                             alt="intelligence-anomaly-green"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-anomaly-red</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-anomalysection--red-status</div>
+                        <div class="path">workflow/intelligence-anomaly-red.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-red.png"
+                             alt="intelligence-anomaly-red"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-deviation-chart</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-deviationchart--mixed-significance</div>
+                        <div class="path">workflow/intelligence-deviation-chart.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-deviation-chart.png"
+                             alt="intelligence-deviation-chart"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-level-distribution</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-leveldistributionchart--normal-distribution</div>
+                        <div class="path">workflow/intelligence-level-distribution.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/workflow/intelligence-level-distribution.png"
+                             alt="intelligence-level-distribution"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="statistics-panel">Statistics Panel <span class="category-count">(4 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">statistics-panel-distribution</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-statistics-distributiontable--balanced-distribution</div>
+                        <div class="path">statistics/statistics-panel-distribution.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png"
+                             alt="statistics-panel-distribution"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">statistics-trend-indicators</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-statistics-coloredpercentagebar--all-positions-comparison</div>
+                        <div class="path">statistics/statistics-trend-indicators.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png"
+                             alt="statistics-trend-indicators"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">statistics-grouping-indicators</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-statistics-groupingindicator--all-groupings-together</div>
+                        <div class="path">statistics/statistics-grouping-indicators.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/statistics/statistics-grouping-indicators.png"
+                             alt="statistics-grouping-indicators"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">statistics-summary-cards</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-statistics-statisticssummary--default</div>
+                        <div class="path">statistics/statistics-summary-cards.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/statistics/statistics-summary-cards.png"
+                             alt="statistics-summary-cards"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="donut-mode">Donut Mode <span class="category-count">(1 screenshot)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">donut-mode-active-layout</div>
+                        <div class="screenshot-desc">Active donut mode layout with concentric circles and ghost tiles</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-nineboxgrid--donut-mode</div>
+                        <div class="path">donut/donut-mode-active-layout.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png"
+                             alt="donut-mode-active-layout"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="grid-and-basic-ui">Grid and Basic UI <span class="category-count">(2 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">grid-normal</div>
+                        <div class="screenshot-desc">Standard 9-box grid with employee tiles</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-nineboxgrid--populated</div>
+                        <div class="path">grid-normal.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/grid-normal.png"
+                             alt="grid-normal"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">employee-tile-normal</div>
+                        <div class="screenshot-desc">Individual employee tile showing name and role</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-employeetile--default</div>
+                        <div class="path">employee-tile-normal.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/employee-tile-normal.png"
+                             alt="employee-tile-normal"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="hero-image">Hero Image <span class="category-count">(1 screenshot)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">hero-grid-sample</div>
+                        <div class="screenshot-desc">Hero image showing full grid with sample data (used for index and documentation)</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">hero-grid-sample.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/hero-grid-sample.png"
+                             alt="hero-grid-sample"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="additional-features">Additional Features <span class="category-count">(3 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">distribution-chart-ideal</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: intelligence-leveldistributionchart--normal-distribution</div>
+                        <div class="path">distribution-chart-ideal.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/distribution-chart-ideal.png"
+                             alt="distribution-chart-ideal"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">timeline-employee-history</div>
+                        <div class="screenshot-desc">Employee movement timeline showing historical positions</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-ratingstimeline--with-history</div>
+                        <div class="path">timeline-employee-history.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/timeline-employee-history.png"
+                             alt="timeline-employee-history"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">file-menu-apply-changes</div>
+                        <div class="screenshot-desc">File menu with Apply Changes option highlighted</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-appbar-filemenubutton--with-changes</div>
+                        <div class="path">file-menu-apply-changes.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png"
+                             alt="file-menu-apply-changes"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="zoom-controls">Zoom Controls <span class="category-count">(1 screenshot)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">zoom-controls</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: common-zoomcontrols--default</div>
+                        <div class="path">zoom-controls.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/zoom-controls.png"
+                             alt="zoom-controls"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="viewcontrols">ViewControls <span class="category-count">(6 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-main-interface</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">view-controls/main-interface.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/main-interface.png"
+                             alt="view-controls-main-interface"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-grid-view</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: common-viewcontrols--grid-view-active</div>
+                        <div class="path">view-controls/view-controls-grid.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png"
+                             alt="view-controls-grid-view"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-donut-view</div>
+                        <div class="screenshot-desc">ViewControls toolbar with Donut view active</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: common-viewcontrols--donut-view-active</div>
+                        <div class="path">view-controls/view-controls-donut.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png"
+                             alt="view-controls-donut-view"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-settings-dialog</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: settings-settingsdialog--open</div>
+                        <div class="path">view-controls/settings-dialog.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png"
+                             alt="view-controls-settings-dialog"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-simplified-appbar</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-appbar-pureappbar--file-loaded</div>
+                        <div class="path">view-controls/simplified-appbar.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png"
+                             alt="view-controls-simplified-appbar"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">view-controls-fullscreen</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="path">view-controls/fullscreen-mode.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/view-controls/fullscreen-mode.png"
+                             alt="view-controls-fullscreen"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="details-panel">Details Panel <span class="category-count">(7 screenshots)</span></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description-cell">Description</th>
+                    <th class="image-cell">Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">employee-details-panel-expanded</div>
+                        <div class="screenshot-desc">Expanded employee details panel with all information</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-employeedetails--default</div>
+                        <div class="path">employee-details-panel-expanded.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png"
+                             alt="employee-details-panel-expanded"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-current-assessment</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-employeedetails--default</div>
+                        <div class="path">details-panel/current-assessment-enhanced.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png"
+                             alt="details-current-assessment"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-flags-ui</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-employeeflags--with-multiple-flags</div>
+                        <div class="path">details-panel/flags-ui.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/flags-ui.png"
+                             alt="details-flags-ui"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-flag-badges</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: grid-employeetile--with-flags</div>
+                        <div class="path">details-panel/flag-badges.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png"
+                             alt="details-flag-badges"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-flag-filtering</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--flags-active</div>
+                        <div class="path">details-panel/flag-filtering.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/flag-filtering.png"
+                             alt="details-flag-filtering"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-reporting-chain-clickable</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: panel-managementchain--with-manager</div>
+                        <div class="path">details-panel/reporting-chain-clickable.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-clickable.png"
+                             alt="details-reporting-chain-clickable"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description-cell">
+                        <div class="screenshot-name">details-reporting-chain-filter-active</div>
+                        <div class="screenshot-desc">No description</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+                        <div class="screenshot-meta">Story: dashboard-filterdrawer--reporting-chain-active</div>
+                        <div class="path">details-panel/reporting-chain-filter-active.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="../../resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-filter-active.png"
+                             alt="details-reporting-chain-filter-active"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 40px; text-align: center; color: #999; font-size: 14px;">
+            Generated: 2025-12-28 | Total: 58 screenshots (48 Storybook, 10 Full-App, 4 Manual)
+        </p>
+    </div>
+</body>
+</html>
