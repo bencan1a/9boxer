@@ -78,21 +78,19 @@ Spawned 4 parallel agents to fix Storybook stories for screenshot generation. **
 
 ---
 
-## 🚧 Blocked (1 screenshot)
+### Import Fix (Agent - Blocker Resolution)
 
-#### **changes-employee-details** - BLOCKER 🚫
-- **Issue**: Story won't render in Storybook (#storybook-root stays hidden)
+#### 7. **changes-employee-details** ✅
+- **Issue**: Story failed to load - Storybook couldn't resolve `@/` path alias imports
+- **Solution**: Changed to relative imports in EmployeeDetails.stories.tsx
+- **Changes**:
+  - `@/store/sessionStore` → `../../store/sessionStore`
+  - `@/types/events` → `../../types/events`
+  - `@/types/employee` → `../../types/employee`
+- **File**: `frontend/src/components/panel/EmployeeDetails.stories.tsx`
 - **Story**: `panel-employeedetails--with-changes`
-- **Root cause**: Decorator pattern with `useSessionStore.setState()` causing rendering failure
-- **Attempts made**:
-  1. ❌ Using `require()` in render function (wrong ES module pattern)
-  2. ❌ Using ES6 imports in render function (still fails)
-  3. ❌ Using decorators to set session store state (current - still fails)
-- **Options**:
-  - **Quick fix**: Simplify story to not use decorators (won't show changes but will render)
-  - **Full solution**: Switch to full-app workflow instead of Storybook
-  - **Debug**: Investigate browser console errors in Storybook
-- **See**: `BLOCKER_changes-employee-details.md` for detailed analysis
+- **Result**: ✓ Story renders, screenshot generates (39.4 KB)
+- **See**: `BLOCKER_changes-employee-details.md` for resolution details
 
 ---
 
@@ -208,10 +206,10 @@ npm run screenshots:generate filters-flags-section filters-reporting-chain chang
 ## Summary Statistics
 
 - **Total screenshots to fix**: 10
-- **Completed**: 6 (60%)
-- **Blocked**: 1 (10%) - changes-employee-details
+- **Completed**: 7 (70%) ✅
+- **Blocked**: 0 (0%)
 - **Pending**: 3 (30%)
-- **Files modified**: 6
-- **New stories created**: 3 (2 working, 1 blocked)
+- **Files modified**: 7
+- **New stories created**: 3 (all working)
 - **Existing stories enhanced**: 4
 - **Workflow functions updated**: 2
