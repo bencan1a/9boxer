@@ -1,7 +1,7 @@
 # Documentation Summary
 
-**Last Updated**: 2025-12-29T18:40:56.995113+00:00
-**Source SHA**: 9c18fc2f8dea7d6df710ad85eac9639caa292832
+**Last Updated**: 2025-12-29T23:10:51.310739+00:00
+**Source SHA**: 93fc2a30b616981a8b945c7ef960cd151888860a
 
 This file provides a quick index of all documentation components in this project.
 
@@ -13,10 +13,10 @@ This file provides a quick index of all documentation components in this project
 - **CHANGELOG.md** - Documentation build history
 
 ### Generated Documentation (`_generated/`)
-- `_generated\api\src\python_template\calculator.html`
-- `_generated\api\src\python_template\greeter.html`
-- `_generated\api\src\python_template\index.html`
-- `_generated\plans_index.md`
+- `_generated/api/src/python_template/calculator.html`
+- `_generated/api/src/python_template/greeter.html`
+- `_generated/api/src/python_template/index.html`
+- `_generated/plans_index.md`
 
 ## How to Use This Documentation
 
