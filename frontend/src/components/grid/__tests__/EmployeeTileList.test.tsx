@@ -120,8 +120,10 @@ describe("EmployeeTileList", () => {
       />
     );
 
-    // Check for donut indicator
-    expect(screen.getByTestId("donut-indicator")).toBeInTheDocument();
+    // Donut mode uses purple border styling (no indicator badge)
+    const card = screen.getByTestId("employee-card-1");
+    expect(card).toBeInTheDocument();
+    expect(card).toHaveAttribute("data-donut-position", "9");
   });
 
   it("handles single employee correctly", () => {

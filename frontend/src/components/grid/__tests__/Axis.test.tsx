@@ -53,7 +53,7 @@ describe("Axis", () => {
       const axis = screen.getByTestId("grid-axis-vertical");
       const styles = window.getComputedStyle(axis);
 
-      expect(styles.width).toBe("80px");
+      expect(styles.width).toBe("64px");
       expect(styles.writingMode).toBe("vertical-rl");
       expect(styles.transform).toBe("rotate(180deg)");
     });

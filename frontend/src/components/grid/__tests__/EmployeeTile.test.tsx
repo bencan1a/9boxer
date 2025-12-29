@@ -29,8 +29,10 @@ describe("EmployeeTile", () => {
     );
 
     expect(screen.getByText("John Doe")).toBeInTheDocument();
-    // Title and job level are now inline with pipe separator
-    expect(screen.getByText(/Software Engineer \| MT4/)).toBeInTheDocument();
+    // Title and job level are displayed with truncation (17 chars > 16 char limit)
+    // "Software Engineer" becomes "Software Enginee…"
+    expect(screen.getByText(/Software Enginee/i)).toBeInTheDocument();
+    expect(screen.getByText(/MT4/)).toBeInTheDocument();
   });
 
   it("shows modified styling when employee was modified in session", () => {

@@ -23,6 +23,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={0}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -38,6 +39,7 @@ describe("FileMenuButton", () => {
         <FileMenuButton
           changeCount={0}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -53,6 +55,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={5}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -69,6 +72,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={0}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -138,7 +142,7 @@ describe("FileMenuButton", () => {
     expect(onExportClick).toHaveBeenCalledOnce();
   });
 
-  it("disables export when no changes", async () => {
+  it("hides export when no changes", async () => {
     const user = userEvent.setup();
 
     render(
@@ -147,6 +151,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={0}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -159,8 +164,9 @@ describe("FileMenuButton", () => {
       expect(screen.getByTestId("file-menu")).toBeInTheDocument();
     });
 
-    const exportItem = screen.getByTestId("export-changes-menu-item");
-    expect(exportItem).toHaveAttribute("aria-disabled", "true");
+    // Export menu item should not exist when there are no changes
+    const exportItem = screen.queryByTestId("export-changes-menu-item");
+    expect(exportItem).not.toBeInTheDocument();
   });
 
   it("disables export when isExporting is true", async () => {
@@ -173,6 +179,7 @@ describe("FileMenuButton", () => {
           changeCount={3}
           isExporting={true}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -197,6 +204,7 @@ describe("FileMenuButton", () => {
           changeCount={0}
           disabled={true}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
