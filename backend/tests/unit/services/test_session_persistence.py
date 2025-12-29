@@ -27,6 +27,7 @@ def temp_db() -> Path:
     try:
         # Close any open connections
         import gc
+
         gc.collect()  # Force cleanup of any lingering connection objects
 
         # Delete the database file

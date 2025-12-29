@@ -6,8 +6,8 @@ from fastapi import HTTPException
 from ninebox.utils.query_parsing import parse_id_list
 
 
-
 pytestmark = pytest.mark.unit
+
 
 def test_parse_id_list_when_valid_ids_then_returns_list():
     """Test parsing valid comma-separated IDs."""

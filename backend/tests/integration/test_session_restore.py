@@ -12,6 +12,7 @@ from ninebox.services.session_manager import SessionManager
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
+
 class TestSessionRestore:
     """Test session restoration after backend restart."""
 
@@ -99,7 +100,9 @@ class TestSessionRestore:
 
         # Debug: Check what the event employee_id is
         event = restored_session.events[0]
-        assert event.employee_id == employee_id, f"Event employee_id {event.employee_id} != {employee_id}"
+        assert event.employee_id == employee_id, (
+            f"Event employee_id {event.employee_id} != {employee_id}"
+        )
 
         # Verify employee position was persisted
         restored_employee = next(

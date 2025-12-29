@@ -1,6 +1,5 @@
 """End-to-end integration tests for complete session persistence workflows."""
 
-import io
 import time
 from pathlib import Path
 
@@ -14,8 +13,8 @@ from ninebox.services.database import DatabaseManager
 from ninebox.services.session_manager import SessionManager
 
 
-
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
+
 
 class TestEndToEndPersistence:
     """Test complete workflows from upload to export with persistence."""
@@ -112,7 +111,8 @@ class TestEndToEndPersistence:
         # Verify notes persisted
         for employee_id, expected_notes in notes_data:
             event = next(
-                e for e in restored_session.events
+                e
+                for e in restored_session.events
                 if e.employee_id == employee_id and e.event_type == "grid_move"
             )
             assert event.notes == expected_notes
@@ -123,12 +123,14 @@ class TestEndToEndPersistence:
         # Since we're using test_client which has its own app instance,
         # the export should work with the persisted data
 
-        response = test_client.post("/api/session/export")
+        response = test_client.post("/api/session/export", json={"mode": "update_original"})
         assert response.status_code == 200
+        export_data = response.json()
+        assert export_data["success"] is True
 
         # Load exported Excel
-        exported_file = io.BytesIO(response.content)
-        workbook = openpyxl.load_workbook(exported_file)
+        exported_file_path = export_data["file_path"]
+        workbook = openpyxl.load_workbook(exported_file_path)
 
         # Verify data sheet exists
         assert len(workbook.worksheets) >= 2
@@ -394,7 +396,9 @@ class TestPerformanceBenchmarks:
         assert len(restored_session.original_employees) == 100
 
         # Performance target: < 100ms
-        assert restore_time_ms < 100, f"Session restore took {restore_time_ms:.2f}ms (target: <100ms)"
+        assert restore_time_ms < 100, (
+            f"Session restore took {restore_time_ms:.2f}ms (target: <100ms)"
+        )
 
     def test_performance_session_persist_after_move(
         self, test_client: TestClient, sample_excel_file: Path
@@ -510,6 +514,6 @@ class TestPerformanceBenchmarks:
         assert len(deserialized.current_employees) == 1000
 
         # Performance target: < 500ms for 1000 employees
-        assert (
-            total_time_ms < 500
-        ), f"Large dataset serialize/deserialize took {total_time_ms:.2f}ms (target: <500ms)"
+        assert total_time_ms < 500, (
+            f"Large dataset serialize/deserialize took {total_time_ms:.2f}ms (target: <500ms)"
+        )

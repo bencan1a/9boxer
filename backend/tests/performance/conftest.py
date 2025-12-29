@@ -72,7 +72,9 @@ def create_test_employee(
         ratings_history=[
             HistoricalRating(year=2023, rating="Solid"),
             HistoricalRating(year=2024, rating="Strong"),
-        ] if employee_id % 2 == 0 else [],
+        ]
+        if employee_id % 2 == 0
+        else [],
         development_focus="Leadership" if employee_id % 3 == 0 else None,
         development_action="Coaching" if employee_id % 3 == 0 else None,
         notes=f"Notes for employee {employee_id}" if employee_id % 4 == 0 else None,
@@ -193,7 +195,13 @@ def test_client_with_session(
     """Create a test client with an active session (small dataset)."""
     # Upload file to create session
     with small_excel_file.open("rb") as f:
-        files = {"file": (small_excel_file.name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+        files = {
+            "file": (
+                small_excel_file.name,
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         response = test_client.post("/api/session/upload", files=files)
         assert response.status_code == 200
 
@@ -208,7 +216,13 @@ def test_client_with_large_session(
     """Create a test client with an active session (large dataset)."""
     # Upload file to create session
     with large_excel_file.open("rb") as f:
-        files = {"file": (large_excel_file.name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+        files = {
+            "file": (
+                large_excel_file.name,
+                f,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        }
         response = test_client.post("/api/session/upload", files=files)
         assert response.status_code == 200
 

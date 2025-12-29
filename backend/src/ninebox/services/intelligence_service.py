@@ -336,7 +336,6 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Perform chi-square test
     try:
         chi2, p_value, dof, expected = _chi_square_test(contingency)
-        z_scores = _calculate_z_scores(contingency, expected)
     except ValueError as e:
         # Chi-square test failed (likely due to zero expected frequencies)
         return _empty_analysis(f"Statistical test failed: {e!s}")
@@ -344,10 +343,13 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Calculate effect size
     effect_size = _cramers_v(chi2, n, len(function_names), len(positions_with_data))
 
-    # Calculate deviations (focus on high performers: positions 7-9)
-    # Find which column indices correspond to positions 7, 8, 9
+    # Calculate deviations (focus on high performers: positions 3, 6, 9)
+    # Grid positions 3, 6, 9 all have High Performance (regardless of potential)
+    # Position 3: High Perf + Low Potential
+    # Position 6: High Perf + Medium Potential
+    # Position 9: High Perf + High Potential
     high_performer_indices = [
-        idx for idx, pos in enumerate(positions_with_data) if pos in [7, 8, 9]
+        idx for idx, pos in enumerate(positions_with_data) if pos in [3, 6, 9]
     ]
 
     deviations = []
@@ -358,13 +360,20 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         if high_performer_indices:
             observed_high = sum(contingency[i][idx] for idx in high_performer_indices)
             expected_high = sum(expected[i][idx] for idx in high_performer_indices)
-            z_scores_high = [z_scores[i][idx] for idx in high_performer_indices]
-            z_score_high = np.mean(z_scores_high) if z_scores_high else 0.0
+            # Calculate z-score correctly for combined high performer category
+            # Using formula: (observed - expected) / sqrt(expected)
+            if expected_high > 0:
+                z_score_high = (observed_high - expected_high) / np.sqrt(expected_high)
+            else:
+                z_score_high = 0.0
         else:
             # No high performer positions in data, use all positions
             observed_high = total_in_func
             expected_high = sum(expected[i])
-            z_score_high = np.mean(z_scores[i])
+            if expected_high > 0:
+                z_score_high = (observed_high - expected_high) / np.sqrt(expected_high)
+            else:
+                z_score_high = 0.0
 
         observed_high_pct = (observed_high / total_in_func * 100) if total_in_func > 0 else 0
         expected_high_pct = (expected_high / total_in_func * 100) if total_in_func > 0 else 0

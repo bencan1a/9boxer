@@ -25,6 +25,7 @@ import { useTheme } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
+import { useUiStore } from "../../store/uiStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { logger } from "../../utils/logger";
 
@@ -136,6 +137,14 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
     try {
       // Pass the file path to uploadFile so it can be persisted
       await uploadFile(selectedFile, selectedFilePath || undefined);
+
+      // Add to recent files using the original user path
+      if (selectedFilePath) {
+        const fileName =
+          selectedFilePath.split(/[\\/]/).pop() || selectedFile.name;
+        await useUiStore.getState().addRecentFile(selectedFilePath, fileName);
+      }
+
       setSuccess(true);
       showSuccess(
         t("common.fileUpload.importSuccess", { filename: selectedFile.name })

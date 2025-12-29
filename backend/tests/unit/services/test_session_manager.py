@@ -10,8 +10,8 @@ from ninebox.models.grid_positions import calculate_grid_position, get_position_
 from ninebox.services.session_manager import SessionManager
 
 
-
 pytestmark = pytest.mark.unit
+
 
 @pytest.fixture
 def session_manager() -> SessionManager:
@@ -466,13 +466,22 @@ def test_move_employee_when_moved_multiple_times_then_preserves_original_positio
     # Employee 2 starts at M,M (position 5)
     # Move through several positions: M,M -> H,H -> L,L -> H,M
     session_manager.move_employee(
-        user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.HIGH
+        user_id="user1",
+        employee_id=2,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.HIGH,
     )
     session_manager.move_employee(
-        user_id="user1", employee_id=2, new_performance=PerformanceLevel.LOW, new_potential=PotentialLevel.LOW
+        user_id="user1",
+        employee_id=2,
+        new_performance=PerformanceLevel.LOW,
+        new_potential=PotentialLevel.LOW,
     )
     final_event = session_manager.move_employee(
-        user_id="user1", employee_id=2, new_performance=PerformanceLevel.HIGH, new_potential=PotentialLevel.MEDIUM
+        user_id="user1",
+        employee_id=2,
+        new_performance=PerformanceLevel.HIGH,
+        new_potential=PotentialLevel.MEDIUM,
     )
 
     # Verify only one event exists showing the NET change from original position (M,M -> H,M)

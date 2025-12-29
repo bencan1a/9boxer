@@ -25,6 +25,7 @@ from functools import lru_cache
 
 from ninebox.services.database import DatabaseManager
 from ninebox.services.employee_service import EmployeeService
+from ninebox.services.preferences_manager import PreferencesManager
 from ninebox.services.session_manager import SessionManager
 from ninebox.services.statistics_service import StatisticsService
 
@@ -99,3 +100,21 @@ def get_statistics_service() -> StatisticsService:
         ...     stats = service.calculate_distribution(employees)
     """
     return StatisticsService()
+
+
+@lru_cache
+def get_preferences_manager() -> PreferencesManager:
+    """Get or create PreferencesManager singleton.
+
+    Uses @lru_cache to ensure only one instance is created per application lifecycle.
+    Can be overridden in tests using app.dependency_overrides.
+
+    Returns:
+        PreferencesManager: Singleton preferences manager instance
+
+    Example:
+        >>> from fastapi import Depends
+        >>> def my_endpoint(mgr: PreferencesManager = Depends(get_preferences_manager)):
+        ...     recent = mgr.get_recent_files()
+    """
+    return PreferencesManager()

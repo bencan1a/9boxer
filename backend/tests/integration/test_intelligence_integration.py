@@ -81,8 +81,12 @@ class TestIntelligenceNoDeviations:
         result = calculate_location_analysis(employees)
 
         # Verify results
-        assert result["status"] == "green", f"Expected green status for uniform distribution, got {result['status']}"
-        assert result["p_value"] > 0.99, f"Expected very high p-value for uniform distribution, got {result['p_value']}"
+        assert result["status"] == "green", (
+            f"Expected green status for uniform distribution, got {result['status']}"
+        )
+        assert result["p_value"] > 0.99, (
+            f"Expected very high p-value for uniform distribution, got {result['p_value']}"
+        )
         assert "evenly distributed" in result["interpretation"].lower(), (
             f"Expected 'evenly distributed' in interpretation, got: {result['interpretation']}"
         )
@@ -178,36 +182,54 @@ class TestIntelligenceLargeDeviations:
 
         # 0-18 Months: Normal distribution - 20% High, 50% Medium, 30% Low (30 total)
         for _ in range(6):  # 6/30 = 20% High
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "0-18 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "0-18 Months")
+            )
             emp_id += 1
         for _ in range(15):  # 15/30 = 50% Medium
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "0-18 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "0-18 Months")
+            )
             emp_id += 1
         for _ in range(9):  # 9/30 = 30% Low
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.LOW, "0-18 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.LOW, "0-18 Months")
+            )
             emp_id += 1
 
         # 19-24 Months: ANOMALY - 50% High, 30% Medium, 20% Low (30 total)
         # This is significantly higher than expected (~20% baseline)
         for _ in range(15):  # 15/30 = 50% High ← ANOMALY
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "19-24 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "19-24 Months")
+            )
             emp_id += 1
         for _ in range(9):  # 9/30 = 30% Medium
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "19-24 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "19-24 Months")
+            )
             emp_id += 1
         for _ in range(6):  # 6/30 = 20% Low
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.LOW, "19-24 Months"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.LOW, "19-24 Months")
+            )
             emp_id += 1
 
         # 2+ Years: Normal distribution - 20% High, 50% Medium, 30% Low (30 total)
         for _ in range(6):  # 6/30 = 20% High
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "2+ Years"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.HIGH, "2+ Years")
+            )
             emp_id += 1
         for _ in range(15):  # 15/30 = 50% Medium
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "2+ Years"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.MEDIUM, "2+ Years")
+            )
             emp_id += 1
         for _ in range(9):  # 9/30 = 30% Low
-            employees.append(_create_employee(emp_id, "Location A", PerformanceLevel.LOW, "2+ Years"))
+            employees.append(
+                _create_employee(emp_id, "Location A", PerformanceLevel.LOW, "2+ Years")
+            )
             emp_id += 1
 
         # Run analysis
@@ -219,10 +241,12 @@ class TestIntelligenceLargeDeviations:
         print(f"  Effect size: {result['effect_size']}")
         print(f"  Interpretation: {result['interpretation']}")
         print(f"\nDeviations:")
-        for dev in result['deviations']:
-            sig = "[SIGNIFICANT]" if dev['is_significant'] else ""
-            print(f"  {dev['category']}: {dev['observed_high_pct']:.1f}% vs {dev['expected_high_pct']:.1f}% "
-                  f"(z={dev['z_score']:.2f}) {sig}")
+        for dev in result["deviations"]:
+            sig = "[SIGNIFICANT]" if dev["is_significant"] else ""
+            print(
+                f"  {dev['category']}: {dev['observed_high_pct']:.1f}% vs {dev['expected_high_pct']:.1f}% "
+                f"(z={dev['z_score']:.2f}) {sig}"
+            )
 
         # CRITICAL ASSERTIONS
         # 1. Should have at least one significant deviation
@@ -317,10 +341,12 @@ class TestIntelligenceMediumDeviations:
         print(f"  Effect size: {result['effect_size']}")
         print(f"  Interpretation: {result['interpretation']}")
         print(f"\nDeviations:")
-        for dev in result['deviations']:
-            sig = "[SIGNIFICANT]" if dev['is_significant'] else ""
-            print(f"  {dev['category']}: {dev['observed_high_pct']:.1f}% vs {dev['expected_high_pct']:.1f}% "
-                  f"(z={dev['z_score']:.2f}) {sig}")
+        for dev in result["deviations"]:
+            sig = "[SIGNIFICANT]" if dev["is_significant"] else ""
+            print(
+                f"  {dev['category']}: {dev['observed_high_pct']:.1f}% vs {dev['expected_high_pct']:.1f}% "
+                f"(z={dev['z_score']:.2f}) {sig}"
+            )
 
         # Overall chi-square test should detect the pattern
         assert result["p_value"] < 0.05, (

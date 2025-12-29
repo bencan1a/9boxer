@@ -376,7 +376,9 @@ def test_frozen_swagger_ui_accessible(frozen_backend: tuple[subprocess.Popen, st
 
 
 def test_frozen_excel_import(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test Excel import with frozen executable."""
     proc, base_url = frozen_backend
@@ -408,7 +410,9 @@ def test_frozen_excel_import(
 
 
 def test_frozen_excel_import_get_employees(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test retrieving employees after Excel import."""
     proc, base_url = frozen_backend
@@ -448,7 +452,9 @@ def test_frozen_excel_import_get_employees(
 
 
 def test_frozen_employee_move(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test moving an employee in the 9-box grid."""
     proc, base_url = frozen_backend
@@ -483,7 +489,9 @@ def test_frozen_employee_move(
 
 
 def test_frozen_employee_statistics(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test statistics calculation with scipy in frozen executable."""
     proc, base_url = frozen_backend
@@ -519,7 +527,9 @@ def test_frozen_employee_statistics(
 
 
 def test_frozen_excel_export(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test Excel export with frozen executable."""
     proc, base_url = frozen_backend
@@ -568,7 +578,9 @@ def test_frozen_excel_export(
 
 
 def test_frozen_excel_export_contains_changes(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test that exported Excel file contains modifications."""
     proc, base_url = frozen_backend
@@ -779,7 +791,9 @@ def test_frozen_error_handling_session_not_active(
 
 
 def test_frozen_error_handling_invalid_employee_id(
-    frozen_backend: tuple[subprocess.Popen, str], auth_headers: dict[str, str], sample_excel_file: Path
+    frozen_backend: tuple[subprocess.Popen, str],
+    auth_headers: dict[str, str],
+    sample_excel_file: Path,
 ) -> None:
     """Test error handling for invalid employee ID."""
     proc, base_url = frozen_backend

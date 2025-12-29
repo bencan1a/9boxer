@@ -5,10 +5,14 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { apiClient, RecentFile } from "../services/api";
 
 // Theme type definitions
 export type Theme = "light" | "dark";
 export type ThemeMode = "light" | "dark" | "auto";
+
+// Re-export for convenience
+export type { RecentFile };
 
 interface UiState {
   // Right panel state
@@ -21,6 +25,9 @@ interface UiState {
   effectiveTheme: Theme; // Computed actual theme to apply
   systemTheme: Theme; // OS theme (from Electron API)
 
+  // Recent files state
+  recentFiles: RecentFile[];
+
   // Actions
   toggleRightPanel: () => void;
   setRightPanelCollapsed: (
@@ -30,6 +37,9 @@ interface UiState {
   setRightPanelSize: (size: number) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setSystemTheme: (theme: Theme) => void;
+  loadRecentFiles: () => Promise<void>;
+  addRecentFile: (path: string, name: string) => Promise<void>;
+  clearRecentFiles: () => Promise<void>;
 }
 
 /**
@@ -44,7 +54,7 @@ const computeEffectiveTheme = (mode: ThemeMode, systemTheme: Theme): Theme => {
 
 export const useUiStore = create<UiState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       // Initial state - panel open by default
       isRightPanelCollapsed: false,
       rightPanelSize: 35, // Default 35%
@@ -54,6 +64,9 @@ export const useUiStore = create<UiState>()(
       themeMode: "auto", // Default to follow system
       systemTheme: "dark", // Fallback if OS detection fails
       effectiveTheme: "dark", // Will be computed on first render
+
+      // Initial recent files state
+      recentFiles: [],
 
       // Actions
       toggleRightPanel: () => {
@@ -87,6 +100,45 @@ export const useUiStore = create<UiState>()(
           effectiveTheme: computeEffectiveTheme(state.themeMode, theme),
         }));
       },
+
+      // Recent files actions
+      loadRecentFiles: async () => {
+        try {
+          const files = await apiClient.getRecentFiles();
+          set({ recentFiles: files });
+        } catch (error) {
+          console.error("Failed to load recent files:", error);
+          set({ recentFiles: [] });
+        }
+      },
+
+      addRecentFile: async (path: string, name: string) => {
+        try {
+          // Check if this file already exists (prevent duplicates)
+          const existingFiles = get().recentFiles;
+          const alreadyExists = existingFiles.some((f) => f.path === path);
+
+          if (alreadyExists) {
+            return;
+          }
+
+          await apiClient.addRecentFile(path, name);
+          // Reload recent files to get updated list
+          await get().loadRecentFiles();
+        } catch (error) {
+          console.error("Failed to add recent file:", error);
+        }
+      },
+
+      clearRecentFiles: async () => {
+        try {
+          await apiClient.clearRecentFiles();
+          // Clear local state
+          set({ recentFiles: [] });
+        } catch (error) {
+          console.error("Failed to clear recent files:", error);
+        }
+      },
     }),
     {
       name: "9boxer-ui-state", // localStorage key
@@ -96,6 +148,7 @@ export const useUiStore = create<UiState>()(
         rightPanelSize: state.rightPanelSize,
         wasAutoCollapsed: state.wasAutoCollapsed,
         themeMode: state.themeMode,
+        recentFiles: state.recentFiles,
         // Do NOT persist effectiveTheme or systemTheme - these are runtime values
       }),
     }

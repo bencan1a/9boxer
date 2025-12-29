@@ -340,7 +340,9 @@ def generate_long_strings() -> None:
     data_sheet.cell(2, 16, "2 years")
     data_sheet.cell(2, 17, "High")
     data_sheet.cell(2, 18, "High")
-    data_sheet.cell(2, 24, "Very long development focus that spans multiple lines and contains " * 10)
+    data_sheet.cell(
+        2, 24, "Very long development focus that spans multiple lines and contains " * 10
+    )
     data_sheet.cell(2, 26, long_notes)
 
     workbook.save(output_path)
@@ -399,10 +401,22 @@ def generate_leading_trailing_spaces() -> None:
 
     # Test data with whitespace issues
     test_data = [
-        (1, "  Alice Smith  ", "  Senior Engineer  ", "Software Engineer", "Software EngineeringUSA"),
+        (
+            1,
+            "  Alice Smith  ",
+            "  Senior Engineer  ",
+            "Software Engineer",
+            "Software EngineeringUSA",
+        ),
         (2, "Bob Jones\t", "\tEngineer", "  Software Engineer  ", "Software EngineeringCAN"),
         (3, "\n\nCarol White\n", "Lead Engineer\n", "Staff Engineer", "Software EngineeringGBR"),
-        (4, "  David Brown", "Principal Engineer  ", "  Principal Eng  ", "Software EngineeringDEU"),
+        (
+            4,
+            "  David Brown",
+            "Principal Engineer  ",
+            "  Principal Eng  ",
+            "Software EngineeringDEU",
+        ),
     ]
 
     for row_idx, (emp_id, name, title, job_title, profile) in enumerate(test_data, start=2):

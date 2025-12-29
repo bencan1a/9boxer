@@ -11,7 +11,6 @@ from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.excel_exporter import ExcelExporter
 
 
-
 pytestmark = pytest.mark.unit
 
 

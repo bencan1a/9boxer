@@ -1,6 +1,5 @@
 """Integration tests for session management and lifecycle."""
 
-import io
 from pathlib import Path
 
 import openpyxl
@@ -28,18 +27,18 @@ class TestSessionLifecycle:
             }
             response = test_client.post("/api/session/upload", files=files)
         assert response.status_code == 200
-        assert response.json()["employee_count"] == 5
+        assert response.json()["employee_count"] == 50
 
         # Get status - data should persist
         response = test_client.get("/api/session/status")
         assert response.status_code == 200
         assert response.json()["active"] is True
-        assert response.json()["employee_count"] == 5
+        assert response.json()["employee_count"] == 50
 
         # Get employees - data still there
         response = test_client.get("/api/employees")
         assert response.status_code == 200
-        assert len(response.json()["employees"]) == 5
+        assert len(response.json()["employees"]) == 50
 
     def test_session_when_cleared_then_removes_all_data(
         self, test_client: TestClient, sample_excel_file: Path
@@ -59,7 +58,7 @@ class TestSessionLifecycle:
         # Verify data exists
         response = test_client.get("/api/session/status")
         assert response.json()["active"] is True
-        assert response.json()["employee_count"] == 5
+        assert response.json()["employee_count"] == 50
 
         # Clear session
         response = test_client.delete("/api/session/clear")
@@ -140,7 +139,8 @@ class TestChangeTracking:
         new_pot = "Low" if original_pot != "Low" else "High"
 
         response = test_client.patch(
-            f"/api/employees/{employee_id}/move", json={"performance": new_perf, "potential": new_pot}
+            f"/api/employees/{employee_id}/move",
+            json={"performance": new_perf, "potential": new_pot},
         )
         assert response.status_code == 200
 
@@ -213,18 +213,18 @@ class TestExportIntegration:
         original_count = upload_response.json()["employee_count"]
 
         # Export
-        response = test_client.post("/api/session/export")
+        response = test_client.post("/api/session/export", json={"mode": "update_original"})
         assert response.status_code == 200
-        assert (
-            response.headers["content-type"]
-            == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        data = response.json()
+        assert data["success"] is True
+        assert "file_path" in data
+        assert "message" in data
 
         # Verify exported file can be opened
-        exported_file = io.BytesIO(response.content)
-        workbook = openpyxl.load_workbook(exported_file)
+        exported_file_path = data["file_path"]
+        workbook = openpyxl.load_workbook(exported_file_path)
         assert len(workbook.worksheets) >= 2
-        assert original_count == 5
+        assert original_count == 50
         workbook.close()  # Prevent openpyxl state pollution
 
     def test_export_when_changes_made_then_highlights_modifications(
@@ -251,20 +251,20 @@ class TestExportIntegration:
         # Move to a DIFFERENT performance level
         new_perf = "Low" if original_perf != "Low" else "High"
         test_client.patch(
-            f"/api/employees/{employee_id}/move", json={"performance": new_perf, "potential": "High"}
+            f"/api/employees/{employee_id}/move",
+            json={"performance": new_perf, "potential": "High"},
         )
 
         # Export
-        response = test_client.post("/api/session/export")
+        response = test_client.post("/api/session/export", json={"mode": "update_original"})
         assert response.status_code == 200
-        assert (
-            response.headers["content-type"]
-            == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        data = response.json()
+        assert data["success"] is True
+        assert "file_path" in data
 
         # Verify exported file has modified flag
-        exported_file = io.BytesIO(response.content)
-        workbook = openpyxl.load_workbook(exported_file)
+        exported_file_path = data["file_path"]
+        workbook = openpyxl.load_workbook(exported_file_path)
         # Get employee data sheet (should be second sheet)
         sheet = workbook.worksheets[1]
 
@@ -312,12 +312,14 @@ class TestExportIntegration:
             )
 
         # Export
-        response = test_client.post("/api/session/export")
+        response = test_client.post("/api/session/export", json={"mode": "update_original"})
         assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
 
         # Verify all 3 modifications are tracked
-        exported_file = io.BytesIO(response.content)
-        workbook = openpyxl.load_workbook(exported_file)
+        exported_file_path = data["file_path"]
+        workbook = openpyxl.load_workbook(exported_file_path)
         sheet = workbook.worksheets[1]
 
         # Count modified employees

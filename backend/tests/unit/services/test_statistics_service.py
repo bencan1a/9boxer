@@ -7,8 +7,8 @@ from ninebox.models.grid_positions import get_position_label_by_number
 from ninebox.services.statistics_service import StatisticsService
 
 
-
 pytestmark = pytest.mark.unit
+
 
 @pytest.fixture
 def statistics_service() -> StatisticsService:
@@ -185,7 +185,6 @@ def test_calculate_distribution_when_single_employee_then_returns_100_percent(
 
     assert dist[employee_position]["count"] == 1
     assert dist[employee_position]["percentage"] == 100.0
-
 
 
 def test_calculate_distribution_when_called_then_includes_total_count(

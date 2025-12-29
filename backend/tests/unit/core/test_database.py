@@ -10,7 +10,6 @@ import pytest
 from ninebox.core.database import get_db_path
 
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -71,9 +70,7 @@ class TestGetDbPath:
         assert result == custom_data_dir / "ninebox.db"
         assert result.parent == custom_data_dir
 
-    def test_get_db_path_when_app_data_dir_set_then_respects_location(
-        self, tmp_path: Path
-    ) -> None:
+    def test_get_db_path_when_app_data_dir_set_then_respects_location(self, tmp_path: Path) -> None:
         """Test database path respects APP_DATA_DIR environment variable."""
         # Arrange
         custom_dir = tmp_path / "custom_app_data"
@@ -96,9 +93,7 @@ class TestGetDbPath:
         assert result1 == result2
         assert str(result1) == str(result2)
 
-    def test_get_db_path_when_frozen_mode_then_uses_writable_location(
-        self, tmp_path: Path
-    ) -> None:
+    def test_get_db_path_when_frozen_mode_then_uses_writable_location(self, tmp_path: Path) -> None:
         """Test that database path is in writable location even in frozen mode."""
         # Arrange
         custom_data_dir = tmp_path / "frozen_app_data"
