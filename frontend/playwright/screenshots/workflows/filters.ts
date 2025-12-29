@@ -12,7 +12,7 @@
  */
 
 import { Page, expect } from "@playwright/test";
-import { uploadExcelFile } from "../../helpers/upload";
+import { loadSampleData } from "../../helpers/fixtures";
 import {
   closeAllDialogsAndOverlays,
   openFilterDrawer,
@@ -64,7 +64,7 @@ export async function generateActiveChips(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -142,7 +142,7 @@ export async function generatePanelExpanded(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -187,7 +187,7 @@ export async function generateBeforeAfter(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -219,7 +219,7 @@ export async function generateClearAllButton(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 

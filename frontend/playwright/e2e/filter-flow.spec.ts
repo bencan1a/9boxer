@@ -6,13 +6,13 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, t } from "../helpers";
+import { loadSampleData, t } from "../helpers";
 
 test.describe("Filter Application Flow", () => {
   test.beforeEach(async ({ page }) => {
-    // Visit and upload sample data
+    // Visit and load sample data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

@@ -54,7 +54,10 @@ Use Donut Mode during:
 >
 > Marcus's Core Talent box has 45 employees - 65% of his workforce. During the Donut Exercise, he discovers 8 are actually High Potential and 5 are really just Solid Performers. This insight helps him recalibrate ratings and identify development opportunities before the quarterly talent review.
 
-1. **Upload your employee data** as normal
+!!! tip "Practice Donut Mode with Sample Data"
+    Want to try this safely first? Load sample data (200 employees) and activate Donut Mode. You'll see a realistic center box population to practice with - experiment without affecting real performance data!
+
+1. **Upload your employee data** as normal (or load sample data)
 2. **Click the "Donut Mode" button** in the top application bar
     - Located next to the Filters button
     - Has a donut icon

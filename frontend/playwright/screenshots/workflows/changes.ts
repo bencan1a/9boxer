@@ -13,7 +13,7 @@
  */
 
 import { Page } from "@playwright/test";
-import { uploadExcelFile } from "../../helpers/upload";
+import { loadSampleData } from "../../helpers/fixtures";
 import {
   closeAllDialogsAndOverlays,
   clickTabAndWait,
@@ -48,7 +48,7 @@ export async function generateDragSequence(
   outputPath: string
 ): Promise<void> {
   // Load sample data
-  await uploadExcelFile(page, "sample-employees.xlsx");
+  await loadSampleData(page);
   await waitForUiSettle(page, 1.0);
 
   // Close any dialogs
@@ -81,7 +81,7 @@ export async function generateOrangeBorder(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -134,7 +134,7 @@ export async function generateEmployeeDetails(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -173,7 +173,7 @@ export async function generateTimelineView(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -216,7 +216,7 @@ export async function generateChangesTab(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -261,7 +261,7 @@ export async function generatePanelEntries(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 

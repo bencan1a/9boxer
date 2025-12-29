@@ -11,7 +11,7 @@
  */
 
 import { Page } from "@playwright/test";
-import { uploadExcelFile } from "../../helpers/upload";
+import { loadSampleData } from "../../helpers/fixtures";
 import {
   closeAllDialogsAndOverlays,
   clickTabAndWait,
@@ -38,7 +38,7 @@ export async function generateChangesTabField(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -82,7 +82,7 @@ export async function generateGoodExample(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 
@@ -179,7 +179,7 @@ export async function generateDonutMode(
   // Ensure data is loaded
   const employeeCards = page.locator('[data-testid^="employee-card-"]');
   if ((await employeeCards.count()) === 0) {
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await waitForUiSettle(page, 1.0);
   }
 

@@ -4,13 +4,13 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition } from "../helpers";
 
 test.describe("Grid Box Expansion Flow", () => {
   test.beforeEach(async ({ page }) => {
-    // Visit and upload sample data
+    // Visit and load sample data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

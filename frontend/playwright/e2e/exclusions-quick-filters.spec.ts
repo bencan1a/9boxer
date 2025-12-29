@@ -4,15 +4,15 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, t } from "../helpers";
+import { loadSampleData, t } from "../helpers";
 
 test.describe("Employee Exclusions with Quick Filters Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to home page
     await page.goto("/");
 
-    // Upload sample employee data
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample employee data
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

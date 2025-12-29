@@ -4,13 +4,13 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile } from "../helpers";
+import { loadSampleData } from "../helpers";
 
 test.describe("Right Panel Interactions", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to app and upload sample data
+    // Navigate to app and load sample data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

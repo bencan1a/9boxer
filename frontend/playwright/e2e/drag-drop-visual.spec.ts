@@ -4,15 +4,15 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition } from "../helpers";
 
 test.describe("Drag-and-Drop Visual Feedback Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
     await page.goto("/");
 
-    // Upload sample data
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample data
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

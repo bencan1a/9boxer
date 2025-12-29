@@ -11,15 +11,15 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, t } from "../helpers";
+import { loadSampleData, t } from "../helpers";
 
 test.describe("Filter Application End-to-End", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to application
     await page.goto("/");
 
-    // Upload sample employee data
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample employee data
+    await loadSampleData(page);
 
     // Verify grid loaded successfully
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

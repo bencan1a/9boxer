@@ -7,7 +7,7 @@
 
 import { test, expect } from "../fixtures";
 import {
-  uploadExcelFile,
+  loadSampleData,
   dragEmployeeToPosition,
   toggleDonutMode,
   getEmployeeIdFromCard,
@@ -18,9 +18,9 @@ import * as fs from "fs";
 
 test.describe("Donut Mode Workflow", () => {
   test.beforeEach(async ({ page }) => {
-    // Visit and upload sample data
+    // Visit and load sample data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

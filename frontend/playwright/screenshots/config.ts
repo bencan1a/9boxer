@@ -228,6 +228,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
     description:
       "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
+    storyId: "dashboard-appbar-filemenubutton--menu-open",
+    cropping: "container",
+    dimensions: { minWidth: 200, minHeight: 300 },
   },
   "calibration-statistics-red-flags": {
     source: "storybook",
@@ -349,12 +352,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, minHeight: 60 },
   },
   "calibration-donut-mode-grid": {
-    source: "full-app",
-    workflow: "calibration",
-    function: "generateDonutModeGrid",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutModeActive",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png",
     description:
       "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
+    storyId: "grid-nineboxgrid--donut-mode",
+    cropping: "container",
+    dimensions: { minWidth: 800, minHeight: 1000 },
   },
   // Statistics workflow screenshots (4 Storybook-based screenshots)
   "statistics-panel-distribution": {
@@ -398,7 +404,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Standard 9-box grid with employee tiles",
     storyId: "grid-nineboxgrid--populated",
     cropping: "container",
-    dimensions: { minWidth: 800, minHeight: 600 },
+    dimensions: { minWidth: 800, minHeight: 1000 },
   },
   "employee-tile-normal": {
     source: "storybook",
@@ -431,10 +437,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     workflow: "storybook-components",
     function: "generateFileMenuApplyChanges",
     path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
-    description: "File menu dropdown open showing Apply Changes option",
-    storyId: "dashboard-appbar-filemenubutton--menu-open-with-changes",
+    description: "File menu dropdown open showing menu options",
+    storyId: "dashboard-appbar-filemenubutton--menu-open",
     cropping: "container",
-    dimensions: { minWidth: 200, minHeight: 200 },
+    dimensions: { minWidth: 200, minHeight: 300 },
   },
 
   // Zoom controls screenshot (1 screenshot)

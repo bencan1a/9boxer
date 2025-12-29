@@ -6,16 +6,16 @@
 
 ---
 
-## Get Started in 2 Minutes
+## Take a 5-Minute Guided Tour
 
 New to 9Boxer? Let's get you to your first success fast.
 
-**[Start the 2-Minute Quickstart →](quickstart.md)**
+**[Start the 5-Minute Guided Tour →](quickstart.md)**
 
-Upload your data or load sample data, see your team on the grid, and understand what it means - all in less time than it takes to make coffee.
+No Excel file needed! Load our sample data (200 realistic employees with complete history) and discover all the features in an interactive tour. You'll see the grid, track changes, spot bias patterns with Intelligence, and understand how 9Boxer makes talent decisions easier.
 
-!!! tip "Try Sample Data First"
-    Want to explore before uploading your own data? Load our pre-generated sample dataset with 200 realistic employees. Perfect for learning features and testing workflows. [Learn more →](getting-started.md#loading-sample-data)
+!!! tip "Why Start with Sample Data?"
+    Our sample dataset includes 200 employees with 3 years of performance history, complete organizational hierarchy, and deliberate bias patterns that let you see Intelligence in action. It's the fastest way to understand what 9Boxer can do - no spreadsheet prep required. [Start the tour →](quickstart.md)
 
 ![Sample 9-box grid showing employees organized by performance and potential](images/screenshots/index/hero-grid-sample.png)
 
@@ -25,7 +25,7 @@ Upload your data or load sample data, see your team on the grid, and understand 
 
 ### 🆕 New to 9Boxer?
 
-**[2-Minute Quickstart](quickstart.md)** - Upload data and see your first grid (fastest path to success)
+**[5-Minute Guided Tour](quickstart.md)** - Try all features with sample data (fastest path to success)
 
 **[10-Minute Getting Started Guide](getting-started.md)** - Complete workflow from upload to export
 
@@ -143,7 +143,7 @@ Here's what a typical first session looks like:
    - Click Export to download your updated ratings
    - Open the file to see your changes and notes
 
-**Ready to try it?** [Start the quickstart now →](quickstart.md)
+**Ready to try it?** [Start the guided tour now →](quickstart.md)
 
 ---
 
@@ -169,4 +169,4 @@ Here's what a typical first session looks like:
 
 ---
 
-**Let's get started!** Head to the [2-Minute Quickstart](quickstart.md) and you'll see your team on the grid in less than 2 minutes.
+**Let's get started!** Head to the [5-Minute Guided Tour](quickstart.md) and discover everything 9Boxer can do - no Excel file required.

@@ -9,7 +9,7 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition } from "../helpers";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -31,8 +31,8 @@ test.describe("Smoke Test - Critical Workflows", () => {
   test("should complete full user workflow: upload, view, move, filter, and export", async ({
     page,
   }) => {
-    // 1. UPLOAD - Upload Excel file and verify grid loads
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // 1. LOAD - Load sample data and verify grid loads
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Verify initial employee count
@@ -128,9 +128,9 @@ test.describe("Smoke Test - Critical Workflows", () => {
   test("should handle change tracking workflow end-to-end", async ({
     page,
   }) => {
-    // Upload and load grid
+    // Load sample data and load grid
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Move employee
@@ -162,9 +162,9 @@ test.describe("Smoke Test - Critical Workflows", () => {
   test("should verify statistics and intelligence tabs are accessible", async ({
     page,
   }) => {
-    // Upload data
+    // Load data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Click Statistics tab

@@ -1,6 +1,5 @@
 """Session management API endpoints."""
 
-import gc
 import logging
 import os
 import shutil
@@ -229,13 +228,11 @@ async def clear_session(
         # Delete session first
         session_mgr.delete_session(LOCAL_USER_ID)
 
-        # Force garbage collection to release file handles (important on Windows)
-        gc.collect()
-
         # Clean up uploaded file from permanent location
         uploaded_file = Path(session.original_file_path)
 
         # Retry deletion with small delays (handles file locking on Windows)
+        # File handles are now properly closed via try/finally blocks in parsers/exporters
         max_retries = 3
         for attempt in range(max_retries):
             try:
@@ -282,9 +279,6 @@ async def close_session(
 
         # Delete session from manager
         session_mgr.delete_session(LOCAL_USER_ID)
-
-        # Force garbage collection to release file handles
-        gc.collect()
 
         logger.info(f"Session closed successfully: session_id={session.session_id}")
 

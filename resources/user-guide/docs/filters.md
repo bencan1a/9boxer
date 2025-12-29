@@ -66,6 +66,9 @@ You can filter employees by:
 | **Reporting Chain** | Manager hierarchy | Filter by entire management chain |
 | **Exclusions** | Individual employees | Hide specific employees from view |
 
+!!! tip "Try Filters with Sample Data"
+    In the [quickstart tour](quickstart.md), you filtered by USA location. Sample data has 8 locations and 8 functions - perfect for exploring filter combinations! Load sample data to practice filtering by department, location, or flags.
+
 ### How Filtering Works
 
 > 📋 **Real-World Scenario**

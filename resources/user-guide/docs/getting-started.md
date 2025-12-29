@@ -1,10 +1,10 @@
 # Getting Started with 9Boxer
 
 > **Time to complete:** 10 minutes
-> **What you'll accomplish:** Upload data, review your grid, make changes, and export results
-> **Already did the [2-minute quickstart](quickstart.md)?** Skip to [Step 2: Review Your Distribution](#step-2-review-your-distribution-3-minutes)
+> **What you'll accomplish:** Load data, review your grid, make changes, and export results
+> **Already did the [5-minute quickstart tour](quickstart.md)?** Skip to [Step 2: Review Your Distribution](#step-2-review-your-distribution-3-minutes)
 
-Welcome! This guide walks you through the complete 9Boxer workflow, from uploading your team data to exporting your final ratings. By the end, you'll know exactly how to use 9Boxer for your talent reviews.
+Welcome! This guide walks you through the complete 9Boxer workflow, from loading data to exporting your final ratings. We'll start with sample data so you can explore features risk-free, then show you how to work with your own team data. By the end, you'll know exactly how to use 9Boxer for your talent reviews.
 
 ---
 
@@ -12,8 +12,8 @@ Welcome! This guide walks you through the complete 9Boxer workflow, from uploadi
 
 In the next 10 minutes, you'll discover how to:
 
-- ✅ Load sample data to explore features (optional)
-- ✅ Upload your employee data from Excel
+- ✅ Load sample data to explore features (recommended for learning)
+- ✅ Upload your employee data from Excel (for production use)
 - ✅ Read and interpret the 9-box grid
 - ✅ Make rating changes with drag-and-drop
 - ✅ Document your decisions with notes
@@ -23,11 +23,15 @@ Let's get started!
 
 ---
 
-## Loading Sample Data
+## Step 1: Load Your Data (2 minutes)
+
+You have two ways to get started with 9Boxer. We recommend starting with sample data to explore features risk-free.
+
+### Option 1: Load Sample Data (Recommended for Learning)
 
 If you're new to 9Boxer or want to explore features without creating your own dataset, you can load pre-generated sample data with a single click.
 
-### What's Included in Sample Data
+#### What's Included in Sample Data
 
 The sample dataset contains **200 employees** with realistic organizational data:
 
@@ -46,25 +50,27 @@ The sample data is designed to showcase 9Boxer's full capabilities, including:
 - Exporting formatted reports
 - Managing talent moves and succession planning
 
-### How to Load Sample Data
+#### How to Load Sample Data
 
 You have two ways to load sample data:
 
-#### Option 1: From the Empty State
+**Method 1: From the Empty State**
 
 When you first open 9Boxer (or after clearing your data), you'll see an empty state screen.
 
-<!-- TODO: Add screenshot showing EmptyState with "Load Sample Data (200 employees)" button -->
+<!-- TODO: Add screenshot showing EmptyState with "Load Sample Data (200 employees)" button
+     Path: images/screenshots/getting-started/empty-state-sample-data-button.png -->
 
 1. Click the **"Load Sample Data (200 employees)"** button
 2. The app generates 200 employees in a few seconds
 3. Your grid appears populated with realistic employee data
 
-#### Option 2: From the File Menu
+**Method 2: From the File Menu**
 
 You can load sample data at any time from the File menu.
 
-<!-- TODO: Add screenshot showing File menu with "Load Sample Dataset..." menu item -->
+<!-- TODO: Add screenshot showing File menu with "Load Sample Dataset..." menu item
+     Path: images/screenshots/getting-started/file-menu-load-sample.png -->
 
 1. Click the **File menu** button (top-left, shows your current filename or "No file")
 2. Select **"Load Sample Dataset..."**
@@ -72,11 +78,12 @@ You can load sample data at any time from the File menu.
 4. Review the sample data details in the dialog
 5. Click **"Load Sample Data"** to confirm
 
-<!-- TODO: Add screenshot showing LoadSampleDialog with warning and sample data details -->
+<!-- TODO: Add screenshot showing LoadSampleDialog with warning and sample data details
+     Path: images/screenshots/getting-started/load-sample-dialog.png -->
 
 The app generates 200 employees in a few seconds and displays them in the 9-box grid.
 
-### When to Use Sample Data
+#### When to Use Sample Data
 
 Sample data is perfect for:
 
@@ -86,16 +93,16 @@ Sample data is perfect for:
 - **Validating Intelligence insights** - See how the Intelligence panel detects patterns
 - **Training sessions** - Consistent data for tutorials and workshops
 
-### Important Notes
+#### Important Notes
 
 - **Sample data is temporary** - It's generated fresh each time you load it
 - **Not saved between sessions** - Load sample data again if you restart the app
 - **Replaces existing data** - You'll see a warning if you have work in progress
 - **Always the same** - Sample data uses a consistent seed for reproducibility
 
-For production use, upload your own data using the Excel import feature (see [Step 1: Upload Your Employee Data](#step-1-upload-your-employee-data-2-minutes)).
+For production use with your actual team, see [Option 2: Upload Your Excel File](#option-2-upload-your-excel-file-for-production-use) below.
 
-### Sample Data Characteristics
+#### Sample Data Characteristics
 
 The sample dataset includes realistic organizational diversity:
 
@@ -110,11 +117,23 @@ This data is **completely fictional** and generated for demonstration purposes o
 !!! tip "Try the Intelligence Panel"
     After loading sample data, click the **Intelligence** tab in the right panel to see detected patterns and anomalies. The sample data includes deliberate bias patterns for the Intelligence engine to find.
 
+#### ✅ Success! You've Loaded Sample Data
+
+You'll see:
+- A 3×3 grid filled with 200 employee tiles
+- Employees distributed across all 9 grid positions
+- File menu showing "sample-data.xlsx" (virtual file)
+- Ready to explore filters, Intelligence, and all 9Boxer features
+
+**Next step:** Continue to [Step 2: Review Your Distribution](#step-2-review-your-distribution-3-minutes) to understand what the grid is showing you, or explore on your own!
+
 ---
 
-## Step 1: Upload Your Employee Data (2 minutes)
+### Option 2: Upload Your Excel File (For Production Use)
 
-### What You'll Need
+When you're ready to work with your actual team data, you'll upload an Excel file.
+
+#### What You'll Need
 
 An Excel file (`.xlsx` or `.xls`) with these 4 required columns (exact names, case-sensitive):
 
@@ -129,12 +148,13 @@ An Excel file (`.xlsx` or `.xls`) with these 4 required columns (exact names, ca
     Use the sample file included with 9Boxer: `Sample_People_List.xlsx`
     Look in the Help menu or in the application's resource folder.
 
-### Upload Your File
+#### Upload Your File
 
 1. **Click "File"** in the top menu bar, then select **"Import Data"**
 
    (Or, if you're starting fresh, click the **"Import Data"** button in the center of the empty screen)
 
+   <!-- TODO: Update screenshot path to images/screenshots/getting-started/upload-dialog.png -->
    ![Upload dialog showing file selection interface](images/screenshots/quickstart/quickstart-upload-dialog.png)
 
 2. **Choose your Excel file** in the file picker
@@ -145,14 +165,15 @@ An Excel file (`.xlsx` or `.xls`) with these 4 required columns (exact names, ca
 
 **What happens next:** Your employees appear on the grid, automatically positioned based on their Performance and Potential ratings.
 
-### ✅ Success Check
+#### ✅ Success! You've Uploaded Your Data
 
-You should see:
+You'll see:
 
 - A 3×3 grid filled with employee tiles
 - Your employee count displayed in the app (example: "15 employees")
 - Employees organized into boxes based on their ratings
 
+<!-- TODO: Update screenshot path to images/screenshots/getting-started/grid-populated.png -->
 ![Grid populated with employee tiles after successful upload](images/screenshots/quickstart/quickstart-grid-populated.png)
 
 !!! warning "Don't see your employees?"
@@ -401,8 +422,8 @@ Bookmark this for easy access to common actions:
 
 | I want to... | How to do it |
 |--------------|--------------|
-| Load sample data | File menu → Load Sample Dataset... (or use empty state button) |
-| Upload new data | File menu → Import Data |
+| Load sample data (recommended for learning) | File menu → Load Sample Dataset... (or use empty state button) |
+| Upload my own data (for production use) | File menu → Import Data |
 | Move an employee | Drag tile to new box |
 | View employee details | Click the employee tile |
 | Add a note | Click employee → Changes tab → Type in Notes field |
