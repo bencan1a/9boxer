@@ -6,7 +6,7 @@
  * - Save as new file (checkbox)
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SaveIcon from "@mui/icons-material/Save";
+import { useElectronAPI } from "../../hooks/useElectronAPI";
 
 export interface ApplyChangesDialogProps {
   open: boolean;
@@ -44,24 +45,39 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
   onCancel,
 }) => {
   const { t } = useTranslation();
+  const { saveFileDialog } = useElectronAPI();
   const [saveAsNew, setSaveAsNew] = useState(false);
+  const [dialogError, setDialogError] = useState<string | undefined>(error);
+
+  // Sync error prop with local state
+  useEffect(() => {
+    setDialogError(error);
+  }, [error]);
 
   const handleApply = async () => {
-    if (saveAsNew) {
-      // Trigger file save dialog via Electron API
-      const newPath = await window.electronAPI?.saveFileDialog(filename);
+    try {
+      if (saveAsNew) {
+        // Trigger file save dialog via Electron API
+        const newPath = await saveFileDialog(filename);
 
-      if (newPath) {
-        await onApply("save_new", newPath);
+        if (newPath) {
+          await onApply("save_new", newPath);
+        }
+      } else {
+        await onApply("update_original");
       }
-    } else {
-      await onApply("update_original");
+    } catch (err) {
+      // Handle Electron API errors (e.g., running in web mode)
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to save file";
+      setDialogError(errorMessage);
     }
   };
 
   const handleClose = () => {
     if (!isLoading) {
       setSaveAsNew(false); // Reset state on close
+      setDialogError(undefined); // Clear any dialog-specific errors
       onCancel();
     }
   };
@@ -73,8 +89,11 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
       maxWidth="sm"
       fullWidth
       data-testid="apply-changes-dialog"
+      aria-labelledby="apply-changes-dialog-title"
+      aria-describedby="apply-changes-dialog-description"
     >
       <DialogTitle
+        id="apply-changes-dialog-title"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -87,7 +106,7 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
         </Typography>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent id="apply-changes-dialog-description">
         <Typography variant="body1" gutterBottom>
           {t("dialogs.applyChanges.applyTo", "Apply changes to:")}
         </Typography>
@@ -112,9 +131,9 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
           )}
         </Typography>
 
-        {error && (
+        {dialogError && (
           <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
+            {dialogError}
           </Alert>
         )}
       </DialogContent>

@@ -1,5 +1,280 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useEffect } from "react";
 import { NineBoxGrid } from "./NineBoxGrid";
+import type { Employee } from "../../types/employee";
+import { PerformanceLevel, PotentialLevel } from "../../types/employee";
+import { useSessionStore } from "../../store/sessionStore";
+
+/**
+ * Create mock employees distributed across all 9 grid positions
+ */
+const createMockEmployeesForGrid = (): Employee[] => {
+  const employees: Employee[] = [];
+
+  // Helper to create employee with specific grid position
+  const createEmployee = (
+    id: number,
+    name: string,
+    position: number,
+    performance: PerformanceLevel,
+    potential: PotentialLevel,
+    flags: string[] = []
+  ): Employee => ({
+    employee_id: id,
+    name,
+    business_title: `Engineer ${id}`,
+    job_title: `Software Engineer`,
+    job_profile: "Engineering-Tech-USA",
+    job_level: "MT4",
+    job_function: "Engineering",
+    location: "USA",
+    manager: "Jane Smith",
+    management_chain_01: "Jane Smith",
+    management_chain_02: "CEO",
+    management_chain_03: null,
+    management_chain_04: null,
+    management_chain_05: null,
+    management_chain_06: null,
+    hire_date: "2020-01-15",
+    tenure_category: "3-5 years",
+    time_in_job_profile: "2 years",
+    performance,
+    potential,
+    grid_position: position,
+    talent_indicator: "Solid Performer",
+    ratings_history: [{ year: 2023, rating: "Meets Expectations" }],
+    development_focus: "Technical skills",
+    development_action: "Complete certification",
+    notes: null,
+    promotion_status: "Not Ready",
+    promotion_readiness: false,
+    modified_in_session: false,
+    last_modified: null,
+    flags,
+  });
+
+  // Position 1: Low Performance, Low Potential (Underperformer)
+  employees.push(
+    createEmployee(
+      1,
+      "Alex Under",
+      1,
+      PerformanceLevel.LOW,
+      PotentialLevel.LOW,
+      ["pip"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      2,
+      "Beth Low",
+      1,
+      PerformanceLevel.LOW,
+      PotentialLevel.LOW,
+      []
+    )
+  );
+
+  // Position 2: Medium Performance, Low Potential (Effective Pro)
+  employees.push(
+    createEmployee(
+      3,
+      "Charlie Steady",
+      2,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.LOW,
+      []
+    )
+  );
+  employees.push(
+    createEmployee(
+      4,
+      "Dana Reliable",
+      2,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.LOW,
+      []
+    )
+  );
+
+  // Position 3: High Performance, Low Potential (Workhorse)
+  employees.push(
+    createEmployee(
+      5,
+      "Ethan Strong",
+      3,
+      PerformanceLevel.HIGH,
+      PotentialLevel.LOW,
+      []
+    )
+  );
+
+  // Position 4: Low Performance, Medium Potential (Inconsistent)
+  employees.push(
+    createEmployee(
+      6,
+      "Fiona Erratic",
+      4,
+      PerformanceLevel.LOW,
+      PotentialLevel.MEDIUM,
+      ["flagged_for_discussion"]
+    )
+  );
+
+  // Position 5: Medium Performance, Medium Potential (Core Talent)
+  employees.push(
+    createEmployee(
+      7,
+      "George Core",
+      5,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.MEDIUM,
+      []
+    )
+  );
+  employees.push(
+    createEmployee(
+      8,
+      "Hannah Solid",
+      5,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.MEDIUM,
+      []
+    )
+  );
+  employees.push(
+    createEmployee(
+      9,
+      "Ian Steady",
+      5,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.MEDIUM,
+      []
+    )
+  );
+  employees.push(
+    createEmployee(
+      10,
+      "Julia Reliable",
+      5,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.MEDIUM,
+      []
+    )
+  );
+
+  // Position 6: High Performance, Medium Potential (High Impact)
+  employees.push(
+    createEmployee(
+      11,
+      "Kevin Top",
+      6,
+      PerformanceLevel.HIGH,
+      PotentialLevel.MEDIUM,
+      ["promotion_ready"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      12,
+      "Laura Excellent",
+      6,
+      PerformanceLevel.HIGH,
+      PotentialLevel.MEDIUM,
+      []
+    )
+  );
+
+  // Position 7: Low Performance, High Potential (Enigma)
+  employees.push(
+    createEmployee(
+      13,
+      "Mike Potential",
+      7,
+      PerformanceLevel.LOW,
+      PotentialLevel.HIGH,
+      ["new_hire"]
+    )
+  );
+
+  // Position 8: Medium Performance, High Potential (Growth)
+  employees.push(
+    createEmployee(
+      14,
+      "Nina Rising",
+      8,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.HIGH,
+      ["succession_candidate"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      15,
+      "Oscar Developing",
+      8,
+      PerformanceLevel.MEDIUM,
+      PotentialLevel.HIGH,
+      []
+    )
+  );
+
+  // Position 9: High Performance, High Potential (Star)
+  employees.push(
+    createEmployee(
+      16,
+      "Patricia Star",
+      9,
+      PerformanceLevel.HIGH,
+      PotentialLevel.HIGH,
+      ["promotion_ready", "succession_candidate"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      17,
+      "Quincy Excellent",
+      9,
+      PerformanceLevel.HIGH,
+      PotentialLevel.HIGH,
+      ["high_retention_priority"]
+    )
+  );
+
+  return employees;
+};
+
+const mockEmployees = createMockEmployeesForGrid();
+
+/**
+ * Story decorator that sets up store state with employees
+ */
+const withStoreState = (
+  storeUpdater: (employees: Employee[]) => Employee[]
+): ((Story: React.FC) => JSX.Element) => {
+  return (Story: React.FC) => {
+    useEffect(() => {
+      // Get employees (optionally transformed by storeUpdater)
+      const employees = storeUpdater(mockEmployees);
+
+      // Set employees in session store
+      useSessionStore.setState({
+        employees,
+        sessionId: "story-session",
+        filename: "story-employees.xlsx",
+      });
+
+      // Cleanup
+      return () => {
+        useSessionStore.setState({
+          employees: [],
+        });
+      };
+    }, []);
+
+    return <Story />;
+  };
+};
 
 /**
  * NineBoxGrid is the main 9-box talent grid component that displays employees
@@ -110,6 +385,12 @@ export const Empty: Story = {
  * - Some needing attention (positions 1, 2, 4)
  */
 export const Populated: Story = {
+  decorators: [
+    withStoreState((employees) => {
+      // Return all employees distributed across grid
+      return employees;
+    }),
+  ],
   parameters: {
     docs: {
       description: {
@@ -218,6 +499,27 @@ export const WithBoxExpanded: Story = {
  * without permanently changing employee positions.
  */
 export const DonutMode: Story = {
+  decorators: [
+    withStoreState((employees) => {
+      // Filter to only position 5 employees (donut mode shows only Core Talent box)
+      const position5Employees = employees.filter((e) => e.grid_position === 5);
+
+      // Move one employee to box 7 in donut mode (shows purple border)
+      if (position5Employees.length > 0) {
+        position5Employees[0].donut_position = 7; // Temporarily moved to Enigma box
+        // Do NOT set modified_in_session - that would show orange border
+        // Donut mode uses donut_position for purple borders
+      }
+
+      // Enable donut mode in the store
+      useSessionStore.setState({
+        donutModeActive: true,
+      });
+
+      // Return only position 5 employees (some with donut_position set)
+      return position5Employees;
+    }),
+  ],
   parameters: {
     docs: {
       description: {

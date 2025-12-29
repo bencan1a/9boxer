@@ -41,11 +41,11 @@ const meta = {
     (Story) => (
       <Box
         sx={{
-          width: 280,
-          minHeight: 350,
-          p: 2,
+          p: 1,
           backgroundColor: "primary.main",
           color: "white",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <Story />
