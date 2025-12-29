@@ -517,3 +517,168 @@ class TestPerformanceBenchmarks:
         assert total_time_ms < 500, (
             f"Large dataset serialize/deserialize took {total_time_ms:.2f}ms (target: <500ms)"
         )
+
+
+class TestOriginalValueTracking:
+    """Test that original Performance/Potential values are tracked in exports."""
+
+    def test_export_tracks_original_values_when_employee_modified(
+        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+    ) -> None:
+        """Test that original Performance/Potential values are preserved in tracking columns.
+        
+        This test verifies:
+        1. Original values are written to "Original Performance" and "Original Potential" columns
+        2. New values are written to main Performance/Potential columns
+        3. Changes persist when file is reloaded
+        """
+        # Upload file
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "test.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            test_client.post("/api/session/upload", files=files)
+
+        # Get first employee and record original values
+        response = test_client.get("/api/employees")
+        employees = response.json()["employees"]
+        employee_id = employees[0]["employee_id"]
+        original_performance = employees[0]["performance"]
+        original_potential = employees[0]["potential"]
+
+        # Move employee to different position
+        new_performance = "High" if original_performance != "High" else "Low"
+        new_potential = "High" if original_potential != "High" else "Low"
+
+        response = test_client.patch(
+            f"/api/employees/{employee_id}/move",
+            json={"performance": new_performance, "potential": new_potential},
+        )
+        assert response.status_code == 200
+
+        # Export to new file
+        export_path = tmp_path / "exported_with_tracking.xlsx"
+        response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": str(export_path)},
+        )
+        assert response.status_code == 200
+        assert response.json()["success"] is True
+
+        # Load exported file and verify columns
+        workbook = openpyxl.load_workbook(export_path)
+        sheet = workbook.worksheets[1]
+
+        # Find columns
+        perf_col = None
+        pot_col = None
+        original_perf_col = None
+        original_pot_col = None
+
+        for col_idx in range(1, sheet.max_column + 1):
+            cell_value = str(sheet.cell(1, col_idx).value or "")
+            if cell_value == "Aug 2025 Talent Assessment Performance":
+                perf_col = col_idx
+            elif cell_value == "Aug 2025  Talent Assessment Potential":
+                pot_col = col_idx
+            elif cell_value == "Original Performance":
+                original_perf_col = col_idx
+            elif cell_value == "Original Potential":
+                original_pot_col = col_idx
+
+        assert perf_col is not None, "Performance column not found"
+        assert pot_col is not None, "Potential column not found"
+        assert original_perf_col is not None, "Original Performance column not found"
+        assert original_pot_col is not None, "Original Potential column not found"
+
+        # Find employee row
+        employee_row = None
+        for row_idx in range(2, sheet.max_row + 1):
+            if int(sheet.cell(row_idx, 1).value) == employee_id:
+                employee_row = row_idx
+                break
+
+        assert employee_row is not None, f"Employee {employee_id} not found in export"
+
+        # Verify main columns have NEW values
+        assert sheet.cell(employee_row, perf_col).value == new_performance
+        assert sheet.cell(employee_row, pot_col).value == new_potential
+
+        # Verify tracking columns have ORIGINAL values
+        assert sheet.cell(employee_row, original_perf_col).value == original_performance
+        assert sheet.cell(employee_row, original_pot_col).value == original_potential
+
+        workbook.close()
+
+        # Reload file to verify persistence
+        from ninebox.services.excel_parser import ExcelParser
+
+        parser = ExcelParser()
+        result = parser.parse(export_path)
+
+        # Find the employee in parsed data
+        reloaded_employee = next(
+            (e for e in result.employees if e.employee_id == employee_id), None
+        )
+        assert reloaded_employee is not None
+
+        # Verify the NEW values persisted (main columns)
+        assert reloaded_employee.performance.value == new_performance
+        assert reloaded_employee.potential.value == new_potential
+
+        # Original values are in tracking columns and don't affect reload
+        # This ensures changes persist across reload
+
+    def test_export_no_original_values_when_employee_not_modified(
+        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+    ) -> None:
+        """Test that unmodified employees have empty original value tracking columns."""
+        # Upload file
+        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+            files = {
+                "file": (
+                    "test.xlsx",
+                    f,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            test_client.post("/api/session/upload", files=files)
+
+        # Export immediately without making changes
+        export_path = tmp_path / "exported_no_changes.xlsx"
+        response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": str(export_path)},
+        )
+        assert response.status_code == 200
+
+        # Load exported file
+        workbook = openpyxl.load_workbook(export_path)
+        sheet = workbook.worksheets[1]
+
+        # Find Original Performance column
+        original_perf_col = None
+        for col_idx in range(1, sheet.max_column + 1):
+            if sheet.cell(1, col_idx).value == "Original Performance":
+                original_perf_col = col_idx
+                break
+
+        assert original_perf_col is not None
+
+        # All employees should have empty original value columns
+        for row_idx in range(2, sheet.max_row + 1):
+            original_perf_value = sheet.cell(row_idx, original_perf_col).value
+            original_pot_value = sheet.cell(row_idx, original_perf_col + 1).value
+            # Empty cells can be "" or None
+            assert original_perf_value in ("", None), (
+                f"Row {row_idx} has non-empty original performance: {original_perf_value}"
+            )
+            assert original_pot_value in ("", None), (
+                f"Row {row_idx} has non-empty original potential: {original_pot_value}"
+            )
+
+        workbook.close()
