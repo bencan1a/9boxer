@@ -23,6 +23,7 @@ export interface GenerateSampleResponse {
     functions: string[];
   };
   session_id: string;
+  filename: string;
 }
 
 /**
