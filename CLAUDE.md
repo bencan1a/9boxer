@@ -811,9 +811,13 @@ See `internal-docs/testing/` for comprehensive testing principles and best pract
 
 - **`arch-review.yml`** - AI-powered architectural review (Wednesdays 2 AM UTC):
   - Uses principal-engineer agent to detect architectural drift, duplication, and pattern violations
-  - Analyzes significant code changes (>10 line changes) against established architecture docs
+  - Analyzes significant code changes (>50 line changes) against established architecture docs
+  - **Historical context**: Tracks findings in `.github/arch-review-findings.json` to avoid re-flagging same issues
+  - **No finding limit**: Returns ALL significant issues (prioritized by severity)
+  - **Focus areas**: Security vulnerabilities, code duplication, anti-patterns, performance regressions
+  - **De-emphasizes**: Missing documentation (separate docs-audit workflow handles that)
   - Creates GitHub issues for critical/high priority architectural concerns
-  - Recommends updates to architecture documentation
+  - Temperature 0.3 for consistent, deterministic analysis
   - Requires `ANTHROPIC_API_KEY` secret
   - Designed for codebases where multiple agents work independently
 
