@@ -2,6 +2,9 @@
 
 Learn how to prepare and upload your employee data to 9Boxer. This guide covers Excel file requirements, the upload process, and troubleshooting common upload errors.
 
+!!! info "Want to Explore First?"
+    Not ready to upload your data yet? [Take the guided tour](quickstart.md) with sample data to see how 9Boxer works! You'll explore all features risk-free with 200 realistic employees.
+
 ---
 
 ## Excel File Requirements

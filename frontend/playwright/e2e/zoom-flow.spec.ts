@@ -10,7 +10,7 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile } from "../helpers";
+import { loadSampleData } from "../helpers";
 
 // Note: Zoom functionality is in ViewControls component (data-testid="view-controls")
 // ViewControls is a unified toolbar that includes view mode toggle AND zoom controls
@@ -22,8 +22,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
 
-    // Upload sample data to show grid (zoom controls only visible when grid loaded)
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample data to show grid (zoom controls only visible when grid loaded)
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Wait for zoom controls to be ready (they appear after grid loads)
@@ -145,8 +145,8 @@ test.describe("Zoom & Full-Screen Controls", () => {
     // Wait for app to initialize and determine state (either empty state or grid loaded from session)
     await page.waitForTimeout(500);
 
-    // Re-upload to show grid
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Re-load to show grid
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Verify zoom persisted

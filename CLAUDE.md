@@ -717,8 +717,8 @@ describe('Button', () => {
 **Writing E2E Tests with Playwright:**
 - Test framework: Playwright
 - Location: `frontend/playwright/e2e/` with naming pattern `feature-flow.spec.ts`
-- Helpers: `frontend/playwright/helpers/` (uploadFile, navigation, assertions)
-- Fixtures: `frontend/playwright/fixtures/` (Excel test files)
+- Helpers: `frontend/playwright/helpers/` (loadSampleData, uploadFile, navigation, assertions)
+- Fixtures: `frontend/playwright/fixtures/` (Excel test files - only for file operation tests)
 - Configuration: `frontend/playwright.config.ts`
 - Test complete user workflows end-to-end
 - Use `page.goto()` to navigate, helper functions from `playwright/helpers/`
@@ -726,25 +726,45 @@ describe('Button', () => {
 - Verify both UI updates and data consistency
 - Servers auto-start (no manual setup required)
 
-Example pattern:
+**Loading Test Data:**
+
+**✅ PREFERRED: Use `loadSampleData()` for most tests**
 ```typescript
-import { test, expect } from '@playwright/test';
-import { uploadExcelFile } from '../helpers/upload';
+import { test, expect } from '../fixtures';
+import { loadSampleData } from '../helpers';
 
-test.describe('Employee Upload Flow', () => {
-  test('allows user to upload Excel file and view employees', async ({ page }) => {
+test.describe('Feature Tests', () => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await loadSampleData(page);  // Loads 200 employees via sample data API
+  });
 
-    // Upload file using helper function
-    await uploadExcelFile(page, 'sample-employees.xlsx');
-
-    // Verify grid displays with employees
-    await expect(page.getByTestId('nine-box-grid')).toBeVisible();
-    const employeeCards = page.getByTestId('employee-card');
-    await expect(employeeCards).toHaveCount(await employeeCards.count());
+  test('should display employees in grid', async ({ page }) => {
+    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+    const employeeCards = page.locator('[data-testid^="employee-card-"]');
+    const count = await employeeCards.count();
+    expect(count).toBeGreaterThan(0);
   });
 });
 ```
+
+**Use `uploadExcelFile()` ONLY for file operation tests**
+```typescript
+import { test, expect } from '../fixtures';
+import { uploadExcelFile } from '../helpers';
+
+test.describe('File Upload Tests', () => {
+  test('should upload Excel file and parse employees', async ({ page }) => {
+    await page.goto('/');
+    await uploadExcelFile(page, 'sample-employees.xlsx');  // Only for upload tests
+    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+  });
+});
+```
+
+**When to use each:**
+- **`loadSampleData()`** - For testing grid, filters, intelligence, statistics, panels, etc. (default choice)
+- **`uploadExcelFile()`** - For testing upload feature, file load/save workflows, Excel parsing
 
 **Playwright Test Files:**
 - `upload-flow.spec.ts` - File upload workflows (3 tests)

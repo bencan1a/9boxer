@@ -62,6 +62,9 @@ You'll want to use the Changes tab when:
 >
 > During a 2-hour calibration meeting, Kim moves 23 employees. She adds notes to each one in the Changes tab like "Calibration 2024-Q4: Moved to Star - consensus on leadership demonstrated in Q3 project." Six months later, when reviewing decisions, these notes help her remember exactly why each change was made.
 
+!!! tip "Practiced This in the Tour?"
+    In [Step 6 of the quickstart tour](quickstart.md#step-6-try-making-a-change-1-minute), you moved an employee and added a note. The Changes tab tracked it automatically - no manual entry needed!
+
 ---
 
 ## Accessing the Change Tracker

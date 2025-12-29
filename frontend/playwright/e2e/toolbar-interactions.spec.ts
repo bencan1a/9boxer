@@ -11,7 +11,7 @@
 
 import { test, expect } from "../fixtures";
 import {
-  uploadExcelFile,
+  loadSampleData,
   dragEmployeeToPosition,
   openFileMenu,
   openFilterDrawer,
@@ -31,8 +31,8 @@ test.describe("File Menu", () => {
   });
 
   test("shows filename when file is uploaded", async ({ page }) => {
-    // Upload sample file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample file
+    await loadSampleData(page);
 
     // Verify FileMenu shows filename
     const fileMenu = page.getByTestId("file-menu-button");
@@ -41,8 +41,8 @@ test.describe("File Menu", () => {
   });
 
   test("shows pending changes badge after employee move", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
 
     // Wait for grid to load
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
@@ -66,8 +66,8 @@ test.describe("File Menu", () => {
   });
 
   test("FileMenu dropdown opens and shows menu items", async ({ page }) => {
-    // Upload file first
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file first
+    await loadSampleData(page);
 
     // Open FileMenu dropdown
     await openFileMenu(page);
@@ -92,8 +92,8 @@ test.describe("File Menu", () => {
   });
 
   test("Apply Changes exports file successfully", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
     // Make a change by moving an employee
@@ -134,8 +134,8 @@ test.describe("File Menu", () => {
   });
 
   test("Import Data from FileMenu opens upload dialog", async ({ page }) => {
-    // Upload initial file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load initial file
+    await loadSampleData(page);
 
     // Open FileMenu
     await openFileMenu(page);
@@ -156,8 +156,8 @@ test.describe("ViewModeToggle in Grid", () => {
   test("displays toggle buttons in grid header after upload", async ({
     page,
   }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
@@ -182,8 +182,8 @@ test.describe("ViewModeToggle in Grid", () => {
   });
 
   test("toggles between Grid and Donut modes", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
     // Click Donut button
@@ -224,8 +224,8 @@ test.describe("ViewModeToggle in Grid", () => {
   });
 
   test("D key keyboard shortcut toggles mode", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
     // Press 'D' key
@@ -266,8 +266,8 @@ test.describe("EmployeeCount in Grid", () => {
   });
 
   test("displays total employee count after upload", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
     // Verify employee count is visible
@@ -280,8 +280,8 @@ test.describe("EmployeeCount in Grid", () => {
   });
 
   test("shows filtered count when filters applied", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
     // Get initial count text
@@ -367,8 +367,8 @@ test.describe("Enhanced Empty State", () => {
       page.getByText(t("dashboard.dashboardPage.noFileLoaded"))
     ).toBeVisible();
 
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
 
     // Verify empty state is gone
     await expect(
@@ -411,8 +411,8 @@ test.describe("Toolbar Layout", () => {
   });
 
   test("AppBar layout after file upload", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
 
     // Verify AppBar still contains same items
     await expect(page.getByTestId("file-menu-button")).toBeVisible();
@@ -433,7 +433,7 @@ test.describe("Toolbar Layout", () => {
 test.describe("File Menu Integration with Changes", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
   });
 
   test("badge updates with multiple changes", async ({ page }) => {

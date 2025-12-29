@@ -18,12 +18,12 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition, t } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Details Panel - Core Functionality", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 

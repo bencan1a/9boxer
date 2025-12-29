@@ -4,13 +4,13 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition, t } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Statistics Tab Display", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to app and upload sample data
+    // Navigate to app and load sample data
     await page.goto("/");
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

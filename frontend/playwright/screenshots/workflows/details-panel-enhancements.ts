@@ -28,6 +28,8 @@ import { captureStorybookScreenshot } from "../storybook-screenshot";
  * Uses Storybook for reliable component capture.
  * Story: panel-employeedetails--default-with-padding
  *
+ * Note: Removed selector to capture full component with padding from story.
+ *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
  */
@@ -40,7 +42,6 @@ export async function generateCurrentAssessmentEnhanced(
     outputPath,
     theme: "light",
     waitTime: 1000,
-    selector: '[data-testid="current-assessment-section"]',
   });
 }
 
@@ -55,6 +56,8 @@ export async function generateCurrentAssessmentEnhanced(
  * Uses Storybook for isolated component capture.
  * Story: panel-employeeflags--with-multiple-flags
  *
+ * Note: Viewport constrained to match other detail panels (~400px width).
+ *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
  */
@@ -62,6 +65,9 @@ export async function generateFlagsUI(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to constrain width to match other detail panels
+  await page.setViewportSize({ width: 450, height: 300 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-employeeflags--with-multiple-flags",
     outputPath,

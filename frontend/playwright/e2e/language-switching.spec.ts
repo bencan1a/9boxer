@@ -9,7 +9,7 @@
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile } from "../helpers";
+import { loadSampleData } from "../helpers";
 
 test.describe("Language Switching", () => {
   test.beforeEach(async ({ page }) => {
@@ -23,8 +23,8 @@ test.describe("Language Switching", () => {
   test("should display language selector in settings dialog", async ({
     page,
   }) => {
-    // Upload file to get to main interface
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file to get to main interface
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Open settings dialog
@@ -41,8 +41,8 @@ test.describe("Language Switching", () => {
   test("should switch from English to Spanish and update UI text", async ({
     page,
   }) => {
-    // Upload file to get to main interface
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file to get to main interface
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Verify initial language is English - check for visible English tab text
@@ -108,8 +108,8 @@ test.describe("Language Switching", () => {
   });
 
   test("should switch from Spanish back to English", async ({ page }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Open settings dialog and switch to Spanish first
@@ -163,8 +163,8 @@ test.describe("Language Switching", () => {
   test("should persist language preference across page reloads", async ({
     page,
   }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Open settings dialog and switch to Spanish
@@ -206,8 +206,8 @@ test.describe("Language Switching", () => {
   test("should update employee count text when switching languages", async ({
     page,
   }) => {
-    // Upload file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load file
+    await loadSampleData(page);
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
     // Check English employee count

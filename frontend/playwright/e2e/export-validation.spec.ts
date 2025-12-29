@@ -7,14 +7,10 @@
  * - Validating file structure is preserved
  *
  * Uses xlsx library to read and validate Excel file content.
- *
- * NOTE: The sample-employees.xlsx fixture uses simple column names (Performance, Potential)
- * rather than the full names (Aug 2025 Talent Assessment Performance). The exporter
- * only updates columns when it finds exact matches, so some tests are adjusted accordingly.
  */
 
 import { test, expect } from "../fixtures";
-import { uploadExcelFile, dragEmployeeToPosition } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition } from "../helpers";
 import * as path from "path";
 import * as fs from "fs";
 import * as XLSX from "xlsx";
@@ -40,8 +36,8 @@ test.describe("Export Excel Content Validation", () => {
     // Navigate to home page
     await page.goto("/");
 
-    // Upload sample employees file
-    await uploadExcelFile(page, "sample-employees.xlsx");
+    // Load sample data
+    await loadSampleData(page);
 
     // Verify grid is loaded
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();

@@ -437,6 +437,30 @@ If the minimal file uploads successfully, the issue is with your original file d
 
 ---
 
+## Testing with Sample Data
+
+Not sure if it's a bug or a data issue? Sample data is your troubleshooting friend!
+
+### When to Use Sample Data for Testing
+
+**Load sample data to:**
+
+- **Verify the app works correctly** - If sample data loads and behaves normally, the issue is likely with your data file
+- **Test features safely** - Try drag-and-drop, filters, and Intelligence without affecting real data
+- **Isolate the problem** - If sample data works but your file doesn't, compare file formats
+- **Learn expected behavior** - See how features should work with clean, validated data
+
+**How to load sample data:**
+
+1. Open the **File menu** (top-left)
+2. Select **"Load Sample Dataset..."**
+3. Sample data replaces your current session (200 employees)
+4. Test the feature you're having trouble with
+
+If the feature works with sample data, check your Excel file format - see [Uploading Data](uploading-data.md) for requirements.
+
+---
+
 ## Getting Help
 
 ### In-Application Help
@@ -448,10 +472,11 @@ If the minimal file uploads successfully, the issue is with your original file d
 ### Before Requesting Support
 
 1. **Review this Troubleshooting guide** - Check common issues above
-2. **Check your workflow** - Review [Getting Started](getting-started.md) for correct steps
-3. **Verify Excel file requirements** - See [Uploading Data](uploading-data.md)
-4. **Test with minimal file** - Try uploading a minimal 3-employee test file
-5. **Check browser/system** - Ensure you're using a supported environment
+2. **Test with sample data** - Load sample data to verify the app works correctly
+3. **Check your workflow** - Review [Getting Started](getting-started.md) for correct steps
+4. **Verify Excel file requirements** - See [Uploading Data](uploading-data.md)
+5. **Test with minimal file** - Try uploading a minimal 3-employee test file
+6. **Check browser/system** - Ensure you're using a supported environment
     - Modern browser (Chrome, Edge, Firefox, Safari)
     - Sufficient disk space
     - Write permissions to download folder

@@ -10,7 +10,7 @@
  */
 
 import { Page } from "@playwright/test";
-import { uploadExcelFile } from "../../helpers/upload";
+import { loadSampleData } from "../../helpers/fixtures";
 import { clickTabAndWait, waitForUiSettle } from "../../helpers/ui";
 import { captureStorybookScreenshot } from "../storybook-screenshot";
 
@@ -27,10 +27,10 @@ export async function generateIntelligenceAnomalies(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Upload sample data that will generate anomalies
-  await uploadExcelFile(page, "sample-employees.xlsx");
+  // Load sample data that will generate anomalies
+  await loadSampleData(page);
 
-  // Wait for upload to complete
+  // Wait for data load to complete
   await page.waitForSelector('[data-testid="nine-box-grid"]', {
     timeout: 10000,
   });
@@ -67,8 +67,8 @@ export async function captureDistributionChartIdeal(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Upload sample data with ideal distribution
-  await uploadExcelFile(page, "sample-employees.xlsx");
+  // Load sample data with ideal distribution
+  await loadSampleData(page);
 
   await page.waitForSelector('[data-testid="nine-box-grid"]', {
     timeout: 10000,

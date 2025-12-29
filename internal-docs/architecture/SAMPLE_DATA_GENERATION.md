@@ -15,7 +15,7 @@
 - **DO use `include_bias=True` for intelligence testing** (statistical patterns)
 - **DO use `include_bias=False` for neutral baseline testing** (no patterns)
 - **DO set size between 50-300 employees** (generator constraint)
-- **NEVER use sample data generator in production sessions** (API endpoint doesn't save to session)
+- **NEVER use in production sessions** - Sample data is for learning/testing only
 
 ---
 
@@ -69,7 +69,8 @@ The Sample Data Generation system provides realistic employee datasets for:
 │  ┌──────────────────────────────────────────────────────────┐ │
 │  │ API Endpoint: /api/employees/generate-sample             │ │
 │  │ - Validates size (50-300)                                │ │
-│  │ - Returns employees + metadata (no session save)         │ │
+│  │ - Creates session with generated employees               │ │
+│  │ - Returns employees + metadata + session_id              │ │
 │  └────────────────────────┬─────────────────────────────────┘ │
 │                           │                                   │
 │  ┌────────────────────────▼──────────────────────────────┐   │
@@ -106,8 +107,9 @@ Data Flow:
 1. User clicks "Load Sample Data" in EmptyState
 2. Frontend calls POST /api/employees/generate-sample
 3. Backend generates employees with RichEmployeeGenerator
-4. API returns employees + metadata (NOT saved to session)
-5. Frontend loads employees into new session via existing upload flow
+4. Backend creates new session with generated employees
+5. API returns employees + metadata + session_id
+6. Frontend receives session and displays employees on grid
 ```
 
 ---
@@ -299,6 +301,7 @@ class GenerateSampleRequest(BaseModel):
 class GenerateSampleResponse(BaseModel):
     employees: list[Employee]
     metadata: dict[str, Any]  # Contains: total, bias_patterns, locations, functions
+    session_id: str  # Session identifier for the generated dataset
 ```
 
 **Metadata Fields:**
@@ -343,7 +346,8 @@ Content-Type: application/json
       "sales_high_performers": 13,
       "sales_high_performer_rate": 0.52
     }
-  }
+  },
+  "session_id": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
@@ -352,10 +356,10 @@ Content-Type: application/json
 - **500 Internal Server Error** - Generation failure
 
 **Performance:**
-- Target: <1 second for 200 employees
-- Acceptable: <2 seconds for 300 employees
+- Target: <1.5s for 200 employees (generation + session creation)
+- Acceptable: <2.5s for 300 employees
 
-**Important:** This endpoint does NOT save employees to a session. It only generates and returns the data. The frontend is responsible for creating a session via the existing upload flow.
+**Important:** This endpoint creates a new session with the generated employees. The session is immediately active and can be used for all subsequent operations.
 
 ---
 
@@ -968,13 +972,11 @@ const handleLoadSample = async () => {
   setIsLoading(true);
   try {
     // Generate sample data (200 employees with bias)
+    // Session is created automatically by the API
     const response = await sampleDataService.loadDefaultSampleData();
 
-    // Create session with generated employees
-    await sessionStore.createSessionFromEmployees(
-      response.employees,
-      'Sample Dataset (200 employees)'
-    );
+    // Session is now active with session_id
+    console.log(`Session ${response.session_id} created with ${response.metadata.total} employees`);
 
     // Success - navigate to grid
     navigate('/grid');
@@ -1245,5 +1247,5 @@ export_to_excel(employees, filename="sample_dataset_200.xlsx")
 
 **Document Status:** Complete (All 5 agents delivered)
 **Coverage:** 96% unit test coverage, 10 integration tests, 4 E2E tests
-**Performance:** <2s for 300 employees, <1s API latency
-**Last Updated:** 2025-12-28
+**Performance:** <2s for 300 employees, <1.5s API latency
+**Last Updated:** 2025-12-29

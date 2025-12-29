@@ -320,72 +320,77 @@ class SheetDetector:
             ValueError: If no suitable sheet is found or file cannot be read.
         """
         try:
-            # Read all sheet names
+            # Read all sheet names - use try/finally to ensure file handle is closed
             excel_file = pd.ExcelFile(file_path)
-            sheet_names = excel_file.sheet_names
+            try:
+                sheet_names = excel_file.sheet_names
 
-            logger.info(f"Examining {len(sheet_names)} sheets: {sheet_names}")
+                logger.info(f"Examining {len(sheet_names)} sheets: {sheet_names}")
 
-            best_score = 0
-            best_sheet = None
-            best_sheet_name = None
-            best_sheet_index = None
+                best_score = 0
+                best_sheet = None
+                best_sheet_name = None
+                best_sheet_index = None
 
-            for idx, sheet_name in enumerate(sheet_names):
-                try:
-                    df = pd.read_excel(file_path, sheet_name=sheet_name)
-                    # Ensure sheet_name is a string
-                    sheet_name_str = str(sheet_name)
-                    score = SheetDetector._score_sheet(df, sheet_name_str)
-
-                    logger.debug(
-                        f"Sheet '{sheet_name_str}' (index {idx}): score={score}, rows={len(df)}, columns={len(df.columns)}"
-                    )
-
-                    if score > best_score:
-                        best_score = score
-                        best_sheet = df
-                        best_sheet_name = sheet_name_str
-                        best_sheet_index = idx
-
-                except Exception as e:
-                    logger.warning(f"Failed to read sheet '{sheet_name}': {e}")
-                    continue
-
-            # Check if we found a suitable sheet
-            if best_score < 30:
-                # If no sheet scored well, fall back to sheet index 1 for backward compatibility
-                if len(sheet_names) > 1:
-                    logger.warning(
-                        f"No sheet scored >= 30 (best was {best_score}). "
-                        f"Falling back to sheet index 1 for backward compatibility."
-                    )
+                for idx, sheet_name in enumerate(sheet_names):
                     try:
-                        df = pd.read_excel(file_path, sheet_name=1)
-                        return df, str(sheet_names[1]), 1
+                        df = pd.read_excel(file_path, sheet_name=sheet_name)
+                        # Ensure sheet_name is a string
+                        sheet_name_str = str(sheet_name)
+                        score = SheetDetector._score_sheet(df, sheet_name_str)
+
+                        logger.debug(
+                            f"Sheet '{sheet_name_str}' (index {idx}): score={score}, rows={len(df)}, columns={len(df.columns)}"
+                        )
+
+                        if score > best_score:
+                            best_score = score
+                            best_sheet = df
+                            best_sheet_name = sheet_name_str
+                            best_sheet_index = idx
+
                     except Exception as e:
+                        logger.warning(f"Failed to read sheet '{sheet_name}': {e}")
+                        continue
+
+                # Check if we found a suitable sheet
+                if best_score < 30:
+                    # If no sheet scored well, fall back to sheet index 1 for backward compatibility
+                    if len(sheet_names) > 1:
+                        logger.warning(
+                            f"No sheet scored >= 30 (best was {best_score}). "
+                            f"Falling back to sheet index 1 for backward compatibility."
+                        )
+                        try:
+                            df = pd.read_excel(file_path, sheet_name=1)
+                            return df, str(sheet_names[1]), 1
+                        except Exception as e:
+                            raise ValueError(
+                                f"No sheet found containing employee data. Best score was {best_score}. "
+                                f"Fallback to sheet 1 failed: {e}"
+                            ) from e
+                    else:
                         raise ValueError(
-                            f"No sheet found containing employee data. Best score was {best_score}. "
-                            f"Fallback to sheet 1 failed: {e}"
-                        ) from e
-                else:
-                    raise ValueError(
-                        f"No sheet found containing employee data. "
-                        f"Only 1 sheet present with score {best_score} (threshold: 30)."
-                    )
+                            f"No sheet found containing employee data. "
+                            f"Only 1 sheet present with score {best_score} (threshold: 30)."
+                        )
 
-            logger.info(
-                f"Selected sheet '{best_sheet_name}' (index {best_sheet_index}) "
-                f"with score {best_score}"
-            )
-
-            # Runtime checks - these should never be None if best_score > 0
-            if best_sheet is None or best_sheet_name is None or best_sheet_index is None:
-                raise ValueError(
-                    "Internal error: best_sheet data is None despite having a valid score"
+                logger.info(
+                    f"Selected sheet '{best_sheet_name}' (index {best_sheet_index}) "
+                    f"with score {best_score}"
                 )
 
-            return best_sheet, best_sheet_name, best_sheet_index
+                # Runtime checks - these should never be None if best_score > 0
+                if best_sheet is None or best_sheet_name is None or best_sheet_index is None:
+                    raise ValueError(
+                        "Internal error: best_sheet data is None despite having a valid score"
+                    )
+
+                return best_sheet, best_sheet_name, best_sheet_index
+
+            finally:
+                # Always close the Excel file to release file handles
+                excel_file.close()
 
         except ValueError as e:
             # Re-raise our own ValueErrors (from validation above), wrap others

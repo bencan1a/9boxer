@@ -66,13 +66,15 @@ export async function generateFlagsFiltering(
 /**
  * Generate reporting chain filter active screenshot
  *
- * Shows the FilterDrawer with Reporting Chain section:
+ * Shows the ReportingChainFilter component with employee count:
  * - Green chip with manager icon (AccountTree)
  * - Manager name displayed in chip ("Reporting to: Jane Smith")
+ * - Employee count badge
  * - Chip can be dismissed with X button
+ * - Dark theme to show contrast
  *
- * Uses Storybook story: dashboard-filterdrawer--reporting-chain-active
- * Verifies reporting chain chip is visible before capturing
+ * Uses Storybook story: dashboard-filters-reportingchainfilter--with-employee-count
+ * Component-level story for cleaner screenshot
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -81,38 +83,12 @@ export async function generateReportingChainFilterActive(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Navigate to story using the helper (ensures Storybook is running)
-  const { navigateToStory } = await import("../storybook-screenshot");
-  await navigateToStory(
-    page,
-    "dashboard-filterdrawer--reporting-chain-active",
-    "light"
-  );
-
-  // Wait for drawer to be visible
-  await page.waitForSelector('[data-testid="filter-drawer"]', {
-    state: "visible",
-    timeout: 5000,
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-filters-reportingchainfilter--with-employee-count",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
   });
-
-  // Verify the reporting chain filter chip is visible
-  await page.waitForSelector('[data-testid="reporting-chain-filter-chip"]', {
-    state: "visible",
-    timeout: 5000,
-  });
-
-  // Additional wait to ensure rendering is complete
-  await page.waitForTimeout(500);
-
-  // Ensure output directory exists
-  const outputDir = path.dirname(outputPath);
-  fs.mkdirSync(outputDir, { recursive: true });
-
-  // Take screenshot of the drawer
-  const drawer = page.locator('[data-testid="filter-drawer"]');
-  await drawer.screenshot({ path: outputPath });
-
-  console.log(`  ✓ Captured reporting chain filter screenshot (active)`);
 }
 
 /**

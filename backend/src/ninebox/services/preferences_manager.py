@@ -6,6 +6,8 @@ recent files list with persistence to disk.
 
 import json
 import logging
+import os
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -230,14 +232,40 @@ class PreferencesManager:
             return default_config
 
     def _save_config(self, config: dict[str, Any]) -> None:
-        """Save configuration to disk.
+        """Save configuration to disk using atomic write.
+
+        Uses atomic write-to-temp + rename to prevent corruption and race conditions.
+        This ensures that concurrent writes don't corrupt the config file.
 
         Args:
             config: Configuration dictionary to save.
         """
         try:
-            with self.config_path.open("w", encoding="utf-8") as f:
-                json.dump(config, f, indent=2, ensure_ascii=False)
+            # Write to temporary file in the same directory (ensures same filesystem)
+            fd, temp_path = tempfile.mkstemp(
+                dir=self.config_path.parent,
+                prefix=".config_",
+                suffix=".tmp",
+                text=True,
+            )
+
+            try:
+                # Write JSON to temp file
+                with os.fdopen(fd, "w", encoding="utf-8") as f:
+                    json.dump(config, f, indent=2, ensure_ascii=False)
+                    f.flush()  # Flush to OS
+                    os.fsync(f.fileno())  # Sync to disk
+
+                # Atomic rename (replaces existing file atomically)
+                # On Windows, need to remove target first if it exists
+                temp_path_obj = Path(temp_path)
+                temp_path_obj.replace(self.config_path)
+
+            except Exception:
+                # Clean up temp file on error
+                Path(temp_path).unlink(missing_ok=True)
+                raise
+
         except Exception as e:
             logger.error(f"Failed to save config to {self.config_path}: {e}")
             raise

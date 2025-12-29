@@ -106,6 +106,9 @@ A visual bar chart representation of your data:
 - Bar height indicates the number of employees in that box
 - Makes it easy to spot imbalances and patterns at a glance
 
+!!! tip "See It in Action"
+    Remember the distribution chart from the [quickstart tour](quickstart.md)? Load sample data to see realistic distribution patterns with 200 employees spread across all 9 boxes.
+
 ### Interpreting Your Distribution
 
 Use the statistics to assess the health of your talent pipeline and identify potential issues.
@@ -160,6 +163,9 @@ Use the statistics to assess the health of your talent pipeline and identify pot
 ## Intelligence Tab
 
 The Intelligence tab provides advanced statistical analysis that identifies patterns, anomalies, and potential biases in your employee data.
+
+!!! info "Sample Data Includes Intentional Bias Patterns"
+    Sample data deliberately includes USA location bias (+15% high performers) and Sales function bias (+20% high performers) so you can see Intelligence in action. [Take the quickstart tour](quickstart.md) to explore how anomaly detection works!
 
 > 📋 **Real-World Scenario**
 >

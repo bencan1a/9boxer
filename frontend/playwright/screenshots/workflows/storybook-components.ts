@@ -288,6 +288,9 @@ export async function generateZoomControls(
  *
  * Story: common-fileuploaddialog--open
  *
+ * Note: Material-UI Dialog renders in a portal outside the Storybook root,
+ * so we use the [role="dialog"] selector to capture the dialog element.
+ *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
  */
@@ -300,7 +303,8 @@ export async function generateFileUploadDialog(
     outputPath,
     theme: "light",
     fullPage: false,
-    waitTime: 500,
+    waitTime: 1000, // Increased to ensure dialog renders
+    selector: '[role="dialog"]', // Dialog renders in portal, not in storybook root
   });
 }
 
@@ -539,39 +543,12 @@ export async function generateFileMenuApplyChanges(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  const { navigateToStory } = await import("../storybook-screenshot");
-  const fs = await import("fs");
-  const path = await import("path");
-
-  // Navigate to MenuOpenWithChanges story
-  await navigateToStory(
-    page,
-    "dashboard-appbar-filemenubutton--menu-open-with-changes",
-    "light"
-  );
-
-  // Wait for menu to be visible
-  await page.waitForSelector('[data-testid="file-menu"]', { state: "visible" });
-  await page.waitForTimeout(500);
-
-  // Hover over Apply Changes menu item to highlight it
-  const applyChangesItem = page.locator(
-    '[data-testid="apply-changes-menu-item"]'
-  );
-  if ((await applyChangesItem.count()) > 0) {
-    await applyChangesItem.hover();
-    await page.waitForTimeout(200);
-  }
-
-  // Capture screenshot of the menu
-  const menu = page.locator('[data-testid="file-menu"]');
-  const outputDir = path.dirname(outputPath);
-  fs.mkdirSync(outputDir, { recursive: true });
-  await menu.screenshot({ path: outputPath });
-
-  console.log(
-    `  ✓ Captured from Storybook with hover: dashboard-appbar-filemenubutton--menu-open-with-changes (light theme)`
-  );
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-appbar-filemenubutton--menu-open",
+    outputPath,
+    theme: "light",
+    waitTime: 1000,
+  });
 }
 
 /**
@@ -595,8 +572,8 @@ export async function generateGridPopulated(
   outputPath: string
 ): Promise<void> {
   // Set viewport to ensure entire 9-box grid is visible (not clipped at bottom)
-  // Grid needs ~900px height to show all 9 boxes without clipping
-  await page.setViewportSize({ width: 1200, height: 1000 });
+  // Grid needs ~1200px height to show all 9 boxes without clipping
+  await page.setViewportSize({ width: 1200, height: 1200 });
 
   await captureStorybookScreenshot(page, {
     storyId: "grid-nineboxgrid--populated",

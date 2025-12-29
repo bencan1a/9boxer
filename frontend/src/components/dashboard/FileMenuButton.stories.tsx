@@ -11,7 +11,7 @@ const meta = {
   title: "Dashboard/AppBar/FileMenuButton",
   component: FileMenuButton,
   parameters: {
-    layout: "centered",
+    layout: "padded",
   },
   tags: ["autodocs"],
   argTypes: {
@@ -35,10 +35,19 @@ const meta = {
   args: {
     onImportClick: fn(),
     onExportClick: fn(),
+    onLoadSampleClick: fn(),
   },
   decorators: [
     (Story) => (
-      <Box sx={{ p: 2, backgroundColor: "primary.main", color: "white" }}>
+      <Box
+        sx={{
+          width: 280,
+          minHeight: 350,
+          p: 2,
+          backgroundColor: "primary.main",
+          color: "white",
+        }}
+      >
         <Story />
       </Box>
     ),
