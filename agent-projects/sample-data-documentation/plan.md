@@ -1,15 +1,17 @@
 # Sample Data Documentation Update (Issue #104)
 
 ```yaml
-status: active
+status: done
 owner: claude
 created: 2025-12-29
+completed: 2025-12-29
 summary:
   - Transform quickstart into 5-7 minute guided tour using sample data
   - Restructure getting-started.md to make sample data the primary path
   - Add missing screenshots for sample data workflows
   - Create SAMPLE_DATA_GENERATION.md architecture documentation
   - Update all feature docs to reference sample data
+commit: 3d9fcd15367dcbc6e2383c8da84259eb7a5e75c8
 ```
 
 ## Problem Statement
