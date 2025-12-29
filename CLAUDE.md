@@ -770,13 +770,14 @@ See `internal-docs/testing/` for comprehensive testing principles and best pract
 
 ### GitHub Actions & CI/CD
 
-**Total Workflows:** 13 (in `.github/workflows/`)
+**Total Workflows:** 14 (in `.github/workflows/`)
 
 | Category | Workflows | Purpose |
 |----------|-----------|---------|
 | CI/CD | ci.yml, pr.yml, weekly.yml, release.yml | Testing, validation, releases |
 | Build | build-electron.yml | Desktop application builds |
 | Documentation | docs.yml, docs-audit.yml, docs-auto-update.yml, screenshots.yml | Doc generation and maintenance |
+| Architecture | arch-review.yml | AI-powered architectural review and drift detection |
 | Testing | visual-regression.yml, update-visual-baselines.yml | Visual regression testing |
 | Development | feature-checklist.yml | PR validation |
 | Environment | copilot-setup-steps.yml | GitHub Copilot setup |
@@ -807,6 +808,14 @@ See `internal-docs/testing/` for comprehensive testing principles and best pract
   - Uses Claude Sonnet 4.5 to detect stale docs, conflicts, missing content
   - Creates GitHub issues with consolidation tasks
   - Requires `ANTHROPIC_API_KEY` secret
+
+- **`arch-review.yml`** - AI-powered architectural review (Wednesdays 2 AM UTC):
+  - Uses principal-engineer agent to detect architectural drift, duplication, and pattern violations
+  - Analyzes significant code changes (>10 line changes) against established architecture docs
+  - Creates GitHub issues for critical/high priority architectural concerns
+  - Recommends updates to architecture documentation
+  - Requires `ANTHROPIC_API_KEY` secret
+  - Designed for codebases where multiple agents work independently
 
 - **`screenshots.yml`** - Screenshot generation (Mondays 2 AM UTC):
   - Automated documentation screenshots using Playwright
