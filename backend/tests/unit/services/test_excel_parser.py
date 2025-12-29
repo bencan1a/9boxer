@@ -205,3 +205,166 @@ def test_get_position_label_when_all_combinations_then_returns_correct_labels() 
     assert get_position_label(PerformanceLevel.LOW, PotentialLevel.HIGH) == "Enigma [L,H]"
     assert get_position_label(PerformanceLevel.LOW, PotentialLevel.MEDIUM) == "Inconsistent [L,M]"
     assert get_position_label(PerformanceLevel.LOW, PotentialLevel.LOW) == "Underperformer [L,L]"
+
+
+# ========== Flags Parsing Tests ==========
+
+
+def test_parse_when_flags_column_exists_then_reads_flags(tmp_path: Path) -> None:
+    """Test that flags are parsed from the Flags column."""
+    # Create a test Excel file with Flags column
+    test_file = tmp_path / "test_flags.xlsx"
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+
+    # Headers
+    sheet["A1"] = "Employee ID"
+    sheet["B1"] = "Worker"
+    sheet["C1"] = "Business Title"
+    sheet["D1"] = "Job Level - Primary Position"
+    sheet["E1"] = "Aug 2025 Talent Assessment Performance"
+    sheet["F1"] = "Aug 2025  Talent Assessment Potential"
+    sheet["G1"] = "Flags"
+
+    # Data row with flags
+    sheet["A2"] = 1
+    sheet["B2"] = "Test Employee"
+    sheet["C2"] = "Software Engineer"
+    sheet["D2"] = "MT4"
+    sheet["E2"] = "High"
+    sheet["F2"] = "Medium"
+    sheet["G2"] = "promotion_ready, flight_risk"
+
+    workbook.save(test_file)
+    workbook.close()
+
+    # Parse and verify flags
+    parser = ExcelParser()
+    result = parser.parse(test_file)
+
+    assert len(result.employees) == 1
+    emp = result.employees[0]
+    assert emp.flags is not None
+    assert set(emp.flags) == {"promotion_ready", "flight_risk"}
+
+
+def test_parse_when_flags_empty_then_no_flags(tmp_path: Path) -> None:
+    """Test that empty Flags column results in None or empty list."""
+    test_file = tmp_path / "test_no_flags.xlsx"
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+
+    # Headers
+    sheet["A1"] = "Employee ID"
+    sheet["B1"] = "Worker"
+    sheet["C1"] = "Business Title"
+    sheet["D1"] = "Job Level - Primary Position"
+    sheet["E1"] = "Aug 2025 Talent Assessment Performance"
+    sheet["F1"] = "Aug 2025  Talent Assessment Potential"
+    sheet["G1"] = "Flags"
+
+    # Data row without flags
+    sheet["A2"] = 1
+    sheet["B2"] = "Test Employee"
+    sheet["C2"] = "Software Engineer"
+    sheet["D2"] = "MT4"
+    sheet["E2"] = "High"
+    sheet["F2"] = "Medium"
+    sheet["G2"] = ""  # Empty flags
+
+    workbook.save(test_file)
+    workbook.close()
+
+    parser = ExcelParser()
+    result = parser.parse(test_file)
+
+    assert len(result.employees) == 1
+    emp = result.employees[0]
+    assert emp.flags is None or emp.flags == []
+
+
+# ========== Donut Exercise Parsing Tests ==========
+
+
+def test_parse_when_donut_data_exists_then_reads_donut_placement(tmp_path: Path) -> None:
+    """Test that donut exercise data is parsed from tracking columns."""
+    test_file = tmp_path / "test_donut.xlsx"
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+
+    # Headers
+    sheet["A1"] = "Employee ID"
+    sheet["B1"] = "Worker"
+    sheet["C1"] = "Business Title"
+    sheet["D1"] = "Job Level - Primary Position"
+    sheet["E1"] = "Aug 2025 Talent Assessment Performance"
+    sheet["F1"] = "Aug 2025  Talent Assessment Potential"
+    sheet["G1"] = "Donut Exercise Position"
+    sheet["H1"] = "Donut Exercise Notes"
+
+    # Data row with donut placement
+    sheet["A2"] = 1
+    sheet["B2"] = "Test Employee"
+    sheet["C2"] = "Software Engineer"
+    sheet["D2"] = "MT4"
+    sheet["E2"] = "Medium"  # Main position
+    sheet["F2"] = "Medium"  # Main position
+    sheet["G2"] = 9  # Donut position (High/High)
+    sheet["H2"] = "Hypothetical star placement"
+
+    workbook.save(test_file)
+    workbook.close()
+
+    parser = ExcelParser()
+    result = parser.parse(test_file)
+
+    assert len(result.employees) == 1
+    emp = result.employees[0]
+    assert emp.donut_modified is True
+    assert emp.donut_position == 9
+    assert emp.donut_performance == PerformanceLevel.HIGH
+    assert emp.donut_potential == PotentialLevel.HIGH
+    assert emp.donut_notes == "Hypothetical star placement"
+
+
+def test_parse_when_no_donut_data_then_donut_fields_none(tmp_path: Path) -> None:
+    """Test that employees without donut data have donut fields set to None/False."""
+    test_file = tmp_path / "test_no_donut.xlsx"
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+
+    # Headers
+    sheet["A1"] = "Employee ID"
+    sheet["B1"] = "Worker"
+    sheet["C1"] = "Business Title"
+    sheet["D1"] = "Job Level - Primary Position"
+    sheet["E1"] = "Aug 2025 Talent Assessment Performance"
+    sheet["F1"] = "Aug 2025  Talent Assessment Potential"
+    sheet["G1"] = "Donut Exercise Position"
+
+    # Data row without donut placement
+    sheet["A2"] = 1
+    sheet["B2"] = "Test Employee"
+    sheet["C2"] = "Software Engineer"
+    sheet["D2"] = "MT4"
+    sheet["E2"] = "Medium"
+    sheet["F2"] = "Medium"
+    sheet["G2"] = ""  # Empty donut position
+
+    workbook.save(test_file)
+    workbook.close()
+
+    parser = ExcelParser()
+    result = parser.parse(test_file)
+
+    assert len(result.employees) == 1
+    emp = result.employees[0]
+    assert emp.donut_modified is False
+    assert emp.donut_position is None
+    assert emp.donut_performance is None
+    assert emp.donut_potential is None
+    assert emp.donut_notes is None
