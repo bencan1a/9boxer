@@ -132,88 +132,75 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
-  // Notes workflow screenshots (3 screenshots)
+  // Notes workflow screenshots (1 screenshot)
   "notes-changes-tab-field": {
-    source: "full-app",
-    workflow: "notes",
-    function: "generateChangesTabField",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateChangesTab",
     path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png",
     description: "Changes tab with note field highlighted",
-  },
-  "notes-good-example": {
-    source: "full-app",
-    workflow: "notes",
-    function: "generateGoodExample",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png",
-    description: "Changes tab with well-written note example",
-  },
-  "notes-export-excel": {
-    source: "full-app",
-    workflow: "notes",
-    function: "generateExportExcel",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-notes-in-excel.png",
-    description: "Excel export with notes column (manual capture required)",
-    manual: true,
+    storyId: "components-panel-changetrackertab--grid-changes-only",
+    cropping: "panel",
+    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
-  // Filters workflow screenshots (4 screenshots)
+  // Filters workflow screenshots (3 screenshots)
   "filters-active-chips": {
-    source: "full-app",
-    workflow: "filters",
+    source: "storybook",
+    workflow: "filters-storybook",
     function: "generateActiveChips",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png",
-    description: "Grid view with active filter chips and orange dot indicator",
-    cropping: "full-page",
-    dimensions: { exactWidth: 1400, exactHeight: 900 },
+    description: "AppBar with active filter chips and orange dot indicator",
+    storyId: "dashboard-appbar-pureappbar--with-active-filters",
+    cropping: "element",
+    dimensions: {
+      minWidth: 300,
+      maxWidth: 1400,
+      minHeight: 60,
+      maxHeight: 100,
+    },
   },
   "filters-panel-expanded": {
-    source: "full-app",
-    workflow: "filters",
-    function: "generatePanelExpanded",
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterDrawerAllExpanded",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
     description: "Filter panel expanded showing all filter options",
+    storyId: "dashboard-filterdrawer--all-sections-expanded",
     cropping: "container",
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
-  "filters-before-after": {
-    source: "full-app",
-    workflow: "filters",
-    function: "generateBeforeAfter",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-before-state.png",
-    description:
-      "Before/after filtering comparison (requires manual 2-panel composition)",
-    manual: true,
-    cropping: "grid",
-    dimensions: { minWidth: 800, minHeight: 600 },
-  },
   "filters-clear-all-button": {
-    source: "full-app",
-    workflow: "filters",
-    function: "generateClearAllButton",
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterDrawerClearAll",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png",
-    description: "Filter drawer with Clear All button highlighted",
+    description: "Filter section with Clear All button",
+    storyId: "dashboard-filtersection--custom-content",
     cropping: "container",
     dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
 
   // Quickstart workflow screenshots (4 screenshots)
   "quickstart-file-menu-button": {
-    source: "full-app",
-    workflow: "quickstart",
-    function: "generateFileMenuButton",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateFileMenuButtonNoFile",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png",
     description:
       'File menu button in toolbar showing "No file selected" empty state',
+    storyId: "dashboard-appbar-filemenubutton--no-file",
     cropping: "element",
     dimensions: { minWidth: 300, maxWidth: 1400, minHeight: 60, maxHeight: 80 },
   },
   "quickstart-upload-dialog": {
-    source: "full-app",
-    workflow: "quickstart",
-    function: "generateUploadDialog",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateFileUploadDialog",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
     description:
       "File upload dialog with file selection input and upload button",
+    storyId: "common-fileuploaddialog--open",
     cropping: "container",
     dimensions: {
       minWidth: 260,
@@ -223,59 +210,62 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     },
   },
   "quickstart-grid-populated": {
-    source: "full-app",
-    workflow: "quickstart",
+    source: "storybook",
+    workflow: "storybook-components",
     function: "generateGridPopulated",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png",
     description: "Populated 9-box grid after successful file upload",
-    cropping: "grid",
+    storyId: "grid-nineboxgrid--populated",
+    cropping: "container",
     dimensions: { minWidth: 800, minHeight: 600 },
   },
-  "quickstart-success-annotated": {
-    source: "full-app",
-    workflow: "quickstart",
-    function: "generateSuccessAnnotated",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-success-annotated.png",
-    description:
-      "Full application view showing populated grid and employee count (requires manual annotation)",
-    manual: true,
-    cropping: "full-page",
-    dimensions: { exactWidth: 1400, exactHeight: 900 },
-  },
-
   // Calibration workflow screenshots (6 screenshots)
   "calibration-file-import": {
-    source: "full-app",
-    workflow: "calibration",
-    function: "generateFileImport",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateFileMenuImport",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
-    description: "File menu open with Import Data menu item highlighted",
+    description:
+      "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
   },
   "calibration-statistics-red-flags": {
-    source: "full-app",
-    workflow: "calibration",
+    source: "storybook",
+    workflow: "statistics-storybook",
     function: "generateStatisticsRedFlags",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png",
     description:
       "Statistics tab showing distribution table with problematic patterns",
+    storyId: "panel-statistics-distributiontable--skewed-distribution",
+    cropping: "container",
   },
-  "calibration-intelligence-anomalies": {
-    source: "full-app",
+  "intelligence-summary-anomalies": {
+    source: "storybook",
     workflow: "intelligence",
-    function: "generateIntelligenceAnomalies",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-intelligence-anomalies.png",
+    function: "intelligenceSummaryNeedsAttention",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-anomalies.png",
     description:
-      "Intelligence tab showing AI-powered anomaly detection results with populated anomalies and insights sections",
-    cropping: "panel",
-    dimensions: { minWidth: 300, minHeight: 400 },
+      "Intelligence summary showing low quality score and high anomaly count",
+    storyId: "intelligence-intelligencesummary--needs-attention",
+    cropping: "container",
+  },
+  "intelligence-anomaly-details": {
+    source: "storybook",
+    workflow: "intelligence",
+    function: "intelligenceAnomalyRed",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-details.png",
+    description:
+      "Anomaly section showing severe statistical anomalies requiring investigation",
+    storyId: "intelligence-anomalysection--red-status",
+    cropping: "container",
   },
   "distribution-chart-ideal": {
-    source: "full-app",
+    source: "storybook",
     workflow: "intelligence",
-    function: "captureDistributionChartIdeal",
+    function: "intelligenceLevelDistribution",
     path: "resources/user-guide/docs/images/screenshots/distribution-chart-ideal.png",
     description:
       "Distribution section showing ideal talent distribution across 9-box grid",
+    storyId: "intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 300 },
   },
@@ -347,19 +337,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 250 },
   },
-  "calibration-filters-panel": {
-    source: "full-app",
-    workflow: "calibration",
-    function: "generateFiltersPanel",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-filters-panel.png",
-    description: "Filters panel with active filter selections applied",
-  },
   "calibration-donut-mode-toggle": {
-    source: "full-app",
-    workflow: "calibration",
-    function: "generateDonutModeToggle",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsDonutView",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
-    description: "View mode toggle button in active donut mode state",
+    description: "ViewControls toolbar with donut mode toggle active",
+    storyId: "common-viewcontrols--donut-view-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "calibration-donut-mode-grid": {
     source: "full-app",
@@ -369,15 +355,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
   },
-  "calibration-export-results": {
-    source: "full-app",
-    workflow: "calibration",
-    function: "generateExportResults",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-export-results.png",
-    description: "Exported Excel file with changes applied",
-    manual: true,
-  },
-
   // Statistics workflow screenshots (4 Storybook-based screenshots)
   "statistics-panel-distribution": {
     source: "storybook",
@@ -387,24 +364,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Statistics panel distribution table with grouping indicators (balanced distribution)",
     storyId: "panel-statistics-distributiontable--balanced-distribution",
-  },
-  "statistics-trend-indicators": {
-    source: "storybook",
-    workflow: "statistics-storybook",
-    function: "generateTrendIndicators",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-trend-indicators.png",
-    description:
-      "Trend indicators showing all 9 position colors with color-coded bars",
-    storyId: "panel-statistics-coloredpercentagebar--all-positions-comparison",
-  },
-  "statistics-grouping-indicators": {
-    source: "storybook",
-    workflow: "statistics-storybook",
-    function: "generateGroupingIndicators",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouping-indicators.png",
-    description:
-      "CSS-based grouping indicators for high/middle/low tiers in distribution table",
-    storyId: "panel-statistics-groupingindicator--all-groupings-together",
   },
   "statistics-summary-cards": {
     source: "storybook",
@@ -416,30 +375,29 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId: "panel-statistics-statisticssummary--default",
   },
 
-  // Donut mode screenshots (2 screenshots)
+  // Donut mode screenshots (1 screenshot)
   "donut-mode-active-layout": {
-    source: "full-app",
-    workflow: "donut",
-    function: "generateActiveLayout",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutModeActive",
     path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png",
-    description: "Active donut mode layout with concentric circles",
-  },
-  "donut-mode-toggle-comparison": {
-    source: "full-app",
-    workflow: "donut",
-    function: "generateToggleComparison",
-    path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-toggle-comparison.png",
-    description: "Side-by-side normal vs donut mode comparison",
-    manual: true,
+    description:
+      "Active donut mode layout with concentric circles and ghost tiles",
+    storyId: "grid-nineboxgrid--donut-mode",
+    cropping: "container",
+    dimensions: { minWidth: 800, minHeight: 600 },
   },
 
   // Grid and basic UI screenshots (2 screenshots)
   "grid-normal": {
-    source: "full-app",
-    workflow: "grid",
-    function: "generateGridNormal",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridPopulated",
     path: "resources/user-guide/docs/images/screenshots/grid-normal.png",
     description: "Standard 9-box grid with employee tiles",
+    storyId: "grid-nineboxgrid--populated",
+    cropping: "container",
+    dimensions: { minWidth: 800, minHeight: 600 },
   },
   "employee-tile-normal": {
     source: "storybook",
@@ -450,105 +408,64 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId: "grid-employeetile--default",
   },
 
-  // Hero and index images (2 screenshots)
-  "hero-grid-sample": {
-    source: "full-app",
-    workflow: "hero",
-    function: "generateHeroGrid",
-    path: "resources/user-guide/docs/images/screenshots/hero-grid-sample.png",
-    description: "Hero image showing full grid with sample data",
-  },
-  "index-quick-win-preview": {
-    source: "full-app",
-    workflow: "hero",
-    function: "generateQuickWinPreview",
-    path: "resources/user-guide/docs/images/screenshots/index-quick-win-preview.png",
-    description: "Quick win preview for index page",
-  },
-
   // Additional features screenshots (5 screenshots)
-  "changes-panel-entries": {
-    source: "full-app",
-    workflow: "changes",
-    function: "generatePanelEntries",
-    path: "resources/user-guide/docs/images/screenshots/changes-panel-entries.png",
-    description: "Changes panel with multiple employee movement entries",
-  },
   "timeline-employee-history": {
-    source: "full-app",
-    workflow: "timeline",
-    function: "generateEmployeeHistory",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateRatingsTimeline",
     path: "resources/user-guide/docs/images/screenshots/timeline-employee-history.png",
     description: "Employee movement timeline showing historical positions",
+    storyId: "panel-ratingstimeline--with-history",
   },
   "employee-details-panel-expanded": {
-    source: "full-app",
-    workflow: "employees",
-    function: "generateDetailsPanelExpanded",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeDetailsPanel",
     path: "resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png",
     description: "Expanded employee details panel with all information",
+    storyId: "panel-employeedetails--default",
   },
   "file-menu-apply-changes": {
-    source: "full-app",
-    workflow: "exporting",
+    source: "storybook",
+    workflow: "storybook-components",
     function: "generateFileMenuApplyChanges",
     path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
-    description: "File menu with Apply Changes option highlighted",
-  },
-  "excel-file-new-columns": {
-    source: "full-app",
-    workflow: "exporting",
-    function: "generateExcelFileNewColumns",
-    path: "resources/user-guide/docs/images/screenshots/excel-file-new-columns.png",
-    description: "Excel file showing new columns after export",
-    manual: true,
-  },
-
-  // Notes donut mode (1 screenshot)
-  "notes-donut-mode": {
-    source: "full-app",
-    workflow: "notes",
-    function: "generateDonutMode",
-    path: "resources/user-guide/docs/images/screenshots/notes/notes-donut-mode.png",
-    description: "Notes visible in donut mode employee hover tooltip",
-  },
-
-  // Quickstart Excel sample (already defined above but adding here for completeness)
-  "quickstart-excel-sample": {
-    source: "full-app",
-    workflow: "quickstart",
-    function: "generateExcelSample",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-excel-sample.png",
-    description: "Sample Excel file format showing required columns",
-    manual: true,
+    description: "File menu dropdown open showing Apply Changes option",
+    storyId: "dashboard-appbar-filemenubutton--menu-open-with-changes",
+    cropping: "container",
+    dimensions: { minWidth: 200, minHeight: 200 },
   },
 
   // Zoom controls screenshot (1 screenshot)
   "zoom-controls": {
     source: "storybook",
     workflow: "storybook-components",
-    function: "generateZoomControls",
+    function: "generateViewControlsGridView",
     path: "resources/user-guide/docs/images/screenshots/zoom-controls.png",
     description:
-      "Zoom controls in bottom-left corner showing +/- buttons, percentage, and full-screen toggle",
-    storyId: "common-zoomcontrols--default",
+      "ViewControls toolbar showing zoom controls, view toggle, and fullscreen button",
+    storyId: "common-viewcontrols--grid-view-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
   },
 
   // ViewControls consolidation screenshots (6 screenshots)
   "view-controls-main-interface": {
-    source: "full-app",
-    workflow: "view-controls",
-    function: "generateMainInterface",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsGridView",
     path: "resources/user-guide/docs/images/screenshots/view-controls/main-interface.png",
     description:
-      "Main dashboard showing new simplified AppBar and floating ViewControls in top-right",
-    cropping: "full-page",
-    dimensions: { minWidth: 1200, minHeight: 800 },
+      "ViewControls toolbar showing all controls: view toggle, zoom, and fullscreen",
+    storyId: "common-viewcontrols--grid-view-active",
+    cropping: "container",
+    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "view-controls-grid-view": {
-    source: "full-app",
-    workflow: "view-controls",
-    function: "generateViewControlsGrid",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsGridView",
+    storyId: "common-viewcontrols--grid-view-active",
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png",
     description:
       "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
@@ -556,9 +473,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 300, minHeight: 60 },
   },
   "view-controls-donut-view": {
-    source: "full-app",
-    workflow: "view-controls",
-    function: "generateViewControlsDonut",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsDonutView",
+    storyId: "common-viewcontrols--donut-view-active",
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
     description: "ViewControls toolbar with Donut view active",
     cropping: "container",
@@ -576,14 +494,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 400, minHeight: 300 },
   },
   "view-controls-simplified-appbar": {
-    source: "full-app",
-    workflow: "view-controls",
+    source: "storybook",
+    workflow: "storybook-components",
     function: "generateSimplifiedAppBar",
     path: "resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png",
     description:
       "Simplified AppBar showing only Logo, File menu, Help button, and Settings button",
-    cropping: "element",
-    dimensions: { minWidth: 800, minHeight: 64 },
+    storyId: "dashboard-appbar-pureappbar--file-loaded",
   },
   "view-controls-fullscreen": {
     source: "full-app",
@@ -620,25 +537,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     dimensions: { minWidth: 275, minHeight: 120 },
   },
   "details-flag-badges": {
-    source: "full-app",
-    workflow: "details-panel-enhancements",
-    function: "generateFlagBadges",
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileFlagged",
     path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
     description:
       "Employee tiles showing individual colored flag badges (16px circular) in top-right corner",
+    storyId: "grid-employeetile--with-flags",
     cropping: "container",
     dimensions: { minWidth: 230, minHeight: 220 },
-  },
-  "details-flag-filtering": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateFlagsFiltering",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-filtering.png",
-    description:
-      "FilterDrawer showing Flags section with checkboxes, employee counts, and active selections",
-    storyId: "dashboard-filterdrawer--flags-active",
-    cropping: "container",
-    dimensions: { minWidth: 275, minHeight: 400 },
   },
   "details-reporting-chain-clickable": {
     source: "storybook",
@@ -651,30 +558,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     cropping: "container",
     dimensions: { minWidth: 300, minHeight: 200 },
   },
-  "details-reporting-chain-filter-active": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateReportingChainFilterActive",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-filter-active.png",
-    description:
-      "Active reporting chain filter shown in FilterDrawer with manager chip and dismiss button",
-    storyId: "dashboard-filterdrawer--reporting-chain-active",
-    cropping: "container",
-    dimensions: { minWidth: 275, minHeight: 400 },
-  },
-
   // FilterDrawer screenshots (4 new screenshots)
-  "filters-overview": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateFilterDrawerOverview",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-overview.png",
-    description:
-      "Complete FilterDrawer anatomy showing all filter sections: Job Levels, Job Functions, Locations, Managers, Flags, Reporting Chain, Exclusions",
-    storyId: "dashboard-filterdrawer--all-sections-expanded",
-    cropping: "container",
-    dimensions: { minWidth: 275, minHeight: 600 },
-  },
   "filters-multiple-active": {
     source: "storybook",
     workflow: "filters-storybook",

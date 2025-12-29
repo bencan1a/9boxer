@@ -125,3 +125,97 @@ export async function generateMultipleFiltersActive(
     selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
   });
 }
+
+/**
+ * Generate FilterDrawer all expanded screenshot
+ *
+ * Shows the FilterDrawer with all sections expanded.
+ * Used for filters-panel-expanded screenshot.
+ *
+ * Uses Storybook story: dashboard-filterdrawer--all-sections-expanded
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterDrawerAllExpanded(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    outputPath,
+    theme: "light",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
+  });
+}
+
+/**
+ * Generate FilterDrawer Clear All button screenshot
+ *
+ * Shows the FilterSection component with Clear All button.
+ * Used for filters-clear-all-button screenshot.
+ *
+ * Uses Storybook story: dashboard-filtersection--custom-content
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterDrawerClearAll(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-filtersection--custom-content",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate FilterDrawer calibration screenshot
+ *
+ * Shows the FilterDrawer with filter selections for calibration workflow.
+ * Used for calibration-filters-panel screenshot.
+ *
+ * Uses Storybook story: dashboard-filterdrawer--multiple-filters-active
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterDrawerCalibration(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    outputPath,
+    theme: "light",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
+  });
+}
+
+/**
+ * Generate active filter chips screenshot
+ *
+ * Shows the AppBar with active filter chips and orange dot indicator.
+ * Used for filters-active-chips screenshot.
+ *
+ * Uses Storybook story: dashboard-appbar-pureappbar--with-active-filters
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateActiveChips(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "dashboard-appbar-pureappbar--with-active-filters",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
