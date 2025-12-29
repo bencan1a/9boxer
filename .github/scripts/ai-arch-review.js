@@ -343,9 +343,52 @@ async function analyzeArchitecture(context) {
 
 ## Your Task: Architectural Review
 
-Analyze the recent code changes against established architectural patterns to identify issues.
+Analyze the recent code changes to:
+1. **Identify significant architectural events** (what happened this week)
+2. **Detect architectural issues** (what needs attention)
 
-**Focus Areas (prioritized):**
+This provides both a narrative of major changes AND identifies problems.
+
+---
+
+## Part 1: Significant Architectural Events
+
+**First, identify 5-10 major architecturally significant events from this review period.**
+
+An "event" is a significant change or addition that has architectural impact:
+- New features or systems introduced
+- Major refactorings or migrations
+- Architectural pattern changes
+- Significant component additions/removals
+- Infrastructure or tooling changes
+- Performance optimizations
+- Security enhancements
+
+**For each event, provide:**
+1. **Title**: Brief description (max 100 chars)
+2. **Category**: One of: feature, refactor, migration, tooling, performance, security, documentation
+3. **Assessment**: One of: positive (good architecture), neutral (acceptable), concern (see findings)
+4. **Scope**: Number of files/commits involved
+5. **Description**: What was done and why it matters architecturally (max 300 chars)
+6. **Alignment**: How well it aligns with established patterns (max 200 chars)
+
+**Example:**
+```json
+{
+  "title": "Migrated screenshot generation from Python to TypeScript",
+  "category": "migration",
+  "assessment": "positive",
+  "scope": "15 files, 8 commits",
+  "description": "Consolidated screenshot generation into Playwright TypeScript workflows. Eliminates Python dependency and shares helpers with E2E tests. Better maintainability.",
+  "alignment": "Follows testing architecture patterns. Shares code between E2E and screenshot workflows (DRY principle)."
+}
+```
+
+---
+
+## Part 2: Architectural Issues
+
+**Now, analyze for architectural problems (Focus Areas prioritized):**
 
 1. **Code Duplication** - Same or very similar logic in multiple files
    - Check for: Duplicate validation logic, duplicate API patterns, duplicate state management
@@ -403,6 +446,16 @@ Analyze the recent code changes against established architectural patterns to id
 
 **Return JSON format (ensure proper escaping):**
 {
+  "significantEvents": [
+    {
+      "title": "Brief event title",
+      "category": "feature|refactor|migration|tooling|performance|security|documentation",
+      "assessment": "positive|neutral|concern",
+      "scope": "X files, Y commits",
+      "description": "What was done and architectural impact",
+      "alignment": "How well it follows established patterns"
+    }
+  ],
   "findings": [
     {
       "type": "duplication|drift|violation|security|performance|missing-docs",
@@ -423,6 +476,21 @@ Analyze the recent code changes against established architectural patterns to id
     }
   ],
   "summary": {
+    "totalEvents": number,
+    "eventsByCategory": {
+      "feature": number,
+      "refactor": number,
+      "migration": number,
+      "tooling": number,
+      "performance": number,
+      "security": number,
+      "documentation": number
+    },
+    "eventsByAssessment": {
+      "positive": number,
+      "neutral": number,
+      "concern": number
+    },
     "totalFindings": number,
     "byType": {
       "duplication": number,
@@ -656,6 +724,40 @@ function printSummary(report) {
   console.log(`   - Significant files: ${report.codeChanges.significantChanges}`);
   console.log(`   - Diffs analyzed: ${report.codeChanges.filesAnalyzed}`);
 
+  // Display significant events
+  if (report.significantEvents && report.significantEvents.length > 0) {
+    console.log(`\n🎯 Significant Architectural Events: ${report.significantEvents.length}`);
+
+    // Show breakdown by assessment
+    if (report.summary.eventsByAssessment) {
+      const positive = report.summary.eventsByAssessment.positive || 0;
+      const neutral = report.summary.eventsByAssessment.neutral || 0;
+      const concern = report.summary.eventsByAssessment.concern || 0;
+      console.log(`   Assessment: ✅ ${positive} positive | ⚪ ${neutral} neutral | ⚠️  ${concern} concern`);
+    }
+
+    // Show sample events
+    console.log(`\n   Major Events This Week:`);
+    report.significantEvents.slice(0, 5).forEach((event, index) => {
+      const assessmentIcon = event.assessment === 'positive' ? '✅' : event.assessment === 'neutral' ? '⚪' : '⚠️';
+      const categoryIcons = {
+        'feature': '🎁',
+        'refactor': '🔧',
+        'migration': '📦',
+        'tooling': '🛠️',
+        'performance': '⚡',
+        'security': '🔒',
+        'documentation': '📝',
+      };
+      const categoryIcon = categoryIcons[event.category] || '•';
+      console.log(`   ${index + 1}. ${assessmentIcon} ${categoryIcon} ${event.title}`);
+      console.log(`      ${event.description}`);
+    });
+    if (report.significantEvents.length > 5) {
+      console.log(`   ... and ${report.significantEvents.length - 5} more (see full report)`);
+    }
+  }
+
   console.log(`\n🔍 Architectural Findings: ${report.summary.totalFindings}`);
 
   if (report.summary.totalFindings > 0) {
@@ -766,9 +868,14 @@ async function main() {
   // Analyze with Claude
   console.log('\n🤖 Analyzing architecture with principal-engineer agent...');
   const results = await analyzeArchitecture(context);
-  console.log(`   Analysis complete: ${results.summary.totalFindings} finding(s)`);
+  console.log(`   Analysis complete: ${results.summary.totalEvents || 0} event(s), ${results.summary.totalFindings} finding(s)`);
   if (results.summary.criticalIssues > 0) {
     console.log(`   ⚠️  ${results.summary.criticalIssues} CRITICAL issue(s) detected!`);
+  }
+  if (results.summary.eventsByAssessment) {
+    const positive = results.summary.eventsByAssessment.positive || 0;
+    const concern = results.summary.eventsByAssessment.concern || 0;
+    console.log(`   Events: ✅ ${positive} positive, ⚠️  ${concern} concern`);
   }
 
   // Create GitHub issues
@@ -791,9 +898,13 @@ async function main() {
       backendFiles: changes.stats.backendFiles,
       frontendFiles: changes.stats.frontendFiles,
     },
+    significantEvents: results.significantEvents || [],
     findings: results.findings,
     documentationUpdates: results.documentationUpdates || [],
     summary: {
+      totalEvents: results.summary.totalEvents || 0,
+      eventsByCategory: results.summary.eventsByCategory || {},
+      eventsByAssessment: results.summary.eventsByAssessment || {},
       totalFindings: results.summary.totalFindings,
       byType: results.summary.byType,
       byPriority: results.summary.byPriority,
