@@ -93,6 +93,30 @@ export async function generateEmployeeDetailsPanel(
 }
 
 /**
+ * Generate employee details panel with changes screenshot
+ *
+ * Captures the EmployeeDetails panel component showing an employee
+ * with visible changes/modifications in the Changes Summary section.
+ *
+ * Story: panel-employeedetails--with-changes
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateEmployeeDetailsPanelWithChanges(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "panel-employeedetails--with-changes",
+    outputPath,
+    theme: "light",
+    fullPage: false,
+    waitTime: 1200, // Panel has animations + needs time for changes to render
+  });
+}
+
+/**
  * Generate ratings timeline screenshot
  *
  * Captures the RatingsTimeline component showing performance history

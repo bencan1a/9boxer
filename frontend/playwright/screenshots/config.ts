@@ -104,10 +104,11 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
   "changes-employee-details": {
     source: "storybook",
     workflow: "storybook-components",
-    function: "generateEmployeeDetailsPanel",
+    function: "generateEmployeeDetailsPanelWithChanges",
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png",
-    description: "Employee details panel showing updated ratings",
-    storyId: "panel-employeedetails--default",
+    description:
+      "Employee details panel showing updated ratings with visible changes",
+    storyId: "panel-employeedetails--with-changes",
     cropping: "panel",
     dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
@@ -520,8 +521,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateCurrentAssessmentEnhanced",
     path: "resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png",
     description:
-      "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips",
-    storyId: "panel-employeedetails--default",
+      "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips with exterior padding",
+    storyId: "panel-employeedetails--default-with-padding",
     cropping: "element",
     dimensions: { minWidth: 300, minHeight: 150 },
   },

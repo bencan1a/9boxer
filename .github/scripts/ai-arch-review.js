@@ -510,11 +510,21 @@ An "event" is a significant change or addition that has architectural impact:
   }
 }
 
-**JSON FORMATTING RULES:**
-- Escape all quotes with backslash: \\"
-- Escape all backslashes: \\\\
-- No literal newlines in strings - use \\n
-- Return ONLY the JSON object, no commentary before or after`;
+**CRITICAL JSON FORMATTING RULES:**
+- **ALL quotes in strings MUST be escaped:** Use \\" not "
+- **ALL backslashes MUST be escaped:** Use \\\\ not \\
+- **NO literal newlines in strings:** Use \\n instead
+- **Return ONLY valid JSON:** No commentary, no markdown formatting
+- **Double-check all escape sequences:** Incomplete escapes will cause parsing to fail
+- **If a string contains code examples:** Escape ALL special characters properly
+
+**Common mistakes to AVOID:**
+- ❌ \\"data-testid=\\" (incomplete escape sequence)
+- ✅ \\"data-testid=\\\\\\"selector\\\\\\"\\" (properly escaped)
+- ❌ C:\\\\Users\\\\file.txt (insufficient escaping)
+- ✅ C:\\\\\\\\Users\\\\\\\\file.txt (properly escaped for JSON)
+
+Return ONLY the JSON object, no markdown fences, no commentary:`;
 
   try {
     const message = await anthropic.messages.create({
@@ -538,7 +548,7 @@ An "event" is a significant change or addition that has architectural impact:
       throw new Error('Failed to extract JSON from Claude response');
     }
 
-    const jsonText = jsonMatch[1];
+    let jsonText = jsonMatch[1];
 
     try {
       const result = JSON.parse(jsonText);
@@ -550,6 +560,17 @@ An "event" is a significant change or addition that has architectural impact:
       const start = Math.max(0, errorPos - 200);
       const end = Math.min(jsonText.length, errorPos + 200);
       console.error(jsonText.slice(start, end));
+
+      // Save the malformed JSON for debugging
+      try {
+        const malformedPath = path.join(PROJECT_ROOT, 'agent-tmp', 'malformed-json.txt');
+        fs.writeFileSync(malformedPath, jsonText);
+        console.error(`   Saved malformed JSON to: ${malformedPath}`);
+        console.error(`   You can manually fix and test with: JSON.parse(fs.readFileSync('${malformedPath}', 'utf-8'))`);
+      } catch (writeError) {
+        // Ignore write errors
+      }
+
       throw new Error(`JSON parsing failed: ${parseError.message}`);
     }
   } catch (error) {

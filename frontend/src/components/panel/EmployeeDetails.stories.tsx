@@ -5,6 +5,8 @@ import type {
   PerformanceLevel,
   PotentialLevel,
 } from "@/types/employee";
+import { useSessionStore } from "@/store/sessionStore";
+import type { GridMoveEvent } from "@/types/events";
 
 /**
  * EmployeeDetails displays comprehensive employee information in the right panel Details tab.
@@ -209,6 +211,50 @@ export const ModifiedInSession: Story = {
 };
 
 /**
+ * Employee with visible changes in the changes summary.
+ * Shows the Current Assessment section with recent grid movements.
+ * Used for documentation screenshot: changes-employee-details
+ */
+export const WithChanges: Story = {
+  args: {
+    employee: {
+      ...fullEmployee,
+      modified_in_session: true,
+      last_modified: "2025-12-24T10:30:00Z",
+    },
+  },
+  decorators: [
+    (Story) => {
+      // Set up session store with events for this employee before rendering
+      const gridEvents: GridMoveEvent[] = [
+        {
+          event_id: "grid-1",
+          event_type: "grid_move",
+          employee_id: 12345,
+          employee_name: "Alice Johnson",
+          timestamp: "2025-12-24T10:30:00Z",
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
+          notes: "Promoted based on exceptional Q4 performance and leadership.",
+        },
+      ];
+
+      useSessionStore.setState({
+        events: gridEvents,
+        donutEvents: [],
+        donutModeActive: false,
+      });
+
+      return <Story />;
+    },
+  ],
+};
+
+/**
  * Low performer needing attention.
  * Shows employee at position 1 (Low/Low) with performance plan flag.
  */
@@ -258,4 +304,22 @@ export const HighPotentialDevelopment: Story = {
       ratings_history: [{ year: 2024, rating: "Developing" }],
     },
   },
+};
+
+/**
+ * Default view with exterior padding for screenshots.
+ * Same as Default but with extra padding to match app appearance.
+ * Used for documentation screenshot: details-current-assessment
+ */
+export const DefaultWithPadding: Story = {
+  args: {
+    employee: fullEmployee,
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: 400, padding: "24px" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };

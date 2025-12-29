@@ -23,9 +23,10 @@ import { captureStorybookScreenshot } from "../storybook-screenshot";
  * - Color-coded Performance chip
  * - Color-coded Potential chip
  * - Recent changes summary
+ * - Exterior padding to match app appearance
  *
  * Uses Storybook for reliable component capture.
- * Story: panel-employeedetails--with-flags-and-assessment
+ * Story: panel-employeedetails--default-with-padding
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -35,7 +36,7 @@ export async function generateCurrentAssessmentEnhanced(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeedetails--default",
+    storyId: "panel-employeedetails--default-with-padding",
     outputPath,
     theme: "light",
     waitTime: 1000,
