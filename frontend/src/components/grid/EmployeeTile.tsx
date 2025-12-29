@@ -53,6 +53,14 @@ interface EmployeeTileProps {
   originalPositionVariant?: OriginalPositionVariant;
 }
 
+/**
+ * Truncate string to max length with ellipsis
+ */
+const truncate = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) return str;
+  return str.substring(0, maxLength) + "…";
+};
+
 export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
@@ -218,7 +226,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
               whiteSpace: "nowrap",
             }}
           >
-            {employee.business_title} | {employee.job_level}
+            {truncate(employee.business_title, 16)} |{" "}
+            {truncate(employee.job_level, 16)}
           </Typography>
 
           {/* Right side: Original Position Indicator with Tooltip */}

@@ -23,8 +23,10 @@ import {
   DragStartEvent,
   DragOverlay,
 } from "@dnd-kit/core";
-import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
+import { Box, Typography, Card, CardContent, Tooltip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import HistoryIcon from "@mui/icons-material/History";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
 import { Axis } from "./Axis";
@@ -32,8 +34,18 @@ import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
+import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
+import { getPositionLabel } from "../../constants/positionLabels";
 
 const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
+
+/**
+ * Truncate string to max length with ellipsis
+ */
+const truncate = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) return str;
+  return str.substring(0, maxLength) + "…";
+};
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
@@ -284,57 +296,175 @@ export const NineBoxGrid: React.FC = () => {
 
       {/* Drag Overlay - shows the dragged item */}
       <DragOverlay dropAnimation={null}>
-        {activeEmployee ? (
-          <Card
-            sx={{
-              mb: 1,
-              // Use same border treatment as rest state
-              border: 2,
-              borderStyle: "solid",
-              borderColor: (() => {
-                // Match EmployeeTile border logic
-                if (donutModeActive && activeEmployee.donut_position) {
-                  return theme.tokens.colors.semantic.donutMode; // Purple
-                }
-                if (activeEmployee.modified_in_session) {
-                  return "secondary.main"; // Orange
-                }
-                return "divider"; // Default
-              })(),
-              cursor: "grabbing",
-              display: "flex",
-              opacity: 0.9,
-              boxShadow: 6,
-            }}
-          >
-            <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1 }}>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                {activeEmployee.name}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontSize="0.75rem"
-              >
-                {activeEmployee.business_title}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                }}
-              >
-                <Chip
-                  label={activeEmployee.job_level}
-                  size="small"
-                  sx={{ height: 18 }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        ) : null}
+        {activeEmployee
+          ? (() => {
+              // Calculate flags, movement state, and original position (same logic as EmployeeTile)
+              const flags = activeEmployee.flags || [];
+              const hasMoved = donutModeActive
+                ? Boolean(activeEmployee.donut_position)
+                : activeEmployee.modified_in_session;
+              const originalPosition = donutModeActive
+                ? activeEmployee.grid_position
+                : activeEmployee.original_grid_position || null;
+              const originalPositionLabel = originalPosition
+                ? getPositionLabel(originalPosition)
+                : null;
+
+              return (
+                <Card
+                  sx={{
+                    mb: 1,
+                    minWidth: 280,
+                    maxWidth: 400,
+                    cursor: "grabbing",
+                    display: "flex",
+                    opacity: 0.9,
+                    userSelect: "none",
+                    position: "relative",
+                    border: 2,
+                    borderStyle: "solid",
+                    borderColor: (() => {
+                      if (donutModeActive && activeEmployee.donut_position) {
+                        return theme.tokens.colors.semantic.donutMode; // Purple
+                      }
+                      if (activeEmployee.modified_in_session) {
+                        return theme.palette.secondary.main; // Orange
+                      }
+                      return "divider";
+                    })(),
+                    boxShadow: 6,
+                  }}
+                >
+                  {/* Flag Badges - Top Right Strip */}
+                  {flags.length > 0 && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: theme.tokens.spacing.xs,
+                        right: theme.tokens.spacing.xs,
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 0.5,
+                        zIndex: 1,
+                      }}
+                    >
+                      {flags.map((flag, index) => (
+                        <Tooltip
+                          key={index}
+                          title={getFlagDisplayName(flag)}
+                          arrow
+                          placement="top"
+                        >
+                          <Box
+                            sx={{
+                              width: 16,
+                              height: 16,
+                              borderRadius: "50%",
+                              backgroundColor: getFlagColor(flag),
+                              border: 2,
+                              borderColor: "background.paper",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                            role="img"
+                            aria-label={getFlagDisplayName(flag)}
+                          />
+                        </Tooltip>
+                      ))}
+                    </Box>
+                  )}
+
+                  {/* Drag Handle */}
+                  <Box
+                    sx={{
+                      width: 24,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "grabbing",
+                      borderRight: 1,
+                      borderColor: "divider",
+                      backgroundColor: "action.hover",
+                    }}
+                  >
+                    <DragIndicatorIcon
+                      sx={{ fontSize: 16, color: "action.active" }}
+                    />
+                  </Box>
+
+                  {/* Card Content */}
+                  <CardContent
+                    sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}
+                  >
+                    {/* Row 1: Name */}
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight="bold"
+                      gutterBottom
+                    >
+                      {activeEmployee.name}
+                    </Typography>
+
+                    {/* Row 2: Title | Level (left) + Original Position (right) */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      {/* Left side: Title | Level inline */}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        fontSize="0.75rem"
+                        sx={{
+                          flex: 1,
+                          minWidth: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {truncate(activeEmployee.business_title, 16)} |{" "}
+                        {truncate(activeEmployee.job_level, 16)}
+                      </Typography>
+
+                      {/* Right side: Original Position Indicator with Tooltip */}
+                      {hasMoved && originalPositionLabel && (
+                        <Tooltip
+                          title="Original position at session start"
+                          arrow
+                          placement="top"
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 0.5,
+                              flexShrink: 0,
+                            }}
+                          >
+                            <HistoryIcon
+                              sx={{
+                                fontSize: 12,
+                                color: "text.disabled",
+                              }}
+                            />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              fontSize={
+                                theme.tokens.typography.fontSize.caption
+                              }
+                              sx={{ whiteSpace: "nowrap" }}
+                            >
+                              {originalPositionLabel}
+                            </Typography>
+                          </Box>
+                        </Tooltip>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              );
+            })()
+          : null}
       </DragOverlay>
     </DndContext>
   );
