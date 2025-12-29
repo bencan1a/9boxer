@@ -3,9 +3,9 @@ name: "Copilot Setup Steps"
 # This workflow is used by GitHub Copilot's coding agent to set up the environment
 # See: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
 #
-# NOTE: This workflow does NOT include actions/checkout@v4 because Copilot
-# automatically clones the repository before running this setup. Including
-# a checkout step causes "repository not found" errors due to permissions conflicts.
+# NOTE: This workflow includes actions/checkout@v4 to support testing via push/PR triggers.
+# When Copilot agent uses this workflow, it provides its own repository context, so the
+# checkout step is harmless and won't cause permission conflicts.
 
 on:
   workflow_dispatch:
@@ -24,6 +24,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository for regular workflow runs (push/PR/workflow_dispatch)
+      # When used by Copilot agent, this step is harmless as Copilot provides its own context
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # ========================================
       # Python Backend Setup
       # ========================================
