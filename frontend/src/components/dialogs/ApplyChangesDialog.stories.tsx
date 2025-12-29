@@ -39,3 +39,16 @@ export const Loading: Story = {
     isLoading: true,
   },
 };
+
+/**
+ * Save-as mode story for screenshot generation
+ * Note: Storybook doesn't support direct state manipulation of checkbox,
+ * so this story documents the save-as mode for reference.
+ * Screenshot workflow should capture Default story and manually check checkbox.
+ */
+export const SaveAsDocumentation: Story = {
+  args: {
+    open: true,
+    filename: "employees.xlsx",
+  },
+};

@@ -2,8 +2,12 @@
 
 Export your modified employee data to Excel to save your work and share updated talent ratings.
 
-!!! info "Apply Button = Export Action"
-    When you click the **"Apply"** button (in the top application bar), it exports your changes to a new Excel file. The terms "apply changes" and "export" refer to the same action - saving your work by creating a modified Excel file.
+!!! info "Apply Changes = Save Your Work"
+    When you click **File menu → Apply X Changes**, a dialog appears with two options:
+    - **Update original file** (default) - Saves changes back to your original Excel file
+    - **Save to different file** - Creates a new file with a different name/location
+
+    Choose the option that fits your workflow. The terms "apply changes" and "export" both mean saving your work to an Excel file.
 
 !!! danger "Critical: No Auto-Save"
     The application does **NOT** auto-save your changes. You **MUST** export to save your work before closing the app, or all changes will be lost.
@@ -13,15 +17,15 @@ Export your modified employee data to Excel to save your work and share updated 
 <details>
 <summary>📋 Quick Reference (Click to expand)</summary>
 
-**How to Export:**
-- Make changes → Review Changes tab → Click "Apply" button (top bar)
-- File downloads as `modified_[original_filename].xlsx`
-- Original file remains unchanged
+**How to Apply Changes:**
+- Make changes → Review Changes tab → File menu → Apply X Changes
+- Choose: Update original file OR Save to different file
+- Original file updated (or new file created based on your choice)
 
 **Finding Your File:**
-- Check browser's default download folder
-- Search for files starting with "modified_"
-- File name format: `modified_employee_data_2024.xlsx`
+- **Update original**: Changes saved to the same file you loaded
+- **Save to different**: You choose the location and filename in the dialog
+- Recent files list (File menu) shows recently used files for quick access
 
 **What's Included:**
 - All original columns + updated Performance/Potential ratings
@@ -105,20 +109,37 @@ Follow these steps to export your changes:
 - Verify all employee movements are correct
 - Add notes documenting why each change was made (recommended)
 
-### Step 3: Click "Apply"
+### Step 3: Apply Changes
 
-1. Click the **"Apply"** button in the top application bar
-2. The button badge displays the number of pending changes
-3. File downloads automatically to your default download folder
+1. Open the **File menu** (top-left of application bar)
+2. Click **"Apply X Changes"** (where X is the number of pending changes)
+3. The **Apply Changes Dialog** appears with two options:
+
+**Option 1: Update original file** (default)
+- Your changes save back to the file you originally loaded
+- Original file is updated with new ratings and change tracking columns
+- Quick and convenient for iterative work
+
+**Option 2: Save to different file**
+- Check the **"Save to a different file instead"** checkbox
+- Choose a new location and filename using the file dialog
+- Original file remains untouched
+- Useful for creating milestone versions or backups
+
+4. Click **"Apply Changes"** to proceed
+5. File is saved to the chosen location
 
 ### Step 4: Verify Export
 
-- Check your download folder for the exported file
-- File name format: `modified_[original_filename].xlsx`
-- Example: `modified_employee_data_2024.xlsx`
+- **If you updated original**: Open your original file to verify changes
+- **If you saved to different file**: Navigate to the location you chose
+- Check that updated ratings and change tracking columns are present
 
-!!! success "Export Complete"
-    Your changes are now saved to the new Excel file. Your original file remains completely unchanged.
+!!! success "Changes Saved"
+    Your changes are now saved to the Excel file! You can continue working or close the application.
+
+!!! info "Read-Only File Protection"
+    If your original file is read-only or can't be updated, 9Boxer automatically falls back to "Save to different file" mode and prompts you to choose a new location. This ensures your work is never lost.
 
 ---
 
@@ -304,10 +325,10 @@ Once your export completes:
 
 **Solutions:**
 
-1. Check your browser's default download folder
-2. Search your computer for files starting with `modified_`
-3. Check browser download history
-4. Try exporting again and watch where the file saves
+1. **If you chose "Update original file"**: The file is in the same location as your original file
+2. **If you chose "Save to different file"**: Check the location you selected in the save dialog
+3. Check the **Recent Files** list in the File menu - it shows recently used files
+4. Try applying changes again and carefully note which option you select
 
 ### Export is missing columns
 
@@ -323,6 +344,23 @@ Once your export completes:
 1. Check if columns are hidden (Excel: Home → Format → Unhide Columns)
 2. Verify you used Donut Mode if expecting donut columns
 3. Re-upload your file and export again
+
+### File is read-only or can't be updated
+
+**Problem:** Original file can't be updated (read-only, locked, or deleted).
+
+**What happens:**
+
+- 9Boxer automatically detects this issue
+- Fallback: Switches to "Save to different file" mode
+- You'll be prompted to choose a new location
+- Your work is never lost!
+
+**Solutions:**
+
+1. Follow the prompt to save to a new location
+2. After saving, close the read-only file and work with the new file
+3. Or: Remove read-only attribute from original file before applying changes
 
 ---
 
