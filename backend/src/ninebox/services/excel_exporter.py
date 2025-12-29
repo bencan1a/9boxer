@@ -83,9 +83,33 @@ class ExcelExporter:
                 sheet.cell(1, modified_col + 6, "Donut Exercise Change Description")
                 sheet.cell(1, modified_col + 7, "Donut Exercise Notes")
                 sheet.cell(1, modified_col + 8, "Flags")
+                sheet.cell(1, modified_col + 9, "Original Performance")
+                sheet.cell(1, modified_col + 10, "Original Potential")
 
+            # Ensure "Original Performance" and "Original Potential" columns exist even for
+            # workbooks exported with older versions that only had "Modified in Session".
+            original_perf_col = self._find_column(sheet, "Original Performance")
+            if original_perf_col is None:
+                original_perf_col = self._find_column(sheet, "Original Performance", create=True)
+                assert (
+                    original_perf_col is not None
+                ), "original_perf_col should not be None when create=True"  # nosec B101
+                sheet.cell(1, original_perf_col, "Original Performance")
+
+            original_pot_col = self._find_column(sheet, "Original Potential")
+            if original_pot_col is None:
+                original_pot_col = self._find_column(sheet, "Original Potential", create=True)
+                assert (
+                    original_pot_col is not None
+                ), "original_pot_col should not be None when create=True"  # nosec B101
+                sheet.cell(1, original_pot_col, "Original Potential")
             # Create employee lookup by ID
             employee_map = {e.employee_id: e for e in employees}
+
+            # Create original employee lookup by ID (for tracking original values)
+            original_employee_map = {}
+            if session:
+                original_employee_map = {e.employee_id: e for e in session.original_employees}
 
             # Create change notes and descriptions lookup by employee ID
             change_notes_map = {}
@@ -191,6 +215,16 @@ class ExcelExporter:
                     # Add flags (comma-separated list)
                     flags_value = ", ".join(emp.flags) if emp.flags else ""
                     sheet.cell(row_idx, modified_col + 8, flags_value)
+
+                    # Add original Performance/Potential values if employee was modified
+                    if emp.modified_in_session and emp_id in original_employee_map:
+                        original_emp = original_employee_map[emp_id]
+                        sheet.cell(row_idx, modified_col + 9, original_emp.performance.value)
+                        sheet.cell(row_idx, modified_col + 10, original_emp.potential.value)
+                    else:
+                        # Leave original value columns empty if not modified
+                        sheet.cell(row_idx, modified_col + 9, "")
+                        sheet.cell(row_idx, modified_col + 10, "")
 
             # Save modified workbook
             workbook.save(output_path)
