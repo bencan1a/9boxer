@@ -571,7 +571,10 @@ def test_export_when_no_flags_then_empty_cell(
     tmp_path: Path,
 ) -> None:
     """Test employees without flags have empty Flags cell."""
-    # No flags for any employee
+    # Clear flags for all employees
+    for emp in sample_employees:
+        emp.flags = None
+
     output_path = tmp_path / "output.xlsx"
     excel_exporter.export(sample_excel_file, sample_employees, output_path)
 

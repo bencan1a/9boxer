@@ -141,10 +141,10 @@ def test_get_statistics_when_by_potential_then_aggregates_correctly(
     assert "Medium" in by_pot
     assert "Low" in by_pot
 
-    # From sample data: 3 High, 2 Medium, 0 Low
-    assert by_pot["High"] == 3
+    # From sample data: 2 High (Alice, Charlie), 2 Medium (Bob, Diana), 1 Low (Eve)
+    assert by_pot["High"] == 2
     assert by_pot["Medium"] == 2
-    assert by_pot["Low"] == 0
+    assert by_pot["Low"] == 1
 
 
 def test_get_statistics_when_employees_modified_then_tracks_count(
@@ -175,8 +175,8 @@ def test_get_statistics_when_multiple_filters_then_applies_all(
     assert response.status_code == 200
     data = response.json()
 
-    # Should count only MT4/MT5 with High performance (2 employees)
-    assert data["total_employees"] == 2
+    # Should count only MT4/MT5 with High performance (1 employee: Alice)
+    assert data["total_employees"] == 1
 
 
 def test_get_statistics_when_exclude_ids_then_excludes_from_count(
