@@ -28,11 +28,18 @@
       "exportChanges": "{{count}} Änderung in Excel übernehmen",
       "exportChanges_other": "{{count}} Änderungen in Excel übernehmen",
       "exporting": "Wird exportiert...",
+      "closeFile": "Datei schließen",
       "openRecentFile": "Zuletzt verwendete Datei öffnen",
+      "recentFiles": "Zuletzt verwendete Dateien",
+      "clearRecentFiles": "Zuletzt verwendete Dateien löschen",
       "comingSoon": "(Demnächst verfügbar)",
       "noActiveSession": "Keine aktive Sitzung",
       "exportSuccess": "{{count}} Änderung wurde erfolgreich nach {{filename}} exportiert",
-      "exportSuccess_other": "{{count}} Änderungen wurden erfolgreich nach {{filename}} exportiert"
+      "exportSuccess_other": "{{count}} Änderungen wurden erfolgreich nach {{filename}} exportiert",
+      "fileNotFound": "Datei nicht gefunden: {{filename}}",
+      "fileLoaded": "{{filename}} geladen",
+      "loadError": "Fehler beim Laden der Datei",
+      "electronApiRequired": "Das Laden von Dateien erfordert die Desktop-Anwendung"
     },
     "filterDrawer": {
       "title": "Filter",
@@ -331,6 +338,24 @@
       "movement": "Movement",
       "donutMovement": "Donut Movement",
       "notes": "Notes"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "Nicht gespeicherte Änderungen",
+      "message_one": "Sie haben {{count}} nicht gespeicherte Änderung.",
+      "message_other": "Sie haben {{count}} nicht gespeicherte Änderungen.",
+      "question": "Änderungen vor dem Fortfahren übernehmen?",
+      "apply": "Änderungen übernehmen",
+      "discard": "Änderungen verwerfen"
+    },
+    "applyChanges": {
+      "title": "Änderungen auf Datei anwenden",
+      "applyTo": "Änderungen anwenden auf:",
+      "saveAsNew": "Stattdessen als neue Datei speichern",
+      "apply": "Änderungen übernehmen",
+      "applying": "Wird angewendet...",
+      "errorFallback": "Originaldatei konnte nicht aktualisiert werden. An einem neuen Speicherort speichern?"
     }
   },
   "common": {

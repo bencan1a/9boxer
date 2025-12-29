@@ -28,11 +28,18 @@
       "exportChanges": "{{count}} परिवर्तन Excel में लागू करें",
       "exportChanges_other": "{{count}} परिवर्तन Excel में लागू करें",
       "exporting": "निर्यात हो रहा है...",
+      "closeFile": "फ़ाइल बंद करें",
       "openRecentFile": "हाल की फ़ाइल खोलें",
+      "recentFiles": "हाल की फ़ाइलें",
+      "clearRecentFiles": "हाल की फ़ाइलें साफ़ करें",
       "comingSoon": "(जल्द आ रहा है)",
       "noActiveSession": "कोई सक्रिय सत्र नहीं",
       "exportSuccess": "{{filename}} में {{count}} परिवर्तन सफलतापूर्वक निर्यात किया गया",
-      "exportSuccess_other": "{{filename}} में {{count}} परिवर्तन सफलतापूर्वक निर्यात किए गए"
+      "exportSuccess_other": "{{filename}} में {{count}} परिवर्तन सफलतापूर्वक निर्यात किए गए",
+      "fileNotFound": "फ़ाइल नहीं मिली: {{filename}}",
+      "fileLoaded": "{{filename}} लोड की गई",
+      "loadError": "फ़ाइल लोड करने में विफल",
+      "electronApiRequired": "फ़ाइल लोड करने के लिए डेस्कटॉप एप्लिकेशन की आवश्यकता है"
     },
     "filterDrawer": {
       "title": "फ़िल्टर",
@@ -331,6 +338,24 @@
       "movement": "Movement",
       "donutMovement": "Donut Movement",
       "notes": "Notes"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "बिना सहेजे गए परिवर्तन",
+      "message_one": "आपके पास {{count}} बिना सहेजा गया परिवर्तन है।",
+      "message_other": "आपके पास {{count}} बिना सहेजे गए परिवर्तन हैं।",
+      "question": "जारी रखने से पहले परिवर्तन लागू करें?",
+      "apply": "परिवर्तन लागू करें",
+      "discard": "परिवर्तन त्यागें"
+    },
+    "applyChanges": {
+      "title": "फ़ाइल पर परिवर्तन लागू करें",
+      "applyTo": "परिवर्तन लागू करें:",
+      "saveAsNew": "इसके बजाय नई फ़ाइल के रूप में सहेजें",
+      "apply": "परिवर्तन लागू करें",
+      "applying": "लागू हो रहा है...",
+      "errorFallback": "मूल फ़ाइल अपडेट नहीं हो सकी। नए स्थान पर सहेजें?"
     }
   },
   "common": {

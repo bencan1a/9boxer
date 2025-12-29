@@ -28,11 +28,18 @@
       "exportChanges": "Aplikovat {{count}} změnu do Excelu",
       "exportChanges_other": "Aplikovat {{count}} změn do Excelu",
       "exporting": "Exportuji...",
+      "closeFile": "Zavřít soubor",
       "openRecentFile": "Otevřít nedávný soubor",
+      "recentFiles": "Nedávné soubory",
+      "clearRecentFiles": "Vymazat nedávné soubory",
       "comingSoon": "(Již brzy)",
       "noActiveSession": "Žádná aktivní relace",
       "exportSuccess": "Úspěšně exportována {{count}} změna do {{filename}}",
-      "exportSuccess_other": "Úspěšně exportováno {{count}} změn do {{filename}}"
+      "exportSuccess_other": "Úspěšně exportováno {{count}} změn do {{filename}}",
+      "fileNotFound": "Soubor nenalezen: {{filename}}",
+      "fileLoaded": "Načten {{filename}}",
+      "loadError": "Nepodařilo se načíst soubor",
+      "electronApiRequired": "Načítání souborů vyžaduje desktopovou aplikaci"
     },
     "filterDrawer": {
       "title": "Filtry",
@@ -331,6 +338,24 @@
       "movement": "Movement",
       "donutMovement": "Donut Movement",
       "notes": "Notes"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "Neuložené změny",
+      "message_one": "Máte {{count}} neuloženou změnu.",
+      "message_other": "Máte {{count}} neuložených změn.",
+      "question": "Použít změny před pokračováním?",
+      "apply": "Použít změny",
+      "discard": "Zahodit změny"
+    },
+    "applyChanges": {
+      "title": "Použít změny na soubor",
+      "applyTo": "Použít změny na:",
+      "saveAsNew": "Místo toho uložit jako nový soubor",
+      "apply": "Použít změny",
+      "applying": "Aplikuji...",
+      "errorFallback": "Nelze aktualizovat původní soubor. Uložit na nové místo?"
     }
   },
   "common": {
