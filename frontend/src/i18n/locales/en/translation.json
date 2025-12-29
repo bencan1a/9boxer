@@ -28,11 +28,18 @@
       "exportChanges": "Apply {{count}} Change to Excel",
       "exportChanges_other": "Apply {{count}} Changes to Excel",
       "exporting": "Exporting...",
+      "closeFile": "Close File",
       "openRecentFile": "Open Recent File",
+      "recentFiles": "Recent Files",
+      "clearRecentFiles": "Clear Recent Files",
       "comingSoon": "(Coming Soon)",
       "noActiveSession": "No active session",
       "exportSuccess": "Successfully exported {{count}} change to {{filename}}",
-      "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}"
+      "exportSuccess_other": "Successfully exported {{count}} changes to {{filename}}",
+      "fileNotFound": "File not found: {{filename}}",
+      "fileLoaded": "Loaded {{filename}}",
+      "loadError": "Failed to load file",
+      "electronApiRequired": "File loading requires desktop application"
     },
     "filterDrawer": {
       "title": "Filters",
@@ -394,6 +401,24 @@
     },
     "section": {
       "infoAria": "More information about this section"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "Unsaved Changes",
+      "message_one": "You have {{count}} unsaved change.",
+      "message_other": "You have {{count}} unsaved changes.",
+      "question": "Apply changes before continuing?",
+      "apply": "Apply Changes",
+      "discard": "Discard Changes"
+    },
+    "applyChanges": {
+      "title": "Apply Changes to File",
+      "applyTo": "Apply changes to:",
+      "saveAsNew": "Save as new file instead",
+      "apply": "Apply Changes",
+      "applying": "Applying...",
+      "errorFallback": "Could not update original file. Save to a new location instead?"
     }
   },
   "common": {

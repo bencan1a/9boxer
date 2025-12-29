@@ -28,11 +28,18 @@
       "exportChanges": "Aplicar {{count}} Cambio a Excel",
       "exportChanges_other": "Aplicar {{count}} Cambios a Excel",
       "exporting": "Exportando...",
+      "closeFile": "Cerrar Archivo",
       "openRecentFile": "Abrir Archivo Reciente",
+      "recentFiles": "Archivos Recientes",
+      "clearRecentFiles": "Borrar Archivos Recientes",
       "comingSoon": "(Próximamente)",
       "noActiveSession": "No hay sesión activa",
       "exportSuccess": "Se exportó exitosamente {{count}} cambio a {{filename}}",
-      "exportSuccess_other": "Se exportaron exitosamente {{count}} cambios a {{filename}}"
+      "exportSuccess_other": "Se exportaron exitosamente {{count}} cambios a {{filename}}",
+      "fileNotFound": "Archivo no encontrado: {{filename}}",
+      "fileLoaded": "Cargado {{filename}}",
+      "loadError": "Error al cargar el archivo",
+      "electronApiRequired": "La carga de archivos requiere la aplicación de escritorio"
     },
     "filterDrawer": {
       "title": "Filtros",
@@ -394,6 +401,24 @@
     },
     "section": {
       "infoAria": "Más información sobre esta sección"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "Cambios sin guardar",
+      "message_one": "Tienes {{count}} cambio sin guardar.",
+      "message_other": "Tienes {{count}} cambios sin guardar.",
+      "question": "¿Aplicar cambios antes de continuar?",
+      "apply": "Aplicar Cambios",
+      "discard": "Descartar Cambios"
+    },
+    "applyChanges": {
+      "title": "Aplicar Cambios al Archivo",
+      "applyTo": "Aplicar cambios a:",
+      "saveAsNew": "Guardar como archivo nuevo en su lugar",
+      "apply": "Aplicar Cambios",
+      "applying": "Aplicando...",
+      "errorFallback": "No se pudo actualizar el archivo original. ¿Guardar en una nueva ubicación?"
     }
   },
   "common": {

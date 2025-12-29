@@ -28,11 +28,18 @@
       "exportChanges": "{{count}}件の変更をExcelに適用",
       "exportChanges_other": "{{count}}件の変更をExcelに適用",
       "exporting": "エクスポート中...",
+      "closeFile": "ファイルを閉じる",
       "openRecentFile": "最近使ったファイルを開く",
+      "recentFiles": "最近使ったファイル",
+      "clearRecentFiles": "最近使ったファイルをクリア",
       "comingSoon": "（近日公開予定）",
       "noActiveSession": "アクティブなセッションがありません",
       "exportSuccess": "{{filename}}に{{count}}件の変更をエクスポートしました",
-      "exportSuccess_other": "{{filename}}に{{count}}件の変更をエクスポートしました"
+      "exportSuccess_other": "{{filename}}に{{count}}件の変更をエクスポートしました",
+      "fileNotFound": "ファイルが見つかりません: {{filename}}",
+      "fileLoaded": "{{filename}}を読み込みました",
+      "loadError": "ファイルの読み込みに失敗しました",
+      "electronApiRequired": "ファイルの読み込みにはデスクトップアプリケーションが必要です"
     },
     "filterDrawer": {
       "title": "フィルター",
@@ -331,6 +338,24 @@
       "movement": "Movement",
       "donutMovement": "Donut Movement",
       "notes": "Notes"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "未保存の変更",
+      "message_one": "{{count}}件の未保存の変更があります。",
+      "message_other": "{{count}}件の未保存の変更があります。",
+      "question": "続行する前に変更を適用しますか?",
+      "apply": "変更を適用",
+      "discard": "変更を破棄"
+    },
+    "applyChanges": {
+      "title": "ファイルに変更を適用",
+      "applyTo": "変更を適用:",
+      "saveAsNew": "代わりに新しいファイルとして保存",
+      "apply": "変更を適用",
+      "applying": "適用中...",
+      "errorFallback": "元のファイルを更新できませんでした。新しい場所に保存しますか?"
     }
   },
   "common": {

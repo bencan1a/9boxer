@@ -28,11 +28,18 @@
       "exportChanges": "Appliquer {{count}} modification à Excel",
       "exportChanges_other": "Appliquer {{count}} modifications à Excel",
       "exporting": "Export en cours...",
+      "closeFile": "Fermer le fichier",
       "openRecentFile": "Ouvrir un fichier récent",
+      "recentFiles": "Fichiers récents",
+      "clearRecentFiles": "Effacer les fichiers récents",
       "comingSoon": "(Prochainement)",
       "noActiveSession": "Aucune session active",
       "exportSuccess": "{{count}} modification exportée avec succès vers {{filename}}",
-      "exportSuccess_other": "{{count}} modifications exportées avec succès vers {{filename}}"
+      "exportSuccess_other": "{{count}} modifications exportées avec succès vers {{filename}}",
+      "fileNotFound": "Fichier introuvable : {{filename}}",
+      "fileLoaded": "{{filename}} chargé",
+      "loadError": "Échec du chargement du fichier",
+      "electronApiRequired": "Le chargement de fichiers nécessite l'application de bureau"
     },
     "filterDrawer": {
       "title": "Filtres",
@@ -331,6 +338,24 @@
       "movement": "Movement",
       "donutMovement": "Donut Movement",
       "notes": "Notes"
+    }
+  },
+  "dialogs": {
+    "unsavedChanges": {
+      "title": "Modifications non enregistrées",
+      "message_one": "Vous avez {{count}} modification non enregistrée.",
+      "message_other": "Vous avez {{count}} modifications non enregistrées.",
+      "question": "Appliquer les modifications avant de continuer?",
+      "apply": "Appliquer les modifications",
+      "discard": "Abandonner les modifications"
+    },
+    "applyChanges": {
+      "title": "Appliquer les modifications au fichier",
+      "applyTo": "Appliquer les modifications à:",
+      "saveAsNew": "Enregistrer comme nouveau fichier à la place",
+      "apply": "Appliquer les modifications",
+      "applying": "Application en cours...",
+      "errorFallback": "Impossible de mettre à jour le fichier d'origine. Enregistrer dans un nouvel emplacement?"
     }
   },
   "common": {
