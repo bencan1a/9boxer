@@ -1,13 +1,13 @@
 # Active Plans
 
-**Updated**: 2025-12-29T22:19:36.835362+00:00
+**Updated**: 2025-12-29T23:10:51.294703+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## rich-sample-data-generator
 - **Status**: active
 - **Owner**: claude
 - **Created**: 2025-12-28
-- **Path**: `agent-projects\rich-sample-data-generator\plan.md`
+- **Path**: `agent-projects/rich-sample-data-generator/plan.md`
 - **Summary**:
   - Create comprehensive sample dataset generator (200-300 employees)
   - Include complete management chains (6 levels), 3-year performance history
@@ -19,7 +19,7 @@
 - **Status**: active
 - **Owner**: Development Team
 - **Created**: 2025-12-26
-- **Path**: `agent-projects\self-managing-docs-system\plan.md`
+- **Path**: `agent-projects/self-managing-docs-system/plan.md`
 - **Summary**:
   - Build self-managing documentation system with automated screenshot updates
   - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
@@ -31,7 +31,7 @@
 - **Status**: active
 - **Owner**: Claude
 - **Created**: 2025-12-21
-- **Path**: `agent-projects\big-movers-feature\plan.md`
+- **Path**: `agent-projects/big-movers-feature/plan.md`
 - **Summary**:
   - Add "big mover" detection for employees who moved significantly between positions
   - Display badge on employee tiles for big movers
