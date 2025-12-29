@@ -250,7 +250,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // - OS-specific features
 } as ElectronAPI);
 
-// Log that preload script loaded successfully
-console.log("[Preload] Electron API initialized");
-console.log(`[Preload] Platform: ${process.platform}`);
-console.log(`[Preload] Electron Version: ${process.versions.electron}`);
+// Log that preload script loaded successfully (development only)
+if (process.env.NODE_ENV === "development") {
+  console.log("[Preload] Electron API initialized");
+  console.log(`[Preload] Platform: ${process.platform}`);
+  console.log(`[Preload] Electron Version: ${process.versions.electron}`);
+}

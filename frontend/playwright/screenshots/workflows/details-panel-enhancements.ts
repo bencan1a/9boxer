@@ -37,6 +37,9 @@ export async function generateCurrentAssessmentEnhanced(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess horizontal whitespace)
+  await page.setViewportSize({ width: 450, height: 800 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-employeedetails--default-with-padding",
     outputPath,
