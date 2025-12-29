@@ -190,10 +190,24 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       const currentSessionId = get().sessionId;
       const cachedSessionId = localStorage.getItem("session_id");
 
+      // Auto-select first employee in box 5 if no employee is currently selected
+      const currentSelectedId = get().selectedEmployeeId;
+      let selectedEmployeeId = currentSelectedId;
+
+      if (!currentSelectedId) {
+        const box5Employees = response.employees.filter(
+          (emp) => emp.grid_position === 5
+        );
+        if (box5Employees.length > 0) {
+          selectedEmployeeId = box5Employees[0].employee_id;
+        }
+      }
+
       set({
         employees: response.employees,
         originalEmployees: response.employees,
         sessionId: currentSessionId || cachedSessionId,
+        selectedEmployeeId,
         isLoading: false,
         error: null,
       });

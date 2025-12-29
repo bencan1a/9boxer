@@ -102,6 +102,7 @@ class GenerateSampleResponse(BaseModel):
     employees: list[Employee]
     metadata: dict[str, Any]  # Contains: total, bias_patterns, locations, functions
     session_id: str  # Session identifier for the generated dataset
+    filename: str  # Filename of the generated dataset
 
 
 @router.get("", response_model=dict)
@@ -504,9 +505,10 @@ async def generate_sample_employees(
         }
 
         # Create a session with the generated sample data
+        filename = f"Sample_Dataset_{request.size}_employees.xlsx"
         session_id = session_manager.create_session(
             user_id=LOCAL_USER_ID,
-            filename=f"Sample_Dataset_{request.size}_employees.xlsx",
+            filename=filename,
             file_path="",  # No actual file for generated data
             sheet_name="Sample Data",
             sheet_index=0,
@@ -523,7 +525,9 @@ async def generate_sample_employees(
         else:
             logger.error(f"CRITICAL: Session {session_id} was NOT found after creation!")
 
-        return GenerateSampleResponse(employees=employees, metadata=metadata, session_id=session_id)
+        return GenerateSampleResponse(
+            employees=employees, metadata=metadata, session_id=session_id, filename=filename
+        )
 
     except ValueError as e:
         raise HTTPException(
