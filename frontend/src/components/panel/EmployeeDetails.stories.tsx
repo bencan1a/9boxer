@@ -4,9 +4,9 @@ import type {
   Employee,
   PerformanceLevel,
   PotentialLevel,
-} from "@/types/employee";
-import { useSessionStore } from "@/store/sessionStore";
-import type { GridMoveEvent } from "@/types/events";
+} from "../../types/employee";
+import { useSessionStore } from "../../store/sessionStore";
+import type { GridMoveEvent } from "../../types/events";
 
 /**
  * EmployeeDetails displays comprehensive employee information in the right panel Details tab.
