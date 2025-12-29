@@ -9,6 +9,7 @@ from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import get_position_label, get_position_label_by_number
 
 if TYPE_CHECKING:
+    import openpyxl
     from openpyxl.worksheet.worksheet import Worksheet
 
     from ninebox.models.session import SessionState
@@ -29,7 +30,7 @@ class ExcelExporter:
         Create new Excel file with updated ratings.
 
         Args:
-            original_file: Path to original Excel file
+            original_file: Path to original Excel file (can be empty for sample data)
             employees: List of employees with current data
             output_path: Path to save modified Excel file
             sheet_index: Index of the sheet to export to (default: 1 for backward compatibility)
@@ -38,8 +39,19 @@ class ExcelExporter:
         # Lazy import openpyxl to reduce startup time
         import openpyxl
 
-        # Read original file to preserve formatting - use try/finally to ensure cleanup
-        workbook = openpyxl.load_workbook(original_file)
+        # Check if original file exists
+        original_file_path = Path(original_file) if original_file else None
+        has_original = (
+            original_file_path and original_file_path.exists() and str(original_file).strip()
+        )
+
+        # Create or load workbook
+        if has_original:
+            # Read original file to preserve formatting - use try/finally to ensure cleanup
+            workbook = openpyxl.load_workbook(original_file)
+        else:
+            # Create new workbook from scratch for sample data
+            workbook = self._create_workbook_from_employees(employees, session)
         try:
             # Work with specified sheet
             if len(workbook.worksheets) <= sheet_index:
@@ -186,6 +198,107 @@ class ExcelExporter:
         finally:
             # Always close workbook to release file handles, even if exception occurred
             workbook.close()
+
+    def _create_workbook_from_employees(
+        self, employees: list[Employee], session: SessionState | None = None
+    ) -> openpyxl.Workbook:
+        """
+        Create a new Excel workbook from employee data.
+
+        Used when exporting sample data that has no original file.
+
+        Args:
+            employees: List of employees to include
+            session: Optional session state for metadata
+
+        Returns:
+            New openpyxl Workbook with employee data
+        """
+        from datetime import datetime, timezone
+
+        import openpyxl
+
+        workbook = openpyxl.Workbook()
+
+        # Summary sheet
+        summary_sheet = workbook.active
+        assert summary_sheet is not None  # nosec B101  # Type narrowing
+        summary_sheet.title = "Summary"
+        summary_sheet["A1"] = "9-Box Talent Review"
+        summary_sheet["A2"] = f"Generated: {datetime.now(timezone.utc).isoformat()}"
+        if session:
+            summary_sheet["A3"] = f"Source: {session.original_filename or 'Sample Data'}"
+            summary_sheet["A4"] = f"Employees: {len(employees)}"
+
+        # Employee data sheet
+        data_sheet = workbook.create_sheet("Employee Data")
+
+        # Headers - matching the expected format from ExcelParser
+        headers = [
+            "Employee ID",
+            "Worker",
+            "Business Title",
+            "Job Title",
+            "Job Profile",
+            "Job Level - Primary Position",
+            "Worker's Manager",
+            "Management Chain - Level 04",
+            "Management Chain - Level 05",
+            "Management Chain - Level 06",
+            "Hire Date",
+            "Tenure Category (Months)",
+            "Time in Job Profile",
+            "Aug 2025 Talent Assessment Performance",
+            "Aug 2025  Talent Assessment Potential",
+            "Aug 2025 Talent Assessment 9-Box Label",
+            "Talent Mapping Position",
+            "FY25 Talent Indicator",
+            "2023 Completed Performance Rating",
+            "2024 Completed Performance Rating",
+            "Development Focus",
+            "Development Action",
+            "Notes",
+            "Promotion Readiness",
+        ]
+
+        for col_idx, header in enumerate(headers, start=1):
+            data_sheet.cell(1, col_idx, header)
+
+        # Data rows
+        for row_idx, emp in enumerate(employees, start=2):
+            data_sheet.cell(row_idx, 1, emp.employee_id)
+            data_sheet.cell(row_idx, 2, emp.name)
+            data_sheet.cell(row_idx, 3, emp.business_title)
+            data_sheet.cell(row_idx, 4, emp.job_title)
+            data_sheet.cell(row_idx, 5, emp.job_profile)
+            data_sheet.cell(row_idx, 6, emp.job_level)
+            data_sheet.cell(row_idx, 7, emp.manager)
+            data_sheet.cell(row_idx, 8, emp.management_chain_04)
+            data_sheet.cell(row_idx, 9, emp.management_chain_05)
+            data_sheet.cell(row_idx, 10, emp.management_chain_06)
+            data_sheet.cell(row_idx, 11, emp.hire_date.isoformat() if emp.hire_date else None)
+            data_sheet.cell(row_idx, 12, emp.tenure_category)
+            data_sheet.cell(row_idx, 13, emp.time_in_job_profile)
+            data_sheet.cell(row_idx, 14, emp.performance.value)
+            data_sheet.cell(row_idx, 15, emp.potential.value)
+            data_sheet.cell(row_idx, 16, emp.grid_position)
+            data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
+            data_sheet.cell(row_idx, 18, emp.talent_indicator)
+
+            # Historical ratings
+            if emp.ratings_history:
+                for rating in emp.ratings_history:
+                    if rating.year == 2023:
+                        data_sheet.cell(row_idx, 19, rating.rating)
+                    elif rating.year == 2024:
+                        data_sheet.cell(row_idx, 20, rating.rating)
+
+            data_sheet.cell(row_idx, 21, emp.development_focus)
+            data_sheet.cell(row_idx, 22, emp.development_action)
+            data_sheet.cell(row_idx, 23, emp.notes)
+            data_sheet.cell(row_idx, 24, emp.promotion_status)
+
+        return workbook
 
     def _find_column(self, sheet: Worksheet, col_name: str, create: bool = False) -> int | None:
         """Find column index by name."""

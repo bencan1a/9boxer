@@ -334,6 +334,22 @@ async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches
             "error": "new_path is required when mode='save_new'",
         }
 
+    # Check if original file exists for update_original mode
+    if request.mode == "update_original":
+        if not session.original_file_path or session.original_file_path.strip() == "":
+            return {
+                "success": False,
+                "error": "No original file available. When using sample data, please save to a new file location.",
+                "fallback_to_save_new": True,
+            }
+        if not Path(session.original_file_path).exists():
+            filename = session.original_filename or Path(session.original_file_path).name
+            return {
+                "success": False,
+                "error": f"Original file '{filename}' not found. Please save to a new location.",
+                "fallback_to_save_new": True,
+            }
+
     # Determine target path
     target_path: str
     if request.mode == "save_new":
@@ -384,6 +400,12 @@ async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches
         # Clear modified_in_session flags since changes are now saved
         for emp in session.current_employees:
             emp.modified_in_session = False
+
+        # Update session file path when saving to new file
+        # This makes the new file the "original" for future saves
+        if request.mode == "save_new":
+            session.original_file_path = target_path
+            session.original_filename = filename
 
         logger.info(f"Session baseline reset after export to {filename}")
 

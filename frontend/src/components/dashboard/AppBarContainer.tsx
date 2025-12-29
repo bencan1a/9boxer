@@ -175,9 +175,18 @@ export const AppBarContainer: React.FC = () => {
         // Backend has cleared events and reset modified flags
         await loadEmployees();
 
-        // Reload session status to get cleared events
+        // Reload session status to get cleared events and updated filename
         const sessionStatus = await apiClient.getSessionStatus();
-        useSessionStore.setState({ events: sessionStatus.events });
+        useSessionStore.setState({
+          events: sessionStatus.events,
+          filename: sessionStatus.uploaded_filename,
+          filePath: response.file_path, // Update file path from export response
+        });
+
+        // Update localStorage with new file path when saving to new location
+        if (mode === "save_new" && response.file_path) {
+          localStorage.setItem("last_file_path", response.file_path);
+        }
 
         // Show success message
         showSuccess(

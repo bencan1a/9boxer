@@ -640,3 +640,72 @@ def test_toggle_donut_mode_when_disabled_then_deactivates(
     data = response.json()
     assert data["success"] is True
     assert data["donut_mode_active"] is False
+
+
+def test_export_when_sample_data_and_update_original_then_returns_fallback_error(
+    test_client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    """Test export with sample data and update_original mode returns fallback error."""
+    # Generate sample data (no original file)
+    response = test_client.post("/api/employees/generate-sample", json={"size": 50})
+    assert response.status_code == 200
+
+    # Try to export with update_original mode (default)
+    export_response = test_client.post("/api/session/export", json={}, headers=auth_headers)
+
+    assert export_response.status_code == 200
+    data = export_response.json()
+    assert data["success"] is False
+    assert "fallback_to_save_new" in data
+    assert data["fallback_to_save_new"] is True
+    assert "sample data" in data["error"].lower()
+    assert "save to a new file" in data["error"].lower()
+
+
+def test_export_when_sample_data_and_save_new_then_creates_file(
+    test_client: TestClient, auth_headers: dict[str, str], tmp_path: Path
+) -> None:
+    """Test export with sample data and save_new mode successfully creates Excel file."""
+    # Generate sample data (no original file)
+    response = test_client.post("/api/employees/generate-sample", json={"size": 50})
+    assert response.status_code == 200
+
+    # Export with save_new mode to a new file
+    new_file_path = tmp_path / "sample_export.xlsx"
+    export_response = test_client.post(
+        "/api/session/export",
+        json={"mode": "save_new", "new_path": str(new_file_path)},
+        headers=auth_headers,
+    )
+
+    assert export_response.status_code == 200
+    data = export_response.json()
+    assert data["success"] is True
+    assert "file_path" in data
+    assert Path(data["file_path"]).exists()
+
+    # Verify session was updated with new file path and name
+    session_status = test_client.get("/api/session/status", headers=auth_headers)
+    assert session_status.status_code == 200
+    session_data = session_status.json()
+    assert session_data["uploaded_filename"] == "sample_export.xlsx"
+
+    # Verify the file can be opened and has the expected structure
+    import openpyxl
+
+    workbook = openpyxl.load_workbook(new_file_path)
+    try:
+        # Should have Summary and Employee Data sheets
+        assert "Summary" in workbook.sheetnames
+        assert "Employee Data" in workbook.sheetnames
+
+        data_sheet = workbook["Employee Data"]
+        # Should have 51 rows (1 header + 50 employees)
+        assert data_sheet.max_row == 51
+
+        # Check headers
+        assert data_sheet.cell(1, 1).value == "Employee ID"
+        assert "Performance" in str(data_sheet.cell(1, 14).value)
+        assert "Potential" in str(data_sheet.cell(1, 15).value)
+    finally:
+        workbook.close()
