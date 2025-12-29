@@ -41,6 +41,21 @@ jobs:
           restore-keys: |
             uv-${{ runner.os }}-
 
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            pre-commit-${{ runner.os }}-
+
+      - name: Cache Ruff
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ruff
+          key: ruff-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ruff-${{ runner.os }}-
       - name: Install uv
         run: pip install uv
 
