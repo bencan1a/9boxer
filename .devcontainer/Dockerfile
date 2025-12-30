@@ -48,8 +48,8 @@ ENV DISPLAY_HEIGHT=1080
 ENV DISPLAY_DEPTH=24
 
 # Copy helper scripts
-COPY scripts/start-display.sh /usr/local/bin/start-display
-COPY scripts/start-vnc.sh /usr/local/bin/start-vnc
+COPY .devcontainer/scripts/start-display.sh /usr/local/bin/start-display
+COPY .devcontainer/scripts/start-vnc.sh /usr/local/bin/start-vnc
 RUN chmod +x /usr/local/bin/start-display /usr/local/bin/start-vnc
 
 # Switch back to vscode user
