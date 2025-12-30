@@ -4,24 +4,71 @@
 
 9Boxer is a simple, powerful desktop application that helps you manage talent using the proven 9-box methodology. Plot employees by performance and potential, track your decisions, and make succession planning a breeze - all while keeping your sensitive data secure on your computer.
 
+> **New to 9Boxer?** [Start the 5-minute quickstart tour](quickstart.md) and see your first talent grid in minutes!
+
 ---
 
-## Take a 5-Minute Guided Tour
+## Common Tasks
 
-New to 9Boxer? Let's get you to your first success fast.
+**Preparing for a talent calibration meeting?**
+→ [Talent Calibration Workflow](workflows/talent-calibration.md)
 
-**[Start the 5-Minute Guided Tour →](quickstart.md)**
+**Making your first rating changes?**
+→ [Making Rating Changes](workflows/making-changes.md)
 
-No Excel file needed! Load our sample data (200 realistic employees with complete history) and discover all the features in an interactive tour. You'll see the grid, track changes, spot bias patterns with Intelligence, and understand how 9Boxer makes talent decisions easier.
+**Validating your center box ratings?**
+→ [Donut Mode Exercise](donut-mode.md)
 
-!!! tip "Why Start with Sample Data?"
-    Our sample dataset includes 200 employees with 3 years of performance history, complete organizational hierarchy, and deliberate bias patterns that let you see Intelligence in action. It's the fastest way to understand what 9Boxer can do - no spreadsheet prep required. [Start the tour →](quickstart.md)
+**Analyzing distribution patterns?**
+→ [Statistics & Intelligence](statistics.md)
 
-![Sample 9-box grid showing employees organized by performance and potential](images/screenshots/index/hero-grid-sample.png)
+**Exporting your results?**
+→ [Exporting Your Work](exporting.md)
+
+**Need help troubleshooting?**
+→ [Troubleshooting Guide](troubleshooting.md)
 
 ---
 
 ## Choose Your Path
+
+**New to 9Boxer?** (Alex - Beginner)
+→ [Start the 5-Minute Quickstart](quickstart.md)
+
+**HR Manager preparing for calibration?** (Sarah)
+→ [Talent Calibration Workflow](workflows/talent-calibration.md)
+
+**Department Head new to 9-box?** (Marcus)
+→ [Understanding the 9-Box Grid](understanding-grid.md)
+
+**Talent Lead with 100+ employees?** (Priya)
+→ [Advanced Filtering & Intelligence](filters.md)
+
+**Executive seeking strategic insights?** (James)
+→ [Distribution Analysis & Anomalies](statistics.md)
+
+---
+
+## Key Features at a Glance
+
+**Visual Talent Management**
+- Drag-and-drop interface makes rating changes intuitive
+- See your entire team's distribution at a glance
+- Track all changes with automatic timeline history
+
+**Smart Analytics**
+- Distribution statistics show if your ratings are balanced
+- Anomaly detection spots rating bias across managers and departments
+- Filter by team, level, or performance to focus your reviews
+
+**Secure and Local**
+- All data stays on your computer - no cloud uploads
+- Import from Excel, export back to Excel
+- Standalone desktop app for Windows, macOS, and Linux
+
+**[Explore all features in detail →](getting-started.md)
+
+---
 
 ### 🆕 New to 9Boxer?
 
@@ -72,78 +119,12 @@ By plotting everyone on a 3x3 grid, you can quickly identify your top talent, sp
 
 ---
 
-## Key Features at a Glance
-
-**Visual Talent Management**
-- Drag-and-drop interface makes rating changes intuitive
-- See your entire team's distribution at a glance
-- Track all changes with automatic timeline history
-
-**Smart Analytics**
-- Distribution statistics show if your ratings are balanced
-- Anomaly detection spots rating bias across managers and departments
-- Filter by team, level, or performance to focus your reviews
-
-**Secure and Local**
-- All data stays on your computer - no cloud uploads
-- Import from Excel, export back to Excel
-- Standalone desktop app for Windows, macOS, and Linux
-
-**[Explore all features in detail →](getting-started.md)**
-
----
-
 ## Critical: No Auto-Save
 
 !!! danger "Remember to Export Your Changes!"
     9Boxer does NOT automatically save your work. Click **Export** to download your changes before closing the application!
 
     Your exported Excel file includes updated ratings, change notes, and a complete audit trail.
-
----
-
-## What You Can Do with 9Boxer
-
-**Upload & Visualize**
-- Import employee data from Excel in seconds
-- See everyone positioned on the 9-box grid
-- Understand your talent distribution instantly
-
-**Review & Adjust**
-- Drag employees to adjust their ratings
-- Add notes explaining your rationale
-- Use Donut Mode to validate center box placements
-
-**Analyze & Export**
-- View distribution statistics and charts
-- Identify rating anomalies and bias patterns
-- Export results with full change tracking
-
-**[See the complete workflow →](getting-started.md)**
-
----
-
-## Your First 5 Minutes
-
-Here's what a typical first session looks like:
-
-1. **Upload your team data** (1 minute)
-   - Prepare an Excel file with 4 required columns
-   - Click Import and select your file
-
-2. **See your grid** (30 seconds)
-   - Employees appear automatically, positioned by their ratings
-   - Check the distribution in the Statistics tab
-
-3. **Make your first change** (2 minutes)
-   - Drag an employee to a new position
-   - Add a note explaining why
-
-4. **Export your results** (1 minute)
-   - Click Export to download your updated ratings
-   - Open the file to see your changes and notes
-
-**Ready to try it?** [Start the guided tour now →](quickstart.md)
 
 ---
 

@@ -36,6 +36,8 @@ export interface PureAppBarProps {
   fileName?: string;
   /** Number of unsaved changes */
   changeCount: number;
+  /** Whether sample data has been loaded but not yet saved */
+  hasSampleData?: boolean;
   /** Whether the file menu is open */
   isFileMenuOpen?: boolean;
   /** Whether the help menu is open */
@@ -104,6 +106,7 @@ export interface PureAppBarProps {
 export const PureAppBar: React.FC<PureAppBarProps> = ({
   fileName,
   changeCount,
+  hasSampleData = false,
   isFileMenuOpen,
   isHelpMenuOpen,
   hasActiveFilters,
@@ -163,6 +166,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
           <FileMenuButton
             fileName={fileName}
             changeCount={changeCount}
+            hasSampleData={hasSampleData}
             isOpen={isFileMenuOpen}
             onToggle={onFileMenuToggle}
             onImportClick={onImportClick}

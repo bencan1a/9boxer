@@ -281,6 +281,11 @@ If the minimal file uploads successfully, the issue is with your original file d
 - No write permissions to download location
 - Disk space issues
 - Browser blocking download
+- Original file is read-only or locked
+
+![Error dialog showing file operation fallback message indicating original file cannot be updated due to read-only status, with option to save to different file location instead, ensuring work is never lost even when file permissions prevent updating the original](images/screenshots/file-ops/file-error-fallback.png)
+
+When the original file can't be updated, 9Boxer automatically falls back to "Save to different file" mode to ensure your work is never lost.
 
 **Solutions:**
 
@@ -292,6 +297,10 @@ If the minimal file uploads successfully, the issue is with your original file d
 4. **Try closing and reopening** - Restart the application and try again
 5. **Check browser settings** (web version) - Ensure browser allows downloads
     - Check if download was blocked in browser address bar
+6. **Remove read-only attribute** - If original file is read-only:
+    - Windows: Right-click file → Properties → Uncheck "Read-only"
+    - macOS: Get Info → Unlock file if locked
+    - Or use the "Save to different file" option to create a new copy
 
 ### Can't Find Exported File
 

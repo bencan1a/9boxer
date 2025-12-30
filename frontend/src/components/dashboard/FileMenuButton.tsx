@@ -47,6 +47,8 @@ export interface FileMenuButtonProps {
   fileName?: string;
   /** Number of unsaved changes */
   changeCount: number;
+  /** Whether sample data has been loaded but not yet saved */
+  hasSampleData?: boolean;
   /** Whether the menu is currently open */
   isOpen?: boolean;
   /** Callback when the menu should be toggled */
@@ -90,6 +92,7 @@ export interface FileMenuButtonProps {
 export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   fileName,
   changeCount,
+  hasSampleData = false,
   isOpen: controlledIsOpen,
   onToggle,
   onImportClick,
@@ -109,6 +112,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
   const isOpen =
     controlledIsOpen !== undefined ? controlledIsOpen : Boolean(anchorEl);
   const hasChanges = changeCount > 0;
+  const showSampleDataBadge = hasSampleData && changeCount === 0;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // Always capture the button element for menu anchoring,
@@ -177,7 +181,8 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
         <ChangeIndicator
           count={changeCount}
-          invisible={!hasChanges}
+          showDot={showSampleDataBadge}
+          invisible={!hasChanges && !showSampleDataBadge}
           testId="file-menu-badge"
           sx={{
             "& .MuiBadge-badge": {
@@ -247,7 +252,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         </MenuItem>
 
         {/* Divider: Separates input actions from file management */}
-        {(hasChanges || fileName) && <Divider />}
+        {(hasChanges || hasSampleData || fileName) && <Divider />}
 
         {/* Group 2: File Management Actions (conditional) */}
         {hasChanges && (
@@ -267,6 +272,23 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
           </MenuItem>
         )}
 
+        {showSampleDataBadge && (
+          <MenuItem
+            onClick={handleExportClick}
+            disabled={isExporting}
+            data-testid="save-sample-data-menu-item"
+          >
+            {isExporting ? (
+              <CircularProgress size={20} sx={{ mr: 1 }} />
+            ) : (
+              <DownloadIcon sx={{ mr: 1 }} fontSize="small" />
+            )}
+            {isExporting
+              ? t("dashboard.fileMenu.exporting")
+              : t("dashboard.fileMenu.saveSampleData")}
+          </MenuItem>
+        )}
+
         {fileName && (
           <MenuItem
             onClick={handleCloseFileClick}
@@ -281,7 +303,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         {recentFiles && recentFiles.length > 0 && (
           <>
             {/* Only show divider if there are file management items above */}
-            {(hasChanges || fileName) && <Divider />}
+            {(hasChanges || hasSampleData || fileName) && <Divider />}
 
             <ListSubheader sx={{ lineHeight: "32px" }}>
               {t("dashboard.fileMenu.recentFiles", "Recent Files")}

@@ -36,6 +36,10 @@ Your grid now displays 200 employees organized into 9 boxes based on Performance
 >
 > Sample data lets you explore features risk-free. You can't break anything, and you'll see patterns that make the Intelligence panel come alive!
 
+> 💾 **New! Save Sample Data Immediately**
+>
+> Want to save the sample data as an Excel file? You can now do that immediately! Click the **File menu** and select **"Save Sample Data"** - no need to make changes first. Perfect for creating a template or sharing the sample dataset with your team!
+
 ---
 
 ## Step 2: Explore Employee Details (1 minute)
@@ -266,7 +270,7 @@ Filters, Donut Mode, Statistics, Intelligence, Change Tracking, Exporting - pick
     Before calibrating your real team, load sample data and practice the workflow. Try moving people, adding notes, and exporting. Build muscle memory in a safe environment!
 
 !!! warning "Remember to Export Your Changes!"
-    9Boxer doesn't auto-save. When you're done making changes, click the **File menu** and select **"Apply X Changes to Excel"** to download your updated file.
+    9Boxer doesn't auto-save. When you're done making changes, click the **File menu** and select **"Apply X Changes to Excel"** to download your updated file. Note: With sample data, you can also use **"Save Sample Data"** to export immediately without making any changes!
 
 !!! info "Filters + Intelligence = Powerful Combo"
     During calibration: Filter by manager to see their team, then check Intelligence for patterns. Does this manager rate everyone high? Intelligence will tell you!
