@@ -10,8 +10,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Enable parallel test execution
-  // CI uses 2 workers for stability, local uses auto-detect based on CPU cores
-  workers: process.env.CI ? 2 : undefined,
+  // CI uses 2 workers for stability, local uses 4 max to prevent resource exhaustion
+  // Auto-detect was causing pthread_create errors with 21 workers
+  workers: process.env.CI ? 2 : 4,
 
   // Reporter to use
   reporter: "html",

@@ -172,13 +172,25 @@ test.describe("Zoom & Full-Screen Controls", () => {
     // Reload page
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
 
-    // Wait for app to initialize and determine state (either empty state or grid loaded from session)
-    await page.waitForTimeout(500);
+    // Wait for app to initialize - check if grid is already visible from session persistence
+    const grid = page.locator('[data-testid="nine-box-grid"]');
+    const isGridVisible = await grid.isVisible().catch(() => false);
 
-    // Re-load to show grid
-    await loadSampleData(page);
-    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+    // If grid is not visible, load sample data
+    if (!isGridVisible) {
+      await loadSampleData(page);
+      await expect(grid).toBeVisible();
+    }
+
+    // Ensure any dialogs from loading are closed
+    await expect(
+      page.locator('[data-testid="load-sample-dialog"]')
+    ).not.toBeVisible();
+
+    // Wait for view controls to be ready
+    await expect(page.locator('[data-testid="view-controls"]')).toBeVisible();
 
     // Verify zoom persisted
     const zoomAfterReload = await zoomPercentage.textContent();

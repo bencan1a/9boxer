@@ -90,13 +90,17 @@ test.describe("Export Workflow with ApplyChangesDialog", () => {
     // Move an employee
     await dragEmployeeToPosition(page, 1, 6);
 
+    // Wait for the change to be tracked
+    await expect(page.locator('[data-testid="file-menu-badge"]')).toBeVisible();
+
     // Open export dialog
     await page.locator('[data-testid="file-menu-button"]').click();
+    await expect(page.locator('[role="menu"]')).toBeVisible();
     await page.locator('[data-testid="export-changes-menu-item"]').click();
 
     // Wait for ApplyChangesDialog
     const dialog = page.locator('[data-testid="apply-changes-dialog"]');
-    await expect(dialog).toBeVisible();
+    await expect(dialog).toBeVisible({ timeout: 10000 });
 
     // Verify checkbox is present and unchecked by default
     const checkbox = page.locator('[data-testid="save-as-new-checkbox"]');
@@ -109,6 +113,7 @@ test.describe("Export Workflow with ApplyChangesDialog", () => {
 
     // Cancel to clean up
     await page.locator('button:has-text("Cancel")').click();
+    await expect(dialog).not.toBeVisible();
   });
 
   test("should display export menu item text with change count", async ({

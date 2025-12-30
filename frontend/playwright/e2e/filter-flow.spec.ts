@@ -28,14 +28,15 @@ test.describe("Filter Application Flow", () => {
     await page.locator('[data-testid="filter-button"]').click();
 
     // Wait for drawer to open and verify filter sections are visible
+    // Use data-testid to avoid strict mode violations (multiple elements with same text)
     await expect(
-      page.getByText(t("dashboard.filterDrawer.jobFunctions"))
+      page.locator('[data-testid="filter-accordion-job-functions-header"]')
     ).toBeVisible();
     await expect(
-      page.getByText(t("dashboard.filterDrawer.jobLevels"))
+      page.locator('[data-testid="filter-accordion-job-levels-header"]')
     ).toBeVisible();
     await expect(
-      page.getByText(t("dashboard.filterDrawer.locations"))
+      page.locator('[data-testid="filter-accordion-locations-header"]')
     ).toBeVisible();
 
     // Verify that there are checkboxes in the filter drawer

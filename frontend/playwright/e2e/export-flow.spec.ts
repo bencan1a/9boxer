@@ -6,7 +6,7 @@
  */
 
 import { test, expect } from "../fixtures";
-import { loadSampleData } from "../helpers";
+import { loadSampleData, dragEmployeeToPosition } from "../helpers";
 
 test.describe("Export Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -53,17 +53,10 @@ test.describe("Export Flow", () => {
       .locator('[data-testid^="employee-card-"]')
       .first();
     const employeeId = await firstEmployee.getAttribute("data-testid");
-    const id = employeeId?.replace("employee-card-", "");
+    const id = parseInt(employeeId?.replace("employee-card-", "") || "0");
 
-    // Drag employee to a different position
-    await firstEmployee.dragTo(page.locator('[data-testid="grid-box-6"]'));
-
-    // Wait for the move operation to complete
-    await page.waitForResponse(
-      (response) =>
-        response.url().includes(`/api/employees/${id}/move`) &&
-        response.status() === 200
-    );
+    // Drag employee to a different position using proper helper
+    await dragEmployeeToPosition(page, id, 6);
 
     // File menu badge should now be visible
     await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);

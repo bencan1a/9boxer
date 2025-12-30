@@ -124,7 +124,11 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         maxWidth: 400, // Maximum width for readability
         cursor: "pointer",
         display: "flex",
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging
+          ? 0.5
+          : donutModeActive && employee.donut_position
+            ? 0.7
+            : 1,
         userSelect: "none",
         position: "relative",
         // Consistent full border for both movement types
