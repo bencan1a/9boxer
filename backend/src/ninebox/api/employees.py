@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, field_validator
 from ninebox.core.dependencies import get_employee_service, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.filters import EmployeeFilters
-from ninebox.services.employee_service import EmployeeService
+from ninebox.services.employee_service import EmployeeService, is_big_mover
 from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
 from ninebox.services.session_manager import SessionManager
 
@@ -146,8 +146,19 @@ async def get_employees(
         **filters.to_filter_kwargs(),
     )
 
+    # Get original employees for in-session big mover detection
+    original_employees_map = {e.employee_id: e for e in session.original_employees}
+
+    # Serialize with is_big_mover computed
+    employees_data = []
+    for emp in filtered_employees:
+        emp_dict = emp.model_dump()
+        original_emp = original_employees_map.get(emp.employee_id)
+        emp_dict["is_big_mover"] = is_big_mover(emp, original_emp)
+        employees_data.append(emp_dict)
+
     return {
-        "employees": [emp.model_dump() for emp in filtered_employees],
+        "employees": employees_data,
         "total": len(session.current_employees),
         "filtered": len(filtered_employees),
     }
