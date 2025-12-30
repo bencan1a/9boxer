@@ -4,7 +4,11 @@
  */
 
 import { test, expect } from "../fixtures";
-import { loadSampleData, dragEmployeeToPosition } from "../helpers";
+import {
+  loadSampleData,
+  dragEmployeeToPosition,
+  createChange,
+} from "../helpers";
 
 test.describe("Grid Box Expansion Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -211,17 +215,8 @@ test.describe("Grid Box Expansion Flow", () => {
       // Verify employee is in box 5 initially
       await expect(firstEmployeeCard).toHaveAttribute("data-position", "5");
 
-      // Collapse box 5 before dragging so target box will show employees
-      // (In expanded mode, other boxes are minimized and don't show employee cards)
-      await page.keyboard.press("Escape");
-
-      // Wait for collapse state change
-      await expect(gridBox5).toHaveAttribute("aria-expanded", "false");
-
-      // Wait for grid to re-layout after collapsing
-      await page.waitForLoadState("networkidle");
-
-      // Drag employee from box 5 to box 1
+      // Drag from EXPANDED box 5 to MINIMIZED box 1
+      // This tests that drag works from expanded state to minimized target box
       await dragEmployeeToPosition(page, employeeId, 1);
 
       // Verify employee moved to box 1 (check data-position attribute)

@@ -8,6 +8,13 @@
 import { Page, expect } from "@playwright/test";
 
 /**
+ * Cache to track if sample data has been loaded in the current page context.
+ * Maps page URL to loaded state to avoid redundant data loading.
+ * This is reset between test workers but persists within serial test suites.
+ */
+const sampleDataCache = new WeakMap<Page, boolean>();
+
+/**
  * Load sample data using the sample data generation API
  *
  * Generates 200 realistic employees with:
@@ -20,21 +27,61 @@ import { Page, expect } from "@playwright/test";
  * For tests that specifically need to test Excel upload functionality,
  * use uploadExcelFile() directly.
  *
+ * **Performance Optimization:**
+ * When used in serial test suites (test.describe.configure({ mode: 'serial' })),
+ * this function caches the loaded state and skips redundant API calls.
+ * For isolated tests, it loads data normally each time.
+ *
  * @param page - Playwright page object
  * @param size - Number of employees to generate (default: 200)
+ * @param options - Optional configuration
+ * @param options.skipCache - Force reload even if data is cached (default: false)
  *
  * @example
  * ```typescript
- * test('grid displays employees', async ({ page }) => {
+ * // In serial test suite (optimized)
+ * test.describe.configure({ mode: 'serial' });
+ * test.beforeAll(async ({ page }) => {
+ *   await page.goto('/');
  *   await loadSampleData(page);
- *   await expect(page.locator('[data-testid^="employee-card-"]')).toHaveCount(200, { timeout: 10000 });
+ * });
+ *
+ * // In isolated test (default)
+ * test.beforeEach(async ({ page }) => {
+ *   await page.goto('/');
+ *   await loadSampleData(page);
  * });
  * ```
  */
 export async function loadSampleData(
   page: Page,
-  size: number = 200
+  size: number = 200,
+  options: { skipCache?: boolean } = {}
 ): Promise<void> {
+  // Check cache unless explicitly told to skip
+  if (!options.skipCache && sampleDataCache.has(page)) {
+    // Data already loaded in this page context
+    // Verify both grid AND employee cards are present to ensure data is fresh
+    const gridVisible = await page
+      .locator('[data-testid="nine-box-grid"]')
+      .isVisible()
+      .catch(() => false);
+
+    const cardsCount = await page
+      .locator('[data-testid^="employee-card-"]')
+      .count()
+      .catch(() => 0);
+
+    // Cache is valid if grid is visible AND we have at least 90% of expected employees
+    // (allows for small variations in data generation)
+    if (gridVisible && cardsCount >= size * 0.9) {
+      // Cache is valid, skip reload
+      return;
+    }
+    // Grid not visible or insufficient cards, cache is stale, clear and proceed with load
+    sampleDataCache.delete(page);
+  }
+
   // Navigate to app if not already there
   const currentUrl = page.url();
   if (!currentUrl.includes("localhost")) {
@@ -72,6 +119,16 @@ export async function loadSampleData(
   await page.waitForSelector('[data-testid^="employee-card-"]', {
     timeout: 5000,
   });
+
+  // Wait for React to finish rendering and network activity to settle
+  await page.waitForLoadState("networkidle");
+
+  // Verify at least one employee card is fully interactive (not loading)
+  const firstCard = page.locator('[data-testid^="employee-card-"]').first();
+  await expect(firstCard).toBeVisible({ timeout: 5000 });
+
+  // Mark as cached for this page context
+  sampleDataCache.set(page, true);
 }
 
 /**

@@ -29,3 +29,9 @@ export {
 } from "./assertions";
 export { loadCalibrationData, loadSampleData } from "./fixtures";
 export { t, tEn, tEs } from "./translations";
+export {
+  createChange,
+  createMultipleChanges,
+  getFirstEmployeeId,
+  getEmployeeIdFromPosition,
+} from "./testData";

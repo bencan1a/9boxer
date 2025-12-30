@@ -252,18 +252,11 @@ test.describe("File Load/Save/Apply Workflows", () => {
     await makeChange(page);
     await verifyChangeCount(page, 1);
 
-    // 3. Make second change (move another employee)
-    const secondCard = page.locator('[data-testid^="employee-card-"]').nth(1);
-    await secondCard.waitFor({ state: "visible" });
-
-    const cardTestId = await secondCard.getAttribute("data-testid");
-    const employeeId = parseInt(
-      cardTestId?.replace("employee-card-", "") || "2"
-    );
-
-    // Import dragEmployeeToPosition for direct use
-    const { dragEmployeeToPosition } = await import("../helpers/dragAndDrop");
-    await dragEmployeeToPosition(page, employeeId, 5);
+    // 3. Make second change (move another employee via API)
+    const { createChange, getEmployeeIdFromPosition } =
+      await import("../helpers/testData");
+    const employeeId = await getEmployeeIdFromPosition(page, 5);
+    await createChange(page, employeeId, 3);
 
     // 4. Verify change count is 2
     await verifyChangeCount(page, 2);

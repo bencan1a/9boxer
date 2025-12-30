@@ -42,12 +42,13 @@ export const DetailsTab: React.FC = () => {
         flexDirection: "column",
         gap: theme.tokens.spacing.lg / 8, // Convert 24px to 3
       }}
+      data-testid="details-tab-content"
     >
       <EmployeeDetails employee={selectedEmployee} />
       <RatingsTimeline employee={selectedEmployee} />
 
       {/* Management Chain */}
-      <Card variant="outlined">
+      <Card variant="outlined" data-testid="management-chain-section">
         <CardContent>
           <Typography variant="subtitle2" color="primary" gutterBottom>
             {t("panel.detailsTab.reportingChain")}

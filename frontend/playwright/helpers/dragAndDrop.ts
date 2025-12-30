@@ -122,6 +122,15 @@ export async function dragEmployeeToPosition(
       // 5. Mouse up to drop
       await page.mouse.up();
 
+      // 5a. Brief wait to allow dnd-kit to process the drop event
+      // dnd-kit needs to:
+      // - Process the pointerup event
+      // - Calculate the drop result
+      // - Call onDragEnd callback
+      // - Which then triggers the API call
+      // Without this, we start waiting for API response before the drag completes
+      await page.waitForTimeout(100);
+
       // 6. Wait for the API call to complete (unless we're skipping it)
       if (moveEmployeePromise) {
         try {

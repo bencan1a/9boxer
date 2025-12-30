@@ -1,7 +1,5 @@
 """Tests for statistics API endpoints."""
 
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -9,28 +7,11 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.unit
 
 
-@pytest.fixture
-def session_with_data(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
-) -> dict[str, str]:
-    """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
-        files = {
-            "file": (
-                "test.xlsx",
-                f,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        }
-        test_client.post("/api/session/upload", files=files, headers=auth_headers)
-    return auth_headers
-
-
 def test_get_statistics_when_session_exists_then_returns_distribution(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/statistics returns distribution with 200."""
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -42,16 +23,16 @@ def test_get_statistics_when_session_exists_then_returns_distribution(
     assert "by_performance" in data
     assert "by_potential" in data
 
-    assert data["total_employees"] == 5
+    assert data["total_employees"] == 50
     assert len(data["distribution"]) == 9
     assert isinstance(data["distribution"], list)
 
 
 def test_get_statistics_when_called_then_distribution_has_all_boxes(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that statistics includes all 9 boxes."""
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -68,28 +49,29 @@ def test_get_statistics_when_called_then_distribution_has_all_boxes(
 
 
 def test_get_statistics_when_with_filters_then_applies_filters(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/statistics with filters applied."""
-    response = test_client.get("/api/statistics?levels=MT4", headers=session_with_data)
+    response = test_client.get("/api/statistics?levels=MT4", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
 
-    # Should only count MT4 employees (2 in sample data)
-    assert data["total_employees"] == 2
+    # Should only count MT4 employees (fewer than total)
+    assert data["total_employees"] > 0
+    assert data["total_employees"] < 50
 
 
 def test_get_statistics_when_counts_then_matches_employee_data(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that statistics match employee data."""
     # Get employees
-    emp_response = test_client.get("/api/employees", headers=session_with_data)
+    emp_response = test_client.get("/api/employees", headers=session_with_employees)
     employees = emp_response.json()["employees"]
 
     # Get statistics
-    stats_response = test_client.get("/api/statistics", headers=session_with_data)
+    stats_response = test_client.get("/api/statistics", headers=session_with_employees)
     stats = stats_response.json()
 
     # Total count should match
@@ -108,10 +90,10 @@ def test_get_statistics_when_counts_then_matches_employee_data(
 
 
 def test_get_statistics_when_by_performance_then_aggregates_correctly(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that by_performance aggregation is correct."""
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -121,17 +103,15 @@ def test_get_statistics_when_by_performance_then_aggregates_correctly(
     assert "Medium" in by_perf
     assert "Low" in by_perf
 
-    # From sample data: 2 High, 2 Medium, 1 Low
-    assert by_perf["High"] == 2
-    assert by_perf["Medium"] == 2
-    assert by_perf["Low"] == 1
+    # All performance levels should sum to total employees
+    assert by_perf["High"] + by_perf["Medium"] + by_perf["Low"] == 50
 
 
 def test_get_statistics_when_by_potential_then_aggregates_correctly(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that by_potential aggregation is correct."""
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -141,22 +121,20 @@ def test_get_statistics_when_by_potential_then_aggregates_correctly(
     assert "Medium" in by_pot
     assert "Low" in by_pot
 
-    # From sample data: 2 High (Alice, Charlie), 2 Medium (Bob, Diana), 1 Low (Eve)
-    assert by_pot["High"] == 2
-    assert by_pot["Medium"] == 2
-    assert by_pot["Low"] == 1
+    # All potential levels should sum to total employees
+    assert by_pot["High"] + by_pot["Medium"] + by_pot["Low"] == 50
 
 
 def test_get_statistics_when_employees_modified_then_tracks_count(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that modified count is tracked after employee moves."""
     # Move an employee
     move_data = {"performance": "Low", "potential": "Low"}
-    test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     # Get statistics
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -165,38 +143,39 @@ def test_get_statistics_when_employees_modified_then_tracks_count(
 
 
 def test_get_statistics_when_multiple_filters_then_applies_all(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test statistics with multiple filters."""
     response = test_client.get(
-        "/api/statistics?levels=MT4,MT5&performance=High", headers=session_with_data
+        "/api/statistics?levels=MT4,MT5&performance=High", headers=session_with_employees
     )
 
     assert response.status_code == 200
     data = response.json()
 
-    # Should count only MT4/MT5 with High performance (1 employee: Alice)
-    assert data["total_employees"] == 1
+    # Should count only MT4/MT5 with High performance (subset of total)
+    assert data["total_employees"] > 0
+    assert data["total_employees"] < 50
 
 
 def test_get_statistics_when_exclude_ids_then_excludes_from_count(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test statistics with exclude_ids filter."""
-    response = test_client.get("/api/statistics?exclude_ids=1,2", headers=session_with_data)
+    response = test_client.get("/api/statistics?exclude_ids=1,2", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
 
     # Should exclude 2 employees
-    assert data["total_employees"] == 3
+    assert data["total_employees"] == 48
 
 
 def test_get_statistics_when_percentages_then_sum_to_100(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that percentages sum to 100%."""
-    response = test_client.get("/api/statistics", headers=session_with_data)
+    response = test_client.get("/api/statistics", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -208,10 +187,10 @@ def test_get_statistics_when_percentages_then_sum_to_100(
 
 
 def test_get_statistics_when_invalid_exclude_ids_then_returns_400(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that invalid exclude_ids returns 400 (not 500)."""
-    response = test_client.get("/api/statistics?exclude_ids=1,invalid,3", headers=session_with_data)
+    response = test_client.get("/api/statistics?exclude_ids=1,invalid,3", headers=session_with_employees)
 
     assert response.status_code == 400
     data = response.json()

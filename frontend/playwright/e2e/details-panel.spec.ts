@@ -18,7 +18,13 @@
  */
 
 import { test, expect } from "../fixtures";
-import { loadSampleData, dragEmployeeToPosition, t } from "../helpers";
+import {
+  loadSampleData,
+  dragEmployeeToPosition,
+  t,
+  createChange,
+  getFirstEmployeeId,
+} from "../helpers";
 import type { Page, Locator } from "@playwright/test";
 
 /**
@@ -177,9 +183,11 @@ test.describe("Details Panel - Core Functionality", () => {
     });
 
     test("should update box info when employee is moved", async ({ page }) => {
-      // Find and select employee
-      const { employeeCard, employeeId, boxNumber } =
-        await findAnyEmployee(page);
+      // Get any employee ID
+      const employeeId = await getFirstEmployeeId(page);
+      const employeeCard = page.locator(
+        `[data-testid="employee-card-${employeeId}"]`
+      );
       await employeeCard.click();
 
       // Get initial position
@@ -189,8 +197,8 @@ test.describe("Details Panel - Core Functionality", () => {
       await expect(initialBoxLabel).toBeVisible();
       const initialPosition = await initialBoxLabel.textContent();
 
-      // Move employee to a different box (box 6)
-      await dragEmployeeToPosition(page, parseInt(employeeId), 6);
+      // Move employee to position 6 via API (testing panel update, not drag)
+      await createChange(page, employeeId, 6);
 
       // Verify employee moved to box 6
       await expect(
@@ -216,9 +224,9 @@ test.describe("Details Panel - Core Functionality", () => {
     test("should show modified indicator when employee is moved", async ({
       page,
     }) => {
-      // Find and move employee
-      const { employeeId } = await findAnyEmployee(page);
-      await dragEmployeeToPosition(page, parseInt(employeeId), 6);
+      // Get any employee and move via API (testing modified indicator, not drag)
+      const employeeId = await getFirstEmployeeId(page);
+      await createChange(page, employeeId, 6);
 
       // Click to view details
       await page.locator(`[data-testid="employee-card-${employeeId}"]`).click();
@@ -235,9 +243,9 @@ test.describe("Details Panel - Core Functionality", () => {
 
   test.describe("Changes Summary", () => {
     test("should display changes after employee movement", async ({ page }) => {
-      // Find and move employee
-      const { employeeId } = await findAnyEmployee(page);
-      await dragEmployeeToPosition(page, parseInt(employeeId), 6);
+      // Get any employee and move via API (testing changes summary, not drag)
+      const employeeId = await getFirstEmployeeId(page);
+      await createChange(page, employeeId, 6);
       await expect(
         page
           .locator('[data-testid="grid-box-6"]')

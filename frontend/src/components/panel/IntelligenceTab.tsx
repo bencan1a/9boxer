@@ -43,6 +43,7 @@ export const IntelligenceTab: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
         }}
+        data-testid="intelligence-tab-loading"
       >
         <CircularProgress />
       </Box>
@@ -56,13 +57,21 @@ export const IntelligenceTab: React.FC = () => {
       error instanceof ApiError && error.statusCode === 404;
 
     return (
-      <Box sx={{ p: theme.tokens.spacing.md / 8 }}>
+      <Box
+        sx={{ p: theme.tokens.spacing.md / 8 }}
+        data-testid="intelligence-tab-error"
+      >
         {" "}
         {/* Convert 16px to 2 */}
         <Alert
           severity={isSessionNotFound ? "warning" : "error"}
           action={
-            <Button color="inherit" size="small" onClick={refetch}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={refetch}
+              data-testid="intelligence-retry-button"
+            >
               {t("panel.intelligenceTab.retry")}
             </Button>
           }
@@ -150,58 +159,67 @@ export const IntelligenceTab: React.FC = () => {
         gap: theme.tokens.spacing.lg / 8, // Convert 24px to 3
         p: theme.tokens.spacing.md / 8, // Convert 16px to 2
       }}
+      data-testid="intelligence-tab-content"
     >
       {/* Summary Section */}
       <IntelligenceSummary data={data} />
 
       {/* Location Analysis */}
-      <AnomalySection
-        title={t("panel.intelligenceTab.locationAnalysis")}
-        analysis={data.location_analysis}
-        chartComponent={
-          <DeviationChart
-            data={data.location_analysis.deviations}
-            title={t("panel.intelligenceTab.highPerformerByLocation")}
-          />
-        }
-      />
+      <Box data-testid="location-analysis-section">
+        <AnomalySection
+          title={t("panel.intelligenceTab.locationAnalysis")}
+          analysis={data.location_analysis}
+          chartComponent={
+            <DeviationChart
+              data={data.location_analysis.deviations}
+              title={t("panel.intelligenceTab.highPerformerByLocation")}
+            />
+          }
+        />
+      </Box>
 
       {/* Function Analysis */}
-      <AnomalySection
-        title={t("panel.intelligenceTab.functionAnalysis")}
-        analysis={data.function_analysis}
-        chartComponent={
-          <DeviationChart
-            data={data.function_analysis.deviations}
-            title={t("panel.intelligenceTab.highPerformerByFunction")}
-          />
-        }
-      />
+      <Box data-testid="function-analysis-section">
+        <AnomalySection
+          title={t("panel.intelligenceTab.functionAnalysis")}
+          analysis={data.function_analysis}
+          chartComponent={
+            <DeviationChart
+              data={data.function_analysis.deviations}
+              title={t("panel.intelligenceTab.highPerformerByFunction")}
+            />
+          }
+        />
+      </Box>
 
       {/* Level Analysis */}
-      <AnomalySection
-        title={t("panel.intelligenceTab.levelAnalysis")}
-        analysis={data.level_analysis}
-        chartComponent={
-          <LevelDistributionChart
-            data={levelDistributionData}
-            title={t("panel.intelligenceTab.performanceDistributionByLevel")}
-            baselineHighPct={baselineHighPct}
-          />
-        }
-      />
+      <Box data-testid="level-analysis-section">
+        <AnomalySection
+          title={t("panel.intelligenceTab.levelAnalysis")}
+          analysis={data.level_analysis}
+          chartComponent={
+            <LevelDistributionChart
+              data={levelDistributionData}
+              title={t("panel.intelligenceTab.performanceDistributionByLevel")}
+              baselineHighPct={baselineHighPct}
+            />
+          }
+        />
+      </Box>
 
       {/* Tenure Analysis */}
-      <AnomalySection
-        title={t("panel.intelligenceTab.tenureAnalysis")}
-        analysis={data.tenure_analysis}
-        chartComponent={
-          <DeviationChart
-            data={data.tenure_analysis.deviations}
-            title={t("panel.intelligenceTab.highPerformerByTenure")}
-          />
-        }
-      />
+      <Box data-testid="tenure-analysis-section">
+        <AnomalySection
+          title={t("panel.intelligenceTab.tenureAnalysis")}
+          analysis={data.tenure_analysis}
+          chartComponent={
+            <DeviationChart
+              data={data.tenure_analysis.deviations}
+              title={t("panel.intelligenceTab.highPerformerByTenure")}
+            />
+          }
+        />
+      </Box>
     </Box>
   );
 };

@@ -168,7 +168,11 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             {t("dashboard.exclusionDialog.title")}
           </Typography>
-          <IconButton size="small" onClick={handleCancel}>
+          <IconButton
+            size="small"
+            onClick={handleCancel}
+            data-testid="exclusion-dialog-close-button"
+          >
             <CloseIcon />
           </IconButton>
         </Box>
@@ -223,6 +227,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
             ),
           }}
           sx={{ mb: 2 }}
+          data-testid="exclusion-search-field"
         />
 
         {/* Select All */}
@@ -238,6 +243,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
                 )
               }
               onChange={toggleSelectAll}
+              data-testid="exclusion-select-all-checkbox"
             />
           }
           label={
@@ -292,7 +298,7 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
             count: selectedIds.length,
           })}
         </Typography>
-        <Button onClick={handleCancel}>
+        <Button onClick={handleCancel} data-testid="exclusion-cancel-button">
           {t("dashboard.exclusionDialog.cancel")}
         </Button>
         <Button
