@@ -33,24 +33,6 @@ export type CroppingStrategy =
   | "grid"
   | "full-page";
 
-/**
- * Expected dimensions for screenshot validation
- */
-export interface ExpectedDimensions {
-  /** Minimum width in pixels */
-  minWidth?: number;
-  /** Maximum width in pixels */
-  maxWidth?: number;
-  /** Minimum height in pixels */
-  minHeight?: number;
-  /** Maximum height in pixels */
-  maxHeight?: number;
-  /** Exact width (if screenshot should be precise width) */
-  exactWidth?: number;
-  /** Exact height (if screenshot should be precise height) */
-  exactHeight?: number;
-}
-
 export interface ScreenshotMetadata {
   /** Source type: storybook (component) or full-app (workflow) */
   source: ScreenshotSource;
@@ -66,8 +48,6 @@ export interface ScreenshotMetadata {
   manual?: boolean;
   /** Cropping strategy - what portion of the screen to capture */
   cropping?: CroppingStrategy;
-  /** Expected dimensions for validation (helps catch incorrect captures) */
-  dimensions?: ExpectedDimensions;
   /** For Storybook screenshots: the story ID (e.g., 'grid-employeetile--modified') */
   storyId?: string;
 }
@@ -89,7 +69,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Base grid for 3-panel drag sequence (requires manual composition)",
     manual: true,
     cropping: "grid",
-    dimensions: { minWidth: 800, minHeight: 600 },
   },
   "changes-orange-border": {
     source: "storybook",
@@ -99,7 +78,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Employee tile with full orange modified border (2px)",
     storyId: "grid-employeetile--modified",
     cropping: "element",
-    dimensions: { minWidth: 150, maxWidth: 290, minHeight: 80, maxHeight: 150 },
   },
   "changes-employee-details": {
     source: "storybook",
@@ -110,7 +88,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Employee details panel showing updated ratings with visible changes",
     storyId: "panel-employeedetails--with-changes",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   "changes-timeline-view": {
     source: "storybook",
@@ -120,7 +97,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Performance History timeline in employee details",
     storyId: "panel-ratingstimeline--default",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   "changes-tab": {
     source: "storybook",
@@ -130,7 +106,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Changes tab with employee movements",
     storyId: "panel-changetrackertab--default",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
   // Notes workflow screenshots (1 screenshot)
@@ -142,7 +117,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Changes tab with note field highlighted",
     storyId: "components-panel-changetrackertab--grid-changes-only",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 300 },
   },
 
   // Filters workflow screenshots (3 screenshots)
@@ -154,12 +128,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "AppBar with active filter chips and orange dot indicator",
     storyId: "dashboard-appbar-pureappbar--with-active-filters",
     cropping: "element",
-    dimensions: {
-      minWidth: 300,
-      maxWidth: 1400,
-      minHeight: 60,
-      maxHeight: 100,
-    },
   },
   "filters-panel-expanded": {
     source: "storybook",
@@ -169,7 +137,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Filter panel expanded showing all filter options",
     storyId: "dashboard-filterdrawer--all-sections-expanded",
     cropping: "container",
-    dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
   "filters-clear-all-button": {
     source: "storybook",
@@ -179,7 +146,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Filter section with Clear All button",
     storyId: "dashboard-filtersection--custom-content",
     cropping: "container",
-    dimensions: { minWidth: 250, maxWidth: 400, minHeight: 300 },
   },
 
   // Quickstart workflow screenshots (10 screenshots - guided tour)
@@ -192,7 +158,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       'File menu button in toolbar showing "No file selected" empty state',
     storyId: "dashboard-appbar-filemenubutton--no-file",
     cropping: "element",
-    dimensions: { minWidth: 300, maxWidth: 1400, minHeight: 60, maxHeight: 80 },
   },
   "quickstart-upload-dialog": {
     source: "storybook",
@@ -203,12 +168,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "File upload dialog with file selection input and upload button",
     storyId: "common-fileuploaddialog--open",
     cropping: "container",
-    dimensions: {
-      minWidth: 260,
-      maxWidth: 1500,
-      minHeight: 200,
-      maxHeight: 1000,
-    },
   },
   "quickstart-grid-populated": {
     source: "storybook",
@@ -218,7 +177,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Populated 9-box grid after successful file upload",
     storyId: "grid-nineboxgrid--populated",
     cropping: "container",
-    dimensions: { minWidth: 800, minHeight: 600 },
   },
   "quickstart-empty-state-sample-button": {
     source: "storybook",
@@ -229,12 +187,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Empty state showing 'Load Sample Data' button for quick onboarding (quickstart tour step 1)",
     storyId: "components-emptystate--default",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 800,
-      minHeight: 300,
-      maxHeight: 600,
-    },
   },
   "quickstart-load-sample-dialog": {
     source: "storybook",
@@ -245,12 +197,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Load Sample Data confirmation dialog explaining the 200-employee dataset (quickstart tour step 1)",
     storyId: "dialogs-loadsampledialog--no-existing-data",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
-      minHeight: 250,
-      maxHeight: 400,
-    },
   },
   "quickstart-employee-details-with-history": {
     source: "storybook",
@@ -261,7 +207,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Employee details panel showing flags, reporting chain, and complete job information (quickstart tour step 2)",
     storyId: "panel-employeedetails--default",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   "quickstart-timeline-history": {
     source: "storybook",
@@ -272,7 +217,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Performance history timeline showing 3-year rating progression (quickstart tour step 3)",
     storyId: "panel-ratingstimeline--with-history",
     cropping: "panel",
-    dimensions: { minWidth: 300, maxWidth: 500, minHeight: 400 },
   },
   "quickstart-intelligence-bias-detected": {
     source: "storybook",
@@ -283,7 +227,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Intelligence panel showing detected bias patterns in sample data (USA +15%, Sales +20%) - quickstart tour step 5",
     storyId: "intelligence-anomalysection--red-status",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 300 },
   },
   "quickstart-statistics-distribution": {
     source: "storybook",
@@ -294,7 +237,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Statistics tab showing healthy distribution patterns in sample data (quickstart tour step 4)",
     storyId: "panel-statistics-distributiontable--balanced-distribution",
     cropping: "panel",
-    dimensions: { minWidth: 300, minHeight: 300 },
   },
   // Calibration workflow screenshots (6 screenshots)
   "calibration-file-import": {
@@ -306,7 +248,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
     storyId: "dashboard-appbar-filemenubutton--menu-open",
     cropping: "container",
-    dimensions: { minWidth: 200, minHeight: 300 },
   },
   "calibration-statistics-red-flags": {
     source: "storybook",
@@ -347,7 +288,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Distribution section showing ideal talent distribution across 9-box grid",
     storyId: "intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 300 },
   },
 
   // Intelligence component screenshots (Storybook-based)
@@ -360,7 +300,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "IntelligenceSummary component with excellent quality score (85+), showing green status and low anomaly count",
     storyId: "intelligence-intelligencesummary--excellent-quality",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 150 },
   },
   "intelligence-summary-needs-attention": {
     source: "storybook",
@@ -371,7 +310,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "IntelligenceSummary component with low quality score (<50), showing red status and high anomaly count requiring attention",
     storyId: "intelligence-intelligencesummary--needs-attention",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 150 },
   },
   "intelligence-anomaly-green": {
     source: "storybook",
@@ -382,7 +320,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "AnomalySection component with green status (p > 0.05), showing no significant statistical issues",
     storyId: "intelligence-anomalysection--green-status",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 300 },
   },
   "intelligence-anomaly-red": {
     source: "storybook",
@@ -393,7 +330,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "AnomalySection component with red status (p < 0.01), showing severe statistical anomalies requiring investigation",
     storyId: "intelligence-anomalysection--red-status",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 300 },
   },
   "intelligence-deviation-chart": {
     source: "storybook",
@@ -404,7 +340,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "DeviationChart showing expected vs actual performance distribution with mixed significance levels (green/yellow/red bars)",
     storyId: "intelligence-deviationchart--mixed-significance",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 250 },
   },
   "intelligence-level-distribution": {
     source: "storybook",
@@ -415,7 +350,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "LevelDistributionChart showing normal distribution of Low/Medium/High performers across job levels",
     storyId: "intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 250 },
   },
   "calibration-donut-mode-toggle": {
     source: "storybook",
@@ -425,7 +359,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "ViewControls toolbar with donut mode toggle active",
     storyId: "common-viewcontrols--donut-view-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "calibration-donut-mode-grid": {
     source: "storybook",
@@ -436,7 +369,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
     storyId: "grid-nineboxgrid--donut-mode",
     cropping: "container",
-    dimensions: { minWidth: 800, minHeight: 1000 },
   },
   // Statistics workflow screenshots (4 Storybook-based screenshots)
   "statistics-panel-distribution": {
@@ -468,7 +400,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Active donut mode layout with concentric circles and ghost tiles",
     storyId: "grid-nineboxgrid--donut-mode",
     cropping: "container",
-    dimensions: { minWidth: 800, minHeight: 600 },
   },
 
   // Grid and basic UI screenshots (2 screenshots)
@@ -480,7 +411,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Standard 9-box grid with employee tiles",
     storyId: "grid-nineboxgrid--populated",
     cropping: "container",
-    dimensions: { minWidth: 800, minHeight: 1000 },
   },
   "employee-tile-normal": {
     source: "storybook",
@@ -516,7 +446,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "File menu dropdown open showing menu options",
     storyId: "dashboard-appbar-filemenubutton--menu-open",
     cropping: "container",
-    dimensions: { minWidth: 200, minHeight: 300 },
   },
 
   // Zoom controls screenshot (1 screenshot)
@@ -529,7 +458,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "ViewControls toolbar showing zoom controls, view toggle, and fullscreen button",
     storyId: "common-viewcontrols--grid-view-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 60 },
   },
 
   // ViewControls consolidation screenshots (6 screenshots)
@@ -542,7 +470,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "ViewControls toolbar showing all controls: view toggle, zoom, and fullscreen",
     storyId: "common-viewcontrols--grid-view-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "view-controls-grid-view": {
     source: "storybook",
@@ -553,7 +480,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "view-controls-donut-view": {
     source: "storybook",
@@ -563,7 +489,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
     description: "ViewControls toolbar with Donut view active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 60 },
   },
   "view-controls-settings-dialog": {
     source: "storybook",
@@ -574,7 +499,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
     storyId: "settings-settingsdialog--open",
     cropping: "container",
-    dimensions: { minWidth: 400, minHeight: 300 },
   },
   "view-controls-simplified-appbar": {
     source: "storybook",
@@ -593,7 +517,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Application in fullscreen mode (note: actual fullscreen requires F11, this shows pre-fullscreen view)",
     cropping: "full-page",
-    dimensions: { minWidth: 1200, minHeight: 800 },
   },
 
   // Details Panel enhancements screenshots (6 screenshots)
@@ -606,7 +529,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips with exterior padding",
     storyId: "panel-employeedetails--default-with-padding",
     cropping: "element",
-    dimensions: { minWidth: 300, minHeight: 150 },
   },
   "details-flags-ui": {
     source: "storybook",
@@ -617,7 +539,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Flags section in Details panel with Add Flag picker and colored flag chips",
     storyId: "panel-employeeflags--with-multiple-flags",
     cropping: "container",
-    dimensions: { minWidth: 275, minHeight: 120 },
   },
   "details-flag-badges": {
     source: "storybook",
@@ -628,7 +549,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Employee tiles showing individual colored flag badges (16px circular) in top-right corner",
     storyId: "grid-employeetile--with-flags",
     cropping: "container",
-    dimensions: { minWidth: 230, minHeight: 220 },
   },
   "details-reporting-chain-clickable": {
     source: "storybook",
@@ -639,7 +559,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Reporting Chain section with clickable manager names (blue underlined links)",
     storyId: "panel-managementchain--with-manager",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 200 },
   },
   // FilterDrawer screenshots (4 new screenshots)
   "filters-multiple-active": {
@@ -651,7 +570,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "FilterDrawer with multiple filter types active: Job Functions, Locations, Flags, and Reporting Chain filters with count badges",
     storyId: "dashboard-filterdrawer--multiple-filters-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 600 },
   },
   "filters-flags-section": {
     source: "storybook",
@@ -662,7 +580,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
     storyId: "dashboard-filterdrawer--flags-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 400 },
   },
   "filters-reporting-chain": {
     source: "storybook",
@@ -673,7 +590,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Reporting Chain section in FilterDrawer with active manager filter chip",
     storyId: "dashboard-filterdrawer--reporting-chain-active",
     cropping: "container",
-    dimensions: { minWidth: 300, minHeight: 200 },
   },
 
   // File Operations workflow screenshots (5 screenshots)
@@ -685,12 +601,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "File menu dropdown showing recent files list, import, apply changes, and close options",
     cropping: "container",
-    dimensions: {
-      minWidth: 250,
-      maxWidth: 400,
-      minHeight: 300,
-      maxHeight: 600,
-    },
   },
   "unsaved-changes-dialog": {
     source: "full-app",
@@ -700,12 +610,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Unsaved Changes protection dialog with Apply Changes, Discard, and Cancel options",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
-      minHeight: 200,
-      maxHeight: 400,
-    },
   },
   "apply-changes-dialog-default": {
     source: "storybook",
@@ -716,12 +620,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Apply Changes dialog in default mode (update original file, checkbox unchecked)",
     storyId: "dialogs-applychangesdialog--default",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
-      minHeight: 250,
-      maxHeight: 450,
-    },
   },
   "apply-changes-dialog-save-as": {
     source: "storybook",
@@ -732,12 +630,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Apply Changes dialog in save-as mode (save to different file, checkbox checked)",
     storyId: "dialogs-applychangesdialog--default",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
-      minHeight: 250,
-      maxHeight: 450,
-    },
   },
   "file-error-fallback": {
     source: "storybook",
@@ -748,12 +640,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "File error fallback - error message when original file can't be updated",
     storyId: "dialogs-applychangesdialog--with-error",
     cropping: "container",
-    dimensions: {
-      minWidth: 400,
-      maxWidth: 600,
-      minHeight: 250,
-      maxHeight: 450,
-    },
   },
 };
 
