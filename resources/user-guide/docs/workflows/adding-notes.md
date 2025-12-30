@@ -15,6 +15,53 @@ Notes help you remember why you made changes and provide context for future revi
 
 ---
 
+## Note Quality Checklist
+
+Use this checklist to ensure your notes are clear, compliant, and useful for future reference.
+
+### Before Writing a Note
+
+- [ ] Understand what changed (old position → new position)
+- [ ] Know why it changed (specific reason or trigger)
+- [ ] Have evidence or context to support the change
+- [ ] Confirm who was involved in the decision
+
+### While Writing a Note
+
+- [ ] Include specific dates or timeframes (when the change occurred)
+- [ ] Cite concrete evidence (metrics, projects, behaviors, feedback)
+- [ ] Name people involved (managers, calibration team, stakeholders)
+- [ ] Use professional, objective language (facts, not opinions)
+- [ ] Keep it concise (1-3 sentences typically sufficient)
+- [ ] Make it self-contained (don't reference external documents)
+
+### Legal and Compliance Review
+
+- [ ] Avoid references to protected classes (age, race, gender, religion, disability)
+- [ ] Avoid speculative or assumptive language (stick to facts)
+- [ ] Avoid inflammatory or judgmental language (no personal attacks)
+- [ ] Avoid medical or personal information (health, family situations)
+- [ ] Avoid retaliation language (no references to complaints or protected activities)
+- [ ] When in doubt about sensitive situations, consult HR or legal
+
+### After Writing a Note
+
+- [ ] Read note aloud - does it sound professional and clear?
+- [ ] Verify note provides enough context for someone unfamiliar with situation
+- [ ] Confirm note is defendable and based on performance, not personality
+- [ ] Check that note includes action items or next steps if applicable
+- [ ] Ensure note will make sense 6 months from now
+
+### Before Exporting
+
+- [ ] Review all notes in Changes tab for completeness
+- [ ] Verify every change has a note (no blank note fields)
+- [ ] Check that notes are consistent in tone and format
+- [ ] Confirm sensitive situations were documented appropriately
+- [ ] Ensure notes provide full audit trail for compliance
+
+---
+
 ## When to Add Notes
 
 ### During Calibration Meetings
@@ -72,6 +119,17 @@ This is the most common way to add notes after making changes.
 
 !!! tip "Notes save automatically"
     You don't need to click a Save button - notes are saved when you leave the text field.
+
+### Success! You've Added a Note
+
+You'll see:
+- Note appears in the Notes field immediately
+- Note saves automatically when you tab away
+- Note included in Excel export
+- Audit trail created for the rating change
+
+!!! note "Why This Matters"
+    Notes create accountability and memory. When someone questions a rating change six months later, your note explains exactly what happened and why. This protects you and maintains fairness across reviews.
 
 ### Method 2: For Multiple Employees
 

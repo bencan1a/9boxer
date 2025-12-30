@@ -129,6 +129,9 @@ When you activate Donut Mode:
 !!! warning "Key Principle"
     Donut placements are **separate from actual positions**. Moving someone in Donut Mode does NOT change their real performance/potential ratings. This is purely an exercise to explore "what-if" scenarios.
 
+!!! note "Why This Matters"
+    Donut Mode forces you to challenge the "safe" center box placements. Do these people REALLY belong in Core Talent? This exercise reveals hidden stars and under-performers that calibration meetings often miss.
+
 ## Working in Donut Mode
 
 ### Placing Employees
@@ -173,6 +176,14 @@ When an employee has been placed in Donut Mode, they display:
 ![Grid in Donut Mode displaying only position 5 employees from the center Core Talent box, with all other grid positions empty and dimmed, showing focused view of 18 employees ready for donut exercise validation with ghostly semi-transparent appearance](images/screenshots/donut-mode/donut-mode-grid-normal.png)
 
 When Donut Mode is active, the grid filters to show only Core Talent (position 5) employees. All other boxes appear empty and dimmed, letting you focus exclusively on center box validation.
+
+### Success! You've Placed Employees in Donut Mode
+
+You'll see:
+- Placed employees appear ghostly with purple border
+- Purple "Donut" badge on each tile
+- Donut Changes tab showing all placements
+- Separate tracking from actual rating changes
 
 ## Tracking Donut Changes
 
@@ -299,6 +310,14 @@ This separation ensures:
 - Full audit trail of both actual and exploratory placements
 
 Learn how donut exercise data appears in your exported file in the [Exporting Your Changes guide](exporting.md).
+
+### Success! You've Exported Donut Data
+
+You'll see:
+- Four new columns in your Excel file with donut data
+- Actual ratings unchanged in main columns
+- Donut findings in separate "Donut Exercise" columns
+- Clear separation of exploratory vs. actual ratings
 
 ## Use Cases and Examples
 

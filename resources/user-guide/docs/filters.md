@@ -95,6 +95,9 @@ Filters let you display only employees who match specific criteria. All other em
 
 The filter drawer gives you every option to narrow your view. Categories are organized logically with checkboxes for easy selection.
 
+!!! note "Why This Matters"
+    Filters help you focus during calibration meetings. Instead of scrolling through 200 employees, you can quickly view just your team, a specific department, or high-performers who need development plans.
+
 ### Available Filter Categories
 
 You can filter employees by:
@@ -172,6 +175,14 @@ To remove filters and show all employees again:
 
 The grid returns to showing all employees.
 
+### Success! You've Applied Filters
+
+You'll see:
+- The grid showing only employees matching your criteria
+- An orange dot on the Filters button
+- The employee count updated (e.g., "12 of 47 employees")
+- A focused view perfect for your current task
+
 ### Filtering by Flags
 
 Flags mark employees with special status indicators like Performance Improvement Plans (PIP), flight risk, promotion readiness, or succession candidates. You can filter employees by these flags to focus on specific groups.
@@ -202,6 +213,9 @@ Each flag shows the count of employees with that status. Check multiple flags to
 !!! tip "Flag Combinations"
     You can select multiple flags at once. For example, select both "Flight Risk" and "High Retention Priority" to see employees who need immediate retention action.
 
+!!! note "Why This Matters"
+    Flag filtering lets you instantly identify employees needing specific actions. Combine "Flight Risk" + "High Retention Priority" to see exactly who needs stay conversations before they leave.
+
 ### Filtering by Reporting Chain
 
 The reporting chain filter lets you view all employees who report up to a specific manager, including both direct and indirect reports. This is useful for reviewing an entire department or organizational hierarchy.
@@ -224,6 +238,14 @@ When a reporting chain filter is active, you see everyone who reports up to that
 !!! info "Reporting Chain vs Manager Filter"
     - **Manager filter** shows only direct reports
     - **Reporting chain filter** shows all direct AND indirect reports through the entire hierarchy
+
+### Success! You've Activated Reporting Chain Filter
+
+You'll see:
+- A green chip showing "Reporting to: [Manager Name]"
+- The grid filtered to show only that manager's org
+- Employee count showing the team size
+- Quick access to department-level review
 
 ### Advanced: Filtering by Grid Position
 
@@ -479,6 +501,14 @@ Once you click **"Apply"**:
     Excluded employees are marked in the export with an "Excluded" flag so you can identify them.
 
 This ensures you don't accidentally lose employee data when exporting.
+
+### Success! You've Applied Exclusions
+
+You'll see:
+- Excluded employees disappear from the grid
+- Employee count updates (e.g., "35 of 47 employees")
+- A clean view focused on the people you want to analyze
+- All data preserved in your dataset for export
 
 ---
 

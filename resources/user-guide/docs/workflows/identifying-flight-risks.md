@@ -89,14 +89,16 @@ Marcus filters to High Performance:
 - Position 6 employees might feel their potential is undervalued
 - Position 3 employees may be mis-rated (high performance but "low potential"?)
 
-### ✅ Success! You've Identified High-Value Employees
+### Success! You've Identified High-Value Employees
 
 You'll see:
-
 - Grid filtered to show only high performers
 - Clear view of your most valuable talent
 - Count of employees in each high-performance position
 - Orange dot on Filters button (filters active)
+
+!!! note "Why This Matters"
+    Identifying flight risks before they resign gives you time to intervene. A targeted retention conversation or promotion can save your best people. Losing a Star employee costs 150-200% of their salary to replace.
 
 ---
 

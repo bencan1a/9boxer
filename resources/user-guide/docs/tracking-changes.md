@@ -226,6 +226,9 @@ Notes help you document why each change was made, which is valuable for:
     - **Use consistent terminology** across your team
     - **Support multiple lines** for longer explanations if needed
 
+!!! note "Why This Matters"
+    Notes create an audit trail for talent decisions. Six months from now, you'll remember exactly why you moved someone. During performance reviews or promotions, these notes justify your rating changes to leadership.
+
 ## Regular Changes vs. Donut Changes
 
 > 📋 **Real-World Scenario**
@@ -252,6 +255,14 @@ If you haven't moved any employees yet, you'll see:
 - Instruction: "Move employees to track changes here"
 
 This reminds you that the change tracker is ready but waiting for you to make employee movements.
+
+### Success! You've Added Notes to Changes
+
+You'll see:
+- Notes appear in the Notes field for each employee
+- Notes save automatically as you type
+- All notes included in Excel export
+- Complete audit trail of your decision-making
 
 ## Use Cases
 

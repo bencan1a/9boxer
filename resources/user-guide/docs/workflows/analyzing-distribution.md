@@ -8,6 +8,82 @@ Understanding how your talent is distributed across the 9-box grid is critical f
 
 ---
 
+## Distribution Analysis Checklist
+
+Use this comprehensive checklist to systematically analyze your talent distribution and identify issues requiring attention.
+
+### Before You Start
+
+- [ ] Have employee data uploaded to 9Boxer
+- [ ] Understand your organization's target distribution benchmarks
+- [ ] Know the context (preparing for calibration, quarterly review, board presentation)
+- [ ] Allow 15-20 minutes for complete analysis
+
+### Review Overall Distribution
+
+- [ ] Open Statistics tab and review distribution table
+- [ ] Compare percentages to healthy benchmarks (10-15% Stars, 40-50% Core)
+- [ ] Identify which boxes are over-populated or under-populated
+- [ ] Note percentage in center box (Position 5) - flag if >60%
+- [ ] Check if top talent percentage (Stars) is sufficient for succession planning
+- [ ] Review visual bar chart for immediate pattern recognition
+
+### Check Intelligence for Anomalies
+
+- [ ] Open Intelligence tab and review Quality Score
+- [ ] Note if score is below 75 (indicates calibration issues)
+- [ ] Review all red anomalies (critical issues requiring immediate attention)
+- [ ] Review all yellow anomalies (moderate issues worth investigating)
+- [ ] Identify patterns by manager, department, location, or level
+- [ ] Document specific anomalies to investigate further
+
+### Drill into Problem Areas
+
+- [ ] Use Filters to isolate flagged managers or departments
+- [ ] Compare filtered distribution to overall distribution
+- [ ] Identify specific employees who may need recalibration
+- [ ] Test different filter combinations (manager, performance level, department)
+- [ ] Take notes on specific employees or groups to discuss in calibration
+- [ ] Gather evidence to support or refute Intelligence anomalies
+
+### Document Findings
+
+- [ ] Summarize key distribution issues identified
+- [ ] List specific anomalies with expected vs. actual counts
+- [ ] Create discussion topics for calibration meeting
+- [ ] Prepare action items with owners and deadlines
+- [ ] Set target distribution percentages to aim for
+- [ ] Note which managers or departments need calibration training
+
+### Prepare for Action
+
+- [ ] Create prioritized list of employees to review in calibration
+- [ ] Prepare specific questions for managers about flagged patterns
+- [ ] Consider using Donut Mode to validate center box (Position 5)
+- [ ] Schedule calibration meeting if significant issues found
+- [ ] Export pre-calibration baseline for comparison later
+- [ ] Share preliminary findings with calibration meeting attendees
+
+### For Executive Presentations (Optional)
+
+- [ ] Create executive summary with overall assessment and quality score
+- [ ] Highlight key metrics (Stars %, High Potential Pipeline %, Core %)
+- [ ] Summarize critical issues in 3-5 bullet points
+- [ ] Prepare recommended actions with timeline and accountability
+- [ ] Define target outcomes (quality score, distribution percentages)
+- [ ] Take screenshots of Statistics and Intelligence tabs for visual support
+
+### After Analysis
+
+- [ ] Verify you can answer: What percentage in each position?
+- [ ] Verify you can answer: How does distribution compare to benchmarks?
+- [ ] Verify you can answer: What anomalies or biases exist?
+- [ ] Verify you can answer: Which managers/departments need calibration?
+- [ ] Verify you can answer: What specific actions will improve distribution?
+- [ ] Verify you can answer: Is succession pipeline healthy (enough Stars)?
+
+---
+
 ## When to Use This Workflow
 
 Use this distribution analysis workflow when you need to:
@@ -71,7 +147,16 @@ Sarah reviews her distribution:
 - Slightly low Stars percentage (8% vs. target 10-15%)
 - This suggests poor differentiation - are some "Core Talent" actually stars or under-performers?
 
-### ✅ Success! You've Reviewed Distribution
+### Success! You've Reviewed Distribution
+
+You'll see:
+- Distribution table with counts and percentages
+- Visual bar chart showing patterns
+- Specific red flags like center box clustering
+- Data to compare against healthy benchmarks
+
+!!! note "Why This Matters"
+    Distribution analysis reveals whether your ratings are balanced or biased. If 60% are in the center box, you know calibration needs to focus on differentiation. This prevents grade inflation before it impacts promotions or retention.
 
 You'll see:
 
