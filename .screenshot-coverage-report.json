@@ -1,18 +1,24 @@
 {
-  "totalComponents": 69,
-  "componentsWithStories": 53,
-  "componentsWithScreenshots": 22,
-  "totalScreenshots": 47,
-  "storybookScreenshots": 44,
-  "fullAppScreenshots": 2,
+  "totalComponents": 70,
+  "componentsWithStories": 55,
+  "componentsWithScreenshots": 26,
+  "totalScreenshots": 58,
+  "storybookScreenshots": 54,
+  "fullAppScreenshots": 3,
   "manualScreenshots": 1,
   "componentBreakdown": [
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.tsx",
       "name": "EmptyState",
       "hasStory": true,
-      "screenshotCount": 0,
-      "screenshots": []
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-empty-state-sample-button",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.tsx",
@@ -52,8 +58,14 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/EmptyState.tsx",
       "name": "EmptyState",
       "hasStory": true,
-      "screenshotCount": 0,
-      "screenshots": []
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-empty-state-sample-button",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ErrorBoundary.tsx",
@@ -92,7 +104,7 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ViewControls.tsx",
       "name": "ViewControls",
-      "hasStory": false,
+      "hasStory": true,
       "screenshotCount": 5,
       "screenshots": [
         {
@@ -285,12 +297,41 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx",
       "name": "ApplyChangesDialog",
       "hasStory": true,
-      "screenshotCount": 0,
-      "screenshots": []
+      "screenshotCount": 3,
+      "screenshots": [
+        {
+          "name": "apply-changes-dialog-default",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "apply-changes-dialog-save-as",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "file-error-fallback",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/LoadSampleDialog.tsx",
       "name": "LoadSampleDialog",
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-load-sample-dialog",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx",
+      "name": "UnsavedChangesDialog",
       "hasStory": true,
       "screenshotCount": 0,
       "screenshots": []
@@ -364,10 +405,15 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.tsx",
       "name": "NineBoxGrid",
       "hasStory": true,
-      "screenshotCount": 3,
+      "screenshotCount": 4,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "calibration-donut-mode-grid",
           "source": "storybook",
           "manual": false
         },
@@ -394,8 +440,13 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.tsx",
       "name": "AnomalySection",
       "hasStory": true,
-      "screenshotCount": 3,
+      "screenshotCount": 4,
       "screenshots": [
+        {
+          "name": "quickstart-intelligence-bias-detected",
+          "source": "storybook",
+          "manual": false
+        },
         {
           "name": "intelligence-anomaly-details",
           "source": "storybook",
@@ -584,10 +635,15 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeDetails.tsx",
       "name": "EmployeeDetails",
       "hasStory": true,
-      "screenshotCount": 3,
+      "screenshotCount": 4,
       "screenshots": [
         {
           "name": "changes-employee-details",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "quickstart-employee-details-with-history",
           "source": "storybook",
           "manual": false
         },
@@ -640,10 +696,15 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/RatingsTimeline.tsx",
       "name": "RatingsTimeline",
       "hasStory": true,
-      "screenshotCount": 2,
+      "screenshotCount": 3,
       "screenshots": [
         {
           "name": "changes-timeline-view",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "quickstart-timeline-history",
           "source": "storybook",
           "manual": false
         },
@@ -693,8 +754,13 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.tsx",
       "name": "DistributionTable",
       "hasStory": true,
-      "screenshotCount": 2,
+      "screenshotCount": 3,
       "screenshots": [
+        {
+          "name": "quickstart-statistics-distribution",
+          "source": "storybook",
+          "manual": false
+        },
         {
           "name": "calibration-statistics-red-flags",
           "source": "storybook",
@@ -752,8 +818,13 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.stories.tsx",
       "componentName": "EmptyState",
-      "usedInScreenshots": 0,
-      "screenshots": []
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-empty-state-sample-button",
+          "storyId": "components-emptystate--default"
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.stories.tsx",
@@ -776,8 +847,13 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/EmptyState.stories.tsx",
       "componentName": "EmptyState",
-      "usedInScreenshots": 0,
-      "screenshots": []
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-empty-state-sample-button",
+          "storyId": "components-emptystate--default"
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ErrorBoundary.stories.tsx",
@@ -809,6 +885,33 @@
       "screenshots": []
     },
     {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ViewControls.stories.tsx",
+      "componentName": "ViewControls",
+      "usedInScreenshots": 5,
+      "screenshots": [
+        {
+          "name": "calibration-donut-mode-toggle",
+          "storyId": "common-viewcontrols--donut-view-active"
+        },
+        {
+          "name": "zoom-controls",
+          "storyId": "common-viewcontrols--grid-view-active"
+        },
+        {
+          "name": "view-controls-main-interface",
+          "storyId": "common-viewcontrols--grid-view-active"
+        },
+        {
+          "name": "view-controls-grid-view",
+          "storyId": "common-viewcontrols--grid-view-active"
+        },
+        {
+          "name": "view-controls-donut-view",
+          "storyId": "common-viewcontrols--donut-view-active"
+        }
+      ]
+    },
+    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/ZoomControls.stories.tsx",
       "componentName": "ZoomControls",
       "usedInScreenshots": 0,
@@ -823,15 +926,19 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.stories.tsx",
       "componentName": "FileMenuButton",
-      "usedInScreenshots": 2,
+      "usedInScreenshots": 3,
       "screenshots": [
         {
           "name": "quickstart-file-menu-button",
           "storyId": "dashboard-appbar-filemenubutton--no-file"
         },
         {
+          "name": "calibration-file-import",
+          "storyId": "dashboard-appbar-filemenubutton--menu-open"
+        },
+        {
           "name": "file-menu-apply-changes",
-          "storyId": "dashboard-appbar-filemenubutton--menu-open-with-changes"
+          "storyId": "dashboard-appbar-filemenubutton--menu-open"
         }
       ]
     },
@@ -929,12 +1036,36 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.stories.tsx",
       "componentName": "ApplyChangesDialog",
-      "usedInScreenshots": 0,
-      "screenshots": []
+      "usedInScreenshots": 3,
+      "screenshots": [
+        {
+          "name": "apply-changes-dialog-default",
+          "storyId": "dialogs-applychangesdialog--default"
+        },
+        {
+          "name": "apply-changes-dialog-save-as",
+          "storyId": "dialogs-applychangesdialog--default"
+        },
+        {
+          "name": "file-error-fallback",
+          "storyId": "dialogs-applychangesdialog--with-error"
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/LoadSampleDialog.stories.tsx",
       "componentName": "LoadSampleDialog",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "quickstart-load-sample-dialog",
+          "storyId": "dialogs-loadsampledialog--no-existing-data"
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.stories.tsx",
+      "componentName": "UnsavedChangesDialog",
       "usedInScreenshots": 0,
       "screenshots": []
     },
@@ -990,11 +1121,15 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.stories.tsx",
       "componentName": "NineBoxGrid",
-      "usedInScreenshots": 3,
+      "usedInScreenshots": 4,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
           "storyId": "grid-nineboxgrid--populated"
+        },
+        {
+          "name": "calibration-donut-mode-grid",
+          "storyId": "grid-nineboxgrid--donut-mode"
         },
         {
           "name": "donut-mode-active-layout",
@@ -1009,8 +1144,12 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.stories.tsx",
       "componentName": "AnomalySection",
-      "usedInScreenshots": 3,
+      "usedInScreenshots": 4,
       "screenshots": [
+        {
+          "name": "quickstart-intelligence-bias-detected",
+          "storyId": "intelligence-anomalysection--red-status"
+        },
         {
           "name": "intelligence-anomaly-details",
           "storyId": "intelligence-anomalysection--red-status"
@@ -1139,11 +1278,15 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/EmployeeDetails.stories.tsx",
       "componentName": "EmployeeDetails",
-      "usedInScreenshots": 3,
+      "usedInScreenshots": 4,
       "screenshots": [
         {
           "name": "changes-employee-details",
           "storyId": "panel-employeedetails--with-changes"
+        },
+        {
+          "name": "quickstart-employee-details-with-history",
+          "storyId": "panel-employeedetails--default"
         },
         {
           "name": "employee-details-panel-expanded",
@@ -1180,11 +1323,15 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/RatingsTimeline.stories.tsx",
       "componentName": "RatingsTimeline",
-      "usedInScreenshots": 2,
+      "usedInScreenshots": 3,
       "screenshots": [
         {
           "name": "changes-timeline-view",
           "storyId": "panel-ratingstimeline--default"
+        },
+        {
+          "name": "quickstart-timeline-history",
+          "storyId": "panel-ratingstimeline--with-history"
         },
         {
           "name": "timeline-employee-history",
@@ -1207,8 +1354,12 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.stories.tsx",
       "componentName": "DistributionTable",
-      "usedInScreenshots": 2,
+      "usedInScreenshots": 3,
       "screenshots": [
+        {
+          "name": "quickstart-statistics-distribution",
+          "storyId": "panel-statistics-distributiontable--balanced-distribution"
+        },
         {
           "name": "calibration-statistics-red-flags",
           "storyId": "panel-statistics-distributiontable--skewed-distribution"
