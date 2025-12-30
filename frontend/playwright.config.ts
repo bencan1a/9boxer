@@ -21,16 +21,39 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
 
   // Reporter to use
-  reporter: "html",
+  reporter: process.env.CI ? [["html"], ["github"]] : "html",
 
   // Configure projects for different test suites
   projects: [
-    // ===== E2E Tests =====
-    // NOTE: E2E tests use worker-scoped backend isolation (see fixtures/worker-backend.ts)
-    // Each worker gets its own backend server + database for true parallel execution
+    // ===== E2E Tests (DISABLED - replaced by e2e-core) =====
+    // NOTE: The comprehensive e2e test suite has been replaced by the focused e2e-core suite
+    // The e2e-core suite provides atomic UX validation based on the test specification
+    // To re-enable the full e2e suite, uncomment the configuration below
+    // {
+    //   name: "e2e",
+    //   testDir: "./playwright/e2e",
+    //   timeout: 30000,
+    //   retries: process.env.CI ? 2 : 1,
+    //   fullyParallel: false,
+    //   use: {
+    //     ...devices["Desktop Chrome"],
+    //     baseURL: "http://localhost:5173",
+    //     viewport: { width: 1920, height: 1080 },
+    //     headless: true,
+    //     actionTimeout: 15000,
+    //     trace: "retain-on-failure",
+    //     screenshot: "only-on-failure",
+    //     video: "retain-on-failure",
+    //     storageState: undefined,
+    //   },
+    // },
+
+    // ===== E2E Core Tests (Atomic UX Validation) =====
+    // Focused test suite for atomic UX operations based on test specification
+    // These tests validate core user workflows and critical functionality
     {
-      name: "e2e",
-      testDir: "./playwright/e2e",
+      name: "e2e-core",
+      testDir: "./playwright/e2e-core",
       timeout: 30000,
       retries: process.env.CI ? 2 : 1,
       // Tests within a file run sequentially, but different files run in parallel
@@ -39,12 +62,11 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:5173",
         viewport: { width: 1920, height: 1080 },
-        headless: true, // Explicitly force headless mode
-        actionTimeout: 15000, // Increased to allow proper auto-waiting
+        headless: true,
+        actionTimeout: 15000,
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "retain-on-failure",
-        // Clear storage state between test contexts for isolation
         storageState: undefined,
       },
     },

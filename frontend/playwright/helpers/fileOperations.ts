@@ -125,15 +125,30 @@ export async function applyChanges(
     }, newPath);
   }
 
-  // Click Apply button (use getByRole for reliability)
-  const applyButton = page.getByRole("button", { name: "Apply Changes" });
+  // Click Apply button (use data-testid for reliability)
+  const applyButton = page.locator(
+    '[data-testid="apply-changes-apply-button"]'
+  );
+
+  // Set up promise to wait for export API call to complete
+  const exportPromise = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/session/export") &&
+      response.status() === 200,
+    { timeout: 15000 }
+  );
+
   await applyButton.click();
 
+  // Wait for export API to complete
+  await exportPromise;
+
   // Wait for dialog to close (indicates success)
+  // Use longer timeout to account for file I/O operations
   await expect(
     page.locator('[data-testid="apply-changes-dialog"]')
   ).not.toBeVisible({
-    timeout: 10000,
+    timeout: 15000,
   });
 }
 
