@@ -86,10 +86,10 @@
       ]
     }
   },
-  "postCreateCommand": "start-display && pip install --upgrade pip && pip install uv && uv pip install --system -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
+  "postCreateCommand": "start-display && sudo pip install --upgrade pip && sudo pip install uv && sudo uv pip install --system -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
   "postStartCommand": "start-display",
   "remoteUser": "vscode",
-  "updateContentCommand": "pip install --upgrade pip && pip install uv && uv pip install --system -e '.[dev]' && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
+  "updateContentCommand": "sudo pip install --upgrade pip && sudo pip install uv && sudo uv pip install --system -e '.[dev]' && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
   ]
