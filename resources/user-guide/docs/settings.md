@@ -1,17 +1,17 @@
 # Application Settings
 
-The Settings dialog allows you to customize your 9Boxer experience with various preferences and configuration options.
+Settings is where you customize 9Boxer to match your preferences.
 
 ## When to Use This
 
 ### Common Scenarios
 
-You'll want to use Settings when:
+You'll use Settings when you're:
 
-- **Adjusting for your environment** - Switch to dark mode for extended work sessions or light mode when presenting
-- **Reducing eye strain** - Enable dark mode for low-light conditions or late-night calibration prep
-- **Screen sharing** - Switch to light mode for better visibility during video calls and presentations
-- **Following your preferences** - Set Auto mode to automatically match your system theme throughout the day
+- **Adjusting for your environment** - Switch to dark mode for long sessions or light mode when presenting
+- **Reducing eye strain** - Enable dark mode for low-light or late-night work
+- **Screen sharing** - Switch to light mode for better visibility during video calls
+- **Following your system theme** - Set Auto mode to match your system throughout the day
 - **First-time setup** - Configure your preferred theme when you first start using 9Boxer
 
 ### Related Workflows
@@ -29,23 +29,23 @@ You'll want to use Settings when:
 
 ## Accessing Settings
 
-To open the Settings dialog:
+Here's how to open Settings:
 
-1. **Click the gear icon** (⚙) in the top application bar
-2. The Settings dialog opens as a modal window
-3. Make your changes and they save automatically
-4. **Click the X** or click outside the dialog to close
+1. **Click the gear icon** (⚙) in the top app bar
+2. The Settings dialog opens
+3. Make your changes - they save automatically
+4. **Click the X** or click outside to close
 
-The gear icon is located in the top-right area of the application bar, next to other utility buttons.
+You'll find the gear icon in the top-right of the app bar.
 
 ## Appearance Settings
 
 ### Theme Mode
 
-9Boxer offers three theme options to suit your preference and work environment:
+You've got three theme choices:
 
 !!! tip "Default Setting"
-    The application defaults to **Auto (Follow System)** mode, which automatically matches your operating system's theme preference.
+    9Boxer defaults to **Auto (Follow System)** mode, which automatically matches your OS theme.
 
 ### Theme Options
 
@@ -90,30 +90,34 @@ The Settings dialog shows your current theme selection with:
 
 ### Theme Persistence
 
-Your theme preference is:
+Your theme choice:
 
-- **Saved automatically** when you make a selection
-- **Persists across sessions** - reopening the app remembers your choice
+- **Saves automatically** when you select it
+- **Persists across sessions** - the app remembers your choice
 - **Stored locally** in your browser's localStorage
-- **Independent of other settings** - changing theme doesn't affect your data or filters
+- **Won't affect your data** - changing theme doesn't touch your filters or employee data
 
 ### System Theme Detection (Auto Mode)
 
-When using **Auto (Follow System)** mode:
+When you use **Auto (Follow System)** mode:
 
-- 9Boxer detects your operating system's theme preference
+- 9Boxer detects your OS theme preference
 - **Windows**: Follows Windows theme settings (Settings → Personalization → Colors)
 - **macOS**: Follows macOS appearance (System Preferences → General → Appearance)
 - **Linux**: Follows desktop environment theme settings
-- **Dynamic updates**: Theme changes automatically when you change your OS theme (no app restart needed)
+- **Dynamic updates**: Theme changes automatically when your OS theme changes (no restart needed)
 
-The Settings dialog shows which theme is currently active: "Currently using light theme (from system)" or "Currently using dark theme (from system)"
+The Settings dialog shows which theme is active: "Currently using light theme (from system)" or "Currently using dark theme (from system)"
 
-<!-- Screenshot placeholder -->
-!!! example "Screenshot Placeholder"
-    **Settings dialog showing theme options**
+![Settings dialog modal window showing Appearance section with three theme options displayed as radio buttons: Light (sun icon), Dark (moon icon), and Auto/Follow System (brightness icon) with Auto currently selected, plus indicator showing "Currently using dark theme from system" and Close button at bottom](images/screenshots/view-controls/settings-dialog.png)
 
-    _(Screenshot to be added: Settings dialog with all three theme options and current selection indicator)_
+The Settings dialog gives you three theme choices. Your selection saves automatically and persists across sessions.
+
+## Fullscreen Mode
+
+![9Boxer application in fullscreen mode showing maximized grid view with employee tiles filling entire screen, toolbar at top with all controls visible, right panel with tabs accessible, and no browser chrome or system bars visible, demonstrating distraction-free workspace for focused calibration work](images/screenshots/view-controls/fullscreen-mode.png)
+
+Press F11 (Windows/Linux) or Cmd+Ctrl+F (macOS) to enter fullscreen mode. This maximizes your workspace for focused calibration sessions.
 
 ## Future Settings
 

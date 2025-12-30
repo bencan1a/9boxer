@@ -33,6 +33,7 @@ export const AppBarContainer: React.FC = () => {
     filename,
     events,
     employees,
+    hasSampleData,
     clearSession,
     closeSession,
     loadEmployees,
@@ -123,8 +124,11 @@ export const AppBarContainer: React.FC = () => {
       // Reload employees to sync frontend state with the new session
       await loadEmployees();
 
-      // Set filename in session store so it displays in file menu
-      useSessionStore.setState({ filename: response.filename });
+      // Set filename and hasSampleData flag in session store
+      useSessionStore.setState({
+        filename: response.filename,
+        hasSampleData: true,
+      });
 
       // Close dialog and show success message
       setLoadSampleDialogOpen(false);
@@ -181,6 +185,7 @@ export const AppBarContainer: React.FC = () => {
           events: sessionStatus.events,
           filename: sessionStatus.uploaded_filename,
           filePath: response.file_path, // Update file path from export response
+          hasSampleData: false, // Clear flag after successful export
         });
 
         // Update localStorage with new file path when saving to new location
@@ -440,6 +445,7 @@ export const AppBarContainer: React.FC = () => {
       <PureAppBar
         fileName={filename || undefined}
         changeCount={events.length}
+        hasSampleData={hasSampleData}
         hasActiveFilters={hasActiveFilters}
         filterTooltip={getFilterTooltip()}
         isFilterDisabled={!sessionId}

@@ -27,6 +27,7 @@
       "importData": "Daten importieren",
       "exportChanges": "{{count}} Änderung in Excel übernehmen",
       "exportChanges_other": "{{count}} Änderungen in Excel übernehmen",
+      "saveSampleData": "Beispieldaten Speichern",
       "exporting": "Wird exportiert...",
       "closeFile": "Datei schließen",
       "openRecentFile": "Zuletzt verwendete Datei öffnen",

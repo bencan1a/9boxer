@@ -49,8 +49,9 @@ Filters let you display only employees who match specific criteria. All other em
 2. The filter drawer opens on the left side of the screen
 3. Filter options appear organized by category
 
-![Filter Drawer Overview](images/screenshots/filters/filters-overview.png)
-*Complete filter drawer showing all available filter categories*
+![Filter drawer panel opened on left side of screen showing organized filter categories including Job Levels (MT1-MT6), Job Functions (Engineering, Product, Sales), Locations (USA, Europe, India), Managers list, Flags section with 8 flag types, and Manage Exclusions button at bottom](images/screenshots/filters/filters-overview.png)
+
+The filter drawer gives you every option to narrow your view. Categories are organized logically with checkboxes for easy selection.
 
 ### Available Filter Categories
 
@@ -118,8 +119,9 @@ The grid returns to showing all employees.
 
 Flags mark employees with special status indicators like Performance Improvement Plans (PIP), flight risk, promotion readiness, or succession candidates. You can filter employees by these flags to focus on specific groups.
 
-![Flag Filtering](images/screenshots/details-panel/flag-filtering.png)
-*Filter employees by flags with employee counts and checkboxes*
+![Flags section in filter drawer showing eight flag types with checkboxes and employee counts: Promotion Ready (12), Succession Candidate (8), High Retention Priority (15), Flight Risk (7), Flagged for Discussion (5), New Hire (18), Ready for Lateral Move (6), PIP (3), allowing quick filtering of employees by special status indicators](images/screenshots/details-panel/flag-filtering.png)
+
+Each flag shows the count of employees with that status. Check multiple flags to combine criteria and find specific employee groups.
 
 **Available Flags:**
 
@@ -147,8 +149,9 @@ Flags mark employees with special status indicators like Performance Improvement
 
 The reporting chain filter lets you view all employees who report up to a specific manager, including both direct and indirect reports. This is useful for reviewing an entire department or organizational hierarchy.
 
-![Reporting Chain Filter](images/screenshots/details-panel/reporting-chain-filter-active.png)
-*Active reporting chain filter showing manager name with clear button*
+![Active reporting chain filter chip displayed at top of screen showing "Reporting to: Jennifer Smith" with X button to clear filter, indicating all employees in Jennifer's entire organizational hierarchy are currently visible on the grid including direct and indirect reports through the management chain](images/screenshots/details-panel/reporting-chain-filter-active.png)
+
+When a reporting chain filter is active, you see everyone who reports up to that manager. Click the X to clear and return to the full view.
 
 **How to activate:**
 
@@ -169,8 +172,9 @@ The reporting chain filter lets you view all employees who report up to a specif
 
 You can combine different filter types to create very specific employee views. All active filters work together using AND logic across categories.
 
-![Multiple Filters Active](images/screenshots/filters/filters-multiple-active.png)
-*Multiple filter types active simultaneously with count badges*
+![Grid view with multiple active filters applied: Filters button showing orange dot and count badge "3", employee count displaying "8 of 87 employees" in top bar, and filtered grid showing only employees who match all selected criteria including Engineering department, High performance level, and Manager job level filters working together with AND logic](images/screenshots/filters/filters-multiple-active.png)
+
+Combine multiple filters to drill down to exactly who you need to see. The orange dot and count badge confirm your filters are active.
 
 **Example combinations:**
 
@@ -329,6 +333,24 @@ This ensures you don't accidentally lose employee data when exporting.
 4. **Use quick filter buttons** - Save time with one-click exclusions for common scenarios
 5. **Document exclusions** - Note which employees you excluded and why (especially for reports)
 6. **Remember exclusions don't export** - Excluded employees still appear in exported Excel files
+
+---
+
+## Quick Reference
+
+| I want to... | How to do it |
+|--------------|-------------|
+| Apply a filter | Click Filters → Check criteria → Grid updates automatically |
+| Focus on one department | Click manager name in Details panel to activate Reporting Chain filter |
+| See flight risk employees | Click Filters → Check "Flight Risk" flag |
+| Find promotion candidates | Click Filters → Check "Promotion Ready" flag |
+| Combine multiple filters | Check boxes in different categories - they work together with AND logic |
+| See how many filters are active | Look for orange dot on Filters button and "X of Y employees" count |
+| Clear all filters | Uncheck all boxes or click "Clear All" button |
+| Hide specific individuals | Click Filters → Manage Exclusions → Check their names → Apply |
+| Exclude all managers | Click Filters → Manage Exclusions → "Exclude Managers" button → Apply |
+| Restore excluded employees | Manage Exclusions → Uncheck their names → Apply |
+| Check if exclusions affect export | They don't - all employees (even excluded) are in the export file |
 
 ---
 

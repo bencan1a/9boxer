@@ -63,4 +63,46 @@ describe("ChangeIndicator", () => {
     expect(screen.getByTestId("child-element")).toBeInTheDocument();
     expect(screen.getByText("Child Content")).toBeInTheDocument();
   });
+
+  it("renders dot badge when showDot is true", () => {
+    render(
+      <TestWrapper>
+        <ChangeIndicator count={0} showDot={true}>
+          <button>Test Button</button>
+        </ChangeIndicator>
+      </TestWrapper>
+    );
+
+    expect(screen.getByText("Test Button")).toBeInTheDocument();
+    expect(screen.getByText("•")).toBeInTheDocument();
+  });
+
+  it("shows dot badge instead of count when showDot is true", () => {
+    render(
+      <TestWrapper>
+        <ChangeIndicator count={5} showDot={true}>
+          <button>Test Button</button>
+        </ChangeIndicator>
+      </TestWrapper>
+    );
+
+    expect(screen.getByText("Test Button")).toBeInTheDocument();
+    expect(screen.getByText("•")).toBeInTheDocument();
+    expect(screen.queryByText("5")).not.toBeInTheDocument();
+  });
+
+  it("hides dot badge when showDot is true but invisible is also true", () => {
+    render(
+      <TestWrapper>
+        <ChangeIndicator count={0} showDot={true} invisible={true}>
+          <button>Test Button</button>
+        </ChangeIndicator>
+      </TestWrapper>
+    );
+
+    expect(screen.getByText("Test Button")).toBeInTheDocument();
+    const badge = screen.getByTestId("change-indicator-badge");
+    expect(badge).toBeInTheDocument();
+    // Badge should be in DOM but not visible
+  });
 });

@@ -79,9 +79,7 @@
           "**/backend/tests/**",
           "**/frontend/tests/**"
         ],
-        "ruff.lint.args": [
-          "--config=${workspaceFolder}/pyproject.toml"
-        ]
+        "ruff.configurationPreference": "filesystemFirst"
       },
       "extensions": [
         "ms-python.python",

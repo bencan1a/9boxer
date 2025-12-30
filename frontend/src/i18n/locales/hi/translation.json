@@ -27,6 +27,7 @@
       "importData": "डेटा आयात करें",
       "exportChanges": "{{count}} परिवर्तन Excel में लागू करें",
       "exportChanges_other": "{{count}} परिवर्तन Excel में लागू करें",
+      "saveSampleData": "नमूना डेटा सहेजें",
       "exporting": "निर्यात हो रहा है...",
       "closeFile": "फ़ाइल बंद करें",
       "openRecentFile": "हाल की फ़ाइल खोलें",
