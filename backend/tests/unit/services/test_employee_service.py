@@ -2,8 +2,16 @@
 
 import pytest
 
-from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
-from ninebox.services.employee_service import EmployeeService
+from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+from ninebox.services.employee_service import (
+    EmployeeService,
+    PerformanceTier,
+    get_tier_from_historical_rating,
+    get_tier_from_position,
+    is_big_mover,
+    is_tier_crossing,
+)
+from tests.conftest import create_simple_test_employee
 
 pytestmark = pytest.mark.unit
 
@@ -280,3 +288,223 @@ def test_filter_employees_when_complex_combination_then_applies_all_filters(
     assert all(emp.job_level in ["MT4", "MT5"] for emp in filtered)
     assert all(emp.performance == PerformanceLevel.HIGH for emp in filtered)
     assert all(emp.employee_id != exclude_id for emp in filtered)
+
+
+# ==================== Big Mover Detection Tests ====================
+
+
+def test_get_tier_from_position_when_low_tier_positions_then_returns_low() -> None:
+    """Test positions 1-4 map to LOW tier."""
+    assert get_tier_from_position(1) == PerformanceTier.LOW
+    assert get_tier_from_position(2) == PerformanceTier.LOW
+    assert get_tier_from_position(3) == PerformanceTier.LOW
+    assert get_tier_from_position(4) == PerformanceTier.LOW
+
+
+def test_get_tier_from_position_when_middle_tier_positions_then_returns_middle() -> None:
+    """Test positions 5 and 7 map to MIDDLE tier."""
+    assert get_tier_from_position(5) == PerformanceTier.MIDDLE
+    assert get_tier_from_position(7) == PerformanceTier.MIDDLE
+
+
+def test_get_tier_from_position_when_high_tier_positions_then_returns_high() -> None:
+    """Test positions 6, 8, 9 map to HIGH tier."""
+    assert get_tier_from_position(6) == PerformanceTier.HIGH
+    assert get_tier_from_position(8) == PerformanceTier.HIGH
+    assert get_tier_from_position(9) == PerformanceTier.HIGH
+
+
+def test_get_tier_from_position_when_invalid_position_then_raises_error() -> None:
+    """Test invalid grid position raises ValueError."""
+    with pytest.raises(ValueError, match="Invalid grid position"):
+        get_tier_from_position(0)
+
+    with pytest.raises(ValueError, match="Invalid grid position"):
+        get_tier_from_position(10)
+
+
+def test_get_tier_from_historical_rating_when_low_then_returns_low() -> None:
+    """Test 'Low' rating maps to LOW tier."""
+    assert get_tier_from_historical_rating("Low") == PerformanceTier.LOW
+    assert get_tier_from_historical_rating("low") == PerformanceTier.LOW
+    assert get_tier_from_historical_rating("LOW") == PerformanceTier.LOW
+
+
+def test_get_tier_from_historical_rating_when_solid_then_returns_middle() -> None:
+    """Test 'Solid' rating maps to MIDDLE tier."""
+    assert get_tier_from_historical_rating("Solid") == PerformanceTier.MIDDLE
+    assert get_tier_from_historical_rating("solid") == PerformanceTier.MIDDLE
+    assert get_tier_from_historical_rating("SOLID") == PerformanceTier.MIDDLE
+
+
+def test_get_tier_from_historical_rating_when_strong_then_returns_high() -> None:
+    """Test 'Strong' rating maps to HIGH tier."""
+    assert get_tier_from_historical_rating("Strong") == PerformanceTier.HIGH
+    assert get_tier_from_historical_rating("strong") == PerformanceTier.HIGH
+    assert get_tier_from_historical_rating("STRONG") == PerformanceTier.HIGH
+
+
+def test_get_tier_from_historical_rating_when_leading_then_returns_high() -> None:
+    """Test 'Leading' rating maps to HIGH tier."""
+    assert get_tier_from_historical_rating("Leading") == PerformanceTier.HIGH
+    assert get_tier_from_historical_rating("leading") == PerformanceTier.HIGH
+    assert get_tier_from_historical_rating("LEADING") == PerformanceTier.HIGH
+
+
+def test_get_tier_from_historical_rating_when_invalid_rating_then_raises_error() -> None:
+    """Test invalid historical rating raises ValueError."""
+    with pytest.raises(ValueError, match="Invalid historical rating"):
+        get_tier_from_historical_rating("Excellent")
+
+    with pytest.raises(ValueError, match="Invalid historical rating"):
+        get_tier_from_historical_rating("Unknown")
+
+
+def test_is_tier_crossing_when_low_to_high_then_returns_true() -> None:
+    """Test crossing from LOW to HIGH tier is a big move."""
+    assert is_tier_crossing(PerformanceTier.LOW, PerformanceTier.HIGH) is True
+
+
+def test_is_tier_crossing_when_high_to_low_then_returns_true() -> None:
+    """Test crossing from HIGH to LOW tier is a big move."""
+    assert is_tier_crossing(PerformanceTier.HIGH, PerformanceTier.LOW) is True
+
+
+def test_is_tier_crossing_when_low_to_middle_then_returns_false() -> None:
+    """Test moving from LOW to MIDDLE is not a big move."""
+    assert is_tier_crossing(PerformanceTier.LOW, PerformanceTier.MIDDLE) is False
+
+
+def test_is_tier_crossing_when_middle_to_high_then_returns_false() -> None:
+    """Test moving from MIDDLE to HIGH is not a big move."""
+    assert is_tier_crossing(PerformanceTier.MIDDLE, PerformanceTier.HIGH) is False
+
+
+def test_is_tier_crossing_when_middle_to_low_then_returns_false() -> None:
+    """Test moving from MIDDLE to LOW is not a big move."""
+    assert is_tier_crossing(PerformanceTier.MIDDLE, PerformanceTier.LOW) is False
+
+
+def test_is_tier_crossing_when_high_to_middle_then_returns_false() -> None:
+    """Test moving from HIGH to MIDDLE is not a big move."""
+    assert is_tier_crossing(PerformanceTier.HIGH, PerformanceTier.MIDDLE) is False
+
+
+def test_is_tier_crossing_when_same_tier_then_returns_false() -> None:
+    """Test staying in same tier is not a big move."""
+    assert is_tier_crossing(PerformanceTier.LOW, PerformanceTier.LOW) is False
+    assert is_tier_crossing(PerformanceTier.MIDDLE, PerformanceTier.MIDDLE) is False
+    assert is_tier_crossing(PerformanceTier.HIGH, PerformanceTier.HIGH) is False
+
+
+def test_is_big_mover_when_year_over_year_low_to_high_then_returns_true() -> None:
+    """Test year-over-year move from Low rating to High position."""
+    employee = create_simple_test_employee(
+        grid_position=9,  # HIGH tier
+    )
+    employee.ratings_history = [HistoricalRating(year=2023, rating="Low")]  # LOW tier
+
+    assert is_big_mover(employee) is True
+
+
+def test_is_big_mover_when_year_over_year_high_to_low_then_returns_true() -> None:
+    """Test year-over-year move from Leading rating to Low position."""
+    employee = create_simple_test_employee(
+        grid_position=1,  # LOW tier
+    )
+    employee.ratings_history = [HistoricalRating(year=2023, rating="Leading")]  # HIGH tier
+
+    assert is_big_mover(employee) is True
+
+
+def test_is_big_mover_when_year_over_year_low_to_middle_then_returns_false() -> None:
+    """Test year-over-year move from Low to Solid is not a big move."""
+    employee = create_simple_test_employee(
+        grid_position=5,  # MIDDLE tier
+    )
+    employee.ratings_history = [HistoricalRating(year=2023, rating="Low")]  # LOW tier
+
+    assert is_big_mover(employee) is False
+
+
+def test_is_big_mover_when_year_over_year_middle_to_high_then_returns_false() -> None:
+    """Test year-over-year move from Solid to High position is not a big move."""
+    employee = create_simple_test_employee(
+        grid_position=9,  # HIGH tier
+    )
+    employee.ratings_history = [HistoricalRating(year=2023, rating="Solid")]  # MIDDLE tier
+
+    assert is_big_mover(employee) is False
+
+
+def test_is_big_mover_when_in_session_low_to_high_then_returns_true() -> None:
+    """Test in-session move from position 2 (LOW) to position 9 (HIGH)."""
+    current = create_simple_test_employee(grid_position=9)  # HIGH tier
+    original = create_simple_test_employee(grid_position=2)  # LOW tier
+
+    assert is_big_mover(current, original) is True
+
+
+def test_is_big_mover_when_in_session_high_to_low_then_returns_true() -> None:
+    """Test in-session move from position 8 (HIGH) to position 1 (LOW)."""
+    current = create_simple_test_employee(grid_position=1)  # LOW tier
+    original = create_simple_test_employee(grid_position=8)  # HIGH tier
+
+    assert is_big_mover(current, original) is True
+
+
+def test_is_big_mover_when_in_session_low_to_middle_then_returns_false() -> None:
+    """Test in-session move from position 1 (LOW) to position 5 (MIDDLE)."""
+    current = create_simple_test_employee(grid_position=5)  # MIDDLE tier
+    original = create_simple_test_employee(grid_position=1)  # LOW tier
+
+    assert is_big_mover(current, original) is False
+
+
+def test_is_big_mover_when_in_session_middle_to_high_then_returns_false() -> None:
+    """Test in-session move from position 5 (MIDDLE) to position 9 (HIGH)."""
+    current = create_simple_test_employee(grid_position=9)  # HIGH tier
+    original = create_simple_test_employee(grid_position=5)  # MIDDLE tier
+
+    assert is_big_mover(current, original) is False
+
+
+def test_is_big_mover_when_no_movement_then_returns_false() -> None:
+    """Test employee with no movement is not a big mover."""
+    employee = create_simple_test_employee(grid_position=5)
+    employee.ratings_history = []
+
+    assert is_big_mover(employee) is False
+
+
+def test_is_big_mover_when_both_year_over_year_and_in_session_then_returns_true() -> None:
+    """Test big mover when both year-over-year and in-session movements cross tiers."""
+    # Year-over-year: Low → position 9 (HIGH)
+    # In-session: position 2 (LOW) → position 9 (HIGH)
+    current = create_simple_test_employee(grid_position=9)  # HIGH tier
+    current.ratings_history = [HistoricalRating(year=2023, rating="Low")]  # LOW tier
+    original = create_simple_test_employee(grid_position=2)  # LOW tier
+
+    assert is_big_mover(current, original) is True
+
+
+def test_is_big_mover_when_invalid_historical_rating_then_checks_in_session() -> None:
+    """Test invalid historical rating is ignored and in-session check still works."""
+    current = create_simple_test_employee(grid_position=9)  # HIGH tier
+    current.ratings_history = [HistoricalRating(year=2023, rating="Invalid")]
+    original = create_simple_test_employee(grid_position=1)  # LOW tier
+
+    # Should still be detected as big mover via in-session check
+    assert is_big_mover(current, original) is True
+
+
+def test_is_big_mover_when_multiple_historical_ratings_then_uses_most_recent() -> None:
+    """Test most recent historical rating is used for year-over-year check."""
+    employee = create_simple_test_employee(grid_position=9)  # HIGH tier
+    employee.ratings_history = [
+        HistoricalRating(year=2022, rating="Strong"),  # Older rating (HIGH)
+        HistoricalRating(year=2023, rating="Low"),  # Most recent (LOW)
+    ]
+
+    # Should use 2023 "Low" rating → Big mover (LOW to HIGH)
+    assert is_big_mover(employee) is True

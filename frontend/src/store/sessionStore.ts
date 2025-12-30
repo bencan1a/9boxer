@@ -9,6 +9,23 @@ import { TrackableEvent } from "../types/events";
 import { extractErrorMessage } from "../types/errors";
 import { logger } from "../utils/logger";
 
+/**
+ * Process employees to add "big_mover" to flags array when is_big_mover is true.
+ * This ensures the computed backend property is reflected in the frontend flag system.
+ */
+function processEmployeesWithBigMoverFlag(employees: Employee[]): Employee[] {
+  return employees.map((emp) => {
+    if (emp.is_big_mover) {
+      // Add "big_mover" to flags array if not already present
+      const flags = emp.flags || [];
+      if (!flags.includes("big_mover")) {
+        return { ...emp, flags: [...flags, "big_mover"] };
+      }
+    }
+    return emp;
+  });
+}
+
 interface SessionState {
   sessionId: string | null;
   employees: Employee[];
@@ -93,12 +110,16 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         selectedEmployeeId = box5Employees[0].employee_id;
       }
 
+      const processedEmployees = processEmployeesWithBigMoverFlag(
+        employeesResponse.employees
+      );
+
       set({
         sessionId: response.session_id,
         filename: response.filename,
         filePath: filePath || null,
-        employees: employeesResponse.employees,
-        originalEmployees: employeesResponse.employees,
+        employees: processedEmployees,
+        originalEmployees: processedEmployees,
         events: [],
         donutEvents: [],
         selectedEmployeeId,
@@ -203,9 +224,13 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         }
       }
 
+      const processedEmployees = processEmployeesWithBigMoverFlag(
+        response.employees
+      );
+
       set({
-        employees: response.employees,
-        originalEmployees: response.employees,
+        employees: processedEmployees,
+        originalEmployees: processedEmployees,
         sessionId: currentSessionId || cachedSessionId,
         selectedEmployeeId,
         isLoading: false,
@@ -237,8 +262,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
       // Update employee in list
       const employees = get().employees;
-      const updatedEmployees = employees.map((emp) =>
-        emp.employee_id === employeeId ? response.employee : emp
+      const updatedEmployees = processEmployeesWithBigMoverFlag(
+        employees.map((emp) =>
+          emp.employee_id === employeeId ? response.employee : emp
+        )
       );
 
       // Update event history based on whether employee is modified
@@ -287,8 +314,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
       // Update employee in list
       const employees = get().employees;
-      const updatedEmployees = employees.map((emp) =>
-        emp.employee_id === employeeId ? response.employee : emp
+      const updatedEmployees = processEmployeesWithBigMoverFlag(
+        employees.map((emp) =>
+          emp.employee_id === employeeId ? response.employee : emp
+        )
       );
 
       // Reload session status to get updated events from backend
@@ -406,12 +435,16 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             }
           }
 
+          const processedEmployees = processEmployeesWithBigMoverFlag(
+            employeesResponse.employees
+          );
+
           set({
             sessionId: sessionStatus.session_id,
             filename: sessionStatus.uploaded_filename,
             filePath: cachedFilePath,
-            employees: employeesResponse.employees,
-            originalEmployees: employeesResponse.employees,
+            employees: processedEmployees,
+            originalEmployees: processedEmployees,
             events: sessionStatus.events,
             donutEvents: [],
             selectedEmployeeId,
@@ -518,8 +551,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
       // Update employee in list
       const employees = get().employees;
-      const updatedEmployees = employees.map((emp) =>
-        emp.employee_id === employeeId ? response.employee : emp
+      const updatedEmployees = processEmployeesWithBigMoverFlag(
+        employees.map((emp) =>
+          emp.employee_id === employeeId ? response.employee : emp
+        )
       );
 
       // Update donut event history based on whether employee is modified
