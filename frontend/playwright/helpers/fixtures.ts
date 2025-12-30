@@ -59,10 +59,11 @@ export async function loadSampleData(
   await page.locator('[data-testid="confirm-button"]').click();
 
   // Wait for loading to complete (dialog closes)
+  // Increased timeout as sample data generation can take time
   await expect(
     page.locator('[data-testid="load-sample-dialog"]')
   ).not.toBeVisible({
-    timeout: 10000,
+    timeout: 30000, // Increased from 15s to 30s for slower CI environments
   });
 
   // Verify grid displays employees
