@@ -7,6 +7,52 @@ Talent calibration meetings ensure consistent performance ratings across teams. 
 
 ---
 
+## Calibration Workflow Overview
+
+Here's the complete calibration workflow from start to finish:
+
+```mermaid
+flowchart TD
+    Start([Start Calibration Process]) --> Import[Import Current Ratings]
+    Import --> Validate[Validate Distribution]
+    Validate --> Intelligence[Check Intelligence for Anomalies]
+    Intelligence --> Filters[Use Filters to Find Borderline Cases]
+    Filters --> Donut[Run Donut Mode Exercise]
+    Donut --> Topics[Create Discussion List]
+    Topics --> Export1[Export Pre-Meeting Baseline]
+
+    Export1 --> Meeting{Calibration<br/>Meeting}
+
+    Meeting --> Filter2[Filter by Cohort/Manager]
+    Filter2 --> Discuss[Discuss & Reach Consensus]
+    Discuss --> Move[Move Employee if Needed]
+    Move --> Note[Add Note Documenting Decision]
+    Note --> More{More<br/>Employees?}
+    More -->|Yes| Filter2
+    More -->|No| Review
+
+    Review[Review Final Distribution] --> ReviewStats[Check Statistics Tab]
+    ReviewStats --> ReviewIntel[Check Intelligence Tab]
+    ReviewIntel --> ReviewChanges[Check Changes Tab - Verify Notes]
+    ReviewChanges --> Export2[Export Final Calibrated Ratings]
+    Export2 --> Communicate[Share Results with Stakeholders]
+    Communicate --> End([End])
+
+    style Start fill:#e3f2fd
+    style Meeting fill:#fff3e0
+    style End fill:#e8f5e9
+    style Export1 fill:#f3e5f5
+    style Export2 fill:#f3e5f5
+```
+
+**Three main phases:**
+
+1. **Pre-Meeting Preparation (20-30 min)** - Import data, validate distribution, identify discussion topics
+2. **During Calibration Meeting (60-90 min)** - Review employees, reach consensus, make changes, document decisions
+3. **Post-Meeting Follow-Up (10 min)** - Review final distribution, export results, communicate to stakeholders
+
+---
+
 ## What You'll Accomplish
 
 By the end of this workflow, you'll have:
@@ -17,12 +63,87 @@ By the end of this workflow, you'll have:
 - ✅ Prepared meeting materials and talking points
 - ✅ A clean report ready to share with stakeholders
 
-**Before you start:**
+---
+
+## Complete Calibration Checklist
+
+Use this comprehensive checklist to ensure you don't miss critical steps throughout your calibration process.
+
+### Before You Start
 
 - [ ] Prepare your Excel file with current Performance/Potential ratings from all managers
 - [ ] Know who will attend the calibration meeting
 - [ ] Have your organization's rating criteria defined (what "High Performance" means)
 - [ ] Allow 20-30 minutes for preparation
+- [ ] Schedule calibration meeting with appropriate stakeholders
+- [ ] Set clear meeting objectives and time limits
+
+---
+
+## Pre-Meeting Checklist
+
+Before your calibration session, complete these essential preparation steps to ensure a productive meeting:
+
+### 1. Review Distribution (5 minutes)
+
+- [ ] **Open Statistics tab** - Check overall distribution percentages
+- [ ] **Identify clustering** - Flag if >60% are in center box (Position 5)
+- [ ] **Check extremes** - Verify Stars (Position 9) percentage is 10-15%
+- [ ] **Note imbalances** - Any boxes completely empty or over-populated?
+
+**Why this matters:** Distribution patterns reveal calibration issues before you start. If 70% are in the center, you know differentiation is the main topic.
+
+### 2. Spot Anomalies (5 minutes)
+
+- [ ] **Review Intelligence tab** - Check the quality score (target: 75+)
+- [ ] **Note red anomalies** - Critical issues requiring immediate discussion
+- [ ] **Note yellow anomalies** - Moderate issues worth reviewing
+- [ ] **Identify patterns** - Which managers, departments, or levels show bias?
+
+**Why this matters:** Anomalies give you specific discussion topics with evidence. Instead of "Let's talk about your team," you can say "You have 15 High Performers vs. expected 5 - let's discuss."
+
+### 3. Prepare Talking Points (8 minutes)
+
+- [ ] **List borderline cases** - Employees who might move between boxes
+- [ ] **Identify Stars to validate** - Are top performers truly exceptional?
+- [ ] **Flag potential mis-ratings** - Anyone in surprising positions?
+- [ ] **Note promotion-ready candidates** - Who should move up?
+- [ ] **Document manager-specific patterns** - Prepare questions for each manager
+
+**Example talking points:**
+
+- "Alex, you rated 18 of 20 as High Performance. Let's walk through your top 5."
+- "Engineering has 85% in center box vs. 50% company-wide. What's driving that?"
+- "Sarah was a Star last year but Medium/Medium now. What changed?"
+
+### 4. Test Your Filters (2 minutes)
+
+- [ ] **Practice filtering by manager** - Can you quickly show one person's team?
+- [ ] **Test performance filters** - Can you display only High Performers?
+- [ ] **Try department filters** - Can you compare teams side-by-side?
+- [ ] **Bookmark key views** - Know which filters you'll use during meeting
+
+**Why this matters:** Smooth filter transitions during the meeting keep discussion flowing. Fumbling with filters wastes time and loses attention.
+
+### 5. Prepare Materials (3 minutes)
+
+- [ ] **Export pre-meeting baseline** - Create snapshot before any changes
+- [ ] **Share meeting agenda** - Send to attendees with discussion topics
+- [ ] **Confirm screen sharing setup** - Test that 9Boxer displays clearly
+- [ ] **Have rating criteria handy** - Reference doc defining each performance level
+
+**Pre-meeting baseline export naming:** `talent-ratings-pre-calibration-[YYYY-MM-DD].xlsx`
+
+### Success! You've Prepared for Calibration
+
+You'll see:
+- Statistics showing distribution with red flags identified
+- Intelligence quality score with anomalies highlighted
+- List of borderline employees to discuss
+- Pre-meeting baseline file exported and shared
+
+!!! note "Why This Matters"
+    Preparation turns calibration meetings from subjective debates into data-driven discussions. You'll walk in with specific examples, statistical evidence, and clear talking points instead of vague concerns.
 
 ---
 
@@ -305,6 +426,87 @@ You've now completed all preparation steps:
 
 ---
 
+## During-Meeting Checklist
+
+Use this checklist during your live calibration session to stay organized and ensure all decisions are properly documented.
+
+### Setup and Preparation
+
+- [ ] Open 9Boxer with your data already loaded
+- [ ] Share your screen in the video call
+- [ ] Keep the right panel visible (Statistics, Intelligence, or Changes tabs)
+- [ ] Have your discussion list ready (separate document or notes)
+
+### For Each Employee Discussion
+
+- [ ] Use filters to focus on the relevant group (manager, department, performance level)
+- [ ] Show the employee details (click tile to open right panel)
+- [ ] Facilitate discussion with prepared calibration questions
+- [ ] Reach consensus or document disagreement professionally
+- [ ] Make rating change in real-time if group agrees (drag employee to new box)
+- [ ] Add note immediately explaining the calibration decision
+- [ ] Include who was involved and why change was made
+
+### Ongoing During Meeting
+
+- [ ] Watch the File menu badge to track how many changes made
+- [ ] Check Statistics tab periodically to see distribution shift
+- [ ] Use filters liberally to focus discussion one cohort at a time
+- [ ] Document action items for tabled discussions
+- [ ] Keep discussions moving (2-3 minutes per employee max)
+- [ ] Table contentious cases for offline follow-up rather than debating endlessly
+
+### Before Ending Meeting
+
+- [ ] Review Changes tab to ensure all moves have notes
+- [ ] Verify Statistics tab shows improved distribution
+- [ ] Check Intelligence tab to confirm major anomalies addressed
+- [ ] Agree on next steps and communication plan
+- [ ] Schedule follow-up meeting if needed
+
+---
+
+## After-Meeting Checklist
+
+Complete these critical steps within 24-48 hours to close the loop on your calibration session.
+
+### Immediate Post-Meeting (Within 10 minutes)
+
+- [ ] Review final distribution in Statistics tab
+- [ ] Verify all changes have clear notes in Changes tab
+- [ ] Click File → Apply Changes to Excel
+- [ ] Rename exported file clearly (e.g., talent-ratings-post-calibration-2024-Q4.xlsx)
+- [ ] Open Excel file to verify all changes exported correctly
+- [ ] Check "Modified in Session" column shows "Yes" for changed employees
+- [ ] Check "9Boxer Change Notes" column has your calibration notes
+
+### Within 24 Hours
+
+- [ ] Send calibrated ratings to meeting attendees for their records
+- [ ] Send each manager their team's updated ratings with highlights of changes
+- [ ] Provide guidance to managers on communicating changes to employees
+- [ ] Set deadline for manager-employee conversations
+
+### Within 48 Hours
+
+- [ ] Import calibrated ratings into your HR system
+- [ ] Verify all changes transferred correctly to HRIS
+- [ ] Update succession planning dashboards or reports
+- [ ] Archive both pre-calibration and post-calibration files
+
+### Within 1 Week
+
+- [ ] Create follow-up list for employees needing development plans
+- [ ] Schedule check-ins for contentious cases (tabled discussions)
+- [ ] Monitor employees flagged for promotion readiness
+- [ ] Send thank-you to meeting attendees
+- [ ] Share executive summary with leadership
+- [ ] Document lessons learned for next calibration
+- [ ] Update calibration process based on feedback
+- [ ] Calendar reminder for next calibration session
+
+---
+
 ## During the Calibration Meeting (60-90 minutes)
 
 Here's how to use 9Boxer during your live calibration session.
@@ -315,6 +517,38 @@ Here's how to use 9Boxer during your live calibration session.
 2. **Share your screen** in the video call
 3. **Keep the right panel visible** (Statistics, Intelligence, or Changes)
 4. **Have your discussion list ready** (separate document or notes)
+
+### During-Meeting Best Practices
+
+Follow these practices to keep your calibration session focused and productive:
+
+**Use filters to focus the conversation:**
+
+- Filter by one manager at a time to review their full team together
+- Filter by performance level (e.g., "High Performance only") to validate a cohort
+- Filter by department to compare cross-functional patterns
+- Clear filters between discussions to reset the view
+
+**Document decisions immediately:**
+
+- Add notes to every employee you move during the meeting
+- Capture WHO made the decision and WHY in the note
+- Include dissenting views if consensus wasn't unanimous
+- Document action items (e.g., "Follow up with manager in 30 days")
+
+**Keep the discussion moving:**
+
+- Set time limits per employee (2-3 minutes each)
+- Table contentious cases for offline follow-up rather than debating endlessly
+- Focus on employees where ratings might change - skip obvious correct placements
+- Track progress (watch File menu badge showing change count)
+
+**Show the data to support discussions:**
+
+- Reference Statistics tab when discussing overall distribution
+- Show Intelligence anomalies to justify questions about manager patterns
+- Display employee timeline to show historical rating trends
+- Use visual evidence instead of abstract debates
 
 ### Work Through Your Discussion List
 
@@ -431,6 +665,52 @@ Share the calibrated ratings with stakeholders:
 - **Key changes:** "Promoted 8 employees to Star/High Potential, recalibrated 12 center-box employees, addressed 3 performance concerns."
 - **Next steps:** "Managers: Review your updated ratings and prepare for employee conversations. HR: Update HRIS by [date]."
 - **Timeline:** "Next calibration session: [Q1 2025]"
+
+### Post-Meeting Follow-Up
+
+Complete these critical follow-up steps within 24-48 hours:
+
+**1. Update Your HRIS (Within 48 hours)**
+
+- [ ] Import the calibrated ratings into your HR system
+- [ ] Verify all changes transferred correctly
+- [ ] Update succession planning dashboards or reports
+- [ ] Archive the pre-calibration and post-calibration files
+
+**2. Communicate to Managers (Within 24 hours)**
+
+- [ ] Send each manager their team's updated ratings
+- [ ] Highlight which of their employees changed and why
+- [ ] Provide guidance on communicating changes to employees
+- [ ] Set deadline for manager-employee conversations
+
+**Example manager communication:**
+
+> "Hi Alex,
+>
+> Attached are your team's calibrated ratings from yesterday's session. Three changes for your team:
+>
+> - **Sarah Chen**: Moved to Star (Position 9) - Ready for promotion, discuss in your next 1:1
+> - **David Kumar**: Moved to High Potential (Position 8) - Recognized growth trajectory
+> - **Maya Patel**: Moved to Core Performer (Position 5) - Calibrated to match peer standards
+>
+> Please review with each employee by [date]. See attached notes for full calibration reasoning.
+>
+> Next calibration: Q1 2025"
+
+**3. Track Action Items (Ongoing)**
+
+- [ ] Create follow-up list for employees needing development plans
+- [ ] Schedule check-ins for contentious cases (tabled discussions)
+- [ ] Monitor employees flagged for promotion readiness
+- [ ] Calendar reminder for next calibration session
+
+**4. Close the Loop (Within 1 week)**
+
+- [ ] Send thank-you to meeting attendees
+- [ ] Share executive summary with leadership
+- [ ] Document lessons learned for next calibration
+- [ ] Update calibration process based on feedback
 
 ### Document Learnings
 

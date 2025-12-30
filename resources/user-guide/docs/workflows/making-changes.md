@@ -15,6 +15,45 @@
 
 ---
 
+## Change Review Checklist
+
+Use this checklist before and after making rating changes to ensure quality and proper documentation.
+
+### Before Making a Change
+
+- [ ] Have clear evidence for the rating change (performance data, metrics, feedback)
+- [ ] Understand why the current rating is incorrect or outdated
+- [ ] Know which box the employee should move to and why
+- [ ] Have manager approval or calibration consensus (if required)
+- [ ] Confirm timing is appropriate (not too early to assess, not waiting too long)
+
+### After Making Each Change
+
+- [ ] Verify orange border appears on employee tile (confirms change recorded)
+- [ ] Check employee details show updated Performance/Potential values
+- [ ] Add clear note explaining what changed and why
+- [ ] Include date context and who was involved in decision
+- [ ] Verify note is specific and professional (avoid vague or subjective language)
+
+### Before Exporting Changes
+
+- [ ] Open Changes tab and review all movements
+- [ ] Verify every change has a note documenting the reasoning
+- [ ] Check that notes are clear enough for someone else to understand
+- [ ] Confirm all changes are intentional (no accidental moves)
+- [ ] Verify distribution makes sense (check Statistics tab if making many changes)
+
+### After Exporting
+
+- [ ] Open exported Excel file to verify changes applied correctly
+- [ ] Check "Modified in Session" column shows "Yes" for changed employees
+- [ ] Check "9Boxer Change Notes" column contains your documentation
+- [ ] Verify Performance/Potential columns are updated in Excel
+- [ ] Save exported file with clear naming convention (include date)
+- [ ] Share with appropriate stakeholders if required
+
+---
+
 ## Why You'd Make Changes
 
 Before we dive into the mechanics, let's talk about when and why you'd move someone.
@@ -40,6 +79,255 @@ You'll typically change ratings in these situations:
 
 **New information received**
 : You just completed performance reviews and have updated assessments to reflect.
+
+---
+
+## When to Make Changes vs. When to Wait
+
+Not every insight requires an immediate change. Here's how to decide:
+
+### Make Changes Now When:
+
+✅ **You have clear evidence**
+- Performance metrics show sustained improvement or decline
+- Manager and employee agree on the rating change
+- Calibration session reached consensus
+- Recent promotion or role change justifies new rating
+
+✅ **The change affects immediate decisions**
+- Promotion cycles are happening now
+- Bonus allocations are being finalized
+- Succession planning discussions are this week
+- Retention risk requires urgent action
+
+✅ **The error is obvious**
+- Data entry mistake (wrong box entirely)
+- Rating doesn't match documented performance
+- Employee in wrong position due to Excel import issue
+
+### Wait and Gather More Information When:
+
+⏸️ **Evidence is incomplete**
+- Only one data point (e.g., single project success/failure)
+- Less than 90 days in new role - too early to assess
+- Manager hasn't had performance conversation with employee yet
+- Conflicting feedback from different sources
+
+⏸️ **Change might be temporary**
+- Performance dip due to personal circumstances (medical, family)
+- Temporary project assignment (not permanent role change)
+- Short-term performance spike (wait to see if sustained)
+- New manager hasn't observed employee long enough
+
+⏸️ **Political or timing concerns**
+- Major reorganization in progress - ratings may change again
+- Employee is in sensitive situation (PIP, transfer, leave)
+- Manager relationships are strained - need neutral mediator
+- Waiting for calibration session to validate with peers
+
+**Best Practice:** If unsure, wait until the next formal review cycle rather than making hasty changes. Document your observations in notes and revisit in 30-60 days.
+
+!!! note "Why This Matters"
+    Rushing rating changes without evidence creates fairness concerns and credibility issues. Waiting for calibration or gathering more data ensures your changes are defensible and consistent across teams.
+
+---
+
+## Best Practices for Change Documentation
+
+Good documentation protects you and provides clarity for future reviews.
+
+### Document Every Change
+
+Never make a change without a note explaining why:
+
+**Minimum information to include:**
+
+- **What changed** - Old position → New position
+- **Why it changed** - Specific reason or trigger
+- **When** - Date or timeframe context
+- **Who was involved** - Manager, calibration team, HR
+
+**Example:**
+"Moved from Position 5 to Position 9 (Core to Star) based on Q4 calibration session. Consensus from 5 managers - sustained high performance in leadership role for 8 months. Ready for Director promotion in Q1 2025."
+
+### Use Consistent Language
+
+Create standard phrases for common changes:
+
+**Promotion/Role Change:**
+- "Promoted to [role] on [date], demonstrating [new capability]"
+- "Role expanded to include [responsibility], increased potential rating"
+
+**Calibration:**
+- "Calibration [date]: Adjusted to [new position] to align with peer standards"
+- "Cross-functional calibration consensus - moved to [position]"
+
+**Performance Trend:**
+- "Performance improved from [old] to [new] over [timeframe]"
+- "Performance declined from [old] to [new] - [reason if known]"
+
+### Avoid These Documentation Mistakes
+
+❌ **Too vague:** "Changed rating" - Why? Based on what?
+
+❌ **Too subjective:** "Just not good enough" - Not helpful or professional
+
+❌ **No context:** "8" - What does this number mean?
+
+❌ **Blame language:** "Manager was wrong" - Focus on evidence, not blame
+
+✅ **Good example:** "Calibration 2024-Q4: Moved from High Performance to Medium Performance to align with peer standards. Initial rating was relative to team, not company-wide benchmarks. Discussed with manager - agreed on recalibration."
+
+---
+
+## How to Handle Disputed Changes in Calibration
+
+Disagreements during calibration are normal. Here's how to navigate them professionally:
+
+### Step 1: Acknowledge the Disagreement
+
+Don't dismiss concerns. Say:
+
+- "I hear you think Sarah should stay at Star. Let's look at the evidence."
+- "There's a difference of opinion here. Let's work through it together."
+
+### Step 2: Review the Data
+
+Use 9Boxer to show objective information:
+
+1. **Filter to the employee's peers** - How do similar employees rate?
+2. **Check Intelligence tab** - Is this person an outlier statistically?
+3. **Review the timeline** - What's the trend over time?
+4. **Show Statistics** - How does this fit overall distribution?
+
+### Step 3: Ask for Specific Evidence
+
+Request concrete examples:
+
+- "Can you give me 2-3 specific examples of Star-level performance?"
+- "What projects or metrics support this rating?"
+- "How does this compare to other Stars in the company?"
+
+### Step 4: Seek Compromise
+
+If consensus can't be reached:
+
+**Option 1: Split the Difference**
+- Manager says Star (Position 9), others say Core (Position 5)
+- Compromise: High Performer (Position 6 or Position 8)
+
+**Option 2: Conditional Rating**
+- "We'll keep them at Star for now, but revisit in 90 days"
+- "If they deliver X project successfully, they stay Star; otherwise we recalibrate"
+
+**Option 3: Table the Discussion**
+- Mark as "Under Review" in notes
+- Schedule offline follow-up with relevant stakeholders
+- Don't hold up entire calibration for one disputed case
+
+**Option 4: Escalate**
+- If significant impact (promotion, retention risk), escalate to senior leader
+- Present both viewpoints with evidence
+- Accept final decision and document reasoning
+
+### Step 5: Document the Resolution
+
+Whatever the outcome, capture it in notes:
+
+**If consensus reached:**
+"Calibration discussion - initial disagreement resolved. Moved to Position 6 after reviewing peer comparisons. All managers agreed based on evidence."
+
+**If compromise:**
+"Calibration 2024-Q4: Moved to Position 8 as compromise between Star and Core ratings. Will revisit in Q1 2025 after project delivery."
+
+**If tabled:**
+"Calibration 2024-Q4: Rating disputed between manager and peers. Tabled for offline discussion. Current rating unchanged pending follow-up by [date]."
+
+**If escalated:**
+"Calibration 2024-Q4: Escalated to VP after manager disagreement. VP decision: Maintain Star rating based on business impact. Dissenting view documented."
+
+### What NOT to Do
+
+❌ **Don't make it personal** - Focus on performance, not personalities
+
+❌ **Don't dismiss without discussion** - "My decision is final" shuts down collaboration
+
+❌ **Don't let it drag on** - Set a time limit for debate (5-10 minutes max)
+
+❌ **Don't force fake consensus** - It's OK to disagree and document both views
+
+---
+
+## Undo and Redo Guidance
+
+Made a mistake? Here's how to fix it:
+
+### To Undo a Single Change
+
+**Option 1: Drag back immediately**
+
+1. Realize you moved the wrong person
+2. Drag them back to their original position
+3. The orange border remains (they're still "modified")
+4. The final position is what matters for export
+
+**Option 2: Check Changes tab and manually fix**
+
+1. Open Changes tab to see all moves
+2. Find the incorrect change
+3. Drag employee to the correct position
+4. Update the note to reflect the correction
+
+**Example note after correction:**
+"Initially moved to Position 6 in error. Corrected to Position 5 (original rating unchanged)."
+
+### To Undo Multiple Changes
+
+If you made several mistakes:
+
+1. Open Changes tab
+2. Review the full list of movements
+3. For each incorrect change, drag employee back to correct position
+4. Consider: Is it easier to re-import your original file and start over?
+
+**When to re-import:**
+- If you have >10 incorrect changes
+- If you're not sure which changes are correct
+- If you want a clean slate
+
+**To re-import:**
+
+1. File → Close File (or re-import will warn you)
+2. File → Import Data
+3. Choose your original file again
+4. Start fresh (all changes lost)
+
+### There is No "Redo" Button
+
+9Boxer doesn't have undo/redo buttons like word processors. Here's why:
+
+- Changes are intentional (you drag deliberately, not accidental clicks)
+- The Changes tab shows full history
+- You can always drag back to fix
+
+**If you need to recreate changes after re-importing:**
+
+1. Before re-importing, take screenshots of Changes tab
+2. Or export your work-in-progress (even with mistakes)
+3. After re-import, reference screenshots to remake correct changes
+4. Lesson learned: Export frequently during long sessions!
+
+### Unsaved Changes Protection
+
+9Boxer now warns you before you lose work:
+
+If you try to import new data or close the file with unsaved changes, you'll see a dialog:
+
+- **Apply Changes** - Export your work first, then proceed
+- **Discard Changes** - Lose all changes and proceed
+- **Cancel** - Stay in your current session
+
+**Best Practice:** If you see this warning and you've made important changes, ALWAYS click "Apply Changes" first!
 
 ---
 
@@ -145,6 +433,14 @@ For a complete record of all your changes:
     While you're in the Changes tab, type a quick note in the "Notes" field explaining why you moved this person.
     Your future self (and your colleagues) will thank you!
     [Learn more about adding notes](adding-notes.md)
+
+### Success! You've Made Your First Change
+
+You'll see:
+- Orange left border on the employee tile
+- Updated Performance/Potential in employee details
+- Change recorded in timeline and Changes tab
+- Apply button badge showing number of changes
 
 ---
 

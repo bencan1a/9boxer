@@ -12,6 +12,9 @@ Export your modified employee data to Excel to save your work and share updated 
 !!! danger "Critical: No Auto-Save"
     The application does **NOT** auto-save your changes. You **MUST** export to save your work before closing the app, or all changes will be lost.
 
+!!! note "Why This Matters"
+    Export is THE critical step that saves your work. Without exporting, all your calibration decisions vanish when you close the app. Export early and often during long sessions.
+
 ---
 
 <details>
@@ -134,6 +137,41 @@ The default Apply Changes dialog updates your original file. This is the quickes
 
 When you check "Save to a different file," you can choose a new location and filename. This creates a milestone version while keeping your original intact.
 
+### Export Options Comparison
+
+Choose the right export option based on your workflow needs:
+
+| Feature | Update Original File | Save to Different File |
+|---------|---------------------|------------------------|
+| **What Happens** | Overwrites your original Excel file with changes | Creates new file at location you choose |
+| **Original File** | Gets updated with new ratings | Remains completely untouched |
+| **Best For** | Iterative work sessions | Creating milestone versions or backups |
+| **File Location** | Same location as original | You choose location and filename |
+| **Filename** | Same as original | You choose custom filename |
+| **Use When** | Continuing work on same dataset | Creating pre/post-calibration versions |
+| **Risk** | Overwrites original (can't undo) | No risk - original preserved |
+| **Speed** | Fastest - one click | Slightly slower - choose location |
+| **Common Scenarios** | Daily calibration work | "talent-ratings-Q4-pre-calibration.xlsx" vs "talent-ratings-Q4-post-calibration.xlsx" |
+| **Version Control** | Manual (save copies before major changes) | Built-in (each export is separate file) |
+| **Backup Strategy** | Save copies before exporting | Automatic - originals never touched |
+| **Recommended If** | You want simplicity and speed | You want safety and versioning |
+
+**When to use each option:**
+
+| Your Goal | Recommended Option | Why |
+|-----------|-------------------|-----|
+| Quick save during calibration meeting | Update Original File | Fastest - keeps workflow simple |
+| Create backup before major changes | Save to Different File | Preserves pre-change version |
+| Share results with stakeholders | Save to Different File | Custom filename like "talent-review-2024-Q4-final.xlsx" |
+| Continue working on same dataset | Update Original File | Keeps everything in one file |
+| Create quarterly snapshots | Save to Different File | Build version history (Q1, Q2, Q3, Q4 files) |
+| Test different scenarios | Save to Different File | Compare multiple versions side-by-side |
+| Single-session work | Update Original File | No need for multiple files |
+| Multi-session collaborative work | Save to Different File | Track "before" and "after" states clearly |
+
+!!! tip "Best Practice: Backup Before Big Changes"
+    Before major calibration sessions, use "Save to Different File" to create a backup like "talent-ratings-backup-2024-12-30.xlsx". Then work with "Update Original File" during the session. This gives you both speed and safety.
+
 4. Click **"Apply Changes"** to proceed
 5. File is saved to the chosen location
 
@@ -145,6 +183,14 @@ When you check "Save to a different file," you can choose a new location and fil
 
 !!! success "Changes Saved"
     Your changes are now saved to the Excel file! You can continue working or close the application.
+
+### Success! You've Exported Your Changes
+
+You'll see:
+- Excel file saved to your chosen location
+- All change tracking columns included
+- Updated Performance and Potential ratings
+- Your notes preserved in the export for audit trail
 
 !!! info "Read-Only File Protection"
     If your original file is read-only or can't be updated, 9Boxer automatically falls back to "Save to different file" mode and prompts you to choose a new location. This ensures your work is never lost.
@@ -222,6 +268,9 @@ If you used [Donut Mode](donut-mode.md), four additional columns are added:
 
 - The four donut columns are empty
 - Only employees you placed in Donut Mode have donut data
+
+!!! note "Why This Matters"
+    Separate donut columns let you explore "what-if" scenarios without changing actual ratings. Share donut findings with leadership to discuss borderline placements before finalizing reviews.
 
 ### Excluded Employees
 
