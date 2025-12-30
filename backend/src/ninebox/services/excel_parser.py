@@ -617,7 +617,7 @@ class ExcelParser:
         if pd.notna(donut_pos_value) and str(donut_pos_value).strip():
             try:
                 # Cast to float first to handle both int and float values from Excel
-                donut_position = int(cast(float, donut_pos_value))
+                donut_position = int(cast("float", donut_pos_value))
                 donut_modified = True
 
                 # Parse donut performance/potential from position if available
