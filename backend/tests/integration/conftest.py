@@ -15,6 +15,9 @@ def db_connection(test_db_path: str) -> Generator[sqlite3.Connection, None, None
     This connection is shared across all integration tests in the session, but each test
     runs in its own transaction that is rolled back after completion.
 
+    CRITICAL: This fixture should only be used by integration tests.
+    Unit tests should use their own database fixtures.
+
     Note: check_same_thread=False is safe here because:
     - SQLite has internal locking to handle concurrent access
     - We use transactions to ensure isolation
@@ -41,8 +44,8 @@ def db_connection(test_db_path: str) -> Generator[sqlite3.Connection, None, None
     conn.close()
 
 
-@pytest.fixture(autouse=True)
-def db_transaction(db_connection: sqlite3.Connection) -> Generator[None, None, None]:
+@pytest.fixture(autouse=True, scope="function")
+def db_transaction(request: pytest.FixtureRequest, db_connection: sqlite3.Connection) -> Generator[None, None, None]:
     """Function-scoped transaction that rolls back after each test.
 
     This ensures test isolation by:
@@ -51,7 +54,18 @@ def db_transaction(db_connection: sqlite3.Connection) -> Generator[None, None, N
     3. Rolling back the transaction after test completes
 
     This is much faster than deleting rows and provides perfect isolation.
+
+    CRITICAL: Only applies to integration tests (checks if "integration" in test path).
+    Unit tests must not be affected by this patch.
     """
+    # ONLY apply to integration tests - check if this is an integration test
+    # This prevents polluting unit tests with the DatabaseManager.get_connection patch
+    is_integration_test = "integration" in str(request.node.path)
+
+    if not is_integration_test:
+        # Skip this fixture for non-integration tests
+        yield
+        return
     # Patch DatabaseManager to use the shared transactional connection
     from contextlib import contextmanager  # noqa: PLC0415
     from unittest.mock import patch  # noqa: PLC0415

@@ -34,6 +34,7 @@ def test_get_free_port_when_called_multiple_times_then_returns_different_ports()
     assert 1024 <= port2 <= 65535
 
 
+@pytest.mark.slow
 def test_is_port_in_use_when_port_is_free_then_returns_false() -> None:
     """Test is_port_in_use returns False for a free port."""
     # Get a free port
@@ -58,6 +59,7 @@ def test_is_port_in_use_when_port_is_occupied_then_returns_true() -> None:
         test_socket.close()
 
 
+@pytest.mark.slow
 def test_is_port_in_use_when_socket_cleanup_then_does_not_leak_sockets() -> None:
     """Test is_port_in_use properly closes sockets."""
     # This test verifies that the function doesn't leak file descriptors

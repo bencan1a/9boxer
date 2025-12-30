@@ -10,6 +10,8 @@ import {
   clickTabAndWait,
   waitForUiSettle,
   t,
+  createChange,
+  getFirstEmployeeId,
 } from "../helpers";
 import type { Page, Locator } from "@playwright/test";
 
@@ -74,21 +76,12 @@ test.describe("Change Tracking Flow", () => {
   test("should display change in Changes tab after moving employee", async ({
     page,
   }) => {
-    // Find any employee in the grid
-    const { employeeCard, employeeId, boxNumber } = await findAnyEmployee(page);
+    // Get any employee ID from the grid
+    const employeeId = await getFirstEmployeeId(page);
 
-    // Verify employee is visible in their current position
-    await expect(employeeCard).toBeVisible();
-    await expect(employeeCard).toHaveAttribute(
-      "data-position",
-      boxNumber.toString()
-    );
-
-    // Choose a target box different from current position
-    const targetBox = boxNumber === 6 ? 3 : 6;
-
-    // Move employee to target box
-    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
+    // Create a change by moving employee to position 6 via API
+    // (Avoids flaky drag operation - this test is about change tracking, not drag UX)
+    await createChange(page, employeeId, 6);
 
     // Navigate to Changes tab
     await clickTabAndWait(page, "changes-tab");
@@ -103,7 +96,6 @@ test.describe("Change Tracking Flow", () => {
     await expect(changeRow).toBeVisible();
 
     // Verify movement chips are shown (should show from and to boxes)
-    // We don't verify specific box names as they depend on which employee was selected
     await expect(changeRow.locator(".MuiChip-root").first()).toBeVisible();
     await expect(changeRow.locator(".MuiChip-root").nth(1)).toBeVisible();
   });
@@ -111,14 +103,11 @@ test.describe("Change Tracking Flow", () => {
   test("should allow user to add and save notes for a change", async ({
     page,
   }) => {
-    // Find any employee in the grid
-    const { employeeId, boxNumber } = await findAnyEmployee(page);
+    // Get any employee ID
+    const employeeId = await getFirstEmployeeId(page);
 
-    // Choose a target box different from current position
-    const targetBox = boxNumber === 6 ? 3 : 6;
-
-    // Move employee to target box
-    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
+    // Create a change via API (testing notes, not drag)
+    await createChange(page, employeeId, 6);
 
     // Navigate to Changes tab
     await clickTabAndWait(page, "changes-tab");
@@ -149,15 +138,18 @@ test.describe("Change Tracking Flow", () => {
   test("should remove change from tracker when employee is moved back to original position", async ({
     page,
   }) => {
-    // Find any employee in the grid
-    const { employeeId, boxNumber } = await findAnyEmployee(page);
-    const originalBox = boxNumber;
+    // Get any employee ID and store original position
+    const employeeId = await getFirstEmployeeId(page);
+    const employeeCard = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
+    const originalPosition = parseInt(
+      (await employeeCard.getAttribute("data-position")) || "1",
+      10
+    );
 
-    // Choose a target box different from current position
-    const targetBox = boxNumber === 6 ? 3 : 6;
-
-    // Move employee to target box
-    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
+    // Create a change via API (move to position 6)
+    await createChange(page, employeeId, 6);
 
     // Verify change appears
     await clickTabAndWait(page, "changes-tab");
@@ -165,14 +157,11 @@ test.describe("Change Tracking Flow", () => {
       page.locator(`[data-testid="change-row-${employeeId}"]`)
     ).toBeVisible();
 
-    // Go back to grid and move employee back to original position
+    // Go back to grid
     await clickTabAndWait(page, "details-tab", 1.0);
 
-    // Move back to original position - skip API wait and don't expect modified indicator
-    await dragEmployeeToPosition(page, parseInt(employeeId), originalBox, {
-      skipApiWait: true,
-      expectModified: false,
-    });
+    // Move back to original position via API
+    await createChange(page, employeeId, originalPosition);
 
     // Verify change is removed
     await clickTabAndWait(page, "changes-tab");
@@ -189,18 +178,14 @@ test.describe("Change Tracking Flow", () => {
   test("should show single entry with net change when employee is moved multiple times", async ({
     page,
   }) => {
-    // Find any employee in the grid
-    const { employeeId, boxNumber } = await findAnyEmployee(page);
+    // Get any employee ID
+    const employeeId = await getFirstEmployeeId(page);
 
-    // Choose intermediate and final target boxes
-    const intermediateBox = boxNumber === 6 ? 3 : 6;
-    const finalBox = boxNumber === 3 ? 1 : 3;
-
-    // First move: original box to intermediate box
-    await dragEmployeeToPosition(page, parseInt(employeeId), intermediateBox);
-
-    // Second move: intermediate box to final box
-    await dragEmployeeToPosition(page, parseInt(employeeId), finalBox);
+    // Create multiple changes via API (testing net change tracking, not drag)
+    await createMultipleChanges(page, [
+      { employeeId, newPosition: 6 }, // First move
+      { employeeId, newPosition: 3 }, // Second move
+    ]);
 
     // Verify only one change entry exists (net change from original to final)
     await clickTabAndWait(page, "changes-tab");
@@ -220,14 +205,11 @@ test.describe("Change Tracking Flow", () => {
   test("should show ApplyChangesDialog for export with notes", async ({
     page,
   }) => {
-    // Find any employee in the grid
-    const { employeeId, boxNumber } = await findAnyEmployee(page);
+    // Get any employee ID
+    const employeeId = await getFirstEmployeeId(page);
 
-    // Choose a target box different from current position
-    const targetBox = boxNumber === 6 ? 3 : 6;
-
-    // Move the employee
-    await dragEmployeeToPosition(page, parseInt(employeeId), targetBox);
+    // Create a change via API (testing export dialog, not drag)
+    await createChange(page, employeeId, 6);
 
     // Add notes
     await clickTabAndWait(page, "changes-tab");

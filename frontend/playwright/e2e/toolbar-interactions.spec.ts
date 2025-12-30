@@ -16,6 +16,9 @@ import {
   openFileMenu,
   openFilterDrawer,
   getEmployeeIdFromCard,
+  createChange,
+  getFirstEmployeeId,
+  getEmployeeIdFromPosition,
   t,
 } from "../helpers";
 
@@ -47,15 +50,9 @@ test.describe("File Menu", () => {
     // Wait for grid to load
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
-    // Find an employee in grid box 9
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const firstEmployee = gridBox9
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-
-    // Move employee to different position
-    await dragEmployeeToPosition(page, employeeId, 6);
+    // Get any employee and create a change via API (faster and more reliable than drag)
+    const employeeId = await getFirstEmployeeId(page);
+    await createChange(page, employeeId, 6);
 
     // Verify badge appears on FileMenu button (MUI Badge component)
     const fileMenuBadge = page
@@ -98,13 +95,9 @@ test.describe("File Menu", () => {
     await loadSampleData(page);
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
-    // Make a change by moving an employee
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const firstEmployee = gridBox9
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-    await dragEmployeeToPosition(page, employeeId, 6);
+    // Get any employee and create a change via API (faster and more reliable than drag)
+    const employeeId = await getFirstEmployeeId(page);
+    await createChange(page, employeeId, 6);
 
     // Verify badge appears before opening menu
     const fileMenuBadge = page
@@ -438,57 +431,40 @@ test.describe("File Menu Integration with Changes", () => {
   test("badge updates with multiple changes", async ({ page }) => {
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
-    // Find employees in different boxes to move
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const gridBox8 = page.locator('[data-testid="grid-box-8"]');
+    // Create multiple changes via API (faster and more reliable than drag)
+    const emp1Id = await getEmployeeIdFromPosition(page, 9);
+    await createChange(page, emp1Id, 6);
 
-    // Get employees from two different boxes
-    const box9Employees = gridBox9.locator('[data-testid^="employee-card-"]');
-    const box8Employees = gridBox8.locator('[data-testid^="employee-card-"]');
+    // Verify badge shows 1
+    let badge = page
+      .locator('[data-testid="file-menu-button"]')
+      .locator("..")
+      .locator(".MuiBadge-badge");
+    await expect(badge).toContainText("1");
 
-    const box9Count = await box9Employees.count();
-    const box8Count = await box8Employees.count();
+    // Create second change
+    const emp2Id = await getEmployeeIdFromPosition(page, 8);
+    await createChange(page, emp2Id, 3);
 
-    if (box9Count > 0 && box8Count > 0) {
-      // Move first employee from box 9
-      const emp1Id = await getEmployeeIdFromCard(box9Employees.first());
-      await dragEmployeeToPosition(page, emp1Id, 6);
+    // Verify badge shows 2
+    badge = page
+      .locator('[data-testid="file-menu-button"]')
+      .locator("..")
+      .locator(".MuiBadge-badge");
+    await expect(badge).toContainText("2");
 
-      // Verify badge shows 1
-      let badge = page
-        .locator('[data-testid="file-menu-button"]')
-        .locator("..")
-        .locator(".MuiBadge-badge");
-      await expect(badge).toContainText("1");
-
-      // Move second employee from box 8
-      const emp2Id = await getEmployeeIdFromCard(box8Employees.first());
-      await dragEmployeeToPosition(page, emp2Id, 3);
-
-      // Verify badge shows 2
-      badge = page
-        .locator('[data-testid="file-menu-button"]')
-        .locator("..")
-        .locator(".MuiBadge-badge");
-      await expect(badge).toContainText("2");
-
-      // Open FileMenu and verify Apply Changes text
-      await openFileMenu(page);
-      const applyItem = page.getByTestId("export-changes-menu-item");
-      await expect(applyItem).toContainText("Apply 2 Changes to Excel");
-    }
+    // Open FileMenu and verify Apply Changes text
+    await openFileMenu(page);
+    const applyItem = page.getByTestId("export-changes-menu-item");
+    await expect(applyItem).toContainText("Apply 2 Changes to Excel");
   });
 
   test("badge disappears after applying changes", async ({ page }) => {
     await expect(page.getByTestId("nine-box-grid")).toBeVisible();
 
-    // Make a change
-    const gridBox9 = page.locator('[data-testid="grid-box-9"]');
-    const firstEmployee = gridBox9
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-    await dragEmployeeToPosition(page, employeeId, 6);
+    // Get any employee and create a change via API (faster and more reliable than drag)
+    const employeeId = await getFirstEmployeeId(page);
+    await createChange(page, employeeId, 6);
 
     // Verify badge appears
     const fileMenuContainer = page

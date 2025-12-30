@@ -173,8 +173,12 @@ test.describe("Zoom & Full-Screen Controls", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
 
-    // Wait for app to initialize and determine state (either empty state or grid loaded from session)
-    await page.waitForTimeout(500);
+    // Wait for app to initialize (event-driven)
+    await expect(
+      page.locator(
+        '[data-testid="upload-file-button"], [data-testid="nine-box-grid"]'
+      )
+    ).toBeVisible();
 
     // Re-load to show grid
     await loadSampleData(page);

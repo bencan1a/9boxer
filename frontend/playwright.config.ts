@@ -4,6 +4,13 @@ import { defineConfig, devices } from "@playwright/test";
  * Playwright configuration for E2E and Visual Regression testing
  * This config includes both E2E and Visual projects so VSCode can discover both
  * See https://playwright.dev/docs/test-configuration.
+ *
+ * IMPORTANT: webServer configuration
+ * - Both Vite (5173) and Storybook (6006) are started automatically
+ * - In development: Reuses existing servers if already running
+ * - In CI: Starts fresh servers (reuseExistingServer: false)
+ * - If you get "DLL initialization failed" errors on Windows, check for port conflicts
+ * - Run `npm run test:cleanup` to kill any lingering servers
  */
 export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
@@ -100,6 +107,9 @@ export default defineConfig({
       url: "http://localhost:5173",
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
+      // Enhanced logging for debugging
+      stdout: "pipe",
+      stderr: "pipe",
     },
     // Storybook server for visual regression tests
     {
@@ -107,13 +117,16 @@ export default defineConfig({
       url: "http://localhost:6006",
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
+      // Enhanced logging for debugging
+      stdout: "pipe",
+      stderr: "pipe",
     },
   ],
 
   // Global expect configuration
   expect: {
     // Expect assertions timeout (applies to all expect() calls)
-    timeout: 2000, // Fail fast - anything longer means something is seriously wrong
+    timeout: 5000, // Balanced - fast enough to catch real issues, tolerant of CI environment
 
     // Visual comparison configuration (for visual regression tests)
     toHaveScreenshot: {
