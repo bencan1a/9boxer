@@ -7,7 +7,7 @@ Thank you for your interest in contributing! This document provides guidelines a
 If you're an AI agent working on this codebase, see the comprehensive internal documentation:
 - **[internal-docs/contributing/](internal-docs/contributing/)** - Agent-optimized contributing guides
 - **[internal-docs/CONTEXT.md](internal-docs/CONTEXT.md)** - Full project context
-- **[CLAUDE.md](CLAUDE.md)** - Main agent entry point
+- **[CLAUDE_INDEX.md](CLAUDE_INDEX.md)** - Quick start index with task-based navigation
 
 The rest of this document is primarily for human contributors.
 

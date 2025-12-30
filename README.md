@@ -343,7 +343,7 @@ See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screensho
 **Development Guides:**
 - [GITHUB_AGENT.md](GITHUB_AGENT.md) - Quick start for AI agents and developers (includes automated setup for Copilot)
 - [AGENTS.md](AGENTS.md) - Development workflow and command quick reference
-- [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
+- [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Quick start index with task-based navigation
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [docs/design-system/](docs/design-system/) - **Design system documentation** (UI components, patterns, accessibility)
 

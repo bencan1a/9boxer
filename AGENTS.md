@@ -1,219 +1,122 @@
-# AGENT GUIDANCE FOR 9BOXER PROJECT
+# Agent Workflows for 9Boxer
 
-**Quick-start workflows and command cheatsheet** for AI agents working on this project.
+**Practical workflows and command reference** for AI agents working on this project.
 
-> **For Comprehensive Reference**: See [CLAUDE.md](CLAUDE.md) for detailed technical guidance
-> **For GitHub Agent/Copilot**: See [GITHUB_AGENT.md](GITHUB_AGENT.md) for streamlined onboarding
+> **Quick Start:** [CLAUDE_INDEX.md](CLAUDE_INDEX.md) | **Critical Rules:** [CLAUDE_INDEX.md#critical-rules](CLAUDE_INDEX.md#⚠️-top-5-critical-rules) | **Environment Help:** [internal-docs/ENVIRONMENT_SETUP.md](internal-docs/ENVIRONMENT_SETUP.md)
+
+---
 
 ## 📱 PROJECT OVERVIEW
 
-**9Boxer is a standalone desktop application** built with Electron that embeds a FastAPI backend bundled with PyInstaller.
+**9Boxer** is a standalone Electron desktop application with an embedded PyInstaller backend.
 
-**Key Facts:**
-- **Deployment**: Electron desktop app (Windows/macOS/Linux installers)
-- **Architecture**: React frontend + Electron wrapper + embedded PyInstaller backend
+**Key Architecture:**
+- **Frontend**: React 18 + TypeScript + Vite + Electron wrapper
+- **Backend**: FastAPI (Python 3.10+) bundled as executable with PyInstaller
 - **Communication**: Backend runs as subprocess, HTTP over localhost:38000
 - **Database**: SQLite in user's app data directory
-- **No external dependencies**: Everything bundled in installer
+- **Deployment**: Platform-specific installers (Windows .exe, macOS .dmg, Linux .AppImage)
 
-**This is NOT a web application.** Docker deployment configuration exists but is legacy.
-
-## 🔥 CRITICAL RULES
-
-**Before starting any work, remember these rules:**
-
-1. **ALWAYS activate venv first** - `. .venv/bin/activate` (90% of issues are from forgetting this)
-2. **Build backend BEFORE frontend** - PyInstaller executable → Electron Builder
-3. **Never use rm/touch/cp/mv** - Use git commands or Read/Edit/Write tools (Windows compatibility)
-4. **Test in Electron app** - Not just web mode (different environment, different bugs)
-5. **Trust facts.json** - Highest authority when docs conflict
-
-## 🔧 ENVIRONMENT SETUP
-
-### Virtual Environment - CRITICAL REQUIREMENT
-
-**⚠️ ALWAYS ACTIVATE THE VIRTUAL ENVIRONMENT BEFORE RUNNING PYTHON TOOLS**
-
-```bash
-# Activate venv - do this FIRST in every session (from project root)
-. .venv/bin/activate      # Linux/macOS
-# or
-.venv\Scripts\activate    # Windows
-
-# Verify activation (should show .venv/bin/python or .venv\Scripts\python.exe)
-which python              # Linux/macOS
-where python              # Windows
+**Monorepo Structure:**
+```
+9boxer/
+  .venv/              ← Python venv (backend deps + tools)
+  pyproject.toml      ← Backend dependencies
+  backend/            ← FastAPI backend → PyInstaller executable
+  frontend/           ← React + Electron → Platform installers
 ```
 
-**Common Issue:** If a Python module appears to not be installed, this is usually because the venv has not been activated. Always activate the venv first!
+**This is NOT a web app.** Docker config exists but is legacy (not maintained).
 
-### Initial Setup
+---
 
-```bash
-# From project root
-python3 -m venv .venv
-. .venv/bin/activate      # Windows: .venv\Scripts\activate
+## 🏗️ ARCHITECTURE QUICK REFERENCE
 
-# Install dependencies
-pip install --upgrade pip
-pip install -e '.[dev]'
+**Before implementing features, consult architecture docs:**
 
-# Set up pre-commit hooks (optional but recommended)
-pre-commit install
+| Task | Documentation |
+|------|---------------|
+| **API endpoint** | [ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md) - Error patterns, HTTP status codes |
+| **IPC handler** | [SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md) - Security boundaries, IPC validation |
+| **Database schema** | [MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md) - Migration patterns, version compatibility |
+| **Performance** | [PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md) - Performance targets, scale constraints |
+| **Logging** | [OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md) - Log levels, debugging tools |
+| **UI component** | [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) - Design tokens, accessibility, i18n |
+| **Past decisions** | [architecture/decisions/](internal-docs/architecture/decisions/) - Architecture Decision Records |
 
-# Install frontend dependencies
-cd frontend
-npm install
-cd ..
-```
+**Full index:** [internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md)
 
-## 🏗️ ARCHITECTURE UNDERSTANDING
-
-### Architecture Documentation (Agent-Optimized)
-
-**BEFORE implementing features or reviewing code, consult the architecture documentation.**
-
-**Quick Reference:** [internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md)
-
-**Core Architecture Docs:**
-- **[ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md)** - Error patterns, HTTP status codes
-- **[SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md)** - Security boundaries, IPC patterns
-- **[PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md)** - Performance targets, scale constraints
-- **[MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md)** - Database migration patterns
-- **[OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md)** - Logging patterns, debugging tools
-- **[decisions/](internal-docs/architecture/decisions/)** - Architecture Decision Records (ADRs)
-
-**Quick Lookup:**
-- Implementing API endpoint? → [ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md)
-- Adding security feature? → [SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md)
-- Optimizing code? → [PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md)
-- Changing database? → [MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md)
-- Adding logging? → [OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md)
-
-### Monorepo Structure
-
-This is a monorepo with **two separate ecosystems**:
-
-**Backend (Python):**
-- FastAPI application
-- Bundled into standalone executable with PyInstaller
-- Dependencies managed via root `pyproject.toml`
-- Virtual environment at `.venv/` (project root)
-
-**Frontend (TypeScript/JavaScript):**
-- React application + Electron wrapper
-- Dependencies managed via `frontend/package.json`
-- Node modules at `frontend/node_modules/`
-
-**They are separate but integrated:**
-- Backend built FIRST with PyInstaller
-- Frontend packaging includes backend executable
-- Electron spawns backend as subprocess
-- Communication via HTTP (localhost:38000)
-
-### Build Flow
-
-```
-1. Backend Build (PyInstaller)
-   backend/src/ninebox/main.py → backend/dist/ninebox/ninebox.exe
-
-2. Frontend Build (Vite + Electron Builder)
-   frontend/src/ → frontend/dist/ (React app)
-   frontend/electron/ → frontend/dist-electron/ (Electron code)
-
-3. Electron Packaging (Electron Builder)
-   Combines: Electron + React app + Electron code + Backend executable
-   → frontend/release/ (platform installers)
-```
-
-### Key Files
-
-**Backend:**
-- `backend/src/ninebox/main.py` - FastAPI entry point
-- `backend/build_config/ninebox.spec` - PyInstaller configuration
-- `backend/scripts/build_executable.{sh,bat}` - Build scripts
-
-**Electron:**
-- `frontend/electron/main/index.ts` - Main process (backend lifecycle)
-- `frontend/electron/preload/index.ts` - IPC bridge
-- `frontend/electron-builder.json` - Packaging configuration
-
-**Documentation:**
-- `CLAUDE.md` - Claude Code guidance (you are reading this type of file)
-- `BUILD.md` - Complete build instructions
-- `DEPLOYMENT.md` - Distribution and deployment guide
-- `internal-docs/facts.json` - Highest authority source of truth
+---
 
 ## 📁 FILE ORGANIZATION
 
 **Where to put files:**
 - `agent-tmp/` → Temporary/debug files (gitignored, auto-cleaned after 7 days)
-- `agent-projects/` → Active project plans (requires `plan.md` with status/owner/date metadata)
-- `internal-docs/` → Permanent documentation
+- `agent-projects/<name>/` → Active project plans (requires `plan.md` with status/owner/date)
+- `internal-docs/` → Permanent documentation (canonical location)
 - Root → Configuration files only (pyproject.toml, README.md, etc.)
 
 **DO NOT** create analysis reports or planning documents in project root. See [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) for complete rules.
+
+---
 
 ## 🔨 DEVELOPMENT WORKFLOW
 
 ### Running the Application in Development
 
-**Full Electron App (Recommended for testing):**
+**Option 1: Full Electron App (Recommended for testing)**
 
 ```bash
 # 1. Build backend (required first time)
 cd backend
-. .venv/bin/activate
-.\scripts\build_executable.bat  # Windows
-# or
-./scripts/build_executable.sh   # Linux/macOS
+. .venv/bin/activate           # Windows: .venv\Scripts\activate
+./scripts/build_executable.sh  # Windows: .\scripts\build_executable.bat
 
 # 2. Run Electron in dev mode
 cd ../frontend
 npm run electron:dev
 ```
 
-**Separate Frontend/Backend (Faster for frontend development):**
+**Option 2: Separate Frontend/Backend (Faster for frontend development)**
 
 ```bash
 # Terminal 1: Run backend executable
 cd backend/dist/ninebox
-./ninebox  # or ninebox.exe
+./ninebox  # Windows: ninebox.exe
 
 # Terminal 2: Run Vite dev server
 cd frontend
 npm run dev
 
-# Access at http://localhost:5173 (web mode, no Electron features)
+# Access at http://localhost:5173 (web mode - no Electron features)
 ```
 
 ### Building Production Releases
 
 ```bash
-# 1. Build backend (from project root)
+# Step 1: Build backend (from project root)
 cd backend
-. .venv/bin/activate
-.\scripts\build_executable.bat  # Windows
-# or
-./scripts/build_executable.sh   # Linux/macOS
+. .venv/bin/activate           # Activate venv FIRST
+./scripts/build_executable.sh  # Windows: .\scripts\build_executable.bat
 
-# Verify: ls backend/dist/ninebox/  (should see executable)
+# Verify output exists
+ls dist/ninebox/  # Should see executable
 
-# 2. Build Electron application
+# Step 2: Build Electron application
 cd ../frontend
 npm run electron:build
 
 # Output in frontend/release/
+# - Windows: 9Boxer-Setup-1.0.0.exe
+# - macOS: 9Boxer-1.0.0.dmg
+# - Linux: 9Boxer-1.0.0.AppImage
 ```
 
-See [BUILD.md](BUILD.md) for complete build instructions.
+**Complete build guide:** [BUILD.md](BUILD.md)
+
+---
 
 ## 🧪 TESTING WORKFLOW
-
-### Pre-Testing Checklist
-1. ✅ Activate virtual environment (`. .venv/bin/activate`)
-2. ✅ Ensure dependencies are installed
-3. ✅ Understand the code being tested
 
 ### Backend Testing
 
@@ -221,112 +124,130 @@ See [BUILD.md](BUILD.md) for complete build instructions.
 # From project root
 . .venv/bin/activate
 
-pytest                     # Run all tests
-pytest --cov               # Run with coverage
-pytest -k "test_name"      # Run specific tests
-pytest -v                  # Verbose output
+# Run tests by suite (organized by folder)
+pytest backend/tests/unit               # Fast unit tests (~30s)
+pytest backend/tests/integration        # Integration tests (~2min)
+pytest backend/tests/e2e                # E2E frozen exe tests (~3min)
+pytest backend/tests/performance        # Benchmark tests (~5min)
+
+# Run tests by marker (alternative)
+pytest -m unit                  # Unit tests only
+pytest -m "not slow"            # Fast tests only
+
+# Run specific tests
+pytest backend/tests/unit/api/test_employees.py
+pytest -k "test_login"          # Tests matching pattern
+pytest -v                       # Verbose output
+pytest --cov                    # With coverage
 ```
 
-Current coverage: 92% (119 tests)
+**Current coverage:** 92% (372 tests)
 
 ### Frontend Testing
 
-**Component Tests (Vitest + React Testing Library):**
-
 ```bash
 cd frontend
 
-npm test                   # Watch mode
-npm run test:run           # Run once
-npm run test:coverage      # With coverage
-npm run test:ui            # Interactive UI
+# Component tests (Vitest + React Testing Library)
+npm test                        # Watch mode
+npm run test:run                # Run once
+npm run test:coverage           # With coverage
+npm run test:ui                 # Interactive UI
+
+# E2E tests (Playwright - preferred)
+npm run test:e2e:pw             # Run all E2E tests
+npm run test:e2e:pw:ui          # Run with Playwright UI
+npm run test:e2e:pw:debug       # Debug mode
+npx playwright test upload-flow.spec.ts  # Specific test file
+
+# Visual regression tests (Playwright)
+npm run test:visual             # Run visual regression tests
+npm run test:visual:update      # Update baseline snapshots
 ```
 
-**E2E Tests (Cypress):**
+### Testing Best Practices
 
-```bash
-cd frontend
+**DO:**
+- ✅ Run existing tests first to establish baseline
+- ✅ Write tests for new functionality (TDD approach)
+- ✅ Test behavior, not implementation details
+- ✅ Use `data-testid` for reliable element selection (frontend)
+- ✅ Mock I/O boundaries (HTTP, DB, filesystem), NOT business logic
 
-npm run cy:open            # Interactive mode
-npm run cy:run             # Headless mode
-```
-
-### Testing Sequence
-
-1. **Run existing tests first** to establish baseline
-2. **Write tests for new functionality**
-   - Backend: `test_function_when_condition_then_expected`
-   - Frontend: User-visible behavior, not implementation
-3. **Run tests during development**
-4. **Before completing work, run full test suite**
-
-### Testing Anti-Patterns to Avoid
+**DON'T:**
 - ❌ Conditional assertions (if statements in test bodies)
-- ❌ Testing types instead of behavior
 - ❌ Over-mocking (mocking business logic)
-- ❌ Accepting multiple outcomes in one test
-- ❌ Tests that don't fail when production code breaks
+- ❌ Hardcoded strings in tests (use data-testid)
+- ❌ Arbitrary timeouts (use event-driven waits)
 
-See `.github/agents/test.md` for comprehensive testing guidance.
+**Comprehensive testing guide:** [internal-docs/testing/](internal-docs/testing/) | **Testing agents:** [.github/agents/README-TESTING-AGENTS.md](.github/agents/README-TESTING-AGENTS.md)
 
-## 📋 CODE QUALITY REQUIREMENTS
+---
 
-**All code must pass quality checks before commit:**
+## 📋 CODE QUALITY WORKFLOW
 
-### Backend (Python)
+### Pre-Commit Checks (REQUIRED)
+
+**ALL commits must pass pre-commit hooks** (same checks as CI):
 
 ```bash
 # From project root
 . .venv/bin/activate
 
-# Run all checks at once
-make check-all
+# Run pre-commit checks on files you're committing
+pre-commit run --files <file1> <file2> ...
 
-# Or run individually:
-ruff format .              # Format code
-ruff check .               # Lint code
-mypy backend/src/          # Type check with mypy
-pyright                    # Type check with pyright
-bandit -r backend/src/     # Security scan
-pytest                     # Run tests
+# Or run on all files (comprehensive)
+pre-commit run --all-files
 
-# Quick fix
-make fix                   # Auto-fix formatting and linting
+# If checks pass, proceed with commit
+git add <files>
+git commit -m "message"
 ```
 
-### Frontend (TypeScript)
+**What pre-commit checks:**
+- Ruff format & lint (Python)
+- Mypy & Pyright type checking (Python)
+- Bandit security scan (Python)
+- ESLint & Prettier (TypeScript/JavaScript)
+- Doc size validation (CLAUDE_INDEX.md, AGENTS.md, GITHUB_AGENT.md)
+- i18n translation validation
+
+### Backend Quality Checks
+
+```bash
+# From project root
+. .venv/bin/activate
+
+# Run all checks at once (recommended)
+make check-all
+
+# Or run individually
+make fix                        # Auto-fix formatting and linting
+ruff format .                   # Format code
+ruff check .                    # Lint code
+mypy backend/src/               # Type check (mypy)
+pyright                         # Type check (pyright)
+bandit -r backend/src/          # Security scan
+pytest                          # Run tests
+```
+
+### Frontend Quality Checks
 
 ```bash
 cd frontend
 
-npm run lint               # ESLint
-npm run format             # Prettier
-npm run type-check         # TypeScript
-npm test                   # Vitest tests
-npm run cy:run             # Cypress E2E tests
+npm run lint                    # ESLint (blocks on errors only)
+npm run format                  # Prettier
+npm run type-check              # TypeScript compiler
+npm test                        # Vitest component tests
+npm run test:e2e:pw             # Playwright E2E tests
 ```
 
-### Quality Standards
-1. **Formatting**: ruff format (Python), Prettier (TypeScript)
-2. **Linting**: ruff check, ESLint
-3. **Type Checking**: mypy + pyright (Python), TypeScript (frontend)
-4. **Security**: bandit (backend)
-5. **Testing**: All tests pass with >80% coverage
+### Type Annotation Requirements
 
-### Handling Unavoidable Warnings
-- `# noqa: <code>` for linting false positives (add justification comment)
-- `# type: ignore[<error>]` for typing false positives (add justification)
-- `# nosec` for security false positives (add explanation)
+**Python:** ALL function parameters and returns must be typed.
 
-## 🎯 TYPE ANNOTATIONS
-
-**Required for all Python code:**
-- ALL function parameters must be typed
-- ALL function returns must be typed
-- Use modern typing: `list[str]`, `dict[str, int]`, `Optional[T]`
-- In classes: `self` is untyped, all other parameters must be typed
-
-Example:
 ```python
 from typing import Optional
 
@@ -334,173 +255,82 @@ def process_employees(
     employee_ids: list[str],
     max_count: Optional[int] = None
 ) -> dict[str, int]:
-    """Process employees and return count mapping.
-
-    Args:
-        employee_ids: List of employee IDs to process
-        max_count: Optional maximum number to process
-
-    Returns:
-        Dictionary mapping employee IDs to their counts
-    """
+    """Process employees and return count mapping."""
     # implementation
-    pass
 ```
 
-## 🤖 CUSTOM AGENT PROFILES
+**TypeScript:** Use strict mode. All functions and variables should have explicit types.
 
-This project includes specialized agent profiles in `.github/agents/`:
-
-- **Architecture Agent** (`architecture.md`): System design and architectural decisions
-- **Test Agent** (`test.md`): Test writing and testing strategies
-- **Debug Agent** (`debug.md`): Debugging and troubleshooting
-- **Documentation Agent** (`documentation.md`): Technical writing and documentation
-
-### Using Custom Agents
-```
-@workspace /agent test.md Write tests for the employee service
-@workspace /agent architecture.md Design a caching strategy
-@workspace /agent debug.md Help debug the file upload issue
-```
-
-See `.github/agents/README.md` for detailed usage instructions.
+---
 
 ## 🚀 COMMON TASKS
 
 ### Starting a New Feature
 
-1. Activate venv: `. .venv/bin/activate`
-2. Create feature branch: `git checkout -b feature/name`
-3. Run existing tests to ensure baseline: `pytest`
-4. Implement feature with TDD approach
-5. Run quality checks: `make check-all`
-6. Test in Electron app: `cd frontend && npm run electron:dev`
-7. Commit with descriptive message
+```bash
+# 1. Check environment
+python -c "import sys; print('VENV' if sys.prefix != sys.base_prefix else 'SYSTEM')"
+. .venv/bin/activate  # If showing SYSTEM
+
+# 2. Create feature branch
+git checkout -b feature/your-feature-name
+
+# 3. Run existing tests (establish baseline)
+pytest
+
+# 4. Implement feature with TDD approach
+# - Write test first
+# - Implement feature
+# - Refactor
+
+# 5. Run quality checks
+make check-all
+
+# 6. Test in Electron app
+cd frontend && npm run electron:dev
+
+# 7. Commit with descriptive message
+git add .
+git commit -m "feat: Add feature description"
+```
 
 ### Before Committing
 
 ```bash
-# Activate venv
+# 1. Activate venv
 . .venv/bin/activate
 
-# Run all backend quality checks
+# 2. Run backend quality checks
 make check-all
 
-# Run frontend checks
+# 3. Run frontend checks (if changed)
 cd frontend
 npm run lint
 npm run type-check
 npm test
 
-# Verify all checks pass before committing
+# 4. Run pre-commit hooks
 cd ..
-git status
+pre-commit run --all-files
+
+# 5. Commit if all checks pass
 git add .
-git commit -m "Descriptive commit message"
+git commit -m "feat|fix|docs|test|refactor: Description"
 ```
 
 ### Pull Request Checklist
+
 - [ ] Virtual environment activated during development
 - [ ] All tests pass (backend and frontend)
 - [ ] Code coverage maintained/improved (>80%)
 - [ ] All quality checks pass (format, lint, type, security)
+- [ ] Pre-commit hooks pass
 - [ ] Documentation updated if needed
 - [ ] No temporary files in commit
 - [ ] Tested in Electron app (not just web mode)
 
-## 🔍 COMMON ISSUES AND SOLUTIONS
+### Creating Documentation Screenshots
 
-| Issue | Solution |
-|-------|----------|
-| "Module not found" (Python) | Activate venv: `. .venv/bin/activate` |
-| Tests fail on import | Install dev mode: `pip install -e '.[dev]'` |
-| Electron won't start | Build backend first: `cd backend && ./scripts/build_executable.sh` |
-| Type checking errors | Add type hints to all parameters and returns |
-| Pre-commit fails | Run `make fix` then `pre-commit run --all-files` |
-| Frontend can't connect | Check backend running on port 38000 |
-| Backend executable won't run | Add missing modules to `backend/build_config/ninebox.spec` hiddenimports |
-
-## 🔍 QUICK SEARCH COMMANDS
-
-Useful commands for searching the codebase:
-
-```bash
-# Find files
-git ls-files "*.py"
-find . -name "*.ts" -not -path "*/node_modules/*"
-
-# Search code
-git grep "def process_"
-git grep -n "useState" -- "*.tsx"
-
-# Recent changes
-git log --oneline -10
-git diff HEAD~1
-```
-
-## 💡 PRO TIPS
-
-- **Save time**: Use `make check-all` for all quality checks at once
-- **Fast feedback**: Run `pytest backend/tests/unit` (fast) before full suite
-- **Avoid errors**: Always activate venv first (prevents 90% of issues)
-- **Platform safe**: Use Read/Edit/Write tools, not Bash file commands (`rm`, `touch`, `cp`, `mv`)
-- **Trust source**: When docs conflict, trust `internal-docs/facts.json` as highest authority
-
-## 📚 DOCUMENTATION SYSTEM
-
-This project uses an automated documentation generation system.
-
-### Folder Structure and Rules
-
-| Folder | Purpose | Persistence | Committed to Git |
-|--------|---------|-------------|------------------|
-| `agent-tmp/` | Scratch / debug / intermediates | Ephemeral (auto-cleaned) | ❌ No (gitignored) |
-| `agent-projects/<project>/` | Ephemeral plan docs for refactors, experiments | Short-lived | ✅ Yes |
-| `internal-docs/` | Permanent, canonical documentation | Persistent | ✅ Yes |
-| `internal-docs/_generated/` | Auto-generated documentation | Auto-updated | ✅ Yes (auto-committed) |
-
-### Primary Documentation Files for Agents
-
-- **`internal-docs/CONTEXT.md`** - Single canonical context file; main entry point
-- **`internal-docs/facts.json`** - Stable, hand-maintained truths (HIGHEST AUTHORITY)
-- **`internal-docs/SUMMARY.md`** - Quick index of all documentation components
-- **`internal-docs/_generated/`** - Auto-generated API docs, schemas, and active plans
-
-### Trust Hierarchy (when information conflicts)
-1. `internal-docs/facts.json` (highest authority)
-2. Permanent content in `internal-docs/`
-3. Active plans summaries (hints only)
-
-### Documentation Command
-```bash
-# Regenerate all documentation
-python tools/build_context.py
-```
-
-This happens automatically via GitHub Actions on push and nightly at 2 AM UTC.
-
-### Screenshot Regeneration
-
-The project includes automated documentation screenshot generation with manual trigger capability.
-
-**Automatic Triggers:**
-- **Pull Requests**: Screenshots are automatically regenerated when PRs modify components that affect documentation
-- **Scheduled**: Weekly runs on Mondays at 2 AM UTC (via `.github/workflows/screenshots.yml`)
-
-**Manual Trigger via GitHub Actions:**
-
-You can manually trigger screenshot regeneration using GitHub's workflow dispatch feature:
-
-1. Navigate to **Actions** tab in GitHub repository
-2. Select **Documentation Auto-Update** workflow
-3. Click **Run workflow** button
-4. Configure options:
-   - **Branch**: Select the branch to run on (defaults to `main`)
-   - **Screenshots**: (Optional) Comma-separated list of specific screenshots to regenerate (e.g., `grid-normal,changes-tab`)
-     - Leave empty to regenerate all screenshots
-   - **Base branch**: (Optional) Base branch to compare against (defaults to `main`)
-
-**Local Screenshot Generation:**
 ```bash
 cd frontend
 
@@ -514,67 +344,123 @@ npm run screenshots:generate grid-normal changes-tab
 HEADLESS=false npm run screenshots:generate
 ```
 
-**What Happens:**
-- Screenshots are generated using Playwright and stored in `resources/user-guide/docs/images/screenshots/`
-- When triggered by PR: Creates a documentation PR with regenerated screenshots
-- When triggered manually: Auto-commits updated screenshots to the selected branch
-- Visual regression testing compares new screenshots against baselines
-- Results are uploaded as workflow artifacts for review
-
-See [CLAUDE.md](CLAUDE.md) for complete screenshot generation documentation and architecture details.
-
-## 📖 ADDITIONAL RESOURCES
-
-### Quick Documentation Lookup
-
-| Need | File |
-|------|------|
-| Quick start | [GITHUB_AGENT.md](GITHUB_AGENT.md) |
-| Source of truth | [internal-docs/facts.json](internal-docs/facts.json) |
-| Technical details | [CLAUDE.md](CLAUDE.md) |
-| Workflow guide | This file ([AGENTS.md](AGENTS.md)) |
-| Full context | [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) |
-| Build instructions | [BUILD.md](BUILD.md) |
-| Testing guide | [.github/agents/test.md](.github/agents/test.md) |
-
-### Core Documentation
-- [CLAUDE.md](CLAUDE.md) - Claude Code guidance with architecture details
-- [BUILD.md](BUILD.md) - Complete build instructions
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Distribution and deployment guide
-- [README.md](README.md) - Project overview and quick start
-- [USER_GUIDE.md](USER_GUIDE.md) - End user guide
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [internal-docs/facts.json](internal-docs/facts.json) - Highest authority source of truth
-
-### Architecture Documentation (Agent-Optimized)
-- [internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md](internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md) - Quick lookup index
-- [internal-docs/architecture/ERROR_HANDLING.md](internal-docs/architecture/ERROR_HANDLING.md) - Error patterns
-- [internal-docs/architecture/SECURITY_MODEL.md](internal-docs/architecture/SECURITY_MODEL.md) - Security boundaries
-- [internal-docs/architecture/PERFORMANCE.md](internal-docs/architecture/PERFORMANCE.md) - Performance targets
-- [internal-docs/architecture/MIGRATIONS.md](internal-docs/architecture/MIGRATIONS.md) - Database migrations
-- [internal-docs/architecture/OBSERVABILITY.md](internal-docs/architecture/OBSERVABILITY.md) - Logging & debugging
-- [internal-docs/architecture/decisions/](internal-docs/architecture/decisions/) - ADRs
-
-### Testing Documentation
-- [.github/agents/test.md](.github/agents/test.md) - Comprehensive testing guidance
-- [internal-docs/testing/](internal-docs/testing/) - Testing guides and templates
-
-## 🎓 PROJECT PHILOSOPHY
-
-- **Standalone First**: Design for standalone desktop app, not web deployment
-- **User Experience**: Native OS integration (file dialogs, app data directories)
-- **Offline First**: Everything works offline, no cloud dependencies
-- **Quality over Speed**: Take time to write good tests and clean code
-- **Type Safety**: Leverage Python's type system and TypeScript
-- **Test-Driven Development**: Write tests first when practical
-- **Clear Communication**: Use descriptive names and comprehensive docstrings
-- **Continuous Improvement**: Refactor as you go
+**Screenshot architecture:** `frontend/playwright/screenshots/` - shares helpers with E2E tests for consistency.
 
 ---
 
-**Remember:**
-1. Always activate the virtual environment first! (`. .venv/bin/activate`)
-2. This is a standalone desktop app, not a web app
-3. Build backend BEFORE building Electron app
-4. Test in Electron app, not just web mode
-5. Trust `internal-docs/facts.json` as highest authority
+## 🤖 CUSTOM AGENT PROFILES
+
+Specialized agent profiles in `.github/agents/`:
+
+- **test-architect**, **test-backend-expert**, **test-frontend-expert**, **test-e2e-expert** - Testing specialists
+- **architecture** - System design and architectural decisions
+- **debug** - Debugging and troubleshooting
+- **documentation** - Technical writing and documentation
+
+**Slash commands:**
+```bash
+/test-review          # Weekly test architecture review
+/test-backend         # Backend testing consultation
+/test-frontend        # Frontend testing consultation
+/test-e2e             # E2E testing consultation
+```
+
+See `.github/agents/README.md` for detailed usage.
+
+---
+
+## 🔍 COMMON ISSUES AND SOLUTIONS
+
+| Issue | Likely Cause | Solution |
+|-------|--------------|----------|
+| **"Module not found" (Python)** | Venv not activated | `. .venv/bin/activate` (verify with `which python`) |
+| **Tests fail on import** | Dev mode not installed | `pip install -e '.[dev]'` |
+| **Electron won't start** | Backend not built | `cd backend && ./scripts/build_executable.sh` |
+| **Type checking errors** | Missing type annotations | Add types to all function params/returns |
+| **Pre-commit fails** | Code quality issues | `make fix` then `pre-commit run --all-files` |
+| **Frontend can't connect** | Backend not running | Check http://localhost:38000/health |
+| **Backend exe won't run** | Missing modules | Add to `backend/build_config/ninebox.spec` hiddenimports |
+| **Phantom `nul` files** | Used `> "nul"` in Bash | See [PLATFORM_CONSTRAINTS.md](internal-docs/PLATFORM_CONSTRAINTS.md) |
+| **Paths mangled in Bash** | Used `C:\...` absolute path | Use relative paths only or Read/Write/Edit tools |
+| **Agent tries to install but fails** | Wrong environment | Check environment first (see [CLAUDE_INDEX.md](CLAUDE_INDEX.md)) |
+
+**Full troubleshooting:** [CLAUDE_INDEX.md#common-issues](CLAUDE_INDEX.md#🔍-common-issues)
+
+---
+
+## 🔍 QUICK REFERENCE
+
+### Essential Commands
+
+```bash
+# Environment check
+python -c "import sys; print('VENV' if sys.prefix != sys.base_prefix else 'SYSTEM')"
+. .venv/bin/activate
+
+# Quality checks
+make check-all              # All backend checks
+make fix                    # Auto-fix formatting and linting
+
+# Testing
+pytest                      # All backend tests
+pytest -m unit              # Fast tests only
+cd frontend && npm test     # Frontend component tests
+cd frontend && npm run test:e2e:pw  # E2E tests
+
+# Building
+cd backend && ./scripts/build_executable.sh
+cd frontend && npm run electron:build
+
+# Running
+cd frontend && npm run electron:dev  # Full Electron app
+```
+
+### Search Commands
+
+```bash
+# Find files
+git ls-files "*.py"
+git ls-files "*.ts" "*.tsx"
+
+# Search code
+git grep "def process_"
+git grep -n "useState" -- "*.tsx"
+
+# Recent changes
+git log --oneline -10
+git diff HEAD~1
+```
+
+### Documentation Lookup
+
+```bash
+# Task-based navigation
+cat CLAUDE_INDEX.md          # Quick start index
+cat BUILD.md                 # Build instructions
+cat DEPLOYMENT.md            # Distribution guide
+
+# Architecture docs
+ls internal-docs/architecture/  # All architecture docs
+cat internal-docs/facts.json    # Highest authority source of truth
+
+# Testing docs
+ls internal-docs/testing/       # Testing guides
+cat .github/agents/README-TESTING-AGENTS.md  # Testing agent system
+```
+
+---
+
+## 💡 PRO TIPS
+
+- **Save time**: Use `make check-all` for all quality checks at once
+- **Fast feedback**: Run `pytest -m unit` (fast tests) before full suite
+- **Avoid errors**: Always activate venv first (prevents 90% of issues)
+- **Platform safe**: Use Read/Edit/Write tools, not Bash commands (`rm`, `touch`, `cp`, `mv`)
+- **Trust hierarchy**: When docs conflict → `internal-docs/facts.json` (highest) → `internal-docs/` → active plans
+- **Test in Electron**: Don't just test in web mode - Electron has different bugs
+- **Check environment first**: Run environment detection before installing dependencies (see [ENVIRONMENT_SETUP.md](internal-docs/ENVIRONMENT_SETUP.md))
+
+---
+
+**For complete project context:** [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md)
+**For quick task navigation:** [CLAUDE_INDEX.md](CLAUDE_INDEX.md)

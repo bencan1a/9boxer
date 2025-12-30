@@ -78,6 +78,14 @@ repos:
         files: ^frontend/src/i18n/locales/.*/translation\.json$
         pass_filenames: true
 
+      # Documentation size validation - prevents documentation bloat
+      - id: check-doc-size
+        name: check documentation file sizes
+        entry: python tools/check_doc_size.py
+        language: system
+        files: ^(CLAUDE_INDEX\.md|AGENTS\.md|GITHUB_AGENT\.md)$
+        pass_filenames: true
+
   # Prettier formatting for frontend files (local hook for ARM64 compatibility)
   - repo: local
     hooks:

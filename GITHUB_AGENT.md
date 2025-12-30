@@ -3,7 +3,7 @@
 **Welcome to 9Boxer!** This guide helps GitHub Agent (and GitHub Copilot) work efficiently with this repository.
 
 > **Quick Links:**
-> 📖 [CLAUDE.md](CLAUDE.md) - Detailed technical guidance
+> 📖 [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Quick start index (task-based navigation)
 > 📋 [AGENTS.md](AGENTS.md) - Development workflow and best practices
 > 📚 [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) - Comprehensive project context
 > 🎯 [internal-docs/facts.json](internal-docs/facts.json) - Source of truth (highest authority)
@@ -219,7 +219,7 @@ npm run format                   # Prettier
 ├── agent-tmp/                   ← Temporary workspace (gitignored, auto-cleaned)
 ├── tools/                       ← Build and automation scripts
 ├── GITHUB_AGENT.md              ← This file
-├── CLAUDE.md                    ← Detailed technical guidance
+├── CLAUDE_INDEX.md              ← Quick start index (task-based navigation)
 └── AGENTS.md                    ← Development workflow guide
 ```
 
@@ -500,7 +500,7 @@ git commit -m "message"
 | **GITHUB_AGENT.md** | This file | First stop, quick reference |
 | **internal-docs/facts.json** | Source of truth | When information conflicts (highest authority) |
 | **AGENTS.md** | Development workflow | Detailed development guidance |
-| **CLAUDE.md** | Technical details | Architecture, build process, quality standards |
+| **CLAUDE_INDEX.md** | Quick start index | Task-based navigation to detailed docs |
 
 ### For Deep Dives
 | File | Purpose |
@@ -641,7 +641,7 @@ Before considering yourself onboarded:
 ## 📞 Need Help?
 
 1. Check [internal-docs/facts.json](internal-docs/facts.json) - source of truth
-2. Review [CLAUDE.md](CLAUDE.md) - technical details
+2. Review [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - quick start index
 3. Check [AGENTS.md](AGENTS.md) - workflow guidance
 4. Search [internal-docs/CONTEXT.md](internal-docs/CONTEXT.md) - comprehensive context
 5. Review [agent-projects/](agent-projects/) - recent work and patterns
