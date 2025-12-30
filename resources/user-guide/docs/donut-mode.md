@@ -64,6 +64,10 @@ Use Donut Mode during:
 3. **The grid changes** to show only employees currently in position 5 (Core Talent box)
 4. **An "ACTIVE" indicator** appears next to the button showing donut mode is on
 
+![View controls toolbar showing Donut Mode button with donut icon, positioned between Filters and other view controls in the top application bar, ready to click to activate the donut exercise mode](images/screenshots/view-controls/view-controls-donut.png)
+
+Click the Donut Mode button in the toolbar to activate the exercise. The button will turn purple and show an "ACTIVE" indicator when enabled.
+
 **To deactivate:**
 
 - Click the "Donut Mode" button again
@@ -130,17 +134,9 @@ When an employee has been placed in Donut Mode, they display:
 : Shows the donut position (e.g., "Donut: Star [H,H]")
 : Italic text to differentiate from regular position labels
 
-<!-- Screenshot placeholder -->
-!!! example "Screenshot Placeholder"
-    **Grid in donut mode showing ghostly tiles with purple borders**
+![Grid in Donut Mode displaying only position 5 employees from the center Core Talent box, with all other grid positions empty and dimmed, showing focused view of 18 employees ready for donut exercise validation with ghostly semi-transparent appearance](images/screenshots/donut-mode/donut-mode-grid-normal.png)
 
-    _(Screenshot to be added: Overview of grid in donut mode)_
-
-<!-- Screenshot placeholder -->
-!!! example "Screenshot Placeholder"
-    **Employee tile with purple donut badge**
-
-    _(Screenshot to be added: Close-up of employee tile in donut mode)_
+When Donut Mode is active, the grid filters to show only Core Talent (position 5) employees. All other boxes appear empty and dimmed, letting you focus exclusively on center box validation.
 
 ## Tracking Donut Changes
 
@@ -171,12 +167,6 @@ The change tracker automatically:
 - This lets you review your donut exercise conclusions in normal mode
 - Regular changes continue to track actual position changes
 
-<!-- Screenshot placeholder -->
-!!! example "Screenshot Placeholder"
-    **Change tracker showing separate Regular and Donut tabs**
-
-    _(Screenshot to be added: Changes panel with both tabs visible)_
-
 ## Adding Notes to Donut Placements
 
 Notes help you document why someone should (or shouldn't) be in the center box.
@@ -194,6 +184,10 @@ Notes help you document why someone should (or shouldn't) be in the center box.
 5. **Click outside the field or press ++tab++** to save
     - Notes save automatically
     - No need to wait for confirmation
+
+![Changes tab in Donut Mode showing good note example: employee Sarah Chen moved from Core Talent to Stars with detailed note "Consistently exceeded Q4 goals, demonstrated leadership on project Alpha, ready for promotion to senior role - strong succession candidate"](images/screenshots/workflow/workflow-donut-notes-example.png)
+
+Good notes in Donut Mode explain your reasoning with specific evidence. This helps during calibration discussions and documents your thought process for future reference.
 
 !!! tip "Note Tips"
     - Be specific about what makes them not-quite-center-box
@@ -267,12 +261,6 @@ This separation ensures:
 - Exercise findings are clearly documented
 - You can review donut conclusions without affecting real data
 - Full audit trail of both actual and exploratory placements
-
-<!-- Screenshot placeholder -->
-!!! example "Screenshot Placeholder"
-    **Excel export showing donut columns**
-
-    _(Screenshot to be added: Excel file with donut exercise columns highlighted)_
 
 Learn how donut exercise data appears in your exported file in the [Exporting Your Changes guide](exporting.md).
 

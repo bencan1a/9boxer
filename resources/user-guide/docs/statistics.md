@@ -1,6 +1,6 @@
 # Statistics and Intelligence
 
-View comprehensive data analysis and insights about your employee distribution using the Statistics and Intelligence tabs in the right panel.
+Here's everything you need to know about analyzing your talent distribution using the Statistics and Intelligence tabs in the right panel.
 
 ---
 
@@ -66,13 +66,13 @@ To view statistics and intelligence data:
 2. The right panel opens with four tabs
 3. Click the **"Statistics"** tab (third tab) or **"Intelligence"** tab (fourth tab)
 
-The Statistics tab shows distribution data, while the Intelligence tab provides advanced analytics and anomaly detection.
+You'll see distribution data in Statistics and advanced analytics in Intelligence.
 
 ---
 
 ## Statistics Tab
 
-The Statistics tab displays a comprehensive overview of how your employees are distributed across the 9-box grid.
+The Statistics tab shows you exactly how your people are spread across the 9-box grid.
 
 > 📋 **Real-World Scenario**
 >
@@ -80,7 +80,7 @@ The Statistics tab displays a comprehensive overview of how your employees are d
 
 ### Distribution Table
 
-A table showing the breakdown of employees by performance and potential:
+Here's the breakdown of employees by performance and potential:
 
 **Table Structure:**
 
@@ -98,6 +98,10 @@ A table showing the breakdown of employees by performance and potential:
 !!! example "Example Distribution Cell"
     **15 (10%)** means 15 employees are in this box, representing 10% of the total workforce.
 
+![Statistics tab showing distribution table with employee counts and percentages for each of the nine grid positions, plus visual bar chart representation and summary cards at the top displaying total employees, average performance, and distribution metrics](images/screenshots/statistics/statistics-panel-distribution.png)
+
+The Statistics panel gives you both a detailed table breakdown and an at-a-glance visual chart. The bar chart makes patterns immediately obvious.
+
 ### Distribution Chart
 
 A visual bar chart representation of your data:
@@ -109,9 +113,13 @@ A visual bar chart representation of your data:
 !!! tip "See It in Action"
     Remember the distribution chart from the [quickstart tour](quickstart.md)? Load sample data to see realistic distribution patterns with 200 employees spread across all 9 boxes.
 
+![Distribution chart showing ideal bell curve pattern with most employees concentrated in center boxes (positions 5, 4, 6), moderate numbers in adjacent boxes, and fewer employees in extreme positions, representing a healthy balanced distribution](images/screenshots/distribution-chart-ideal.png)
+
+This is what a healthy, well-balanced distribution looks like. Notice the concentration in the middle boxes with fewer employees at the extremes.
+
 ### Interpreting Your Distribution
 
-Use the statistics to assess the health of your talent pipeline and identify potential issues.
+Use these statistics to assess your talent pipeline health and spot potential issues.
 
 **Ideal Distribution (Rough Guideline):**
 
@@ -138,6 +146,20 @@ Use the statistics to assess the health of your talent pipeline and identify pot
 - **Balanced**: Employees spread across multiple boxes with concentration in middle
 - **Unbalanced**: Most employees clustered in one or two boxes (indicates calibration issues)
 
+![Three summary cards displaying key distribution metrics: total employee count, percentage in each performance category (High, Medium, Low), and percentage in each potential category, with trend indicators showing changes from previous period](images/screenshots/statistics/statistics-summary-cards.png)
+
+Summary cards at the top of the Statistics panel give you quick insights into your overall distribution health without scrolling through the detailed table.
+
+### Grouping and Trend Analysis
+
+![Statistics panel with grouping dropdown menu expanded showing options to group distribution by Department, Manager, Job Level, or Location, allowing analysis of rating patterns across different organizational dimensions](images/screenshots/statistics/statistics-grouping-indicators.png)
+
+You can group your distribution data by different dimensions (Department, Manager, Location, Job Level) to spot patterns and compare rating consistency across teams.
+
+![Statistics panel showing trend indicators with green upward arrows for improving metrics and red downward arrows for declining metrics, comparing current distribution against previous period baseline to track changes over time](images/screenshots/statistics/statistics-trend-indicators.png)
+
+Trend indicators show you how your distribution has changed over time. Green arrows indicate improvements (like increasing Stars or reducing Under-performers), while red arrows highlight areas needing attention.
+
 ### Use Cases for Statistics
 
 **Performance Review Calibration:**
@@ -158,11 +180,15 @@ Use the statistics to assess the health of your talent pipeline and identify pot
 - Spot hiring or retention issues
 - Track distribution changes over time
 
+> Why This Matters
+>
+> Statistics help you focus during calibration meetings. Instead of guessing if your ratings are balanced, you'll see exactly where adjustments are needed. This data turns subjective discussions into objective calibration.
+
 ---
 
 ## Intelligence Tab
 
-The Intelligence tab provides advanced statistical analysis that identifies patterns, anomalies, and potential biases in your employee data.
+Intelligence runs advanced statistical analysis behind the scenes to spot patterns, anomalies, and potential biases in your ratings.
 
 !!! info "Sample Data Includes Intentional Bias Patterns"
     Sample data deliberately includes USA location bias (+15% high performers) and Sales function bias (+20% high performers) so you can see Intelligence in action. [Take the quickstart tour](quickstart.md) to explore how anomaly detection works!
@@ -171,14 +197,18 @@ The Intelligence tab provides advanced statistical analysis that identifies patt
 >
 > Priya opens Intelligence and discovers that the Engineering department has 80% of employees in the "Core Talent" box while Sales has only 40%. She uses filters to review Engineering employees individually, finding 12 who are actually high-potential but were rated conservatively. She adds notes and recalibrates their ratings.
 
-### What the Intelligence Tab Analyzes
+### What Intelligence Analyzes
 
-The Intelligence system uses statistical testing (chi-square test) to detect unusual patterns across different dimensions:
+Intelligence uses statistical testing (chi-square test) to detect unusual patterns across different dimensions:
 
 - **Job Level** - Are managers rated differently than individual contributors?
 - **Job Profile** - Do certain functions have skewed ratings (e.g., sales vs. engineering)?
 - **Manager** - Do some managers rate too high or too low compared to peers?
 - **Location/Organization** - Are certain offices or departments rated inconsistently?
+
+![Intelligence tab displaying two anomaly cards: "Location Bias - USA" highlighted in red with "Needs Attention" badge showing 23 affected employees with +15% deviation from expected distribution, and "Function Bias - Sales" in yellow with "Review Recommended" showing 15 affected employees with +12% deviation](images/screenshots/workflow/intelligence-summary-anomalies.png)
+
+The Intelligence tab highlights anomalies with color-coded severity indicators. Red cards need immediate attention, yellow cards warrant review, and green cards are informational.
 
 ### Quality Score
 
@@ -191,15 +221,23 @@ At the top of the Intelligence tab, you'll see an overall **quality score** for 
 
 The quality score helps you quickly assess the reliability of your talent data.
 
+![Intelligence tab showing excellent quality score with green checkmark and "No anomalies detected" message, indicating well-calibrated ratings with consistent distribution patterns across all organizational dimensions and no statistical outliers requiring attention](images/screenshots/workflow/intelligence-summary-excellent.png)
+
+When Intelligence shows a clean bill of health like this, your ratings are well-calibrated and statistically consistent across your organization. No anomalies means no bias patterns detected.
+
+![Intelligence tab showing critical alert with red warning indicator, low quality score, and multiple anomaly cards highlighted for immediate attention, indicating significant rating inconsistencies requiring calibration review before finalizing performance assessments](images/screenshots/workflow/intelligence-summary-needs-attention.png)
+
+This is what you see when Intelligence detects problems. Multiple red anomalies mean you should review ratings before finalizing them. Use this as a discussion prompt for calibration meetings.
+
 ### Anomaly Detection
 
-The Intelligence tab highlights unusual distributions by comparing:
+Intelligence highlights unusual distributions by comparing:
 
-- **Expected employee count** - What you would expect based on overall distribution
+- **Expected employee count** - What you'd expect based on overall distribution
 - **Actual employee count** - What you actually have in each category
 - **Deviation** - How far actual deviates from expected
 
-**Outliers are marked with visual indicators:**
+**We highlight outliers with color coding:**
 
 - **Red/Yellow highlights** - Significant deviations from expected distribution
 - **Tables or lists** - Show which groups have the most anomalies
@@ -209,6 +247,34 @@ The Intelligence tab highlights unusual distributions by comparing:
     **Actual**: 2 employees
     **Deviation**: -6 (significantly lower than expected)
     **Interpretation**: Engineering may be under-rating high performers or lacking stars
+
+![Detailed anomaly card for critical severity issue showing "Manager Leniency - Tom Chen" with red "Needs Attention" badge, affected employee count of 18, expected distribution 4.2 employees, actual distribution 18 employees, deviation of +13.8, statistical significance p-value, and "View Affected Employees" action button](images/screenshots/workflow/intelligence-anomaly-red.png)
+
+Critical (red) anomalies like this manager leniency example show severe rating bias. This manager rates 18 employees high when only 4 would be expected statistically. This needs immediate calibration discussion.
+
+![Detailed anomaly card for minor severity issue showing "New Hire Distribution" with green "Informational" badge, showing slight positive deviation of +2.3 employees in high potential category, with statistical details indicating pattern is within acceptable variance and no action required](images/screenshots/workflow/intelligence-anomaly-green.png)
+
+Minor (green) anomalies are informational only. This slight deviation is within normal statistical variance and doesn't require action. Intelligence helps you distinguish real problems from noise.
+
+### Anomaly Severity Levels
+
+Intelligence uses color coding to indicate how urgent each anomaly is:
+
+- **Red (Critical)** - Needs immediate attention, significant deviation (p < 0.01)
+- **Yellow (Moderate)** - Review recommended, notable pattern (p < 0.05)
+- **Green (Minor)** - Informational only, within acceptable variance
+
+The statistical significance (p-value) tells you whether the pattern is real or could be random chance.
+
+### Deviation Charts
+
+![Intelligence deviation chart showing bar graph comparing expected vs actual employee distribution across performance and potential categories, with red bars indicating categories with significant positive deviation and blue bars showing negative deviation from statistical norms](images/screenshots/workflow/intelligence-deviation-chart.png)
+
+Deviation charts visualize where your actual distribution differs from expected patterns. Red bars show over-representation, blue shows under-representation. This makes patterns obvious at a glance.
+
+![Intelligence level distribution chart showing employee counts broken down by job level (Individual Contributor, Manager, Director, VP, Executive) with performance and potential ratings for each level, revealing rating patterns across organizational hierarchy and potential succession planning gaps](images/screenshots/workflow/intelligence-level-distribution.png)
+
+Level distribution analysis shows rating patterns across your organizational hierarchy. Use this to spot if managers are rated differently than individual contributors or if leadership has succession gaps.
 
 ### What Anomalies Tell You
 
@@ -223,17 +289,17 @@ The Intelligence tab highlights unusual distributions by comparing:
 
 ### How to Use Intelligence Insights
 
-Follow this workflow to act on intelligence findings:
+Here's how to act on Intelligence findings:
 
-**Step 1: Review the Quality Score**
+**Step 1: Check the Quality Score**
 
-- Check the overall score at the top of the Intelligence tab
-- Low score = investigate anomalies before finalizing ratings
+- Look at the overall score at the top
+- Low score? Investigate anomalies before finalizing ratings
 
-**Step 2: Scan for Highlighted Anomalies**
+**Step 2: Scan for Red or Yellow Anomalies**
 
-- Look for red or yellow highlighted categories
-- Note which dimensions have the most significant deviations
+- Find the highlighted categories
+- Note which dimensions have the biggest deviations
 
 **Step 3: Investigate Outliers**
 
@@ -291,6 +357,25 @@ For the most effective analysis, use both tabs together:
 4. Review placements and identify stars/under-performers miscategorized as "Core"
 5. Move employees to more accurate boxes
 6. Re-check Statistics to see improved distribution
+
+---
+
+## Quick Reference
+
+| I want to... | How to do it |
+|--------------|-------------|
+| View distribution statistics | Click any employee (or click outside) → Statistics tab (third tab) |
+| See counts and percentages | Check the distribution table - each cell shows count (%) |
+| Spot imbalances visually | Look at the distribution chart - bar heights show concentrations |
+| Check if distribution is healthy | Compare to ideal: 10-15% Stars, 50-60% in middle boxes |
+| View anomaly analysis | Click Intelligence tab (fourth tab) |
+| Check overall quality score | Look at top of Intelligence tab for quality score |
+| Find specific bias patterns | Scan Intelligence for red/yellow anomaly cards |
+| See which managers rate high | Intelligence shows manager-level rating patterns |
+| Compare expected vs actual | Anomaly cards show expected count vs actual count |
+| Investigate an anomaly | Click "View Affected Employees" on anomaly card, use filters to drill in |
+| Group distribution by dimension | Use Statistics grouping dropdown (Department, Manager, Location, Job Level) |
+| Track distribution changes | Look for trend indicators (green/red arrows) in Statistics panel |
 
 ---
 
