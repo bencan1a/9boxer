@@ -11,9 +11,10 @@ import sys
 import tempfile
 import traceback
 from pathlib import Path
+from typing import Any
 
 
-def load_validation_module():
+def load_validation_module() -> Any:
     """Load the validate-translations.py module."""
     tools_path = Path(__file__).parent
     validate_script_path = tools_path / "validate-translations.py"
@@ -26,7 +27,7 @@ def load_validation_module():
     return module
 
 
-def test_extract_placeholders(module):
+def test_extract_placeholders(module: Any) -> None:
     """Test placeholder extraction."""
     print("Testing placeholder extraction...")
 
@@ -45,7 +46,7 @@ def test_extract_placeholders(module):
     print("✓ Placeholder extraction tests passed")
 
 
-def test_flatten_keys(module):
+def test_flatten_keys(module: Any) -> None:
     """Test key flattening."""
     print("Testing key flattening...")
 
@@ -64,7 +65,7 @@ def test_flatten_keys(module):
     print("✓ Key flattening tests passed")
 
 
-def test_structure_paths(module):
+def test_structure_paths(module: Any) -> None:
     """Test structure path extraction."""
     print("Testing structure path extraction...")
 
@@ -79,7 +80,7 @@ def test_structure_paths(module):
     print("✓ Structure path tests passed")
 
 
-def test_json_validation(module):
+def test_json_validation(module: Any) -> None:
     """Test JSON validation."""
     print("Testing JSON validation...")
 
@@ -104,7 +105,7 @@ def test_json_validation(module):
     print("✓ JSON validation tests passed")
 
 
-def test_full_validation(module):
+def test_full_validation(module: Any) -> None:
     """Test full translation validation."""
     print("Testing full translation validation...")
 
@@ -135,7 +136,7 @@ def test_full_validation(module):
     print("✓ Full validation tests passed")
 
 
-def test_real_translation_files(module):
+def test_real_translation_files(module: Any) -> None:
     """Test with real project translation files."""
     print("Testing with real project translation files...")
 
@@ -153,7 +154,7 @@ def test_real_translation_files(module):
     print("✓ Real translation file tests passed")
 
 
-def main():
+def main() -> int:
     """Run all tests."""
     print("=" * 60)
     print("Standalone Test Runner for validate-translations.py")
