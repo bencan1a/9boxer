@@ -115,6 +115,10 @@ Follow these steps to export your changes:
 2. Click **"Apply X Changes"** (where X is the number of pending changes)
 3. The **Apply Changes Dialog** appears with two options:
 
+![Apply Changes dialog in default state showing "Update original file" option selected, with filename "sample-data-modified.xlsx" displayed, checkboxes for "Include change notes" and "Include donut placements" both checked, and Apply Changes button ready to save modifications back to the original Excel file](images/screenshots/file-ops/apply-changes-dialog-default.png)
+
+The default Apply Changes dialog updates your original file. This is the quickest option for iterative work sessions.
+
 **Option 1: Update original file** (default)
 - Your changes save back to the file you originally loaded
 - Original file is updated with new ratings and change tracking columns
@@ -125,6 +129,10 @@ Follow these steps to export your changes:
 - Choose a new location and filename using the file dialog
 - Original file remains untouched
 - Useful for creating milestone versions or backups
+
+![Apply Changes dialog with "Save to a different file instead" checkbox selected, showing file browser interface for choosing export location and custom filename, with Apply Changes button ready to create new Excel file at selected destination while leaving original file untouched](images/screenshots/file-ops/apply-changes-dialog-save-as.png)
+
+When you check "Save to a different file," you can choose a new location and filename. This creates a milestone version while keeping your original intact.
 
 4. Click **"Apply Changes"** to proceed
 5. File is saved to the chosen location
@@ -373,6 +381,25 @@ Once your export completes:
 5. **Keep milestone versions** - Export at key points (quarterly, after calibration sessions, etc.)
 6. **Store exports securely** - These files contain sensitive employee performance data
 7. **Use exported files as input** - Upload the modified file to continue working in a future session
+
+---
+
+## Quick Reference
+
+| I want to... | How to do it |
+|--------------|-------------|
+| Save my changes | File menu → Apply X Changes → Choose update or save option → Apply |
+| Update my original file | File menu → Apply X Changes → Keep "Update original file" selected → Apply |
+| Save to a new file | File menu → Apply X Changes → Check "Save to different file" → Choose location → Apply |
+| Check how many changes to export | Look at Apply button badge or File menu "Apply X Changes" text |
+| Add notes before exporting | Click employees → Changes tab → Add notes → Then export |
+| Review changes before exporting | Click Changes tab in right panel to see all movements |
+| Find my exported file (updated original) | Same location as your original file |
+| Find my exported file (new file) | Location you chose in save dialog |
+| See what's in the export | All original columns + Performance/Potential updates + 4 change tracking columns |
+| Check if excluded employees export | Yes - all employees (even excluded) are in the export |
+| Include donut exercise data | Donut columns auto-appear if you used Donut Mode |
+| Use export for next session | Upload the exported file to continue with updated ratings |
 
 ---
 
