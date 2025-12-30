@@ -41,6 +41,9 @@ interface SessionState {
   donutModeActive: boolean;
   donutEvents: TrackableEvent[];
 
+  // Sample data tracking
+  hasSampleData: boolean;
+
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
@@ -86,6 +89,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   donutModeActive: false,
   donutEvents: [],
 
+  // Sample data tracking
+  hasSampleData: false,
+
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
     try {
@@ -123,6 +129,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         events: [],
         donutEvents: [],
         selectedEmployeeId,
+        hasSampleData: false,
         isLoading: false,
         error: null,
       });
@@ -154,6 +161,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutEvents: [],
         filename: null,
         filePath: null,
+        hasSampleData: false,
         isLoading: false,
         error: null,
         selectedEmployeeId: null,
@@ -185,6 +193,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         selectedEmployeeId: null,
         donutModeActive: false,
         donutEvents: [],
+        hasSampleData: false,
         isLoading: false,
         error: null,
       });
@@ -293,6 +302,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       set({
         employees: updatedEmployees,
         events,
+        hasSampleData: false, // Clear flag when user makes changes
         isLoading: false,
         error: null,
       });
@@ -327,6 +337,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       set({
         employees: updatedEmployees,
         events: sessionStatus.events,
+        hasSampleData: false, // Clear flag when user makes changes
         isLoading: false,
         error: null,
       });
@@ -492,6 +503,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         originalEmployees: [],
         events: [],
         donutEvents: [],
+        hasSampleData: false,
         isLoading: false,
         error: null,
       });
@@ -504,6 +516,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         originalEmployees: [],
         events: [],
         donutEvents: [],
+        hasSampleData: false,
         isLoading: false,
         error: null,
       });
