@@ -16,10 +16,11 @@ Agents can read exported JSON to make corrections and regenerate screenshots.
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 
 # Read the TypeScript config file and extract screenshot data
-def parse_config_ts():
+def parse_config_ts() -> dict[str, dict[str, Any]]:
     """Parse config.ts and extract screenshot metadata."""
     config_path = (
         Path(__file__).parent.parent / "frontend" / "playwright" / "screenshots" / "config.ts"
@@ -40,9 +41,9 @@ def parse_config_ts():
     config_str = match.group(1)
 
     # Parse each screenshot entry
-    screenshots = {}
+    screenshots: dict[str, dict[str, Any]] = {}
     current_key = None
-    current_data = {}
+    current_data: dict[str, Any] = {}
 
     # Simple regex-based parsing (not perfect but works for our structured config)
     lines = config_str.split("\n")
@@ -89,9 +90,11 @@ def parse_config_ts():
 
 
 # Organize screenshots by category
-def organize_by_category(screenshots):
+def organize_by_category(
+    screenshots: dict[str, dict[str, Any]],
+) -> dict[str, list[tuple[str, dict[str, Any]]]]:
     """Organize screenshots into categories based on path."""
-    categories = {
+    categories: dict[str, list[tuple[str, dict[str, Any]]]] = {
         "Changes Workflow": [],
         "Notes Workflow": [],
         "Filters Workflow": [],
@@ -146,7 +149,7 @@ def organize_by_category(screenshots):
 
 
 # Generate HTML
-def generate_html(screenshots):
+def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
     """Generate complete HTML gallery."""
     categories = organize_by_category(screenshots)
 
