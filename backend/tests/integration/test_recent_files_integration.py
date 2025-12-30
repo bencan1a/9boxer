@@ -48,8 +48,8 @@ class TestRecentFilesIntegration:
 
         # Verify upload succeeded
         assert response.status_code == 200
-        response_data = response.json()
-        assert response_data["employee_count"] > 0  # Don't hardcode count (fixture may vary)
+        upload_data = response.json()
+        assert upload_data["employee_count"] > 0  # Don't hardcode count (fixture may vary)
 
         # Verify recent files was updated
         recent_files = prefs_mgr.get_recent_files()

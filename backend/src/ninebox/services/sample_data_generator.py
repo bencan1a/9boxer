@@ -677,7 +677,7 @@ class RichEmployeeGenerator:
         Example:
             >>> generator = RichEmployeeGenerator()
             >>> generator.rng = random.Random(42)
-            >>> # USA location gets +15% boost
+            >>> # USA location gets strong boost to high performance
             >>> pos = generator._apply_bias(4, "USA", "Engineering")
             >>> pos >= 4
             True
@@ -685,23 +685,25 @@ class RichEmployeeGenerator:
         if self.rng is None:
             self.rng = random.Random()  # nosec B311 - Using for sample data generation, not cryptography
 
-        # USA location: +15% chance to boost to high performance
-        # This means about 15% MORE high performers than baseline
+        # USA location: 60% boost rate to high performance
+        # With 200 employees / 8 locations = 25 per location
+        # Baseline ~44.5% high performers = 11 high performers
+        # 60% boost of 14 non-high = 8.4 additional = 19-20 high performers total
+        # This produces z-score >= 2.0 for statistical significance
         if location == "USA":
             performance, potential = self._grid_to_perf_pot(grid_pos)
-            if (
-                performance != PerformanceLevel.HIGH and self.rng.random() < 0.30
-            ):  # Increased to 30% boost rate
+            if performance != PerformanceLevel.HIGH and self.rng.random() < 0.60:  # 60% boost rate
                 performance = PerformanceLevel.HIGH
                 grid_pos = self._perf_pot_to_grid(performance, potential)
 
-        # Sales function: +20% chance to boost to high performance
-        # This means about 20% MORE high performers than baseline
+        # Sales function: 65% boost rate to high performance
+        # With 200 employees / 8 functions = 25 per function
+        # Baseline ~44.5% high performers = 11 high performers
+        # 65% boost of 14 non-high = 9.1 additional = 20-21 high performers total
+        # This produces z-score >= 2.0 for statistical significance
         if function == "Sales":
             performance, potential = self._grid_to_perf_pot(grid_pos)
-            if (
-                performance != PerformanceLevel.HIGH and self.rng.random() < 0.35
-            ):  # Increased to 35% boost rate
+            if performance != PerformanceLevel.HIGH and self.rng.random() < 0.65:  # 65% boost rate
                 performance = PerformanceLevel.HIGH
                 grid_pos = self._perf_pot_to_grid(performance, potential)
 

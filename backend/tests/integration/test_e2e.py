@@ -10,7 +10,7 @@ pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
 
 def test_full_workflow_when_complete_session_then_all_operations_succeed(
-    test_client: TestClient, sample_excel_file: Path
+    test_client: TestClient, rich_sample_excel_file: Path
 ) -> None:
     """
     Test complete workflow for local-only app.
@@ -30,7 +30,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
     headers = {}
 
     # 1. Upload Excel file
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+    with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
             "file": (
                 "test.xlsx",
@@ -108,7 +108,7 @@ def test_full_workflow_when_complete_session_then_all_operations_succeed(
 
 
 def test_filtering_workflow_when_applied_then_filters_correctly(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+    test_client: TestClient, auth_headers: dict[str, str], rich_sample_excel_file: Path
 ) -> None:
     """
     Test filtering workflow.
@@ -122,7 +122,7 @@ def test_filtering_workflow_when_applied_then_filters_correctly(
     6. Verify statistics match filtered employees
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+    with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
             "file": (
                 "test.xlsx",
@@ -166,7 +166,7 @@ def test_filtering_workflow_when_applied_then_filters_correctly(
 
 
 def test_multiple_moves_when_performed_then_all_tracked(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+    test_client: TestClient, auth_headers: dict[str, str], rich_sample_excel_file: Path
 ) -> None:
     """
     Test that multiple employee moves are all tracked.
@@ -179,7 +179,7 @@ def test_multiple_moves_when_performed_then_all_tracked(
     5. Export and verify all changes in file
     """
     # 1. Upload file
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+    with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
             "file": (
                 "test.xlsx",
@@ -247,7 +247,7 @@ def test_multiple_moves_when_performed_then_all_tracked(
 
 
 def test_error_recovery_when_invalid_operations_then_session_intact(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+    test_client: TestClient, auth_headers: dict[str, str], rich_sample_excel_file: Path
 ) -> None:
     """
     Test that sessions remain intact after error operations.
@@ -260,7 +260,7 @@ def test_error_recovery_when_invalid_operations_then_session_intact(
     5. Verify everything works
     """
     # 1. Upload file
-    with sample_excel_file.open("rb") as f:
+    with rich_sample_excel_file.open("rb") as f:
         files = {
             "file": (
                 "test.xlsx",
@@ -298,7 +298,7 @@ def test_error_recovery_when_invalid_operations_then_session_intact(
 
 
 def test_export_preserves_original_formatting_when_exported_then_data_intact(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
+    test_client: TestClient, auth_headers: dict[str, str], rich_sample_excel_file: Path
 ) -> None:
     """
     Test that export preserves original file data and formatting.
@@ -311,7 +311,7 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
     5. Verify changes reflected
     """
     # 1. Upload file
-    with sample_excel_file.open("rb") as f:
+    with rich_sample_excel_file.open("rb") as f:
         files = {
             "file": (
                 "test.xlsx",

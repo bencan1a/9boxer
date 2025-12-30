@@ -11,10 +11,11 @@ from typing import Literal
 from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field, field_validator
 
-from ninebox.core.dependencies import get_session_manager
+from ninebox.core.dependencies import get_preferences_manager, get_session_manager
 from ninebox.models.events import Event
 from ninebox.services.excel_exporter import ExcelExporter
 from ninebox.services.excel_parser import ExcelParser
+from ninebox.services.preferences_manager import PreferencesManager
 from ninebox.services.session_manager import SessionManager
 from ninebox.utils.paths import get_user_data_dir
 
@@ -72,6 +73,7 @@ async def upload_file(
     file: UploadFile = File(...),
     original_file_path: str | None = Form(None),
     session_mgr: SessionManager = Depends(get_session_manager),
+    prefs_mgr: PreferencesManager = Depends(get_preferences_manager),
 ) -> dict:
     """Upload Excel file and create session.
 
@@ -174,6 +176,13 @@ async def upload_file(
     logger.info(
         f"Session created successfully: session_id={session_id}, active_sessions={list(session_mgr.sessions.keys())}"
     )
+
+    # Add to recent files list
+    try:
+        prefs_mgr.add_recent_file(actual_file_path, file.filename)
+    except ValueError as e:
+        # Log validation error but don't fail the upload
+        logger.warning(f"Could not add file to recent files: {e}")
 
     return {
         "session_id": session_id,
@@ -295,6 +304,7 @@ async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches
         default=ExportSessionRequest(mode="update_original", new_path=None)
     ),
     session_mgr: SessionManager = Depends(get_session_manager),
+    prefs_mgr: PreferencesManager = Depends(get_preferences_manager),
 ) -> dict:
     """
     Export current session data to Excel file.
@@ -408,6 +418,13 @@ async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches
             session.original_filename = filename
 
         logger.info(f"Session baseline reset after export to {filename}")
+
+        # Add to recent files list
+        try:
+            prefs_mgr.add_recent_file(target_path, filename)
+        except ValueError as e:
+            # Log validation error but don't fail the export
+            logger.warning(f"Could not add file to recent files: {e}")
 
         # Return success response with file path and message
         return {
