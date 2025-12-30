@@ -89,13 +89,24 @@
         "charliermarsh.ruff",
         "ms-python.mypy-type-checker",
         "ms-python.debugpy",
+        "ms-python.autopep8",
+        "ms-python.vscode-python-envs",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
         "GitHub.copilot",
         "GitHub.copilot-chat",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
         "tamasfe.even-better-toml",
         "redhat.vscode-yaml",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-playwright.playwright",
+        "vitest.explorer",
+        "ms-vscode.live-server",
+        "nwgh.bandit",
+        "zainchen.json",
+        "anthropic.claude-code"
       ]
     }
   },
