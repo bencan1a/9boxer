@@ -8,8 +8,8 @@ Quick navigation to all documentation categories:
 
 ### Core Entry Points
 
-- **[CLAUDE.md](../CLAUDE.md)** - Primary agent entry point (comprehensive guidance)
-- **[AGENTS.md](../AGENTS.md)** - Quick reference (command cheatsheet and workflows)
+- **[CLAUDE_INDEX.md](../CLAUDE_INDEX.md)** - Primary Claude Code entry point (quick start index with task-based navigation)
+- **[AGENTS.md](../AGENTS.md)** - Development workflow guide (command cheatsheet and workflows)
 - **[GITHUB_AGENT.md](../GITHUB_AGENT.md)** - GitHub Copilot onboarding guide
 - **[README.md](../README.md)** - Project overview
 - **[BUILD.md](../BUILD.md)**, **[DEPLOYMENT.md](../DEPLOYMENT.md)** - Build and deployment guides
@@ -72,6 +72,8 @@ Quick navigation to all documentation categories:
 
 ### Reference Documentation
 
+- **[ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md)** - Environment detection and adaptive setup
+- **[PLATFORM_CONSTRAINTS.md](PLATFORM_CONSTRAINTS.md)** - Platform-specific constraints (Windows, Linux, macOS)
 - **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
 - **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
 - **[facts.json](facts.json)** - Stable project truths (highest authority)

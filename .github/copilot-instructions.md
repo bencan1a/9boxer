@@ -190,7 +190,7 @@ npm run dev  # http://localhost:5173
 **Primary references:**
 1. **internal-docs/facts.json** - Source of truth (HIGHEST AUTHORITY)
 2. **GITHUB_AGENT.md** - Quick onboarding guide
-3. **CLAUDE.md** - Detailed technical guidance
+3. **CLAUDE_INDEX.md** - Quick start index with task-based navigation
 4. **AGENTS.md** - Development workflow
 5. **internal-docs/CONTEXT.md** - Comprehensive project context
 

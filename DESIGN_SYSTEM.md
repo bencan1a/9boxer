@@ -4,7 +4,7 @@ This document provides comprehensive guidelines for creating and modifying UI co
 
 > **Related Documentation:**
 > - [Design Tokens](internal-docs/design-system/design-tokens.md) - All design constants
-> - [CLAUDE.md](CLAUDE.md) - General development guidelines
+> - [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Quick start and navigation
 > - [Component Guidelines](internal-docs/design-system/component-guidelines.md) - Detailed component patterns
 
 ---
@@ -1041,7 +1041,7 @@ const [expanded, setExpanded] = useState(false);
 - [Design Principles](internal-docs/design-system/design-principles.md) - Core UX philosophy
 - [Component Guidelines](internal-docs/design-system/component-guidelines.md) - Detailed component patterns
 - [Accessibility Standards](internal-docs/design-system/accessibility-standards.md) - WCAG compliance
-- [CLAUDE.md](CLAUDE.md) - General development guidelines
+- [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Quick start and navigation
 - [Testing Guide](internal-docs/testing/quick-reference.md) - Testing patterns
 
 ---

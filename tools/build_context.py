@@ -422,6 +422,56 @@ def clean_tmp_directory() -> int:
     return removed_count
 
 
+def validate_doc_structure() -> bool:
+    """Validate documentation structure and file sizes."""
+    issues = []
+
+    # Check entry point sizes
+    doc_limits = {
+        "CLAUDE_INDEX.md": 15_000,  # 15 KB max
+        "AGENTS.md": 20_000,  # 20 KB max
+        "GITHUB_AGENT.md": 25_000,  # 25 KB max (comprehensive onboarding)
+    }
+
+    for filename, max_size in doc_limits.items():
+        filepath = REPO_ROOT / filename
+        if filepath.exists():
+            size = filepath.stat().st_size
+            if size > max_size:
+                issues.append(f"{filename} is {size:,} bytes (max: {max_size:,})")
+
+    # Check for docs in wrong location (should be in internal-docs/)
+    allowed_root_docs = {
+        "README.md",
+        "CLAUDE_INDEX.md",
+        "AGENTS.md",
+        "GITHUB_AGENT.md",
+        "BUILD.md",
+        "DEPLOYMENT.md",
+        "DESIGN_SYSTEM.md",
+        "CONTRIBUTING.md",
+        "CHANGELOG.md",
+        "USER_GUIDE.md",
+    }
+
+    wrong_location = [f.name for f in REPO_ROOT.glob("*.md") if f.name not in allowed_root_docs]
+
+    if wrong_location:
+        issues.append(
+            f"Documentation in wrong location (should be in internal-docs/): "
+            f"{', '.join(wrong_location)}"
+        )
+
+    if issues:
+        print("⚠️  Documentation validation issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False
+
+    print("✅ Documentation structure validated")
+    return True
+
+
 def main() -> int:
     """Main entry point."""
     print("Building documentation context...")
@@ -430,6 +480,15 @@ def main() -> int:
     print(f"  CONTEXT_MAX_CHARS: {CONTEXT_MAX_CHARS:,}")
     print(f"  PLANS_MAX_AGE_DAYS: {PLANS_MAX_AGE_DAYS}")
     print(f"  CLEAN_TMP_AGE_DAYS: {CLEAN_TMP_AGE_DAYS}")
+    print()
+
+    # Validate documentation structure
+    print("Validating documentation structure...")
+    if not validate_doc_structure():
+        print("❌ Documentation validation failed")
+        print()
+        print("Please fix the issues above before proceeding.")
+        return 1
     print()
 
     # Ensure directories exist
