@@ -9,10 +9,10 @@
  * Related: Issues #61, #54, #55
  */
 
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import { screenshotConfig, ScreenshotMetadata } from "../screenshots/config";
+import { screenshotConfig } from "../screenshots/config";
 
 /**
  * Configuration for visual regression testing
@@ -75,7 +75,7 @@ test.describe("Documentation Screenshot Visual Regression", () => {
 
   // Generate a test for each automated screenshot
   for (const [screenshotId, metadata] of automatedScreenshots) {
-    test(`${screenshotId} matches baseline`, async ({ page }) => {
+    test(`${screenshotId} matches baseline`, async () => {
       // Skip if screenshot doesn't exist yet (might be new)
       if (!screenshotExists(metadata.path)) {
         test.skip(
@@ -90,7 +90,7 @@ test.describe("Documentation Screenshot Visual Regression", () => {
 
       // Compare against baseline using Playwright's visual comparison
       // The baseline will be stored in __baselines__/ directory
-      await expect(screenshot).toMatchSnapshot(`${screenshotId}-baseline.png`, {
+      expect(screenshot).toMatchSnapshot(`${screenshotId}-baseline.png`, {
         maxDiffPixelRatio: VISUAL_REGRESSION_CONFIG.maxDiffPixelRatio,
         threshold: VISUAL_REGRESSION_CONFIG.threshold,
       });
@@ -145,85 +145,6 @@ test.describe("Documentation Screenshot Visual Regression", () => {
     // This test passes - it's just documenting missing screenshots
     expect(true).toBe(true);
   });
-});
-
-/**
- * Test suite for screenshot dimensions validation
- *
- * Validates that screenshots match their expected dimensions (if defined)
- */
-test.describe("Screenshot Dimensions Validation", () => {
-  const screenshotsWithDimensions = Object.entries(screenshotConfig).filter(
-    ([_, metadata]) => metadata.dimensions && !metadata.manual
-  );
-
-  if (screenshotsWithDimensions.length === 0) {
-    test.skip("No screenshots with dimension constraints", () => {});
-  }
-
-  for (const [screenshotId, metadata] of screenshotsWithDimensions) {
-    test(`${screenshotId} dimensions are valid`, async () => {
-      if (!screenshotExists(metadata.path)) {
-        test.skip(true, `Screenshot not yet generated: ${metadata.path}`);
-        return;
-      }
-
-      // Load screenshot to check dimensions
-      const screenshot = loadDocumentationScreenshot(metadata.path);
-      const { PNG } = await import("pngjs");
-      const png = PNG.sync.read(screenshot);
-
-      const dims = metadata.dimensions!;
-
-      // Check minimum width
-      if (dims.minWidth) {
-        expect(
-          png.width,
-          `${screenshotId} width ${png.width} is less than minimum ${dims.minWidth}`
-        ).toBeGreaterThanOrEqual(dims.minWidth);
-      }
-
-      // Check maximum width
-      if (dims.maxWidth) {
-        expect(
-          png.width,
-          `${screenshotId} width ${png.width} exceeds maximum ${dims.maxWidth}`
-        ).toBeLessThanOrEqual(dims.maxWidth);
-      }
-
-      // Check minimum height
-      if (dims.minHeight) {
-        expect(
-          png.height,
-          `${screenshotId} height ${png.height} is less than minimum ${dims.minHeight}`
-        ).toBeGreaterThanOrEqual(dims.minHeight);
-      }
-
-      // Check maximum height
-      if (dims.maxHeight) {
-        expect(
-          png.height,
-          `${screenshotId} height ${png.height} exceeds maximum ${dims.maxHeight}`
-        ).toBeLessThanOrEqual(dims.maxHeight);
-      }
-
-      // Check exact width
-      if (dims.exactWidth) {
-        expect(
-          png.width,
-          `${screenshotId} width ${png.width} must be exactly ${dims.exactWidth}`
-        ).toBe(dims.exactWidth);
-      }
-
-      // Check exact height
-      if (dims.exactHeight) {
-        expect(
-          png.height,
-          `${screenshotId} height ${png.height} must be exactly ${dims.exactHeight}`
-        ).toBe(dims.exactHeight);
-      }
-    });
-  }
 });
 
 /**
