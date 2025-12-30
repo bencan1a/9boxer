@@ -12,6 +12,9 @@ Export your modified employee data to Excel to save your work and share updated 
 !!! danger "Critical: No Auto-Save"
     The application does **NOT** auto-save your changes. You **MUST** export to save your work before closing the app, or all changes will be lost.
 
+!!! note "Why This Matters"
+    Export is THE critical step that saves your work. Without exporting, all your calibration decisions vanish when you close the app. Export early and often during long sessions.
+
 ---
 
 <details>
@@ -181,6 +184,14 @@ Choose the right export option based on your workflow needs:
 !!! success "Changes Saved"
     Your changes are now saved to the Excel file! You can continue working or close the application.
 
+### Success! You've Exported Your Changes
+
+You'll see:
+- Excel file saved to your chosen location
+- All change tracking columns included
+- Updated Performance and Potential ratings
+- Your notes preserved in the export for audit trail
+
 !!! info "Read-Only File Protection"
     If your original file is read-only or can't be updated, 9Boxer automatically falls back to "Save to different file" mode and prompts you to choose a new location. This ensures your work is never lost.
 
@@ -257,6 +268,9 @@ If you used [Donut Mode](donut-mode.md), four additional columns are added:
 
 - The four donut columns are empty
 - Only employees you placed in Donut Mode have donut data
+
+!!! note "Why This Matters"
+    Separate donut columns let you explore "what-if" scenarios without changing actual ratings. Share donut findings with leadership to discuss borderline placements before finalizing reviews.
 
 ### Excluded Employees
 

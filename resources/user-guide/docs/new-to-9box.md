@@ -80,9 +80,8 @@ The 9-box grid creates a common language for talent discussions:
 - Prevents grade inflation ("everyone is High Performance")
 - Identifies rating bias (one manager rates everyone high, another rates everyone low)
 
-> **Why This Matters**
->
-> Without the 9-box framework, talent discussions become subjective debates. The grid provides structure, making it easier to compare employees fairly and make data-driven decisions about promotions, development, and resource allocation.
+!!! note "Why This Matters"
+    Without the 9-box framework, talent discussions become subjective debates. The grid provides structure, making it easier to compare employees fairly and make data-driven decisions about promotions, development, and resource allocation.
 
 ---
 

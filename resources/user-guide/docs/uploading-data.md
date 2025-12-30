@@ -133,6 +133,17 @@ After a successful upload, you should see:
 !!! success "Upload Successful"
     You should see a green success notification and your employees arranged on the grid.
 
+### Success! You've Uploaded Your Data
+
+You'll see:
+- Green success notification appears
+- Employees populate the 9-box grid
+- Employee count displays in top bar
+- Grid organized by Performance and Potential
+
+!!! note "Why This Matters"
+    Uploading your data is the first step to visualizing your talent distribution. Once loaded, you can filter, analyze statistics, and make rating adjustments that save back to Excel.
+
 ---
 
 ## What Happens After Upload

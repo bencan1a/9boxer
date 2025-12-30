@@ -147,6 +147,9 @@ Here's the breakdown of employees by performance and potential:
 
 The Statistics panel gives you both a detailed table breakdown and an at-a-glance visual chart. The bar chart makes patterns immediately obvious.
 
+!!! note "Why This Matters"
+    Statistics turn subjective talent discussions into objective data. Instead of guessing if your ratings are balanced, you'll see exactly where adjustments are needed before calibration meetings.
+
 ### Distribution Chart
 
 A visual bar chart representation of your data:
@@ -195,6 +198,14 @@ Use these statistics to assess your talent pipeline health and spot potential is
 
 Summary cards at the top of the Statistics panel give you quick insights into your overall distribution health without scrolling through the detailed table.
 
+### Success! You've Reviewed Distribution Statistics
+
+You'll see:
+- Exact counts and percentages for each grid box
+- Visual bar chart showing patterns at a glance
+- Red flags if distribution looks unbalanced
+- Data to drive calibration conversations
+
 ### Grouping and Trend Analysis
 
 ![Statistics panel with grouping dropdown menu expanded showing options to group distribution by Department, Manager, Job Level, or Location, allowing analysis of rating patterns across different organizational dimensions](images/screenshots/statistics/statistics-grouping-indicators.png)
@@ -237,6 +248,9 @@ Intelligence runs advanced statistical analysis behind the scenes to spot patter
 
 !!! info "Sample Data Includes Intentional Bias Patterns"
     Sample data deliberately includes USA location bias (+15% high performers) and Sales function bias (+20% high performers) so you can see Intelligence in action. [Take the quickstart tour](quickstart.md) to explore how anomaly detection works!
+
+!!! note "Why This Matters"
+    Intelligence catches rating bias that goes unnoticed until it impacts succession planning or causes employee relations issues. It gives you statistical evidence to have difficult calibration conversations.
 
 > 📋 **Real-World Scenario**
 >
@@ -637,6 +651,14 @@ Intelligence analyzes all detected anomalies and calculates a composite score fr
 ![Intelligence tab showing excellent quality score with green checkmark and "No anomalies detected" message, indicating well-calibrated ratings with consistent distribution patterns across all organizational dimensions and no statistical outliers requiring attention](images/screenshots/workflow/intelligence-summary-excellent.png)
 
 When Intelligence shows a clean bill of health like this, your ratings are well-calibrated and statistically consistent across your organization. No anomalies means no bias patterns detected.
+
+### Success! You've Reviewed Intelligence Analysis
+
+You'll see:
+- Overall quality score showing rating reliability
+- Red/yellow anomaly cards flagging issues needing attention
+- Statistical evidence of manager leniency or department bias
+- Specific employees to review during calibration
 
 ![Intelligence tab showing critical alert with red warning indicator, low quality score, and multiple anomaly cards highlighted for immediate attention, indicating significant rating inconsistencies requiring calibration review before finalizing performance assessments](images/screenshots/workflow/intelligence-summary-needs-attention.png)
 

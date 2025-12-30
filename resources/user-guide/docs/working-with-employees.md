@@ -142,6 +142,14 @@ Moving employees is drag-and-drop simple:
 !!! tip "Visual Feedback"
     Modified employees display an orange left border, making it easy to see which employees have been moved during your session.
 
+### Success! You've Moved an Employee
+
+You'll see:
+- Orange left border on the employee tile
+- Employee now appears in their new grid box
+- Apply button badge increases by 1
+- Change recorded in timeline and Changes tab
+
 ### What Happens When You Move
 
 When you drag an employee to a new box:
@@ -251,9 +259,8 @@ Flags are visual markers that highlight important employee attributes:
 - **Onboarding** - New hire status
 - **Strategic Moves** - Big Mover (employees who moved significantly in the grid)
 
-> 💡 **Why This Matters**
->
-> During calibration meetings, flags help you quickly spot employees needing special attention. Instead of manually tracking who's at risk of leaving or ready for promotion, flags make this visible at a glance.
+!!! note "Why This Matters"
+    During calibration meetings, flags help you quickly spot employees needing special attention. Instead of manually tracking who's at risk of leaving or ready for promotion, flags make this visible at a glance.
 
 ### All Flag Types
 

@@ -15,6 +15,45 @@
 
 ---
 
+## Change Review Checklist
+
+Use this checklist before and after making rating changes to ensure quality and proper documentation.
+
+### Before Making a Change
+
+- [ ] Have clear evidence for the rating change (performance data, metrics, feedback)
+- [ ] Understand why the current rating is incorrect or outdated
+- [ ] Know which box the employee should move to and why
+- [ ] Have manager approval or calibration consensus (if required)
+- [ ] Confirm timing is appropriate (not too early to assess, not waiting too long)
+
+### After Making Each Change
+
+- [ ] Verify orange border appears on employee tile (confirms change recorded)
+- [ ] Check employee details show updated Performance/Potential values
+- [ ] Add clear note explaining what changed and why
+- [ ] Include date context and who was involved in decision
+- [ ] Verify note is specific and professional (avoid vague or subjective language)
+
+### Before Exporting Changes
+
+- [ ] Open Changes tab and review all movements
+- [ ] Verify every change has a note documenting the reasoning
+- [ ] Check that notes are clear enough for someone else to understand
+- [ ] Confirm all changes are intentional (no accidental moves)
+- [ ] Verify distribution makes sense (check Statistics tab if making many changes)
+
+### After Exporting
+
+- [ ] Open exported Excel file to verify changes applied correctly
+- [ ] Check "Modified in Session" column shows "Yes" for changed employees
+- [ ] Check "9Boxer Change Notes" column contains your documentation
+- [ ] Verify Performance/Potential columns are updated in Excel
+- [ ] Save exported file with clear naming convention (include date)
+- [ ] Share with appropriate stakeholders if required
+
+---
+
 ## Why You'd Make Changes
 
 Before we dive into the mechanics, let's talk about when and why you'd move someone.
@@ -87,6 +126,9 @@ Not every insight requires an immediate change. Here's how to decide:
 - Waiting for calibration session to validate with peers
 
 **Best Practice:** If unsure, wait until the next formal review cycle rather than making hasty changes. Document your observations in notes and revisit in 30-60 days.
+
+!!! note "Why This Matters"
+    Rushing rating changes without evidence creates fairness concerns and credibility issues. Waiting for calibration or gathering more data ensures your changes are defensible and consistent across teams.
 
 ---
 
@@ -391,6 +433,14 @@ For a complete record of all your changes:
     While you're in the Changes tab, type a quick note in the "Notes" field explaining why you moved this person.
     Your future self (and your colleagues) will thank you!
     [Learn more about adding notes](adding-notes.md)
+
+### Success! You've Made Your First Change
+
+You'll see:
+- Orange left border on the employee tile
+- Updated Performance/Potential in employee details
+- Change recorded in timeline and Changes tab
+- Apply button badge showing number of changes
 
 ---
 
