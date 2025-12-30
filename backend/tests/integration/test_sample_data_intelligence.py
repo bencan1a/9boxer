@@ -18,8 +18,8 @@ class TestSampleDataIntelligence:
 
         This test uses a fixed seed to ensure deterministic results.
         Expected insights:
-        - USA location bias (80% boost rate)
-        - Sales function bias (85% boost rate)
+        - USA location bias (60% boost rate)
+        - Sales function bias (65% boost rate)
         """
         # Given: Sample data with bias enabled
         config = RichDatasetConfig(size=200, seed=42, include_bias=True)
@@ -124,7 +124,7 @@ class TestSampleDataIntelligence:
     def test_usa_bias_produces_significant_z_score(self) -> None:
         """Test that USA location bias produces z-score >= 2.0.
 
-        The USA bias (80% boost rate) should result in significantly more high
+        The USA bias (60% boost rate) should result in significantly more high
         performers than the baseline, with a z-score >= 2.0 for statistical significance.
         """
         # Given: Sample data with bias enabled
@@ -156,7 +156,7 @@ class TestSampleDataIntelligence:
     def test_sales_bias_produces_significant_z_score(self) -> None:
         """Test that Sales function bias produces z-score >= 2.0.
 
-        The Sales bias (85% boost rate) should result in significantly more high
+        The Sales bias (65% boost rate) should result in significantly more high
         performers than the baseline, with a z-score >= 2.0 for statistical significance.
         """
         # Given: Sample data with bias enabled

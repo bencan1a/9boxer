@@ -13,11 +13,11 @@ class TestSessionLifecycle:
     """Test complete session lifecycle including cleanup."""
 
     def test_session_when_created_then_persists_data(
-        self, test_client: TestClient, sample_excel_file: Path
+        self, test_client: TestClient, rich_sample_excel_file: Path
     ) -> None:
         """Test session data persists across requests."""
         # Upload data
-        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
             files = {
                 "file": (
                     "test.xlsx",
@@ -41,11 +41,11 @@ class TestSessionLifecycle:
         assert len(response.json()["employees"]) == 50
 
     def test_session_when_cleared_then_removes_all_data(
-        self, test_client: TestClient, sample_excel_file: Path
+        self, test_client: TestClient, rich_sample_excel_file: Path
     ) -> None:
         """Test session clear removes all data."""
         # Upload data
-        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
             files = {
                 "file": (
                     "test.xlsx",
@@ -197,11 +197,11 @@ class TestExportIntegration:
     """Test Excel export integration with modifications."""
 
     def test_export_when_no_changes_then_includes_all_data(
-        self, test_client: TestClient, sample_excel_file: Path
+        self, test_client: TestClient, rich_sample_excel_file: Path
     ) -> None:
         """Test export works without modifications."""
         # Upload
-        with open(sample_excel_file, "rb") as f:  # noqa: PTH123
+        with open(rich_sample_excel_file, "rb") as f:  # noqa: PTH123
             files = {
                 "file": (
                     "test.xlsx",

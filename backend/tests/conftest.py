@@ -5,6 +5,7 @@ import tempfile
 from collections.abc import Generator
 from datetime import date, datetime, timezone
 from pathlib import Path
+from unittest.mock import Mock
 
 import openpyxl
 import pytest
@@ -258,6 +259,44 @@ def setup_test_db() -> Generator[None, None, None]:
         pass
 
 
+@pytest.fixture(autouse=True, scope="function")
+def mock_preferences_manager(monkeypatch: pytest.MonkeyPatch) -> Mock:
+    """Mock PreferencesManager to prevent race conditions in parallel tests.
+
+    This fixture automatically applies to all tests and mocks the PreferencesManager
+    to prevent file system race conditions when tests run in parallel with pytest-xdist.
+
+    The mock returns empty lists for get_recent_files() and None for add_recent_file(),
+    allowing tests to focus on API behavior without preferences side effects.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture for patching
+
+    Returns:
+        Mock object configured to replace PreferencesManager
+    """
+    # Create a mock instance
+    mock_instance = Mock()
+    mock_instance.add_recent_file.return_value = None
+    mock_instance.get_recent_files.return_value = []
+    mock_instance.get_config.return_value = {}
+    mock_instance.update_config.return_value = None
+
+    # Create a mock class that returns our mock instance
+    mock_class = Mock(return_value=mock_instance)
+
+    # Patch the PreferencesManager class itself
+    monkeypatch.setattr("ninebox.services.preferences_manager.PreferencesManager", mock_class)
+    monkeypatch.setattr("ninebox.core.dependencies.PreferencesManager", mock_class)
+
+    # Also clear the lru_cache to ensure fresh instances
+    from ninebox.core.dependencies import get_preferences_manager  # noqa: PLC0415
+
+    get_preferences_manager.cache_clear()
+
+    return mock_instance
+
+
 @pytest.fixture
 def sample_employees() -> list[Employee]:
     """Create sample employee data for testing (5 employees).
@@ -456,7 +495,10 @@ def rich_sample_employees_large() -> list[Employee]:
 
 @pytest.fixture
 def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
-    """Create a sample Excel file for testing."""
+    """Create a sample Excel file for testing (5 employees).
+
+    For integration tests requiring more employees, use rich_sample_excel_file.
+    """
     file_path = tmp_path / "test_employees.xlsx"
 
     # Create workbook with two sheets
@@ -504,6 +546,99 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
 
     # Data rows
     for row_idx, emp in enumerate(sample_employees, start=2):
+        data_sheet.cell(row_idx, 1, emp.employee_id)
+        data_sheet.cell(row_idx, 2, emp.name)
+        data_sheet.cell(row_idx, 3, emp.business_title)
+        data_sheet.cell(row_idx, 4, emp.job_title)
+        data_sheet.cell(row_idx, 5, emp.job_profile)
+        data_sheet.cell(row_idx, 6, emp.job_level)
+        data_sheet.cell(row_idx, 7, emp.manager)
+        data_sheet.cell(row_idx, 8, emp.management_chain_04)
+        data_sheet.cell(row_idx, 9, emp.management_chain_05)
+        data_sheet.cell(row_idx, 10, emp.management_chain_06)
+        data_sheet.cell(row_idx, 11, emp.hire_date.isoformat() if emp.hire_date else None)
+        data_sheet.cell(row_idx, 12, emp.tenure_category)
+        data_sheet.cell(row_idx, 13, emp.time_in_job_profile)
+        data_sheet.cell(row_idx, 14, emp.performance.value)
+        data_sheet.cell(row_idx, 15, emp.potential.value)
+        data_sheet.cell(row_idx, 16, emp.grid_position)
+        data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
+        data_sheet.cell(row_idx, 18, emp.talent_indicator)
+
+        # Historical ratings
+        if len(emp.ratings_history) > 0 and emp.ratings_history[0].year == 2023:
+            data_sheet.cell(row_idx, 19, emp.ratings_history[0].rating)
+        if len(emp.ratings_history) > 0:
+            for rating in emp.ratings_history:
+                if rating.year == 2024:
+                    data_sheet.cell(row_idx, 20, rating.rating)
+
+        data_sheet.cell(row_idx, 21, emp.development_focus)
+        data_sheet.cell(row_idx, 22, emp.development_action)
+        data_sheet.cell(row_idx, 23, emp.notes)
+        data_sheet.cell(row_idx, 24, emp.promotion_status)
+
+    workbook.save(file_path)
+    workbook.close()  # Explicitly close to prevent openpyxl state pollution
+    return file_path
+
+
+@pytest.fixture
+def rich_sample_excel_file(tmp_path: Path, rich_sample_employees_small: list[Employee]) -> Path:
+    """Create a rich sample Excel file for testing with 50 employees.
+
+    Uses rich_sample_employees_small fixture to generate realistic test data
+    with organizational hierarchies and complete employee records.
+
+    Use this for integration tests that need larger datasets.
+    """
+    file_path = tmp_path / "test_employees.xlsx"
+
+    # Create workbook with two sheets
+    workbook = openpyxl.Workbook()
+
+    # First sheet (summary/metadata)
+    summary_sheet = workbook.active
+    summary_sheet.title = "Summary"
+    summary_sheet["A1"] = "9-Box Talent Review"
+    summary_sheet["A2"] = f"Generated: {datetime.now(timezone.utc).isoformat()}"
+
+    # Second sheet (employee data)
+    data_sheet = workbook.create_sheet("Employee Data")
+
+    # Headers
+    headers = [
+        "Employee ID",
+        "Worker",
+        "Business Title",
+        "Job Title",
+        "Job Profile",
+        "Job Level - Primary Position",
+        "Worker's Manager",
+        "Management Chain - Level 04",
+        "Management Chain - Level 05",
+        "Management Chain - Level 06",
+        "Hire Date",
+        "Tenure Category (Months)",
+        "Time in Job Profile",
+        "Aug 2025 Talent Assessment Performance",
+        "Aug 2025  Talent Assessment Potential",
+        "Aug 2025 Talent Assessment 9-Box Label",
+        "Talent Mapping Position [Performance vs Potential]",
+        "FY25 Talent Indicator",
+        "2023 Completed Performance Rating",
+        "2024 Completed Performance Rating",
+        "Development Focus",
+        "Development Action",
+        "Notes",
+        "Promotion (In-Line,",
+    ]
+
+    for col_idx, header in enumerate(headers, start=1):
+        data_sheet.cell(1, col_idx, header)
+
+    # Data rows
+    for row_idx, emp in enumerate(rich_sample_employees_small, start=2):
         data_sheet.cell(row_idx, 1, emp.employee_id)
         data_sheet.cell(row_idx, 2, emp.name)
         data_sheet.cell(row_idx, 3, emp.business_title)

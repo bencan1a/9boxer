@@ -526,7 +526,7 @@ class TestOriginalValueTracking:
         self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
     ) -> None:
         """Test that original Performance/Potential values are preserved in tracking columns.
-        
+
         This test verifies:
         1. Original values are written to "Original Performance" and "Original Potential" columns
         2. New values are written to main Performance/Potential columns
@@ -847,7 +847,7 @@ class TestFlagsAndDonutPersistence:
         employee_id = employees[0]["employee_id"]
 
         # Add both flags and donut placement
-        session.current_employees[0].flags = ["high_potential", "new_hire"]
+        session.current_employees[0].flags = ["promotion_ready", "new_hire"]
         session.current_employees[0].donut_modified = True
         session.current_employees[0].donut_position = 9
         session.current_employees[0].donut_performance = PerformanceLevel.HIGH
@@ -876,7 +876,7 @@ class TestFlagsAndDonutPersistence:
 
         # Check flags
         assert reloaded_employee.flags is not None
-        assert set(reloaded_employee.flags) == {"high_potential", "new_hire"}
+        assert set(reloaded_employee.flags) == {"promotion_ready", "new_hire"}
 
         # Check donut data
         assert reloaded_employee.donut_modified is True

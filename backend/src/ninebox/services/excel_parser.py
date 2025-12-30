@@ -6,7 +6,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 import pandas as pd
 
@@ -616,18 +616,28 @@ class ExcelParser:
         donut_pos_value = row.get("Donut Exercise Position")
         if pd.notna(donut_pos_value) and str(donut_pos_value).strip():
             try:
-                donut_position = int(donut_pos_value)
+                # Cast to float first to handle both int and float values from Excel
+                donut_position = int(cast(float, donut_pos_value))
                 donut_modified = True
 
                 # Parse donut performance/potential from position if available
                 # Position 1-9 maps to performance/potential combinations
                 if 1 <= donut_position <= 9:
                     # Calculate performance and potential from grid position
-                    # Grid is 3x3: positions 1-3 (Low perf), 4-6 (Med perf), 7-9 (High perf)
-                    # Within each group: Low pot, Med pot, High pot
-                    perf_idx = (donut_position - 1) // 3  # 0, 1, 2
-                    pot_idx = (donut_position - 1) % 3  # 0, 1, 2
-                    perf_levels = [PerformanceLevel.LOW, PerformanceLevel.MEDIUM, PerformanceLevel.HIGH]
+                    # Grid formula: position = (potential_row * 3) + performance_column
+                    # Where performance: Low=1, Medium=2, High=3
+                    # And potential_row: Low=0, Medium=3, High=6
+                    #
+                    # Reverse calculation:
+                    # performance_column = ((position - 1) % 3) + 1  -> gives 1, 2, or 3
+                    # potential_row = (position - 1) // 3  -> gives 0, 1, or 2
+                    perf_idx = (donut_position - 1) % 3  # Column (0, 1, 2)
+                    pot_idx = (donut_position - 1) // 3  # Row (0, 1, 2)
+                    perf_levels = [
+                        PerformanceLevel.LOW,
+                        PerformanceLevel.MEDIUM,
+                        PerformanceLevel.HIGH,
+                    ]
                     pot_levels = [PotentialLevel.LOW, PotentialLevel.MEDIUM, PotentialLevel.HIGH]
                     donut_performance = perf_levels[perf_idx]
                     donut_potential = pot_levels[pot_idx]
