@@ -132,6 +132,72 @@ export async function loadSampleData(
 }
 
 /**
+ * Load sample data from empty state button
+ *
+ * This is different from loadSampleData() which uses the File menu.
+ * Use this helper for Test 1.1 which specifically tests the empty state button.
+ *
+ * Clicks the "Load Sample Data (200 employees)" button in the empty state,
+ * then waits for data to load and grid to populate.
+ *
+ * Note: The empty state button always loads 200 employees (hardcoded in UI).
+ *
+ * @param page - Playwright page object
+ *
+ * @example
+ * ```typescript
+ * test('loads sample data from empty state', async ({ page }) => {
+ *   await page.goto('/');
+ *   await loadSampleDataFromEmptyState(page);
+ *   // Grid should now show employees
+ * });
+ * ```
+ */
+export async function loadSampleDataFromEmptyState(page: Page): Promise<void> {
+  // Navigate to app if not already there
+  const currentUrl = page.url();
+  if (!currentUrl.includes("localhost")) {
+    await page.goto("/");
+  }
+
+  // Click the empty state "Load Sample Data (200 employees)" button
+  await page.locator('[data-testid="load-sample-data-button"]').click();
+
+  // Verify LoadSampleDialog appears
+  await expect(
+    page.locator('[data-testid="load-sample-dialog"]')
+  ).toBeVisible();
+
+  // Click Confirm button
+  await page.locator('[data-testid="confirm-button"]').click();
+
+  // Wait for loading to complete (dialog closes)
+  await expect(
+    page.locator('[data-testid="load-sample-dialog"]')
+  ).not.toBeVisible({
+    timeout: 10000,
+  });
+
+  // Verify grid displays employees
+  await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+
+  // Wait for employee cards to load
+  await page.waitForSelector('[data-testid^="employee-card-"]', {
+    timeout: 5000,
+  });
+
+  // Wait for React to finish rendering and network activity to settle
+  await page.waitForLoadState("networkidle");
+
+  // Verify at least one employee card is fully interactive (not loading)
+  const firstCard = page.locator('[data-testid^="employee-card-"]').first();
+  await expect(firstCard).toBeVisible({ timeout: 5000 });
+
+  // Mark as cached for this page context
+  sampleDataCache.set(page, true);
+}
+
+/**
  * Load calibration sample data
  *
  * Alias for loadSampleData() with larger dataset.
