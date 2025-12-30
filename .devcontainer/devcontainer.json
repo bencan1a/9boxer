@@ -1,6 +1,9 @@
 {
   "name": "9Boxer Electron Development",
-  "image": "mcr.microsoft.com/devcontainers/python:1-3.13-bullseye",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
@@ -8,15 +11,34 @@
       "version": "20"
     }
   },
+  "containerEnv": {
+    "DISPLAY": ":99",
+    "ELECTRON_DISABLE_GPU": "1",
+    "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright"
+  },
+  "runArgs": [
+    "--shm-size=2gb"
+  ],
+  "forwardPorts": [5900, 6080],
+  "portsAttributes": {
+    "5900": {
+      "label": "VNC Server",
+      "onAutoForward": "notify"
+    },
+    "6080": {
+      "label": "noVNC Web Client",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": false,
         "python.formatting.provider": "none",
         "python.analysis.typeCheckingMode": "basic",
-        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvironment": false,
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit"
@@ -64,9 +86,10 @@
       ]
     }
   },
-  "postCreateCommand": "python3 -m venv .venv && . .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
+  "postCreateCommand": "start-display && pip install --upgrade pip && pip install uv && uv pip install --system -e '.[dev]' && pre-commit install && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
+  "postStartCommand": "start-display",
   "remoteUser": "vscode",
-  "updateContentCommand": ". .venv/bin/activate && pip install --upgrade pip && pip install uv && uv pip install -e '.[dev]' && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
+  "updateContentCommand": "pip install --upgrade pip && pip install uv && uv pip install --system -e '.[dev]' && cd frontend && npm install --legacy-peer-deps && npx playwright install --with-deps",
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
   ]
