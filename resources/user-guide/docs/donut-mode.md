@@ -4,6 +4,42 @@
 
 ## When to Use This
 
+### When Should I Use Donut Mode?
+
+Use this decision tree to decide if Donut Mode is right for your situation:
+
+```mermaid
+graph TD
+    A[Do you need to validate<br/>center box placements?] --> B{Is your center box<br/>overcrowded?>}
+    B -->|Yes<br/>>50% of employees| C[YES - Use Donut Mode<br/>to challenge placements]
+    B -->|No<br/><50% of employees| D{Preparing for<br/>calibration meeting?}
+    D -->|Yes| E{Need to identify<br/>discussion topics?}
+    E -->|Yes| F[YES - Use Donut Mode<br/>to find borderline cases]
+    E -->|No| G{Just checking<br/>distribution quality?}
+    G -->|Yes| H[NO - Use Statistics<br/>+ Intelligence instead]
+    G -->|No| I[NO - Donut Mode<br/>not needed]
+    D -->|No| J{Quality checking<br/>ratings before<br/>finalization?}
+    J -->|Yes| K[YES - Use Donut Mode<br/>to validate ratings]
+    J -->|No| L{Looking for<br/>hidden high-potentials<br/>or under-performers?}
+    L -->|Yes| M[YES - Use Donut Mode<br/>to identify mis-placements]
+    L -->|No| N[NO - Donut Mode<br/>not needed]
+
+    style C fill:#d4edda
+    style F fill:#d4edda
+    style K fill:#d4edda
+    style M fill:#d4edda
+    style H fill:#fff3cd
+    style I fill:#f8d7da
+    style N fill:#f8d7da
+
+```
+
+**Quick decision guide:**
+
+- **Yes, use Donut Mode if**: Center box >50%, preparing calibration, validating ratings, finding mis-placements
+- **No, use alternatives if**: Just checking distribution (use Statistics), reviewing specific employees (use Filters)
+- **When in doubt**: Try Donut Mode - it's exploratory and won't change actual ratings
+
 ### Common Scenarios
 
 You'll want to use Donut Mode when:

@@ -4,6 +4,56 @@ The **Changes** tab provides a comprehensive tracking system for all employee mo
 
 ---
 
+## Change Tracking Workflow
+
+Here's how the change tracking process works from start to finish:
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Move[Drag Employee to New Box]
+    Move --> Auto[Change Automatically Added to Tracker]
+    Auto --> Border[Employee Gets Orange Left Border]
+    Border --> Badge[File Menu Badge Updates]
+
+    Badge --> Click[Click Employee Tile]
+    Click --> Changes[Open Changes Tab]
+    Changes --> Type[Type Note in Notes Field]
+    Type --> Save[Note Saves Automatically]
+
+    Save --> Multiple{More<br/>Changes?}
+    Multiple -->|Yes| Move
+    Multiple -->|No| Review
+
+    Review[Review Changes Tab] --> Table[See Table of All Movements]
+    Table --> Verify[Verify Each Note is Complete]
+    Verify --> Timeline[Check Timeline Tab for History]
+
+    Timeline --> Export[Export to Excel]
+    Export --> Columns[Excel Includes Change Columns]
+
+    Columns --> ModCol[Modified in Session Column]
+    ModCol --> DateCol[Modification Date Column]
+    DateCol --> DescCol[Change Description Column]
+    DescCol --> NoteCol[Change Notes Column]
+
+    NoteCol --> End([End])
+
+    style Start fill:#e3f2fd
+    style End fill:#e8f5e9
+    style Auto fill:#fff3e0
+    style Save fill:#fff3e0
+    style Export fill:#f3e5f5
+```
+
+**Key points:**
+
+- **Automatic tracking** - Changes are tracked automatically when you drag employees
+- **Visual indicators** - Orange border and badge show modified employees
+- **Notes save automatically** - No manual save button needed
+- **Export includes everything** - All changes and notes appear in Excel
+
+---
+
 <details>
 <summary>📋 Quick Reference (Click to expand)</summary>
 
