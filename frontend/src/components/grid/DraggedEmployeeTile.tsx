@@ -67,7 +67,6 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
   return (
     <Card
       sx={{
-        mb: 1,
         minWidth: tokens.tile.minWidth,
         maxWidth: tokens.tile.maxWidth,
         cursor: "grabbing",
@@ -90,7 +89,7 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
             right: theme.tokens.spacing.xs,
             display: "flex",
             flexDirection: "row",
-            gap: 0.5,
+            gap: `${tokens.spacing.flagGap}px`,
             zIndex: 1,
           }}
         >
@@ -124,7 +123,7 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
       {/* Drag Handle */}
       <Box
         sx={{
-          width: 24,
+          width: tokens.tile.dragHandleWidth,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -140,9 +139,27 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
       </Box>
 
       {/* Card Content */}
-      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}>
+      <CardContent
+        sx={{
+          py: `${tokens.tile.paddingY}px`,
+          pl: `${tokens.tile.paddingX}px`,
+          pr: 3,
+          "&:last-child": { pb: `${tokens.tile.paddingY}px` },
+          flex: 1,
+        }}
+      >
         {/* Row 1: Name */}
-        <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle2"
+          fontWeight="bold"
+          gutterBottom
+          sx={{
+            fontSize: tokens.font.name,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
           {employee.name}
         </Typography>
 
@@ -152,8 +169,8 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
           <Typography
             variant="body2"
             color="text.secondary"
-            fontSize="0.75rem"
             sx={{
+              fontSize: tokens.font.titleLevel,
               flex: 1,
               minWidth: 0,
               overflow: "hidden",

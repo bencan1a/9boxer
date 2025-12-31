@@ -87,7 +87,7 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 0.5,
+          gap: `${theme.tokens.dimensions.boxHeader.gapCollapsed}px`,
         }}
       >
         <Typography
@@ -127,10 +127,17 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        mb: 1,
+        mb: `${theme.tokens.dimensions.boxHeader.marginBottom}px`,
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: `${theme.tokens.dimensions.boxHeader.gap}px`,
+          flex: 1,
+        }}
+      >
         <Tooltip
           title={positionGuidance || ""}
           arrow
@@ -153,7 +160,12 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
         <Badge
           badgeContent={employeeCount}
           color="primary"
-          sx={{ "& .MuiBadge-badge": { fontSize: "0.65rem", height: 16 } }}
+          sx={{
+            "& .MuiBadge-badge": {
+              fontSize: theme.tokens.dimensions.boxHeader.badgeFontSize,
+              height: theme.tokens.dimensions.boxHeader.badgeHeight,
+            },
+          }}
           data-testid={`grid-box-${position}-count`}
         />
       </Box>
@@ -164,7 +176,7 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
           size="small"
           onClick={onCollapse}
           aria-label={t("grid.gridBox.collapseBox")}
-          sx={{ ml: 1 }}
+          sx={{ ml: `${theme.tokens.dimensions.boxHeader.iconMargin}px` }}
         >
           <CloseFullscreenIcon fontSize="small" />
         </IconButton>
@@ -174,7 +186,7 @@ export const BoxHeader: React.FC<BoxHeaderProps> = ({
           onClick={onExpand}
           aria-label={t("grid.gridBox.expandBox")}
           sx={{
-            ml: 1,
+            ml: `${theme.tokens.dimensions.boxHeader.iconMargin}px`,
             opacity: theme.tokens.opacity.gridExpandButtonIdle,
             transition: `opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
             "&:hover": {

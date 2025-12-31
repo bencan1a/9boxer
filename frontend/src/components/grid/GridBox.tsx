@@ -48,7 +48,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   }
 
   const theme = useTheme();
-  const { isResizing } = useGridZoom();
+  const { isResizing, tokens } = useGridZoom();
   const { setNodeRef, isOver } = useDroppable({
     id: `grid-${position}`,
     data: { position },
@@ -87,7 +87,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
       border: 2,
       borderColor: isOver ? "primary.main" : "divider",
       borderRadius: 1,
-      p: 1.5,
+      p: `${tokens.spacing.boxPadding}px`,
       backgroundColor: isOver
         ? alpha(theme.palette.primary.main, 0.15)
         : bgColor,
@@ -139,6 +139,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
     isCollapsed,
     isExpanded,
     isResizing,
+    tokens.spacing.boxPadding,
     theme.palette.primary.main,
     theme.palette.primary.light,
     theme.tokens.duration.normal,
