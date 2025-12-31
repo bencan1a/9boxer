@@ -26,7 +26,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Chip,
   Box,
   useTheme,
   Tooltip,
@@ -37,6 +36,7 @@ import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
 import { getPositionLabel } from "../../constants/positionLabels";
+import { useGridZoom } from "../../contexts/GridZoomContext";
 
 export type OriginalPositionVariant =
   | "none"
@@ -68,6 +68,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
   originalPositionVariant = "icon-text",
 }) => {
   const theme = useTheme();
+  const { tokens } = useGridZoom();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging } =
     useDraggable({
       id: `employee-${employee.employee_id}`,
@@ -120,8 +121,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
       onClick={handleCardClick}
       sx={{
         mb: 1,
-        minWidth: 280, // Minimum width for multi-column grid layout
-        maxWidth: 400, // Maximum width for readability
+        minWidth: tokens.tile.minWidth,
+        maxWidth: tokens.tile.maxWidth,
         cursor: "pointer",
         display: "flex",
         opacity: isDragging
@@ -153,7 +154,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
             right: theme.tokens.spacing.xs,
             display: "flex",
             flexDirection: "row",
-            gap: 0.5,
+            gap: `${tokens.spacing.flagGap}px`,
             zIndex: 1,
           }}
         >
@@ -166,8 +167,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
             >
               <Box
                 sx={{
-                  width: 16,
-                  height: 16,
+                  width: tokens.icon.flag,
+                  height: tokens.icon.flag,
                   borderRadius: "50%",
                   backgroundColor: getFlagColor(flag),
                   border: 2,
@@ -205,13 +206,27 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
         }}
         onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to card
       >
-        <DragIndicatorIcon sx={{ fontSize: 16, color: "action.active" }} />
+        <DragIndicatorIcon
+          sx={{ fontSize: tokens.icon.dragHandle, color: "action.active" }}
+        />
       </Box>
 
       {/* Card Content */}
-      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}>
+      <CardContent
+        sx={{
+          p: `${tokens.tile.padding}px`,
+          "&:last-child": { pb: `${tokens.tile.padding}px` },
+          flex: 1,
+          pr: 3,
+        }}
+      >
         {/* Row 1: Name */}
-        <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle2"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ fontSize: tokens.font.name }}
+        >
           {employee.name}
         </Typography>
 
@@ -221,8 +236,8 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           <Typography
             variant="body2"
             color="text.secondary"
-            fontSize="0.75rem"
             sx={{
+              fontSize: tokens.font.titleLevel,
               flex: 1,
               minWidth: 0,
               overflow: "hidden",
@@ -254,7 +269,7 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
                 >
                   <HistoryIcon
                     sx={{
-                      fontSize: 12,
+                      fontSize: tokens.icon.history,
                       color: "text.disabled",
                     }}
                   />

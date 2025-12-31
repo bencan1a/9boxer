@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { getTheme } from "../theme/theme";
 import { I18nTestWrapper } from "./i18nTestUtils";
+import { GridZoomProvider } from "../contexts/GridZoomContext";
 
 // Create a default theme for testing (light mode)
 const theme = getTheme("light");
@@ -18,8 +19,10 @@ const AllTheProviders: React.FC<AllTheProvidersProps> = ({ children }) => {
   return (
     <I18nTestWrapper>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
+        <GridZoomProvider>
+          <CssBaseline />
+          {children}
+        </GridZoomProvider>
       </ThemeProvider>
     </I18nTestWrapper>
   );
