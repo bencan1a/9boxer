@@ -38,6 +38,9 @@ export async function generateFileMenuWithRecents(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to app and load sample data
   await page.goto("http://localhost:5173");
   await waitForUiSettle(page, 1.0);
@@ -131,8 +134,8 @@ export async function generateUnsavedChangesDialog(
   const importButton = page.locator('[data-testid="import-data-menu-item"]');
   await importButton.click();
 
-  // Wait for dialog to appear
-  await waitForUiSettle(page, 0.5);
+  // Wait for dialog to appear and fully render
+  await waitForUiSettle(page, 1.0);
 
   // Capture the unsaved changes dialog
   await dialog.screenshot({
