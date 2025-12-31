@@ -360,9 +360,10 @@ def test_high_performer():
 - **Total suite:** <5 minutes for all integration tests
 
 ### E2E Tests
-- **Target:** <30 seconds per workflow
-- **Max:** 60 seconds per workflow
-- **Run in CI:** Not required for local development
+- **Target:** <30 seconds per test (e2e-core suite: 30.5s for 23 tests)
+- **Max:** 30 seconds per test (configured timeout)
+- **Run in CI:** Required for all PRs (e2e-core suite)
+- **Best Practice:** Use state-based waits, not arbitrary timeouts
 
 **Optimization Tips:**
 - Use in-memory databases for tests
@@ -524,24 +525,65 @@ const expectedText = `${filteredCount} ${getTranslatedText('grid.employeeCount.o
 
 ### E2E Tests (Playwright)
 
-```typescript
-// ✓ GOOD: Test complete user workflows
-import { test, expect } from '@playwright/test';
-import * as path from 'path';
+**Key Principle: NO ARBITRARY WAITS** - Always wait for observable state changes.
 
-test('allows user to upload file and view employees', async ({ page }) => {
+The e2e-core test suite provides the reference implementation for state-based waits. See [playwright-best-practices-checklist.md](playwright-best-practices-checklist.md) for comprehensive async handling patterns.
+
+```typescript
+// ✓ GOOD: Test complete user workflows with state-based waits
+import { test, expect } from '../fixtures';  // Use fixtures for worker isolation
+import { uploadFile } from '../helpers/fileOperations';
+import { dragEmployeeToPosition } from '../helpers/dragAndDrop';
+
+test('allows user to move employee and track changes', async ({ page }) => {
   await page.goto('/');
 
-  await page.getByTestId('upload-button').click();
-  const fixturePath = path.join(__dirname, '..', 'fixtures', 'test-data.xlsx');
-  await page.locator('#file-upload-input').setInputFiles(fixturePath);
-  await page.getByTestId('upload-submit-button').click();
+  // Upload file and wait for grid to load
+  await uploadFile(page, 'sample-employees.xlsx');
+  await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
+  // Get employee ID for tracking
+  const employeeCard = page.locator('[data-testid="employee-card-1"]');
+  const employeeId = await employeeCard.getAttribute('data-employee-id');
+
+  // Move employee to new position
+  await dragEmployeeToPosition(page, Number(employeeId), 6);
+
+  // ✓ Wait for position attribute to confirm drag completed
+  await expect(employeeCard).toHaveAttribute('data-position', '6', { timeout: 5000 });
+
+  // ✓ Wait for network to settle (API call completed)
+  await page.waitForLoadState('networkidle', { timeout: 3000 });
+
+  // ✓ Verify badge updated (poll without assumptions about count)
+  const badge = page.locator('[data-testid="file-menu-badge"]');
+  await expect(async () => {
+    const isVisible = await badge.isVisible().catch(() => false);
+    expect(isVisible).toBe(true);
+  }).toPass({ timeout: 2000 });
+});
+
+// ❌ BAD: Using arbitrary waits
+test('ANTI-PATTERN: arbitrary waits', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('upload-button').click();
+
+  // ❌ What are we waiting for? State is unpredictable
+  await page.waitForTimeout(1000);
+
+  // ❌ Element might not be ready yet
   await expect(page.getByTestId('employee-grid')).toBeVisible();
-  const cards = page.locator('[data-testid^="employee-card-"]');
-  expect(await cards.count()).toBe(5);
 });
 ```
+
+**E2E Async Handling Rules:**
+- ✅ Use `expect(element).toHaveAttribute()` to wait for state changes
+- ✅ Use `waitForLoadState('networkidle')` to wait for API calls
+- ✅ Use `expect().toPass()` for polling without assumptions
+- ✅ Use `waitForResponse()` for specific API calls
+- ❌ NEVER use `waitForTimeout()` without a state-based alternative
+- ❌ NEVER assume badge counts will increment (they can decrement!)
+- ❌ NEVER assume modified status (drag-back removes it)
 
 ---
 

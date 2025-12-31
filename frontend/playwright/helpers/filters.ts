@@ -22,7 +22,9 @@ async function selectFilter(
   await openFilterDrawer(page);
 
   // Find and check the checkbox
-  const checkbox = page.locator(`[data-testid="filter-${filterType}-${value}"]`);
+  const checkbox = page.locator(
+    `[data-testid="filter-${filterType}-${value}"]`
+  );
   await checkbox.check();
 
   // Verify checkbox is checked

@@ -80,3 +80,32 @@ export {
   readExportedFile,
   verifyExportedColumns,
 } from "./exportValidation";
+export {
+  toggleRightPanel,
+  verifyPanelCollapsed,
+  verifyPanelExpanded,
+  resizePanelToWidth,
+  switchPanelTab,
+  expandGridBox,
+  collapseGridBox,
+  verifyBoxExpanded,
+  verifyBoxCollapsed,
+} from "./panelInteractions";
+export {
+  openSettingsDialog,
+  closeSettingsDialog,
+  changeLanguage,
+  verifyLanguage,
+} from "./settings";
+export {
+  zoomIn,
+  zoomOut,
+  resetZoom,
+  getZoomLevel,
+  verifyZoomLevel,
+} from "./zoom";
+export {
+  getDistributionData,
+  verifyDistributionPercentagesSum,
+  type DistributionRow,
+} from "./statistics";

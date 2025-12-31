@@ -11,6 +11,7 @@
  */
 
 import { test, expect } from "../fixtures/worker-backend";
+import path from "path";
 import {
   loadSampleDataFromEmptyState,
   loadSampleData,
@@ -212,7 +213,6 @@ test.describe("Data Loading Tests", () => {
     ).toBeVisible();
 
     // Select the Excel file from fixtures
-    const path = require("path");
     const fixturePath = path.join(
       __dirname,
       "..",

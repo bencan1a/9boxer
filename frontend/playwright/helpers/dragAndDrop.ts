@@ -44,6 +44,9 @@ export async function dragEmployeeToPosition(
       );
       await employeeCard.waitFor({ state: "visible", timeout: 5000 });
 
+      // Scroll into view if needed (handles expanded boxes and scrollable containers)
+      await employeeCard.scrollIntoViewIfNeeded();
+
       // Get the bounding box of the employee card
       const cardBox = await employeeCard.boundingBox();
       if (!cardBox) {

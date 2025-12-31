@@ -48,7 +48,7 @@ export async function applyFlag(
 
   // Click on the flag picker autocomplete input to open dropdown
   const flagPicker = page.locator('[data-testid="flag-picker"]');
-  const input = flagPicker.locator('input');
+  const input = flagPicker.locator("input");
   await input.click();
 
   // Wait for the dropdown to open and the SPECIFIC flag option to appear
@@ -125,9 +125,7 @@ export async function removeFlag(
   await selectEmployee(page, employeeId);
 
   // Click remove button for the flag
-  const removeButton = page.locator(
-    `[data-testid="remove-flag-${flagName}"]`
-  );
+  const removeButton = page.locator(`[data-testid="remove-flag-${flagName}"]`);
   await removeButton.click();
 
   // Verify flag is removed from Flags section

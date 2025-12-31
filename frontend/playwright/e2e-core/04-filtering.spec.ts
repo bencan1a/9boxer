@@ -131,7 +131,9 @@ test.describe("Section 4: Filtering Tests", () => {
 
     // ✅ Employee count updates (e.g., "45 of 200 employees")
     // The count display should show filtered vs total
-    const countPattern = new RegExp(`${filteredCount}\\s+of\\s+${initialCount}`);
+    const countPattern = new RegExp(
+      `${filteredCount}\\s+of\\s+${initialCount}`
+    );
     await expect(page.getByText(countPattern)).toBeVisible();
 
     // ✅ Grid boxes update counts accordingly
@@ -155,7 +157,7 @@ test.describe("Section 4: Filtering Tests", () => {
 
     // Verify button is initially inactive (no badge dot visible)
     const badge = page.locator('[data-testid="filter-badge"]');
-    const badgeDot = badge.locator('.MuiBadge-badge');
+    const badgeDot = badge.locator(".MuiBadge-badge");
     // Badge dot should have the invisible class when no filters are active
     await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
 
@@ -169,7 +171,9 @@ test.describe("Section 4: Filtering Tests", () => {
 
     // Close filters panel
     await page.locator('[data-testid="filter-close-button"]').click();
-    await expect(page.locator('[data-testid="filter-drawer"]')).not.toBeVisible();
+    await expect(
+      page.locator('[data-testid="filter-drawer"]')
+    ).not.toBeVisible();
 
     // ✅ Filters button displays orange dot or indicator
     // ✅ Indicator is clearly visible and distinct from inactive state
@@ -297,7 +301,7 @@ test.describe("Section 4: Filtering Tests", () => {
 
     // Verify filter badge is visible (not invisible)
     const filterBadge = page.locator('[data-testid="filter-badge"]');
-    const badgeDot = filterBadge.locator('.MuiBadge-badge');
+    const badgeDot = filterBadge.locator(".MuiBadge-badge");
     await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
 
     // Open filters panel and click "Clear All"

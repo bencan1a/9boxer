@@ -170,12 +170,16 @@ test.describe("Employee Selection & Right Panel Navigation", () => {
     await expect(statisticsPanel).toBeVisible();
 
     // Look for distribution heading
-    await expect(statisticsPanel.getByText(/distribution/i).first()).toBeVisible();
+    await expect(
+      statisticsPanel.getByText(/distribution/i).first()
+    ).toBeVisible();
 
     // ✅ Visual bar chart displays distribution
     // ✅ Summary cards show: Total employees, Average ratings, Distribution health metrics
     // Look for the total employees card by test-id
-    const totalEmployeesCard = page.locator('[data-testid="total-employees-card-value"]');
+    const totalEmployeesCard = page.locator(
+      '[data-testid="total-employees-card-value"]'
+    );
     await expect(totalEmployeesCard).toBeVisible();
     await expect(totalEmployeesCard).toContainText("200");
 
@@ -213,7 +217,9 @@ test.describe("Employee Selection & Right Panel Navigation", () => {
     // ✅ At least one pattern/anomaly is detected
     // Sample data is designed to have detectable patterns
     // Verify we have analysis content
-    await expect(intelligencePanel.getByText(/Analysis/i).first()).toBeVisible();
+    await expect(
+      intelligencePanel.getByText(/Analysis/i).first()
+    ).toBeVisible();
 
     // ✅ Anomaly cards show clear descriptions of detected patterns
     // (Verified by presence of analysis sections)

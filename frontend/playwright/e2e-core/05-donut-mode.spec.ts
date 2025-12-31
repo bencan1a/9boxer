@@ -33,7 +33,9 @@ test.describe("Test 5.1 - Donut Mode", () => {
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
   });
 
-  test("should switch to Donut Mode and move employee from Box 5", async ({ page }) => {
+  test("should switch to Donut Mode and move employee from Box 5", async ({
+    page,
+  }) => {
     // ✅ Success Criterion: Donut Mode toggle/button activates successfully
     const donutModeButton = page.locator('[data-testid="donut-view-button"]');
     await expect(donutModeButton).toBeVisible();
@@ -63,7 +65,9 @@ test.describe("Test 5.1 - Donut Mode", () => {
     expect(employeeId).toBeGreaterThan(0);
 
     // Get employee name for verification later
-    const employeeCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeCard = page.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeCard).toBeVisible();
     const employeeCardText = await employeeCard.textContent();
     const employeeName = employeeCardText?.split("\n")[0].trim();
@@ -78,7 +82,7 @@ test.describe("Test 5.1 - Donut Mode", () => {
     await dragEmployeeToPosition(page, employeeId, 6, {
       isDonutMode: true,
       expectModified: false, // Donut mode uses different visual indicators
-      maxRetries: 3
+      maxRetries: 3,
     });
     await waitForUiSettle(page);
 
@@ -88,7 +92,9 @@ test.describe("Test 5.1 - Donut Mode", () => {
     await expect(gridBox6).toBeVisible();
 
     // Verify employee is in Box 6 and visible
-    const employeeInBox6 = gridBox6.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeInBox6 = gridBox6.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeInBox6).toBeVisible();
     await expect(employeeInBox6).toContainText(employeeName!);
 
@@ -103,12 +109,15 @@ test.describe("Test 5.1 - Donut Mode", () => {
     await waitForUiSettle(page);
 
     // Verify Donut mode is deactivated
-    const donutModeInactive = await donutModeButton.getAttribute("aria-pressed");
+    const donutModeInactive =
+      await donutModeButton.getAttribute("aria-pressed");
     expect(donutModeInactive).toBe("false");
 
     // Verify employee is still visible in the grid after exiting Donut mode
     // In normal mode, employee shows in original position (Box 5) since donut placement doesn't change base position
-    const employeeBackInBox5 = gridBox5.locator(`[data-testid="employee-card-${employeeId}"]`);
+    const employeeBackInBox5 = gridBox5.locator(
+      `[data-testid="employee-card-${employeeId}"]`
+    );
     await expect(employeeBackInBox5).toBeVisible();
     await expect(employeeBackInBox5).toContainText(employeeName!);
   });
