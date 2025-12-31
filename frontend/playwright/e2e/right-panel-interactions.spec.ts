@@ -39,7 +39,7 @@ async function findAnyEmployee(page: Page): Promise<{
 
 test.describe("Right Panel Interactions", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to app and load sample data
+    // Navigate to app and load sample data for each test (ensures isolation)
     await page.goto("/");
     await loadSampleData(page);
 
@@ -326,13 +326,14 @@ test.describe("Right Panel Interactions", () => {
       );
       await page.mouse.up();
 
-      // Wait for panel resize animation to complete (0.2s transition in panel-animations.css)
-      await page.waitForTimeout(300);
-
-      // Get resized width - wait for layout to settle
+      // Wait for panel resize to complete (event-driven)
       await expect(async () => {
         const resizedBox = await rightPanel.boundingBox();
         expect(resizedBox).not.toBeNull();
+        // Verify width has changed significantly from initial
+        expect(Math.abs(resizedBox!.width - initialBox!.width)).toBeGreaterThan(
+          50
+        );
       }).toPass();
       const resizedBox = await rightPanel.boundingBox();
       const resizedWidth = resizedBox!.width;
@@ -341,8 +342,8 @@ test.describe("Right Panel Interactions", () => {
       await changesTab.click();
       await expect(changesTab).toHaveAttribute("aria-selected", "true");
 
-      // Wait for any tab content layout changes to settle
-      await page.waitForTimeout(100);
+      // Wait for tab content to be visible (event-driven)
+      await expect(page.locator('[data-testid="tab-panel-1"]')).toBeVisible();
 
       // Verify width is maintained
       const afterTabBox = await rightPanel.boundingBox();

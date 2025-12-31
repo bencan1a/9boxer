@@ -169,7 +169,12 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
         />
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-          <Button onClick={handleClose} color="inherit" disabled={isLoading}>
+          <Button
+            onClick={handleClose}
+            color="inherit"
+            disabled={isLoading}
+            data-testid="apply-changes-cancel-button"
+          >
             {t("common.cancel", "Cancel")}
           </Button>
           <Button
@@ -180,6 +185,7 @@ export const ApplyChangesDialog: React.FC<ApplyChangesDialogProps> = ({
             startIcon={
               isLoading ? <CircularProgress size={20} /> : <SaveIcon />
             }
+            data-testid="apply-changes-apply-button"
           >
             {isLoading
               ? t("dialogs.applyChanges.applying", "Applying...")

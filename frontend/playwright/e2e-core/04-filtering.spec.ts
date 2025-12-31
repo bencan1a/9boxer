@@ -1,0 +1,328 @@
+/**
+ * E2E Core Tests - Section 4: Filtering (Tests 4.1-4.5)
+ *
+ * Validates filter functionality based on the test specification in
+ * /workspaces/9boxer/e2e-test-specification.md (lines 298-397)
+ *
+ * Tests:
+ * - 4.1: Open Filters Panel
+ * - 4.2: Apply Location Filter
+ * - 4.3: Filters Button Shows Active State
+ * - 4.4: Employee Count Updates with Filter
+ * - 4.5: Clear Filters
+ */
+
+import { test, expect } from "../fixtures";
+import {
+  loadSampleData,
+  openFilterDrawer,
+  getVisibleEmployeeCount,
+} from "../helpers";
+
+test.describe("Section 4: Filtering Tests", () => {
+  test.beforeEach(async ({ page }) => {
+    // Navigate to app and load sample data
+    await page.goto("/");
+    await loadSampleData(page);
+
+    // Verify grid is loaded with employees
+    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+    const employeeCards = page.locator('[data-testid^="employee-card-"]');
+    await expect(employeeCards.first()).toBeVisible();
+  });
+
+  /**
+   * Test 4.1 - Open Filters Panel
+   *
+   * Success Criteria:
+   * - ✅ Filter drawer/panel opens from left side
+   * - ✅ Filter categories are visible (Location, Function, Level, etc.)
+   * - ✅ All filter options are displayed
+   * - ✅ "Clear All" button is visible
+   * - ✅ Panel can be closed (X button or outside click)
+   */
+  test("4.1 - Open Filters Panel", async ({ page }) => {
+    // Click the "Filters" button in toolbar
+    await page.locator('[data-testid="filter-button"]').click();
+
+    // ✅ Filter drawer/panel opens from left side
+    const filterDrawer = page.locator('[data-testid="filter-drawer"]');
+    await expect(filterDrawer).toBeVisible();
+
+    // ✅ Filter categories are visible
+    // Job Levels section
+    await expect(
+      page.locator('[data-testid="filter-accordion-job-levels"]')
+    ).toBeVisible();
+
+    // Job Functions section
+    await expect(
+      page.locator('[data-testid="filter-accordion-job-functions"]')
+    ).toBeVisible();
+
+    // Locations section
+    await expect(
+      page.locator('[data-testid="filter-accordion-locations"]')
+    ).toBeVisible();
+
+    // Managers section
+    await expect(
+      page.locator('[data-testid="filter-accordion-managers"]')
+    ).toBeVisible();
+
+    // ✅ All filter options are displayed
+    // Check that at least one checkbox is visible (sections are expanded by default)
+    const checkboxes = page.locator('input[type="checkbox"]');
+    const checkboxCount = await checkboxes.count();
+    expect(checkboxCount).toBeGreaterThan(0);
+
+    // ✅ "Clear All" button is visible
+    await expect(
+      page.locator('[data-testid="clear-filter-button"]')
+    ).toBeVisible();
+
+    // ✅ Panel can be closed with X button
+    await page.locator('[data-testid="filter-close-button"]').click();
+    await expect(filterDrawer).not.toBeVisible();
+  });
+
+  /**
+   * Test 4.2 - Apply Location Filter
+   *
+   * Success Criteria:
+   * - ✅ Grid updates to show only USA employees
+   * - ✅ Employee count updates (e.g., "45 of 200 employees")
+   * - ✅ Non-USA employees are hidden/removed from grid
+   * - ✅ USA filter shows as selected/active in panel
+   * - ✅ Grid boxes update counts accordingly
+   */
+  test("4.2 - Apply Location Filter", async ({ page }) => {
+    // Get initial employee count
+    const initialCount = await getVisibleEmployeeCount(page);
+    expect(initialCount).toBeGreaterThanOrEqual(190); // Should have ~200 employees
+
+    // Open filter drawer
+    await openFilterDrawer(page);
+
+    // Under "Location" section, select "USA"
+    // The checkbox test ID follows pattern: filter-checkbox-locations-usa
+    const usaCheckbox = page.locator(
+      '[data-testid="filter-checkbox-locations-usa"]'
+    );
+    await usaCheckbox.check();
+
+    // ✅ USA filter shows as selected/active in panel
+    await expect(usaCheckbox).toBeChecked();
+
+    // Close drawer to see results
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Wait for grid to update
+    await page.waitForLoadState("networkidle");
+
+    // ✅ Grid updates to show only USA employees
+    // ✅ Non-USA employees are hidden/removed from grid
+    const filteredCount = await getVisibleEmployeeCount(page);
+    expect(filteredCount).toBeLessThan(initialCount); // Should be fewer than all employees
+    expect(filteredCount).toBeGreaterThan(0); // But should have some USA employees
+
+    // ✅ Employee count updates (e.g., "45 of 200 employees")
+    // The count display should show filtered vs total
+    const countPattern = new RegExp(
+      `${filteredCount}\\s+of\\s+${initialCount}`
+    );
+    await expect(page.getByText(countPattern)).toBeVisible();
+
+    // ✅ Grid boxes update counts accordingly
+    // Verify that the grid still shows employee cards
+    const employeeCards = page.locator('[data-testid^="employee-card-"]');
+    const visibleCards = await employeeCards.count();
+    expect(visibleCards).toBe(filteredCount);
+  });
+
+  /**
+   * Test 4.3 - Filters Button Shows Active State
+   *
+   * Success Criteria:
+   * - ✅ Filters button displays orange dot or indicator
+   * - ✅ Indicator is clearly visible and distinct from inactive state
+   * - ✅ Indicator persists while filters remain active
+   * - ✅ Indicator disappears when all filters are cleared
+   */
+  test("4.3 - Filters Button Shows Active State", async ({ page }) => {
+    // Verify button is initially inactive (no badge dot visible)
+    const badge = page.locator('[data-testid="filter-badge"]');
+    const badgeDot = badge.locator(".MuiBadge-badge");
+    // Badge dot should have the invisible class when no filters are active
+    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+
+    // Apply a filter (Location: USA)
+    await openFilterDrawer(page);
+    const usaCheckbox = page.locator(
+      '[data-testid="filter-checkbox-locations-usa"]'
+    );
+    await usaCheckbox.check();
+    await expect(usaCheckbox).toBeChecked();
+
+    // Close filters panel
+    await page.locator('[data-testid="filter-close-button"]').click();
+    await expect(
+      page.locator('[data-testid="filter-drawer"]')
+    ).not.toBeVisible();
+
+    // ✅ Filters button displays orange dot or indicator
+    // ✅ Indicator is clearly visible and distinct from inactive state
+    // Badge dot should NOT have the invisible class when filters are active
+    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+
+    // ✅ Indicator persists while filters remain active
+    // Open and close drawer again - badge should still be there
+    await openFilterDrawer(page);
+    await page.locator('[data-testid="filter-close-button"]').click();
+    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+
+    // ✅ Indicator disappears when all filters are cleared
+    await openFilterDrawer(page);
+    await page.locator('[data-testid="clear-filter-button"]').click();
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Badge dot should now have the invisible class again
+    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+  });
+
+  /**
+   * Test 4.4 - Employee Count Updates with Filter
+   *
+   * Success Criteria:
+   * - ✅ Count shows filtered employees vs. total (e.g., "45 of 200 employees")
+   * - ✅ Count updates immediately when filter is applied
+   * - ✅ Count is accurate (matches visible employees)
+   * - ✅ Count returns to total when filters are cleared
+   */
+  test("4.4 - Employee Count Updates with Filter", async ({ page }) => {
+    // Note total employee count display
+    const initialCount = await getVisibleEmployeeCount(page);
+    expect(initialCount).toBeGreaterThanOrEqual(190); // ~200 employees
+
+    // Verify initial count shows total (just the number, no "of")
+    await expect(
+      page.getByText(new RegExp(`${initialCount}\\s+employees`))
+    ).toBeVisible();
+
+    // Apply a filter (Location: USA)
+    await openFilterDrawer(page);
+    const usaCheckbox = page.locator(
+      '[data-testid="filter-checkbox-locations-usa"]'
+    );
+    await usaCheckbox.check();
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Wait for grid to update
+    await page.waitForLoadState("networkidle");
+
+    // ✅ Count updates immediately when filter is applied
+    const filteredCount = await getVisibleEmployeeCount(page);
+
+    // ✅ Count shows filtered employees vs. total (e.g., "45 of 200 employees")
+    const filteredCountPattern = new RegExp(
+      `${filteredCount}\\s+of\\s+${initialCount}\\s+employees`
+    );
+    await expect(page.getByText(filteredCountPattern)).toBeVisible();
+
+    // ✅ Count is accurate (matches visible employees)
+    const visibleCards = await page
+      .locator('[data-testid^="employee-card-"]')
+      .count();
+    expect(visibleCards).toBe(filteredCount);
+
+    // ✅ Count returns to total when filters are cleared
+    await openFilterDrawer(page);
+    await page.locator('[data-testid="clear-filter-button"]').click();
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Wait for grid to update
+    await page.waitForLoadState("networkidle");
+
+    // Should show all employees again
+    const finalCount = await getVisibleEmployeeCount(page);
+    expect(finalCount).toBe(initialCount);
+
+    // Count display should show just total (no "of")
+    await expect(
+      page.getByText(new RegExp(`${finalCount}\\s+employees`))
+    ).toBeVisible();
+  });
+
+  /**
+   * Test 4.5 - Clear Filters
+   *
+   * Success Criteria:
+   * - ✅ All filter selections are cleared
+   * - ✅ Grid shows all 200 employees again
+   * - ✅ Employee count returns to "200 employees"
+   * - ✅ Filters button active indicator disappears
+   * - ✅ No filters show as selected in panel
+   */
+  test("4.5 - Clear Filters", async ({ page }) => {
+    const initialCount = await getVisibleEmployeeCount(page);
+
+    // Apply multiple filters
+    await openFilterDrawer(page);
+
+    // Select USA location
+    const usaCheckbox = page.locator(
+      '[data-testid="filter-checkbox-locations-usa"]'
+    );
+    await usaCheckbox.check();
+    await expect(usaCheckbox).toBeChecked();
+
+    // Select a job level (first available)
+    const firstLevelCheckbox = page
+      .locator('[data-testid^="filter-checkbox-job-levels-"]')
+      .first();
+    await firstLevelCheckbox.check();
+    await expect(firstLevelCheckbox).toBeChecked();
+
+    // Close drawer to see filter effects
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Wait for filters to apply
+    await page.waitForLoadState("networkidle");
+
+    // Verify filters are active
+    const filteredCount = await getVisibleEmployeeCount(page);
+    expect(filteredCount).toBeLessThan(initialCount);
+
+    // Verify filter badge is visible (not invisible)
+    const filterBadge = page.locator('[data-testid="filter-badge"]');
+    const badgeDot = filterBadge.locator(".MuiBadge-badge");
+    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+
+    // Open filters panel and click "Clear All"
+    await openFilterDrawer(page);
+    await page.locator('[data-testid="clear-filter-button"]').click();
+
+    // ✅ All filter selections are cleared
+    // ✅ No filters show as selected in panel
+    await expect(usaCheckbox).not.toBeChecked();
+    await expect(firstLevelCheckbox).not.toBeChecked();
+
+    // Close drawer
+    await page.locator('[data-testid="filter-close-button"]').click();
+
+    // Wait for grid to update
+    await page.waitForLoadState("networkidle");
+
+    // ✅ Grid shows all employees again
+    const finalCount = await getVisibleEmployeeCount(page);
+    expect(finalCount).toBe(initialCount);
+
+    // ✅ Employee count returns to total
+    await expect(
+      page.getByText(new RegExp(`${finalCount}\\s+employees`))
+    ).toBeVisible();
+
+    // ✅ Filters button active indicator disappears
+    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+  });
+});

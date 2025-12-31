@@ -12,6 +12,9 @@ import {
   toggleDonutMode,
   getEmployeeIdFromCard,
   waitForUiSettle,
+  createChange,
+  createMultipleChanges,
+  getEmployeeIdFromPosition,
 } from "../helpers";
 
 test.describe("Donut Mode Workflow", () => {
@@ -199,46 +202,17 @@ test.describe("Donut Mode Workflow", () => {
     // 2. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
-    // 3. Make a donut placement
-    const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-
-    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
+    // 3. Make a donut placement via API (testing export, not drag)
+    const employeeId = await getEmployeeIdFromPosition(page, 5);
+    await createChange(page, employeeId, 9, { isDonutMode: true });
 
     // 4. Toggle donut mode OFF
     await toggleDonutMode(page, false);
     await waitForUiSettle(page, 1.0);
 
-    // 5. Make a regular modification to enable export
-    // Find a different employee in a different position (not position 5 where first employee is)
-
-    // Try to find an employee in position 1, 2, or 3 (more likely to have employees)
-    let anotherEmployeeId: number | null = null;
-    for (const pos of [1, 2, 3, 6, 9]) {
-      const gridBox = page.locator(`[data-testid="grid-box-${pos}"]`);
-      const employees = gridBox.locator('[data-testid^="employee-card-"]');
-      const count = await employees.count();
-
-      if (count > 0) {
-        const firstEmp = employees.first();
-        const empId = await getEmployeeIdFromCard(firstEmp);
-        if (empId !== employeeId) {
-          anotherEmployeeId = empId;
-          break;
-        }
-      }
-    }
-
-    // Only proceed if we found a different employee
-    if (anotherEmployeeId !== null) {
-      await dragEmployeeToPosition(page, anotherEmployeeId, 6);
-    } else {
-      // If no other employee found, move the first employee again (regular move this time)
-      await dragEmployeeToPosition(page, employeeId, 6);
-    }
+    // 5. Make a regular modification to enable export via API
+    const anotherEmployeeId = await getEmployeeIdFromPosition(page, 1);
+    await createChange(page, anotherEmployeeId, 6);
 
     // 6. Verify file menu badge shows changes
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
@@ -289,14 +263,9 @@ test.describe("Donut Mode Workflow", () => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
-    // 2. Find and move an employee in donut mode
-    const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-
-    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
+    // 2. Make a donut placement via API (testing notes feature, not drag)
+    const employeeId = await getEmployeeIdFromPosition(page, 5);
+    await createChange(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Open employee details to add notes
     // Click on the employee card
@@ -363,15 +332,9 @@ test.describe("Donut Mode Workflow", () => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
-    // 2. Make a donut placement
-    const gridBox5 = page.locator('[data-testid="grid-box-5"]');
-    const firstEmployee = gridBox5
-      .locator('[data-testid^="employee-card-"]')
-      .first();
-    const employeeId = await getEmployeeIdFromCard(firstEmployee);
-
-    // Move from position 5 to position 9
-    await dragEmployeeToPosition(page, employeeId, 9, { isDonutMode: true });
+    // 2. Make a donut placement via API (testing labels, not drag)
+    const employeeId = await getEmployeeIdFromPosition(page, 5);
+    await createChange(page, employeeId, 9, { isDonutMode: true });
 
     // 3. Verify employee shows in position 9 with donut label
     const gridBox9 = page.locator('[data-testid="grid-box-9"]');
@@ -427,7 +390,7 @@ test.describe("Donut Mode Workflow", () => {
     // 1. Toggle donut mode ON
     await toggleDonutMode(page, true);
 
-    // 2. Make multiple donut placements
+    // 2. Get two employees from position 5 and create multiple donut placements via API
     const gridBox5 = page.locator('[data-testid="grid-box-5"]');
     const position5Employees = gridBox5.locator(
       '[data-testid^="employee-card-"]'
@@ -436,7 +399,7 @@ test.describe("Donut Mode Workflow", () => {
 
     // Move at least 2 employees if available
     if (count >= 2) {
-      // Collect employee IDs before moving
+      // Collect employee IDs
       const employee1Id = await getEmployeeIdFromCard(
         position5Employees.nth(0)
       );
@@ -444,19 +407,11 @@ test.describe("Donut Mode Workflow", () => {
         position5Employees.nth(1)
       );
 
-      // Move first employee
-      await dragEmployeeToPosition(page, employee1Id, 9, { isDonutMode: true });
-      // Wait for first employee to appear in position 9
-      await expect(
-        page.locator(`[data-testid="employee-card-${employee1Id}"]`)
-      ).toBeVisible();
-
-      // Move second employee
-      await dragEmployeeToPosition(page, employee2Id, 6, { isDonutMode: true });
-      // Wait for second employee to appear in position 6
-      await expect(
-        page.locator(`[data-testid="employee-card-${employee2Id}"]`)
-      ).toBeVisible();
+      // Create multiple donut placements via API (testing multi-placement, not drag)
+      await createMultipleChanges(page, [
+        { employeeId: employee1Id, newPosition: 9, isDonutMode: true },
+        { employeeId: employee2Id, newPosition: 6, isDonutMode: true },
+      ]);
 
       // 3. Verify both employees show with ghostly styling
       const employee1Card = page.locator(

@@ -69,6 +69,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       fullWidth
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-description"
+      data-testid="confirm-dialog"
     >
       <DialogTitle id="confirm-dialog-title">
         <Box
@@ -84,6 +85,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={onClose}
             size="small"
             disabled={loading}
+            data-testid="confirm-dialog-close-button"
           >
             <CloseIcon />
           </IconButton>
@@ -100,7 +102,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           pb: theme.tokens.spacing.md / 8, // Convert 16px to 2
         }}
       >
-        <Button onClick={onClose} disabled={loading}>
+        <Button
+          onClick={onClose}
+          disabled={loading}
+          data-testid="confirm-dialog-cancel-button"
+        >
           {cancelLabel}
         </Button>
         <Button
@@ -109,6 +115,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           color={confirmColor}
           disabled={loading}
           autoFocus
+          data-testid="confirm-dialog-confirm-button"
         >
           {confirmLabel}
         </Button>

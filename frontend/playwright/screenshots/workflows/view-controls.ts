@@ -240,6 +240,10 @@ export async function generateSimplifiedAppBar(
  *
  * Shows the application in fullscreen mode
  *
+ * Note: True fullscreen cannot be captured in automated tests (browser API restriction).
+ * This captures the normal view which is what users see before pressing F11.
+ * The documentation should note to press F11 for actual fullscreen.
+ *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
  */
@@ -247,18 +251,29 @@ export async function generateFullscreenMode(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Load sample data
-  await loadSampleData(page);
+  // Navigate to app if not already there
+  const currentUrl = page.url();
+  if (!currentUrl.includes("localhost:5173")) {
+    await page.goto("http://localhost:5173");
+  }
+
+  // Wait for app to load
+  await waitForUiSettle(page, 1.0);
+
+  // Check if we need to load sample data
+  const employeeCards = page.locator('[data-testid^="employee-card-"]');
+  const count = await employeeCards.count();
+
+  if (count === 0) {
+    // Load sample data using the helper
+    await loadSampleData(page);
+  }
 
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
 
-  // Wait for UI to settle
+  // Wait for UI to fully stabilize
   await waitForUiSettle(page, 0.5);
-
-  // Note: True fullscreen cannot be captured in automated tests
-  // This captures the normal view which is what users will see before entering fullscreen
-  // The documentation should note to press F11 for actual fullscreen
 
   // Take full page screenshot
   await page.screenshot({

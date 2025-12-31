@@ -46,9 +46,11 @@ def test_export_when_mode_update_original_then_writes_to_original_path(
 
 
 def test_export_when_mode_save_new_then_writes_to_new_path(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path, tmp_path: Path
+    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test export with mode='save_new' writes to new file path."""
+    import tempfile  # noqa: PLC0415
+
     # Upload file first
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -60,20 +62,29 @@ def test_export_when_mode_save_new_then_writes_to_new_path(
         }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
-    # Export with mode='save_new' to a new path
-    new_path = str(tmp_path / "new_export.xlsx")
-    response = test_client.post(
-        "/api/session/export",
-        json={"mode": "save_new", "new_path": new_path},
-        headers=auth_headers,
-    )
+    # Export with mode='save_new' to a new path (use home dir for security validation)
+    # Create a temp file within home directory to pass path validation
+    with tempfile.NamedTemporaryFile(
+        suffix=".xlsx", dir=Path.home(), delete=False
+    ) as tmp_file:
+        new_path = tmp_file.name
 
-    assert response.status_code == 200
-    data = response.json()
-    assert data["success"] is True
-    assert data["file_path"] == new_path
-    assert "message" in data
-    assert Path(new_path).exists()
+    try:
+        response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": new_path},
+            headers=auth_headers,
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        assert data["file_path"] == new_path
+        assert "message" in data
+        assert Path(new_path).exists()
+    finally:
+        # Clean up temp file
+        Path(new_path).unlink(missing_ok=True)
 
 
 def test_export_when_mode_save_new_without_new_path_then_returns_error(
@@ -296,9 +307,11 @@ def test_export_when_path_too_long_then_returns_422(
 
 
 def test_export_when_valid_xlsx_extension_then_accepts(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path, tmp_path: Path
+    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test .xlsx extension is accepted."""
+    import tempfile  # noqa: PLC0415
+
     # Upload first
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -310,23 +323,32 @@ def test_export_when_valid_xlsx_extension_then_accepts(
         }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
-    # Valid path with .xlsx
-    new_path = str(tmp_path / "output.xlsx")
+    # Valid path with .xlsx (use home dir for security validation)
+    with tempfile.NamedTemporaryFile(
+        suffix=".xlsx", dir=Path.home(), delete=False
+    ) as tmp_file:
+        new_path = tmp_file.name
 
-    response = test_client.post(
-        "/api/session/export",
-        json={"mode": "save_new", "new_path": new_path},
-        headers=auth_headers,
-    )
+    try:
+        response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": new_path},
+            headers=auth_headers,
+        )
 
-    # Should not get validation error (might get other errors, but not 422)
-    assert response.status_code != 422
+        # Should not get validation error (might get other errors, but not 422)
+        assert response.status_code != 422
+    finally:
+        # Clean up temp file
+        Path(new_path).unlink(missing_ok=True)
 
 
 def test_export_when_valid_xls_extension_then_accepts(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path, tmp_path: Path
+    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
 ) -> None:
     """Test .xls extension is accepted."""
+    import tempfile  # noqa: PLC0415
+
     # Upload first
     with open(sample_excel_file, "rb") as f:  # noqa: PTH123
         files = {
@@ -338,17 +360,24 @@ def test_export_when_valid_xls_extension_then_accepts(
         }
         test_client.post("/api/session/upload", files=files, headers=auth_headers)
 
-    # Valid path with .xls
-    new_path = str(tmp_path / "output.xls")
+    # Valid path with .xls (use home dir for security validation)
+    with tempfile.NamedTemporaryFile(
+        suffix=".xls", dir=Path.home(), delete=False
+    ) as tmp_file:
+        new_path = tmp_file.name
 
-    response = test_client.post(
-        "/api/session/export",
-        json={"mode": "save_new", "new_path": new_path},
-        headers=auth_headers,
-    )
+    try:
+        response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": new_path},
+            headers=auth_headers,
+        )
 
-    # Should not get validation error
-    assert response.status_code != 422
+        # Should not get validation error
+        assert response.status_code != 422
+    finally:
+        # Clean up temp file
+        Path(new_path).unlink(missing_ok=True)
 
 
 def test_export_when_path_traversal_attack_then_returns_error(

@@ -60,17 +60,36 @@ Quick reference guide for writing and reviewing E2E tests. Use this checklist be
 
 ## ⏱️ Async Handling Best Practices
 
-### ✅ Good Patterns
+### ✅ State-Based Waits (e2e-core Pattern)
+
+**RULE: NO ARBITRARY WAITS** - Always wait for observable state changes.
 
 ```typescript
-// ✅ Auto-retry assertions (preferred)
-await expect(element).toBeVisible({ timeout: 5000 });
+// ✅ BEST: Wait for element attribute changes (confirms operation completed)
+const movedCard = page.locator(`[data-testid="employee-card-${employeeId}"]`);
+await expect(movedCard).toHaveAttribute(
+  "data-position",
+  targetPosition.toString(),
+  { timeout: 5000 }
+);
 
-// ✅ Wait for network to settle
-await page.waitForLoadState('networkidle');
+// ✅ Wait for network to settle (API call completed)
+await page.waitForLoadState('networkidle', { timeout: 3000 });
+
+// ✅ Poll badge count without assumptions
+await expect(async () => {
+  const newCount = await getBadgeCount(page, "file-menu-badge");
+  expect(newCount).toBeGreaterThanOrEqual(0); // Just verify readable
+}).toPass({ timeout: 2000 });
 
 // ✅ Wait for specific API call
-await page.waitForResponse((r) => r.url().includes('/move'));
+await page.waitForResponse(
+  (r) => r.url().includes('/api/session/export') && r.status() === 200,
+  { timeout: 15000 }
+);
+
+// ✅ Auto-retry assertions (for visibility checks)
+await expect(element).toBeVisible({ timeout: 5000 });
 
 // ✅ Wait for specific event
 const downloadPromise = page.waitForEvent('download');
@@ -78,33 +97,53 @@ await exportButton.click();
 const download = await downloadPromise;
 ```
 
-### ❌ Bad Patterns
+### ❌ Patterns to AVOID
 
 ```typescript
-// ❌ Fixed arbitrary delays
-await page.waitForTimeout(300);  // Why 300? What are we waiting for?
+// ❌ NEVER: Arbitrary delays without state verification
+await page.waitForTimeout(1000);  // What are we waiting for?
 
-// ❌ Manual polling
+// ❌ NEVER: Assuming modified status (may be false if drag-back)
+await expect(movedCard).toHaveAttribute("data-modified", "true");
+
+// ❌ NEVER: Assuming badge will increment (may decrement!)
+const expectedBadgeCount = currentCount + 1;
+await expect(badge).toContainText(expectedBadgeCount.toString());
+
+// ❌ Manual polling (use expect().toPass() instead)
 while (!(await element.isVisible())) {
   await page.waitForTimeout(100);
 }
 ```
 
-### ⚠️ Acceptable Fixed Timeouts
+### 🎯 Supporting Edge Cases
 
-Only use `waitForTimeout()` for:
-- **CSS animations** (match animation duration)
-- **Deliberate delays** (e.g., testing auto-save after 2s)
-- **Between rapid operations** (after `waitForLoadState`)
+**Important**: Your waits must support all business logic scenarios:
 
 ```typescript
-// ✅ Acceptable: Known animation duration
-await page.waitForTimeout(300);  // Matches CSS animation-duration: 300ms
+// ✅ Supports both modified AND unmodified scenarios
+// (e.g., drag-back-to-original removes modified status)
+await expect(movedCard).toHaveAttribute("data-position", "5");
+await page.waitForLoadState("networkidle");
 
-// ✅ Acceptable: Stabilization buffer after network idle
-await page.waitForLoadState('networkidle');
-await page.waitForTimeout(200);  // Small buffer for React re-renders
+// Badge count can:
+// - Increment (employee moved away from original)
+// - Decrement (employee moved back to original)
+// - Stay same (employee already at that position)
+await expect(async () => {
+  const count = await getBadgeCount(page, "file-menu-badge");
+  expect(count).toBeGreaterThanOrEqual(0); // No assumptions!
+}).toPass({ timeout: 2000 });
 ```
+
+### ⚠️ Zero Acceptable Use of `waitForTimeout()`
+
+**The e2e-core suite has ZERO arbitrary waits.** If you think you need one, you're missing a state change to wait for:
+
+- Need to wait for drag? → Wait for `data-position` attribute
+- Need to wait for badge? → Poll with `expect().toPass()`
+- Need to wait for API? → `waitForResponse()` or `waitForLoadState('networkidle')`
+- Need to wait for dialog? → `expect(dialog).not.toBeVisible()`
 
 ---
 

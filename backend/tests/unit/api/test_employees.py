@@ -1,111 +1,99 @@
 """Tests for employees API endpoints."""
 
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.unit
 
 
-@pytest.fixture
-def session_with_data(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
-) -> dict[str, str]:
-    """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
-        files = {
-            "file": (
-                "test.xlsx",
-                f,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        }
-        test_client.post("/api/session/upload", files=files, headers=auth_headers)
-    return auth_headers
-
-
 def test_get_employees_when_session_exists_then_returns_all_employees(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees returns all employees with 200."""
-    response = test_client.get("/api/employees", headers=session_with_data)
+    response = test_client.get("/api/employees", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
     assert "employees" in data
     assert "total" in data
     assert "filtered" in data
-    assert len(data["employees"]) == 5
-    assert data["total"] == 5
-    assert data["filtered"] == 5
+    assert len(data["employees"]) == 50
+    assert data["total"] == 50
+    assert data["filtered"] == 50
 
 
 def test_get_employees_when_filter_by_level_then_filters_correctly(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees with level filter."""
-    response = test_client.get("/api/employees?levels=MT4", headers=session_with_data)
+    response = test_client.get("/api/employees?levels=MT4", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
-    assert data["filtered"] == 2
+    assert data["filtered"] > 0
+    assert data["filtered"] < 50
     assert all(emp["job_level"] == "MT4" for emp in data["employees"])
 
 
 def test_get_employees_when_filter_by_manager_then_filters_correctly(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees with manager filter."""
-    response = test_client.get("/api/employees?managers=Bob Manager", headers=session_with_data)
+    # Get all employees to find a manager name
+    all_response = test_client.get("/api/employees", headers=session_with_employees)
+    all_data = all_response.json()
+    first_manager = all_data["employees"][0]["manager"]
+
+    response = test_client.get(f"/api/employees?managers={first_manager}", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
-    assert data["filtered"] == 3
-    assert all(emp["manager"] == "Bob Manager" for emp in data["employees"])
+    assert data["filtered"] > 0
+    assert all(emp["manager"] == first_manager for emp in data["employees"])
 
 
 def test_get_employees_when_exclude_ids_then_excludes_correctly(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees with exclude_ids."""
-    response = test_client.get("/api/employees?exclude_ids=1,3", headers=session_with_data)
+    response = test_client.get("/api/employees?exclude_ids=1,3", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
-    assert data["filtered"] == 3
+    assert data["filtered"] == 48
     assert all(emp["employee_id"] not in [1, 3] for emp in data["employees"])
 
 
 def test_get_employee_by_id_when_exists_then_returns_employee(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees/{id} returns single employee with 200."""
-    response = test_client.get("/api/employees/1", headers=session_with_data)
+    response = test_client.get("/api/employees/1", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
     assert data["employee_id"] == 1
-    assert data["name"] == "Alice Smith"
+    assert "name" in data
+    assert len(data["name"]) > 0
 
 
 def test_get_employee_by_id_when_not_exists_then_returns_404(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees/{id} with invalid ID returns 404."""
-    response = test_client.get("/api/employees/999", headers=session_with_data)
+    response = test_client.get("/api/employees/999", headers=session_with_employees)
 
     assert response.status_code == 404
     assert "Employee 999 not found" in response.json()["detail"]
 
 
 def test_move_employee_when_valid_then_updates_position(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH /api/employees/{id}/move updates position with 200."""
     move_data = {"performance": "Medium", "potential": "Low"}
 
-    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -116,47 +104,47 @@ def test_move_employee_when_valid_then_updates_position(
 
 
 def test_move_employee_when_invalid_performance_then_returns_400(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH with invalid performance returns 400."""
     move_data = {"performance": "Invalid", "potential": "Medium"}
 
-    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     assert response.status_code == 400
     assert "Invalid performance or potential value" in response.json()["detail"]
 
 
 def test_move_employee_when_invalid_potential_then_returns_400(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH with invalid potential returns 400."""
     move_data = {"performance": "High", "potential": "Invalid"}
 
-    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     assert response.status_code == 400
     assert "Invalid performance or potential value" in response.json()["detail"]
 
 
 def test_move_employee_when_employee_not_exists_then_returns_404(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH with non-existent employee returns 404."""
     move_data = {"performance": "Medium", "potential": "Medium"}
 
     response = test_client.patch(
-        "/api/employees/999/move", json=move_data, headers=session_with_data
+        "/api/employees/999/move", json=move_data, headers=session_with_employees
     )
 
     assert response.status_code == 404
 
 
 def test_get_filter_options_when_session_exists_then_returns_options(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees/filter-options returns 200."""
-    response = test_client.get("/api/employees/filter-options", headers=session_with_data)
+    response = test_client.get("/api/employees/filter-options", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -170,30 +158,35 @@ def test_get_filter_options_when_session_exists_then_returns_options(
 
 
 def test_get_employees_when_multiple_filters_then_applies_all(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/employees with multiple filters applies all."""
     response = test_client.get(
-        "/api/employees?levels=MT4,MT5&performance=High", headers=session_with_data
+        "/api/employees?levels=MT4,MT5&performance=High", headers=session_with_employees
     )
 
     assert response.status_code == 200
     data = response.json()
     # Should match employees that are (MT4 or MT5) AND High performance
-    # Only Alice Smith (MT4, High) matches
-    assert data["filtered"] == 1
+    assert data["filtered"] > 0
+    assert data["filtered"] < 50
     for emp in data["employees"]:
         assert emp["job_level"] in ["MT4", "MT5"]
         assert emp["performance"] == "High"
 
 
 def test_move_employee_when_called_then_tracks_change(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that moving employee tracks the change."""
-    move_data = {"performance": "Low", "potential": "Low"}
+    # Get employee's original position first
+    get_response = test_client.get("/api/employees/1", headers=session_with_employees)
+    original = get_response.json()
+    old_perf = original["performance"]
+    old_pot = original["potential"]
 
-    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    move_data = {"performance": "Low", "potential": "Low"}
+    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -201,17 +194,17 @@ def test_move_employee_when_called_then_tracks_change(
     # Check change record
     assert "change" in data
     assert data["change"]["employee_id"] == 1
-    assert data["change"]["old_performance"] == "High"
-    assert data["change"]["old_potential"] == "High"
+    assert data["change"]["old_performance"] == old_perf
+    assert data["change"]["old_potential"] == old_pot
     assert data["change"]["new_performance"] == "Low"
     assert data["change"]["new_potential"] == "Low"
 
 
 def test_get_employees_when_invalid_exclude_ids_then_returns_400(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that invalid exclude_ids returns 400 (not 500)."""
-    response = test_client.get("/api/employees?exclude_ids=1,invalid,3", headers=session_with_data)
+    response = test_client.get("/api/employees?exclude_ids=1,invalid,3", headers=session_with_employees)
 
     assert response.status_code == 400
     data = response.json()
@@ -224,13 +217,13 @@ def test_get_employees_when_invalid_exclude_ids_then_returns_400(
 
 
 def test_move_employee_when_updates_grid_position_then_position_correct(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that moving employee updates grid position correctly."""
     # Move to M,M (position 5)
     move_data = {"performance": "Medium", "potential": "Medium"}
 
-    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -241,15 +234,20 @@ def test_move_employee_when_updates_grid_position_then_position_correct(
 
 
 def test_move_employee_donut_when_valid_request_then_updates_donut_position(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test moving employee in donut mode updates donut fields."""
-    # Employee 1 starts at H,H (position 9)
+    # Get employee's original position first
+    get_response = test_client.get("/api/employees/1", headers=session_with_employees)
+    original = get_response.json()
+    orig_grid_pos = original["grid_position"]
+    orig_perf = original["performance"]
+    orig_pot = original["potential"]
+
     # Move in donut mode to H,M (position 6)
     move_data = {"performance": "High", "potential": "Medium"}
-
     response = test_client.patch(
-        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_employees
     )
 
     assert response.status_code == 200
@@ -262,13 +260,13 @@ def test_move_employee_donut_when_valid_request_then_updates_donut_position(
     assert data["employee"]["donut_last_modified"] is not None
 
     # Original grid position should be unchanged
-    assert data["employee"]["grid_position"] == 9
-    assert data["employee"]["performance"] == "High"
-    assert data["employee"]["potential"] == "High"
+    assert data["employee"]["grid_position"] == orig_grid_pos
+    assert data["employee"]["performance"] == orig_perf
+    assert data["employee"]["potential"] == orig_pot
 
 
 def test_move_employee_donut_when_with_notes_then_saves_notes(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test donut move creates event."""
     # Note: This test covers basic donut move functionality
@@ -279,7 +277,7 @@ def test_move_employee_donut_when_with_notes_then_saves_notes(
     }
 
     response = test_client.patch(
-        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_employees
     )
 
     assert response.status_code == 200
@@ -295,44 +293,51 @@ def test_move_employee_donut_when_with_notes_then_saves_notes(
 
 
 def test_move_employee_donut_when_multiple_moves_then_updates_entry(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test multiple donut moves update single entry preserving original position."""
-    # First move: H,H (position 9) -> M,M (position 5)
+    # Get employee's original position first
+    get_response = test_client.get("/api/employees/1", headers=session_with_employees)
+    original = get_response.json()
+    orig_grid_pos = original["grid_position"]
+    orig_perf = original["performance"]
+    orig_pot = original["potential"]
+
+    # First move: original -> M,M (position 5)
     first_move = {"performance": "Medium", "potential": "Medium"}
     response1 = test_client.patch(
-        "/api/employees/1/move-donut", json=first_move, headers=session_with_data
+        "/api/employees/1/move-donut", json=first_move, headers=session_with_employees
     )
     assert response1.status_code == 200
     change1 = response1.json()["change"]
-    assert change1["old_position"] == 9
+    assert change1["old_position"] == orig_grid_pos
     assert change1["new_position"] == 5
 
     # Second move: M,M (position 5) -> L,L (position 1)
     second_move = {"performance": "Low", "potential": "Low"}
     response2 = test_client.patch(
-        "/api/employees/1/move-donut", json=second_move, headers=session_with_data
+        "/api/employees/1/move-donut", json=second_move, headers=session_with_employees
     )
     assert response2.status_code == 200
     change2 = response2.json()["change"]
 
-    # Should show original position (9) to final position (1)
-    assert change2["old_position"] == 9
+    # Should show original position to final position (1)
+    assert change2["old_position"] == orig_grid_pos
     assert change2["new_position"] == 1
-    assert change2["old_performance"] == "High"
-    assert change2["old_potential"] == "High"
+    assert change2["old_performance"] == orig_perf
+    assert change2["old_potential"] == orig_pot
     assert change2["new_performance"] == "Low"
     assert change2["new_potential"] == "Low"
 
 
 def test_move_employee_donut_when_moved_to_5_then_removes_entry(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test moving to position 5 (M,M) clears donut fields and removes change entry."""
     # First move employee away from position 5
     first_move = {"performance": "High", "potential": "Medium"}
     response1 = test_client.patch(
-        "/api/employees/1/move-donut", json=first_move, headers=session_with_data
+        "/api/employees/1/move-donut", json=first_move, headers=session_with_employees
     )
     assert response1.status_code == 200
     assert response1.json()["employee"]["donut_modified"] is True
@@ -340,7 +345,7 @@ def test_move_employee_donut_when_moved_to_5_then_removes_entry(
     # Move back to position 5 (M,M)
     second_move = {"performance": "Medium", "potential": "Medium"}
     response2 = test_client.patch(
-        "/api/employees/1/move-donut", json=second_move, headers=session_with_data
+        "/api/employees/1/move-donut", json=second_move, headers=session_with_employees
     )
     assert response2.status_code == 200
     employee = response2.json()["employee"]
@@ -355,13 +360,13 @@ def test_move_employee_donut_when_moved_to_5_then_removes_entry(
 
 
 def test_move_employee_donut_when_invalid_employee_then_404(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test donut move with non-existent employee returns 404."""
     move_data = {"performance": "Medium", "potential": "Medium"}
 
     response = test_client.patch(
-        "/api/employees/999/move-donut", json=move_data, headers=session_with_data
+        "/api/employees/999/move-donut", json=move_data, headers=session_with_employees
     )
 
     assert response.status_code == 404
@@ -369,13 +374,13 @@ def test_move_employee_donut_when_invalid_employee_then_404(
 
 
 def test_move_employee_donut_when_invalid_position_then_400(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test donut move with invalid performance/potential returns 400."""
     move_data = {"performance": "Invalid", "potential": "Medium"}
 
     response = test_client.patch(
-        "/api/employees/1/move-donut", json=move_data, headers=session_with_data
+        "/api/employees/1/move-donut", json=move_data, headers=session_with_employees
     )
 
     assert response.status_code == 400
@@ -386,12 +391,12 @@ def test_move_employee_donut_when_invalid_position_then_400(
 
 
 def test_update_employee_when_valid_flags_then_updates_flags(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH /api/employees/{id} with valid flags updates employee."""
     update_data = {"flags": ["promotion_ready", "flight_risk"]}
 
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -400,28 +405,28 @@ def test_update_employee_when_valid_flags_then_updates_flags(
 
 
 def test_update_employee_when_invalid_flags_then_returns_422(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH with invalid flags returns 422 validation error."""
     update_data = {"flags": ["invalid_flag", "promotion_ready"]}
 
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 422
     # Pydantic validation error for invalid flags
 
 
 def test_update_employee_when_empty_flags_then_clears_flags(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH with empty flags list clears employee flags."""
     # First add some flags
     test_client.patch(
-        "/api/employees/1", json={"flags": ["promotion_ready"]}, headers=session_with_data
+        "/api/employees/1", json={"flags": ["promotion_ready"]}, headers=session_with_employees
     )
 
     # Then clear them
-    response = test_client.patch("/api/employees/1", json={"flags": []}, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json={"flags": []}, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -429,7 +434,7 @@ def test_update_employee_when_empty_flags_then_clears_flags(
 
 
 def test_update_employee_when_all_allowed_flags_then_accepts_all(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that all allowed flag values are accepted."""
     allowed_flags = [
@@ -444,7 +449,7 @@ def test_update_employee_when_all_allowed_flags_then_accepts_all(
     ]
     update_data = {"flags": allowed_flags}
 
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -452,17 +457,17 @@ def test_update_employee_when_all_allowed_flags_then_accepts_all(
 
 
 def test_update_employee_when_flags_none_then_accepts_none(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test PATCH clears flags when set to empty list (None not supported in current implementation)."""
     # First add some flags
     test_client.patch(
-        "/api/employees/1", json={"flags": ["promotion_ready"]}, headers=session_with_data
+        "/api/employees/1", json={"flags": ["promotion_ready"]}, headers=session_with_employees
     )
 
     # Clear flags using empty list (current implementation doesn't support None)
     update_data = {"flags": []}
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -474,14 +479,14 @@ def test_update_employee_when_flags_none_then_accepts_none(
 
 
 def test_update_employee_when_promotion_checked_and_no_position_change_then_not_modified(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that toggling promotion_readiness alone doesn't mark employee as modified."""
     # Employee 1 starts at H,H - don't move them
     # Just update promotion_readiness
     update_data = {"promotion_readiness": True}
 
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -491,17 +496,17 @@ def test_update_employee_when_promotion_checked_and_no_position_change_then_not_
 
 
 def test_update_employee_when_promotion_unchecked_and_no_position_change_then_not_modified(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test unchecking promotion_readiness when no position change doesn't keep modified flag."""
     # First set promotion_readiness to true
     test_client.patch(
-        "/api/employees/1", json={"promotion_readiness": True}, headers=session_with_data
+        "/api/employees/1", json={"promotion_readiness": True}, headers=session_with_employees
     )
 
     # Now uncheck it
     update_data = {"promotion_readiness": False}
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -511,20 +516,20 @@ def test_update_employee_when_promotion_unchecked_and_no_position_change_then_no
 
 
 def test_update_employee_when_promotion_changed_after_move_then_stays_modified(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that modifying promotion_readiness after moving keeps modified_in_session."""
     # First move the employee (creates a change entry)
     move_data = {"performance": "Medium", "potential": "High"}
     move_response = test_client.patch(
-        "/api/employees/1/move", json=move_data, headers=session_with_data
+        "/api/employees/1/move", json=move_data, headers=session_with_employees
     )
     assert move_response.status_code == 200
     assert move_response.json()["employee"]["modified_in_session"] is True
 
     # Now update promotion_readiness
     update_data = {"promotion_readiness": True}
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -534,21 +539,21 @@ def test_update_employee_when_promotion_changed_after_move_then_stays_modified(
 
 
 def test_update_employee_when_promotion_unchecked_after_move_then_stays_modified(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test unchecking promotion_readiness after move keeps modified_in_session (position changed)."""
     # Move employee first
     move_data = {"performance": "Low", "potential": "Medium"}
-    test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_data)
+    test_client.patch("/api/employees/1/move", json=move_data, headers=session_with_employees)
 
     # Set promotion readiness
     test_client.patch(
-        "/api/employees/1", json={"promotion_readiness": True}, headers=session_with_data
+        "/api/employees/1", json={"promotion_readiness": True}, headers=session_with_employees
     )
 
     # Now uncheck promotion readiness
     update_data = {"promotion_readiness": False}
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -558,28 +563,27 @@ def test_update_employee_when_promotion_unchecked_after_move_then_stays_modified
 
 
 def test_update_employee_when_move_back_to_original_then_not_modified(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that moving back to original position clears modified_in_session."""
-    # Employee 1 starts at H,H (position 9)
     # Get original state
-    original_response = test_client.get("/api/employees/1", headers=session_with_data)
+    original_response = test_client.get("/api/employees/1", headers=session_with_employees)
     original = original_response.json()
-    assert original["performance"] == "High"
-    assert original["potential"] == "High"
+    orig_perf = original["performance"]
+    orig_pot = original["potential"]
     assert original["modified_in_session"] is False
 
     # Move employee away
     move_data = {"performance": "Medium", "potential": "Medium"}
     move_response = test_client.patch(
-        "/api/employees/1/move", json=move_data, headers=session_with_data
+        "/api/employees/1/move", json=move_data, headers=session_with_employees
     )
     assert move_response.json()["employee"]["modified_in_session"] is True
 
     # Move back to original position
-    move_back_data = {"performance": "High", "potential": "High"}
+    move_back_data = {"performance": orig_perf, "potential": orig_pot}
     move_back_response = test_client.patch(
-        "/api/employees/1/move", json=move_back_data, headers=session_with_data
+        "/api/employees/1/move", json=move_back_data, headers=session_with_employees
     )
 
     assert move_back_response.status_code == 200
@@ -589,7 +593,7 @@ def test_update_employee_when_move_back_to_original_then_not_modified(
 
 
 def test_update_employee_when_multiple_field_updates_then_modified_status_correct(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test updating multiple fields respects modified_in_session logic."""
     # Update multiple fields without moving
@@ -599,7 +603,7 @@ def test_update_employee_when_multiple_field_updates_then_modified_status_correc
         "notes": "High potential employee",
     }
 
-    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_data)
+    response = test_client.patch("/api/employees/1", json=update_data, headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()

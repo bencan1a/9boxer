@@ -347,11 +347,11 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # Stage 3: Smoke Test (quick regression check, ~2 min)
+  # Stage 3: Core E2E Tests (atomic UX validation, ~1 min)
   # ============================================================================
 
-  smoke-test:
-    name: Smoke Test (Playwright)
+  e2e-core-tests:
+    name: E2E Core Tests (Atomic UX)
     runs-on: windows-latest
     needs: [unit-tests, frontend-tests]  # Wait for both backend and frontend tests
     steps:
@@ -411,15 +411,15 @@ jobs:
         working-directory: frontend
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright smoke test
+      - name: Run E2E Core Tests
         working-directory: frontend
-        run: npx playwright test smoke-test.spec.ts
+        run: npx playwright test --project=e2e-core
 
-      - name: Upload smoke test report
+      - name: Upload E2E Core test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-smoke-report
+          name: playwright-e2e-core-report
           path: frontend/playwright-report/
           retention-days: 7
 
@@ -465,7 +465,7 @@ jobs:
   ci-success:
     name: CI Summary
     runs-on: windows-latest
-    needs: [check-changes, lint, type-check, security, validate-screenshot-metadata, unit-tests, frontend-tests, smoke-test, screenshot-validation]
+    needs: [check-changes, lint, type-check, security, validate-screenshot-metadata, unit-tests, frontend-tests, e2e-core-tests, screenshot-validation]
     if: always()
     steps:
       - name: Check results
@@ -477,7 +477,7 @@ jobs:
           echo "Screenshot Metadata: ${{ needs.validate-screenshot-metadata.result }}"
           echo "Unit Tests: ${{ needs.unit-tests.result }}"
           echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
-          echo "Smoke Test: ${{ needs.smoke-test.result }}"
+          echo "E2E Core Tests: ${{ needs.e2e-core-tests.result }}"
           echo "Screenshot Validation: ${{ needs.screenshot-validation.result }}"
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
@@ -493,7 +493,7 @@ jobs:
                [[ "${{ needs.type-check.result }}" == "success" ]] && \
                [[ "${{ needs.security.result }}" == "success" ]] && \
                [[ "${{ needs.frontend-tests.result }}" == "success" || "${{ needs.frontend-tests.result }}" == "skipped" ]] && \
-               [[ "${{ needs.smoke-test.result }}" == "success" || "${{ needs.smoke-test.result }}" == "skipped" ]] && \
+               [[ "${{ needs.e2e-core-tests.result }}" == "success" || "${{ needs.e2e-core-tests.result }}" == "skipped" ]] && \
                [[ "${{ needs.screenshot-validation.result }}" == "success" || "${{ needs.screenshot-validation.result }}" == "skipped" ]]; then
               echo "✅ All required CI checks passed"
               exit 0
@@ -509,7 +509,7 @@ jobs:
              [[ "${{ needs.security.result }}" != "success" ]] || \
              [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
              [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
-             [[ "${{ needs.smoke-test.result }}" != "success" ]] || \
+             [[ "${{ needs.e2e-core-tests.result }}" != "success" ]] || \
              [[ "${{ needs.screenshot-validation.result }}" != "success" && "${{ needs.screenshot-validation.result }}" != "skipped" ]]; then
             echo "❌ CI Failed"
             exit 1
@@ -537,10 +537,10 @@ jobs:
           echo "| Unit Tests | ${{ needs.unit-tests.result == 'success' && '✅' || needs.unit-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Tests | ${{ needs.frontend-tests.result == 'success' && '✅' || needs.frontend-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Stage 3: Smoke Test**" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 3: E2E Core Tests**" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Smoke Test (Playwright) | ${{ needs.smoke-test.result == 'success' && '✅' || needs.smoke-test.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Core Tests (Atomic UX) | ${{ needs.e2e-core-tests.result == 'success' && '✅' || needs.e2e-core-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Stage 4: Screenshot Validation**" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY

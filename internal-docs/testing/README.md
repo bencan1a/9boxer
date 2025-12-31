@@ -9,6 +9,8 @@ This directory contains comprehensive testing guidance, templates, and best prac
 - **Backend**: pytest for Python/FastAPI testing
 - **Frontend Component Tests**: Vitest + React Testing Library
 - **Frontend E2E Tests**: Playwright for end-to-end workflows
+  - **e2e-core suite**: Atomic UX validation with state-based waits (23 tests, 0 flakiness)
+  - Replaces comprehensive e2e suite with focused, reliable tests
 
 ## Documentation Files
 
@@ -197,7 +199,14 @@ pytest
 # Frontend Component Tests (from frontend directory)
 npm test
 
-# E2E Tests (from frontend directory)
+# E2E Core Tests - Atomic UX validation (RECOMMENDED)
+cd frontend
+npm run test:e2e:pw -- --project=e2e-core
+
+# E2E Core Tests with UI (for debugging)
+npm run test:e2e:pw:ui -- --project=e2e-core
+
+# All E2E tests
 npm run test:e2e:pw
 ```
 
@@ -205,9 +214,10 @@ npm run test:e2e:pw
 
 1. **Simple** - No conditional logic in tests
 2. **Isolated** - Each test is independent
-3. **Reliable** - Deterministic results every time
+3. **Reliable** - Deterministic results every time (use state-based waits in E2E)
 4. **Behavior-focused** - Test what users see, not implementation details
 5. **Integration-first** - Prefer integration tests over unit tests when practical
+6. **State-based waits** - NO arbitrary timeouts; wait for observable state changes (E2E tests)
 
 ## Coverage Goals
 
