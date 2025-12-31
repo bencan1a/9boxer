@@ -117,3 +117,24 @@ repos:
         language: system
         files: ^frontend/src/theme/tokens\.ts$
         pass_filenames: false
+
+      # Fast unit tests for frontend changes (pre-push only)
+      # Runs on pre-push stage to catch regressions without slowing commits
+      - id: frontend-test-fast
+        name: fast frontend unit tests
+        entry: bash -c 'cd frontend && npm run test:fast'
+        language: system
+        files: ^frontend/src/.*\.(ts|tsx)$
+        pass_filenames: false
+        stages: [push]
+
+      # Bundle size regression check (pre-push only)
+      # Validates production bundle against baseline limits
+      # Runs only when frontend source files change to avoid unnecessary builds
+      - id: frontend-bundle-size
+        name: check frontend bundle size
+        entry: bash -c 'cd frontend && npm run check:bundle'
+        language: system
+        files: ^frontend/src/.*\.(ts|tsx)$
+        pass_filenames: false
+        stages: [push]

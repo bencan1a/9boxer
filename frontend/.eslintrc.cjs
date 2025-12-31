@@ -41,6 +41,21 @@ module.exports = {
     'jsx-a11y/role-supports-aria-props': 'error',
     'jsx-a11y/tabindex-no-positive': 'warn',
 
+    // ===== Performance Rules =====
+    // Detect MUI barrel imports (adds 200-300KB to bundle)
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['@mui/material', '@mui/icons-material'],
+            message:
+              'Use named imports to enable tree-shaking: import Button from "@mui/material/Button"',
+          },
+        ],
+      },
+    ],
+
     // ===== Design System Rules =====
     // Note: These are warnings to guide developers, not hard errors
     // Hardcoded values should use design tokens instead

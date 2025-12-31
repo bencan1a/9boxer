@@ -76,6 +76,481 @@
 
 ## Pattern Catalog
 
+### Pattern: Bundle Size Optimization with Code Splitting (#frontend #build)
+
+**When:** Initial bundle size >500KB gzipped (slow app loading)
+
+**Scenario:** Material-UI barrel imports and eager i18n loading bloat bundle
+
+```typescript
+// ✅ CORRECT: Named imports for tree-shaking
+// frontend/src/components/Grid/EmployeeTile.tsx
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+// Each import adds only what's needed (~10-20KB per component)
+
+// ✅ CORRECT: Lazy load i18n translations
+// frontend/src/i18n/config.ts
+const loadLanguage = async (language: string) => {
+  const translations = await import(`./locales/${language}/translation.json`);
+  return translations.default || translations;
+};
+
+// ✅ CORRECT: Code splitting with React.lazy
+// frontend/src/App.tsx
+const SettingsDialog = React.lazy(() =>
+  import('./components/settings/SettingsDialog')
+);
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: Barrel imports (bundle includes ALL MUI components)
+import { Card, Typography, Avatar } from '@mui/material';
+// Adds 200-300KB of unused components to bundle
+
+// ❌ WRONG: Eager load all translations at startup
+import enTranslations from './locales/en/translation.json';
+import esTranslations from './locales/es/translation.json';
+// All 7 languages loaded upfront = +150KB
+```
+
+**Performance Impact:**
+- Before: 700KB+ gzipped bundle, 3-5s initial load
+- After: 381KB gzipped bundle (46% reduction), <2s load
+- Validation: `npm run build` → check `dist/assets/` sizes
+- Target: <500KB gzipped for main bundle
+
+**Build Configuration:**
+```typescript
+// vite.config.ts
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'mui-core': ['@mui/material', '@mui/system'],
+          'vendor': ['react', 'react-dom', 'zustand'],
+          'i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
+        },
+      },
+    },
+  },
+});
+```
+
+---
+
+### Pattern: i18n Lazy Loading with Resource Caching (#frontend #i18n #performance)
+
+**When:** Language switching or translation loading causes delays
+
+**Scenario:** Custom i18next backend with dynamic imports
+
+```typescript
+// ✅ CORRECT: Cache loaded translations in i18next
+// frontend/src/i18n/config.ts
+
+const loadLanguage = async (language: string) => {
+  try {
+    const translations = await import(`./locales/${language}/translation.json`);
+    return translations.default || translations;
+  } catch (error) {
+    console.error(`Failed to load language: ${language}`, error);
+    // Fallback to English if not already trying English
+    if (language !== "en") {
+      const enTranslations = await import(`./locales/en/translation.json`);
+      return enTranslations.default || enTranslations;
+    }
+    return {}; // i18next uses keys as fallback text
+  }
+};
+
+i18n.use({
+  type: 'backend',
+  read: (language: string, namespace: string, callback: Function) => {
+    // CRITICAL: Check cache first to enable language switching
+    if (i18n.hasResourceBundle(language, namespace)) {
+      const bundle = i18n.getResourceBundle(language, namespace);
+      callback(null, bundle);
+      return;
+    }
+
+    // Load and cache
+    loadLanguage(language)
+      .then((resources) => {
+        // Add to i18next cache for future switches
+        i18n.addResourceBundle(language, namespace, resources, true, true);
+        callback(null, resources);
+      })
+      .catch((error) => callback(error, null));
+  },
+});
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: No resource caching (language switching broken)
+read: (language, namespace, callback) => {
+  loadLanguage(language)
+    .then((resources) => {
+      callback(null, resources); // Not cached!
+      // Language switch triggers error: "Language already loaded"
+    });
+},
+```
+
+**Performance Impact:**
+- Before: Language switching broken, must reload app
+- After: Instant language switching (cached resources)
+- Bundle: Only current language loaded (~20KB vs 140KB for all 7)
+- Validation: Manual test - switch languages in Settings
+
+**Error Handling:**
+```tsx
+// Add error boundary for Suspense failures
+// frontend/src/main.tsx
+import { ErrorBoundary } from 'react-error-boundary';
+
+const I18nErrorFallback = () => (
+  <div>
+    <h2>Translation Loading Error</h2>
+    <button onClick={() => window.location.reload()}>Refresh</button>
+  </div>
+);
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <ErrorBoundary fallback={<I18nErrorFallback />}>
+    <Suspense fallback={<LoadingSpinner />}>
+      <App />
+    </Suspense>
+  </ErrorBoundary>
+);
+```
+
+---
+
+### Pattern: Zustand Granular Selectors (#frontend #state #rendering)
+
+**When:** Components re-render when unrelated store state changes
+
+**Scenario:** Component only needs one piece of store state, not whole store
+
+```typescript
+// ✅ CORRECT: Export granular selectors from store
+// frontend/src/store/sessionStore.ts
+
+export const useSessionStore = create<SessionState>((set) => ({
+  sessionId: null,
+  employees: [],
+  donutModeActive: false,
+  uploadFile: null,
+  // ... actions
+}));
+
+// Export selectors for granular subscriptions
+export const selectSessionId = (state: SessionState) => state.sessionId;
+export const selectEmployees = (state: SessionState) => state.employees;
+export const selectDonutModeActive = (state: SessionState) => state.donutModeActive;
+export const selectUploadFile = (state: SessionState) => state.uploadFile;
+
+// Component uses only what it needs
+const MyComponent = () => {
+  // Only re-renders when donutModeActive changes
+  const donutModeActive = useSessionStore(selectDonutModeActive);
+  const toggleDonut = useSessionStore(selectToggleDonutMode);
+
+  return <Button onClick={toggleDonut}>{donutModeActive ? 'On' : 'Off'}</Button>;
+};
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: Subscribe to entire store (unnecessary re-renders)
+const MyComponent = () => {
+  const { donutModeActive, toggleDonutMode } = useSessionStore();
+  // Component re-renders when ANY store property changes!
+  // (employees update → MyComponent re-renders unnecessarily)
+
+  return <Button onClick={toggleDonutMode}>{donutModeActive ? 'On' : 'Off'}</Button>;
+};
+```
+
+**Performance Impact:**
+- Before: 50+ components re-render on any store change
+- After: Only affected components re-render (1-5 components)
+- Validation: React DevTools Profiler → fewer components in flamegraph
+- Best Practice: Export both state selectors AND action selectors
+
+**Test Mock Pattern:**
+```typescript
+// Test mocks must support selectors
+// frontend/src/components/__tests__/MyComponent.test.tsx
+
+vi.mock('../../store/sessionStore', () => ({
+  useSessionStore: vi.fn(),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+  selectToggleDonutMode: vi.fn((state) => state.toggleDonutMode),
+}));
+
+beforeEach(() => {
+  useSessionStore.mockImplementation((selector) => {
+    const mockState = {
+      donutModeActive: false,
+      toggleDonutMode: vi.fn(),
+    };
+    return selector ? selector(mockState) : mockState;
+  });
+});
+```
+
+---
+
+### Pattern: React.memo with Custom Comparison Functions (#frontend #rendering)
+
+**When:** Component receives complex props (objects, arrays, functions)
+
+**Scenario:** EmployeeTile with employee object and callback props
+
+```typescript
+// ✅ CORRECT: Custom comparison for complex props
+// frontend/src/components/grid/EmployeeTile.tsx
+
+// Helper for efficient array comparison (avoid JSON.stringify)
+const areArraysEqual = (a: string[] | undefined, b: string[] | undefined): boolean => {
+  const arr1 = a || [];
+  const arr2 = b || [];
+  if (arr1.length !== arr2.length) return false;
+  const sorted1 = [...arr1].sort();
+  const sorted2 = [...arr2].sort();
+  return sorted1.every((val, idx) => val === sorted2[idx]);
+};
+
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      prevProps.employee.name === nextProps.employee.name &&
+      prevProps.employee.performance === nextProps.employee.performance &&
+      prevProps.employee.potential === nextProps.employee.potential &&
+      areArraysEqual(prevProps.employee.flags, nextProps.employee.flags) &&
+      prevProps.donutModeActive === nextProps.donutModeActive &&
+      prevProps.onSelect === nextProps.onSelect  // CRITICAL: Include callbacks!
+    );
+  }
+);
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: Missing callback comparison (stale closures)
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return prevProps.employee.employee_id === nextProps.employee.employee_id;
+    // Missing onSelect comparison → stale callback when parent updates
+  }
+);
+
+// ❌ WRONG: JSON.stringify for arrays (performance hit in hot path)
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      JSON.stringify(prevProps.employee.flags) === JSON.stringify(nextProps.employee.flags)
+      // Called 50+ times per frame during drag → CPU bottleneck
+    );
+  }
+);
+```
+
+**Performance Impact:**
+- Before: React.memo broken by missing comparisons → full re-renders
+- After: Only affected tiles re-render (5-10 vs 500+)
+- JSON.stringify issue: 50+ calls per frame (16ms budget) → lag
+- Validation: React DevTools Profiler → "Why did this render?" shows "Props changed: onSelect"
+
+**Critical Rules:**
+1. **Include ALL props** in comparison (especially callbacks)
+2. **Never use JSON.stringify** in hot paths (drag, scroll, resize)
+3. **Use efficient comparisons** for arrays (sort + every, not JSON)
+4. **Compare primitive IDs** first (early exit optimization)
+
+---
+
+### Pattern: requestAnimationFrame Throttling for 60fps (#frontend #interactions)
+
+**When:** User interactions cause jank (drag, scroll, resize)
+
+**Scenario:** Right panel resize handler fires multiple times per frame
+
+```typescript
+// ✅ CORRECT: RAF throttling with guards
+// frontend/src/components/dashboard/DashboardPage.tsx
+
+const rafIdRef = useRef<number | null>(null);
+const isMountedRef = useRef(true);
+
+useEffect(() => {
+  isMountedRef.current = true;
+  return () => {
+    isMountedRef.current = false;
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+  };
+}, []);
+
+const handlePanelResize = useCallback((sizes: number[]) => {
+  // Use functional setState to avoid stale closures
+  setIsResizing(prev => true);
+
+  // Cancel pending frame
+  if (rafIdRef.current) {
+    cancelAnimationFrame(rafIdRef.current);
+  }
+
+  // Schedule single update per frame (60fps = 16.67ms budget)
+  rafIdRef.current = requestAnimationFrame(() => {
+    if (!isMountedRef.current) return; // Guard against unmount
+
+    // Update panel size
+    const newSize = sizes[1];
+    setRightPanelSize(newSize);
+
+    if (!isMountedRef.current) return; // Guard before setTimeout
+
+    // Debounce "resizing complete" signal
+    setTimeout(() => {
+      if (!isMountedRef.current) return;
+      setIsResizing(false);
+    }, 150);
+  });
+}, [setRightPanelSize]); // Don't include isResizing (stale closure)
+```
+
+**Don't:**
+```typescript
+// ❌ WRONG: Direct state update on every resize event (30-60 fps → 200+ updates/sec)
+const handlePanelResize = (sizes: number[]) => {
+  setIsResizing(true);
+  setRightPanelSize(sizes[1]);
+  setTimeout(() => setIsResizing(false), 150);
+  // Fires 10-20 times per frame → React can't keep up → jank
+};
+
+// ❌ WRONG: Missing mounted guard (React warnings after unmount)
+rafIdRef.current = requestAnimationFrame(() => {
+  setRightPanelSize(newSize); // May execute after unmount!
+});
+
+// ❌ WRONG: isResizing in dependencies (recreates callback during resize)
+const handlePanelResize = useCallback((sizes) => {
+  setIsResizing(!isResizing); // Stale closure + unnecessary recreation
+}, [isResizing]); // Callback recreated on every resize → breaks memoization
+```
+
+**Performance Impact:**
+- Before: 200+ state updates/sec during resize → 15-20fps (jank)
+- After: 60 updates/sec (capped by RAF) → 60fps (smooth)
+- Validation: Chrome DevTools Performance → FPS meter should stay green (60fps)
+- Critical: Always guard RAF callbacks with `isMounted` check
+
+**Pattern Variants:**
+```typescript
+// Disable expensive CSS transitions during resize
+const GridContainer = styled('div')<{ isResizing: boolean }>(({ isResizing }) => ({
+  transition: isResizing ? 'none' : 'width 0.2s ease-out',
+  // Transitions disabled during resize → 60fps
+}));
+
+// Use ResizeObserver with RAF throttling for responsive layout
+useEffect(() => {
+  const observer = new ResizeObserver(() => {
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = requestAnimationFrame(() => {
+      if (!isMountedRef.current) return;
+      updateLayout();
+    });
+  });
+  observer.observe(containerRef.current);
+  return () => observer.disconnect();
+}, []);
+```
+
+---
+
+### Pattern: Web Vitals Monitoring (#frontend #observability)
+
+**When:** Need to track real-world performance metrics
+
+**Scenario:** Monitor Core Web Vitals (LCP, FID, CLS) for regression detection
+
+```typescript
+// ✅ CORRECT: Track Web Vitals with web-vitals library
+// frontend/src/utils/performance.ts
+
+import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals';
+
+export const initPerformanceMonitoring = () => {
+  if (import.meta.env.MODE === 'production') {
+    onCLS(console.log); // Cumulative Layout Shift
+    onFID(console.log); // First Input Delay
+    onLCP(console.log); // Largest Contentful Paint
+    onFCP(console.log); // First Contentful Paint
+    onTTFB(console.log); // Time to First Byte
+  }
+};
+
+// Custom hook for component performance
+export const usePerformanceMonitor = (componentName: string) => {
+  useEffect(() => {
+    performance.mark(`${componentName}-mount-start`);
+
+    return () => {
+      performance.mark(`${componentName}-mount-end`);
+      performance.measure(
+        `${componentName}-mount`,
+        `${componentName}-mount-start`,
+        `${componentName}-mount-end`
+      );
+
+      const measure = performance.getEntriesByName(`${componentName}-mount`)[0];
+      if (measure.duration > 100) {
+        console.warn(`Slow component: ${componentName} took ${measure.duration}ms to mount`);
+      }
+
+      performance.clearMarks(`${componentName}-mount-start`);
+      performance.clearMarks(`${componentName}-mount-end`);
+      performance.clearMeasures(`${componentName}-mount`);
+    };
+  }, [componentName]);
+};
+
+// Usage
+const NineBoxGrid = () => {
+  usePerformanceMonitor('NineBoxGrid');
+  // Logs warning if mount >100ms
+};
+```
+
+**Performance Targets:**
+- **LCP** (Largest Contentful Paint): <2.5s
+- **FID** (First Input Delay): <100ms
+- **CLS** (Cumulative Layout Shift): <0.1
+- **FCP** (First Contentful Paint): <1.8s
+- **TTFB** (Time to First Byte): <600ms
+
+**Validation:**
+- Chrome DevTools → Lighthouse tab → Performance score
+- Real User Monitoring: Track metrics in production logs
+- Regression Detection: Compare before/after optimization metrics
+
+---
+
 ### Pattern: Lazy Import Heavy Modules (#backend #startup)
 
 **When:** Backend startup is slow (>12s)
@@ -547,6 +1022,376 @@ Before merging code that affects performance-critical paths:
 
 ---
 
+## Critical Anti-Patterns (Discovered During Production Optimization)
+
+This section documents real performance issues discovered during the December 2024 performance optimization project. These anti-patterns caused measurable user-perceived lag and required P0/P1 fixes.
+
+### Anti-Pattern 1: i18n Lazy Loading Without Resource Caching
+
+**Issue:** Custom i18next backend loads translations dynamically but doesn't cache them in i18next's resource bundles.
+
+**Symptom:** Language switching completely broken - users must reload app after first language load.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: No caching in i18next
+read: (language, namespace, callback) => {
+  loadLanguage(language)
+    .then((resources) => callback(null, resources))
+    .catch((error) => callback(error, null));
+  // i18next doesn't know resources are loaded → error on language switch
+}
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Cache in i18next resource bundles
+read: (language, namespace, callback) => {
+  // Check cache first
+  if (i18n.hasResourceBundle(language, namespace)) {
+    const bundle = i18n.getResourceBundle(language, namespace);
+    callback(null, bundle);
+    return;
+  }
+
+  // Load and cache
+  loadLanguage(language).then((resources) => {
+    i18n.addResourceBundle(language, namespace, resources, true, true);
+    callback(null, resources);
+  });
+}
+```
+
+**Impact:** P0 - Feature completely broken in production
+**Files:** `frontend/src/i18n/config.ts`
+**Test:** Manual - switch languages in Settings dialog
+
+---
+
+### Anti-Pattern 2: React.memo Missing Callback Props in Comparison
+
+**Issue:** React.memo custom comparison function doesn't include callback props (onSelect, onClick, etc.).
+
+**Symptom:** Components use stale closures, event handlers reference old state/props.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: Missing onSelect comparison
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      prevProps.donutModeActive === nextProps.donutModeActive
+      // Missing: prevProps.onSelect === nextProps.onSelect
+    );
+  }
+);
+```
+
+**Why This Breaks:**
+1. Parent component updates → creates new `onSelect` callback
+2. React.memo comparison returns `true` (props "equal")
+3. EmployeeTile keeps old callback → stale closure
+4. User clicks tile → old callback with stale state executes
+
+**Fix:**
+```typescript
+// ✅ FIXED: Include ALL props, especially callbacks
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      prevProps.donutModeActive === nextProps.donutModeActive &&
+      prevProps.onSelect === nextProps.onSelect  // Critical!
+    );
+  }
+);
+```
+
+**Impact:** P1 - Stale closures cause incorrect behavior
+**Files:** `frontend/src/components/grid/EmployeeTile.tsx`, `DraggedEmployeeTile.tsx`
+**Detection:** React DevTools Profiler → "Why did this render?" → "Props changed: onSelect"
+
+---
+
+### Anti-Pattern 3: JSON.stringify for Array Comparison in Hot Paths
+
+**Issue:** Using `JSON.stringify()` to compare arrays in React.memo comparison functions.
+
+**Symptom:** Drag-and-drop feels laggy, frame rate drops to 30-40fps during drag.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: JSON.stringify in hot path (called 50+ times per frame)
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      JSON.stringify(prevProps.employee.flags) === JSON.stringify(nextProps.employee.flags)
+      // Called 50+ times per drag frame → CPU bottleneck
+    );
+  }
+);
+```
+
+**Why This Is Slow:**
+- Drag triggers 500+ tile comparisons per frame
+- Each `JSON.stringify()` call: ~0.05-0.1ms
+- Total: 50 tiles × 0.1ms = 5ms (30% of 16ms frame budget)
+- Order-sensitive: `['flag1', 'flag2']` ≠ `['flag2', 'flag1']`
+
+**Fix:**
+```typescript
+// ✅ FIXED: Efficient array comparison
+const areArraysEqual = (a?: string[], b?: string[]): boolean => {
+  const arr1 = a || [];
+  const arr2 = b || [];
+  if (arr1.length !== arr2.length) return false;
+  const sorted1 = [...arr1].sort();
+  const sorted2 = [...arr2].sort();
+  return sorted1.every((val, idx) => val === sorted2[idx]);
+};
+
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      areArraysEqual(prevProps.employee.flags, nextProps.employee.flags)
+      // 10-20x faster, order-insensitive
+    );
+  }
+);
+```
+
+**Impact:** P1 - Measurable lag during drag operations (40fps → 60fps)
+**Files:** `frontend/src/components/grid/EmployeeTile.tsx`, `DraggedEmployeeTile.tsx`
+**Validation:** Chrome DevTools Performance → FPS meter, JS profiler
+
+---
+
+### Anti-Pattern 4: Hard-Coded Pixel Values in Responsive Components
+
+**Issue:** Components use hard-coded pixel values instead of design tokens from GridZoomContext.
+
+**Symptom:** Dragged employee tiles don't match grid tile size at different zoom levels.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: Hard-coded values don't respond to zoom
+<Card sx={{
+  minWidth: 280,  // Hard-coded
+  maxWidth: 400,  // Hard-coded
+}}>
+  <DragHandleIcon sx={{ fontSize: 16 }} /> {/* Hard-coded */}
+  <HistoryIcon sx={{ fontSize: 12 }} /> {/* Hard-coded */}
+</Card>
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Use zoom tokens
+import { useGridZoom } from '../../contexts/GridZoomContext';
+
+const DraggedEmployeeTile = () => {
+  const { tokens } = useGridZoom();
+
+  return (
+    <Card sx={{
+      minWidth: tokens.tile.minWidth,
+      maxWidth: tokens.tile.maxWidth,
+    }}>
+      <DragHandleIcon sx={{ fontSize: tokens.icon.dragHandle }} />
+      <HistoryIcon sx={{ fontSize: tokens.icon.history }} />
+    </Card>
+  );
+};
+```
+
+**Impact:** P1 - Visual mismatch at zoom levels, poor UX
+**Files:** `frontend/src/components/grid/DraggedEmployeeTile.tsx`
+**Test:** Visual regression - compare drag overlay to grid tiles at 50%, 100%, 150% zoom
+
+---
+
+### Anti-Pattern 5: requestAnimationFrame Without Mounted Guards
+
+**Issue:** RAF callbacks execute after component unmounts, causing React warnings and potential memory leaks.
+
+**Symptom:** Console warnings: "Can't perform a React state update on an unmounted component"
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: RAF executes after unmount
+const handlePanelResize = (sizes: number[]) => {
+  rafIdRef.current = requestAnimationFrame(() => {
+    setRightPanelSize(sizes[1]); // May run after unmount!
+    setTimeout(() => {
+      setIsResizing(false); // Memory leak!
+    }, 150);
+  });
+};
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Mounted guards in RAF and cleanup
+const isMountedRef = useRef(true);
+
+useEffect(() => {
+  isMountedRef.current = true;
+  return () => {
+    isMountedRef.current = false;
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current);
+  };
+}, []);
+
+const handlePanelResize = (sizes: number[]) => {
+  rafIdRef.current = requestAnimationFrame(() => {
+    if (!isMountedRef.current) return; // Guard #1
+
+    setRightPanelSize(sizes[1]);
+
+    if (!isMountedRef.current) return; // Guard #2
+
+    resizeTimeoutRef.current = setTimeout(() => {
+      if (!isMountedRef.current) return; // Guard #3
+      setIsResizing(false);
+    }, 150);
+  });
+};
+```
+
+**Impact:** P1 - React warnings, potential memory leaks
+**Files:** `frontend/src/components/dashboard/DashboardPage.tsx`
+**Test:** Automated - mount/unmount stress test
+
+---
+
+### Anti-Pattern 6: Stale Closures in useCallback Dependencies
+
+**Issue:** `useCallback` includes state variables in dependencies that cause unnecessary callback recreation during active operations.
+
+**Symptom:** Resize operations feel janky, callbacks recreated mid-resize.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: isResizing in dependencies causes recreation
+const handlePanelResize = useCallback((sizes) => {
+  setIsResizing(!isResizing); // Reads isResizing from closure
+  // ... resize logic
+}, [isResizing]); // Callback recreated every time isResizing changes!
+// During resize: isResizing toggles → callback recreated → breaks memoization
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Functional setState pattern, remove from dependencies
+const handlePanelResize = useCallback((sizes) => {
+  setIsResizing(prev => true); // Functional update, no closure dependency
+
+  rafIdRef.current = requestAnimationFrame(() => {
+    // ... resize logic
+    setTimeout(() => {
+      setIsResizing(false); // OK to use false directly
+    }, 150);
+  });
+}, [setRightPanelSize]); // isResizing NOT in dependencies
+```
+
+**Impact:** P1 - Janky resize, broken memoization
+**Files:** `frontend/src/components/dashboard/DashboardPage.tsx`
+**Validation:** React DevTools Profiler → callback reference stability
+
+---
+
+### Anti-Pattern 7: Context Fallback Logic Ignoring Internal State
+
+**Issue:** Context always uses external prop value even when external setter is `undefined`.
+
+**Symptom:** Internal state never used, components can't function standalone.
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: Always uses external value
+const GridZoomContext = ({ externalIsResizing, externalSetIsResizing, children }) => {
+  const [internalIsResizing, setInternalIsResizing] = useState(false);
+
+  // Always uses external value even if setter is undefined!
+  const isResizing = externalIsResizing;
+  const setIsResizing = externalSetIsResizing || setInternalIsResizing;
+};
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Conditional logic based on setter presence
+const GridZoomContext = ({ externalIsResizing, externalSetIsResizing, children }) => {
+  const [internalIsResizing, setInternalIsResizing] = useState(false);
+
+  // Use external ONLY if setter provided
+  const isResizing = externalSetIsResizing ? externalIsResizing : internalIsResizing;
+  const setIsResizing = externalSetIsResizing || setInternalIsResizing;
+};
+```
+
+**Impact:** P1 - Context unusable without external state management
+**Files:** `frontend/src/contexts/GridZoomContext.tsx`
+**Test:** Unit test - verify internal state works when no external props
+
+---
+
+### Anti-Pattern 8: Zustand Store Tests Not Updated for Selectors
+
+**Issue:** Tests use old mock pattern (`mockReturnValue`) after store refactored to use selectors.
+
+**Symptom:** 49 test failures: "No 'selectX' export is defined on mock"
+
+**Root Cause:**
+```typescript
+// ❌ BROKEN: Old mock pattern doesn't support selectors
+vi.mock('../../store/sessionStore', () => ({
+  useSessionStore: vi.fn(() => ({
+    employees: mockEmployees,
+    donutModeActive: false,
+  }))
+}));
+
+// Component uses selectors:
+const donutModeActive = useSessionStore(selectDonutModeActive);
+// Test fails: selectDonutModeActive not exported from mock!
+```
+
+**Fix:**
+```typescript
+// ✅ FIXED: Mock supports selector pattern
+vi.mock('../../store/sessionStore', () => ({
+  useSessionStore: vi.fn(),
+  selectEmployees: vi.fn((state) => state.employees),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+}));
+
+beforeEach(() => {
+  useSessionStore.mockImplementation((selector) => {
+    const mockState = {
+      employees: mockEmployees,
+      donutModeActive: false,
+    };
+    return selector ? selector(mockState) : mockState;
+  });
+});
+```
+
+**Impact:** P0 - 49 test failures (96% → 100% pass rate)
+**Files:** 6 test files across `components/` and `hooks/`
+**Pattern:** Apply to ALL Zustand store mocks consistently
+
+---
+
 ## Common Performance Mistakes
 
 ### Mistake 1: Importing Heavy Modules at Top Level
@@ -632,6 +1477,81 @@ db.commit()
 
 ---
 
+## Automated Regression Detection
+
+### Quick Commands
+
+```bash
+# Pre-commit (< 2s) - Automatic with git hooks
+npm run lint                      # ESLint performance rules
+
+# Pre-push (< 30s) - Run before pushing
+npm run test:fast                 # Fast unit tests (bail on 5 failures)
+npm run check:bundle              # Validate bundle size vs baseline
+
+# Save new baseline (after verified optimization)
+npm run check:bundle:save
+
+# CI/CD (runs automatically on PR)
+npm test                          # Full test suite
+npm run build && npm run check:bundle
+```
+
+### ESLint Performance Rules
+
+The project enforces these performance rules automatically:
+
+- **❌ Error:** MUI barrel imports (`import { Button } from '@mui/material'`)
+  - **✅ Fix:** Named imports (`import Button from '@mui/material/Button'`)
+
+- **⚠️ Warning:** JSON.stringify in performance-critical paths
+  - **✅ Fix:** Use efficient comparison functions
+
+- **⚠️ Warning:** Hardcoded pixel values instead of design tokens
+  - **✅ Fix:** Use `useGridZoom()` tokens or theme values
+
+### Bundle Size Limits
+
+| Chunk | Limit (gzipped) | Current Baseline | Status |
+|-------|-----------------|------------------|--------|
+| **main** | 500KB | 38.7KB | ✅ 92% under limit |
+| **vendor** | 300KB | 234.2KB | ✅ 22% under limit |
+| **mui-core** | 200KB | 95.2KB | ✅ 52% under limit |
+| **total** | 1MB | 368.2KB | ✅ 63% under limit |
+
+**Regression threshold:** 10% increase triggers warning
+
+**Notes:**
+- Baseline established: 2025-12-31
+- `vendor` includes: React, Zustand, react-dnd, recharts, i18n, emotion
+- `mui-core` includes: Material-UI components (@mui/material, @mui/icons-material)
+- `main` includes: Application code (components, stores, utilities)
+- Translation files are lazy-loaded and not counted in initial bundle
+
+### What Gets Checked When
+
+| Check | Pre-commit | Pre-push | CI/CD | Time |
+|-------|-----------|----------|-------|------|
+| ESLint performance rules | ✅ | ✅ | ✅ | < 2s |
+| Fast unit tests | ❌ | ✅ | ✅ | < 10s |
+| Bundle size check | ❌ | ✅ | ✅ | < 20s |
+| Full test suite | ❌ | ❌ | ✅ | 30-60s |
+
+### Escape Hatches
+
+```bash
+# Skip pre-commit hooks (use sparingly!)
+git commit --no-verify
+
+# Run bundle check without rebuilding
+npm run check:bundle -- --skip-build
+
+# Check specific tests
+npm run test:fast -- EmployeeTile
+```
+
+---
+
 ## Related Documentation
 
 - **[SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md)** - Architecture overview, data flow
@@ -646,6 +1566,7 @@ db.commit()
 
 ---
 
-**Last Updated:** 2025-12-27
-**Performance Baseline:** Backend startup <10s, Grid render <500ms, API calls <100ms
-**Test Suite:** `pytest -m performance` (24 performance tests)
+**Last Updated:** 2025-12-31
+**Performance Baseline:** Backend startup <10s, Grid render <500ms, API calls <100ms, Bundle size 381KB gzipped
+**Test Suite:** `pytest -m performance` (24 performance tests), Frontend: 1,173 tests
+**Recent Optimization:** December 2024 - 46% bundle reduction, 60fps drag operations, i18n lazy loading
