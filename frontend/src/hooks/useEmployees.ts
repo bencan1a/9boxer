@@ -14,6 +14,7 @@ import {
   getPositionGuidance,
   getPositionInfo,
 } from "../constants/positionLabels";
+import { sortEmployees } from "../utils/sortEmployees";
 
 export const useEmployees = () => {
   const { employees, moveEmployee, selectEmployee, selectedEmployeeId } =
@@ -59,6 +60,11 @@ export const useEmployees = () => {
       if (position >= 1 && position <= 9) {
         grouped[position].push(emp);
       }
+    });
+
+    // Sort each group using three-tier logic
+    Object.keys(grouped).forEach((key) => {
+      grouped[parseInt(key)] = sortEmployees(grouped[parseInt(key)]);
     });
 
     return grouped;
