@@ -107,6 +107,52 @@ git commit -m "Update translations"
   pytest backend/tests/unit/tools/test_validate_translations.py -v
   ```
 
+### `generate-docs-tokens-hook.sh`
+Auto-generates documentation design tokens when design system changes.
+
+**Purpose**: Pre-commit hook that regenerates CSS design tokens for documentation whenever `frontend/src/theme/tokens.ts` is modified. This ensures the documentation design system stays perfectly synchronized with the application.
+
+**How it works**:
+1. Detects changes to `frontend/src/theme/tokens.ts`
+2. Runs `npm run generate:docs-tokens` (executes `frontend/scripts/generate-docs-tokens.ts`)
+3. Stages the generated `resources/user-guide/docs/stylesheets/design-tokens.css` for commit
+
+**Automation**: Runs automatically via pre-commit hook when tokens are changed.
+
+**Manual Usage**:
+```bash
+# Test the hook manually
+bash tools/generate-docs-tokens-hook.sh
+
+# Or regenerate tokens directly
+cd frontend
+npm run generate:docs-tokens
+```
+
+**Integration**: Configured in `.pre-commit-config.yaml` under local hooks.
+
+**Generated Tokens**:
+- Colors (light/dark mode): primary, secondary, background, text, semantic, grid box, scrollbar
+- Typography: font family, sizes (h1-h6, body, caption), weights, line heights
+- Spacing: 6 scales (xs to xxl) based on 8px grid
+- Border radius: 6 scales (none to round)
+- Shadows: card, elevated, dropdown (light/dark variants)
+- Animation: duration and easing curves
+- Dimensions: scrollbar sizing
+- Opacity & z-index scales
+
+**Benefits**:
+- ✅ Single source of truth for design system
+- ✅ Automatic synchronization on every commit
+- ✅ No manual duplication of design values
+- ✅ Type-safe design tokens from TypeScript
+
+**Related Files**:
+- Source: `frontend/src/theme/tokens.ts` (TypeScript design tokens)
+- Generator: `frontend/scripts/generate-docs-tokens.ts` (TypeScript → CSS converter)
+- Output: `resources/user-guide/docs/stylesheets/design-tokens.css` (generated CSS)
+- Usage: `resources/user-guide/docs/stylesheets/extra.css` (uses CSS custom properties)
+
 ## Deprecated Tools
 
 ### ~~`generate_docs_screenshots.py`~~ (DELETED)
