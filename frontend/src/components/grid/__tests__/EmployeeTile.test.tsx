@@ -3,11 +3,14 @@ import { render, screen } from "../../../test/utils";
 import { EmployeeTile } from "../EmployeeTile";
 import { createMockEmployee } from "../../../test/mockData";
 import { DndContext } from "@dnd-kit/core";
+import { GridZoomProvider } from "../../../contexts/GridZoomContext";
 import userEvent from "@testing-library/user-event";
 
-// Wrapper for drag-and-drop context
-const DndWrapper = ({ children }: { children: React.ReactNode }) => (
-  <DndContext>{children}</DndContext>
+// Wrapper for drag-and-drop context and zoom context
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <GridZoomProvider>
+    <DndContext>{children}</DndContext>
+  </GridZoomProvider>
 );
 
 describe("EmployeeTile", () => {
@@ -23,9 +26,9 @@ describe("EmployeeTile", () => {
 
   it("displays employee name, title, and job level", () => {
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={defaultEmployee} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     expect(screen.getByText("John Doe")).toBeInTheDocument();
@@ -42,9 +45,9 @@ describe("EmployeeTile", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={modifiedEmployee} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Modified employees have orange left border (visual indicator only, no badge)
@@ -56,9 +59,9 @@ describe("EmployeeTile", () => {
 
   it("renders without modified styling when employee was not modified", () => {
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={defaultEmployee} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // No modified badge exists (design uses border only)
@@ -71,9 +74,9 @@ describe("EmployeeTile", () => {
   it("calls onSelect when employee card is clicked", async () => {
     const user = userEvent.setup();
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={defaultEmployee} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     const card = screen.getByText("John Doe").closest(".MuiCard-root");
@@ -101,13 +104,13 @@ describe("EmployeeTile - Donut Mode", () => {
 
   it("displays regular position label when donut mode is inactive", () => {
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={position5Employee}
           onSelect={mockOnSelect}
           donutModeActive={false}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should not show donut-specific labels when donut mode is off
@@ -122,13 +125,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={donutModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={true}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should show original position indicator with history icon
@@ -152,13 +155,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={donutModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={true}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     const card = screen.getByTestId(
@@ -177,13 +180,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={donutModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={false}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     const card = screen.getByTestId(
@@ -201,13 +204,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={donutModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={false}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     const donutIndicator = screen.queryByTestId("donut-indicator");
@@ -222,13 +225,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={donutModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={true}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     const card = screen.getByTestId(
@@ -247,13 +250,13 @@ describe("EmployeeTile - Donut Mode", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={dualModifiedEmployee}
           onSelect={mockOnSelect}
           donutModeActive={true}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Donut indicator badge should NOT be visible (only border treatment)
@@ -283,9 +286,9 @@ describe("EmployeeTile - Flag Badges", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={employeeWithFlags} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should show 3 individual flag badges
@@ -301,9 +304,9 @@ describe("EmployeeTile - Flag Badges", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={employeeNoFlags} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should not show any flag badges
@@ -322,12 +325,12 @@ describe("EmployeeTile - Flag Badges", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile
           employee={employeeWithManyFlags}
           onSelect={mockOnSelect}
         />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should show 4 flag badges
@@ -344,9 +347,9 @@ describe("EmployeeTile - Flag Badges", () => {
     });
 
     render(
-      <DndWrapper>
+      <TestWrapper>
         <EmployeeTile employee={employeeWithOneFlag} onSelect={mockOnSelect} />
-      </DndWrapper>
+      </TestWrapper>
     );
 
     // Should show exactly 1 flag badge

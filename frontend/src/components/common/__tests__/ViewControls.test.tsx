@@ -5,8 +5,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "../../../test/utils";
 import { ViewControls } from "../ViewControls";
-import { useSessionStore } from "../../../store/sessionStore";
-import * as zoomService from "../../../services/zoomService";
 
 // Mock session store with default state
 const mockToggleDonutMode = vi.fn();
@@ -25,19 +23,6 @@ vi.mock("../../../store/sessionStore", () => ({
   },
 }));
 
-// Mock the zoom service
-vi.mock("../../../services/zoomService", () => ({
-  zoomIn: vi.fn(),
-  zoomOut: vi.fn(),
-  resetZoom: vi.fn(),
-  getCurrentZoomPercentage: vi.fn(() => "100%"),
-  canZoomIn: vi.fn(() => true),
-  canZoomOut: vi.fn(() => true),
-  isAtDefaultZoom: vi.fn(() => true),
-  saveZoomLevel: vi.fn(),
-  loadSavedZoom: vi.fn(),
-}));
-
 describe("ViewControls", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -53,9 +38,22 @@ describe("ViewControls", () => {
     Object.defineProperty(document, "fullscreenElement", {
       writable: true,
       value: null,
+      configurable: true,
     });
     document.documentElement.requestFullscreen = vi.fn(() => Promise.resolve());
     document.exitFullscreen = vi.fn(() => Promise.resolve());
+
+    // Mock localStorage
+    const localStorageMock = {
+      getItem: vi.fn(() => null),
+      setItem: vi.fn(),
+      clear: vi.fn(),
+    };
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
+      writable: true,
+      configurable: true,
+    });
   });
 
   it("renders all control groups when session exists", () => {
@@ -76,41 +74,46 @@ describe("ViewControls", () => {
     expect(screen.getByTestId("fullscreen-toggle-button")).toBeInTheDocument();
   });
 
-  it("displays current zoom percentage", () => {
+  it("displays current zoom percentage (default 80%)", () => {
     render(<ViewControls />);
 
     const percentageDisplay = screen.getByTestId("zoom-percentage");
-    expect(percentageDisplay).toHaveTextContent("100%");
+    expect(percentageDisplay).toHaveTextContent("80%");
   });
 
-  it("calls zoomIn when zoom in button is clicked", () => {
+  it("increases zoom percentage when zoom in button is clicked", () => {
     render(<ViewControls />);
 
     const zoomInButton = screen.getByTestId("zoom-in-button");
     fireEvent.click(zoomInButton);
 
-    expect(zoomService.zoomIn).toHaveBeenCalledTimes(1);
+    // Should go from 80% to 125%
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("125%");
   });
 
-  it("calls zoomOut when zoom out button is clicked", () => {
+  it("decreases zoom percentage when zoom out button is clicked", () => {
     render(<ViewControls />);
 
     const zoomOutButton = screen.getByTestId("zoom-out-button");
     fireEvent.click(zoomOutButton);
 
-    expect(zoomService.zoomOut).toHaveBeenCalledTimes(1);
+    // Should go from 80% to 60%
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("60%");
   });
 
-  it("calls resetZoom when reset button is clicked", () => {
-    // Mock isAtDefaultZoom to return false so button is enabled
-    (zoomService.isAtDefaultZoom as any).mockReturnValue(false);
-
+  it("resets zoom to 80% when reset button is clicked", () => {
     render(<ViewControls />);
 
+    // First zoom in to enable reset button
+    const zoomInButton = screen.getByTestId("zoom-in-button");
+    fireEvent.click(zoomInButton);
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("125%");
+
+    // Then reset
     const resetButton = screen.getByTestId("zoom-reset-button");
     fireEvent.click(resetButton);
 
-    expect(zoomService.resetZoom).toHaveBeenCalled();
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("80%");
   });
 
   it("toggles view mode when grid button is clicked", async () => {
@@ -187,30 +190,36 @@ describe("ViewControls", () => {
     expect(document.exitFullscreen).toHaveBeenCalledTimes(1);
   });
 
-  it("disables zoom out button when canZoomOut is false", () => {
-    (zoomService.canZoomOut as any).mockReturnValue(false);
-
+  it("disables zoom out button at minimum zoom", () => {
     render(<ViewControls />);
 
+    // Zoom out to minimum (100% -> 80% -> 60%)
     const zoomOutButton = screen.getByTestId("zoom-out-button");
+    fireEvent.click(zoomOutButton);
+    fireEvent.click(zoomOutButton);
+
+    // Should be disabled at 60%
     expect(zoomOutButton).toBeDisabled();
   });
 
-  it("disables zoom in button when canZoomIn is false", () => {
-    (zoomService.canZoomIn as any).mockReturnValue(false);
-
+  it("disables zoom in button at maximum zoom", () => {
     render(<ViewControls />);
 
+    // Zoom in to maximum (100% -> 125% -> 150%)
     const zoomInButton = screen.getByTestId("zoom-in-button");
+    fireEvent.click(zoomInButton);
+    fireEvent.click(zoomInButton);
+
+    // Should be disabled at 150%
     expect(zoomInButton).toBeDisabled();
   });
 
   it("disables reset button when at default zoom", () => {
-    (zoomService.isAtDefaultZoom as any).mockReturnValue(true);
-
     render(<ViewControls />);
 
     const resetButton = screen.getByTestId("zoom-reset-button");
+
+    // Should be disabled at default (100%)
     expect(resetButton).toBeDisabled();
   });
 

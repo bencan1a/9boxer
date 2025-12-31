@@ -17,6 +17,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
+import { useGridZoom } from "../../contexts/GridZoomContext";
 
 /**
  * Props for the EmployeeTileList component
@@ -48,16 +49,16 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   onSelectEmployee,
   donutModeActive = false,
 }) => {
+  const { tokens } = useGridZoom();
+
   return (
     <Box
       data-testid="employee-tile-list"
       sx={{
-        // Multi-column grid layout when expanded for better space utilization
-        display: isExpanded ? "grid" : "block",
-        gridTemplateColumns: isExpanded
-          ? "repeat(auto-fill, minmax(280px, 1fr))"
-          : undefined,
-        gap: isExpanded ? 1.5 : 0, // 12px gap between cards in grid mode
+        // Multi-column grid layout for better space utilization with smaller tiles
+        display: "grid",
+        gridTemplateColumns: `repeat(auto-fill, minmax(${tokens.tile.minWidth}px, 1fr))`,
+        gap: `${tokens.spacing.gap / 8}rem`,
         // Ensure minimum height when empty for visibility in tests/Storybook
         minHeight: employees.length === 0 ? "48px" : undefined,
       }}

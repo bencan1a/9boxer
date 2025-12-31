@@ -2,7 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "../../../test/utils";
 import { EmployeeTileList } from "../EmployeeTileList";
 import { createMockEmployee } from "../../../test/mockData";
+import { GridZoomProvider } from "../../../contexts/GridZoomContext";
 import type { Employee } from "../../../types/employee";
+
+// Wrapper for GridZoomProvider
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <GridZoomProvider>{children}</GridZoomProvider>
+);
 
 describe("EmployeeTileList", () => {
   const mockOnSelect = vi.fn();
@@ -19,11 +25,13 @@ describe("EmployeeTileList", () => {
 
   it("renders empty list without errors", () => {
     const { container } = render(
-      <EmployeeTileList
-        employees={[]}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={[]}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     // Should render container but no employee cards
@@ -33,11 +41,13 @@ describe("EmployeeTileList", () => {
 
   it("renders all employees in the list", () => {
     render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     expect(screen.getByText("Alice")).toBeInTheDocument();
@@ -45,27 +55,15 @@ describe("EmployeeTileList", () => {
     expect(screen.getByText("Carol")).toBeInTheDocument();
   });
 
-  it("uses block layout when not expanded", () => {
+  it("always uses grid layout for multi-column support", () => {
     const { container } = render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
-    );
-
-    const listContainer = container.firstChild as HTMLElement;
-    const styles = window.getComputedStyle(listContainer);
-    expect(styles.display).toBe("block");
-  });
-
-  it("uses grid layout when expanded", () => {
-    const { container } = render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={true}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     const listContainer = container.firstChild as HTMLElement;
@@ -73,28 +71,48 @@ describe("EmployeeTileList", () => {
     expect(styles.display).toBe("grid");
   });
 
-  it("applies correct gap in expanded mode", () => {
+  it("uses grid layout when expanded", () => {
     const { container } = render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={true}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={true}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     const listContainer = container.firstChild as HTMLElement;
     const styles = window.getComputedStyle(listContainer);
-    // 1.5 theme spacing = 12px
-    expect(styles.gap).toBe("12px");
+    expect(styles.display).toBe("grid");
+  });
+
+  it("applies correct gap based on zoom level", () => {
+    const { container } = render(
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={true}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
+    );
+
+    const listContainer = container.firstChild as HTMLElement;
+    const styles = window.getComputedStyle(listContainer);
+    // Default zoom level (level2) has gap of 12px = 1.5rem (12/8)
+    expect(styles.gap).toBe("1.5rem");
   });
 
   it("passes onSelectEmployee callback to tiles", () => {
     render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     const aliceCard = screen.getByTestId("employee-card-1");
@@ -112,12 +130,14 @@ describe("EmployeeTileList", () => {
     });
 
     render(
-      <EmployeeTileList
-        employees={[donutEmployee]}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-        donutModeActive={true}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={[donutEmployee]}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+          donutModeActive={true}
+        />
+      </TestWrapper>
     );
 
     // Donut mode uses purple border styling (no indicator badge)
@@ -128,11 +148,13 @@ describe("EmployeeTileList", () => {
 
   it("handles single employee correctly", () => {
     render(
-      <EmployeeTileList
-        employees={[threeEmployees[0]]}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={[threeEmployees[0]]}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     expect(screen.getByText("Alice")).toBeInTheDocument();
@@ -145,11 +167,13 @@ describe("EmployeeTileList", () => {
     );
 
     render(
-      <EmployeeTileList
-        employees={manyEmployees}
-        isExpanded={true}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={manyEmployees}
+          isExpanded={true}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     // All employees should render
@@ -159,11 +183,13 @@ describe("EmployeeTileList", () => {
 
   it("maintains tile order from employees array", () => {
     render(
-      <EmployeeTileList
-        employees={threeEmployees}
-        isExpanded={false}
-        onSelectEmployee={mockOnSelect}
-      />
+      <TestWrapper>
+        <EmployeeTileList
+          employees={threeEmployees}
+          isExpanded={false}
+          onSelectEmployee={mockOnSelect}
+        />
+      </TestWrapper>
     );
 
     const cards = screen.getAllByTestId(/employee-card-/);

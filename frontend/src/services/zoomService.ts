@@ -1,131 +1,64 @@
 /**
  * Zoom Service
  *
- * Manages application-wide zoom levels using Electron's webFrame API.
- * Provides standard browser zoom steps, persistence, and keyboard shortcuts.
+ * Manages application-wide grid zoom levels using discrete zoom level indices.
+ * Provides 5 zoom levels (60%, 80%, 100%, 125%, 150%), persistence, and keyboard shortcuts.
  */
 
-// Standard browser zoom levels (matching Chrome/Firefox)
-export const ZOOM_LEVELS = [
-  0.25, // 25%
-  0.33, // 33%
-  0.5, // 50%
-  0.67, // 67%
-  0.75, // 75%
-  0.8, // 80%
-  0.9, // 90%
-  1.0, // 100% (default)
-  1.1, // 110%
-  1.25, // 125%
-  1.5, // 150%
-  1.75, // 175%
-  2.0, // 200%
-  2.5, // 250%
-  3.0, // 300%
-] as const;
+import { tokens } from "../theme/tokens";
 
-export const DEFAULT_ZOOM_INDEX = ZOOM_LEVELS.indexOf(1.0); // Index of 100%
+// Grid zoom levels (5 discrete levels, 0-4)
+// Level 0: Compact (60%) - Maximum information density
+// Level 1: Comfortable- (80%) - Slightly smaller than normal
+// Level 2: Normal (100%) - Default view
+// Level 3: Comfortable+ (125%) - Slightly larger than normal
+// Level 4: Presentation (150%) - Maximum visibility from distance
+export const ZOOM_LEVELS = [0, 1, 2, 3, 4] as const;
+
+export const DEFAULT_ZOOM_LEVEL = 2; // Normal (100%)
 const STORAGE_KEY = "app-zoom-level";
 
+// Track current zoom level
+let currentZoomLevel = DEFAULT_ZOOM_LEVEL;
+
 /**
- * Get the webFrame API from Electron.
- * Returns null if not running in Electron environment.
+ * Get the current grid zoom level index (0-4)
  */
-function getWebFrame() {
-  // In Electron, webFrame is available via require in renderer process
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { webFrame } = require("electron");
-    return webFrame;
-  } catch {
-    // Not in Electron environment (e.g., web mode, tests)
-    return null;
-  }
+export function getGridZoomLevel(): number {
+  return currentZoomLevel;
 }
 
 /**
- * Apply CSS zoom for non-Electron environments.
- * Stores the zoom index in a data attribute for reliable retrieval.
+ * Get the design tokens for the current zoom level
  */
-function applyCssZoom(factor: number, index: number): void {
-  const root = document.documentElement;
-  if (root) {
-    // Use CSS zoom property (simpler than transform and works better for layout)
-    root.style.zoom = factor.toString();
-    // Store index in data attribute for reliable retrieval
-    root.setAttribute("data-zoom-index", index.toString());
-  }
-}
-
-/**
- * Get zoom index from DOM (fallback mode).
- */
-function getFallbackZoomIndex(): number {
-  const root = document.documentElement;
-  if (root) {
-    const stored = root.getAttribute("data-zoom-index");
-    if (stored !== null) {
-      const index = parseInt(stored, 10);
-      if (!isNaN(index) && index >= 0 && index < ZOOM_LEVELS.length) {
-        return index;
-      }
-    }
-  }
-  return DEFAULT_ZOOM_INDEX;
+export function getGridZoomTokens() {
+  return tokens.dimensions.gridZoom[
+    `level${currentZoomLevel}` as keyof typeof tokens.dimensions.gridZoom
+  ];
 }
 
 /**
  * Get current zoom level index.
- * Returns the index in ZOOM_LEVELS array.
+ * Returns the index in ZOOM_LEVELS array (0-4).
  */
 export function getCurrentZoomIndex(): number {
-  const webFrame = getWebFrame();
-  if (!webFrame) {
-    // Fallback for non-Electron: read from DOM
-    return getFallbackZoomIndex();
-  }
-
-  const currentFactor = webFrame.getZoomFactor();
-
-  // Find the closest matching zoom level
-  let closestIndex = DEFAULT_ZOOM_INDEX;
-  let smallestDiff = Math.abs(ZOOM_LEVELS[closestIndex] - currentFactor);
-
-  for (let i = 0; i < ZOOM_LEVELS.length; i++) {
-    const diff = Math.abs(ZOOM_LEVELS[i] - currentFactor);
-    if (diff < smallestDiff) {
-      smallestDiff = diff;
-      closestIndex = i;
-    }
-  }
-
-  return closestIndex;
+  return currentZoomLevel;
 }
 
 /**
  * Set zoom level by index.
- * @param index - Index in ZOOM_LEVELS array
- * @returns The zoom factor that was set
+ * @param index - Index in ZOOM_LEVELS array (0-4)
+ * @returns The zoom level index that was set
  */
 export function setZoomByIndex(index: number): number {
   const clampedIndex = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, index));
-  const zoomFactor = ZOOM_LEVELS[clampedIndex];
-
-  const webFrame = getWebFrame();
-  if (webFrame) {
-    // Electron mode: use webFrame API
-    webFrame.setZoomFactor(zoomFactor);
-  } else {
-    // Fallback for non-Electron: use CSS zoom and store in DOM
-    applyCssZoom(zoomFactor, clampedIndex);
-  }
-
-  return zoomFactor;
+  currentZoomLevel = clampedIndex;
+  return clampedIndex;
 }
 
 /**
  * Zoom in to the next level.
- * @returns The new zoom factor
+ * @returns The new zoom level index
  */
 export function zoomIn(): number {
   const currentIndex = getCurrentZoomIndex();
@@ -135,7 +68,7 @@ export function zoomIn(): number {
 
 /**
  * Zoom out to the previous level.
- * @returns The new zoom factor
+ * @returns The new zoom level index
  */
 export function zoomOut(): number {
   const currentIndex = getCurrentZoomIndex();
@@ -144,20 +77,20 @@ export function zoomOut(): number {
 }
 
 /**
- * Reset zoom to 100%.
- * @returns The default zoom factor (1.0)
+ * Reset zoom to 100% (level 2).
+ * @returns The default zoom level index (2)
  */
 export function resetZoom(): number {
-  return setZoomByIndex(DEFAULT_ZOOM_INDEX);
+  return setZoomByIndex(DEFAULT_ZOOM_LEVEL);
 }
 
 /**
  * Get current zoom percentage as a string (e.g., "125%").
+ * Maps zoom levels to their percentage values.
  */
 export function getCurrentZoomPercentage(): string {
-  const index = getCurrentZoomIndex();
-  const factor = ZOOM_LEVELS[index];
-  return `${Math.round(factor * 100)}%`;
+  const percentages = ["60%", "80%", "100%", "125%", "150%"];
+  return percentages[currentZoomLevel];
 }
 
 /**
@@ -208,8 +141,8 @@ export function canZoomOut(): boolean {
 }
 
 /**
- * Check if currently at default zoom (100%).
+ * Check if currently at default zoom (100% - level 2).
  */
 export function isAtDefaultZoom(): boolean {
-  return getCurrentZoomIndex() === DEFAULT_ZOOM_INDEX;
+  return getCurrentZoomIndex() === DEFAULT_ZOOM_LEVEL;
 }
