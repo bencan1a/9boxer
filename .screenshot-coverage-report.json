@@ -2,8 +2,8 @@
   "totalComponents": 70,
   "componentsWithStories": 55,
   "componentsWithScreenshots": 26,
-  "totalScreenshots": 58,
-  "storybookScreenshots": 54,
+  "totalScreenshots": 56,
+  "storybookScreenshots": 52,
   "fullAppScreenshots": 3,
   "manualScreenshots": 1,
   "componentBreakdown": [
@@ -405,15 +405,10 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.tsx",
       "name": "NineBoxGrid",
       "hasStory": true,
-      "screenshotCount": 4,
+      "screenshotCount": 3,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
-          "source": "storybook",
-          "manual": false
-        },
-        {
-          "name": "calibration-donut-mode-grid",
           "source": "storybook",
           "manual": false
         },
@@ -754,15 +749,10 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.tsx",
       "name": "DistributionTable",
       "hasStory": true,
-      "screenshotCount": 3,
+      "screenshotCount": 2,
       "screenshots": [
         {
           "name": "quickstart-statistics-distribution",
-          "source": "storybook",
-          "manual": false
-        },
-        {
-          "name": "calibration-statistics-red-flags",
           "source": "storybook",
           "manual": false
         },
@@ -1121,15 +1111,11 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.stories.tsx",
       "componentName": "NineBoxGrid",
-      "usedInScreenshots": 4,
+      "usedInScreenshots": 3,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
           "storyId": "grid-nineboxgrid--populated"
-        },
-        {
-          "name": "calibration-donut-mode-grid",
-          "storyId": "grid-nineboxgrid--donut-mode"
         },
         {
           "name": "donut-mode-active-layout",
@@ -1354,15 +1340,11 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.stories.tsx",
       "componentName": "DistributionTable",
-      "usedInScreenshots": 3,
+      "usedInScreenshots": 2,
       "screenshots": [
         {
           "name": "quickstart-statistics-distribution",
           "storyId": "panel-statistics-distributiontable--balanced-distribution"
-        },
-        {
-          "name": "calibration-statistics-red-flags",
-          "storyId": "panel-statistics-distributiontable--skewed-distribution"
         },
         {
           "name": "statistics-panel-distribution",
