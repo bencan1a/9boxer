@@ -609,3 +609,46 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }
   },
 }));
+
+// ==================== Reusable Selectors ====================
+// These selectors help components subscribe only to specific parts of the store,
+// reducing unnecessary re-renders when unrelated state changes.
+// Usage: const employees = useSessionStore(selectEmployees)
+
+export const selectSessionId = (state: SessionState) => state.sessionId;
+export const selectEmployees = (state: SessionState) => state.employees;
+export const selectOriginalEmployees = (state: SessionState) =>
+  state.originalEmployees;
+export const selectEvents = (state: SessionState) => state.events;
+export const selectFilename = (state: SessionState) => state.filename;
+export const selectFilePath = (state: SessionState) => state.filePath;
+export const selectIsLoading = (state: SessionState) => state.isLoading;
+export const selectError = (state: SessionState) => state.error;
+export const selectSelectedEmployeeId = (state: SessionState) =>
+  state.selectedEmployeeId;
+export const selectDonutModeActive = (state: SessionState) =>
+  state.donutModeActive;
+export const selectDonutEvents = (state: SessionState) => state.donutEvents;
+export const selectHasSampleData = (state: SessionState) => state.hasSampleData;
+
+// Action selectors
+export const selectUploadFile = (state: SessionState) => state.uploadFile;
+export const selectClearSession = (state: SessionState) => state.clearSession;
+export const selectCloseSession = (state: SessionState) => state.closeSession;
+export const selectLoadEmployees = (state: SessionState) => state.loadEmployees;
+export const selectMoveEmployee = (state: SessionState) => state.moveEmployee;
+export const selectUpdateEmployee = (state: SessionState) =>
+  state.updateEmployee;
+export const selectUpdateChangeNotes = (state: SessionState) =>
+  state.updateChangeNotes;
+export const selectUpdateDonutChangeNotes = (state: SessionState) =>
+  state.updateDonutChangeNotes;
+export const selectSelectEmployee = (state: SessionState) =>
+  state.selectEmployee;
+export const selectClearError = (state: SessionState) => state.clearError;
+export const selectRestoreSession = (state: SessionState) =>
+  state.restoreSession;
+export const selectToggleDonutMode = (state: SessionState) =>
+  state.toggleDonutMode;
+export const selectMoveEmployeeDonut = (state: SessionState) =>
+  state.moveEmployeeDonut;

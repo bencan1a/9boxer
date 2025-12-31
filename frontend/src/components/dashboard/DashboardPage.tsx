@@ -2,8 +2,10 @@
  * Main dashboard page
  */
 
-import React, { useEffect, useState, useRef } from "react";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -23,8 +25,22 @@ import { ViewControls } from "../common/ViewControls";
 import { EmptyState } from "../EmptyState";
 import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
 import { useSession } from "../../hooks/useSession";
-import { useSessionStore } from "../../store/sessionStore";
-import { useUiStore } from "../../store/uiStore";
+import {
+  useSessionStore,
+  selectRestoreSession,
+  selectClearSession,
+  selectLoadEmployees,
+  selectEmployees,
+} from "../../store/sessionStore";
+import {
+  useUiStore,
+  selectIsRightPanelCollapsed,
+  selectRightPanelSize,
+  selectWasAutoCollapsed,
+  selectToggleRightPanel,
+  selectSetRightPanelCollapsed,
+  selectSetRightPanelSize,
+} from "../../store/uiStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { sampleDataService } from "../../services/sampleDataService";
@@ -37,16 +53,20 @@ export const DashboardPage: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { sessionId } = useSession();
-  const { restoreSession, clearSession, loadEmployees, employees } =
-    useSessionStore();
-  const {
-    isRightPanelCollapsed,
-    rightPanelSize,
-    wasAutoCollapsed,
-    toggleRightPanel,
-    setRightPanelCollapsed,
-    setRightPanelSize,
-  } = useUiStore();
+
+  // Use granular selectors to minimize re-renders
+  const restoreSession = useSessionStore(selectRestoreSession);
+  const clearSession = useSessionStore(selectClearSession);
+  const loadEmployees = useSessionStore(selectLoadEmployees);
+  const employees = useSessionStore(selectEmployees);
+
+  const isRightPanelCollapsed = useUiStore(selectIsRightPanelCollapsed);
+  const rightPanelSize = useUiStore(selectRightPanelSize);
+  const wasAutoCollapsed = useUiStore(selectWasAutoCollapsed);
+  const toggleRightPanel = useUiStore(selectToggleRightPanel);
+  const setRightPanelCollapsed = useUiStore(selectSetRightPanelCollapsed);
+  const setRightPanelSize = useUiStore(selectSetRightPanelSize);
+
   const { showSuccess, showError } = useSnackbar();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const rightPanelRef = useRef<ImperativePanelHandle>(null);
@@ -54,6 +74,70 @@ export const DashboardPage: React.FC = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [loadSampleDialogOpen, setLoadSampleDialogOpen] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const rafIdRef = useRef<number>();
+  const resizeTimeoutRef = useRef<NodeJS.Timeout>();
+  const isMountedRef = useRef(true);
+
+  // Cleanup RAF and timeouts on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Throttled resize handler using requestAnimationFrame
+  const handlePanelResize = useCallback(
+    (sizes: number[]) => {
+      // Set resizing state using functional update to avoid stale closure
+      setIsResizing((prev) => {
+        if (!prev) return true; // Only update if not already resizing
+        return prev; // Keep current value
+      });
+
+      // Cancel previous RAF if still pending
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+
+      // Clear previous timeout
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+
+      // Schedule update on next animation frame (60fps max)
+      rafIdRef.current = requestAnimationFrame(() => {
+        // Guard against unmounted component
+        if (!isMountedRef.current) return;
+
+        // Track panel size changes (only when panel is visible)
+        if (!isRightPanelCollapsed && sizes.length === 2) {
+          const rightSize = sizes[1];
+          if (rightSize !== rightPanelSize) {
+            setRightPanelSize(rightSize);
+          }
+        }
+
+        // Guard again before setting timeout
+        if (!isMountedRef.current) return;
+
+        // Set timeout to end resize state after resize stops
+        resizeTimeoutRef.current = setTimeout(() => {
+          // Guard in timeout callback
+          if (!isMountedRef.current) return;
+          setIsResizing(false);
+        }, 150); // 150ms debounce for resize end
+      });
+    },
+    [isRightPanelCollapsed, rightPanelSize, setRightPanelSize]
+  );
 
   // Restore session from localStorage on mount
   useEffect(() => {
@@ -89,22 +173,28 @@ export const DashboardPage: React.FC = () => {
 
   // Track window resize and auto-collapse/reopen panel based on screen size
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setWindowWidth(width);
+    let resizeTimeout: NodeJS.Timeout;
 
-      // Auto-collapse if window becomes too small and panel is open
-      if (width < PANEL_COLLAPSE_BREAKPOINT && !isRightPanelCollapsed) {
-        setRightPanelCollapsed(true, true); // true = isAutoCollapse
-      }
-      // Auto-reopen if window becomes large enough and panel was auto-collapsed
-      else if (
-        width >= PANEL_COLLAPSE_BREAKPOINT &&
-        isRightPanelCollapsed &&
-        wasAutoCollapsed
-      ) {
-        setRightPanelCollapsed(false, false);
-      }
+    const handleResize = () => {
+      // Debounce window resize to avoid excessive checks
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const width = window.innerWidth;
+        setWindowWidth(width);
+
+        // Auto-collapse if window becomes too small and panel is open
+        if (width < PANEL_COLLAPSE_BREAKPOINT && !isRightPanelCollapsed) {
+          setRightPanelCollapsed(true, true); // true = isAutoCollapse
+        }
+        // Auto-reopen if window becomes large enough and panel was auto-collapsed
+        else if (
+          width >= PANEL_COLLAPSE_BREAKPOINT &&
+          isRightPanelCollapsed &&
+          wasAutoCollapsed
+        ) {
+          setRightPanelCollapsed(false, false);
+        }
+      }, 150); // Debounce 150ms
     };
 
     window.addEventListener("resize", handleResize);
@@ -114,7 +204,10 @@ export const DashboardPage: React.FC = () => {
       setRightPanelCollapsed(true, true);
     }
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
   }, [
     windowWidth,
     isRightPanelCollapsed,
@@ -232,18 +325,7 @@ export const DashboardPage: React.FC = () => {
                 position: "relative",
               }}
             >
-              <PanelGroup
-                direction="horizontal"
-                onLayout={(sizes) => {
-                  // Track panel size changes (only when panel is visible)
-                  if (!isRightPanelCollapsed && sizes.length === 2) {
-                    const rightSize = sizes[1];
-                    if (rightSize !== rightPanelSize) {
-                      setRightPanelSize(rightSize);
-                    }
-                  }
-                }}
-              >
+              <PanelGroup direction="horizontal" onLayout={handlePanelResize}>
                 <Panel defaultSize={100 - rightPanelSize} minSize={30}>
                   <Box
                     sx={{
@@ -256,7 +338,10 @@ export const DashboardPage: React.FC = () => {
                       position: "relative",
                     }}
                   >
-                    <GridZoomProvider>
+                    <GridZoomProvider
+                      isResizing={isResizing}
+                      setIsResizing={setIsResizing}
+                    >
                       <NineBoxGrid />
                       {/* View Controls (view mode + zoom + fullscreen) */}
                       <ViewControls />

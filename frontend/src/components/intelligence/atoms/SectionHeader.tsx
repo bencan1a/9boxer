@@ -3,7 +3,10 @@
  */
 
 import React from "react";
-import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
 import InfoIcon from "@mui/icons-material/Info";
 

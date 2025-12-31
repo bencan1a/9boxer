@@ -154,3 +154,32 @@ export const useUiStore = create<UiState>()(
     }
   )
 );
+
+// ==================== Reusable Selectors ====================
+// These selectors help components subscribe only to specific parts of the store,
+// reducing unnecessary re-renders when unrelated state changes.
+// Usage: const themeMode = useUiStore(selectThemeMode)
+
+export const selectIsRightPanelCollapsed = (state: UiState) =>
+  state.isRightPanelCollapsed;
+export const selectRightPanelSize = (state: UiState) => state.rightPanelSize;
+export const selectWasAutoCollapsed = (state: UiState) =>
+  state.wasAutoCollapsed;
+export const selectThemeMode = (state: UiState) => state.themeMode;
+export const selectEffectiveTheme = (state: UiState) => state.effectiveTheme;
+export const selectSystemTheme = (state: UiState) => state.systemTheme;
+export const selectRecentFiles = (state: UiState) => state.recentFiles;
+
+// Action selectors
+export const selectToggleRightPanel = (state: UiState) =>
+  state.toggleRightPanel;
+export const selectSetRightPanelCollapsed = (state: UiState) =>
+  state.setRightPanelCollapsed;
+export const selectSetRightPanelSize = (state: UiState) =>
+  state.setRightPanelSize;
+export const selectSetThemeMode = (state: UiState) => state.setThemeMode;
+export const selectSetSystemTheme = (state: UiState) => state.setSystemTheme;
+export const selectLoadRecentFiles = (state: UiState) => state.loadRecentFiles;
+export const selectAddRecentFile = (state: UiState) => state.addRecentFile;
+export const selectClearRecentFiles = (state: UiState) =>
+  state.clearRecentFiles;

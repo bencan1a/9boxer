@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  ButtonGroup,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import IconButton from "@mui/material/IconButton";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";

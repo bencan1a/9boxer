@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { NineBoxGrid } from "./NineBoxGrid";
 import type { Employee } from "../../types/employee";

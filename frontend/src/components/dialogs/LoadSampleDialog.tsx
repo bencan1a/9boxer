@@ -6,18 +6,16 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button,
-  Box,
-  Alert,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import ScienceIcon from "@mui/icons-material/Science";

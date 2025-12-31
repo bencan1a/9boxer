@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }

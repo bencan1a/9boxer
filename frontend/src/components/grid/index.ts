@@ -4,6 +4,7 @@
 
 export { EmployeeCount } from "./EmployeeCount";
 export { EmployeeTile } from "./EmployeeTile";
+export { DraggedEmployeeTile } from "./DraggedEmployeeTile";
 export { GridBox } from "./GridBox";
 export { Axis } from "./Axis";
 export { BoxHeader } from "./BoxHeader";

@@ -19,14 +19,12 @@
  */
 
 import React from "react";
-import {
-  Box,
-  Typography,
-  Badge,
-  IconButton,
-  Tooltip,
-  alpha,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Badge from "@mui/material/Badge";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import { alpha } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";

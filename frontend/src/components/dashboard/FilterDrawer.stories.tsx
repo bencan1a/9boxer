@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React, { useEffect } from "react";
 import { FilterDrawer } from "./FilterDrawer";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import {
   Employee,
   PerformanceLevel,

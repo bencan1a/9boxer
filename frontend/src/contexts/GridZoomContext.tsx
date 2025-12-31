@@ -61,6 +61,12 @@ interface GridZoomContextType {
 
   /** Check if at default zoom (level 2) */
   isAtDefault: boolean;
+
+  /** Whether the panel is currently being resized */
+  isResizing: boolean;
+
+  /** Set the resizing state */
+  setIsResizing: (isResizing: boolean) => void;
 }
 
 const GridZoomContext = createContext<GridZoomContextType | undefined>(
@@ -123,11 +129,26 @@ function saveZoomLevel(level: number): void {
  * Single source of truth for grid zoom state.
  * Handles state management, persistence, and design tokens.
  */
-export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
+export const GridZoomProvider: React.FC<{
+  children: React.ReactNode;
+  isResizing?: boolean;
+  setIsResizing?: (isResizing: boolean) => void;
+}> = ({
   children,
+  isResizing: externalIsResizing = false,
+  setIsResizing: externalSetIsResizing,
 }) => {
   // Initialize from localStorage
   const [level, setLevelState] = useState<number>(() => loadSavedZoomLevel());
+
+  // Internal isResizing state (used if not provided externally)
+  const [internalIsResizing, setInternalIsResizing] = useState(false);
+
+  // Use external state if parent is managing it (setter provided), otherwise use internal state
+  const isResizing = externalSetIsResizing
+    ? externalIsResizing
+    : internalIsResizing;
+  const setIsResizing = externalSetIsResizing || setInternalIsResizing;
 
   // Memoize the tokens for the current level
   const currentTokens = useMemo(() => getTokensForLevel(level), [level]);
@@ -180,6 +201,8 @@ export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
       canZoomIn: canZoomInValue,
       canZoomOut: canZoomOutValue,
       isAtDefault: isAtDefaultValue,
+      isResizing,
+      setIsResizing,
     }),
     [
       level,
@@ -192,6 +215,8 @@ export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
       canZoomInValue,
       canZoomOutValue,
       isAtDefaultValue,
+      isResizing,
+      setIsResizing,
     ]
   );
 

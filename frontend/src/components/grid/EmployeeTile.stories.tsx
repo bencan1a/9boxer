@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "@storybook/test";
 import { DndContext } from "@dnd-kit/core";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { EmployeeTile } from "./EmployeeTile";
 import type {

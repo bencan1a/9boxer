@@ -5,7 +5,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { LoadSampleDialog } from "./LoadSampleDialog";
-import { Button, Box } from "@mui/material";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 const meta = {
   title: "Dialogs/LoadSampleDialog",

@@ -4,7 +4,10 @@
  */
 
 import React from "react";
-import { Container, Typography, Paper, Divider } from "@mui/material";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
 import { DeviationChart } from "./DeviationChart";
 import { DistributionHeatmap } from "./DistributionHeatmap";
 import { LevelDistributionChart } from "./LevelDistributionChart";

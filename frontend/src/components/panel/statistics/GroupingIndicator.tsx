@@ -19,7 +19,10 @@
  */
 
 import React from "react";
-import { TableCell, Box, Typography, alpha } from "@mui/material";
+import TableCell from "@mui/material/TableCell";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 
 export interface GroupingIndicatorProps {

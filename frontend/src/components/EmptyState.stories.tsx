@@ -12,7 +12,7 @@ import { fn } from "@storybook/test";
 import EmptyState from "./EmptyState";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const meta = {
   title: "Components/EmptyState",

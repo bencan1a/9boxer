@@ -11,7 +11,9 @@
  */
 
 import React from "react";
-import { Box, Paper, Alert } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useStatistics } from "../../hooks/useStatistics";

@@ -41,6 +41,8 @@
       "fileNotFound": "Datei nicht gefunden: {{filename}}",
       "fileLoaded": "{{filename}} geladen",
       "loadError": "Fehler beim Laden der Datei",
+      "exportError": "Fehler beim Exportieren der Änderungen",
+      "recentFilesCleared": "Zuletzt verwendete Dateien gelöscht",
       "electronApiRequired": "Das Laden von Dateien erfordert die Desktop-Anwendung"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[H,H]",
         "fullLabel": "Spitzentalent [H,H]",
         "guidance": "Top-Leistungsträger mit hohem Potenzial. Kritische Talente, die für Führungspositionen zu halten und zu entwickeln sind. Fokus auf Bindung, Nachfolgeplanung, Führungskräfteentwicklung und anspruchsvolle Aufgaben."
-      }
+      },
+      "unknown": "Unbekannt"
     }
   },
   "panel": {
@@ -355,6 +358,7 @@
     "applyChanges": {
       "title": "Änderungen auf Datei anwenden",
       "applyTo": "Änderungen anwenden auf:",
+      "defaultBehavior": "Ihre Änderungen werden in der Originaldatei gespeichert.",
       "saveAsNew": "Stattdessen als neue Datei speichern",
       "apply": "Änderungen übernehmen",
       "applying": "Wird angewendet...",
