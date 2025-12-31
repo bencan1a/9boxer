@@ -70,6 +70,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         p: theme.tokens.spacing.xl / 8, // Convert 32px to MUI spacing units (32/8 = 4)
         ...sx,
       }}
+      data-testid="empty-state"
     >
       {/* Icon */}
       {icon && (
@@ -127,6 +128,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           startIcon={action.icon}
           onClick={action.onClick}
           sx={{ mb: hint ? theme.tokens.spacing.md / 8 : 0 }} // Convert 16px to MUI spacing units (16/8 = 2)
+          data-testid="empty-state-action-button"
         >
           {action.label}
         </Button>

@@ -68,6 +68,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
             bgcolor: "background.default",
             padding: (theme?.tokens.spacing.lg ?? 24) / 8, // Convert 24px to 3
           }}
+          data-testid="error-boundary"
         >
           <Paper
             elevation={3}
@@ -77,6 +78,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
               textAlign: "center",
               bgcolor: "background.paper",
             }}
+            data-testid="error-boundary-content"
           >
             <ErrorOutlineIcon
               sx={{
@@ -122,6 +124,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
               color="primary"
               onClick={this.handleReset}
               sx={{ mt: (theme?.tokens.spacing.lg ?? 24) / 8 }} // Convert 24px to 3
+              data-testid="error-boundary-reset-button"
             >
               {t("common.errorBoundary.returnHome")}
             </Button>

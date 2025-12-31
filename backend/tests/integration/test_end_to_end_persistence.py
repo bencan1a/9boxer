@@ -523,7 +523,7 @@ class TestOriginalValueTracking:
     """Test that original Performance/Potential values are tracked in exports."""
 
     def test_export_tracks_original_values_when_employee_modified(
-        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+        self, test_client: TestClient, sample_excel_file: Path, export_dir: Path
     ) -> None:
         """Test that original Performance/Potential values are preserved in tracking columns.
 
@@ -561,7 +561,7 @@ class TestOriginalValueTracking:
         assert response.status_code == 200
 
         # Export to new file
-        export_path = tmp_path / "exported_with_tracking.xlsx"
+        export_path = export_dir / "exported_with_tracking.xlsx"
         response = test_client.post(
             "/api/session/export",
             json={"mode": "save_new", "new_path": str(export_path)},
@@ -634,7 +634,7 @@ class TestOriginalValueTracking:
         # This ensures changes persist across reload
 
     def test_export_no_original_values_when_employee_not_modified(
-        self, test_client: TestClient, sample_excel_file: Path, tmp_path: Path
+        self, test_client: TestClient, sample_excel_file: Path, export_dir: Path
     ) -> None:
         """Test that unmodified employees have empty original value tracking columns."""
         # Upload file
@@ -649,7 +649,7 @@ class TestOriginalValueTracking:
             test_client.post("/api/session/upload", files=files)
 
         # Export immediately without making changes
-        export_path = tmp_path / "exported_no_changes.xlsx"
+        export_path = export_dir / "exported_no_changes.xlsx"
         response = test_client.post(
             "/api/session/export",
             json={"mode": "save_new", "new_path": str(export_path)},

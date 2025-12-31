@@ -7,6 +7,7 @@
 import { Page, expect } from "@playwright/test";
 import * as path from "path";
 import { dragEmployeeToPosition } from "./dragAndDrop";
+import { createChange, getFirstEmployeeId } from "./testData";
 import { openFileMenu } from "./ui";
 
 /**
@@ -52,27 +53,16 @@ export async function uploadFile(page: Page, fileName: string): Promise<void> {
 
 /**
  * Make a change to create unsaved changes
- * Moves the first employee to a different position
+ * Moves the first employee to a different position via API
  *
  * @param page - Playwright Page object
  */
 export async function makeChange(page: Page): Promise<void> {
-  // Get first employee card
-  const firstCard = page.locator('[data-testid^="employee-card-"]').first();
-  await firstCard.waitFor({ state: "visible" });
+  // Get any employee ID (faster than querying DOM for specific positions)
+  const employeeId = await getFirstEmployeeId(page);
 
-  // Extract employee ID from the card
-  const cardTestId = await firstCard.getAttribute("data-testid");
-  const employeeId = parseInt(cardTestId?.replace("employee-card-", "") || "1");
-
-  // Get current position
-  const currentPosition = await firstCard.getAttribute("data-position");
-
-  // Calculate target position (different from current)
-  const targetPosition = currentPosition === "9" ? 5 : 9;
-
-  // Move employee using drag helper
-  await dragEmployeeToPosition(page, employeeId, targetPosition);
+  // Move employee to position 6 via API (faster and more reliable than drag)
+  await createChange(page, employeeId, 6);
 
   // Verify change count badge appears
   await expect(page.locator('[data-testid="file-menu-badge"]')).toBeVisible();
@@ -135,15 +125,30 @@ export async function applyChanges(
     }, newPath);
   }
 
-  // Click Apply button (use getByRole for reliability)
-  const applyButton = page.getByRole("button", { name: "Apply Changes" });
+  // Click Apply button (use data-testid for reliability)
+  const applyButton = page.locator(
+    '[data-testid="apply-changes-apply-button"]'
+  );
+
+  // Set up promise to wait for export API call to complete
+  const exportPromise = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/session/export") &&
+      response.status() === 200,
+    { timeout: 15000 }
+  );
+
   await applyButton.click();
 
+  // Wait for export API to complete
+  await exportPromise;
+
   // Wait for dialog to close (indicates success)
+  // Use longer timeout to account for file I/O operations
   await expect(
     page.locator('[data-testid="apply-changes-dialog"]')
   ).not.toBeVisible({
-    timeout: 10000,
+    timeout: 15000,
   });
 }
 

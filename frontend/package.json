@@ -31,6 +31,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:cleanup": "node scripts/cleanup-dev-servers.js",
     "test:e2e:pw": "playwright test --project=e2e",
     "test:e2e:pw:ui": "playwright test --project=e2e --ui",
     "test:e2e:pw:debug": "playwright test --project=e2e --debug",

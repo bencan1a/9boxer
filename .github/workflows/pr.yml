@@ -532,17 +532,15 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # Stage 3: E2E Testing with Smart Test Selection
+  # Stage 3: E2E Core Tests (Atomic UX Validation)
   # ============================================================================
 
-  e2e-tests-smart:
-    name: E2E Tests (Smart Selection)
+  e2e-core-tests:
+    name: E2E Core Tests (Atomic UX)
     runs-on: windows-latest
     needs: [unit-tests, frontend-tests]  # Wait for both backend and frontend tests
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
@@ -601,110 +599,15 @@ jobs:
         working-directory: frontend
         run: npx playwright install --with-deps chromium
 
-      - name: Determine E2E tests to run
-        id: select-tests
-        shell: bash
-        run: |
-          # Get changed files
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          else
-            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-          fi
-
-          # Always run smoke test
-          TESTS_TO_RUN="smoke-test.spec.ts"
-
-          # Check for critical file changes that require all E2E tests
-          CRITICAL_CHANGES=$(echo "$CHANGED_FILES" | grep -E '(backend/src/ninebox/models\.py|backend/src/ninebox/database\.py|pyproject\.toml|\.github/workflows/)' || echo "")
-
-          if [ -n "$CRITICAL_CHANGES" ]; then
-            echo "Critical files changed, running ALL E2E tests"
-            echo "run_all=true" >> $GITHUB_OUTPUT
-            echo "tests=" >> $GITHUB_OUTPUT
-          else
-            # Map changed files to specific E2E tests
-            echo "$CHANGED_FILES" | while read -r file; do
-              case "$file" in
-                backend/src/ninebox/services/excel_parser.py)
-                  echo "upload-flow.spec.ts" >> e2e_tests.txt
-                  ;;
-                backend/src/ninebox/services/excel_exporter.py)
-                  echo "export-flow.spec.ts" >> e2e_tests.txt
-                  echo "export-validation.spec.ts" >> e2e_tests.txt
-                  ;;
-                backend/src/ninebox/services/intelligence_service.py)
-                  echo "intelligence-flow.spec.ts" >> e2e_tests.txt
-                  ;;
-                backend/src/ninebox/routers/employees.py)
-                  echo "employee-movement.spec.ts" >> e2e_tests.txt
-                  echo "employee-details.spec.ts" >> e2e_tests.txt
-                  ;;
-                backend/src/ninebox/routers/filters.py)
-                  echo "filter-flow.spec.ts" >> e2e_tests.txt
-                  echo "filter-application.spec.ts" >> e2e_tests.txt
-                  echo "exclusions-quick-filters.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/NineBoxGrid.tsx)
-                  echo "employee-movement.spec.ts" >> e2e_tests.txt
-                  echo "drag-drop-visual.spec.ts" >> e2e_tests.txt
-                  echo "grid-expansion.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/FileUpload.tsx)
-                  echo "upload-flow.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/FilterDrawer.tsx)
-                  echo "filter-flow.spec.ts" >> e2e_tests.txt
-                  echo "filter-application.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/ChangeTracker.tsx)
-                  echo "change-tracking.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/StatisticsPanel.tsx)
-                  echo "statistics-tab.spec.ts" >> e2e_tests.txt
-                  ;;
-                frontend/src/components/DetailsPanel.tsx)
-                  echo "employee-details.spec.ts" >> e2e_tests.txt
-                  ;;
-              esac
-            done
-
-            # Deduplicate and add to TESTS_TO_RUN
-            if [ -f e2e_tests.txt ]; then
-              MAPPED_TESTS=$(sort -u e2e_tests.txt | tr '\n' ' ')
-              TESTS_TO_RUN="$TESTS_TO_RUN $MAPPED_TESTS"
-            fi
-
-            echo "run_all=false" >> $GITHUB_OUTPUT
-            echo "tests=$TESTS_TO_RUN" >> $GITHUB_OUTPUT
-          fi
-
-          echo "E2E tests to run: $TESTS_TO_RUN"
-          echo "## E2E Test Selection" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "$CRITICAL_CHANGES" != "" ]; then
-            echo "**Running ALL E2E tests** (critical files changed)" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "**Selected tests:** $TESTS_TO_RUN" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Run Playwright E2E tests (all tests)
-        if: steps.select-tests.outputs.run_all == 'true'
+      - name: Run E2E Core Tests
         working-directory: frontend
-        run: npx playwright test
-
-      - name: Run Playwright E2E tests (selected tests)
-        if: steps.select-tests.outputs.run_all == 'false'
-        working-directory: frontend
-        shell: bash
-        run: |
-          npx playwright test ${{ steps.select-tests.outputs.tests }}
+        run: npx playwright test --project=e2e-core
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-pr
+          name: playwright-e2e-core-report
           path: frontend/playwright-report/
           retention-days: 7
 
@@ -712,7 +615,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-results-pr
+          name: playwright-e2e-core-results
           path: |
             frontend/test-results/
             frontend/playwright-report/
@@ -735,7 +638,7 @@ jobs:
       integration-tests,
       performance-tests,
       frontend-tests,
-      e2e-tests-smart
+      e2e-core-tests
     ]
     if: always()
     steps:
@@ -750,7 +653,7 @@ jobs:
           echo "Integration Tests: ${{ needs.integration-tests.result }}"
           echo "Performance Tests: ${{ needs.performance-tests.result }}"
           echo "Frontend Tests: ${{ needs.frontend-tests.result }}"
-          echo "E2E Tests: ${{ needs.e2e-tests-smart.result }}"
+          echo "E2E Core Tests: ${{ needs.e2e-core-tests.result }}"
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then
             echo "✅ Skipped tests for docs-only changes"
@@ -766,7 +669,7 @@ jobs:
              [[ "${{ needs.integration-tests.result }}" != "success" && "${{ needs.integration-tests.result }}" != "skipped" ]] || \
              [[ "${{ needs.performance-tests.result }}" != "success" && "${{ needs.performance-tests.result }}" != "skipped" ]] || \
              [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
-             [[ "${{ needs.e2e-tests-smart.result }}" != "success" ]]; then
+             [[ "${{ needs.e2e-core-tests.result }}" != "success" ]]; then
             echo "❌ PR Validation Failed"
             exit 1
           fi
@@ -796,10 +699,10 @@ jobs:
           echo "| Performance Tests | ${{ needs.performance-tests.result == 'success' && '✅' || needs.performance-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Tests | ${{ needs.frontend-tests.result == 'success' && '✅' || needs.frontend-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Stage 3: E2E Testing**" >> $GITHUB_STEP_SUMMARY
+          echo "**Stage 3: E2E Core Tests**" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| E2E Tests (Smart) | ${{ needs.e2e-tests-smart.result == 'success' && '✅' || needs.e2e-tests-smart.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Core Tests (Atomic UX) | ${{ needs.e2e-core-tests.result == 'success' && '✅' || needs.e2e-core-tests.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.check-changes.outputs.should-skip-tests }}" = "true" ]; then

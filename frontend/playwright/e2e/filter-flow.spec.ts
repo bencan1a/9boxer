@@ -10,7 +10,7 @@ import { loadSampleData, t } from "../helpers";
 
 test.describe("Filter Application Flow", () => {
   test.beforeEach(async ({ page }) => {
-    // Visit and load sample data
+    // Visit and load sample data for each test (ensures isolation)
     await page.goto("/");
     await loadSampleData(page);
 

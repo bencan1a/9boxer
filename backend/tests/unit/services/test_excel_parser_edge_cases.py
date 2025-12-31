@@ -111,6 +111,7 @@ class TestUnicodeCharacters:
 class TestLargeFiles:
     """Test handling of large Excel files with many employees."""
 
+    @pytest.mark.slow
     def test_parse_when_large_file_then_processes_all_employees(self) -> None:
         """Test parsing 1000 employees successfully."""
         parser = ExcelParser()
@@ -126,6 +127,7 @@ class TestLargeFiles:
         assert employees[999].employee_id == 1000
         assert employees[999].name == "Employee 1000"
 
+    @pytest.mark.slow
     def test_parse_when_large_file_then_maintains_data_quality(self) -> None:
         """Test data integrity across all employees in large file."""
         parser = ExcelParser()

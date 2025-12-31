@@ -153,32 +153,39 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 # Navigation Structure
-# This will be populated by content migration agents
 nav:
   - Home: index.md
-  - Quickstart: quickstart.md
-  - Getting Started: getting-started.md
-  - Uploading Data: uploading-data.md
-  - Understanding the Grid: understanding-grid.md
-  - Donut Mode: donut-mode.md
-  - Working with Employees: working-with-employees.md
-  - Tracking Changes: tracking-changes.md
-  - Filters: filters.md
-  - Statistics: statistics.md
-  - Exporting: exporting.md
-  - Settings: settings.md
-  - Tips & Best Practices: tips.md
-  - Best Practices: best-practices.md
-  - Troubleshooting: troubleshooting.md
+  - Getting Started:
+    - Quickstart Tour: quickstart.md
+    - Complete Guide: getting-started.md
+    - New to 9-Box?: new-to-9box.md
+  - Core Features:
+    - Uploading Data: uploading-data.md
+    - Understanding the Grid: understanding-grid.md
+    - Working with Employees: working-with-employees.md
+    - Tracking Changes: tracking-changes.md
+    - Filters: filters.md
+    - Statistics & Intelligence: statistics.md
+    - Donut Mode: donut-mode.md
+    - Exporting: exporting.md
+    - Settings: settings.md
   - Workflows:
     - Preparing for Talent Calibration: workflows/talent-calibration.md
     - Making Your First Changes: workflows/making-changes.md
     - Adding Notes & Documentation: workflows/adding-notes.md
-  - Decision Aids:
-    - Choosing Your Workflow: workflows/workflow-decision-tree.md
+    - Analyzing Your Talent Distribution: workflows/analyzing-distribution.md
+    - Identifying Flight Risks: workflows/identifying-flight-risks.md
+  - Guides by Role:
+    - Executive Quick Reference: executive-quick-reference.md
+    - Managing Large Datasets (100+): large-dataset-guide.md
+  - Reference:
+    - Keyboard Shortcuts: keyboard-shortcuts.md
+    - Tips & Best Practices: tips.md
+    - Best Practices: best-practices.md
     - Feature Comparison: feature-comparison.md
     - Common Decisions: common-decisions.md
   - Help:
+    - Troubleshooting: troubleshooting.md
     - Frequently Asked Questions: faq.md
 
 # UPDATED: Custom CSS for design system alignment

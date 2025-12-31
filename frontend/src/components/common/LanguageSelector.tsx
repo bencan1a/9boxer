@@ -32,7 +32,11 @@ export const LanguageSelector: React.FC = () => {
   };
 
   return (
-    <FormControl size="small" sx={{ minWidth: 120 }}>
+    <FormControl
+      size="small"
+      sx={{ minWidth: 120 }}
+      data-testid="language-selector"
+    >
       {" "}
       {/* 120px - specific control width */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -46,9 +50,14 @@ export const LanguageSelector: React.FC = () => {
               py: 0.5,
             },
           }}
+          data-testid="language-select"
         >
           {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
-            <MenuItem key={code} value={code}>
+            <MenuItem
+              key={code}
+              value={code}
+              data-testid={`language-option-${code}`}
+            >
               <Typography variant="body2">{name}</Typography>
             </MenuItem>
           ))}

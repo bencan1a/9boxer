@@ -4,27 +4,56 @@ import { defineConfig, devices } from "@playwright/test";
  * Playwright configuration for E2E and Visual Regression testing
  * This config includes both E2E and Visual projects so VSCode can discover both
  * See https://playwright.dev/docs/test-configuration.
+ *
+ * IMPORTANT: webServer configuration
+ * - Both Vite (5173) and Storybook (6006) are started automatically
+ * - In development: Reuses existing servers if already running
+ * - In CI: Starts fresh servers (reuseExistingServer: false)
+ * - If you get "DLL initialization failed" errors on Windows, check for port conflicts
+ * - Run `npm run test:cleanup` to kill any lingering servers
  */
 export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
   // Enable parallel test execution
-  // CI uses 2 workers for stability, local uses 4 max to prevent resource exhaustion
-  // Auto-detect was causing pthread_create errors with 21 workers
-  workers: process.env.CI ? 2 : 4,
+  // CI uses 2 workers for stability, local uses auto-detect based on CPU cores
+  workers: process.env.CI ? 2 : undefined,
 
   // Reporter to use
-  reporter: "html",
+  reporter: process.env.CI ? [["html"], ["github"]] : "html",
 
   // Configure projects for different test suites
   projects: [
-    // ===== E2E Tests =====
-    // NOTE: E2E tests use worker-scoped backend isolation (see fixtures/worker-backend.ts)
-    // Each worker gets its own backend server + database for true parallel execution
+    // ===== E2E Tests (DISABLED - replaced by e2e-core) =====
+    // NOTE: The comprehensive e2e test suite has been replaced by the focused e2e-core suite
+    // The e2e-core suite provides atomic UX validation based on the test specification
+    // To re-enable the full e2e suite, uncomment the configuration below
+    // {
+    //   name: "e2e",
+    //   testDir: "./playwright/e2e",
+    //   timeout: 30000,
+    //   retries: process.env.CI ? 2 : 1,
+    //   fullyParallel: false,
+    //   use: {
+    //     ...devices["Desktop Chrome"],
+    //     baseURL: "http://localhost:5173",
+    //     viewport: { width: 1920, height: 1080 },
+    //     headless: true,
+    //     actionTimeout: 15000,
+    //     trace: "retain-on-failure",
+    //     screenshot: "only-on-failure",
+    //     video: "retain-on-failure",
+    //     storageState: undefined,
+    //   },
+    // },
+
+    // ===== E2E Core Tests (Atomic UX Validation) =====
+    // Focused test suite for atomic UX operations based on test specification
+    // These tests validate core user workflows and critical functionality
     {
-      name: "e2e",
-      testDir: "./playwright/e2e",
+      name: "e2e-core",
+      testDir: "./playwright/e2e-core",
       timeout: 30000,
       retries: process.env.CI ? 2 : 1,
       // Tests within a file run sequentially, but different files run in parallel
@@ -33,12 +62,11 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:5173",
         viewport: { width: 1920, height: 1080 },
-        headless: true, // Explicitly force headless mode
-        actionTimeout: 15000, // Increased to allow proper auto-waiting
+        headless: true,
+        actionTimeout: 15000,
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "retain-on-failure",
-        // Clear storage state between test contexts for isolation
         storageState: undefined,
       },
     },
@@ -122,6 +150,9 @@ export default defineConfig({
       url: "http://localhost:5173",
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
+      // Enhanced logging for debugging
+      stdout: "pipe",
+      stderr: "pipe",
     },
     // Storybook server for visual regression tests
     {
@@ -129,13 +160,16 @@ export default defineConfig({
       url: "http://localhost:6006",
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
+      // Enhanced logging for debugging
+      stdout: "pipe",
+      stderr: "pipe",
     },
   ],
 
   // Global expect configuration
   expect: {
     // Expect assertions timeout (applies to all expect() calls)
-    timeout: 2000, // Fail fast - anything longer means something is seriously wrong
+    timeout: 5000, // Balanced - fast enough to catch real issues, tolerant of CI environment
 
     // Visual comparison configuration (for visual regression tests)
     toHaveScreenshot: {

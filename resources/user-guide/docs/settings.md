@@ -113,6 +113,14 @@ The Settings dialog shows which theme is active: "Currently using light theme (f
 
 The Settings dialog gives you three theme choices. Your selection saves automatically and persists across sessions.
 
+### Success! You've Changed Your Theme
+
+You'll see:
+- Theme updates immediately across the entire app
+- Your preference saved automatically
+- Setting persists when you close and reopen
+- No need to refresh or restart
+
 ## Fullscreen Mode
 
 ![9Boxer application in fullscreen mode showing maximized grid view with employee tiles filling entire screen, toolbar at top with all controls visible, right panel with tabs accessible, and no browser chrome or system bars visible, demonstrating distraction-free workspace for focused calibration work](images/screenshots/view-controls/fullscreen-mode.png)
