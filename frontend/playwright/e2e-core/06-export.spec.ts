@@ -14,11 +14,9 @@ import { test, expect } from "../fixtures";
 import {
   getFirstEmployeeId,
   dragEmployeeToPosition,
-  selectEmployee,
   clickTabAndWait,
   clickExport,
   applyChanges,
-  verifyExportedEmployeeRating,
   verifyExportedChangeNotes,
 } from "../helpers";
 import { uploadFile } from "../helpers/fileOperations";
@@ -99,15 +97,6 @@ test.describe("Export Tests", () => {
     // Get first employee ID
     const employeeId = await getFirstEmployeeId(page);
 
-    // Store original position
-    const employeeCard = page.locator(
-      `[data-testid="employee-card-${employeeId}"]`
-    );
-    const originalPosition = parseInt(
-      (await employeeCard.getAttribute("data-position")) || "1",
-      10
-    );
-
     // Move employee to known position (position 9 - High Performance, High Potential)
     await dragEmployeeToPosition(page, employeeId, 9);
 
@@ -156,7 +145,7 @@ test.describe("Export Tests", () => {
       (row: any) =>
         parseInt(row["Employee ID"].toString(), 10) ===
         parseInt(employeeId.toString(), 10)
-    );
+    ) as any;
     expect(employee).toBeDefined();
     expect(employee["Modified in Session"]).toBe("Yes");
   });

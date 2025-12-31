@@ -12,11 +12,7 @@
 
 import { test, expect } from "../fixtures/worker-backend";
 import path from "path";
-import {
-  loadSampleDataFromEmptyState,
-  loadSampleData,
-  uploadExcelFile,
-} from "../helpers";
+import { loadSampleDataFromEmptyState, uploadExcelFile } from "../helpers";
 
 test.describe("Data Loading Tests", () => {
   test.beforeEach(async ({ page }) => {

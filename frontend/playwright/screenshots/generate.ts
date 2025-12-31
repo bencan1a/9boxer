@@ -24,6 +24,7 @@ import { spawn, ChildProcess } from "child_process";
 import * as http from "http";
 import * as path from "path";
 import * as fs from "fs";
+import * as os from "os";
 import {
   screenshotConfig,
   ScreenshotMetadata,
@@ -51,38 +52,99 @@ interface GenerationResults {
 class ServerManager {
   private backendProcess: ChildProcess | null = null;
   private frontendProcess: ChildProcess | null = null;
+  private tempDataDir: string | null = null;
   private readonly backendPort = 38000;
   private readonly frontendPort = 5173;
 
   async startBackend(): Promise<void> {
     console.log("Starting backend server...");
 
-    // Determine backend executable path based on platform
     const projectRoot = path.resolve(__dirname, "../../..");
-    const isWindows = process.platform === "win32";
-    const backendExe = isWindows
-      ? path.join(projectRoot, "backend", "dist", "ninebox", "ninebox.exe")
-      : path.join(projectRoot, "backend", "dist", "ninebox", "ninebox");
+    const backendDir = path.join(projectRoot, "backend");
 
-    // Check if backend executable exists
-    if (!fs.existsSync(backendExe)) {
-      throw new Error(
-        `Backend executable not found at ${backendExe}. ` +
-          "Please build the backend first using: cd backend && ./scripts/build_executable.sh (or .bat on Windows)"
-      );
+    // Python executable path
+    let pythonPath: string;
+    if (process.env.CI) {
+      pythonPath = "python";
+    } else {
+      pythonPath =
+        process.platform === "win32"
+          ? path.join(projectRoot, ".venv/Scripts/python.exe")
+          : path.join(projectRoot, ".venv/bin/python");
+
+      if (!fs.existsSync(pythonPath)) {
+        throw new Error(
+          `Python executable not found at: ${pythonPath}\n` +
+            `Please ensure the virtual environment is set up.`
+        );
+      }
     }
 
-    this.backendProcess = spawn(backendExe, [], {
-      stdio: "pipe",
-      env: { ...process.env, PORT: this.backendPort.toString() },
-    });
+    // Create temporary data directory for screenshots
+    const tempDataDir = path.join(
+      os.tmpdir(),
+      `ninebox-screenshots-${Date.now()}`
+    );
+    fs.mkdirSync(tempDataDir, { recursive: true });
+    this.tempDataDir = tempDataDir;
 
+    console.log(`Backend port: ${this.backendPort}`);
+    console.log(`Data directory: ${tempDataDir}`);
+
+    // Spawn backend using uvicorn (same as E2E tests)
+    this.backendProcess = spawn(
+      pythonPath,
+      [
+        "-m",
+        "uvicorn",
+        "ninebox.main:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        this.backendPort.toString(),
+      ],
+      {
+        cwd: backendDir,
+        stdio: ["ignore", "pipe", "pipe"],
+        env: {
+          ...process.env,
+          PYTHONPATH: path.join(backendDir, "src"),
+          APP_DATA_DIR: tempDataDir,
+        },
+        shell: false,
+      }
+    );
+
+    // Capture stdout (only show important messages)
     this.backendProcess.stdout?.on("data", (data) => {
-      console.log(`[Backend] ${data.toString().trim()}`);
+      const message = data.toString().trim();
+      if (message) {
+        const logLevelMatch = message.match(/ - (ERROR|WARNING|CRITICAL) - /);
+        if (
+          logLevelMatch ||
+          message.includes('"port"') ||
+          message.includes("Uvicorn running")
+        ) {
+          console.log(`[Backend] ${message}`);
+        }
+      }
     });
 
+    // Capture stderr
     this.backendProcess.stderr?.on("data", (data) => {
-      console.error(`[Backend Error] ${data.toString().trim()}`);
+      const message = data.toString().trim();
+      if (message) {
+        const logLevelMatch = message.match(/ - (ERROR|WARNING|CRITICAL) - /);
+        if (logLevelMatch) {
+          console.error(`[Backend Error] ${message}`);
+        }
+      }
+    });
+
+    // Handle process errors
+    this.backendProcess.on("error", (error) => {
+      console.error("Failed to start backend:", error);
+      throw error;
     });
 
     // Wait for backend to be ready
@@ -163,6 +225,17 @@ class ServerManager {
     if (this.frontendProcess) {
       this.frontendProcess.kill();
       this.frontendProcess = null;
+    }
+
+    // Cleanup temporary data directory
+    if (this.tempDataDir) {
+      try {
+        fs.rmSync(this.tempDataDir, { recursive: true, force: true });
+        console.log("Cleaned up temporary data directory");
+      } catch (error) {
+        console.warn(`Failed to cleanup data directory: ${error}`);
+      }
+      this.tempDataDir = null;
     }
 
     console.log("Servers stopped");

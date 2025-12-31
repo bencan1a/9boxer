@@ -16,10 +16,7 @@ import { test, expect } from "../fixtures";
 import {
   loadSampleData,
   openFilterDrawer,
-  selectLocationFilter,
-  expectFilterActive,
   getVisibleEmployeeCount,
-  clearAllFilters,
 } from "../helpers";
 
 test.describe("Section 4: Filtering Tests", () => {
@@ -153,8 +150,6 @@ test.describe("Section 4: Filtering Tests", () => {
    * - ✅ Indicator disappears when all filters are cleared
    */
   test("4.3 - Filters Button Shows Active State", async ({ page }) => {
-    const filterButton = page.locator('[data-testid="filter-button"]');
-
     // Verify button is initially inactive (no badge dot visible)
     const badge = page.locator('[data-testid="filter-badge"]');
     const badgeDot = badge.locator(".MuiBadge-badge");
@@ -210,7 +205,6 @@ test.describe("Section 4: Filtering Tests", () => {
     expect(initialCount).toBeGreaterThanOrEqual(190); // ~200 employees
 
     // Verify initial count shows total (just the number, no "of")
-    const initialCountText = `${initialCount} employees`;
     await expect(
       page.getByText(new RegExp(`${initialCount}\\s+employees`))
     ).toBeVisible();

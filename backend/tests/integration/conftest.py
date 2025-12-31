@@ -3,6 +3,7 @@
 import sqlite3
 from collections.abc import Generator
 from contextlib import contextmanager
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -85,3 +86,31 @@ def db_transaction(request: pytest.FixtureRequest, db_connection: sqlite3.Connec
 
     # Rollback transaction to undo all changes from this test
     db_connection.rollback()
+
+
+@pytest.fixture(scope="function")
+def export_dir(test_db_path: str) -> Generator[Path, None, None]:  # noqa: ARG001
+    """Provide a valid export directory within the allowed paths.
+
+    This fixture creates a directory within the test data directory,
+    which is allowed by the export path validation in the API.
+
+    Use this instead of tmp_path for export tests to avoid path validation errors.
+
+    Args:
+        test_db_path: Ensures test environment is set up (not directly used)
+    """
+    from ninebox.utils.paths import get_user_data_dir  # noqa: PLC0415
+
+    # Create exports subdirectory within the test data directory
+    export_path = get_user_data_dir() / "test_exports"
+    export_path.mkdir(parents=True, exist_ok=True)
+
+    yield export_path
+
+    # Cleanup - remove all files in the export directory
+    if export_path.exists():
+        for file in export_path.glob("*"):
+            if file.is_file():
+                file.unlink()
+        # Don't remove the directory itself as other tests might be using it
