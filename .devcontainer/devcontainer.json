@@ -17,7 +17,10 @@
     "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright"
   },
   "runArgs": [
-    "--shm-size=2gb"
+    "--shm-size=16gb",
+    "--cpus=32",
+    "--memory=64g",
+    "--gpus=all"
   ],
   "forwardPorts": [5900, 6080],
   "portsAttributes": {
@@ -76,13 +79,24 @@
         "charliermarsh.ruff",
         "ms-python.mypy-type-checker",
         "ms-python.debugpy",
+        "ms-python.autopep8",
+        "ms-python.vscode-python-envs",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
         "GitHub.copilot",
         "GitHub.copilot-chat",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
         "tamasfe.even-better-toml",
         "redhat.vscode-yaml",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-playwright.playwright",
+        "vitest.explorer",
+        "ms-vscode.live-server",
+        "nwgh.bandit",
+        "zainchen.json",
+        "anthropic.claude-code"
       ]
     }
   },
