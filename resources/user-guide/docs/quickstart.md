@@ -32,9 +32,24 @@ Your grid now displays 200 employees organized into 9 boxes based on Performance
 
 ![Grid populated with sample employee data showing all 9 positions](images/screenshots/quickstart/quickstart-grid-populated.png)
 
+### ✅ Success! You've Loaded Sample Data
+
+You'll see:
+
+- A 3x3 grid with 200 employee tiles organized by performance and potential
+- Employee count showing "200 employees" in the top bar
+- Colorful tiles spread across all 9 boxes (not just in one box)
+- Names and basic info visible on each tile
+
+If you see a populated grid with employees, you're all set!
+
 > 💡 **Why This Matters**
 >
 > Sample data lets you explore features risk-free. You can't break anything, and you'll see patterns that make the Intelligence panel come alive!
+
+> 💾 **New! Save Sample Data Immediately**
+>
+> Want to save the sample data as an Excel file? You can now do that immediately! Click the **File menu** and select **"Save Sample Data"** - no need to make changes first. Perfect for creating a template or sharing the sample dataset with your team!
 
 ---
 
@@ -57,6 +72,18 @@ You'll see rich information:
 ![Employee details panel showing flags, job info, and reporting chain](images/screenshots/quickstart/quickstart-employee-details-with-history.png)
 
 **Try this:** Click on different employees to see the variety of roles, locations, and flags. Notice how the reporting chain updates for each person.
+
+### ✅ Success! You've Opened Employee Details
+
+You'll see:
+
+- The right panel is open with four tabs (Details, Timeline, Changes, Notes)
+- The Details tab shows the employee's current performance and potential ratings
+- Job information including function, level, location, and tenure is displayed
+- Flags like "Promotion Ready" or "Flight Risk" appear (if applicable)
+- Reporting chain shows the employee's manager up to the CEO
+
+If you see this information in the right panel, you're exploring correctly!
 
 > 💡 **Why This Matters**
 >
@@ -82,6 +109,17 @@ The timeline shows:
 ![Timeline tab showing 3-year performance history for an employee](images/screenshots/quickstart/quickstart-timeline-history.png)
 
 **Try this:** Find someone who moved boxes over time. Click on different employees to compare career trajectories.
+
+### ✅ Success! You're Viewing Performance History
+
+You'll see:
+
+- The Timeline tab showing historical ratings for 2023, 2024, and 2025
+- Performance and Potential values for each year
+- Visual representation of how the employee's grid position changed over time
+- Year-over-year trend indicators (improving, stable, or declining)
+
+If you can see 3 years of history, you're viewing the timeline correctly!
 
 > 💡 **Why This Matters**
 >
@@ -111,6 +149,17 @@ You'll see:
 - Are too many people rated "High"? (Grade inflation)
 - Are there enough Stars (top-right) for succession planning?
 - Is everyone clustered in the center? (Poor differentiation)
+
+### ✅ Success! You're Viewing Distribution Statistics
+
+You'll see:
+
+- A distribution table showing count and percentage for each of the 9 grid positions
+- A visual bar chart with bars representing each box
+- Summary cards at the top showing total employees and distribution metrics
+- Patterns immediately visible (which boxes have the most/least employees)
+
+If you see the table and chart, you're analyzing the distribution correctly!
 
 > 💡 **Why This Matters**
 >
@@ -143,6 +192,18 @@ The Intelligence panel will show you things like:
 - Unconscious bias (favoring certain groups)
 
 **Click on anomaly cards** to see detailed breakdowns and charts showing the deviation from expected distribution.
+
+### ✅ Success! You're Using Intelligence
+
+You'll see:
+
+- The Intelligence tab showing a quality score at the top
+- Anomaly cards highlighting detected patterns (red, yellow, or green severity)
+- Specific bias patterns like "Location Bias - USA" or "Function Bias - Sales"
+- Expected vs. actual employee counts showing statistical deviations
+- Charts and visualizations showing the distribution deviations
+
+If you see anomaly cards with colored severity indicators, Intelligence is working!
 
 > 💡 **Why This Matters**
 >
@@ -178,6 +239,18 @@ Watch what happens:
 
 ![Changes tab showing note field and modified employee](images/screenshots/workflow/making-changes-changes-tab.png)
 
+### ✅ Success! You've Made and Documented a Change
+
+You'll see:
+
+- Employee tile with an orange left border (indicates it's been modified)
+- File menu badge showing change count (e.g., "1 change")
+- Changes tab displaying the employee's old and new ratings
+- Your note appears in the Notes field
+- The change is tracked but NOT saved yet (you'd need to export to save)
+
+If you see the orange border and your note in the Changes tab, you've successfully made and documented a change!
+
 > 💡 **Why This Matters**
 >
 > Notes create an audit trail. Six months from now, you'll remember WHY you made this change. During calibration meetings, you can justify every decision!
@@ -209,6 +282,18 @@ You'll see:
 - Filter by **Function** instead - try "Engineering" or "Sales"
 - Combine filters - select multiple locations or functions
 
+### ✅ Success! You're Using Filters
+
+You'll see:
+
+- Grid showing only employees matching your filter criteria (fewer tiles visible)
+- Orange dot indicator on the Filters button (shows filters are active)
+- Updated employee count in the top bar (e.g., "45 of 200 employees")
+- Filter drawer on the left showing your selected criteria
+- Ability to combine multiple filters for precise focus
+
+If you see fewer employees on the grid and the orange dot on Filters, you're filtering correctly!
+
 > 💡 **Why This Matters**
 >
 > During calibration meetings, filters help you review one team at a time. Instead of scrolling through 200 people, you see exactly the group you need!
@@ -230,33 +315,115 @@ This is everything you need for effective talent management - all in one place!
 
 ---
 
-## What's Next?
+## What's Next? Choose Your Learning Path
 
-Choose your path based on what you need:
+Your next steps depend on your role and what you need to accomplish. Choose the path that fits you best:
 
-### I'm Ready to Use My Own Data
+### New to 9Boxer? (First-Time User)
 
-[Learn how to upload your Excel file](uploading-data.md)
+**If you're:** Just getting started and want to learn the complete workflow
 
-You'll need 4 columns: Employee ID, Worker, Performance, Potential. We'll show you the exact format.
+**Your next step:** [Take the complete Getting Started tour](getting-started.md)
 
-### I Want the Full 10-Minute Walkthrough
+Deeper dive into the complete workflow: upload, review, change, document, export. You'll learn production best practices and the full calibration process.
 
-[Take the complete Getting Started tour](getting-started.md)
+**Then explore:**
 
-Deeper dive into the complete workflow: upload, review, change, document, export.
+- [Understanding the 9-Box Grid](understanding-grid.md) - Learn what each position means strategically
+- [Uploading Your Own Data](uploading-data.md) - Excel file requirements and format
 
-### I Need to Understand What Each Grid Position Means
+---
 
-[Learn about the 9-box framework](understanding-grid.md)
+### New to the 9-Box Method? (Department Head or Manager)
 
-What does "Star" vs "Core Talent" vs "Enigma" actually mean? Strategic context for each position.
+**If you're:** A manager or department head new to the 9-box talent framework
 
-### I Want to Try Specific Features
+**Your next step:** [Understanding the 9-Box Grid](understanding-grid.md)
 
-[Jump to feature documentation](index.md#need-specific-help)
+Learn the strategic meaning of each grid position, what "Star" vs "Core Talent" vs "Enigma" means, and how to use the framework for talent decisions.
 
-Filters, Donut Mode, Statistics, Intelligence, Change Tracking, Exporting - pick what you need.
+**Then explore:**
+
+- [Getting Started](getting-started.md) - Complete workflow from upload to export
+- [Best Practices](best-practices.md) - Proven strategies for talent reviews
+- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Lead effective calibration meetings
+
+---
+
+### HR Manager Preparing for Calibration? (Talent Professional)
+
+**If you're:** Preparing for a talent calibration session or performance review cycle
+
+**Your next step:** [Talent Calibration Workflow](workflows/talent-calibration.md)
+
+Complete guide to preparing for calibration meetings: checking distribution, identifying anomalies, using filters, and facilitating discussions.
+
+**Then explore:**
+
+- [Statistics and Intelligence](statistics.md) - Detect rating bias and distribution problems
+- [Filters and Focus](filters.md) - Review one team at a time during calibration
+- [Tracking Changes](tracking-changes.md) - Document calibration decisions with notes
+
+---
+
+### Managing 100+ Employees? (Talent Lead or HR Director)
+
+**If you're:** Working with large datasets and need advanced filtering and analysis
+
+**Your next step:** [Filtering and Focus Tools](filters.md)
+
+Learn advanced filtering strategies for large datasets: combining filters, using exclusions, and focusing on specific cohorts.
+
+**Then explore:**
+
+- [Statistics and Intelligence](statistics.md) - Advanced analytics for large populations
+- [Working with Employees](working-with-employees.md) - Efficient navigation and bulk operations
+- Coming soon: Large Dataset Guide - Best practices for 200+ employees
+
+---
+
+### Executive Seeking Strategic Insights? (C-Suite or Board Member)
+
+**If you're:** Looking for high-level distribution analysis and succession planning insights
+
+**Your next step:** [Statistics and Intelligence](statistics.md)
+
+Understand distribution health, quality scores, and anomaly detection. Learn how to interpret Intelligence findings for board-level succession planning.
+
+**Then explore:**
+
+- [Understanding the Grid](understanding-grid.md) - Strategic talent framework context
+- Coming soon: Executive Quick Reference - Board-ready insights and reporting
+- [Best Practices](best-practices.md) - Strategic talent management approaches
+
+---
+
+### Ready to Use Your Own Data?
+
+**If you're:** Done exploring and ready to upload your actual employee data
+
+**Your next step:** [Uploading Your Own Data](uploading-data.md)
+
+You'll need 4 columns: Employee ID, Worker, Performance, Potential. We'll show you the exact format and requirements.
+
+**Then use:**
+
+- [Getting Started](getting-started.md) - Complete production workflow
+- [Troubleshooting](troubleshooting.md) - Common upload issues and solutions
+
+---
+
+### Want to Explore Specific Features?
+
+**If you're:** Curious about a particular feature
+
+**Jump directly to:**
+
+- [Donut Mode Validation](donut-mode.md) - Validate your center box placements
+- [Change Tracking](tracking-changes.md) - See exactly what changed and when
+- [Exporting Results](exporting.md) - Save your work to Excel
+- [Settings and Preferences](settings.md) - Customize themes and display options
+- [All Features](index.md#need-specific-help) - Complete feature reference
 
 ---
 
@@ -266,7 +433,7 @@ Filters, Donut Mode, Statistics, Intelligence, Change Tracking, Exporting - pick
     Before calibrating your real team, load sample data and practice the workflow. Try moving people, adding notes, and exporting. Build muscle memory in a safe environment!
 
 !!! warning "Remember to Export Your Changes!"
-    9Boxer doesn't auto-save. When you're done making changes, click the **File menu** and select **"Apply X Changes to Excel"** to download your updated file.
+    9Boxer doesn't auto-save. When you're done making changes, click the **File menu** and select **"Apply X Changes to Excel"** to download your updated file. Note: With sample data, you can also use **"Save Sample Data"** to export immediately without making any changes!
 
 !!! info "Filters + Intelligence = Powerful Combo"
     During calibration: Filter by manager to see their team, then check Intelligence for patterns. Does this manager rate everyone high? Intelligence will tell you!

@@ -9,9 +9,9 @@
  * - Responsive hiding on small screens
  */
 
-import { test, expect } from "../fixtures";
+import type { Locator, Page } from "@playwright/test";
+import { expect, test } from "../fixtures";
 import { loadSampleData } from "../helpers";
-import type { Page, Locator } from "@playwright/test";
 
 /**
  * Helper to find any employee in the grid
@@ -172,6 +172,7 @@ test.describe("Zoom & Full-Screen Controls", () => {
     // Reload page
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
 
     // Wait for app to initialize (event-driven)
     await expect(
@@ -180,9 +181,19 @@ test.describe("Zoom & Full-Screen Controls", () => {
       )
     ).toBeVisible();
 
-    // Re-load to show grid
-    await loadSampleData(page);
-    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
+    // If grid is not visible, load sample data
+    if (!isGridVisible) {
+      await loadSampleData(page);
+      await expect(grid).toBeVisible();
+    }
+
+    // Ensure any dialogs from loading are closed
+    await expect(
+      page.locator('[data-testid="load-sample-dialog"]')
+    ).not.toBeVisible();
+
+    // Wait for view controls to be ready
+    await expect(page.locator('[data-testid="view-controls"]')).toBeVisible();
 
     // Verify zoom persisted
     const zoomAfterReload = await zoomPercentage.textContent();

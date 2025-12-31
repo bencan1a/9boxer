@@ -194,6 +194,10 @@ See [Working with Employees](working-with-employees.md) for complete details pan
 - ✅ "Calibrated with peers - rating adjusted to reflect actual output vs. potential"
 - ✅ "Initial rating too high - performance is solid but not exceptional, adjusted to Medium"
 
+![Changes tab showing employee with good detailed note example reading "Promoted to manager role in Q4, strong leadership demonstrated through team restructuring project and consistent delivery" providing specific evidence and timeline for rating change decision](images/screenshots/workflow/workflow-changes-good-note.png)
+
+This is what a good note looks like - specific, objective, with evidence and timeline.
+
 **Bad note examples:**
 
 - ❌ "Good performer" (too vague)
@@ -276,6 +280,10 @@ See [Filters](filters.md) for all available filter options.
 - ⚠️ One department has no Stars (under-rating or talent gap?)
 - ⚠️ All new hires rated "High Potential" (premature ratings)
 - ⚠️ One location consistently lower than others (harsh raters or real performance issues?)
+
+![Intelligence tab showing anomaly detection with red and yellow warning cards indicating statistical outliers including manager leniency bias and department rating inconsistencies requiring calibration discussion before finalizing performance assessments](images/screenshots/workflow/intelligence-summary-anomalies.png)
+
+The Intelligence tab highlights anomalies that need discussion. Use these red flags to drive calibration conversations.
 
 **Calibration questions to ask:**
 

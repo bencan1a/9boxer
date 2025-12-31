@@ -481,16 +481,28 @@ test.describe("File Menu Integration with Changes", () => {
       page.locator('[data-testid="apply-changes-dialog"]')
     ).toBeVisible();
 
-    // Set up download listener and click Apply
-    const downloadPromise = page.waitForEvent("download");
-    await page.locator('button:has-text("Apply Changes")').click();
-    await downloadPromise;
+    // Mock the export API to succeed (web mode doesn't have file system)
+    await page.route("**/api/session/export", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          message: "Export successful",
+          file_path: "/tmp/test.xlsx",
+        }),
+      });
+    });
 
-    // Wait for download event to settle
-    await expect(async () => {
-      const fileMenu = page.getByTestId("file-menu-button");
-      await expect(fileMenu).toBeVisible();
-    }).toPass();
+    // Click Apply and wait for dialog to close
+    const applyButton = page.locator('button:has-text("Apply Changes")');
+    await expect(applyButton).toBeEnabled(); // Ensure button is ready
+    await applyButton.click();
+
+    // Wait for dialog to close (indicates success)
+    await expect(
+      page.locator('[data-testid="apply-changes-dialog"]')
+    ).not.toBeVisible({ timeout: 10000 });
 
     // Note: In the current implementation, exporting doesn't clear the session changes
     // It just exports the current state to Excel

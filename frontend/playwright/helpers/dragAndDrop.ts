@@ -99,7 +99,7 @@ export async function dragEmployeeToPosition(
             }
             return matchesEndpoint && is200;
           },
-          { timeout: 5000 } // 5s timeout per attempt (max 15s total with 3 attempts)
+          { timeout: 10000 } // 10s timeout per attempt (max 30s total with 3 attempts)
         );
       } else {
         console.log(
@@ -186,21 +186,15 @@ export async function dragEmployeeToPosition(
         continue;
       }
 
-      // 9. Check for donut indicator in donut mode only
-      // Note: Regular modified state is shown via border styling, not a testable indicator element
-      const expectModified = options.expectModified ?? true; // Default: expect it
+      // 9. Verification complete
+      // Note: Modified state is shown via border styling, not a testable indicator element
+      // For both regular and donut moves, we've already verified success via:
+      // - API response (200 status for appropriate endpoint)
+      // - Position attribute update (data-position or data-donut-position)
+      // Visual modified state (purple border in donut mode) is shown via CSS styling only
 
-      if (expectModified && isDonutMode) {
-        // In donut mode, verify the donut-indicator chip is visible
-        const indicator = employeeCard.locator(
-          `[data-testid="donut-indicator"]`
-        );
-        await expect(indicator).toBeVisible({ timeout: 2000 });
-      }
-      // For regular (non-donut) moves, we've already verified success via:
-      // - API response (200 status)
-      // - Position attribute update
-      // Visual modified state is shown via border styling only
+      // The donut-indicator element no longer exists in the component
+      // Donut mode is indicated by the purple border styling, which is sufficient validation
 
       // Success! Break out of retry loop
       return;

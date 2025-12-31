@@ -4,6 +4,193 @@ Common issues and solutions for 9Boxer desktop application.
 
 ---
 
+## Quick Navigation - Find Your Issue
+
+**Data & Upload Issues:**
+
+- [File won't upload](#file-wont-upload) - Wrong format, missing columns, invalid data
+- [Missing required columns error](#3-required-columns-missing) - Column names don't match exactly
+- [Invalid data values](#4-invalid-data-values) - Performance/Potential values incorrect
+- [Empty grid after upload](#employees-dont-appear-after-upload) - Data uploaded but nothing displays
+- [File too large error](#2-file-size) - Excel file exceeds 10MB limit
+
+**Performance & Display:**
+
+- [App running slow](#performance-is-slow) - Sluggish, laggy, unresponsive
+- [Grid not displaying correctly](#grid-looks-wrong-or-incomplete) - Broken layout, overlapping tiles
+- [Right panel won't open](#right-panel-wont-open) - Employee details not appearing
+
+**Drag & Drop Issues:**
+
+- [Can't drag employees](#cant-drag-employees) - Tiles won't move when dragging
+
+**Saving & Exporting:**
+
+- [Changes not saving](#changes-not-saving) - Changes made but not in export
+- [Can't export/apply changes](#no-modifications-to-export) - No modifications to export error
+- [Export failed error](#export-failed) - File won't download
+- [Can't find exported file](#cant-find-exported-file) - Downloaded file missing
+- [Missing columns in export](#export-is-missing-columns) - Expected columns not in Excel file
+
+**Installation Issues:**
+
+- [App won't start](#application-wont-start) - Nothing happens when launching
+- [Windows security warning](#windows-security-warning) - SmartScreen blocks installation
+- [macOS Gatekeeper warning](#macos-gatekeeper-warning) - Unidentified developer error
+
+**Session & Data Management:**
+
+- [Lost changes/session cleared](#lost-changes-session-cleared) - Work disappeared
+- [Can't resume previous session](#cant-load-previous-session) - Want to continue from yesterday
+
+---
+
+## Diagnostic Decision Trees
+
+Use these flowcharts to quickly diagnose and fix common issues.
+
+### Data Won't Upload - Diagnostic Flow
+
+```mermaid
+flowchart TD
+    Start([File Won't Upload]) --> FileType{Is file .xlsx or .xls?}
+    FileType -->|No| ConvertFile[Convert to Excel format]
+    FileType -->|Yes| FileSize{File under 10MB?}
+
+    FileSize -->|No| ReduceSize[Remove unnecessary columns/rows<br/>or split into smaller files]
+    FileSize -->|Yes| CheckColumns{Has required columns?<br/>Employee ID, Worker,<br/>Performance, Potential}
+
+    CheckColumns -->|No| FixColumns[Add missing columns<br/>Check exact spelling and case]
+    CheckColumns -->|Yes| CheckCase{Column names<br/>EXACTLY match?<br/>Case-sensitive}
+
+    CheckCase -->|No| FixCase[Fix capitalization:<br/>Employee ID not employee id<br/>Worker not worker]
+    CheckCase -->|Yes| CheckValues{Performance/Potential<br/>values valid?<br/>Low, Medium, High}
+
+    CheckValues -->|No| FixValues[Fix values:<br/>Must be exactly<br/>Low, Medium, or High<br/>Case-sensitive]
+    CheckValues -->|Yes| TestMinimal[Try minimal test file<br/>3 employees only]
+
+    ConvertFile --> FileSize
+    ReduceSize --> CheckColumns
+    FixColumns --> CheckCase
+    FixCase --> CheckValues
+    FixValues --> TestMinimal
+
+    TestMinimal --> Works{Test file uploads?}
+    Works -->|Yes| DataIssue[Issue in original file data<br/>Compare test vs original]
+    Works -->|No| BrowserIssue[Clear browser cache<br/>Try different browser<br/>Restart app]
+
+    DataIssue --> Success([Upload Fixed])
+    BrowserIssue --> Success
+
+    style Start fill:#fee
+    style Success fill:#efe
+    style ConvertFile fill:#ffd
+    style ReduceSize fill:#ffd
+    style FixColumns fill:#ffd
+    style FixCase fill:#ffd
+    style FixValues fill:#ffd
+    style TestMinimal fill:#ffd
+    style BrowserIssue fill:#ffd
+    style DataIssue fill:#ffd
+```
+
+### Changes Not Saving - Diagnostic Flow
+
+```mermaid
+flowchart TD
+    Start([Changes Not Saving]) --> MadeChanges{Did you actually<br/>move employees?}
+    MadeChanges -->|No| NoChanges[No changes to save<br/>Move at least 1 employee]
+    MadeChanges -->|Yes| CheckBorder{Do moved employees<br/>have orange border?}
+
+    CheckBorder -->|No| NotRecorded[Changes not recorded<br/>Try moving again<br/>Refresh app if needed]
+    CheckBorder -->|Yes| ClickedApply{Did you click<br/>Apply button?}
+
+    ClickedApply -->|No| MustApply[Changes NOT auto-saved<br/>Click File → Apply Changes<br/>to export]
+    ClickedApply -->|Yes| CheckDownload{File downloaded<br/>to Downloads folder?}
+
+    CheckDownload -->|No| PermissionCheck{Check download<br/>permissions}
+    CheckDownload -->|Yes| OpenedFile{Opened the<br/>modified_ file?}
+
+    PermissionCheck --> FixPerms[Fix permissions:<br/>Check Downloads folder access<br/>Check disk space<br/>Check browser settings]
+
+    OpenedFile -->|No| WrongFile[Open correct file:<br/>Look for modified_filename.xlsx<br/>in Downloads folder]
+    OpenedFile -->|Yes| CheckColumn{Check Modified in<br/>Session column<br/>Shows 'Yes'?}
+
+    CheckColumn -->|No| OldFile[Wrong file opened<br/>Find most recent export<br/>Check file timestamp]
+    CheckColumn -->|Yes| CheckRatings{Performance/Potential<br/>columns updated?}
+
+    CheckRatings -->|No| BugReport[Unexpected issue<br/>Check Changes tab<br/>Take screenshots<br/>Report bug]
+    CheckRatings -->|Yes| Success([Changes Saved Successfully])
+
+    NoChanges --> Start
+    NotRecorded --> Start
+    MustApply --> ClickedApply
+    FixPerms --> CheckDownload
+    WrongFile --> OpenedFile
+    OldFile --> OpenedFile
+
+    style Start fill:#fee
+    style Success fill:#efe
+    style MustApply fill:#ffa
+    style NoChanges fill:#ffd
+    style NotRecorded fill:#ffd
+    style WrongFile fill:#ffd
+    style OldFile fill:#ffd
+    style FixPerms fill:#ffd
+    style BugReport fill:#fdd
+```
+
+### Performance Issues - Diagnostic Flow
+
+```mermaid
+flowchart TD
+    Start([App Running Slow]) --> HowMany{How many<br/>employees loaded?}
+
+    HowMany -->|Under 500| ManyChanges{Made many changes?<br/>100+ moves?}
+    HowMany -->|500-1000| LargeDataset[Large dataset<br/>Use filters to focus]
+    HowMany -->|Over 1000| VeryLarge[Very large dataset<br/>Consider splitting]
+
+    ManyChanges -->|No| OtherApps{Other apps/tabs<br/>using resources?}
+    ManyChanges -->|Yes| ExportRestart[Export changes<br/>Close app<br/>Reopen with exported file]
+
+    LargeDataset --> UseFilters[Apply filters:<br/>Show one department/manager<br/>Reduces visual complexity]
+    VeryLarge --> SplitOrFilter[Split file by department<br/>OR use aggressive filtering]
+
+    OtherApps -->|Yes| CloseOther[Close unnecessary:<br/>Browser tabs<br/>Other applications]
+    OtherApps -->|No| BrowserCheck{Using web version?}
+
+    BrowserCheck -->|Yes| BrowserFix[Try desktop app<br/>OR update browser<br/>OR clear cache]
+    BrowserCheck -->|No| SystemCheck{System resources low?<br/>CPU/Memory high?}
+
+    SystemCheck -->|Yes| FreeResources[Free resources:<br/>Restart computer<br/>Close background apps]
+    SystemCheck -->|No| LastResort[Last resort options:<br/>Reinstall app<br/>Try different computer<br/>Report performance issue]
+
+    UseFilters --> CheckBetter{Performance<br/>improved?}
+    SplitOrFilter --> CheckBetter
+    ExportRestart --> CheckBetter
+    CloseOther --> CheckBetter
+    BrowserFix --> CheckBetter
+    FreeResources --> CheckBetter
+
+    CheckBetter -->|Yes| Success([Performance Fixed])
+    CheckBetter -->|No| LastResort
+
+    LastResort --> Done([Contact Support])
+
+    style Start fill:#fee
+    style Success fill:#efe
+    style Done fill:#eef
+    style ExportRestart fill:#ffd
+    style UseFilters fill:#ffd
+    style SplitOrFilter fill:#ffd
+    style CloseOther fill:#ffd
+    style BrowserFix fill:#ffd
+    style FreeResources fill:#ffd
+    style LastResort fill:#fdd
+```
+
+---
+
 ## Installation Issues
 
 ### Application Won't Start
@@ -281,6 +468,11 @@ If the minimal file uploads successfully, the issue is with your original file d
 - No write permissions to download location
 - Disk space issues
 - Browser blocking download
+- Original file is read-only or locked
+
+![Error dialog showing file operation fallback message indicating original file cannot be updated due to read-only status, with option to save to different file location instead, ensuring work is never lost even when file permissions prevent updating the original](images/screenshots/file-ops/file-error-fallback.png)
+
+When the original file can't be updated, 9Boxer automatically falls back to "Save to different file" mode to ensure your work is never lost.
 
 **Solutions:**
 
@@ -292,6 +484,10 @@ If the minimal file uploads successfully, the issue is with your original file d
 4. **Try closing and reopening** - Restart the application and try again
 5. **Check browser settings** (web version) - Ensure browser allows downloads
     - Check if download was blocked in browser address bar
+6. **Remove read-only attribute** - If original file is read-only:
+    - Windows: Right-click file → Properties → Uncheck "Read-only"
+    - macOS: Get Info → Unlock file if locked
+    - Or use the "Save to different file" option to create a new copy
 
 ### Can't Find Exported File
 
@@ -408,6 +604,17 @@ If the minimal file uploads successfully, the issue is with your original file d
 - **Export frequently** - Save your work after major changes
 - **Export before closing** - Always export before closing the app
 - **Export before uploading new file** - Current session is replaced
+
+!!! tip "Unsaved Changes Protection"
+    9Boxer now warns you before you lose work! If you try to import new data or close the file with unsaved changes, you'll see a protection dialog:
+
+    ![Unsaved changes warning dialog with three options: Apply Changes to save work, Discard Changes, or Cancel to return to session](images/screenshots/file-ops/unsaved-changes-dialog.png)
+
+    - **Apply Changes** - Export your work first, then proceed
+    - **Discard Changes** - Lose all changes and proceed
+    - **Cancel** - Return to your session without losing anything
+
+    This protection ensures you don't accidentally lose hours of work!
 
 **Recovery:**
 

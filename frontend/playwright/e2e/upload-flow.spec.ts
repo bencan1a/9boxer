@@ -5,9 +5,8 @@
  * Converted from Cypress test: cypress/e2e/upload-flow.cy.ts
  */
 
-import { test, expect } from "../fixtures";
+import { expect, test } from "../fixtures";
 import { uploadExcelFile } from "../helpers";
-import * as path from "path";
 
 test.describe("Employee Upload Flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -78,11 +77,9 @@ test.describe("Employee Upload Flow", () => {
     const box9Count = await box9Employees.count();
     expect(box9Count).toBeGreaterThan(0);
 
-    // Verify employee cards contain job title information (data-independent)
-    const firstEmployee = box9Employees.first();
-    const employeeText = await firstEmployee.textContent();
-    expect(employeeText).toBeTruthy();
-    expect(employeeText!.length).toBeGreaterThan(10); // Should have name + title
+    // Verify we can see employee job titles
+    await expect(gridBox9.getByText("Senior Engineer")).toBeVisible();
+    await expect(gridBox9.getByText("Engineering Manager")).toBeVisible();
 
     // Verify total employee count is displayed (15 employees in our fixture)
     const employeeCountDisplay = page.locator('[data-testid="employee-count"]');
