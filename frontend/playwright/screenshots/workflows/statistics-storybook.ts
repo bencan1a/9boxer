@@ -125,3 +125,29 @@ export async function generateSummaryCards(
     waitTime: 800,
   });
 }
+
+/**
+ * Generate statistics red flags screenshot
+ *
+ * Shows the Statistics panel distribution table with problematic patterns:
+ * - Skewed distribution (not balanced)
+ * - Red flags indicating potential issues
+ * - Three-tier grouping with warning indicators
+ *
+ * Uses Storybook story: panel-statistics-distributiontable--skewed-distribution
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateStatisticsRedFlags(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "panel-statistics-distributiontable--skewed-distribution",
+    outputPath,
+    theme: "light",
+    waitTime: 800,
+    selector: '[data-testid="distribution-table"]',
+  });
+}

@@ -11,7 +11,6 @@ import {
   getFirstEmployeeId,
   dragEmployeeToPosition,
   expectEmployeeHasOrangeBorder,
-  expectChangeRecordExists,
   selectEmployee,
   clickTabAndWait,
   applyFlag,

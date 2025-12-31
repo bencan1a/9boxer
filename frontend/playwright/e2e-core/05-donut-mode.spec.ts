@@ -16,7 +16,6 @@ import {
   toggleDonutMode,
   getEmployeeIdFromPosition,
   dragEmployeeToPosition,
-  expectEmployeeHasOrangeBorder,
   getBadgeCount,
   waitForUiSettle,
 } from "../helpers";
@@ -75,7 +74,7 @@ test.describe("Test 5.1 - Donut Mode", () => {
 
     // Record badge count before making changes
     // Note: Donut mode changes may not always update the badge (implementation-specific)
-    const badgeCountBefore = await getBadgeCount(page, "file-menu-badge");
+    const _badgeCountBefore = await getBadgeCount(page, "file-menu-badge");
 
     // ✅ Success Criterion: Employee can be dragged from Box 5 to another box
     // Step 4-5: Drag the employee to a different box (Box 6 - High Performance, Medium Potential)
@@ -101,7 +100,7 @@ test.describe("Test 5.1 - Donut Mode", () => {
     // ✅ Success Criterion: Change is tracked
     // Note: Badge update behavior for donut-only changes is implementation-specific
     // We verify the change was recorded even if badge doesn't increment
-    const badgeCountAfter = await getBadgeCount(page, "file-menu-badge");
+    const _badgeCountAfter = await getBadgeCount(page, "file-menu-badge");
 
     // ✅ Success Criterion: Can exit Donut mode and return to normal view
     // Step 9: Verify can exit Donut mode
