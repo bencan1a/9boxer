@@ -225,7 +225,12 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
           variant="subtitle2"
           fontWeight="bold"
           gutterBottom
-          sx={{ fontSize: tokens.font.name }}
+          sx={{
+            fontSize: tokens.font.name,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
         >
           {employee.name}
         </Typography>
