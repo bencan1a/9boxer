@@ -15,6 +15,53 @@ Notes help you remember why you made changes and provide context for future revi
 
 ---
 
+## Note Quality Checklist
+
+Use this checklist to ensure your notes are clear, compliant, and useful for future reference.
+
+### Before Writing a Note
+
+- [ ] Understand what changed (old position → new position)
+- [ ] Know why it changed (specific reason or trigger)
+- [ ] Have evidence or context to support the change
+- [ ] Confirm who was involved in the decision
+
+### While Writing a Note
+
+- [ ] Include specific dates or timeframes (when the change occurred)
+- [ ] Cite concrete evidence (metrics, projects, behaviors, feedback)
+- [ ] Name people involved (managers, calibration team, stakeholders)
+- [ ] Use professional, objective language (facts, not opinions)
+- [ ] Keep it concise (1-3 sentences typically sufficient)
+- [ ] Make it self-contained (don't reference external documents)
+
+### Legal and Compliance Review
+
+- [ ] Avoid references to protected classes (age, race, gender, religion, disability)
+- [ ] Avoid speculative or assumptive language (stick to facts)
+- [ ] Avoid inflammatory or judgmental language (no personal attacks)
+- [ ] Avoid medical or personal information (health, family situations)
+- [ ] Avoid retaliation language (no references to complaints or protected activities)
+- [ ] When in doubt about sensitive situations, consult HR or legal
+
+### After Writing a Note
+
+- [ ] Read note aloud - does it sound professional and clear?
+- [ ] Verify note provides enough context for someone unfamiliar with situation
+- [ ] Confirm note is defendable and based on performance, not personality
+- [ ] Check that note includes action items or next steps if applicable
+- [ ] Ensure note will make sense 6 months from now
+
+### Before Exporting
+
+- [ ] Review all notes in Changes tab for completeness
+- [ ] Verify every change has a note (no blank note fields)
+- [ ] Check that notes are consistent in tone and format
+- [ ] Confirm sensitive situations were documented appropriately
+- [ ] Ensure notes provide full audit trail for compliance
+
+---
+
 ## When to Add Notes
 
 ### During Calibration Meetings
@@ -73,6 +120,17 @@ This is the most common way to add notes after making changes.
 !!! tip "Notes save automatically"
     You don't need to click a Save button - notes are saved when you leave the text field.
 
+### Success! You've Added a Note
+
+You'll see:
+- Note appears in the Notes field immediately
+- Note saves automatically when you tab away
+- Note included in Excel export
+- Audit trail created for the rating change
+
+!!! note "Why This Matters"
+    Notes create accountability and memory. When someone questions a rating change six months later, your note explains exactly what happened and why. This protects you and maintains fairness across reviews.
+
 ### Method 2: For Multiple Employees
 
 If you've moved several people, you can add notes to all of them from the Changes tab:
@@ -91,99 +149,302 @@ This lets you quickly document all your decisions in one place.
 
 ## Writing Effective Notes
 
-### Good Note Examples
+### Good Note Examples vs. Bad Note Examples
 
-**Be specific and actionable:**
+Learn what makes a note helpful by comparing good and bad examples:
 
-✅ "Moved from Medium to High performance based on Q3 project success - delivered $2M revenue initiative ahead of schedule"
+#### Example 1: Promotion
 
-✅ "Potential increased to High after succession planning discussion with VP - ready for Director role with 6 months mentoring"
+❌ **BAD:** "Promoted"
 
-✅ "Discussed with manager Jane Smith - employee needs coaching in presentation skills before promotion consideration"
+✅ **GOOD:** "Promoted to Senior Engineer on Dec 1, 2024. Demonstrated leadership by mentoring 3 junior engineers and leading Q4 infrastructure project. Potential increased to High - ready for management track."
 
-✅ "Performance declined from High to Medium due to skill gap in new role - providing training in Python and SQL"
-
-✅ "Calibration 2024-12: Adjusted to match peer ratings - initial rating was inflated relative to actual deliverables"
-
-**What makes these good:**
-
-- Specific reasons (not vague)
-- Evidence or context (what changed)
-- Professional tone (suitable for HR review)
-- Actionable information (what happens next)
-- Dates when relevant (Q3, 2024-12)
-
-### Notes to Avoid
-
-**Don't be vague:**
-
-❌ "Changed rating" - Why? What changed?
-
-❌ "Good performer" - Too generic, no specific information
-
-❌ "8" - What does this mean? Performance? Potential?
-
-**Don't be unprofessional:**
-
-❌ "Not good enough for promotion" - Negative without being constructive
-
-❌ "Manager is wrong about this person" - Confrontational tone
-
-❌ "idk why but moved them" - Not helpful for future reference
-
-**Don't skip context:**
-
-❌ "Moved" - Where from? Where to? Why?
-
-❌ "Discussed this" - With whom? What was decided?
-
-❌ "See email" - The note should be self-contained
+**Why the good example works:** Includes date, specific role, evidence of why promotion happened, and future implications.
 
 ---
 
-## Best Practices
+#### Example 2: Calibration Adjustment
 
-### 1. Be Specific
+❌ **BAD:** "Changed after meeting"
 
-Include what changed and why:
+✅ **GOOD:** "Calibration 2024-Q4: Moved from Star (Position 9) to High Performer (Position 6) based on peer comparison. Performance remains high, but potential rating was inflated relative to company standards. Discussed with manager Alex Chen - agreed on recalibration."
 
-- **Weak:** "Performance improved"
-- **Strong:** "Performance improved from Medium to High after completing leadership training and successfully managing team of 5"
+**Why the good example works:** Explains what meeting, what changed and why, includes manager name for accountability, shows consensus.
 
-### 2. Be Professional
+---
 
-Notes may be reviewed by HR, executives, or the employee themselves:
+#### Example 3: Performance Decline
 
-- Use objective language
-- Focus on behaviors and outcomes, not personality
-- Avoid emotional or judgmental terms
-- Be constructive, even when noting concerns
+❌ **BAD:** "Not performing well"
 
-### 3. Include Dates and Time Context
+✅ **GOOD:** "Performance declined from High to Medium over Q3-Q4 2024. New role requires Python/ML skills not yet developed. Providing training and pairing with senior data scientist. Revisit rating in Q1 2025 after skills development."
 
-Help your future self understand when things happened:
+**Why the good example works:** Specific timeframe, explains reason for decline, includes support plan, sets follow-up expectation.
 
-- "As of Q4 2024..."
-- "Performance review cycle ending Dec 2024..."
-- "After 6 months in new role..."
+---
 
-### 4. Reference Evidence
+#### Example 4: Disputed Rating
 
-Point to concrete information:
+❌ **BAD:** "Manager disagrees"
 
-- "Based on 360 feedback showing strong peer ratings"
-- "Delivered 3 major projects on time and under budget"
-- "Manager reports consistent 1:1 performance discussions"
-- "Metrics show 125% of quota achieved"
+✅ **GOOD:** "Calibration 2024-Q4: Manager Lisa Park advocates for Star rating based on technical contributions. Calibration team consensus: High Performer (Position 6) more appropriate given peer comparison. Lisa's dissenting view documented. Will revisit in Q1 after next project delivery."
 
-### 5. Note Action Items
+**Why the good example works:** Acknowledges disagreement professionally, explains both perspectives, documents resolution, includes follow-up.
 
-Capture next steps or follow-ups:
+---
 
-- "Follow up with training plan in Q1"
-- "Schedule check-in after 90 days in new role"
-- "Revisit promotion readiness after next project delivery"
-- "Manager to provide mentoring on stakeholder management"
+#### Example 5: Retention Risk
+
+❌ **BAD:** "Might leave"
+
+✅ **GOOD:** "Flight risk identified - ready for promotion but not yet promoted (tenure: 3.5 years, consistently Star rated). Engineering Director to discuss promotion to Senior Engineer by Jan 15. Monitor engagement closely."
+
+**Why the good example works:** Explains why they're flight risk, includes specific action with owner and deadline, notes monitoring need.
+
+---
+
+#### Example 6: New Information
+
+❌ **BAD:** "Updated rating"
+
+✅ **GOOD:** "Updated from Medium to High Performance based on 2024 annual review completed Dec 10. Exceeded all goals - 125% quota, led 2 major client wins, peer feedback consistently excellent. Manager Sarah Jones recommends for High Potential consideration in Q1."
+
+**Why the good example works:** Cites specific review, includes quantitative evidence, shows peer/manager input, suggests next steps.
+
+---
+
+### What Makes Notes Good vs. Bad
+
+| Good Notes Include | Bad Notes Have |
+|-------------------|----------------|
+| Specific dates or timeframes | Vague timing ("recently", "a while ago") |
+| Concrete evidence (metrics, projects, behaviors) | Generic statements ("doing well") |
+| Names of people involved (managers, stakeholders) | No attribution ("discussed") |
+| Action items or next steps | No follow-up plan |
+| Professional, objective language | Emotional or judgmental tone |
+| Self-contained context | References to external docs ("see email") |
+| Clear what changed and why | Just the outcome, no reasoning |
+
+---
+
+## Note Templates for Common Scenarios
+
+Copy and customize these templates for your most frequent note-taking needs:
+
+### Template 1: Promotion or Role Change
+
+```
+Promoted to [ROLE] on [DATE]. Demonstrating [KEY NEW CAPABILITY/ACHIEVEMENT].
+[Performance/Potential] increased to [NEW LEVEL] based on [EVIDENCE].
+Next step: [ACTION ITEM or DEVELOPMENT FOCUS].
+```
+
+**Example:**
+"Promoted to Engineering Manager on Nov 1, 2024. Demonstrating strong team leadership with 5 direct reports. Potential increased to High based on successful team delivery and peer feedback. Next step: Executive presence training in Q1 2025."
+
+---
+
+### Template 2: Calibration Adjustment
+
+```
+Calibration [DATE]: Moved from [OLD POSITION] to [NEW POSITION] to [REASON - align with peers/standards/etc.].
+Discussed with [MANAGER NAME] - [agreed/consensus/dissenting view].
+[FOLLOW-UP if applicable].
+```
+
+**Example:**
+"Calibration 2024-Q4: Moved from Position 9 to Position 6 to align with company-wide standards. Discussed with Manager Tom Lee - agreed that performance is high but potential rating was relative to team, not company. Will revisit in Q2 2025."
+
+---
+
+### Template 3: Performance Improvement
+
+```
+Performance improved from [OLD] to [NEW] over [TIMEFRAME].
+[SPECIFIC EVIDENCE of improvement].
+[WHAT HELPED - training/mentoring/role change].
+Continue [NEXT STEPS].
+```
+
+**Example:**
+"Performance improved from Medium to High over Q3-Q4 2024. Successfully delivered 3 major projects on time with quality metrics up 40%. Benefited from pair programming with senior engineer. Continue development focus on system design."
+
+---
+
+### Template 4: Performance Decline
+
+```
+Performance declined from [OLD] to [NEW] over [TIMEFRAME].
+[REASON if known - skill gap/personal circumstances/role fit].
+Providing [SUPPORT - training/coaching/PIP].
+Revisit rating [TIMELINE].
+```
+
+**Example:**
+"Performance declined from High to Medium over Q3-Q4 2024. New role requires stakeholder management skills still developing. Providing executive communication coaching and reducing project complexity temporarily. Revisit rating in Q1 2025 after 90-day support period."
+
+---
+
+### Template 5: Succession Planning / Development
+
+```
+Identified as [SUCCESSION CANDIDATE for ROLE] during [REVIEW/DISCUSSION].
+Ready in [TIMEFRAME] with development in [SKILL AREAS].
+Action: [DEVELOPMENT PLAN].
+Check-in: [DATE].
+```
+
+**Example:**
+"Identified as succession candidate for Director of Product during Q4 talent review. Ready in 12-18 months with development in strategic planning and executive communication. Action: Pair with current Director, present to executive team in Q1. Check-in: June 2025."
+
+---
+
+### Template 6: Flight Risk / Retention
+
+```
+Flight risk identified - [REASON: ready for promotion/market competitive/disengaged].
+Tenure: [YEARS]. Current rating: [POSITION].
+Action: [RETENTION PLAN - promotion/compensation/development].
+Owner: [NAME]. Deadline: [DATE].
+```
+
+**Example:**
+"Flight risk identified - ready for promotion to Senior but not yet promoted. Tenure: 3.2 years. Current rating: Star (Position 9). Action: Discuss promotion path and timeline in next 1:1. Owner: Manager Lisa Park. Deadline: Dec 20, 2024."
+
+---
+
+### Template 7: Disputed Rating (Calibration)
+
+```
+Calibration [DATE]: [MANAGER NAME] advocates for [POSITION] based on [THEIR REASONING].
+Calibration team consensus: [DIFFERENT POSITION] based on [TEAM REASONING].
+Resolution: [WHAT WAS DECIDED and WHY].
+[FOLLOW-UP if applicable].
+```
+
+**Example:**
+"Calibration 2024-Q4: Manager Alex Chen advocates for Star rating based on technical excellence. Calibration team consensus: High Performer (Position 6) more appropriate - technical skills are strong but leadership/influence not yet at Star level. Resolution: Position 6 with development plan for executive visibility. Revisit in Q1 2025."
+
+---
+
+### Template 8: Correction / Error Fix
+
+```
+Corrected from [WRONG POSITION] to [CORRECT POSITION].
+Original rating was [ERROR - data entry mistake/import error/etc.].
+Correct rating confirmed with [MANAGER/HR].
+Date corrected: [DATE].
+```
+
+**Example:**
+"Corrected from Position 3 to Position 9. Original rating was data entry error during Excel import (Performance and Potential columns swapped). Correct rating confirmed with Manager Sarah Jones. Date corrected: Dec 15, 2024."
+
+---
+
+## Legal and Compliance Considerations
+
+Your notes may be reviewed in legal contexts. Follow these guidelines to protect your organization:
+
+### What to Include for Legal Safety
+
+✅ **Objective, factual language**
+- Focus on observable behaviors and measurable results
+- "Delivered 5 projects on time" not "Is a hard worker"
+- "Missed 3 deadlines in Q3" not "Doesn't care about work"
+
+✅ **Evidence-based reasoning**
+- Cite specific performance data, feedback, or metrics
+- Reference calibration consensus or manager discussions
+- Link to performance reviews or formal assessments
+
+✅ **Dates and timelines**
+- When rating changed
+- When discussions occurred
+- When reviews were completed
+- When follow-up is planned
+
+✅ **Attribution and accountability**
+- Who made the decision (manager, calibration team, HR)
+- Who was consulted
+- Whose input was considered
+
+### What to Avoid for Legal Protection
+
+❌ **Protected class references**
+- Never mention age, race, gender, religion, disability, etc.
+- Even if relevant to context, keep separate from performance notes
+- Example: ❌ "As a new parent, performance has declined"
+- Instead: ✅ "Performance declined Q3-Q4 2024, discussed support options"
+
+❌ **Speculative or assumptive language**
+- Don't guess at motivations or personal circumstances
+- ❌ "Probably looking for another job"
+- ✅ "Engagement declined based on 1:1 feedback, retention conversation scheduled"
+
+❌ **Inflammatory or judgmental language**
+- No personal attacks or character judgments
+- ❌ "Lazy and doesn't care"
+- ✅ "Missed 4 deadlines in Q4, performance improvement plan initiated"
+
+❌ **Medical or personal information**
+- Don't reference health conditions, family situations, etc.
+- ❌ "Performance declined due to health issues"
+- ✅ "Performance declined Q3-Q4, employee on approved leave, rating revisit upon return"
+
+❌ **Retaliation language**
+- No references to complaints, whistleblowing, or protected activities
+- ❌ "Rating lowered after HR complaint"
+- ✅ "Rating adjusted during calibration to align with peer standards"
+
+### Compliance Best Practices
+
+**1. Consistency**
+- Use similar note templates for similar situations
+- Apply same standards across all employees
+- Document all rating changes, not just some
+
+**2. Reviewability**
+- Assume your notes will be read by HR, legal, or in litigation
+- Would this note make sense to someone unfamiliar with the situation?
+- Is it defensible and based on performance, not personality?
+
+**3. Retention**
+- Notes become part of employment record
+- May be retained for years per company policy
+- Could be subpoenaed in legal proceedings
+
+**4. Consultation**
+- When in doubt about sensitive situations, consult HR or legal
+- For disputed ratings, document all perspectives
+- For performance issues, align with formal performance management process
+
+### Red Flag Situations - Consult HR/Legal
+
+Seek guidance before documenting these situations:
+
+⚠️ **Employee on leave** (medical, family, etc.)
+⚠️ **Recent complaint or protected activity** (discrimination, whistleblower, etc.)
+⚠️ **Performance decline concurrent with protected activity**
+⚠️ **Disputed rating with legal implications** (promotion denial, compensation impact)
+⚠️ **Termination or performance improvement plan imminent**
+⚠️ **Disability accommodation requests**
+
+**In these cases:**
+1. Pause before adding notes
+2. Consult your HR business partner or legal team
+3. Use company-approved language for sensitive situations
+4. Ensure notes align with formal documentation (PIPs, accommodations, etc.)
+
+### Sample Compliant Notes for Sensitive Situations
+
+**Performance issue (legally safe):**
+✅ "Performance rating lowered from High to Medium based on Q3-Q4 results. Missed 5 project deadlines, quality metrics below standards. Formal performance improvement plan initiated Nov 1, 2024. Will reassess in 90 days per company policy."
+
+**Leave of absence (legally safe):**
+✅ "Rating unchanged from previous period. Employee on approved leave Q3-Q4 2024. Performance assessment deferred until return to work. Revisit rating in Q1 2025 after 90 days back."
+
+**Accommodation request (legally safe):**
+✅ "Performance rating maintained. Employee requested accommodation Nov 2024, currently under review with HR. Performance assessment will continue per standard review cycle. Next review: Q1 2025."
 
 ---
 

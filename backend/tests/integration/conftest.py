@@ -3,6 +3,7 @@
 import sqlite3
 from collections.abc import Generator
 from contextlib import contextmanager
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -14,6 +15,9 @@ def db_connection(test_db_path: str) -> Generator[sqlite3.Connection, None, None
 
     This connection is shared across all integration tests in the session, but each test
     runs in its own transaction that is rolled back after completion.
+
+    CRITICAL: This fixture should only be used by integration tests.
+    Unit tests should use their own database fixtures.
 
     Note: check_same_thread=False is safe here because:
     - SQLite has internal locking to handle concurrent access
@@ -41,8 +45,8 @@ def db_connection(test_db_path: str) -> Generator[sqlite3.Connection, None, None
     conn.close()
 
 
-@pytest.fixture(autouse=True)
-def db_transaction(db_connection: sqlite3.Connection) -> Generator[None, None, None]:
+@pytest.fixture(autouse=True, scope="function")
+def db_transaction(request: pytest.FixtureRequest, db_connection: sqlite3.Connection) -> Generator[None, None, None]:
     """Function-scoped transaction that rolls back after each test.
 
     This ensures test isolation by:
@@ -51,7 +55,18 @@ def db_transaction(db_connection: sqlite3.Connection) -> Generator[None, None, N
     3. Rolling back the transaction after test completes
 
     This is much faster than deleting rows and provides perfect isolation.
+
+    CRITICAL: Only applies to integration tests (checks if "integration" in test path).
+    Unit tests must not be affected by this patch.
     """
+    # ONLY apply to integration tests - check if this is an integration test
+    # This prevents polluting unit tests with the DatabaseManager.get_connection patch
+    is_integration_test = "integration" in str(request.node.path)
+
+    if not is_integration_test:
+        # Skip this fixture for non-integration tests
+        yield
+        return
     # Patch DatabaseManager to use the shared transactional connection
     from contextlib import contextmanager  # noqa: PLC0415
     from unittest.mock import patch  # noqa: PLC0415
@@ -71,3 +86,31 @@ def db_transaction(db_connection: sqlite3.Connection) -> Generator[None, None, N
 
     # Rollback transaction to undo all changes from this test
     db_connection.rollback()
+
+
+@pytest.fixture(scope="function")
+def export_dir(test_db_path: str) -> Generator[Path, None, None]:  # noqa: ARG001
+    """Provide a valid export directory within the allowed paths.
+
+    This fixture creates a directory within the test data directory,
+    which is allowed by the export path validation in the API.
+
+    Use this instead of tmp_path for export tests to avoid path validation errors.
+
+    Args:
+        test_db_path: Ensures test environment is set up (not directly used)
+    """
+    from ninebox.utils.paths import get_user_data_dir  # noqa: PLC0415
+
+    # Create exports subdirectory within the test data directory
+    export_path = get_user_data_dir() / "test_exports"
+    export_path.mkdir(parents=True, exist_ok=True)
+
+    yield export_path
+
+    # Cleanup - remove all files in the export directory
+    if export_path.exists():
+        for file in export_path.glob("*"):
+            if file.is_file():
+                file.unlink()
+        # Don't remove the directory itself as other tests might be using it

@@ -201,3 +201,81 @@ export async function openFilterDrawer(page: Page): Promise<void> {
   await page.locator('[data-testid="filter-button"]').click();
   await expect(page.locator('[data-testid="filter-drawer"]')).toBeVisible();
 }
+
+/**
+ * Verify right panel is visible
+ *
+ * Checks that the right panel (Details panel) is open and visible.
+ * This panel typically opens when an employee is selected and shows
+ * detailed information including tabs for Details, Timeline, Statistics, etc.
+ *
+ * Uses event-driven visibility assertion instead of arbitrary timeouts.
+ *
+ * @param page - Playwright Page object
+ * @throws {AssertionError} If the right panel is not visible
+ * @example
+ * await page.locator('[data-testid="employee-card-1"]').click();
+ * await expectRightPanelVisible(page);
+ */
+export async function expectRightPanelVisible(page: Page): Promise<void> {
+  await expect(page.locator('[data-testid="details-panel"]')).toBeVisible();
+}
+
+/**
+ * Verify tab is active
+ *
+ * Checks that a specific tab has aria-selected="true", indicating it is
+ * the currently active tab. This is useful for verifying tab navigation
+ * completed successfully.
+ *
+ * Provides clear error message if the tab is not active, showing which
+ * tab was expected to be active and its current state.
+ *
+ * @param page - Playwright Page object
+ * @param tabTestId - The data-testid of the tab to verify
+ * @throws {AssertionError} If the tab does not have aria-selected="true"
+ * @example
+ * await page.locator('[data-testid="timeline-tab"]').click();
+ * await expectTabActive(page, 'timeline-tab');
+ *
+ * @example
+ * // Verify Statistics tab is active after clicking
+ * await page.locator('[data-testid="statistics-tab"]').click();
+ * await expectTabActive(page, 'statistics-tab');
+ */
+export async function expectTabActive(
+  page: Page,
+  tabTestId: string
+): Promise<void> {
+  await expect(page.locator(`[data-testid="${tabTestId}"]`)).toHaveAttribute(
+    "aria-selected",
+    "true"
+  );
+}
+
+/**
+ * Close right panel
+ *
+ * Closes the right panel (Details panel) using the Escape key.
+ * This is the most reliable method as it works regardless of panel state
+ * and doesn't require locating a close button.
+ *
+ * After pressing Escape, verifies that the panel is actually closed
+ * by checking that it is no longer visible.
+ *
+ * @param page - Playwright Page object
+ * @example
+ * await page.locator('[data-testid="employee-card-1"]').click();
+ * await expectRightPanelVisible(page);
+ * await closeRightPanel(page);
+ * // Panel is now closed
+ *
+ * @example
+ * // Clean up after test that opened panel
+ * await closeRightPanel(page);
+ * // Can now proceed with next test operation
+ */
+export async function closeRightPanel(page: Page): Promise<void> {
+  await page.keyboard.press("Escape");
+  await expect(page.locator('[data-testid="details-panel"]')).not.toBeVisible();
+}

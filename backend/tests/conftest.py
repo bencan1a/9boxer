@@ -176,7 +176,7 @@ def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
 
 
 @pytest.fixture(autouse=True)
-def setup_test_db() -> Generator[None, None, None]:
+def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]:
     """Clean up in-memory state and database before and after each test.
 
     This fixture clears dependency injection caches, in-memory state,
@@ -189,6 +189,32 @@ def setup_test_db() -> Generator[None, None, None]:
 
     # BEFORE test: ensure clean state for xdist robustness
     from ninebox.core.dependencies import get_session_manager, get_db_manager  # noqa: PLC0415
+    from ninebox.services.database import DatabaseManager  # noqa: PLC0415
+
+    # Check if this is an integration test (skip database cleanup for integration tests)
+    # Integration tests use transaction-based isolation which is more robust
+    is_integration_test = "integration" in str(request.node.path)
+
+    # Clear database FIRST before test starts (unit tests only)
+    if not is_integration_test:
+        try:
+            temp_db = DatabaseManager()
+            with temp_db.get_connection() as conn:
+                # Check if tables exist before trying to delete (avoids "no such table" errors)
+                cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                tables = {row[0] for row in cursor.fetchall()}
+
+                # Clear all tables to ensure full isolation (only if they exist)
+                if "historical_ratings" in tables:
+                    conn.execute("DELETE FROM historical_ratings")
+                if "employees" in tables:
+                    conn.execute("DELETE FROM employees")
+                if "sessions" in tables:
+                    conn.execute("DELETE FROM sessions")
+                # No manual commit needed - context manager commits automatically
+        except Exception:
+            # Ignore errors during cleanup (e.g., if database doesn't exist yet)
+            pass
 
     # Clear caches BEFORE test to ensure fresh instances
     try:
@@ -221,7 +247,33 @@ def setup_test_db() -> Generator[None, None, None]:
     except Exception:
         pass
 
-    # AFTER test: Clean up in-memory state from dependency injection cache
+    # AFTER test: Clean up database FIRST, then in-memory state
+    # This order is critical: database → memory → caches
+    # Clear database sessions (for unit tests that use test_client)
+    # Integration tests handle this via transaction rollback (see integration/conftest.py)
+    # Skip cleanup for integration tests to avoid interfering with transaction isolation
+    from ninebox.services.database import DatabaseManager  # noqa: PLC0415
+
+    try:
+        # Check if DatabaseManager.get_connection is patched (integration tests patch this)
+        # If patched, skip cleanup since transaction rollback handles it
+        is_patched = hasattr(DatabaseManager.get_connection, '__wrapped__') or \
+                     hasattr(DatabaseManager.get_connection, '_mock_name')
+
+        if not is_patched:
+            # Only clean up for unit tests (not patched)
+            temp_db = DatabaseManager()
+            with temp_db.get_connection() as conn:
+                # Clear all tables to ensure full isolation
+                conn.execute("DELETE FROM historical_ratings")
+                conn.execute("DELETE FROM employees")
+                conn.execute("DELETE FROM sessions")
+                conn.commit()  # Ensure changes are committed
+    except Exception:
+        # Ignore errors during cleanup (e.g., if database doesn't exist)
+        pass
+
+    # AFTER database cleanup: Clean up in-memory state from dependency injection cache
     # Reset session manager's in-memory state
     try:
         mgr = get_session_manager()
@@ -235,21 +287,6 @@ def setup_test_db() -> Generator[None, None, None]:
         get_session_manager.cache_clear()
         get_db_manager.cache_clear()
     except Exception:
-        pass
-
-    # Clear database sessions (for unit tests that use test_client)
-    # Integration tests handle this via transaction rollback
-    # Note: Integration tests patch get_connection, so this cleanup may be a no-op for them
-    from ninebox.services.database import DatabaseManager  # noqa: PLC0415
-
-    try:
-        temp_db = DatabaseManager()
-        # Use a fresh connection that bypasses any patches
-        # This ensures cleanup works even if DatabaseManager.get_connection is patched
-        with temp_db.get_connection() as conn:
-            conn.execute("DELETE FROM sessions")
-    except Exception:
-        # Ignore errors during cleanup (e.g., if database doesn't exist, is patched, or transaction-controlled)
         pass
 
     # Final garbage collection after all cleanup
@@ -707,3 +744,51 @@ def auth_headers() -> dict[str, str]:
     This fixture returns empty headers for backward compatibility.
     """
     return {}
+
+
+@pytest.fixture
+def session_with_employees(test_client: TestClient, auth_headers: dict[str, str]) -> dict[str, str]:
+    """Create session with employees via sample data API (no file upload).
+
+    This fixture uses the /api/employees/generate-sample endpoint to create
+    a session with employee data, bypassing the file upload flow. This is
+    faster than session_with_data while properly setting up cookies and
+    session state.
+
+    Use this fixture for:
+    - Statistics API tests
+    - Intelligence API tests
+    - Employee CRUD tests
+    - Filter/search tests
+    - Any test that needs employee data but doesn't test file upload
+
+    Use session_with_data (file upload) ONLY for:
+    - File upload/download tests
+    - Excel parsing tests
+    - Session management integration tests
+
+    Args:
+        test_client: FastAPI test client
+        auth_headers: Authentication headers (empty dict for local-only app)
+
+    Returns:
+        Headers dict (includes session cookie set by API)
+
+    Example:
+        >>> def test_get_employees(test_client, session_with_employees):
+        ...     response = test_client.get("/api/employees", headers=session_with_employees)
+        ...     assert response.status_code == 200
+        ...     employees = response.json()["employees"]
+        ...     assert len(employees) > 0
+    """
+    # Use the generate-sample endpoint to create a session with sample data
+    # This sets up cookies and session state properly while avoiding file I/O
+    # Note: generate-sample requires size >= 50
+    response = test_client.post(
+        "/api/employees/generate-sample",
+        json={"size": 50, "include_bias": False, "seed": 42},
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+
+    return auth_headers

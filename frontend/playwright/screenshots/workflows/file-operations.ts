@@ -38,9 +38,6 @@ export async function generateFileMenuWithRecents(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Set viewport to match container size (no excess whitespace)
-  await page.setViewportSize({ width: 500, height: 700 });
-
   // Navigate to app and load sample data
   await page.goto("http://localhost:5173");
   await waitForUiSettle(page, 1.0);
@@ -50,29 +47,22 @@ export async function generateFileMenuWithRecents(
   await loadSampleButton.click();
   await waitForUiSettle(page, 0.3);
 
-  // Confirm in the dialog
-  const confirmButton = page.locator(
-    '[data-testid="confirm-load-sample-button"]'
-  );
-  await confirmButton.click();
-
-  // Wait for data to load
-  await waitForUiSettle(page, 2.0);
-
-  // Verify grid is populated
-  const grid = page.locator('[data-testid="nine-box-grid"]');
-  await grid.waitFor({ state: "visible", timeout: 10000 });
+  // Close any dialogs
+  await closeAllDialogsAndOverlays(page);
 
   // Click the File menu button to open dropdown
   await page.waitForTimeout(500);
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
   await fileMenuButton.click();
 
-  // Wait for menu to fully open and animate
-  await waitForUiSettle(page, 0.5);
+  // Wait for menu to become visible (state-based wait)
+  await page
+    .locator('[role="menu"]')
+    .waitFor({ state: "visible", timeout: 5000 });
+  await waitForUiSettle(page, 0.3);
 
   // Capture the File menu dropdown
-  const fileMenu = page.locator('[data-testid="file-menu"]');
+  const fileMenu = page.locator('[role="menu"]');
   await fileMenu.screenshot({
     path: outputPath,
   });
@@ -105,7 +95,7 @@ export async function generateUnsavedChangesDialog(
 
   // Load sample data
   await loadSampleData(page);
-  await waitForUiSettle(page, 1.0);
+  await waitForUiSettle(page, 0.5);
 
   // Close any dialogs
   await closeAllDialogsAndOverlays(page);
@@ -114,21 +104,37 @@ export async function generateUnsavedChangesDialog(
   await ensureChangesExist(page, 2);
   await waitForUiSettle(page, 0.5);
 
-  // Trigger unsaved changes dialog by trying to import new data
+  // Trigger unsaved changes dialog by trying to load sample data again
   // Open File menu
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
   await fileMenuButton.click();
+
+  // Wait for menu to be visible (state-based wait)
+  await page
+    .locator('[role="menu"]')
+    .waitFor({ state: "visible", timeout: 5000 });
+
+  // Click "Load Sample Dataset" which should trigger unsaved changes dialog
+  const loadSampleMenuItem = page.locator(
+    '[data-testid="load-sample-menu-item"]'
+  );
+  await loadSampleMenuItem.click();
+
+  // Wait for dialog to appear (state-based wait, not arbitrary timeout)
+  const dialog = page
+    .locator('[role="dialog"]')
+    .filter({ hasText: "Unsaved Changes" });
+  await dialog.waitFor({ state: "visible", timeout: 5000 });
   await waitForUiSettle(page, 0.3);
 
   // Click "Import Data" which should trigger unsaved changes dialog
   const importButton = page.locator('[data-testid="import-data-menu-item"]');
   await importButton.click();
 
-  // Wait for dialog to appear and fully render
-  await waitForUiSettle(page, 1.0);
+  // Wait for dialog to appear
+  await waitForUiSettle(page, 0.5);
 
   // Capture the unsaved changes dialog
-  const dialog = page.locator('[data-testid="unsaved-changes-dialog"]');
   await dialog.screenshot({
     path: outputPath,
   });

@@ -8,6 +8,60 @@ Welcome! This guide walks you through the complete 9Boxer workflow, from loading
 
 ---
 
+## Complete Workflow Overview
+
+Here's the full 9Boxer workflow from data upload to export:
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Choice{Have<br/>Data?}
+    Choice -->|No| Sample[Load Sample Data]
+    Choice -->|Yes| Upload[Upload Excel File]
+
+    Sample --> Grid[View Grid with Employees]
+    Upload --> Grid
+
+    Grid --> Review[Review Distribution]
+    Review --> Stats[Check Statistics Tab]
+    Stats --> Intel[Check Intelligence Tab]
+
+    Intel --> Decision{Need to Make<br/>Changes?}
+
+    Decision -->|Yes| Move[Drag Employee to New Box]
+    Move --> Orange[Employee Gets Orange Border]
+    Orange --> Note[Add Note in Changes Tab]
+    Note --> More{More<br/>Changes?}
+    More -->|Yes| Move
+    More -->|No| Export
+
+    Decision -->|No| Export[Export to Excel]
+
+    Export --> Download[File Downloads Automatically]
+    Download --> Review2[Review Excel File]
+    Review2 --> Verify{Changes<br/>Correct?}
+
+    Verify -->|Yes| Share[Share with Stakeholders]
+    Verify -->|No| Reload[Re-import and Adjust]
+    Reload --> Move
+
+    Share --> End([End])
+
+    style Start fill:#e3f2fd
+    style End fill:#e8f5e9
+    style Export fill:#f3e5f5
+    style Download fill:#f3e5f5
+```
+
+**Key steps in the workflow:**
+
+1. **Load Data** - Either load sample data or upload your Excel file
+2. **Review** - Check distribution using Statistics and Intelligence tabs
+3. **Change** - Drag employees to new positions as needed
+4. **Document** - Add notes explaining each change
+5. **Export** - Download your updated Excel file with all changes
+
+---
+
 ## What You'll Learn
 
 In the next 10 minutes, you'll discover how to:

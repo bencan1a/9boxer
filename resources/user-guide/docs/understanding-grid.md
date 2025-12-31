@@ -95,9 +95,8 @@ Each box tells you something different about an employee. Here's what each posit
 - Ready for bigger roles and responsibilities
 - Demonstrate strong leadership qualities
 
-> Why This Matters
->
-> Stars (top-right) are your future leaders. Invest heavily in them - they're the succession pipeline. Aim for 10-15% of your workforce here. If you have 50%, you're over-rating or have grade inflation.
+!!! note "Why This Matters"
+    Stars (top-right) are your future leaders. Invest heavily in them - they're the succession pipeline. Aim for 10-15% of your workforce here. If you have 50%, you're over-rating or have grade inflation.
 
 **Strategic Actions:**
 
