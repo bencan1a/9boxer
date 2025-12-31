@@ -9,7 +9,7 @@ Learn how to prepare and upload your employee data to 9Boxer. This guide covers 
 
 ## Excel File Requirements
 
-Your Excel file must contain specific columns with exact names (case-sensitive) for 9Boxer to process your employee data correctly.
+Your Excel file must contain specific columns for 9Boxer to process your employee data correctly.
 
 ### Required Columns
 
@@ -21,13 +21,6 @@ These columns **must** be present in your Excel file:
 | `Worker` | Full name of the employee | Text (e.g., "John Doe") |
 | `Performance` | Current performance rating | `Low`, `Medium`, or `High` |
 | `Potential` | Future growth capacity rating | `Low`, `Medium`, or `High` |
-
-!!! warning "Case-Sensitive Column Names"
-    Column names must match exactly as shown above. Capitalization matters!
-
-    - ✅ Correct: `Employee ID`, `Worker`, `Performance`, `Potential`
-    - ❌ Wrong: `employee id`, `worker`, `performance`, `potential`
-    - ❌ Wrong: `EmployeeID`, `Name`, `Perf`, `Pot`
 
 ### Optional Columns
 
@@ -103,8 +96,7 @@ Follow these steps to upload your employee data:
 ### Step 1: Prepare Your File
 
 1. **Open your Excel file** and verify it contains the required columns
-2. **Check column names** match exactly (case-sensitive)
-3. **Verify data values**:
+2. **Verify data values**:
     - Performance and Potential must be `Low`, `Medium`, or `High`
     - Employee IDs must be unique
     - No completely empty rows
@@ -216,9 +208,8 @@ Use this file to:
     - `Worker`
     - `Performance`
     - `Potential`
-2. **Verify column names are spelled exactly** as shown (case-sensitive)
-3. **Ensure columns are in the first row** (header row)
-4. **Check for extra spaces** before or after column names
+2. **Ensure columns are in the first row** (header row)
+3. **Check for extra spaces** before or after column names
 
 ---
 
@@ -229,10 +220,7 @@ Use this file to:
 **Solution**:
 
 1. **Ensure the data is on the first sheet** of your workbook
-2. **Check column names match exactly** (case-sensitive):
-    - ✅ `Employee ID` (with space, capital E and I)
-    - ❌ `EmployeeID` or `employee_id` or `EMPLOYEE ID`
-3. **Verify the header row** is the first row of the sheet
+2. **Verify the header row** is the first row of the sheet
 4. **Remove empty sheets** that might be confusing the parser
 
 ---

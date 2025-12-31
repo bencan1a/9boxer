@@ -16,6 +16,75 @@ from ninebox.models.grid_positions import calculate_grid_position
 logger = logging.getLogger(__name__)
 
 
+def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Normalize DataFrame column names to match expected format (case-insensitive).
+
+    This allows Excel files with column names like "employee id", "WORKER", etc.
+    to be parsed correctly by mapping them to the expected column names.
+
+    Args:
+        df: DataFrame with potentially non-standard column names
+
+    Returns:
+        DataFrame with normalized column names
+    """
+    # Define the expected column names (keys are lowercase for matching)
+    expected_columns = {
+        "employee id": "Employee ID",
+        "worker": "Worker",
+        "business title": "Business Title",
+        "job level - primary position": "Job Level - Primary Position",
+        "performance": "Performance",
+        "potential": "Potential",
+        "aug 2025 talent assessment performance": "Aug 2025 Talent Assessment Performance",
+        "aug 2025  talent assessment potential": "Aug 2025  Talent Assessment Potential",
+        "current performance": "Current Performance",
+        "current potential": "Current Potential",
+        "hire date": "Hire Date",
+        "job profile": "Job Profile",
+        "job title": "Job Title",
+        "worker's manager": "Worker's Manager",
+        "management chain - level 01": "Management Chain - Level 01",
+        "management chain - level 02": "Management Chain - Level 02",
+        "management chain - level 03": "Management Chain - Level 03",
+        "management chain - level 04": "Management Chain - Level 04",
+        "management chain - level 05": "Management Chain - Level 05",
+        "management chain - level 06": "Management Chain - Level 06",
+        "tenure category (months)": "Tenure Category (Months)",
+        "time in job profile": "Time in Job Profile",
+        "fy25 talent indicator": "FY25 Talent Indicator",
+        "talent indicator": "Talent Indicator",
+        "2023 completed performance rating": "2023 Completed Performance Rating",
+        "2024 completed performance rating": "2024 Completed Performance Rating",
+        "development focus": "Development Focus",
+        "development action": "Development Action",
+        "notes": "Notes",
+        "promotion (in-line,": "Promotion (In-Line,",
+        "promotion": "Promotion",
+        "promotion readiness": "Promotion Readiness",
+        "flags": "Flags",
+        "donut exercise position": "Donut Exercise Position",
+        "donut exercise notes": "Donut Exercise Notes",
+    }
+
+    # Build rename mapping for columns that need normalization
+    rename_mapping = {}
+    for col in df.columns:
+        col_lower = str(col).lower().strip()
+        if col_lower in expected_columns:
+            expected_name = expected_columns[col_lower]
+            if col != expected_name:
+                rename_mapping[col] = expected_name
+                logger.debug(f"Normalizing column name: '{col}' -> '{expected_name}'")
+
+    if rename_mapping:
+        logger.info(f"Normalized {len(rename_mapping)} column names: {rename_mapping}")
+        df = df.rename(columns=rename_mapping)
+
+    return df
+
+
 @dataclass
 class JobFunctionConfig:
     """Configuration for job function grouping."""
@@ -286,14 +355,17 @@ class SheetDetector:
         """
         score = 0
 
+        # Normalize column names for case-insensitive matching
+        df_normalized = normalize_column_names(df)
+
         # Check for required columns (10 points each)
         for col in SheetDetector.REQUIRED_COLUMNS:
-            if col in df.columns:
+            if col in df_normalized.columns:
                 score += 10
 
         # Check for optional columns (5 points each)
         for col in SheetDetector.OPTIONAL_COLUMNS:
-            if col in df.columns:
+            if col in df_normalized.columns:
                 score += 5
                 break  # Only count once if any performance/potential column exists
 
@@ -363,6 +435,8 @@ class SheetDetector:
                         )
                         try:
                             df = pd.read_excel(file_path, sheet_name=1)
+                            # Normalize column names for case-insensitive matching
+                            df = normalize_column_names(df)
                             return df, str(sheet_names[1]), 1
                         except Exception as e:
                             raise ValueError(
@@ -386,6 +460,8 @@ class SheetDetector:
                         "Internal error: best_sheet data is None despite having a valid score"
                     )
 
+                # Normalize column names for case-insensitive matching
+                best_sheet = normalize_column_names(best_sheet)
                 return best_sheet, best_sheet_name, best_sheet_index
 
             finally:
