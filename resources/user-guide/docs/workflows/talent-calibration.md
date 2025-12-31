@@ -66,7 +66,7 @@ Now let's check if your ratings look healthy or if there are calibration issues.
 1. **Click the Statistics tab** in the right panel
 2. **Check the distribution table** for red flags
 
-![Statistics tab showing distribution with potential red flags highlighted](../images/screenshots/workflow/calibration-statistics-red-flags.png)
+![Statistics panel showing distribution table](../images/screenshots/statistics/statistics-panel-distribution.png)
 
 **Healthy distribution typically shows:**
 
@@ -190,7 +190,7 @@ The center "Core Talent" box often becomes a catch-all. Donut Mode helps you val
    - Click employee → Changes tab → Donut Changes
    - Document why you think they should move
 
-![Donut mode grid showing employees with ghostly appearance and purple borders](../images/screenshots/workflow/calibration-donut-mode-grid.png)
+![Donut mode grid showing employees with purple borders in outer boxes](../images/screenshots/donut/donut-mode-active-layout.png)
 
 5. **Review your Donut Changes**
    - Click Changes tab → Donut Changes subtab

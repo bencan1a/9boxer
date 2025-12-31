@@ -47,6 +47,9 @@ export async function generateDragSequence(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match grid size (no excess whitespace)
+  await page.setViewportSize({ width: 1200, height: 1200 });
+
   // Load sample data
   await loadSampleData(page);
   await waitForUiSettle(page, 1.0);

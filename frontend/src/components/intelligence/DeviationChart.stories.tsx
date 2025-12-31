@@ -42,7 +42,7 @@ const meta = {
   title: "Intelligence/DeviationChart",
   component: DeviationChart,
   parameters: {
-    layout: "padded",
+    layout: "centered",
     docs: {
       description: {
         component:

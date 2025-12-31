@@ -38,6 +38,9 @@ export async function generateFileMenuWithRecents(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to app and load sample data
   await page.goto("http://localhost:5173");
   await waitForUiSettle(page, 1.0);
@@ -61,6 +64,7 @@ export async function generateFileMenuWithRecents(
   await grid.waitFor({ state: "visible", timeout: 10000 });
 
   // Click the File menu button to open dropdown
+  await page.waitForTimeout(500);
   const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
   await fileMenuButton.click();
 
@@ -96,6 +100,9 @@ export async function generateUnsavedChangesDialog(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Load sample data
   await loadSampleData(page);
   await waitForUiSettle(page, 1.0);
@@ -117,8 +124,8 @@ export async function generateUnsavedChangesDialog(
   const importButton = page.locator('[data-testid="import-data-menu-item"]');
   await importButton.click();
 
-  // Wait for dialog to appear
-  await waitForUiSettle(page, 0.5);
+  // Wait for dialog to appear and fully render
+  await waitForUiSettle(page, 1.0);
 
   // Capture the unsaved changes dialog
   const dialog = page.locator('[data-testid="unsaved-changes-dialog"]');
@@ -147,6 +154,9 @@ export async function generateApplyChangesDialogDefault(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to Storybook story for Apply Changes Dialog
   await page.goto(
     "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--default&viewMode=story"
@@ -177,6 +187,9 @@ export async function generateApplyChangesDialogSaveAs(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to Storybook Default story
   await page.goto(
     "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--default&viewMode=story"
@@ -207,6 +220,9 @@ export async function generateFileErrorFallback(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to WithError Storybook story
   await page.goto(
     "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--with-error&viewMode=story"

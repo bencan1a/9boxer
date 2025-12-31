@@ -238,7 +238,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId: "panel-statistics-distributiontable--balanced-distribution",
     cropping: "panel",
   },
-  // Calibration workflow screenshots (6 screenshots)
+  // Calibration workflow screenshots (5 screenshots)
   "calibration-file-import": {
     source: "storybook",
     workflow: "storybook-components",
@@ -247,16 +247,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
     storyId: "dashboard-appbar-filemenubutton--menu-open",
-    cropping: "container",
-  },
-  "calibration-statistics-red-flags": {
-    source: "storybook",
-    workflow: "statistics-storybook",
-    function: "generateStatisticsRedFlags",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-statistics-red-flags.png",
-    description:
-      "Statistics tab showing distribution table with problematic patterns",
-    storyId: "panel-statistics-distributiontable--skewed-distribution",
     cropping: "container",
   },
   "intelligence-summary-anomalies": {
@@ -358,16 +348,6 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
     description: "ViewControls toolbar with donut mode toggle active",
     storyId: "common-viewcontrols--donut-view-active",
-    cropping: "container",
-  },
-  "calibration-donut-mode-grid": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateDonutModeActive",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-grid.png",
-    description:
-      "Grid in donut mode showing ghostly purple-bordered employees moved from position-5",
-    storyId: "grid-nineboxgrid--donut-mode",
     cropping: "container",
   },
   // Statistics workflow screenshots (4 Storybook-based screenshots)

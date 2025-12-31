@@ -9,8 +9,7 @@
  *   - grid-normal: Standard 9-box grid with employee tiles
  *   - quickstart-grid-populated: Populated grid after successful file upload
  *   - hero-grid-sample: Hero image showing full grid with sample data
- *   - donut-mode-active-layout: Active donut mode layout with concentric circles
- *   - calibration-donut-mode-grid: Grid in donut mode showing ghostly purple-bordered employees
+ *   - donut-mode-active-layout: Active donut mode layout showing purple-bordered tiles in outer boxes
  *   - changes-drag-sequence: Base grid for 3-panel drag sequence
  *   - filters-active-chips: Grid view with active filter chips and orange dot indicator
  *   - filters-before-after: Before/after filtering comparison

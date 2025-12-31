@@ -34,7 +34,7 @@ const meta: Meta<typeof EmployeeDetails> = {
   component: EmployeeDetails,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   decorators: [
     (Story) => (
