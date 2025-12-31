@@ -106,3 +106,14 @@ repos:
         files: ^frontend/
         exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage)/
         pass_filenames: false
+
+      # Auto-generate documentation design tokens when design system changes
+      # Triggers when: frontend/src/theme/tokens.ts is modified
+      # Action: Regenerates resources/user-guide/docs/stylesheets/design-tokens.css
+      # This ensures documentation design stays in sync with the application
+      - id: generate-docs-tokens
+        name: generate documentation design tokens
+        entry: bash tools/generate-docs-tokens-hook.sh
+        language: system
+        files: ^frontend/src/theme/tokens\.ts$
+        pass_filenames: false
