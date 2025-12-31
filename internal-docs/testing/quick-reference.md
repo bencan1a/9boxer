@@ -219,11 +219,13 @@ it('displays different text for different props', () => {
 
 ### E2E Tests (Playwright)
 
-#### Basic E2E Test
+**IMPORTANT:** Always import from fixtures for worker isolation, and use state-based waits (NO arbitrary timeouts).
+
+#### Basic E2E Test (e2e-core Pattern)
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import * as path from 'path';
+import { test, expect } from '../fixtures';  // Worker isolation
+import { uploadFile } from '../helpers/fileOperations';
 
 test.describe('Upload Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -231,45 +233,52 @@ test.describe('Upload Flow', () => {
   });
 
   test('uploads file and displays employees', async ({ page }) => {
-    // Upload
-    const fixturePath = path.join(__dirname, '..', 'fixtures', 'employees.xlsx');
-    await page.getByTestId('upload-button').click();
-    await page.locator('#file-upload-input').setInputFiles(fixturePath);
-    await page.getByTestId('upload-submit-button').click();
+    // Use helper for reliable upload
+    await uploadFile(page, 'employees.xlsx');
 
-    // Verify success
-    await expect(page.getByText('Upload successful')).toBeVisible();
+    // Verify grid displays (auto-waits)
+    await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
 
-    // Verify grid displays
-    await expect(page.getByTestId('nine-box-grid')).toBeVisible();
+    // Wait for employee cards to be present
     const cards = page.locator('[data-testid^="employee-card-"]');
+    await expect(cards.first()).toBeVisible({ timeout: 5000 });
+
+    // Verify count
     expect(await cards.count()).toBeGreaterThan(0);
   });
 });
 ```
 
-#### Testing User Interactions
+#### Testing User Interactions (State-Based Waits)
 
 ```typescript
-test('allows dragging employee', async ({ page }) => {
+import { dragEmployeeToPosition } from '../helpers/dragAndDrop';
+import { uploadFile } from '../helpers/fileOperations';
+
+test('allows dragging employee with state verification', async ({ page }) => {
   // Setup: Upload file
-  const fixturePath = path.join(__dirname, '..', 'fixtures', 'employees.xlsx');
-  await page.getByTestId('upload-button').click();
-  await page.locator('#file-upload-input').setInputFiles(fixturePath);
-  await page.getByTestId('upload-submit-button').click();
+  await uploadFile(page, 'employees.xlsx');
 
-  // Get employee from box 1
-  const employeeCard = page.getByTestId('grid-box-1')
-    .locator('[data-testid^="employee-card-"]')
-    .first();
+  // Get employee ID for tracking
+  const employeeCard = page.locator('[data-testid="employee-card-1"]');
+  const employeeId = await employeeCard.getAttribute('data-employee-id');
 
-  const employeeName = await employeeCard.getByTestId('employee-name').textContent();
+  // Drag employee to position 5
+  await dragEmployeeToPosition(page, Number(employeeId), 5);
 
-  // Drag employee to box 5
-  await employeeCard.dragTo(page.getByTestId('grid-box-5'));
+  // ✅ Wait for position attribute to confirm drag completed
+  await expect(employeeCard).toHaveAttribute('data-position', '5', { timeout: 5000 });
 
-  // Verify moved
-  await expect(page.getByTestId('grid-box-5').getByText(employeeName as string)).toBeVisible();
+  // ✅ Wait for network to settle (API call completed)
+  await page.waitForLoadState('networkidle', { timeout: 3000 });
+
+  // ❌ DON'T assume modified status - employee may have been moved back to original
+  // ✅ DO verify badge updated (count can go up, down, or stay same)
+  await expect(async () => {
+    const badge = page.locator('[data-testid="file-menu-badge"]');
+    const isVisible = await badge.isVisible().catch(() => false);
+    expect(isVisible).toBeTruthy(); // Just verify readable
+  }).toPass({ timeout: 2000 });
 });
 ```
 
@@ -297,20 +306,41 @@ test('filters by department', async ({ page }) => {
 });
 ```
 
-#### Waiting for Elements
+#### Waiting for Elements (State-Based Pattern)
+
+**RULE: NO ARBITRARY WAITS** - Always wait for observable state changes.
 
 ```typescript
-test('waits for dynamic content', async ({ page }) => {
+test('waits for dynamic content using state changes', async ({ page }) => {
   await page.goto('/');
 
-  // Wait for element to appear (auto-waits)
-  await expect(page.getByTestId('loading')).toBeVisible();
+  // ✅ Wait for element to appear (auto-waits)
+  await expect(page.locator('[data-testid="loading"]')).toBeVisible();
 
-  // Wait for element to disappear
-  await expect(page.getByTestId('loading')).not.toBeVisible();
+  // ✅ Wait for element to disappear
+  await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-  // Wait for element with specific content
-  await expect(page.getByText('Data loaded')).toBeVisible();
+  // ✅ Wait for specific attribute change (confirms operation completed)
+  const dataElement = page.locator('[data-testid="data-container"]');
+  await expect(dataElement).toHaveAttribute('data-loaded', 'true', { timeout: 5000 });
+
+  // ✅ Wait for network to settle
+  await page.waitForLoadState('networkidle', { timeout: 3000 });
+
+  // ✅ Wait for specific API call
+  await page.waitForResponse(
+    (r) => r.url().includes('/api/data') && r.status() === 200,
+    { timeout: 5000 }
+  );
+
+  // ✅ Poll for condition without assumptions
+  await expect(async () => {
+    const count = await page.locator('[data-testid="item"]').count();
+    expect(count).toBeGreaterThan(0); // Just verify data present
+  }).toPass({ timeout: 3000 });
+
+  // ❌ NEVER do this - what are we waiting for?
+  // await page.waitForTimeout(1000);
 });
 ```
 
@@ -772,21 +802,29 @@ npm run test:coverage
 
 ## Performance Targets
 
-| Test Type | Target | Max |
-|-----------|--------|-----|
-| Unit (Python) | <0.5s | 1s |
-| Unit (TypeScript) | <0.5s | 1s |
-| Integration | <2s | 5s |
-| API endpoint | <1s | 5s |
-| E2E (Playwright) | <20s | 60s |
-| Full suite (backend) | <2m | 5m |
-| Full suite (frontend) | <1m | 2m |
+| Test Type | Target | Max | Notes |
+|-----------|--------|-----|-------|
+| Unit (Python) | <0.5s | 1s | |
+| Unit (TypeScript) | <0.5s | 1s | |
+| Integration | <2s | 5s | |
+| API endpoint | <1s | 5s | |
+| E2E (Playwright) | <30s/test | 30s | e2e-core: 30.5s for 23 tests |
+| Full suite (backend) | <2m | 5m | |
+| Full suite (frontend) | <1m | 2m | |
 
 If tests exceed these targets, optimize by:
+- Using state-based waits instead of arbitrary timeouts
 - Using mocks for slow operations
 - Running tests in parallel
 - Reducing test data size
 - Eliminating unnecessary setup/teardown
+
+**E2E Optimization Tips:**
+- ❌ NEVER use `waitForTimeout()` - it wastes time and is unreliable
+- ✅ Use `waitForLoadState('networkidle')` for API calls (3s max)
+- ✅ Use `expect().toHaveAttribute()` to wait for state changes (5s max)
+- ✅ Use `expect().toPass()` for polling without blocking (2s max)
+- See e2e-core suite for reference implementation (0 arbitrary waits)
 
 ---
 

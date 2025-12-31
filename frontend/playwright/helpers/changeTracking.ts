@@ -51,11 +51,15 @@ export async function expectChangeRecordExists(
   await expect(changesPanel).toContainText(/position|moved|changed/i);
 
   // Verify old position is displayed
-  const oldPosition = changesPanel.locator('[data-testid="change-old-position"]');
+  const oldPosition = changesPanel.locator(
+    '[data-testid="change-old-position"]'
+  );
   await expect(oldPosition).toBeVisible();
 
   // Verify new position is displayed
-  const newPosition = changesPanel.locator('[data-testid="change-new-position"]');
+  const newPosition = changesPanel.locator(
+    '[data-testid="change-new-position"]'
+  );
   await expect(newPosition).toBeVisible();
 }
 

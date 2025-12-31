@@ -153,7 +153,9 @@ test.describe("Export Tests", () => {
 
     // Verify employee exists in exported file and was marked as modified
     const employee = data.find(
-      (row: any) => parseInt(row["Employee ID"].toString(), 10) === parseInt(employeeId.toString(), 10)
+      (row: any) =>
+        parseInt(row["Employee ID"].toString(), 10) ===
+        parseInt(employeeId.toString(), 10)
     );
     expect(employee).toBeDefined();
     expect(employee["Modified in Session"]).toBe("Yes");
@@ -218,7 +220,9 @@ test.describe("Export Tests", () => {
 
     // Find the modified employee (compare as numbers to handle leading zeros)
     const modifiedEmployee = data.find(
-      (row) => parseInt(row["Employee ID"].toString(), 10) === parseInt(employeeId.toString(), 10)
+      (row) =>
+        parseInt(row["Employee ID"].toString(), 10) ===
+        parseInt(employeeId.toString(), 10)
     );
     expect(modifiedEmployee).toBeDefined();
     expect(modifiedEmployee["9Boxer Change Notes"]).toBe(testNote);
@@ -227,7 +231,8 @@ test.describe("Export Tests", () => {
     // Verify at least one employee without changes has empty/blank notes
     const unchangedEmployee = data.find(
       (row) =>
-        parseInt(row["Employee ID"].toString(), 10) !== parseInt(employeeId.toString(), 10) &&
+        parseInt(row["Employee ID"].toString(), 10) !==
+          parseInt(employeeId.toString(), 10) &&
         row["Modified in Session"] !== "Yes"
     );
     if (unchangedEmployee) {

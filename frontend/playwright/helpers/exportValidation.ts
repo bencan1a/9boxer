@@ -50,7 +50,7 @@ export async function waitForExportedFile(
   filePath: string,
   timeout: number = 10000
 ): Promise<void> {
-  const fs = await import('fs/promises');
+  const fs = await import("fs/promises");
   const start = Date.now();
 
   while (Date.now() - start < timeout) {
@@ -59,13 +59,11 @@ export async function waitForExportedFile(
       return; // File exists
     } catch {
       // File doesn't exist yet, wait and retry
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
-  throw new Error(
-    `File not created within ${timeout}ms: ${filePath}`
-  );
+  throw new Error(`File not created within ${timeout}ms: ${filePath}`);
 }
 
 /**
@@ -104,7 +102,7 @@ export async function verifyExportedEmployeeRating(
   expectedPotential: string
 ): Promise<void> {
   // Check file exists
-  const fs = await import('fs/promises');
+  const fs = await import("fs/promises");
   await fs.access(filePath);
 
   // Read Excel file
@@ -114,7 +112,9 @@ export async function verifyExportedEmployeeRating(
 
   // Find employee by ID (compare as numbers to handle leading zeros)
   const employee = data.find(
-    (row) => parseInt(row["Employee ID"].toString(), 10) === parseInt(employeeId.toString(), 10)
+    (row) =>
+      parseInt(row["Employee ID"].toString(), 10) ===
+      parseInt(employeeId.toString(), 10)
   );
 
   if (!employee) {
@@ -168,7 +168,7 @@ export async function verifyExportedChangeNotes(
   expectedNote: string
 ): Promise<void> {
   // Check file exists
-  const fs = await import('fs/promises');
+  const fs = await import("fs/promises");
   await fs.access(filePath);
 
   // Read Excel file
@@ -178,7 +178,9 @@ export async function verifyExportedChangeNotes(
 
   // Find employee by ID (compare as numbers to handle leading zeros)
   const employee = data.find(
-    (row) => parseInt(row["Employee ID"].toString(), 10) === parseInt(employeeId.toString(), 10)
+    (row) =>
+      parseInt(row["Employee ID"].toString(), 10) ===
+      parseInt(employeeId.toString(), 10)
   );
 
   if (!employee) {
@@ -227,7 +229,9 @@ export async function verifyExportedEmployees(
   // Validate each employee from the in-memory data
   for (const emp of employees) {
     const employee = allData.find(
-      (row) => parseInt(row["Employee ID"].toString(), 10) === parseInt(emp.id.toString(), 10)
+      (row) =>
+        parseInt(row["Employee ID"].toString(), 10) ===
+        parseInt(emp.id.toString(), 10)
     );
 
     if (!employee) {
