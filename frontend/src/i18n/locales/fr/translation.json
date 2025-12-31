@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "Menu fichier : {{filename}}, {{count}} modification en attente",
       "fileMenuAriaLabelNoFile": "Menu fichier : Aucun fichier sélectionné",
       "importData": "Importer des données",
+      "loadSampleDataset": "Charger l'ensemble de données d'exemple...",
       "exportChanges": "Appliquer {{count}} modification à Excel",
       "exportChanges_other": "Appliquer {{count}} modifications à Excel",
       "saveSampleData": "Enregistrer les Données d'Exemple",
@@ -342,6 +343,7 @@
     }
   },
   "dialogs": {
+    "confirm": "Confirmer",
     "unsavedChanges": {
       "title": "Modifications non enregistrées",
       "message_one": "Vous avez {{count}} modification non enregistrée.",
@@ -358,6 +360,27 @@
       "applying": "Application en cours...",
       "errorFallback": "Impossible de mettre à jour le fichier d'origine. Enregistrer dans un nouvel emplacement?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "Charger l'ensemble de données d'exemple",
+    "warningMessage": "Attention : Cela remplacera vos données actuelles. Continuer?",
+    "description": "Cela générera un ensemble de données d'exemple de 200 employés avec des modèles réalistes à des fins de test et de démonstration.",
+    "includes": "Les données d'exemple incluent:",
+    "includesItem1": "Des employés dans les 9 positions de la grille",
+    "includesItem2": "Des intitulés de poste, niveaux et emplacements réalistes",
+    "includesItem3": "Des hiérarchies de gestion et des chaînes de rapport",
+    "includesItem4": "Des évaluations historiques et des données de performance",
+    "loading": "Chargement...",
+    "loadButton": "Charger les données d'exemple",
+    "loadError": "Échec du chargement des données d'exemple"
+  },
+  "emptyState": {
+    "heading": "Aucun Employé Chargé",
+    "description": "Chargez des données d'exemple pour explorer les fonctionnalités ou téléchargez votre propre fichier Excel pour commencer.",
+    "loadSampleButton": "Charger les données d'exemple (200 employés)",
+    "uploadButton": "Télécharger un fichier Excel",
+    "sampleDataHint": "Les données d'exemple incluent des employés diversifiés dans les 9 positions avec des évaluations de performance et de potentiel réalistes",
+    "loadingStatus": "Chargement des données d'exemple..."
   },
   "common": {
     "ok": "OK",

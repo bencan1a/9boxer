@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "File menu: {{filename}}, {{count}} pending changes",
       "fileMenuAriaLabelNoFile": "File menu: No file selected",
       "importData": "Import Data",
+      "loadSampleDataset": "Load Sample Dataset...",
       "exportChanges": "Apply {{count}} Change to Excel",
       "exportChanges_other": "Apply {{count}} Changes to Excel",
       "saveSampleData": "Save Sample Data",
@@ -405,6 +406,7 @@
     }
   },
   "dialogs": {
+    "confirm": "Confirm",
     "unsavedChanges": {
       "title": "Unsaved Changes",
       "message_one": "You have {{count}} unsaved change.",
@@ -421,6 +423,27 @@
       "applying": "Applying...",
       "errorFallback": "Could not update original file. Save to a new location instead?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "Load Sample Dataset",
+    "warningMessage": "Warning: This will replace your current data. Continue?",
+    "description": "This will generate a sample dataset of 200 employees with realistic patterns for testing and demonstration purposes.",
+    "includes": "The sample data includes:",
+    "includesItem1": "Employees across all 9 grid positions",
+    "includesItem2": "Realistic job titles, levels, and locations",
+    "includesItem3": "Management hierarchies and reporting chains",
+    "includesItem4": "Historical ratings and performance data",
+    "loading": "Loading...",
+    "loadButton": "Load Sample Data",
+    "loadError": "Failed to load sample data"
+  },
+  "emptyState": {
+    "heading": "No Employees Loaded",
+    "description": "Load sample data to explore features, or upload your own Excel file to get started.",
+    "loadSampleButton": "Load Sample Data (200 employees)",
+    "uploadButton": "Upload Excel File",
+    "sampleDataHint": "Sample data includes diverse employees across all 9-box positions with realistic performance and potential ratings",
+    "loadingStatus": "Loading sample data..."
   },
   "common": {
     "ok": "OK",

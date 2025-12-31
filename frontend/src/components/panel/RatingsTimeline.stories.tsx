@@ -32,7 +32,7 @@ const meta: Meta<typeof RatingsTimeline> = {
   component: RatingsTimeline,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   decorators: [
     (Story) => (

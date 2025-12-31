@@ -189,6 +189,9 @@ export async function generateFilterDrawerClearAll(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "dashboard-filtersection--custom-content",
     outputPath,
@@ -236,6 +239,10 @@ export async function generateActiveChips(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match element size (no excess whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 400 });
+
   await captureStorybookScreenshot(page, {
     storyId: "dashboard-appbar-pureappbar--with-active-filters",
     outputPath,

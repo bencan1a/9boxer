@@ -269,9 +269,18 @@ export async function generateScreenshots(
       headless: options.headless ?? true,
     });
 
-    const page = await browser.newPage({
+    const context = await browser.newContext({
       viewport: options.viewport || { width: 1400, height: 900 },
     });
+
+    // Enable tracing for debugging
+    await context.tracing.start({
+      screenshots: true,
+      snapshots: true,
+      sources: true,
+    });
+
+    const page = (await context.pages()[0]) || (await context.newPage());
 
     // Navigate to app
     await page.goto("http://localhost:5173");
@@ -321,6 +330,26 @@ export async function generateScreenshots(
           error instanceof Error ? error.message : String(error);
         results.failed.push({ name, error: errorMessage });
         console.error(`✗ Failed: ${name} - ${errorMessage}`);
+
+        // Save trace for debugging
+        try {
+          const tracesDir = path.join(process.cwd(), "playwright-traces");
+          if (!fs.existsSync(tracesDir)) {
+            fs.mkdirSync(tracesDir, { recursive: true });
+          }
+          const tracePath = path.join(tracesDir, `${name}-trace.zip`);
+          await context.tracing.stop({ path: tracePath });
+          console.log(`  📊 Trace saved: ${tracePath}`);
+
+          // Restart tracing for next screenshot
+          await context.tracing.start({
+            screenshots: true,
+            snapshots: true,
+            sources: true,
+          });
+        } catch (traceError) {
+          console.error(`  ⚠️  Failed to save trace: ${traceError}`);
+        }
       }
 
       screenshotIndex++;
@@ -339,7 +368,15 @@ export async function generateScreenshots(
     console.error(error);
     throw error;
   } finally {
-    // Cleanup
+    // Cleanup - stop tracing if still active
+    try {
+      if (context) {
+        await context.tracing.stop();
+      }
+    } catch (error) {
+      // Ignore tracing stop errors during cleanup
+    }
+
     if (browser) {
       await browser.close();
     }
@@ -348,6 +385,9 @@ export async function generateScreenshots(
 
   // Print summary
   printSummary(results);
+
+  // Generate HTML report
+  await generateHtmlReport(results);
 
   return results;
 }
@@ -484,6 +524,278 @@ function printSummary(results: GenerationResults): void {
   }
 
   console.log("=".repeat(60) + "\n");
+}
+
+/**
+ * Generate HTML report for screenshot results
+ */
+async function generateHtmlReport(results: GenerationResults): Promise<void> {
+  const reportDir = path.join(process.cwd(), "playwright-report-screenshots");
+  if (!fs.existsSync(reportDir)) {
+    fs.mkdirSync(reportDir, { recursive: true });
+  }
+
+  const reportPath = path.join(reportDir, "index.html");
+  const timestamp = new Date().toISOString();
+  const totalTests = results.successful.length + results.failed.length;
+  const passRate =
+    totalTests > 0
+      ? Math.round((results.successful.length / totalTests) * 100)
+      : 0;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot Generation Report</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 8px 8px 0 0;
+    }
+    .header h1 { font-size: 28px; margin-bottom: 10px; }
+    .header .timestamp { opacity: 0.9; font-size: 14px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .stat-card {
+      padding: 20px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border-left: 4px solid #ccc;
+    }
+    .stat-card.success { border-left-color: #10b981; background: #ecfdf5; }
+    .stat-card.failure { border-left-color: #ef4444; background: #fef2f2; }
+    .stat-card.skipped { border-left-color: #f59e0b; background: #fffbeb; }
+    .stat-card.manual { border-left-color: #8b5cf6; background: #f5f3ff; }
+    .stat-card .label { font-size: 14px; color: #666; margin-bottom: 5px; }
+    .stat-card .value { font-size: 32px; font-weight: bold; color: #333; }
+    .stat-card .percentage { font-size: 14px; color: #666; margin-top: 5px; }
+    .results { padding: 30px; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 30px 0 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .section-title:first-child { margin-top: 0; }
+    .test-list { list-style: none; }
+    .test-item {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: #f8f9fa;
+      border-left: 4px solid #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    .test-item.success { border-left-color: #10b981; }
+    .test-item.failure { border-left-color: #ef4444; background: #fef2f2; }
+    .test-item .icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .test-item.success .icon { color: #10b981; }
+    .test-item.failure .icon { color: #ef4444; }
+    .test-item .content { flex: 1; }
+    .test-item .name {
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    .test-item .error {
+      font-size: 13px;
+      color: #666;
+      font-family: 'Consolas', 'Monaco', monospace;
+      background: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      border: 1px solid #e0e0e0;
+      overflow-x: auto;
+    }
+    .test-item .trace-link {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    .test-item .trace-link:hover { background: #5568d3; }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-style: italic;
+    }
+    .footer {
+      padding: 20px 30px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📸 Screenshot Generation Report</h1>
+      <div class="timestamp">Generated: ${timestamp}</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card success">
+        <div class="label">✓ Successful</div>
+        <div class="value">${results.successful.length}</div>
+        ${totalTests > 0 ? `<div class="percentage">${passRate}% pass rate</div>` : ""}
+      </div>
+      <div class="stat-card failure">
+        <div class="label">✗ Failed</div>
+        <div class="value">${results.failed.length}</div>
+        ${totalTests > 0 ? `<div class="percentage">${Math.round((results.failed.length / totalTests) * 100)}% failure rate</div>` : ""}
+      </div>
+      <div class="stat-card skipped">
+        <div class="label">⊘ Skipped</div>
+        <div class="value">${results.skipped.length}</div>
+      </div>
+      <div class="stat-card manual">
+        <div class="label">⚠ Manual</div>
+        <div class="value">${results.manual.length}</div>
+      </div>
+    </div>
+
+    <div class="results">
+      ${
+        results.failed.length > 0
+          ? `
+      <h2 class="section-title">Failed Screenshots (${results.failed.length})</h2>
+      <ul class="test-list">
+        ${results.failed
+          .map(({ name, error }) => {
+            const tracePath = `../playwright-traces/${name}-trace.zip`;
+            const traceExists = fs.existsSync(
+              path.join(process.cwd(), "playwright-traces", `${name}-trace.zip`)
+            );
+            return `
+          <li class="test-item failure">
+            <span class="icon">✗</span>
+            <div class="content">
+              <div class="name">${name}</div>
+              <div class="error">${error}</div>
+              ${traceExists ? `<a href="${tracePath}" class="trace-link" download>📊 Download Trace</a>` : ""}
+            </div>
+          </li>
+        `;
+          })
+          .join("")}
+      </ul>
+      `
+          : ""
+      }
+
+      ${
+        results.successful.length > 0
+          ? `
+      <h2 class="section-title">Successful Screenshots (${results.successful.length})</h2>
+      <ul class="test-list">
+        ${results.successful
+          .map(
+            (name) => `
+          <li class="test-item success">
+            <span class="icon">✓</span>
+            <div class="content">
+              <div class="name">${name}</div>
+            </div>
+          </li>
+        `
+          )
+          .join("")}
+      </ul>
+      `
+          : ""
+      }
+
+      ${
+        results.manual.length > 0
+          ? `
+      <h2 class="section-title">Manual Screenshots (${results.manual.length})</h2>
+      <p style="margin-bottom: 15px; color: #666;">These screenshots require manual creation and cannot be automated.</p>
+      <ul class="test-list">
+        ${results.manual
+          .map((name) => {
+            const metadata = screenshotConfig[name];
+            return `
+          <li class="test-item">
+            <span class="icon">⚠</span>
+            <div class="content">
+              <div class="name">${name}</div>
+              <div style="font-size: 13px; color: #666; margin-top: 5px;">${metadata.description}</div>
+            </div>
+          </li>
+        `;
+          })
+          .join("")}
+      </ul>
+      `
+          : ""
+      }
+
+      ${
+        results.skipped.length > 0
+          ? `
+      <h2 class="section-title">Skipped Screenshots (${results.skipped.length})</h2>
+      <ul class="test-list">
+        ${results.skipped
+          .map(
+            (name) => `
+          <li class="test-item">
+            <span class="icon">⊘</span>
+            <div class="content">
+              <div class="name">${name}</div>
+            </div>
+          </li>
+        `
+          )
+          .join("")}
+      </ul>
+      `
+          : ""
+      }
+    </div>
+
+    <div class="footer">
+      Run <code>npx playwright show-trace playwright-traces/&lt;screenshot-name&gt;-trace.zip</code> to view trace files
+    </div>
+  </div>
+</body>
+</html>`;
+
+  fs.writeFileSync(reportPath, html);
+  console.log(`\n📊 HTML report generated: ${reportPath}`);
+  console.log(`   Open with: npx playwright show-report ${reportDir}\n`);
 }
 
 /**

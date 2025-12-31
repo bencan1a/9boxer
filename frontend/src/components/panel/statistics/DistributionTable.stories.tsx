@@ -27,7 +27,7 @@ const meta: Meta<typeof DistributionTable> = {
   component: DistributionTable,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   argTypes: {
     distribution: {

@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "Nabídka souboru: {{filename}}, {{count}} čekající změna",
       "fileMenuAriaLabelNoFile": "Nabídka souboru: Není vybrán žádný soubor",
       "importData": "Importovat data",
+      "loadSampleDataset": "Načíst vzorovou datovou sadu...",
       "exportChanges": "Aplikovat {{count}} změnu do Excelu",
       "exportChanges_other": "Aplikovat {{count}} změn do Excelu",
       "saveSampleData": "Uložit Ukázková Data",
@@ -342,6 +343,7 @@
     }
   },
   "dialogs": {
+    "confirm": "Potvrdit",
     "unsavedChanges": {
       "title": "Neuložené změny",
       "message_one": "Máte {{count}} neuloženou změnu.",
@@ -358,6 +360,27 @@
       "applying": "Aplikuji...",
       "errorFallback": "Nelze aktualizovat původní soubor. Uložit na nové místo?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "Načíst vzorovou datovou sadu",
+    "warningMessage": "Varování: Tímto nahradíte aktuální data. Pokračovat?",
+    "description": "Tím se vygeneruje vzorová datová sada 200 zaměstnanců s realistickými vzory pro testování a demonstrační účely.",
+    "includes": "Vzorová data zahrnují:",
+    "includesItem1": "Zaměstnance ve všech 9 pozicích mřížky",
+    "includesItem2": "Realistické názvy pracovních pozic, úrovně a lokace",
+    "includesItem3": "Manažerské hierarchie a řetězce podřízenosti",
+    "includesItem4": "Historická hodnocení a výkonnostní data",
+    "loading": "Načítání...",
+    "loadButton": "Načíst vzorová data",
+    "loadError": "Nepodařilo se načíst vzorová data"
+  },
+  "emptyState": {
+    "heading": "Nejsou načteni žádní zaměstnanci",
+    "description": "Načtěte vzorová data pro prozkoumání funkcí nebo nahrajte vlastní soubor Excel a začněte.",
+    "loadSampleButton": "Načíst vzorová data (200 zaměstnanců)",
+    "uploadButton": "Nahrát soubor Excel",
+    "sampleDataHint": "Vzorová data zahrnují rozmanité zaměstnance ve všech 9 pozicích s realistickými hodnoceními výkonu a potenciálu",
+    "loadingStatus": "Načítání vzorových dat..."
   },
   "common": {
     "ok": "OK",

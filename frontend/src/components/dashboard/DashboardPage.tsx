@@ -26,6 +26,7 @@ import { useSession } from "../../hooks/useSession";
 import { useSessionStore } from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
+import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { sampleDataService } from "../../services/sampleDataService";
 import { extractErrorMessage } from "../../types/errors";
 import { logger } from "../../utils/logger";
@@ -255,9 +256,11 @@ export const DashboardPage: React.FC = () => {
                       position: "relative",
                     }}
                   >
-                    <NineBoxGrid />
-                    {/* View Controls (view mode + zoom + fullscreen) */}
-                    <ViewControls />
+                    <GridZoomProvider>
+                      <NineBoxGrid />
+                      {/* View Controls (view mode + zoom + fullscreen) */}
+                      <ViewControls />
+                    </GridZoomProvider>
                   </Box>
                 </Panel>
 

@@ -181,6 +181,130 @@ export const dimensions = {
     spacing: 8,
   },
 
+  // Grid zoom levels (5 discrete levels)
+  // Base tile size: 250px-370px (reduced by 30px from original 280px-400px)
+  // Level 0: Ultra Compact (48%) - Maximum information density
+  // Level 1: Compact (60%) - Very dense view
+  // Level 2: Normal (80%) - Default view
+  // Level 3: Comfortable (125%) - Slightly larger than normal
+  // Level 4: Presentation (150%) - Maximum visibility from distance
+  gridZoom: {
+    // Zoom level 0: Ultra Compact (48% scale) - New smallest size
+    level0: {
+      tile: {
+        minWidth: 120, // 250 * 0.48
+        maxWidth: 178, // 370 * 0.48
+        padding: 7, // 1.5 * 0.48 (from CardContent default)
+      },
+      font: {
+        name: "0.7rem", // Very small for ultra compact
+        titleLevel: "0.55rem", // Very small title
+        metadata: "0.55rem", // Very small metadata
+      },
+      icon: {
+        dragHandle: 10, // Very small icons
+        flag: 10,
+        history: 9,
+      },
+      spacing: {
+        gap: 6, // Very tight spacing
+        flagGap: 2,
+      },
+    },
+
+    // Zoom level 1: Compact (60% scale) - Old level 0
+    level1: {
+      tile: {
+        minWidth: 150, // 250 * 0.6
+        maxWidth: 222, // 370 * 0.6
+        padding: 9, // 1.5 * 0.6
+      },
+      font: {
+        name: "0.8rem",
+        titleLevel: "0.6rem",
+        metadata: "0.6rem",
+      },
+      icon: {
+        dragHandle: 12,
+        flag: 12,
+        history: 10,
+      },
+      spacing: {
+        gap: 8,
+        flagGap: 3,
+      },
+    },
+
+    // Zoom level 2: Normal (80% scale - baseline/default) - Old level 1
+    level2: {
+      tile: {
+        minWidth: 200, // 250 * 0.8
+        maxWidth: 296, // 370 * 0.8
+        padding: 12, // 1.5 * 0.8
+      },
+      font: {
+        name: "0.95rem",
+        titleLevel: "0.65rem",
+        metadata: "0.65rem",
+      },
+      icon: {
+        dragHandle: 14,
+        flag: 14,
+        history: 11,
+      },
+      spacing: {
+        gap: 12,
+        flagGap: 3,
+      },
+    },
+
+    // Zoom level 3: Comfortable (125% scale)
+    level3: {
+      tile: {
+        minWidth: 313, // 250 * 1.25
+        maxWidth: 463, // 370 * 1.25
+        padding: 19, // 1.5 * 1.25 ≈ 19px
+      },
+      font: {
+        name: "1.25rem",
+        titleLevel: "0.95rem",
+        metadata: "0.95rem",
+      },
+      icon: {
+        dragHandle: 20,
+        flag: 20,
+        history: 15,
+      },
+      spacing: {
+        gap: 20,
+        flagGap: 5,
+      },
+    },
+
+    // Zoom level 4: Presentation (150% scale)
+    level4: {
+      tile: {
+        minWidth: 375, // 250 * 1.5
+        maxWidth: 555, // 370 * 1.5
+        padding: 24, // 1.5 * 1.5 = 2.25 → 24px
+      },
+      font: {
+        name: "1.5rem",
+        titleLevel: "1.125rem",
+        metadata: "1.125rem",
+      },
+      icon: {
+        dragHandle: 24,
+        flag: 24,
+        history: 18,
+      },
+      spacing: {
+        gap: 24,
+        flagGap: 6,
+      },
+    },
+  },
+
   // Drawer dimensions (left sidebar filter drawer)
   drawer: {
     width: 280, // Filter drawer width

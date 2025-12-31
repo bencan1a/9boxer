@@ -15,6 +15,7 @@ import {
   Box,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import CloseIcon from "@mui/icons-material/Close";
 
 export interface ConfirmDialogProps {
@@ -53,13 +54,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   title,
   message,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   confirmColor = "primary",
   loading = false,
   maxWidth = "xs",
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
+
+  // Use translated defaults if labels not provided
+  const confirmText = confirmLabel ?? t("dialogs.confirm", "Confirm");
+  const cancelText = cancelLabel ?? t("common.cancel", "Cancel");
 
   return (
     <Dialog
@@ -107,7 +113,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           disabled={loading}
           data-testid="confirm-dialog-cancel-button"
         >
-          {cancelLabel}
+          {cancelText}
         </Button>
         <Button
           onClick={onConfirm}
@@ -117,7 +123,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           autoFocus
           data-testid="confirm-dialog-confirm-button"
         >
-          {confirmLabel}
+          {confirmText}
         </Button>
       </DialogActions>
     </Dialog>

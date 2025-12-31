@@ -12,7 +12,7 @@ const meta = {
   title: "Components/Panel/ChangeTrackerTab",
   component: ChangeTrackerTab,
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   tags: ["autodocs"],
   decorators: [

@@ -26,7 +26,7 @@ const meta: Meta<typeof StatisticsSummary> = {
   component: StatisticsSummary,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   argTypes: {
     totalEmployees: {

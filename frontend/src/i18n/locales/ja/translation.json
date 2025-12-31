@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "ファイルメニュー: {{filename}}、{{count}}件の変更が保留中",
       "fileMenuAriaLabelNoFile": "ファイルメニュー: ファイルが選択されていません",
       "importData": "データをインポート",
+      "loadSampleDataset": "サンプルデータセットを読み込む...",
       "exportChanges": "{{count}}件の変更をExcelに適用",
       "exportChanges_other": "{{count}}件の変更をExcelに適用",
       "saveSampleData": "サンプルデータを保存",
@@ -342,6 +343,7 @@
     }
   },
   "dialogs": {
+    "confirm": "確認",
     "unsavedChanges": {
       "title": "未保存の変更",
       "message_one": "{{count}}件の未保存の変更があります。",
@@ -358,6 +360,27 @@
       "applying": "適用中...",
       "errorFallback": "元のファイルを更新できませんでした。新しい場所に保存しますか?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "サンプルデータセットを読み込む",
+    "warningMessage": "警告：これにより現在のデータが置き換えられます。続行しますか？",
+    "description": "これにより、テストおよびデモンストレーション目的のために、現実的なパターンを持つ200人の従業員のサンプルデータセットが生成されます。",
+    "includes": "サンプルデータには以下が含まれます：",
+    "includesItem1": "9つのグリッド位置すべてにわたる従業員",
+    "includesItem2": "現実的な職務名、レベル、および勤務地",
+    "includesItem3": "管理階層およびレポートチェーン",
+    "includesItem4": "過去の評価およびパフォーマンスデータ",
+    "loading": "読み込み中...",
+    "loadButton": "サンプルデータを読み込む",
+    "loadError": "サンプルデータの読み込みに失敗しました"
+  },
+  "emptyState": {
+    "heading": "従業員が読み込まれていません",
+    "description": "サンプルデータを読み込んで機能を探索するか、独自のExcelファイルをアップロードして開始してください。",
+    "loadSampleButton": "サンプルデータを読み込む（200人の従業員）",
+    "uploadButton": "Excelファイルをアップロード",
+    "sampleDataHint": "サンプルデータには、現実的なパフォーマンスとポテンシャルの評価を持つ9つの位置すべてにわたる多様な従業員が含まれます",
+    "loadingStatus": "サンプルデータを読み込んでいます..."
   },
   "common": {
     "ok": "OK",

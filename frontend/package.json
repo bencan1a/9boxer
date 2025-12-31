@@ -19,6 +19,7 @@
     "copy-splash": "node scripts/copy-splash.cjs",
     "generate:guide": "node scripts/generate-user-guide.cjs",
     "generate:screenshots": "node scripts/generate-screenshots.cjs",
+    "generate:docs-tokens": "npx tsx scripts/generate-docs-tokens.ts",
     "electron:compile": "tsc -p electron/tsconfig.json && npm run copy-splash",
     "electron:watch": "tsc -p electron/tsconfig.json --watch",
     "electron:dev": "npm run copy-splash && concurrently -n \"vite,electron-tsc,electron\" -c \"blue,yellow,green\" \"npm run dev\" \"npm run electron:watch\" \"wait-on http://localhost:5173 dist-electron/main/index.js && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
@@ -41,6 +42,10 @@
     "test:docs-visual": "playwright test --project=docs-visual",
     "test:docs-visual:ui": "playwright test --project=docs-visual --ui",
     "test:docs-visual:update": "playwright test --project=docs-visual --update-snapshots",
+    "test:screenshots": "playwright test --project=screenshots",
+    "test:screenshots:ui": "playwright test --project=screenshots --ui",
+    "test:screenshots:headed": "playwright test --project=screenshots --headed",
+    "test:screenshots:report": "playwright show-report",
     "test:all:pw": "playwright test",
     "test:all:pw:ui": "playwright test --ui",
     "generate:icons": "npx tsx scripts/generate_logo_icons.ts",
@@ -68,7 +73,6 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.14.20",
     "axios": "^1.13.2",
-    "date-fns": "^2.30.0",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "react": "^18.2.0",
@@ -87,7 +91,6 @@
     "@storybook/react": "^10.1.10",
     "@storybook/react-vite": "^10.1.10",
     "@storybook/test": "^8.6.14",
-    "@stylelint/postcss-css-in-js": "^0.38.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
@@ -111,7 +114,6 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "jsdom": "^27.3.0",
     "png2icons": "^2.0.1",
-    "pngjs": "^7.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
     "storybook": "^10.1.10",
@@ -121,7 +123,6 @@
     "typescript": "^5.2.2",
     "vite": "^7.2.7",
     "vitest": "^4.0.16",
-    "wait-on": "^9.0.3",
-    "xlsx": "^0.18.5"
+    "wait-on": "^9.0.3"
   }
 }

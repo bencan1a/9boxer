@@ -61,10 +61,6 @@ function ViewControlsMock({
   return (
     <Box
       sx={{
-        position: "absolute",
-        top: 16,
-        right: 24,
-        zIndex: 10,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 1,
         boxShadow: 3,
@@ -180,7 +176,7 @@ const meta: Meta<typeof ViewControlsMock> = {
   title: "Common/ViewControls",
   component: ViewControlsMock,
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
     docs: {
       description: {
         component:
@@ -189,20 +185,6 @@ const meta: Meta<typeof ViewControlsMock> = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <Box
-        sx={{
-          width: "100%",
-          height: "400px",
-          backgroundColor: "background.default",
-          position: "relative",
-        }}
-      >
-        <Story />
-      </Box>
-    ),
-  ],
 };
 
 export default meta;
