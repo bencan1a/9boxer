@@ -66,7 +66,7 @@ const onRenderCallback = (
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
-  const { isResizing } = useGridZoom();
+  const { isResizing, tokens } = useGridZoom();
   const {
     employeesByPosition,
     getShortPositionLabel,
@@ -210,7 +210,7 @@ export const NineBoxGrid: React.FC = () => {
     }
 
     // Expanded mode: Make target row/col large, others small
-    const smallSize = "80px";
+    const smallSize = `${theme.tokens.dimensions.gridContainer.collapsedBoxSize}px`;
     const largeSize = "1fr";
 
     const cols = [smallSize, smallSize, smallSize];
@@ -236,8 +236,8 @@ export const NineBoxGrid: React.FC = () => {
       >
         <Box
           sx={{
-            p: 2,
-            minHeight: "calc(100vh - 80px)",
+            p: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            minHeight: `calc(100vh - ${theme.tokens.dimensions.appBar.height}px)`,
             width: "100%",
             userSelect: "none",
             display: "flex",

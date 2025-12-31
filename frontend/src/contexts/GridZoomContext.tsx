@@ -25,10 +25,16 @@ import { tokens } from "../theme/tokens";
 
 // Type for the zoom level tokens
 interface ZoomTokens {
-  tile: { minWidth: number; maxWidth: number; padding: number };
+  tile: {
+    minWidth: number;
+    maxWidth: number;
+    paddingY: number;
+    paddingX: number;
+    dragHandleWidth: number;
+  };
   font: { name: string; titleLevel: string; metadata: string };
   icon: { dragHandle: number; flag: number; history: number };
-  spacing: { gap: number; flagGap: number };
+  spacing: { gap: number; flagGap: number; boxPadding: number };
 }
 
 interface GridZoomContextType {

@@ -58,7 +58,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
         // Multi-column grid layout for better space utilization with smaller tiles
         display: "grid",
         gridTemplateColumns: `repeat(auto-fill, minmax(${tokens.tile.minWidth}px, 1fr))`,
-        gap: `${tokens.spacing.gap / 8}rem`,
+        gap: `${tokens.spacing.gap}px`,
         // Ensure minimum height when empty for visibility in tests/Storybook
         minHeight: employees.length === 0 ? "48px" : undefined,
       }}

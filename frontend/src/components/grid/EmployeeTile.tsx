@@ -118,7 +118,6 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       ref={setNodeRef}
       onClick={handleCardClick}
       sx={{
-        mb: 1,
         minWidth: tokens.tile.minWidth,
         maxWidth: tokens.tile.maxWidth,
         cursor: "pointer",
@@ -190,7 +189,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
         {...listeners}
         {...attributes}
         sx={{
-          width: 24,
+          width: tokens.tile.dragHandleWidth,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -212,10 +211,11 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       {/* Card Content */}
       <CardContent
         sx={{
-          p: `${tokens.tile.padding}px`,
-          "&:last-child": { pb: `${tokens.tile.padding}px` },
-          flex: 1,
+          py: `${tokens.tile.paddingY}px`,
+          pl: `${tokens.tile.paddingX}px`,
           pr: 3,
+          "&:last-child": { pb: `${tokens.tile.paddingY}px` },
+          flex: 1,
         }}
       >
         {/* Row 1: Name */}
