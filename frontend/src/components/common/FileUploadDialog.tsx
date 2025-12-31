@@ -10,21 +10,23 @@
  */
 
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Typography,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 import { useTheme } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useTranslation } from "react-i18next";
-import { useSessionStore } from "../../store/sessionStore";
+import {
+  useSessionStore,
+  selectUploadFile,
+  selectIsLoading,
+} from "../../store/sessionStore";
 import { useUiStore } from "../../store/uiStore";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { logger } from "../../utils/logger";
@@ -40,7 +42,11 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { uploadFile, isLoading } = useSessionStore();
+
+  // Use granular selectors to minimize re-renders
+  const uploadFile = useSessionStore(selectUploadFile);
+  const isLoading = useSessionStore(selectIsLoading);
+
   const { showSuccess, showError } = useSnackbar();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);

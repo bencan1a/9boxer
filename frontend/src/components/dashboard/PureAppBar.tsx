@@ -11,15 +11,13 @@
  */
 
 import React from "react";
-import {
-  AppBar as MuiAppBar,
-  Toolbar,
-  Typography,
-  Box,
-  IconButton,
-  Tooltip,
-  Badge,
-} from "@mui/material";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Badge from "@mui/material/Badge";
 import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SettingsIcon from "@mui/icons-material/Settings";

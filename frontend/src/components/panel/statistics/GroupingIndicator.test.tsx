@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import { GroupingIndicator } from "./GroupingIndicator";
 
 // Helper to render GroupingIndicator in a table context

@@ -16,7 +16,10 @@
  */
 
 import React from "react";
-import { Box, Button, Typography, CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme, alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";

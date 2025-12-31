@@ -11,13 +11,11 @@
  */
 
 import React from "react";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Chip,
-} from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 

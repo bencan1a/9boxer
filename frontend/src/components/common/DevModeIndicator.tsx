@@ -10,7 +10,8 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Chip, Tooltip } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import Tooltip from "@mui/material/Tooltip";
 import { Code as CodeIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { isDevelopment, isElectron } from "../../config";

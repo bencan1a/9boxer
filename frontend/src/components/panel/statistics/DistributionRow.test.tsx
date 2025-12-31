@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
-import { Table, TableBody } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import { DistributionRow } from "./DistributionRow";
 
 // Helper to render DistributionRow in a table context

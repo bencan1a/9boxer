@@ -16,11 +16,15 @@ describe("ViewModeToggle", () => {
   });
 
   it("renders Grid and Donut view buttons", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    // Mock selector-based store access
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -36,11 +40,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("shows Grid mode as selected when donutModeActive is false", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -53,11 +60,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("shows Donut mode as selected when donutModeActive is true", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: true,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: true,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -71,11 +81,14 @@ describe("ViewModeToggle", () => {
 
   it("calls toggleDonutMode with true when Donut button is clicked from Grid mode", async () => {
     const user = userEvent.setup();
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -89,11 +102,14 @@ describe("ViewModeToggle", () => {
 
   it("calls toggleDonutMode with false when Grid button is clicked from Donut mode", async () => {
     const user = userEvent.setup();
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: true,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: true,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -106,11 +122,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("is disabled when no sessionId exists", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: null,
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: null,
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -123,11 +142,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("is enabled when sessionId exists", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -141,11 +163,14 @@ describe("ViewModeToggle", () => {
 
   it("shows Grid mode active tooltip when in Grid mode", async () => {
     const user = userEvent.setup();
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -165,11 +190,14 @@ describe("ViewModeToggle", () => {
 
   it("shows Donut mode active tooltip when in Donut mode", async () => {
     const user = userEvent.setup();
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: true,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: true,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -189,11 +217,14 @@ describe("ViewModeToggle", () => {
 
   it("does not change mode when clicking the already selected button", async () => {
     const user = userEvent.setup();
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -205,11 +236,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("responds to keyboard shortcut (D key) to toggle mode", async () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -222,11 +256,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("does not respond to keyboard shortcut when no session exists", async () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: null,
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: null,
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -238,11 +275,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("does not respond to keyboard shortcut with modifier keys", async () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 
@@ -254,11 +294,14 @@ describe("ViewModeToggle", () => {
   });
 
   it("has correct ARIA labels for accessibility", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session",
-      donutModeActive: false,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector: any) => {
+      const state = {
+        sessionId: "test-session",
+        donutModeActive: false,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector(state);
+    });
 
     render(<ViewModeToggle />);
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ZoomControls } from "./ZoomControls";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const meta: Meta<typeof ZoomControls> = {
   title: "Common/ZoomControls",

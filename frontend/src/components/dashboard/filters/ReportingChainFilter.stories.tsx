@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ReportingChainFilter } from "./ReportingChainFilter";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ReportingChainFilter> = {

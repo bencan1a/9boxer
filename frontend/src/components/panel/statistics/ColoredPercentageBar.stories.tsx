@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ColoredPercentageBar } from "./ColoredPercentageBar";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 /**
  * ColoredPercentageBar displays a progress bar with dynamic color based on position and percentage.

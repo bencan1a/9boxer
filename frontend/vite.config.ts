@@ -20,6 +20,8 @@ export default defineConfig({
     assetsDir: "assets",
     sourcemap: true,
     emptyOutDir: true,
+    // Performance budgets - warn if chunks exceed these sizes
+    chunkSizeWarningLimit: 500, // 500 KB warning threshold
     rollupOptions: {
       output: {
         manualChunks: (id) => {

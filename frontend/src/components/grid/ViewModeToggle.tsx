@@ -6,15 +6,26 @@
  */
 
 import React, { useEffect } from "react";
-import { ToggleButtonGroup, ToggleButton, Tooltip } from "@mui/material";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
+import Tooltip from "@mui/material/Tooltip";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
 import { useTranslation } from "react-i18next";
-import { useSessionStore } from "../../store/sessionStore";
+import {
+  useSessionStore,
+  selectSessionId,
+  selectDonutModeActive,
+  selectToggleDonutMode,
+} from "../../store/sessionStore";
 
 export const ViewModeToggle: React.FC = () => {
   const { t } = useTranslation();
-  const { sessionId, donutModeActive, toggleDonutMode } = useSessionStore();
+
+  // Use granular selectors to minimize re-renders
+  const sessionId = useSessionStore(selectSessionId);
+  const donutModeActive = useSessionStore(selectDonutModeActive);
+  const toggleDonutMode = useSessionStore(selectToggleDonutMode);
 
   const handleViewModeChange = async (
     _event: React.MouseEvent<HTMLElement>,

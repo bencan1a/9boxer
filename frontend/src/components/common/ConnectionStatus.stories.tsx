@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "@storybook/test";
-import { Chip, IconButton, Box } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 

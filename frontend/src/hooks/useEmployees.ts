@@ -5,7 +5,7 @@
 import { useMemo } from "react";
 import { Employee } from "../types/employee";
 import { useSession } from "./useSession";
-import { useSessionStore } from "../store/sessionStore";
+import { useSessionStore, selectDonutModeActive } from "../store/sessionStore";
 import { useFilters } from "./useFilters";
 import {
   getPositionLabel,
@@ -19,7 +19,10 @@ import { sortEmployees } from "../utils/sortEmployees";
 export const useEmployees = () => {
   const { employees, moveEmployee, selectEmployee, selectedEmployeeId } =
     useSession();
-  const { donutModeActive } = useSessionStore();
+
+  // Use granular selector to minimize re-renders
+  const donutModeActive = useSessionStore(selectDonutModeActive);
+
   const { applyFilters } = useFilters();
 
   // Apply filters to employees

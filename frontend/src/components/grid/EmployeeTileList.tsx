@@ -14,7 +14,7 @@
  */
 
 import React from "react";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
 import { useGridZoom } from "../../contexts/GridZoomContext";

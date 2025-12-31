@@ -4,16 +4,14 @@
  */
 
 import React from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button,
-  IconButton,
-  Box,
-} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import CloseIcon from "@mui/icons-material/Close";

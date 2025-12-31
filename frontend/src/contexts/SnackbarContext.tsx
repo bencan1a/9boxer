@@ -3,7 +3,9 @@
  */
 
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { Snackbar, Alert, AlertColor } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import AlertColor from "@mui/material/AlertColor";
 
 interface SnackbarMessage {
   id: number;

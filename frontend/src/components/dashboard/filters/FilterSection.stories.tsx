@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { FilterSection } from "./FilterSection";
-import { FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
 
 const meta: Meta<typeof FilterSection> = {
   title: "Dashboard/FilterSection",

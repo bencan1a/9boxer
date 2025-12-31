@@ -22,14 +22,12 @@
 
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  useTheme,
-  Tooltip,
-} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
+import Tooltip from "@mui/material/Tooltip";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import HistoryIcon from "@mui/icons-material/History";
 import { Employee } from "../../types/employee";
@@ -61,7 +59,7 @@ const truncate = (str: string, maxLength: number): string => {
   return str.substring(0, maxLength) + "…";
 };
 
-export const EmployeeTile: React.FC<EmployeeTileProps> = ({
+const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
   donutModeActive = false,
@@ -294,3 +292,48 @@ export const EmployeeTile: React.FC<EmployeeTileProps> = ({
     </Card>
   );
 };
+
+/**
+ * Order-independent array equality check.
+ * More efficient than JSON.stringify for flag arrays.
+ */
+const areArraysEqual = (
+  a: string[] | undefined,
+  b: string[] | undefined
+): boolean => {
+  const arr1 = a || [];
+  const arr2 = b || [];
+  if (arr1.length !== arr2.length) return false;
+  const sorted1 = [...arr1].sort();
+  const sorted2 = [...arr2].sort();
+  return sorted1.every((val, idx) => val === sorted2[idx]);
+};
+
+/**
+ * Memoized EmployeeTile component to prevent unnecessary re-renders during drag operations.
+ * Custom comparison function ensures tiles only re-render when their specific data changes.
+ */
+export const EmployeeTile = React.memo(
+  EmployeeTileComponent,
+  (prevProps, nextProps) => {
+    // Return true if props are equal (skip re-render), false if different (re-render)
+    return (
+      prevProps.employee.employee_id === nextProps.employee.employee_id &&
+      prevProps.employee.name === nextProps.employee.name &&
+      prevProps.employee.business_title === nextProps.employee.business_title &&
+      prevProps.employee.job_level === nextProps.employee.job_level &&
+      prevProps.employee.performance === nextProps.employee.performance &&
+      prevProps.employee.potential === nextProps.employee.potential &&
+      prevProps.employee.grid_position === nextProps.employee.grid_position &&
+      prevProps.employee.donut_position === nextProps.employee.donut_position &&
+      prevProps.employee.modified_in_session ===
+        nextProps.employee.modified_in_session &&
+      prevProps.employee.original_grid_position ===
+        nextProps.employee.original_grid_position &&
+      areArraysEqual(prevProps.employee.flags, nextProps.employee.flags) &&
+      prevProps.donutModeActive === nextProps.donutModeActive &&
+      prevProps.originalPositionVariant === nextProps.originalPositionVariant &&
+      prevProps.onSelect === nextProps.onSelect
+    );
+  }
+);

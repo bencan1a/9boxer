@@ -1,11 +1,9 @@
 import React from "react";
-import {
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  Box,
-} from "@mui/material";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 
 /**

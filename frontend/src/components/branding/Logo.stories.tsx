@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Logo, LogoVariant } from "./Logo";
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
 
 const meta: Meta<typeof Logo> = {
   title: "Branding/Logo",

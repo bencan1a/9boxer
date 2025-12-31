@@ -17,17 +17,15 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Box,
-  ButtonGroup,
-  IconButton,
-  Tooltip,
-  Typography,
-  ToggleButtonGroup,
-  ToggleButton,
-  Divider,
-  useMediaQuery,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
+import Divider from "@mui/material/Divider";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
@@ -37,13 +35,23 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useTranslation } from "react-i18next";
-import { useSessionStore } from "../../store/sessionStore";
+import {
+  useSessionStore,
+  selectSessionId,
+  selectDonutModeActive,
+  selectToggleDonutMode,
+} from "../../store/sessionStore";
 import { useGridZoom } from "../../contexts/GridZoomContext";
 
 export const ViewControls: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { sessionId, donutModeActive, toggleDonutMode } = useSessionStore();
+
+  // Use granular selectors to minimize re-renders
+  const sessionId = useSessionStore(selectSessionId);
+  const donutModeActive = useSessionStore(selectDonutModeActive);
+  const toggleDonutMode = useSessionStore(selectToggleDonutMode);
+
   const {
     percentage,
     canZoomIn: canZoomInValue,

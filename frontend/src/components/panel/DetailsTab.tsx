@@ -3,7 +3,10 @@
  */
 
 import React from "react";
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import { useTheme } from "@mui/material/styles";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useTranslation } from "react-i18next";

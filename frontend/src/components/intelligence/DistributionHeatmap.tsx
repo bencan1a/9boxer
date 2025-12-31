@@ -3,7 +3,9 @@
  */
 
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 import { useTheme, alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 

@@ -20,7 +20,9 @@
  */
 
 import React from "react";
-import { TableRow, TableCell, Typography } from "@mui/material";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ColoredPercentageBar } from "./ColoredPercentageBar";
 

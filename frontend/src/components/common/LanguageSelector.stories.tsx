@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LanguageSelector } from "./LanguageSelector";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const meta: Meta<typeof LanguageSelector> = {
   title: "Common/LanguageSelector",
