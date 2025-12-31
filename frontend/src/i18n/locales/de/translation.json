@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "Dateimenü: {{filename}}, {{count}} ausstehende Änderung",
       "fileMenuAriaLabelNoFile": "Dateimenü: Keine Datei ausgewählt",
       "importData": "Daten importieren",
+      "loadSampleDataset": "Beispieldatensatz laden...",
       "exportChanges": "{{count}} Änderung in Excel übernehmen",
       "exportChanges_other": "{{count}} Änderungen in Excel übernehmen",
       "saveSampleData": "Beispieldaten Speichern",
@@ -342,6 +343,7 @@
     }
   },
   "dialogs": {
+    "confirm": "Bestätigen",
     "unsavedChanges": {
       "title": "Nicht gespeicherte Änderungen",
       "message_one": "Sie haben {{count}} nicht gespeicherte Änderung.",
@@ -358,6 +360,27 @@
       "applying": "Wird angewendet...",
       "errorFallback": "Originaldatei konnte nicht aktualisiert werden. An einem neuen Speicherort speichern?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "Beispieldatensatz laden",
+    "warningMessage": "Warnung: Dies ersetzt Ihre aktuellen Daten. Fortfahren?",
+    "description": "Dadurch wird ein Beispieldatensatz mit 200 Mitarbeitern mit realistischen Mustern zu Test- und Demonstrationszwecken generiert.",
+    "includes": "Die Beispieldaten umfassen:",
+    "includesItem1": "Mitarbeiter in allen 9 Rasterpositionen",
+    "includesItem2": "Realistische Berufsbezeichnungen, Ebenen und Standorte",
+    "includesItem3": "Managementhierarchien und Berichtsketten",
+    "includesItem4": "Historische Bewertungen und Leistungsdaten",
+    "loading": "Wird geladen...",
+    "loadButton": "Beispieldaten laden",
+    "loadError": "Fehler beim Laden der Beispieldaten"
+  },
+  "emptyState": {
+    "heading": "Keine Mitarbeiter geladen",
+    "description": "Laden Sie Beispieldaten, um die Funktionen zu erkunden, oder laden Sie Ihre eigene Excel-Datei hoch, um zu beginnen.",
+    "loadSampleButton": "Beispieldaten laden (200 Mitarbeiter)",
+    "uploadButton": "Excel-Datei hochladen",
+    "sampleDataHint": "Die Beispieldaten umfassen vielfältige Mitarbeiter in allen 9 Positionen mit realistischen Leistungs- und Potenzialbewertungen",
+    "loadingStatus": "Beispieldaten werden geladen..."
   },
   "common": {
     "ok": "OK",

@@ -25,6 +25,7 @@
       "fileMenuAriaLabel": "Menú de archivo: {{filename}}, {{count}} cambios pendientes",
       "fileMenuAriaLabelNoFile": "Menú de archivo: Ningún archivo seleccionado",
       "importData": "Importar Datos",
+      "loadSampleDataset": "Cargar Conjunto de Datos de Muestra...",
       "exportChanges": "Aplicar {{count}} Cambio a Excel",
       "exportChanges_other": "Aplicar {{count}} Cambios a Excel",
       "saveSampleData": "Guardar Datos de Muestra",
@@ -405,6 +406,7 @@
     }
   },
   "dialogs": {
+    "confirm": "Confirmar",
     "unsavedChanges": {
       "title": "Cambios sin guardar",
       "message_one": "Tienes {{count}} cambio sin guardar.",
@@ -421,6 +423,27 @@
       "applying": "Aplicando...",
       "errorFallback": "No se pudo actualizar el archivo original. ¿Guardar en una nueva ubicación?"
     }
+  },
+  "sampleData": {
+    "dialogTitle": "Cargar Conjunto de Datos de Muestra",
+    "warningMessage": "Advertencia: Esto reemplazará sus datos actuales. ¿Continuar?",
+    "description": "Esto generará un conjunto de datos de muestra de 200 empleados con patrones realistas para propósitos de prueba y demostración.",
+    "includes": "Los datos de muestra incluyen:",
+    "includesItem1": "Empleados en todas las 9 posiciones de la cuadrícula",
+    "includesItem2": "Títulos de trabajo, niveles y ubicaciones realistas",
+    "includesItem3": "Jerarquías de gestión y cadenas de reporte",
+    "includesItem4": "Calificaciones históricas y datos de desempeño",
+    "loading": "Cargando...",
+    "loadButton": "Cargar Datos de Muestra",
+    "loadError": "Error al cargar los datos de muestra"
+  },
+  "emptyState": {
+    "heading": "No Hay Empleados Cargados",
+    "description": "Cargue datos de muestra para explorar las funciones o suba su propio archivo de Excel para comenzar.",
+    "loadSampleButton": "Cargar Datos de Muestra (200 empleados)",
+    "uploadButton": "Subir Archivo de Excel",
+    "sampleDataHint": "Los datos de muestra incluyen empleados diversos en todas las 9 posiciones con calificaciones realistas de desempeño y potencial",
+    "loadingStatus": "Cargando datos de muestra..."
   },
   "common": {
     "ok": "Aceptar",

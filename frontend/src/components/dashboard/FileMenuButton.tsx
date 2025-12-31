@@ -248,7 +248,7 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
           data-testid="load-sample-menu-item"
         >
           <ScienceIcon sx={{ mr: 1 }} fontSize="small" />
-          Load Sample Dataset...
+          {t("dashboard.fileMenu.loadSampleDataset", "Load Sample Dataset...")}
         </MenuItem>
 
         {/* Divider: Separates input actions from file management */}
