@@ -309,7 +309,15 @@ async def update_employee(  # noqa: PLR0912 - Complex update logic requires mult
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
-    return {"employee": employee.model_dump(), "success": True}
+
+    # Compute is_big_mover for response
+    employee_data = employee.model_dump()
+    original_emp = next(
+        (e for e in session.original_employees if e.employee_id == employee_id), None
+    )
+    employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+
+    return {"employee": employee_data, "success": True}
 
 
 @router.patch("/{employee_id}/move")
@@ -351,8 +359,17 @@ async def move_employee(
         )
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
+    # Compute is_big_mover for response
+    employee_data = None
+    if employee:
+        employee_data = employee.model_dump()
+        original_emp = next(
+            (e for e in session.original_employees if e.employee_id == employee_id), None
+        )
+        employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+
     return {
-        "employee": employee.model_dump() if employee else None,
+        "employee": employee_data,
         "change": change.model_dump(),
         "success": True,
     }
@@ -429,8 +446,17 @@ async def move_employee_donut(
     # Get updated employee for response
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
+    # Compute is_big_mover for response
+    employee_data = None
+    if employee:
+        employee_data = employee.model_dump()
+        original_emp = next(
+            (e for e in session.original_employees if e.employee_id == employee_id), None
+        )
+        employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+
     return {
-        "employee": employee.model_dump() if employee else None,
+        "employee": employee_data,
         "change": change.model_dump(),
         "success": True,
     }
