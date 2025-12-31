@@ -141,3 +141,118 @@ export async function triggerSessionSave(page: Page): Promise<void> {
     // Ignore errors - session might not exist yet
   }
 }
+
+/**
+ * Get the backend URL for the current worker
+ *
+ * Each Playwright worker uses a unique backend port (38000 + workerIndex)
+ * for parallel test execution with isolated databases. This helper extracts
+ * the correct backend URL from the page context.
+ *
+ * In worker-scoped backend mode:
+ * - Worker 0: http://localhost:38000
+ * - Worker 1: http://localhost:38001
+ * - Worker 2: http://localhost:38002
+ * - etc.
+ *
+ * @param page - Playwright Page object
+ * @returns Backend URL (e.g., "http://localhost:38001")
+ * @example
+ * const backendUrl = await getBackendUrl(page);
+ * console.log(`Worker backend: ${backendUrl}`);
+ */
+export async function getBackendUrl(page: Page): Promise<string> {
+  // Navigate to the frontend to ensure page context is initialized
+  // This is safe to call multiple times - Playwright caches if already loaded
+  const currentUrl = page.url();
+  if (!currentUrl || currentUrl === "about:blank") {
+    await page.goto("/");
+  }
+
+  // Extract port from first API request made by the page
+  // Worker-scoped routing intercepts /api/** requests and routes to worker backend
+  return new Promise<string>((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(
+        new Error(
+          "Failed to determine backend URL - no API requests detected within 5 seconds"
+        )
+      );
+    }, 5000);
+
+    page.on("request", (request) => {
+      const url = request.url();
+      if (url.includes("/api/")) {
+        clearTimeout(timeout);
+        // Extract base URL (protocol + host + port)
+        const match = url.match(/(http:\/\/localhost:\d+)/);
+        if (match) {
+          resolve(match[1]);
+        } else {
+          // Fallback to default backend port
+          resolve("http://localhost:38000");
+        }
+      }
+    });
+  });
+}
+
+/**
+ * Check if backend is healthy and responding
+ *
+ * Performs a health check against the worker's backend server without throwing
+ * errors. Useful for debugging test failures, verifying backend state, or
+ * implementing retry logic in tests.
+ *
+ * This helper:
+ * - Extracts the correct worker backend URL from the page context
+ * - Makes a GET request to the /health endpoint
+ * - Returns true if backend responds with 200, false otherwise
+ * - Handles all errors gracefully (no exceptions thrown)
+ *
+ * @param page - Playwright Page object
+ * @returns true if backend is healthy, false otherwise
+ * @example
+ * // Check backend health before running test
+ * const isHealthy = await isBackendHealthy(page);
+ * if (!isHealthy) {
+ *   console.warn('Backend is not healthy, test may fail');
+ * }
+ *
+ * @example
+ * // Implement retry logic
+ * let healthy = false;
+ * for (let i = 0; i < 5 && !healthy; i++) {
+ *   healthy = await isBackendHealthy(page);
+ *   if (!healthy) await page.waitForTimeout(1000);
+ * }
+ *
+ * @example
+ * // Debug test failures
+ * test('my test', async ({ page }) => {
+ *   await loadSampleData(page);
+ *   const healthBefore = await isBackendHealthy(page);
+ *   console.log(`Backend health before action: ${healthBefore}`);
+ *
+ *   // ... perform actions ...
+ *
+ *   const healthAfter = await isBackendHealthy(page);
+ *   console.log(`Backend health after action: ${healthAfter}`);
+ * });
+ */
+export async function isBackendHealthy(page: Page): Promise<boolean> {
+  try {
+    // Get the worker's backend URL
+    const backendUrl = await getBackendUrl(page);
+
+    // Make health check request
+    const response = await page.request.get(`${backendUrl}/health`);
+
+    // Return true only if status is 200
+    return response.status() === 200;
+  } catch (error) {
+    // Don't throw - return false for any errors
+    // This includes network errors, timeouts, or backend not responding
+    return false;
+  }
+}

@@ -68,7 +68,7 @@ class TestExportFallbackFlow:
         self,
         test_client: TestClient,
         sample_excel_file: Path,
-        tmp_path: Path,
+        export_dir: Path,
     ) -> None:
         """Test that export can fallback to save_new mode with new path."""
         # Upload file
@@ -94,7 +94,7 @@ class TestExportFallbackFlow:
         original_file.unlink(missing_ok=True)
 
         # Export to new path (fallback mode)
-        new_file_path = tmp_path / "new_export.xlsx"
+        new_file_path = export_dir / "new_export.xlsx"
         export_request = {"mode": "save_new", "new_path": str(new_file_path)}
         response = test_client.post("/api/session/export", json=export_request)
         assert response.status_code == 200
@@ -172,7 +172,7 @@ class TestExportFallbackFlow:
         self,
         test_client: TestClient,
         sample_excel_file: Path,
-        tmp_path: Path,
+        export_dir: Path,
     ) -> None:
         """Test complete workflow: upload -> make changes -> export to new file."""
         # Upload file
@@ -202,7 +202,7 @@ class TestExportFallbackFlow:
         assert response.status_code == 200
 
         # Export to new file
-        new_file_path = tmp_path / "export_new.xlsx"
+        new_file_path = export_dir / "export_new.xlsx"
         export_request = {"mode": "save_new", "new_path": str(new_file_path)}
         response = test_client.post("/api/session/export", json=export_request)
         assert response.status_code == 200

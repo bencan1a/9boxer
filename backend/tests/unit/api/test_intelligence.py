@@ -1,7 +1,5 @@
 """Tests for intelligence API endpoints."""
 
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -9,28 +7,11 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.unit
 
 
-@pytest.fixture
-def session_with_data(
-    test_client: TestClient, auth_headers: dict[str, str], sample_excel_file: Path
-) -> dict[str, str]:
-    """Create a session with uploaded data."""
-    with open(sample_excel_file, "rb") as f:  # noqa: PTH123
-        files = {
-            "file": (
-                "test.xlsx",
-                f,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        }
-        test_client.post("/api/session/upload", files=files, headers=auth_headers)
-    return auth_headers
-
-
 def test_get_intelligence_when_session_exists_then_returns_analysis(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test GET /api/intelligence returns intelligence analysis with 200."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -45,10 +26,10 @@ def test_get_intelligence_when_session_exists_then_returns_analysis(
 
 
 def test_get_intelligence_when_called_then_has_correct_structure(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that intelligence response has correct structure."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -68,10 +49,10 @@ def test_get_intelligence_when_called_then_has_correct_structure(
 
 
 def test_get_intelligence_when_called_then_dimension_analyses_have_required_fields(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that each dimension analysis has all required fields."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -110,10 +91,10 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
 
 
 def test_get_intelligence_when_called_then_p_values_in_valid_range(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that p-values are in valid range [0, 1]."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -129,10 +110,10 @@ def test_get_intelligence_when_called_then_p_values_in_valid_range(
 
 
 def test_get_intelligence_when_called_then_effect_sizes_non_negative(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that effect sizes are non-negative."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -148,10 +129,10 @@ def test_get_intelligence_when_called_then_effect_sizes_non_negative(
 
 
 def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that anomaly counts are consistent with status levels."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -175,12 +156,12 @@ def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
 
 
 def test_get_intelligence_when_called_multiple_times_then_returns_consistent_results(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that intelligence endpoint returns consistent results."""
     # Call twice
-    response1 = test_client.get("/api/intelligence", headers=session_with_data)
-    response2 = test_client.get("/api/intelligence", headers=session_with_data)
+    response1 = test_client.get("/api/intelligence", headers=session_with_employees)
+    response2 = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response1.status_code == 200
     assert response2.status_code == 200
@@ -194,16 +175,16 @@ def test_get_intelligence_when_called_multiple_times_then_returns_consistent_res
 
 
 def test_get_intelligence_when_analyzes_full_dataset_then_uses_all_employees(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that intelligence uses full dataset, not filtered data."""
     # Get intelligence (should use all employees)
-    intelligence_response = test_client.get("/api/intelligence", headers=session_with_data)
+    intelligence_response = test_client.get("/api/intelligence", headers=session_with_employees)
     assert intelligence_response.status_code == 200
     intelligence_data = intelligence_response.json()
 
     # Get total employees from unfiltered stats
-    stats_response = test_client.get("/api/statistics", headers=session_with_data)
+    stats_response = test_client.get("/api/statistics", headers=session_with_employees)
     assert stats_response.status_code == 200
     stats_response.json()["total_employees"]
 
@@ -221,10 +202,10 @@ def test_get_intelligence_when_analyzes_full_dataset_then_uses_all_employees(
 
 
 def test_get_intelligence_when_severity_green_then_p_value_high(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that green status corresponds to high p-values (no anomaly)."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -247,10 +228,10 @@ def test_get_intelligence_when_severity_green_then_p_value_high(
 
 
 def test_get_intelligence_when_sample_insufficient_then_flags_appropriately(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that insufficient sample sizes are mentioned in interpretation."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -269,10 +250,10 @@ def test_get_intelligence_when_sample_insufficient_then_flags_appropriately(
 
 
 def test_get_intelligence_when_called_then_deviations_are_lists(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that deviations field is always a list."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -288,10 +269,10 @@ def test_get_intelligence_when_called_then_deviations_are_lists(
 
 
 def test_get_intelligence_when_quality_score_calculated_then_in_valid_range(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that quality score is between 0 and 100."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
@@ -302,10 +283,10 @@ def test_get_intelligence_when_quality_score_calculated_then_in_valid_range(
 
 
 def test_get_intelligence_when_response_then_matches_typeddict_structure(
-    test_client: TestClient, session_with_data: dict[str, str]
+    test_client: TestClient, session_with_employees: dict[str, str]
 ) -> None:
     """Test that response matches the expected TypedDict structure exactly."""
-    response = test_client.get("/api/intelligence", headers=session_with_data)
+    response = test_client.get("/api/intelligence", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()

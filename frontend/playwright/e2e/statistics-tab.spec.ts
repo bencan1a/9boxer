@@ -8,7 +8,7 @@ import { loadSampleData, dragEmployeeToPosition, t } from "../helpers";
 
 test.describe("Statistics Tab Display", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to app and load sample data
+    // Navigate to app and load sample data for each test (ensures isolation)
     await page.goto("/");
     await loadSampleData(page);
 

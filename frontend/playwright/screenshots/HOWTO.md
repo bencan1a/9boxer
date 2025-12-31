@@ -349,12 +349,17 @@ await captureStorybookScreenshot(page, {
 });
 ```
 
-### Backend Executable Not Found
+### Backend Not Starting
+
+The screenshot generator uses Python + uvicorn (same as E2E tests), not the built executable.
+
+Ensure your Python virtual environment is set up:
 
 ```bash
-# Build backend first
-cd backend
-./scripts/build_executable.sh  # or .bat on Windows
+# From project root
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
 ```
 
 ---

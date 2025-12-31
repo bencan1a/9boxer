@@ -40,7 +40,7 @@ export const StatisticsTab: React.FC = () => {
 
   if (error) {
     return (
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2 }} data-testid="statistics-tab-error">
         <Alert severity="error">{error}</Alert>
       </Box>
     );
@@ -68,22 +68,27 @@ export const StatisticsTab: React.FC = () => {
         flexDirection: "column",
         gap: theme.tokens.spacing.lg / 8,
       }}
+      data-testid="statistics-tab-content"
     >
       {/* Summary Cards */}
-      <StatisticsSummary
-        totalEmployees={statistics.total_employees}
-        modifiedEmployees={statistics.modified_employees}
-        highPerformers={statistics.high_performers}
-      />
+      <Box data-testid="statistics-summary-section">
+        <StatisticsSummary
+          totalEmployees={statistics.total_employees}
+          modifiedEmployees={statistics.modified_employees}
+          highPerformers={statistics.high_performers}
+        />
+      </Box>
 
       {/* Distribution Table */}
-      <DistributionTable
-        distribution={distributionWithLabels}
-        groupedStats={statistics.groupedStats}
-      />
+      <Box data-testid="distribution-table-section">
+        <DistributionTable
+          distribution={distributionWithLabels}
+          groupedStats={statistics.groupedStats}
+        />
+      </Box>
 
       {/* Distribution Chart */}
-      <Box>
+      <Box data-testid="distribution-chart-section">
         <Paper variant="outlined" sx={{ p: theme.tokens.spacing.md / 8 }}>
           <DistributionChart data={statistics.distribution} />
         </Paper>

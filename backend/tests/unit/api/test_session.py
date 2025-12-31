@@ -664,49 +664,60 @@ def test_export_when_sample_data_and_update_original_then_returns_fallback_error
 
 
 def test_export_when_sample_data_and_save_new_then_creates_file(
-    test_client: TestClient, auth_headers: dict[str, str], tmp_path: Path
+    test_client: TestClient, auth_headers: dict[str, str]
 ) -> None:
     """Test export with sample data and save_new mode successfully creates Excel file."""
+    import tempfile  # noqa: PLC0415
+
     # Generate sample data (no original file)
     response = test_client.post("/api/employees/generate-sample", json={"size": 50})
     assert response.status_code == 200
 
-    # Export with save_new mode to a new file
-    new_file_path = tmp_path / "sample_export.xlsx"
-    export_response = test_client.post(
-        "/api/session/export",
-        json={"mode": "save_new", "new_path": str(new_file_path)},
-        headers=auth_headers,
-    )
+    # Export with save_new mode to a new file (use home dir for security validation)
+    # Create a temp file within home directory to pass path validation
+    with tempfile.NamedTemporaryFile(
+        suffix=".xlsx", dir=Path.home(), delete=False
+    ) as tmp_file:
+        new_file_path = Path(tmp_file.name)
 
-    assert export_response.status_code == 200
-    data = export_response.json()
-    assert data["success"] is True
-    assert "file_path" in data
-    assert Path(data["file_path"]).exists()
-
-    # Verify session was updated with new file path and name
-    session_status = test_client.get("/api/session/status", headers=auth_headers)
-    assert session_status.status_code == 200
-    session_data = session_status.json()
-    assert session_data["uploaded_filename"] == "sample_export.xlsx"
-
-    # Verify the file can be opened and has the expected structure
-    import openpyxl
-
-    workbook = openpyxl.load_workbook(new_file_path)
     try:
-        # Should have Summary and Employee Data sheets
-        assert "Summary" in workbook.sheetnames
-        assert "Employee Data" in workbook.sheetnames
+        export_response = test_client.post(
+            "/api/session/export",
+            json={"mode": "save_new", "new_path": str(new_file_path)},
+            headers=auth_headers,
+        )
 
-        data_sheet = workbook["Employee Data"]
-        # Should have 51 rows (1 header + 50 employees)
-        assert data_sheet.max_row == 51
+        assert export_response.status_code == 200
+        data = export_response.json()
+        assert data["success"] is True
+        assert "file_path" in data
+        assert Path(data["file_path"]).exists()
 
-        # Check headers
-        assert data_sheet.cell(1, 1).value == "Employee ID"
-        assert "Performance" in str(data_sheet.cell(1, 14).value)
-        assert "Potential" in str(data_sheet.cell(1, 15).value)
+        # Verify session was updated with new file path and name
+        session_status = test_client.get("/api/session/status", headers=auth_headers)
+        assert session_status.status_code == 200
+        session_data = session_status.json()
+        assert session_data["uploaded_filename"] == new_file_path.name
+
+        # Verify the file can be opened and has the expected structure
+        import openpyxl  # noqa: PLC0415
+
+        workbook = openpyxl.load_workbook(new_file_path)
+        try:
+            # Should have Summary and Employee Data sheets
+            assert "Summary" in workbook.sheetnames
+            assert "Employee Data" in workbook.sheetnames
+
+            data_sheet = workbook["Employee Data"]
+            # Should have 51 rows (1 header + 50 employees)
+            assert data_sheet.max_row == 51
+
+            # Check headers
+            assert data_sheet.cell(1, 1).value == "Employee ID"
+            assert "Performance" in str(data_sheet.cell(1, 14).value)
+            assert "Potential" in str(data_sheet.cell(1, 15).value)
+        finally:
+            workbook.close()
     finally:
-        workbook.close()
+        # Clean up temp file
+        new_file_path.unlink(missing_ok=True)
