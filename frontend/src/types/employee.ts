@@ -69,6 +69,7 @@ export interface Employee {
 
   // Flags (tags for employee status)
   flags?: string[];
+  is_big_mover?: boolean; // Computed: true if crossed Low↔High tier
 
   // Donut Mode (alternative positioning system)
   donut_performance?: PerformanceLevel;

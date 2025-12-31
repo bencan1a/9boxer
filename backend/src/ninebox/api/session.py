@@ -404,7 +404,7 @@ async def export_session(  # noqa: PLR0911, PLR0912  # Multiple returns/branches
         session.events = []
         session.donut_events = []
         # Deep copy current employees to make them the new baseline
-        import copy
+        import copy  # noqa: E402  # noqa: RUF100
 
         session.original_employees = copy.deepcopy(session.current_employees)
         # Clear modified_in_session flags since changes are now saved

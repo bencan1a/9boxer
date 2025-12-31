@@ -27,6 +27,7 @@
       "importData": "データをインポート",
       "exportChanges": "{{count}}件の変更をExcelに適用",
       "exportChanges_other": "{{count}}件の変更をExcelに適用",
+      "saveSampleData": "サンプルデータを保存",
       "exporting": "エクスポート中...",
       "closeFile": "ファイルを閉じる",
       "openRecentFile": "最近使ったファイルを開く",

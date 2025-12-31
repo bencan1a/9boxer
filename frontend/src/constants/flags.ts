@@ -52,6 +52,11 @@ export const FLAGS: Record<string, FlagDefinition> = {
     displayName: "Ready for Lateral Move",
     color: "#009688", // Teal
   },
+  big_mover: {
+    key: "big_mover",
+    displayName: "Big Mover",
+    color: "#00BCD4", // Cyan
+  },
 };
 
 /**

@@ -71,7 +71,18 @@
         },
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "mypy-type-checker.args": [
+          "--config-file=${workspaceFolder}/pyproject.toml",
+          "--exclude=backend/tests",
+          "--exclude=frontend/tests"
+        ],
+        "mypy-type-checker.ignorePatterns": [
+          "**/tests/**",
+          "**/backend/tests/**",
+          "**/frontend/tests/**"
+        ],
+        "ruff.configurationPreference": "filesystemFirst"
       },
       "extensions": [
         "ms-python.python",

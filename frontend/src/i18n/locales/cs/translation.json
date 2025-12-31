@@ -27,6 +27,7 @@
       "importData": "Importovat data",
       "exportChanges": "Aplikovat {{count}} změnu do Excelu",
       "exportChanges_other": "Aplikovat {{count}} změn do Excelu",
+      "saveSampleData": "Uložit Ukázková Data",
       "exporting": "Exportuji...",
       "closeFile": "Zavřít soubor",
       "openRecentFile": "Otevřít nedávný soubor",

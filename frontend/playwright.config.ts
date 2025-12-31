@@ -17,8 +17,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Enable parallel test execution
-  // Testing 4 workers for optimal balance between speed and stability
-  workers: 4,
+  // CI uses 2 workers for stability, local uses auto-detect based on CPU cores
+  workers: process.env.CI ? 2 : undefined,
 
   // Reporter to use
   reporter: process.env.CI ? [["html"], ["github"]] : "html",
