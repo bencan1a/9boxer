@@ -111,6 +111,9 @@ export async function intelligenceSummaryExcellent(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-intelligencesummary--excellent-quality",
     outputPath,
@@ -132,6 +135,9 @@ export async function intelligenceSummaryNeedsAttention(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-intelligencesummary--needs-attention",
     outputPath,
@@ -153,6 +159,9 @@ export async function intelligenceAnomalyGreen(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-anomalysection--green-status",
     outputPath,
@@ -174,6 +183,9 @@ export async function intelligenceAnomalyRed(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-anomalysection--red-status",
     outputPath,
@@ -195,6 +207,9 @@ export async function intelligenceDeviationChart(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-deviationchart--mixed-significance",
     outputPath,
@@ -216,6 +231,9 @@ export async function intelligenceLevelDistribution(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "intelligence-leveldistributionchart--normal-distribution",
     outputPath,

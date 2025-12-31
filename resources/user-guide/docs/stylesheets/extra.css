@@ -1,15 +1,17 @@
 /**
  * 9Boxer Documentation Custom Styles
  *
- * This stylesheet aligns the MkDocs Material theme with the 9Boxer design system.
- * All values reference design tokens from frontend/src/theme/tokens.ts
+ * This stylesheet applies documentation-specific styling while leveraging
+ * the auto-generated design tokens from design-tokens.css.
  *
- * Design System Reference: docs/design-system/design-tokens.md
+ * Design tokens are generated from: frontend/src/theme/tokens.ts
+ * To regenerate tokens: npm run generate:docs-tokens (from frontend directory)
+ *
+ * This file should only contain:
+ * 1. Documentation-specific font scaling (smaller than app)
+ * 2. MkDocs Material theme mappings
+ * 3. Custom documentation components
  */
-
-/* ============================================================================
-   COLOR SYSTEM - LIGHT MODE
-   ============================================================================ */
 
 /* Global font rendering improvements to match app */
 * {
@@ -17,79 +19,159 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-:root {
-  /* Primary Colors (Blue) - tokens.colors.primary.light */
-  --md-primary-fg-color: #1976d2;        /* Primary main */
-  --md-primary-fg-color--light: #42a5f5; /* Primary light */
-  --md-primary-fg-color--dark: #1565c0;  /* Primary dark */
-
-  /* Secondary/Accent Colors (Orange) - tokens.colors.secondary.light */
-  --md-accent-fg-color: #ff9800;         /* Secondary main */
-  --md-accent-fg-color--transparent: rgba(255, 152, 0, 0.1);
-
-  /* Background Colors - tokens.colors.background.light */
-  --md-default-bg-color: #fafafa;        /* Background default */
-  --md-code-bg-color: #ffffff;           /* Background paper */
-
-  /* Text Colors - tokens.colors.text.light */
-  --md-default-fg-color: rgba(0, 0, 0, 0.87);        /* Primary text */
-  --md-default-fg-color--light: rgba(0, 0, 0, 0.60); /* Secondary text */
-  --md-default-fg-color--lighter: rgba(0, 0, 0, 0.38); /* Disabled text */
-
-  /* Semantic Colors - tokens.colors.semantic */
-  --md-success-fg-color: #4caf50;  /* Green */
-  --md-warning-fg-color: #ff9800;  /* Orange */
-  --md-error-fg-color: #f44336;    /* Red */
-  --md-info-fg-color: #1976d2;     /* Blue */
-
-  /* Grid Box Colors - tokens.colors.gridBox.light */
-  --grid-high-performer: #d4c4e8;     /* Purple */
-  --grid-needs-attention: #ffc9c9;    /* Red */
-  --grid-solid-performer: #c4e5d0;    /* Green */
-  --grid-development: #fff0c0;        /* Yellow */
-}
-
 /* ============================================================================
-   COLOR SYSTEM - DARK MODE
+   MKDOCS MATERIAL THEME VARIABLE MAPPINGS
+   Map MkDocs Material variables to our design tokens
+   Aligned with 9Boxer app's dark purple/blue aesthetic
    ============================================================================ */
 
-[data-md-color-scheme="slate"] {
-  /* Primary Colors (Blue) - tokens.colors.primary.dark */
-  --md-primary-fg-color: #90caf9;        /* Primary main (dark) */
-  --md-primary-fg-color--light: #b3d9f7; /* Primary light (dark) */
-  --md-primary-fg-color--dark: #6ba6d6;  /* Primary dark (dark) */
+:root {
+  /* Primary Colors - Map to design tokens */
+  --md-primary-fg-color: var(--color-primary-main);
+  --md-primary-fg-color--light: var(--color-primary-light);
+  --md-primary-fg-color--dark: var(--color-primary-dark);
 
-  /* Secondary/Accent Colors (Orange) - tokens.colors.secondary.dark */
-  --md-accent-fg-color: #ffb74d;         /* Secondary main (dark) */
+  /* Secondary/Accent Colors - Map to design tokens */
+  --md-accent-fg-color: var(--color-secondary-main);
+  --md-accent-fg-color--transparent: rgba(255, 152, 0, 0.1);
+
+  /* Background Colors - Map to design tokens */
+  --md-default-bg-color: var(--color-background-default);
+  --md-code-bg-color: var(--color-background-paper);
+
+  /* Text Colors - Map to design tokens */
+  --md-default-fg-color: var(--color-text-primary);
+  --md-default-fg-color--light: var(--color-text-secondary);
+  --md-default-fg-color--lighter: var(--color-text-disabled);
+
+  /* Semantic Colors - Map to design tokens */
+  --md-success-fg-color: var(--color-semantic-success);
+  --md-warning-fg-color: var(--color-semantic-warning);
+  --md-error-fg-color: var(--color-semantic-error);
+  --md-info-fg-color: var(--color-semantic-info);
+
+  /* Grid Box Colors - Map to design tokens */
+  --grid-high-performer: var(--color-grid-box-high-performer);
+  --grid-needs-attention: var(--color-grid-box-needs-attention);
+  --grid-solid-performer: var(--color-grid-box-solid-performer);
+  --grid-development: var(--color-grid-box-development);
+}
+
+/* Light mode enhancements - match app's light theme */
+[data-md-color-scheme="default"] {
+  /* Clean backgrounds matching app */
+  --md-default-bg-color: #fafafa;
+  --md-code-bg-color: #ffffff;
+  --md-default-bg-color--light: #f5f5f5;
+  --md-default-bg-color--lighter: #eeeeee;
+
+  /* Enhanced link colors for light mode */
+  --md-typeset-a-color: var(--color-primary-main);
+}
+
+/* Dark mode variable mappings - enhanced to match app */
+[data-md-color-scheme="slate"] {
+  /* Dark mode tokens are defined in design-tokens.css */
+  /* Additional overrides for MkDocs Material theme */
   --md-accent-fg-color--transparent: rgba(255, 183, 77, 0.1);
 
-  /* Background Colors - tokens.colors.background.dark */
-  --md-default-bg-color: #121212;        /* Material Design 3 standard */
-  --md-code-bg-color: #1e1e1e;           /* Paper surface */
+  /* Enhance contrast for better readability in dark mode */
+  --md-typeset-a-color: var(--color-primary-light);
 
-  /* Text Colors - tokens.colors.text.dark */
-  --md-default-fg-color: rgba(255, 255, 255, 0.87);
-  --md-default-fg-color--light: rgba(255, 255, 255, 0.60);
-  --md-default-fg-color--lighter: rgba(255, 255, 255, 0.38);
-
-  /* Grid Box Colors - tokens.colors.gridBox.dark */
-  --grid-high-performer: #4a3a5c;     /* Purple (dark) */
-  --grid-needs-attention: #5c3a3a;    /* Red (dark) */
-  --grid-solid-performer: #3a5c4a;    /* Green (dark) */
-  --grid-development: #5c5a3a;        /* Yellow (dark) */
+  /* Sidebar styling to match app's navigation */
+  --md-default-bg-color--light: #1e1e1e;
+  --md-default-bg-color--lighter: #252525;
+  --md-default-bg-color--lightest: #2d2d2d;
 }
 
 /* ============================================================================
-   TYPOGRAPHY SYSTEM
-   Matches tokens.typography from frontend/src/theme/tokens.ts
+   APP-INSPIRED ENHANCEMENTS
+   Additional styling to match 9Boxer app aesthetic for both themes
+   ============================================================================ */
+
+/* Make navigation links more prominent (app-like) */
+.md-nav__link {
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-fast) var(--easing-ease-in-out);
+}
+
+.md-nav__link:hover {
+  background-color: rgba(25, 118, 210, 0.08);
+}
+
+.md-nav__link--active {
+  background-color: rgba(25, 118, 210, 0.12);
+  font-weight: var(--typography-font-weight-medium);
+}
+
+/* ============================================================================
+   LIGHT MODE APP STYLING
+   ============================================================================ */
+
+[data-md-color-scheme="default"] .md-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-md-color-scheme="default"] .md-sidebar {
+  background-color: #fafafa;
+}
+
+[data-md-color-scheme="default"] .md-typeset pre {
+  background-color: #f5f5f5;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .md-typeset table:not([class]) {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .md-typeset table:not([class]) th {
+  background-color: rgba(25, 118, 210, 0.08);
+  border-bottom: 2px solid rgba(25, 118, 210, 0.2);
+}
+
+/* ============================================================================
+   DARK MODE APP STYLING
+   ============================================================================ */
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #1e1e1e !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-sidebar {
+  background-color: #1e1e1e;
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre {
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: rgba(63, 81, 181, 0.1);
+  border-bottom: 2px solid rgba(63, 81, 181, 0.3);
+}
+
+/* ============================================================================
+   TYPOGRAPHY SYSTEM - DOCUMENTATION-SPECIFIC SCALING
+   Lighter weights and smaller sizes to match mkdocs-material demo
    ============================================================================ */
 
 .md-typeset {
-  /* Base font - tokens.typography.fontFamily */
-  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  font-size: 1rem;        /* 16px - tokens.typography.fontSize.body1 */
-  font-weight: 400;       /* tokens.typography.fontWeight.regular */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  /* Base font family from design tokens */
+  font-family: var(--typography-font-family);
+
+  /* Smaller body text matching mkdocs-material demo (~10pt) */
+  font-size: 0.8rem;  /* 12.8px - lighter than our previous 14px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 */
+  line-height: 1.6;
 
   /* Improve font rendering to match app */
   -webkit-font-smoothing: antialiased;
@@ -97,79 +179,89 @@
   text-rendering: optimizeLegibility;
 }
 
-/* Headings - Scaled down for documentation readability */
-/* Note: App uses larger sizes for UI, but docs need moderate sizing */
+/* Headings - Lighter weight matching mkdocs-material demo */
+/* Using 400 (regular) instead of 500 (medium) for cleaner look */
 .md-typeset h1 {
-  font-size: 2rem;        /* 32px - Scaled down from 2.5rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.3;       /* Slightly relaxed for readability */
+  font-size: 1.6rem;      /* 25.6px - Slightly smaller, cleaner */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.3;
   margin-top: 0;
-  margin-bottom: 1.5rem;  /* 24px - tokens.spacing.lg */
+  margin-bottom: var(--spacing-lg);
 }
 
 .md-typeset h2 {
-  font-size: 1.5rem;      /* 24px - Scaled down from 2rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.3;       /* Slightly relaxed for readability */
-  margin-top: 2rem;       /* 32px - tokens.spacing.xl */
-  margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
+  font-size: 1.25rem;     /* 20px - Lighter hierarchy */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.4;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .md-typeset h3 {
-  font-size: 1.25rem;     /* 20px - Scaled down from 1.75rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.4;       /* Slightly relaxed for readability */
-  margin-top: 1.5rem;     /* 24px - tokens.spacing.lg */
-  margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
+  font-size: 1rem;        /* 16px - Compact and clean */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.5;
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .md-typeset h4 {
-  font-size: 1.125rem;    /* 18px - Scaled down from 1.5rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.4;       /* Slightly relaxed for readability */
-  margin-top: 1.5rem;     /* 24px - tokens.spacing.lg */
-  margin-bottom: 0.875rem; /* 14px */
+  font-size: 0.9rem;      /* 14.4px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.5;
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
 }
 
 .md-typeset h5 {
-  font-size: 1rem;        /* 16px - Scaled down from 1.25rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.5;       /* Normal line height */
-  margin-top: 1rem;       /* 16px - tokens.spacing.md */
-  margin-bottom: 0.75rem; /* 12px */
+  font-size: 0.85rem;     /* 13.6px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: var(--typography-line-height-normal);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .md-typeset h6 {
-  font-size: 0.875rem;    /* 14px - Scaled down from 1rem for documentation */
-  font-weight: 500;       /* tokens.typography.fontWeight.medium */
-  line-height: 1.5;       /* Normal line height */
-  margin-top: 1rem;       /* 16px - tokens.spacing.md */
-  margin-bottom: 0.75rem; /* 12px */
+  font-size: 0.8rem;      /* 12.8px - Same as body */
+  font-weight: var(--typography-font-weight-medium);  /* 500 - slightly bolder for H6 */
+  line-height: var(--typography-line-height-normal);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 /* Body text variants */
 .md-typeset p {
-  font-size: 1rem;        /* 16px - tokens.typography.fontSize.body1 */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
-  margin-bottom: 1rem;    /* 16px - tokens.spacing.md */
+  font-size: 0.8rem;      /* 12.8px - matches mkdocs-material */
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+.md-typeset li {
+  font-size: 0.8rem;      /* Match body text in lists */
+  line-height: 1.6;
 }
 
 .md-typeset .text-small,
 .md-typeset small {
-  font-size: 0.875rem;    /* 14px - tokens.typography.fontSize.body2 */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  font-size: 0.75rem;     /* 12px */
+  line-height: 1.6;
 }
 
 .md-typeset .caption {
-  font-size: 0.75rem;     /* 12px - tokens.typography.fontSize.caption */
-  line-height: 1.5;       /* tokens.typography.lineHeight.normal */
+  font-size: 0.7rem;      /* 11.2px */
+  line-height: 1.6;
   color: var(--md-default-fg-color--light);
 }
 
 /* Code typography */
 .md-typeset code {
   font-family: "Roboto Mono", monospace;
-  font-size: 0.875rem;    /* 14px - tokens.typography.fontSize.body2 */
+  font-size: 0.75rem;     /* 12px - proportionally smaller */
+  font-weight: var(--typography-font-weight-regular);
+}
+
+.md-typeset pre code {
+  font-size: 0.75rem;     /* 12px for code blocks */
 }
 
 /* ============================================================================
@@ -232,109 +324,93 @@
 /* ============================================================================
    GRID BOX SEMANTIC COLORS
    For documentation examples about the 9-box grid
-   Matches tokens.colors.gridBox
+   Uses auto-generated design tokens
    ============================================================================ */
 
 .grid-high-performer {
   background-color: var(--grid-high-performer);
-  padding: 8px;           /* tokens.spacing.sm */
-  border-radius: 8px;     /* tokens.radius.md */
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
 }
 
 .grid-needs-attention {
   background-color: var(--grid-needs-attention);
-  padding: 8px;           /* tokens.spacing.sm */
-  border-radius: 8px;     /* tokens.radius.md */
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
 }
 
 .grid-solid-performer {
   background-color: var(--grid-solid-performer);
-  padding: 8px;           /* tokens.spacing.sm */
-  border-radius: 8px;     /* tokens.radius.md */
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
 }
 
 .grid-development {
   background-color: var(--grid-development);
-  padding: 8px;           /* tokens.spacing.sm */
-  border-radius: 8px;     /* tokens.radius.md */
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
 }
 
 /* ============================================================================
    SPACING UTILITIES
-   Based on 8px grid system - tokens.spacing
+   Uses auto-generated spacing tokens (8px grid system)
    ============================================================================ */
 
-.spacing-xs  { padding: 4px; }   /* tokens.spacing.xs */
-.spacing-sm  { padding: 8px; }   /* tokens.spacing.sm */
-.spacing-md  { padding: 16px; }  /* tokens.spacing.md */
-.spacing-lg  { padding: 24px; }  /* tokens.spacing.lg */
-.spacing-xl  { padding: 32px; }  /* tokens.spacing.xl */
-.spacing-xxl { padding: 48px; }  /* tokens.spacing.xxl */
+.spacing-xs  { padding: var(--spacing-xs); }
+.spacing-sm  { padding: var(--spacing-sm); }
+.spacing-md  { padding: var(--spacing-md); }
+.spacing-lg  { padding: var(--spacing-lg); }
+.spacing-xl  { padding: var(--spacing-xl); }
+.spacing-xxl { padding: var(--spacing-xxl); }
 
-.margin-xs  { margin: 4px; }
-.margin-sm  { margin: 8px; }
-.margin-md  { margin: 16px; }
-.margin-lg  { margin: 24px; }
-.margin-xl  { margin: 32px; }
-.margin-xxl { margin: 48px; }
+.margin-xs  { margin: var(--spacing-xs); }
+.margin-sm  { margin: var(--spacing-sm); }
+.margin-md  { margin: var(--spacing-md); }
+.margin-lg  { margin: var(--spacing-lg); }
+.margin-xl  { margin: var(--spacing-xl); }
+.margin-xxl { margin: var(--spacing-xxl); }
 
 /* Margin bottom variants (common use case) */
-.mb-xs  { margin-bottom: 4px; }
-.mb-sm  { margin-bottom: 8px; }
-.mb-md  { margin-bottom: 16px; }
-.mb-lg  { margin-bottom: 24px; }
-.mb-xl  { margin-bottom: 32px; }
-.mb-xxl { margin-bottom: 48px; }
+.mb-xs  { margin-bottom: var(--spacing-xs); }
+.mb-sm  { margin-bottom: var(--spacing-sm); }
+.mb-md  { margin-bottom: var(--spacing-md); }
+.mb-lg  { margin-bottom: var(--spacing-lg); }
+.mb-xl  { margin-bottom: var(--spacing-xl); }
+.mb-xxl { margin-bottom: var(--spacing-xxl); }
 
 /* ============================================================================
    SHADOWS & ELEVATION
-   Matches tokens.shadows
+   Uses auto-generated shadow tokens (automatically adjust for light/dark mode)
    ============================================================================ */
 
 .shadow-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* tokens.shadows.card.light */
-}
-
-[data-md-color-scheme="slate"] .shadow-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* tokens.shadows.card.dark */
+  box-shadow: var(--shadow-card);
 }
 
 .shadow-elevated {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* tokens.shadows.elevated.light */
-}
-
-[data-md-color-scheme="slate"] .shadow-elevated {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* tokens.shadows.elevated.dark */
+  box-shadow: var(--shadow-elevated);
 }
 
 .shadow-dropdown {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12); /* tokens.shadows.dropdown.light */
-}
-
-[data-md-color-scheme="slate"] .shadow-dropdown {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* tokens.shadows.dropdown.dark */
+  box-shadow: var(--shadow-dropdown);
 }
 
 /* Apply card shadow to common elements */
 .md-typeset .admonition {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-[data-md-color-scheme="slate"] .md-typeset .admonition {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-card);
 }
 
 /* ============================================================================
    BORDER RADIUS
-   Matches tokens.radius
+   Uses auto-generated radius tokens
    ============================================================================ */
 
-.radius-none { border-radius: 0; }      /* tokens.radius.none */
-.radius-sm   { border-radius: 4px; }    /* tokens.radius.sm */
-.radius-md   { border-radius: 8px; }    /* tokens.radius.md */
-.radius-lg   { border-radius: 12px; }   /* tokens.radius.lg */
-.radius-xl   { border-radius: 16px; }   /* tokens.radius.xl */
-.radius-round { border-radius: 50%; }   /* tokens.radius.round */
+.radius-none { border-radius: var(--radius-none); }
+.radius-sm   { border-radius: var(--radius-sm); }
+.radius-md   { border-radius: var(--radius-md); }
+.radius-lg   { border-radius: var(--radius-lg); }
+.radius-xl   { border-radius: var(--radius-xl); }
+.radius-round { border-radius: var(--radius-round); }
 
 /* Apply default border radius to common elements */
 .md-typeset .admonition,
@@ -342,46 +418,31 @@
 .md-typeset pre,
 .md-typeset table,
 .md-typeset img {
-  border-radius: 8px; /* tokens.radius.md */
+  border-radius: var(--radius-md);
 }
 
 /* ============================================================================
    SCROLLBAR STYLING
-   Matches tokens.dimensions.scrollbar
+   Uses auto-generated scrollbar tokens (automatically adjust for light/dark mode)
    ============================================================================ */
 
 ::-webkit-scrollbar {
-  width: 12px;   /* tokens.dimensions.scrollbar.width */
-  height: 12px;  /* tokens.dimensions.scrollbar.height */
+  width: var(--dimension-scrollbar-width);
+  height: var(--dimension-scrollbar-height);
 }
 
-/* Light mode scrollbar */
 ::-webkit-scrollbar-track {
-  background-color: #f5f5f5; /* tokens.colors.scrollbar.light.track */
+  background-color: var(--color-scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #bdbdbd;  /* tokens.colors.scrollbar.light.thumb */
-  border-radius: 6px;         /* tokens.dimensions.scrollbar.thumbBorderRadius */
-  border: 3px solid #f5f5f5;  /* tokens.dimensions.scrollbar.thumbBorderWidth */
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: var(--dimension-scrollbar-thumb-border-radius);
+  border: var(--dimension-scrollbar-thumb-border-width) solid var(--color-scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #9e9e9e;  /* tokens.colors.scrollbar.light.thumbHover */
-}
-
-/* Dark mode scrollbar */
-[data-md-color-scheme="slate"] ::-webkit-scrollbar-track {
-  background-color: #1e1e1e;  /* tokens.colors.scrollbar.dark.track */
-}
-
-[data-md-color-scheme="slate"] ::-webkit-scrollbar-thumb {
-  background-color: #424242;  /* tokens.colors.scrollbar.dark.thumb */
-  border: 3px solid #1e1e1e;
-}
-
-[data-md-color-scheme="slate"] ::-webkit-scrollbar-thumb:hover {
-  background-color: #616161;  /* tokens.colors.scrollbar.dark.thumbHover */
+  background-color: var(--color-scrollbar-thumb-hover);
 }
 
 /* ============================================================================
@@ -393,18 +454,13 @@
 .md-header {
   background-color: var(--md-code-bg-color) !important;
   color: var(--md-default-fg-color) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-[data-md-color-scheme="slate"] .md-header {
-  background-color: var(--md-code-bg-color) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-card);
 }
 
 /* Header title styling */
 .md-header__title {
-  font-size: 1.25rem;     /* 20px - Moderate size for header */
-  font-weight: 500;       /* Medium weight */
+  font-size: 1.125rem;  /* 18px - Documentation-specific (smaller than app) */
+  font-weight: var(--typography-font-weight-medium);
   color: var(--md-default-fg-color);
 }
 
@@ -424,7 +480,7 @@
 
 /* ============================================================================
    TRANSITIONS & ANIMATIONS
-   Matches tokens.duration and tokens.easing
+   Uses auto-generated duration and easing tokens
    ============================================================================ */
 
 /* Smooth transitions for interactive elements */
@@ -432,12 +488,12 @@
 .md-typeset button,
 .md-header,
 .md-nav__link {
-  transition: all 0.15s ease-in-out; /* tokens.duration.fast + tokens.easing.easeInOut */
+  transition: all var(--duration-fast) var(--easing-ease-in-out);
 }
 
 /* Panel/drawer transitions */
 .md-sidebar {
-  transition: transform 0.3s ease-out; /* tokens.duration.normal + tokens.easing.easeOut */
+  transition: transform var(--duration-normal) var(--easing-ease-out);
 }
 
 /* Respect user motion preferences */
@@ -466,8 +522,8 @@
 .md-skip {
   background-color: var(--md-primary-fg-color);
   color: white;
-  padding: 8px 16px; /* tokens.spacing.sm + tokens.spacing.md */
-  border-radius: 4px; /* tokens.radius.sm */
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
 }
 
 /* ============================================================================
@@ -476,9 +532,9 @@
 
 /* Callout boxes for special content */
 .callout {
-  padding: 16px;           /* tokens.spacing.md */
-  margin-bottom: 16px;     /* tokens.spacing.md */
-  border-radius: 8px;      /* tokens.radius.md */
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
   border-left: 4px solid var(--md-primary-fg-color);
   background-color: rgba(25, 118, 210, 0.05);
 }
@@ -486,19 +542,19 @@
 /* Code block enhancements */
 .md-typeset pre > code {
   background-color: var(--md-code-bg-color);
-  padding: 16px;           /* tokens.spacing.md */
-  border-radius: 8px;      /* tokens.radius.md */
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
 }
 
 /* Table styling */
 .md-typeset table {
-  border-radius: 8px;      /* tokens.radius.md */
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
 .md-typeset table th {
   background-color: rgba(25, 118, 210, 0.1);
-  font-weight: 500;        /* tokens.typography.fontWeight.medium */
+  font-weight: var(--typography-font-weight-medium);
 }
 
 /* ============================================================================
@@ -508,8 +564,8 @@
 @media print {
   /* Use light mode colors for printing */
   :root {
-    --md-default-bg-color: #ffffff;
-    --md-default-fg-color: rgba(0, 0, 0, 0.87);
+    --md-default-bg-color: var(--color-background-paper);
+    --md-default-fg-color: var(--color-text-primary);
   }
 
   /* Remove shadows for print */

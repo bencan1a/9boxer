@@ -44,7 +44,7 @@ const meta = {
   title: "Intelligence/LevelDistributionChart",
   component: LevelDistributionChart,
   parameters: {
-    layout: "padded",
+    layout: "centered",
     docs: {
       description: {
         component:

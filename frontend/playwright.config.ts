@@ -112,6 +112,27 @@ export default defineConfig({
         storageState: undefined,
       },
     },
+
+    // ===== Screenshot Generation =====
+    {
+      name: "screenshots",
+      testDir: "./playwright/screenshots",
+      testMatch: "screenshots.spec.ts",
+      timeout: 60000,
+      retries: 0, // No retries for screenshot generation
+      fullyParallel: false, // Run sequentially to avoid conflicts
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:5173",
+        viewport: { width: 1400, height: 900 },
+        headless: true,
+        actionTimeout: 30000,
+        trace: "on", // Always capture traces for debugging
+        screenshot: "on", // Capture screenshots at each step
+        video: "retain-on-failure",
+        storageState: undefined,
+      },
+    },
   ],
 
   // Global setup/teardown for backend server

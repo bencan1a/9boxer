@@ -38,69 +38,48 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";
-import {
-  zoomIn,
-  zoomOut,
-  resetZoom,
-  getCurrentZoomPercentage,
-  canZoomIn,
-  canZoomOut,
-  isAtDefaultZoom,
-  saveZoomLevel,
-  loadSavedZoom,
-} from "../../services/zoomService";
+import { useGridZoom } from "../../contexts/GridZoomContext";
 
 export const ViewControls: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { sessionId, donutModeActive, toggleDonutMode } = useSessionStore();
+  const {
+    percentage,
+    canZoomIn: canZoomInValue,
+    canZoomOut: canZoomOutValue,
+    isAtDefault,
+    zoomIn,
+    zoomOut,
+    resetZoom,
+  } = useGridZoom();
 
-  // Zoom state
-  const [zoomPercentage, setZoomPercentage] = useState(
-    getCurrentZoomPercentage()
-  );
-  const [canZoomInState, setCanZoomInState] = useState(canZoomIn());
-  const [canZoomOutState, setCanZoomOutState] = useState(canZoomOut());
-  const [isDefault, setIsDefault] = useState(isAtDefaultZoom());
+  // Fullscreen state
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Hide on small screens (< 600px width)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   /**
-   * Update zoom state after any zoom operation.
-   */
-  const updateZoomState = useCallback(() => {
-    setZoomPercentage(getCurrentZoomPercentage());
-    setCanZoomInState(canZoomIn());
-    setCanZoomOutState(canZoomOut());
-    setIsDefault(isAtDefaultZoom());
-    saveZoomLevel();
-  }, []);
-
-  /**
    * Handle zoom in click.
    */
   const handleZoomIn = useCallback(() => {
     zoomIn();
-    updateZoomState();
-  }, [updateZoomState]);
+  }, [zoomIn]);
 
   /**
    * Handle zoom out click.
    */
   const handleZoomOut = useCallback(() => {
     zoomOut();
-    updateZoomState();
-  }, [updateZoomState]);
+  }, [zoomOut]);
 
   /**
    * Handle reset zoom click.
    */
   const handleResetZoom = useCallback(() => {
     resetZoom();
-    updateZoomState();
-  }, [updateZoomState]);
+  }, [resetZoom]);
 
   /**
    * Handle full-screen toggle.
@@ -235,14 +214,6 @@ export const ViewControls: React.FC = () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
   }, []);
 
-  /**
-   * Load saved zoom on mount.
-   */
-  useEffect(() => {
-    loadSavedZoom();
-    updateZoomState();
-  }, [updateZoomState]);
-
   // Don't render on small screens
   if (isSmallScreen) {
     return null;
@@ -321,7 +292,7 @@ export const ViewControls: React.FC = () => {
           <span>
             <IconButton
               onClick={handleZoomOut}
-              disabled={!canZoomOutState}
+              disabled={!canZoomOutValue}
               data-testid="zoom-out-button"
               size="small"
             >
@@ -334,7 +305,7 @@ export const ViewControls: React.FC = () => {
           <span>
             <IconButton
               onClick={handleResetZoom}
-              disabled={isDefault}
+              disabled={isAtDefault}
               data-testid="zoom-reset-button"
               size="small"
             >
@@ -347,7 +318,7 @@ export const ViewControls: React.FC = () => {
           <span>
             <IconButton
               onClick={handleZoomIn}
-              disabled={!canZoomInState}
+              disabled={!canZoomInValue}
               data-testid="zoom-in-button"
               size="small"
             >
@@ -368,7 +339,7 @@ export const ViewControls: React.FC = () => {
           color: "text.secondary",
         }}
       >
-        {zoomPercentage}
+        {percentage}
       </Typography>
 
       <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />

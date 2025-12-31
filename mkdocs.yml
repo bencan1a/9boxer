@@ -26,33 +26,55 @@ use_directory_urls: false  # Generate page.html instead of page/index.html
 theme:
   name: material
 
-  # UPDATED: Support both light and dark modes (matches app theme toggle)
+  # 9Boxer Logo
+  logo: images/logo.png
+  favicon: images/logo.png
+
+  # UPDATED: Match 9Boxer app color scheme - default to dark mode with working toggle
   palette:
-    # Light mode (default)
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
+    # Dark mode (default - matches app)
+    - scheme: slate
+      primary: indigo  # Deep purple/blue matching app
+      accent: deep orange  # Orange accents for highlights
       toggle:
         icon: material/brightness-7
-        name: Switch to dark mode
-
-    # Dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
         name: Switch to light mode
 
-  # Material Design features for enhanced navigation
+    # Light mode - matches app's light theme
+    - scheme: default
+      primary: blue  # Lighter blue for light mode (matches app)
+      accent: orange  # Orange accents for highlights
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+
+  # Material Design features for enhanced navigation (matches mkdocs-material demo)
   features:
-    - navigation.instant      # Fast page loads without full reload
-    - navigation.tracking     # Update URL with current section
-    - navigation.sections     # Group navigation items into sections
-    - navigation.top          # Back to top button
-    - search.suggest          # Search suggestions as you type
-    - search.highlight        # Highlight search terms in results
-    - search.share            # Share search results via URL
+    - announce.dismiss        # Dismissible announcements
+    - content.action.edit     # Edit button
+    - content.action.view     # View source button
+    - content.code.annotate   # Code annotations
     - content.code.copy       # Copy button for code blocks
     - content.tabs.link       # Link tabbed content across pages
+    - content.tooltips        # Improved tooltips
+    - header.autohide         # Auto-hide header on scroll
+    - navigation.expand       # Expand navigation by default
+    - navigation.footer       # Footer navigation
+    - navigation.indexes      # Section index pages
+    - navigation.instant      # Fast page loads without full reload
+    - navigation.instant.prefetch  # Prefetch pages
+    - navigation.instant.progress  # Progress indicator
+    - navigation.path         # Breadcrumb navigation
+    - navigation.sections     # Group navigation items into sections
+    - navigation.tabs         # Top-level tabs
+    - navigation.tabs.sticky  # Sticky tabs
+    - navigation.top          # Back to top button
+    - navigation.tracking     # Update URL with current section
+    - search.highlight        # Highlight search terms in results
+    - search.share            # Share search results via URL
+    - search.suggest          # Search suggestions as you type
+    - toc.follow              # Follow table of contents
+    - toc.integrate           # Integrate TOC into sidebar
 
   # Icon configuration
   icon:
@@ -167,8 +189,11 @@ nav:
     - Frequently Asked Questions: faq.md
 
 # UPDATED: Custom CSS for design system alignment
+# design-tokens.css is auto-generated from frontend/src/theme/tokens.ts
+# Run: npm run generate:docs-tokens (from frontend directory) to regenerate
 extra_css:
-  - stylesheets/extra.css
+  - stylesheets/design-tokens.css  # Auto-generated design tokens (DO NOT EDIT)
+  - stylesheets/extra.css          # Documentation-specific overrides
 
 # Extra JavaScript (optional for future enhancements)
 # extra_javascript:

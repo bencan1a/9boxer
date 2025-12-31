@@ -19,6 +19,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import ScienceIcon from "@mui/icons-material/Science";
 
 export interface LoadSampleDialogProps {
@@ -43,6 +44,7 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
   hasExistingData,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,7 +64,9 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
       // Dialog will be closed by parent component on success
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to load sample data";
+        err instanceof Error
+          ? err.message
+          : t("sampleData.loadError", "Failed to load sample data");
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -90,7 +94,7 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <ScienceIcon color="primary" />
           <Typography variant="h6" component="span">
-            Load Sample Dataset
+            {t("sampleData.dialogTitle", "Load Sample Dataset")}
           </Typography>
         </Box>
       </DialogTitle>
@@ -103,8 +107,10 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
             sx={{ mb: theme.tokens.spacing.md / 8 }}
             data-testid="existing-data-warning"
           >
-            <strong>Warning:</strong> This will replace your current data.
-            Continue?
+            {t(
+              "sampleData.warningMessage",
+              "Warning: This will replace your current data. Continue?"
+            )}
           </Alert>
         )}
 
@@ -121,13 +127,15 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
 
         {/* Description */}
         <DialogContentText id="load-sample-dialog-description">
-          This will generate a sample dataset of <strong>200 employees</strong>{" "}
-          with realistic patterns for testing and demonstration purposes.
+          {t(
+            "sampleData.description",
+            "This will generate a sample dataset of 200 employees with realistic patterns for testing and demonstration purposes."
+          )}
         </DialogContentText>
 
         <Box sx={{ mt: theme.tokens.spacing.md / 8 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            The sample data includes:
+            {t("sampleData.includes", "The sample data includes:")}
           </Typography>
           <Box
             component="ul"
@@ -138,16 +146,28 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
             }}
           >
             <Typography component="li" variant="body2">
-              Employees across all 9 grid positions
+              {t(
+                "sampleData.includesItem1",
+                "Employees across all 9 grid positions"
+              )}
             </Typography>
             <Typography component="li" variant="body2">
-              Realistic job titles, levels, and locations
+              {t(
+                "sampleData.includesItem2",
+                "Realistic job titles, levels, and locations"
+              )}
             </Typography>
             <Typography component="li" variant="body2">
-              Management hierarchies and reporting chains
+              {t(
+                "sampleData.includesItem3",
+                "Management hierarchies and reporting chains"
+              )}
             </Typography>
             <Typography component="li" variant="body2">
-              Historical ratings and performance data
+              {t(
+                "sampleData.includesItem4",
+                "Historical ratings and performance data"
+              )}
             </Typography>
           </Box>
         </Box>
@@ -164,7 +184,7 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
           disabled={isLoading}
           data-testid="cancel-button"
         >
-          Cancel
+          {t("common.cancel", "Cancel")}
         </Button>
         <Button
           onClick={handleConfirm}
@@ -174,7 +194,9 @@ export const LoadSampleDialog: React.FC<LoadSampleDialogProps> = ({
           startIcon={isLoading ? <CircularProgress size={16} /> : null}
           data-testid="confirm-button"
         >
-          {isLoading ? "Loading..." : "Load Sample Data"}
+          {isLoading
+            ? t("sampleData.loading", "Loading...")
+            : t("sampleData.loadButton", "Load Sample Data")}
         </Button>
       </DialogActions>
     </Dialog>

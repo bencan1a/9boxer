@@ -38,12 +38,15 @@ export async function generatePanelDistribution(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 900 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-statistics-distributiontable--balanced-distribution",
     outputPath,
     theme: "light",
     waitTime: 800,
-    selector: '[data-testid="distribution-table"]',
   });
 }
 
@@ -118,6 +121,9 @@ export async function generateSummaryCards(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-statistics-statisticssummary--default",
     outputPath,

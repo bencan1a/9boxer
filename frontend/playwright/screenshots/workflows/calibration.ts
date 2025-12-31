@@ -67,44 +67,6 @@ export async function generateFileImport(
 }
 
 /**
- * Generate Statistics Red Flags screenshot
- *
- * Shows the Statistics tab with distribution table highlighting problematic patterns.
- * Demonstrates statistical analysis features for identifying distribution issues.
- *
- * Requires calibration data to show realistic distribution patterns.
- *
- * @param page - Playwright Page object
- * @param outputPath - Absolute path where screenshot should be saved
- *
- * @example
- * ```typescript
- * await generateStatisticsRedFlags(page, 'docs/images/screenshots/calibration-statistics-red-flags.png');
- * ```
- */
-export async function generateStatisticsRedFlags(
-  page: Page,
-  outputPath: string
-): Promise<void> {
-  // Ensure sample data is loaded
-  const employeeCards = page.locator('[data-testid^="employee-card-"]');
-  const count = await employeeCards.count();
-  if (count === 0) {
-    await loadSampleData(page);
-  }
-
-  // Close any dialogs
-  await closeAllDialogsAndOverlays(page);
-
-  // Click Statistics tab and wait for content to load
-  await clickTabAndWait(page, "statistics-tab");
-
-  // Capture the right panel showing statistics
-  const rightPanel = page.locator('[data-testid="right-panel"]');
-  await rightPanel.screenshot({ path: outputPath });
-}
-
-/**
  * Generate Intelligence Anomalies screenshot
  *
  * Shows the Intelligence tab with anomaly detection results.
