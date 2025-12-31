@@ -171,7 +171,7 @@ function ViewControlsMock({
 }
 
 const meta: Meta<typeof ViewControlsMock> = {
-  title: "Common/ViewControls",
+  title: "App/Common/ViewControls",
   component: ViewControlsMock,
   parameters: {
     layout: "centered",
@@ -181,6 +181,7 @@ const meta: Meta<typeof ViewControlsMock> = {
           "Floating toolbar providing view mode toggle (Grid/Donut), zoom controls, and fullscreen toggle. " +
           "Positioned absolutely at top-right of the application.",
       },
+      tags: ["autodocs"],
     },
   },
 };
@@ -207,6 +208,12 @@ function createMockDecorator(hasSession: boolean = true) {
  * Default state: Grid view active, 100% zoom
  */
 export const GridViewActive: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-grid-view" },
+    screenshot: { enabled: true, id: "zoom-controls" },
+    screenshot: { enabled: true, id: "view-controls-main-interface" },
+  },
   decorators: [createMockDecorator()],
   args: {
     donutMode: false,
@@ -230,6 +237,11 @@ export const GridViewActive: Story = {
  * Donut view active: Shows toggle in donut mode state
  */
 export const DonutViewActive: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-donut-view" },
+    screenshot: { enabled: true, id: "view-controls-donut-view" },
+  },
   decorators: [createMockDecorator()],
   args: {
     donutMode: true,

@@ -14,6 +14,15 @@ import { SnackbarProvider } from "../../../contexts/SnackbarContext";
 // Mock the session store
 vi.mock("../../../store/sessionStore", () => ({
   useSessionStore: vi.fn(),
+  selectSessionId: vi.fn((state) => state.sessionId),
+  selectFilename: vi.fn((state) => state.filename),
+  selectEmployees: vi.fn((state) => state.employees),
+  selectEvents: vi.fn((state) => state.events),
+  selectClearSession: vi.fn((state) => state.clearSession),
+  selectCloseSession: vi.fn((state) => state.closeSession),
+  selectLoadEmployees: vi.fn((state) => state.loadEmployees),
+  selectUploadFile: vi.fn((state) => state.uploadFile),
+  selectIsLoading: vi.fn((state) => state.isLoading),
 }));
 
 // Mock the UI store
@@ -84,16 +93,23 @@ describe("RecentFileLoadingWorkflow", () => {
       delete localStorageMock[key];
     });
 
-    // Default session store mock
-    vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-      sessionId: null,
-      filename: null,
-      events: [],
-      employees: [],
-      clearSession: mockClearSession,
-      closeSession: mockCloseSession,
-      loadEmployees: mockLoadEmployees,
-    } as any);
+    // Default session store mock - support both selector and direct patterns
+    vi.mocked(sessionStore.useSessionStore).mockImplementation(
+      (selector?: any) => {
+        const state = {
+          sessionId: null,
+          filename: null,
+          events: [],
+          employees: [],
+          clearSession: mockClearSession,
+          closeSession: mockCloseSession,
+          loadEmployees: mockLoadEmployees,
+          isLoading: false,
+        };
+        // If a selector is passed, apply it, otherwise return the whole state
+        return selector ? selector(state) : state;
+      }
+    );
 
     // Default UI store mock - Zustand uses selector pattern
     vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -126,16 +142,22 @@ describe("RecentFileLoadingWorkflow", () => {
 
       // Mock uploadFile in session store
       const mockUploadFile = vi.fn().mockResolvedValue(undefined);
-      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-        sessionId: null,
-        filename: null,
-        events: [],
-        employees: [],
-        clearSession: mockClearSession,
-        closeSession: mockCloseSession,
-        loadEmployees: mockLoadEmployees,
-        uploadFile: mockUploadFile,
-      } as any);
+      vi.mocked(sessionStore.useSessionStore).mockImplementation(
+        (selector?: any) => {
+          const state = {
+            sessionId: null,
+            filename: null,
+            events: [],
+            employees: [],
+            clearSession: mockClearSession,
+            closeSession: mockCloseSession,
+            loadEmployees: mockLoadEmployees,
+            uploadFile: mockUploadFile,
+            isLoading: false,
+          };
+          return selector ? selector(state) : state;
+        }
+      );
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -200,16 +222,22 @@ describe("RecentFileLoadingWorkflow", () => {
       mockClearSession.mockResolvedValue(undefined);
 
       // Mock session store with existing session
-      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-        sessionId: "existing-session-123",
-        filename: "old-file.xlsx",
-        events: [],
-        employees: [{ id: "1", name: "Test Employee" }],
-        clearSession: mockClearSession,
-        closeSession: mockCloseSession,
-        loadEmployees: mockLoadEmployees,
-        uploadFile: mockUploadFile,
-      } as any);
+      vi.mocked(sessionStore.useSessionStore).mockImplementation(
+        (selector?: any) => {
+          const state = {
+            sessionId: "existing-session-123",
+            filename: "old-file.xlsx",
+            events: [],
+            employees: [{ id: "1", name: "Test Employee" }],
+            clearSession: mockClearSession,
+            closeSession: mockCloseSession,
+            loadEmployees: mockLoadEmployees,
+            uploadFile: mockUploadFile,
+            isLoading: false,
+          };
+          return selector ? selector(state) : state;
+        }
+      );
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -263,16 +291,22 @@ describe("RecentFileLoadingWorkflow", () => {
 
       // Mock uploadFile
       const mockUploadFile = vi.fn();
-      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-        sessionId: null,
-        filename: null,
-        events: [],
-        employees: [],
-        clearSession: mockClearSession,
-        closeSession: mockCloseSession,
-        loadEmployees: mockLoadEmployees,
-        uploadFile: mockUploadFile,
-      } as any);
+      vi.mocked(sessionStore.useSessionStore).mockImplementation(
+        (selector?: any) => {
+          const state = {
+            sessionId: null,
+            filename: null,
+            events: [],
+            employees: [],
+            clearSession: mockClearSession,
+            closeSession: mockCloseSession,
+            loadEmployees: mockLoadEmployees,
+            uploadFile: mockUploadFile,
+            isLoading: false,
+          };
+          return selector ? selector(state) : state;
+        }
+      );
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -450,16 +484,22 @@ describe("RecentFileLoadingWorkflow", () => {
 
       // Mock uploadFile
       const mockUploadFile = vi.fn();
-      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-        sessionId: null,
-        filename: null,
-        events: [],
-        employees: [],
-        clearSession: mockClearSession,
-        closeSession: mockCloseSession,
-        loadEmployees: mockLoadEmployees,
-        uploadFile: mockUploadFile,
-      } as any);
+      vi.mocked(sessionStore.useSessionStore).mockImplementation(
+        (selector?: any) => {
+          const state = {
+            sessionId: null,
+            filename: null,
+            events: [],
+            employees: [],
+            clearSession: mockClearSession,
+            closeSession: mockCloseSession,
+            loadEmployees: mockLoadEmployees,
+            uploadFile: mockUploadFile,
+            isLoading: false,
+          };
+          return selector ? selector(state) : state;
+        }
+      );
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
@@ -507,16 +547,22 @@ describe("RecentFileLoadingWorkflow", () => {
 
       // Mock uploadFile
       const mockUploadFile = vi.fn();
-      vi.mocked(sessionStore.useSessionStore).mockReturnValue({
-        sessionId: null,
-        filename: null,
-        events: [],
-        employees: [],
-        clearSession: mockClearSession,
-        closeSession: mockCloseSession,
-        loadEmployees: mockLoadEmployees,
-        uploadFile: mockUploadFile,
-      } as any);
+      vi.mocked(sessionStore.useSessionStore).mockImplementation(
+        (selector?: any) => {
+          const state = {
+            sessionId: null,
+            filename: null,
+            events: [],
+            employees: [],
+            clearSession: mockClearSession,
+            closeSession: mockCloseSession,
+            loadEmployees: mockLoadEmployees,
+            uploadFile: mockUploadFile,
+            isLoading: false,
+          };
+          return selector ? selector(state) : state;
+        }
+      );
 
       // Mock UI store with recent files
       vi.mocked(uiStore.useUiStore).mockImplementation((selector: any) => {
