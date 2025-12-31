@@ -18,6 +18,7 @@
 import React from "react";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SampleDataIcon from "@mui/icons-material/GroupAdd";
@@ -48,6 +49,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   isLoading = false,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -104,7 +106,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           color: "text.primary",
         }}
       >
-        No Employees Loaded
+        {t("emptyState.heading", "No Employees Loaded")}
       </Typography>
 
       {/* Description */}
@@ -117,8 +119,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           lineHeight: theme.tokens.typography.lineHeight.normal,
         }}
       >
-        Load sample data to explore features, or upload your own Excel file to
-        get started.
+        {t(
+          "emptyState.description",
+          "Load sample data to explore features, or upload your own Excel file to get started."
+        )}
       </Typography>
 
       {/* Action Buttons */}
@@ -145,7 +149,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             minWidth: { xs: "100%", sm: "240px" },
           }}
         >
-          Load Sample Data (200 employees)
+          {t("emptyState.loadSampleButton", "Load Sample Data (200 employees)")}
         </Button>
 
         {/* Secondary Action: Upload File */}
@@ -161,7 +165,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             minWidth: { xs: "100%", sm: "200px" },
           }}
         >
-          Upload Excel File
+          {t("emptyState.uploadButton", "Upload Excel File")}
         </Button>
       </Box>
 
@@ -175,8 +179,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             maxWidth: theme.tokens.dimensions.panel.defaultWidth,
           }}
         >
-          Sample data includes diverse employees across all 9-box positions with
-          realistic performance and potential ratings
+          {t(
+            "emptyState.sampleDataHint",
+            "Sample data includes diverse employees across all 9-box positions with realistic performance and potential ratings"
+          )}
         </Typography>
       )}
 
@@ -190,7 +196,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           }}
           aria-live="polite"
         >
-          Loading sample data...
+          {t("emptyState.loadingStatus", "Loading sample data...")}
         </Typography>
       )}
     </Box>
