@@ -100,13 +100,14 @@ test.describe("3. Making Changes Tests", () => {
   });
 
   test("3.3 - File Menu Badge Shows Change Count", async ({ page }) => {
-    // Initial state - no changes
+    // Initial state - sample data loaded but no changes made yet
     const fileMenuBadge = page.locator('[data-testid="file-menu-badge"]');
     const badgePill = fileMenuBadge.locator(".MuiBadge-badge");
 
     // Success Criteria:
-    // ✅ File menu button displays badge/indicator (initially invisible)
-    await expect(badgePill).toHaveClass(/MuiBadge-invisible/);
+    // ✅ File menu button displays badge/indicator (shows dot for unsaved sample data)
+    await expect(badgePill).not.toHaveClass(/MuiBadge-invisible/);
+    await expect(fileMenuBadge).toContainText("•");
 
     // Move an employee to create a change
     const employeeId = await getFirstEmployeeId(page);
