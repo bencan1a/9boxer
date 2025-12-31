@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { NineBoxGrid } from "./NineBoxGrid";
 import type { Employee } from "../../types/employee";
 import { PerformanceLevel, PotentialLevel } from "../../types/employee";
 import { useSessionStore } from "../../store/sessionStore";
+import { tokens } from "../../theme/tokens";
 
 /**
  * Create mock employees distributed across all 9 grid positions
@@ -314,7 +317,7 @@ const meta: Meta<typeof NineBoxGrid> = {
   component: NineBoxGrid,
   tags: ["autodocs"],
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
     docs: {
       description: {
         component:
@@ -324,9 +327,11 @@ const meta: Meta<typeof NineBoxGrid> = {
   },
   decorators: [
     (Story) => (
-      <div style={{ height: "100vh", overflow: "auto" }}>
-        <Story />
-      </div>
+      <GridZoomProvider>
+        <div style={{ overflow: "auto" }}>
+          <Story />
+        </div>
+      </GridZoomProvider>
     ),
   ],
 };
@@ -504,11 +509,24 @@ export const DonutMode: Story = {
       // Filter to only position 5 employees (donut mode shows only Core Talent box)
       const position5Employees = employees.filter((e) => e.grid_position === 5);
 
-      // Move one employee to box 7 in donut mode (shows purple border)
-      if (position5Employees.length > 0) {
-        position5Employees[0].donut_position = 7; // Temporarily moved to Enigma box
+      // Move several employees to different NON-CENTER positions (all boxes except 5)
+      // to show the purple donut mode border. In donut mode, modified tiles must
+      // appear in boxes OTHER than the center (position 5).
+      if (position5Employees.length >= 3) {
+        // Move first employee to box 7 (Low Perf / High Pot - Enigma)
+        position5Employees[0].donut_position = 7;
+        position5Employees[0].donut_modified = true;
+
+        // Move second employee to box 6 (High Perf / Med Pot - High Impact)
+        position5Employees[1].donut_position = 6;
+        position5Employees[1].donut_modified = true;
+
+        // Move third employee to box 8 (Med Perf / High Pot - Growth)
+        position5Employees[2].donut_position = 8;
+        position5Employees[2].donut_modified = true;
+
         // Do NOT set modified_in_session - that would show orange border
-        // Donut mode uses donut_position for purple borders
+        // Donut mode uses donut_position AND donut_modified for purple borders
       }
 
       // Enable donut mode in the store
@@ -516,7 +534,7 @@ export const DonutMode: Story = {
         donutModeActive: true,
       });
 
-      // Return only position 5 employees (some with donut_position set)
+      // Return only position 5 employees (some with donut_position set to non-center boxes)
       return position5Employees;
     }),
   ],
@@ -524,7 +542,7 @@ export const DonutMode: Story = {
     docs: {
       description: {
         story:
-          "Donut mode for calibration. Shows only position 5 employees that can be temporarily moved for 'what-if' analysis.",
+          "Donut mode for calibration. Shows position 5 employees with some temporarily moved to boxes 6, 7, and 8 for 'what-if' analysis. Moved employees display purple donut mode borders in their new positions (never in center box).",
       },
     },
   },
@@ -651,6 +669,564 @@ export const NeedsAttention: Story = {
       description: {
         story:
           "Focus on boxes requiring attention (1, 2, 4) for performance improvement plans and coaching.",
+      },
+    },
+  },
+};
+
+/**
+ * ============================================================================
+ * ZOOM LEVEL EXPERIMENTATION
+ * ============================================================================
+ *
+ * These stories allow testing different zoom levels for the grid zoom feature.
+ * Use the controls to experiment with how the entire grid scales.
+ *
+ * Zoom Levels:
+ * - Level 0: Compact (60%) - Maximum information density
+ * - Level 1: Comfortable- (80%) - Slightly smaller than normal
+ * - Level 2: Normal (100%) - Default view
+ * - Level 3: Comfortable+ (125%) - Slightly larger than normal
+ * - Level 4: Presentation (150%) - Maximum visibility from distance
+ */
+
+/**
+ * Get zoom tokens for a specific level
+ */
+const getZoomTokens = (level: number) => {
+  const levelKey = `level${level}` as keyof typeof tokens.dimensions.gridZoom;
+  return tokens.dimensions.gridZoom[levelKey];
+};
+
+/**
+ * Zoom Level Experimentation - Interactive Full Grid
+ *
+ * Use this story to experiment with different zoom levels on the full 9-box grid.
+ * Adjust the zoom level control to switch between all 5 levels and see how the
+ * entire grid scales, including tile density and spacing.
+ *
+ * **How to use:**
+ * 1. Use the "zoomLevel" control to select 0-4
+ * 2. Observe how employee tiles scale (tile size, fonts, icons)
+ * 3. Test information density at each level
+ * 4. Verify readability at different zoom levels
+ * 5. Count visible tiles to compare density across levels
+ *
+ * **Note:** This story uses CSS overrides to preview zoom behavior. In Phase 6,
+ * these token values will be applied directly in the EmployeeTile component.
+ */
+export const ZoomLevels_Interactive: Story = {
+  name: "🔍 Zoom Levels: Interactive Grid",
+  render: (args) => {
+    // @ts-expect-error - zoomLevel is a custom arg
+    const zoomLevel = args.zoomLevel ?? 2;
+    const zoomTokens = getZoomTokens(zoomLevel);
+
+    return (
+      <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+        {/* Info Banner */}
+        <Box
+          sx={{
+            p: 2,
+            bgcolor: "info.main",
+            color: "white",
+            borderRadius: 0,
+            fontFamily: "monospace",
+            fontSize: "0.875rem",
+            flexShrink: 0,
+          }}
+        >
+          <div>
+            <strong>Zoom Level {zoomLevel}</strong> -{" "}
+            {
+              [
+                "Compact (60%)",
+                "Comfortable- (80%)",
+                "Normal (100%)",
+                "Comfortable+ (125%)",
+                "Presentation (150%)",
+              ][zoomLevel]
+            }
+          </div>
+          <div>
+            Tile: {zoomTokens.tile.minWidth}px-{zoomTokens.tile.maxWidth}px |
+            Gap: {zoomTokens.spacing.gap}px | Font: Name={zoomTokens.font.name},
+            Title={zoomTokens.font.titleLevel}
+          </div>
+          <div style={{ marginTop: "4px", opacity: 0.9 }}>
+            💡 CSS overrides are applied in this story to preview zoom behavior.
+            Phase 6 will apply these tokens directly in the EmployeeTile
+            component.
+          </div>
+        </Box>
+
+        {/* Grid - with CSS overrides to apply zoom tokens */}
+        <Box
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            // Apply zoom tokens via CSS selectors (for Storybook experimentation)
+            // These selectors target EmployeeTile components within the grid
+            "& .MuiCard-root": {
+              minWidth: `${zoomTokens.tile.minWidth}px !important`,
+              maxWidth: `${zoomTokens.tile.maxWidth}px !important`,
+            },
+            "& .MuiCardContent-root": {
+              padding: `${zoomTokens.tile.padding}px !important`,
+            },
+            "& .MuiTypography-subtitle2": {
+              fontSize: `${zoomTokens.font.name} !important`,
+            },
+            "& .MuiTypography-body2": {
+              fontSize: `${zoomTokens.font.titleLevel} !important`,
+            },
+            "& [data-testid^='flag-badge']": {
+              width: `${zoomTokens.icon.flag}px !important`,
+              height: `${zoomTokens.icon.flag}px !important`,
+              fontSize: `${zoomTokens.icon.flag * 0.6}px !important`,
+            },
+            "& .MuiSvgIcon-root": {
+              fontSize: `${zoomTokens.icon.dragHandle}px !important`,
+            },
+            // Override grid layout gaps for proper density
+            // Target the tile container grids within each grid box
+            "& [data-testid^='grid-box-'] > div > div": {
+              gap: `${zoomTokens.spacing.gap}px !important`,
+            },
+            // Also target any grid containers with display: grid
+            "& .MuiBox-root[style*='display: grid']": {
+              gap: `${zoomTokens.spacing.gap}px !important`,
+            },
+            // Override EmployeeTileList grid template to use zoom-scaled tile width
+            // This fixes the layout density - without this, tiles shrink but columns stay 280px wide
+            "& [data-testid='employee-tile-list']": {
+              gridTemplateColumns: `repeat(auto-fill, minmax(${zoomTokens.tile.minWidth}px, 1fr)) !important`,
+              gap: `${zoomTokens.spacing.gap / 8}rem !important`, // Convert px to rem for MUI gap
+            },
+          }}
+        >
+          <NineBoxGrid />
+        </Box>
+      </Box>
+    );
+  },
+  args: {
+    zoomLevel: 2,
+  },
+  argTypes: {
+    zoomLevel: {
+      control: {
+        type: "select",
+        labels: {
+          0: "Level 0: Compact (60%)",
+          1: "Level 1: Comfortable- (80%)",
+          2: "Level 2: Normal (100%)",
+          3: "Level 3: Comfortable+ (125%)",
+          4: "Level 4: Presentation (150%)",
+        },
+      },
+      options: [0, 1, 2, 3, 4],
+      description: "Grid zoom level (0=Compact, 2=Normal, 4=Presentation)",
+    },
+  },
+  decorators: [
+    withStoreState((employees) => {
+      // Return all employees for full grid visualization
+      return employees;
+    }),
+  ],
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Interactive zoom level experimentation. Use the zoom level control to see how different scaling strategies affect the entire grid layout and information density.",
+      },
+    },
+  },
+};
+
+/**
+ * Zoom Levels: Token Comparison Matrix
+ *
+ * Shows all zoom levels side-by-side with their token values for easy comparison.
+ * Helps designers and developers understand the scaling progression and fine-tune values.
+ */
+export const ZoomLevels_TokenMatrix: Story = {
+  name: "🔍 Zoom Levels: Token Comparison Matrix",
+  render: () => {
+    const levels = [0, 1, 2, 3, 4];
+    const levelNames = [
+      "Compact (60%)",
+      "Comfortable- (80%)",
+      "Normal (100%)",
+      "Comfortable+ (125%)",
+      "Presentation (150%)",
+    ];
+
+    return (
+      <Box
+        sx={{
+          p: 4,
+          bgcolor: "background.default",
+          minHeight: "100vh",
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Grid Zoom Token Comparison
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          Compare design token values across all 5 zoom levels. Use this to
+          fine-tune scaling ratios and ensure consistent progression.
+        </Typography>
+
+        {/* Token Matrix Table */}
+        <Box
+          sx={{
+            mt: 3,
+            overflowX: "auto",
+            bgcolor: "background.paper",
+            borderRadius: 1,
+            boxShadow: 2,
+          }}
+        >
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontFamily: "monospace",
+              fontSize: "0.875rem",
+            }}
+          >
+            <thead>
+              <tr style={{ borderBottom: "2px solid #ddd" }}>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Token
+                </th>
+                {levels.map((level) => (
+                  <th
+                    key={level}
+                    style={{
+                      textAlign: "center",
+                      padding: "12px",
+                      fontWeight: "bold",
+                      backgroundColor: level === 2 ? "#e3f2fd" : "transparent",
+                    }}
+                  >
+                    Level {level}
+                    <br />
+                    <span style={{ fontSize: "0.75rem", fontWeight: "normal" }}>
+                      {levelNames[level]}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {/* Tile Dimensions */}
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: "8px 12px",
+                    fontWeight: "bold",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Tile Dimensions
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Min Width</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.tile.minWidth}px
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Max Width</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.tile.maxWidth}px
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Padding</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.tile.padding}px
+                    </td>
+                  );
+                })}
+              </tr>
+
+              {/* Font Sizes */}
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: "8px 12px",
+                    fontWeight: "bold",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Font Sizes
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Name</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.font.name}
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Title/Level</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.font.titleLevel}
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Metadata</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.font.metadata}
+                    </td>
+                  );
+                })}
+              </tr>
+
+              {/* Icon Sizes */}
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: "8px 12px",
+                    fontWeight: "bold",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Icon Sizes
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Drag Handle</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.icon.dragHandle}px
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Flag Badge</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.icon.flag}px
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>History Icon</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.icon.history}px
+                    </td>
+                  );
+                })}
+              </tr>
+
+              {/* Spacing */}
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: "8px 12px",
+                    fontWeight: "bold",
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  Spacing
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid #eee" }}>
+                <td style={{ padding: "8px 12px" }}>Gap (between tiles)</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.spacing.gap}px
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr>
+                <td style={{ padding: "8px 12px" }}>Flag Gap</td>
+                {levels.map((level) => {
+                  const tokens = getZoomTokens(level);
+                  return (
+                    <td
+                      key={level}
+                      style={{
+                        textAlign: "center",
+                        padding: "8px 12px",
+                        backgroundColor:
+                          level === 2 ? "#e3f2fd" : "transparent",
+                      }}
+                    >
+                      {tokens.spacing.flagGap}px
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+          </table>
+        </Box>
+
+        <Box
+          sx={{
+            mt: 3,
+            p: 2,
+            bgcolor: "info.light",
+            borderRadius: 1,
+            color: "info.contrastText",
+          }}
+        >
+          <Typography variant="subtitle2" gutterBottom>
+            💡 How to use this matrix:
+          </Typography>
+          <Typography variant="body2">
+            • Level 2 (highlighted) is the baseline (100%)
+            <br />
+            • Compare vertical progression to ensure smooth scaling
+            <br />• Adjust tokens in{" "}
+            <code>frontend/src/theme/tokens.ts → gridZoom</code>
+            <br />• After tweaking values, refresh Storybook to see changes
+          </Typography>
+        </Box>
+      </Box>
+    );
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Comprehensive token comparison matrix showing all design token values across zoom levels. Use this to fine-tune scaling ratios and ensure visual consistency.",
       },
     },
   },

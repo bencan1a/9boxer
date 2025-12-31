@@ -40,7 +40,7 @@ const meta: Meta<typeof IntelligenceSummary> = {
   component: IntelligenceSummary,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
   },
   argTypes: {
     data: {

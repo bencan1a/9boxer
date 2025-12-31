@@ -35,6 +35,9 @@ export async function generateEmployeeTileModified(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport for tile screenshots
+  await page.setViewportSize({ width: 800, height: 600 });
+
   await captureStorybookScreenshot(page, {
     storyId: "grid-employeetile--modified",
     outputPath,
@@ -59,6 +62,9 @@ export async function generateEmployeeTileNormal(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport for tile screenshots
+  await page.setViewportSize({ width: 800, height: 600 });
+
   await captureStorybookScreenshot(page, {
     storyId: "grid-employeetile--default",
     outputPath,
@@ -83,6 +89,10 @@ export async function generateEmployeeDetailsPanel(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess horizontal whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 900 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-employeedetails--default",
     outputPath,
@@ -107,6 +117,10 @@ export async function generateEmployeeDetailsPanelWithChanges(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess horizontal whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 900 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-employeedetails--with-changes",
     outputPath,
@@ -132,6 +146,10 @@ export async function generateRatingsTimeline(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess horizontal whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 900 });
+
   await captureStorybookScreenshot(page, {
     storyId: "panel-ratingstimeline--with-history",
     outputPath,
@@ -179,6 +197,10 @@ export async function generateChangesTab(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match panel width (no excess horizontal whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 900 });
+
   await captureStorybookScreenshot(page, {
     storyId: "components-panel-changetrackertab--grid-changes-only",
     outputPath,
@@ -416,6 +438,9 @@ export async function generateEmployeeTileFlagged(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport for tile screenshots
+  await page.setViewportSize({ width: 800, height: 600 });
+
   await captureStorybookScreenshot(page, {
     storyId: "grid-employeetile--with-flags",
     outputPath,
@@ -440,6 +465,10 @@ export async function generateFileMenuButtonNoFile(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match element size (no excess whitespace)
+  // Note: Storybook requires minimum ~600px width to avoid hiding content
+  await page.setViewportSize({ width: 600, height: 400 });
+
   await captureStorybookScreenshot(page, {
     storyId: "dashboard-appbar-filemenubutton--no-file",
     outputPath,
@@ -496,6 +525,9 @@ export async function generateFileMenuImport(
   const fs = await import("fs");
   const path = await import("path");
 
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   // Navigate to MenuOpen story
   await navigateToStory(
     page,
@@ -514,11 +546,10 @@ export async function generateFileMenuImport(
     await page.waitForTimeout(200);
   }
 
-  // Capture screenshot of the menu
-  const menu = page.locator('[data-testid="file-menu"]');
+  // Capture screenshot of the entire page (includes button + menu connected)
   const outputDir = path.dirname(outputPath);
   fs.mkdirSync(outputDir, { recursive: true });
-  await menu.screenshot({ path: outputPath });
+  await page.screenshot({ path: outputPath, fullPage: true });
 
   console.log(
     `  ✓ Captured from Storybook with hover: dashboard-appbar-filemenubutton--menu-open (light theme)`
@@ -543,6 +574,9 @@ export async function generateFileMenuApplyChanges(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "dashboard-appbar-filemenubutton--menu-open",
     outputPath,
@@ -637,6 +671,9 @@ export async function generateSimplifiedAppBar(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "dashboard-appbar-pureappbar--file-loaded",
     outputPath,
@@ -663,6 +700,9 @@ export async function generateViewControlsGridView(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "common-viewcontrols--grid-view-active",
     outputPath,
@@ -689,6 +729,9 @@ export async function generateViewControlsDonutView(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "common-viewcontrols--donut-view-active",
     outputPath,
@@ -712,6 +755,9 @@ export async function generateEmptyStateWithSampleButton(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
   await captureStorybookScreenshot(page, {
     storyId: "components-emptystate--default",
     outputPath,

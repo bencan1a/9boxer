@@ -4,16 +4,6 @@ import { ChangeTrackerTab } from "../ChangeTrackerTab";
 import { mockChanges } from "../../../test/mockData";
 import { getTranslatedText } from "../../../test/i18nTestUtils";
 
-// Mock date-fns to have consistent timestamps
-vi.mock("date-fns", () => ({
-  formatDistanceToNow: vi.fn((date: Date) => {
-    const now = new Date("2024-01-15T15:00:00Z");
-    const diff = now.getTime() - new Date(date).getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    return `${hours} hours ago`;
-  }),
-}));
-
 // Mock the session store module
 const mockUpdateChangeNotes = vi.fn();
 const mockUpdateDonutChangeNotes = vi.fn();
