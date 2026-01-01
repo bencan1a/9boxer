@@ -37,16 +37,12 @@ The timeline in the Details tab shows an employee's complete movement history:
 - Consider trajectory when making new placements
 - Use historical context to inform current decisions
 
-### Export Frequently
-
-!!! danger "Critical: No Auto-Save"
-    The application does NOT auto-save. Export regularly to avoid losing work!
+### Export When Ready
 
 **Export guidelines:**
 
-- **Export before closing** - Always save your work before closing the app
-- **Export during long sessions** - Save after every major set of changes
 - **Export at milestones** - Save quarterly, after calibration sessions, or before major meetings
+- **Export for sharing** - Create versions to share with stakeholders
 - **Export for backups** - Create backup versions before making experimental changes
 
 Learn about naming conventions and file management in the [Exporting Your Changes guide](exporting.md).
@@ -330,24 +326,11 @@ Uploading a new file replaces the current session completely:
 
 All changes are lost if you close without exporting:
 
-!!! danger "No Auto-Save"
-    There is NO auto-save feature. You MUST export to save your work.
+**Export for sharing and archiving:**
 
-**Prevent data loss:**
-
-- Export immediately after making important changes
-- Export before closing the application
-- Export before uploading a new file
-- Export before breaks during long sessions
-
-### No Auto-Save
-
-You must manually click "Apply" to save changes:
-
-- Changes are stored in browser memory until exported
-- Closing the app without exporting = all changes lost
-- Refreshing the browser = all changes lost (web version)
-- Uploading a new file = all changes lost
+- Export after calibration meetings to share with stakeholders
+- Export before uploading a new file to preserve your current work
+- Export at milestones for compliance and record-keeping
 
 **Best practice:** Export frequently and save exports to a secure folder.
 

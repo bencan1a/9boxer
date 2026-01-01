@@ -35,7 +35,7 @@ def create_test_employee(
         job_level="MT4",
         job_function="Other",
         location="USA",
-        manager="Test Manager",
+        direct_manager="Test Manager",
         hire_date=date(2020, 1, 1),
         tenure_category="3-5 years",
         time_in_job_profile="2 years",

@@ -408,7 +408,7 @@ class TestParserServiceIntegration:
             "business_title",
             "job_title",
             "job_level",
-            "manager",
+            "direct_manager",
             "performance",
             "potential",
             "grid_position",

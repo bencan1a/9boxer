@@ -483,10 +483,9 @@ During a long session with many moves:
 
 **Advantage:** Catch mistakes early before making too many changes.
 
-!!! warning "Remember: No auto-save!"
-    Your changes are stored in your browser while you work, but they're NOT saved to a file automatically.
-    Click **Apply Changes** (in the File menu) when you're done to save your updated ratings.
-    [Learn about applying changes](../exporting.md)
+!!! tip "Ready to share your changes?"
+    Click **Apply Changes** (in the File menu) to export your updated ratings to an Excel file.
+    [Learn about exporting](../exporting.md)
 
 ---
 

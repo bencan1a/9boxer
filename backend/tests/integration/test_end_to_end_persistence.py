@@ -461,7 +461,7 @@ class TestPerformanceBenchmarks:
                 job_level=f"MT{(i % 5) + 1}",
                 job_function="Other",
                 location="USA",
-                manager=f"Manager {i % 20}",
+                direct_manager=f"Manager {i % 20}",
                 management_chain_04=f"Manager {i % 20}",
                 management_chain_05="Director",
                 management_chain_06=None,

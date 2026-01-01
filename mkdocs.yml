@@ -74,7 +74,7 @@ theme:
     - search.share            # Share search results via URL
     - search.suggest          # Search suggestions as you type
     - toc.follow              # Follow table of contents
-    - toc.integrate           # Integrate TOC into sidebar
+    # toc.integrate removed - keeps page TOC on right side, site nav on left
 
   # Icon configuration
   icon:
@@ -132,7 +132,7 @@ markdown_extensions:
   # Table of contents with permalinks
   - toc:
       permalink: true
-      toc_depth: 3
+      toc_depth: 2  # Only show H1 and H2 in TOC, not H3 sub-sections
 
   # Add attributes to HTML elements
   - attr_list
@@ -155,22 +155,24 @@ markdown_extensions:
 # Navigation Structure
 nav:
   - Home: index.md
+  - Overview: overview.md
   - Getting Started:
-    - Quickstart Tour: quickstart.md
-    - Complete Guide: getting-started.md
+    - Quickstart (2 min): quickstart.md
+    - Your First Calibration: getting-started.md
     - New to 9-Box?: new-to-9box.md
+  - Working with Employee Data: employee-data.md
   - Core Features:
-    - Uploading Data: uploading-data.md
-    - Understanding the Grid: understanding-grid.md
-    - Working with Employees: working-with-employees.md
+    - The 9-Box Grid: understanding-grid.md
+    - Employee Details: working-with-employees.md
     - Tracking Changes: tracking-changes.md
-    - Filters: filters.md
-    - Statistics & Intelligence: statistics.md
+    - Filtering: filters.md
+    - Statistics: statistics.md
+    - Intelligence: intelligence.md
     - Donut Mode: donut-mode.md
     - Exporting: exporting.md
     - Settings: settings.md
   - Workflows:
-    - Preparing for Talent Calibration: workflows/talent-calibration.md
+    - Complete Calibration Reference: workflows/talent-calibration.md
     - Making Your First Changes: workflows/making-changes.md
     - Adding Notes & Documentation: workflows/adding-notes.md
     - Analyzing Your Talent Distribution: workflows/analyzing-distribution.md
@@ -184,6 +186,7 @@ nav:
     - Best Practices: best-practices.md
     - Feature Comparison: feature-comparison.md
     - Common Decisions: common-decisions.md
+    - Detection Methodology: detection-methodology.md
   - Help:
     - Troubleshooting: troubleshooting.md
     - Frequently Asked Questions: faq.md

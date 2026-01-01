@@ -137,7 +137,7 @@ def test_generate_sample_employees_when_generated_then_has_required_fields(
     assert "location" in emp
 
     # Management
-    assert "manager" in emp
+    assert "direct_manager" in emp
 
     # Tenure
     assert "hire_date" in emp
@@ -212,3 +212,82 @@ def test_generate_sample_employees_when_metadata_then_has_correct_structure(
     assert len(metadata["grid_positions"]) == 9
     assert metadata["grid_positions"] == sorted(metadata["grid_positions"])
     assert set(metadata["grid_positions"]) == {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+
+def test_get_column_schema_when_called_then_returns_200_ok(
+    test_client: TestClient,
+) -> None:
+    """Test GET /api/employees/column-schema returns 200 OK."""
+    response = test_client.get("/api/employees/column-schema")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "columns" in data
+    assert "total_columns" in data
+    assert "required_columns" in data
+    assert "categories" in data
+
+
+def test_get_column_schema_when_called_then_has_required_columns(
+    test_client: TestClient,
+) -> None:
+    """Test column schema includes the 4 required columns."""
+    response = test_client.get("/api/employees/column-schema")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    required_names = [col["name"] for col in data["columns"] if col["required"]]
+    assert "Employee ID" in required_names
+    assert "Worker" in required_names
+    assert "Current Performance" in required_names
+    assert "Current Potential" in required_names
+    assert data["required_columns"] == 4
+
+
+def test_get_column_schema_when_called_then_columns_have_correct_structure(
+    test_client: TestClient,
+) -> None:
+    """Test each column has required metadata fields."""
+    response = test_client.get("/api/employees/column-schema")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    for col in data["columns"]:
+        assert "name" in col
+        assert "data_type" in col
+        assert "description" in col
+        assert "required" in col
+        assert "category" in col
+        assert isinstance(col["name"], str)
+        assert isinstance(col["required"], bool)
+
+
+def test_get_column_schema_when_called_then_has_all_categories(
+    test_client: TestClient,
+) -> None:
+    """Test column schema includes all expected categories."""
+    response = test_client.get("/api/employees/column-schema")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    expected_categories = {"identity", "ratings", "organization", "job_info", "history", "tracking", "donut"}
+    actual_categories = set(data["categories"])
+    assert expected_categories == actual_categories
+
+
+def test_get_column_schema_when_called_then_performance_has_valid_values(
+    test_client: TestClient,
+) -> None:
+    """Test Performance column has correct valid values."""
+    response = test_client.get("/api/employees/column-schema")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    performance_col = next(col for col in data["columns"] if col["name"] == "Current Performance")
+    assert performance_col["data_type"] == "enum"
+    assert performance_col["valid_values"] == ["Low", "Medium", "High"]
+    assert performance_col["category"] == "ratings"
