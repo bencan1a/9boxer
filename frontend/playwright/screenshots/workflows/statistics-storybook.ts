@@ -161,3 +161,29 @@ export async function generateStatisticsRedFlags(
     selector: '[data-testid="distribution-table"]',
   });
 }
+
+/**
+ * Generate distribution table screenshot for docs
+ *
+ * Shows the 9-box distribution table with:
+ * - All 9 positions with counts and percentages
+ * - Colored bars indicating tier groupings
+ * - Balanced distribution for healthy example
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateDistributionTable(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 600, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
+    outputPath,
+    theme: "light",
+    waitTime: 800,
+  });
+}

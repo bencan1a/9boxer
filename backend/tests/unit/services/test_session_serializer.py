@@ -367,7 +367,7 @@ def test_round_trip_serialization_when_real_employee_data_then_identical(
         assert emp.job_level == original_emp.job_level
         assert emp.job_function == original_emp.job_function
         assert emp.location == original_emp.location
-        assert emp.manager == original_emp.manager
+        assert emp.direct_manager == original_emp.direct_manager
         assert emp.management_chain_04 == original_emp.management_chain_04
         assert emp.management_chain_05 == original_emp.management_chain_05
         assert emp.management_chain_06 == original_emp.management_chain_06
@@ -559,7 +559,7 @@ def test_serialize_when_employee_with_last_modified_then_serializes_datetime() -
         job_level="MT3",
         job_function="Engineering",
         location="USA",
-        manager="Manager Name",
+        direct_manager="Manager Name",
         hire_date=date(2023, 1, 1),
         tenure_category="1-3 years",
         time_in_job_profile="1 year",
@@ -607,7 +607,7 @@ def test_deserialize_when_employee_without_last_modified_then_handles_none() -> 
         job_level="MT2",
         job_function="Design",
         location="USA",
-        manager="Manager Name",
+        direct_manager="Manager Name",
         hire_date=date(2022, 6, 1),
         tenure_category="3-5 years",
         time_in_job_profile="2 years",
@@ -659,7 +659,7 @@ def test_serialize_deserialize_when_large_dataset_then_preserves_all() -> None:
                 job_level="MT3",
                 job_function="Engineering",
                 location="USA",
-                manager="Manager",
+                direct_manager="Manager",
                 hire_date=date(2020, 1, 1),
                 tenure_category="3-5 years",
                 time_in_job_profile="2 years",

@@ -23,9 +23,351 @@ Example:
 import random  # nosec B311 - Using random for sample data generation, not cryptography
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from enum import Enum
 
 from ninebox.models.constants import ALLOWED_FLAGS
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+
+
+class ColumnCategory(str, Enum):
+    """Category of column for organizational purposes."""
+
+    IDENTITY = "identity"  # Core identification columns
+    RATINGS = "ratings"  # Performance and potential ratings
+    ORGANIZATION = "organization"  # Organizational hierarchy
+    JOB_INFO = "job_info"  # Job-related information
+    HISTORY = "history"  # Historical data
+    TRACKING = "tracking"  # 9Boxer-added tracking columns
+    DONUT = "donut"  # Donut exercise columns
+
+
+@dataclass
+class ColumnMetadata:
+    """Metadata describing a single Excel column.
+
+    Attributes:
+        name: Exact column name as it appears in Excel (case-sensitive)
+        data_type: Data type (string, integer, enum, date, boolean)
+        description: Human-readable description of the column's purpose
+        required: Whether this column is required for 9Boxer to function
+        category: Category for organizational grouping
+        valid_values: List of valid values for enum-type columns
+        example: Example value for documentation
+        used_for: Description of how 9Boxer uses this column
+
+    Example:
+        >>> col = ColumnMetadata(
+        ...     name="Performance",
+        ...     data_type="enum",
+        ...     description="Current performance rating",
+        ...     required=True,
+        ...     category=ColumnCategory.RATINGS,
+        ...     valid_values=["Low", "Medium", "High"],
+        ...     example="High",
+        ...     used_for="Determines horizontal position on the 9-box grid"
+        ... )
+    """
+
+    name: str
+    data_type: str
+    description: str
+    required: bool
+    category: ColumnCategory
+    valid_values: list[str] | None = None
+    example: str | None = None
+    used_for: str | None = None
+
+
+def get_column_schema() -> list[ColumnMetadata]:
+    """Get the complete column schema for 9Boxer Excel files.
+
+    Returns a list of ColumnMetadata objects describing all columns that
+    9Boxer recognizes, both for input (employee data) and output (tracking).
+
+    This serves as the single source of truth for:
+    - Documentation generation
+    - Input validation
+    - Export column definitions
+
+    Returns:
+        List of ColumnMetadata objects
+
+    Example:
+        >>> schema = get_column_schema()
+        >>> required_cols = [c for c in schema if c.required]
+        >>> [c.name for c in required_cols]
+        ['Employee ID', 'Worker', 'Current Performance', 'Current Potential']
+    """
+    return [
+        # Required Identity Columns
+        ColumnMetadata(
+            name="Employee ID",
+            data_type="integer",
+            description="Unique numeric identifier for each employee",
+            required=True,
+            category=ColumnCategory.IDENTITY,
+            example="12345",
+            used_for="Uniquely identifies employees across sessions; used for change tracking",
+        ),
+        ColumnMetadata(
+            name="Worker",
+            data_type="string",
+            description="Employee's full name",
+            required=True,
+            category=ColumnCategory.IDENTITY,
+            example="Alice Smith",
+            used_for="Displayed on employee tiles and in the details panel",
+        ),
+        # Required Rating Columns
+        ColumnMetadata(
+            name="Current Performance",
+            data_type="enum",
+            description="Current performance rating",
+            required=True,
+            category=ColumnCategory.RATINGS,
+            valid_values=["Low", "Medium", "High"],
+            example="High",
+            used_for="Determines horizontal position on the 9-box grid (left to right)",
+        ),
+        ColumnMetadata(
+            name="Current Potential",
+            data_type="enum",
+            description="Growth capacity rating",
+            required=True,
+            category=ColumnCategory.RATINGS,
+            valid_values=["Low", "Medium", "High"],
+            example="Medium",
+            used_for="Determines vertical position on the 9-box grid (bottom to top)",
+        ),
+        # Optional Job Info Columns
+        ColumnMetadata(
+            name="Job Profile",
+            data_type="string",
+            description="Combined field: <title>, <job function>-<location code>",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="Senior Software Engineer, Engineering-USA",
+            used_for="Parsed to extract job function and location for filtering",
+        ),
+        ColumnMetadata(
+            name="Job Level - Primary Position",
+            data_type="string",
+            description="Job level or grade designation",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="IC",
+            used_for="Available as a filter option; displayed in employee details",
+        ),
+        ColumnMetadata(
+            name="Business Title",
+            data_type="string",
+            description="Job title as shown in address book",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="Senior Software Engineer",
+            used_for="Displayed in employee details panel",
+        ),
+        ColumnMetadata(
+            name="Job Title",
+            data_type="string",
+            description="Official HRIS job title",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="Staff Engineer",
+            used_for="Fallback if Business Title not available; displayed in details",
+        ),
+        ColumnMetadata(
+            name="Hire Date",
+            data_type="date",
+            description="Employee's hire date",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="2022-03-15",
+            used_for="Used to calculate tenure category if not provided",
+        ),
+        ColumnMetadata(
+            name="Tenure Category",
+            data_type="string",
+            description="Bucketed tenure range based on hire date",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            valid_values=[
+                "0 - 3 Months",
+                "7 - 9 Months",
+                "10 - 12 Months",
+                "13 - 18 Months",
+                "19 - 24 Months",
+                "2 - 3 Years",
+                "3 - 5 Years",
+                "5 - 10 Years",
+                "10 - 15 Years",
+            ],
+            example="2 - 3 Years",
+            used_for="Available as a filter option for tenure-based analysis",
+        ),
+        ColumnMetadata(
+            name="Time in Job Profile",
+            data_type="string",
+            description="Duration in current job profile",
+            required=False,
+            category=ColumnCategory.JOB_INFO,
+            example="18 months",
+            used_for="Displayed in employee details; useful for role stability analysis",
+        ),
+        # Organization Hierarchy Columns
+        ColumnMetadata(
+            name="Direct Manager",
+            data_type="string",
+            description="Direct manager's name",
+            required=False,
+            category=ColumnCategory.ORGANIZATION,
+            example="David Chen",
+            used_for="Available as a filter option to view specific manager's teams",
+        ),
+        ColumnMetadata(
+            name="Management Chain - Level 04",
+            data_type="string",
+            description="Manager at level 4 in the hierarchy",
+            required=False,
+            category=ColumnCategory.ORGANIZATION,
+            example="Sarah Johnson",
+            used_for="Filter for viewing by skip-level manager",
+        ),
+        ColumnMetadata(
+            name="Management Chain - Level 05",
+            data_type="string",
+            description="Manager at level 5 in the hierarchy",
+            required=False,
+            category=ColumnCategory.ORGANIZATION,
+            example="Michael Brown",
+            used_for="Filter for viewing by senior leadership",
+        ),
+        ColumnMetadata(
+            name="Management Chain - Level 06",
+            data_type="string",
+            description="Manager at level 6 in the hierarchy (executive)",
+            required=False,
+            category=ColumnCategory.ORGANIZATION,
+            example="Jennifer Lee",
+            used_for="Filter for viewing by executive leadership",
+        ),
+        # Historical Rating Columns
+        ColumnMetadata(
+            name="2023 Completed Performance Rating",
+            data_type="string",
+            description="Performance rating from 2023 review cycle",
+            required=False,
+            category=ColumnCategory.HISTORY,
+            example="High",
+            used_for="Displayed in employee timeline to show rating trends",
+        ),
+        ColumnMetadata(
+            name="2024 Completed Performance Rating",
+            data_type="string",
+            description="Performance rating from 2024 review cycle",
+            required=False,
+            category=ColumnCategory.HISTORY,
+            example="Medium",
+            used_for="Displayed in employee timeline to show rating trends",
+        ),
+        # 9Boxer Tracking Columns (added on export)
+        ColumnMetadata(
+            name="Modified in Session",
+            data_type="boolean",
+            description="Indicates if employee was moved during the session",
+            required=False,
+            category=ColumnCategory.TRACKING,
+            valid_values=["Yes", ""],
+            example="Yes",
+            used_for="Added by 9Boxer on export; filter for changed employees",
+        ),
+        ColumnMetadata(
+            name="Modification Date",
+            data_type="datetime",
+            description="Timestamp of the last rating change",
+            required=False,
+            category=ColumnCategory.TRACKING,
+            example="2024-12-30 14:32:15",
+            used_for="Added by 9Boxer on export; audit trail for compliance",
+        ),
+        ColumnMetadata(
+            name="9Boxer Change Description",
+            data_type="string",
+            description="Human-readable description of the rating change",
+            required=False,
+            category=ColumnCategory.TRACKING,
+            example="Moved from Core Talent [M,M] to Star [H,H]",
+            used_for="Added by 9Boxer on export; documents what changed",
+        ),
+        ColumnMetadata(
+            name="9Boxer Change Notes",
+            data_type="string",
+            description="User's notes explaining why the change was made",
+            required=False,
+            category=ColumnCategory.TRACKING,
+            example="Promoted to team lead, exceeded Q4 targets",
+            used_for="Added by 9Boxer on export; captures rationale for audit",
+        ),
+        # Donut Exercise Columns (added on export if Donut Mode used)
+        ColumnMetadata(
+            name="Donut Exercise Position",
+            data_type="integer",
+            description="Grid position (1-9) from donut exercise",
+            required=False,
+            category=ColumnCategory.DONUT,
+            valid_values=["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            example="9",
+            used_for="Added by 9Boxer if Donut Mode used; exploratory placement",
+        ),
+        ColumnMetadata(
+            name="Donut Exercise Label",
+            data_type="string",
+            description="Box label from donut exercise",
+            required=False,
+            category=ColumnCategory.DONUT,
+            example="Star [H,H]",
+            used_for="Added by 9Boxer if Donut Mode used; human-readable position",
+        ),
+        ColumnMetadata(
+            name="Donut Exercise Change Description",
+            data_type="string",
+            description="Description of the donut placement",
+            required=False,
+            category=ColumnCategory.DONUT,
+            example="Donut: Moved from Core Talent [M,M] to Star [H,H]",
+            used_for="Added by 9Boxer if Donut Mode used; documents exploration",
+        ),
+        ColumnMetadata(
+            name="Donut Exercise Notes",
+            data_type="string",
+            description="User's notes from the donut exercise",
+            required=False,
+            category=ColumnCategory.DONUT,
+            example="Actually exceeds expectations, should be High Performer",
+            used_for="Added by 9Boxer if Donut Mode used; captures thinking",
+        ),
+    ]
+
+
+def get_column_schema_by_category() -> dict[str, list[ColumnMetadata]]:
+    """Get column schema organized by category.
+
+    Returns:
+        Dictionary mapping category names to lists of ColumnMetadata
+
+    Example:
+        >>> schema_by_cat = get_column_schema_by_category()
+        >>> list(schema_by_cat.keys())
+        ['identity', 'ratings', 'organization', 'job_info', 'history', 'tracking', 'donut']
+    """
+    schema = get_column_schema()
+    result: dict[str, list[ColumnMetadata]] = {}
+    for col in schema:
+        category_name = col.category.value
+        if category_name not in result:
+            result[category_name] = []
+        result[category_name].append(col)
+    return result
 
 
 @dataclass
@@ -562,11 +904,11 @@ class RichEmployeeGenerator:
                 name=self._generate_name(numeric_id),
                 business_title=node.title,
                 job_title=node.title,
-                job_profile=f"{function}{location}",
+                job_profile=f"{node.title}, {function}-{location}",
                 job_level=node.level,
                 job_function=function,
                 location=location,
-                manager=manager_name if manager_name else "None",
+                direct_manager=manager_name if manager_name else "None",
                 management_chain_01=self._get_manager_name(node.chain_01, hierarchy),
                 management_chain_02=self._get_manager_name(node.chain_02, hierarchy),
                 management_chain_03=self._get_manager_name(node.chain_03, hierarchy),
@@ -802,29 +1144,54 @@ class RichEmployeeGenerator:
     def _calculate_tenure_category(self, hire_date: date) -> str:
         """Calculate tenure category from hire date.
 
+        Buckets match HR data format:
+        - 0 - 3 Months
+        - 7 - 9 Months (note: 4-6 months not in HR data, using 7-9)
+        - 10 - 12 Months
+        - 13 - 18 Months
+        - 19 - 24 Months
+        - 2 - 3 Years
+        - 3 - 5 Years
+        - 5 - 10 Years
+        - 10 - 15 Years
+
         Args:
             hire_date: Date employee was hired
 
         Returns:
-            Tenure category string
+            Tenure category string matching HR bucket format
 
         Example:
             >>> generator = RichEmployeeGenerator()
             >>> hire_date = date.today() - timedelta(days=500)
             >>> category = generator._calculate_tenure_category(hire_date)
-            >>> category in ["0-1 year", "1-3 years", "3-5 years", "5+ years"]
+            >>> category in ["0 - 3 Months", "7 - 9 Months", "10 - 12 Months", "13 - 18 Months", "19 - 24 Months", "2 - 3 Years", "3 - 5 Years", "5 - 10 Years", "10 - 15 Years"]
             True
         """
-        years = (date.today() - hire_date).days / 365.25
+        days = (date.today() - hire_date).days
+        months = days / 30.44  # Average days per month
 
-        if years < 1:
-            return "0-1 year"
-        elif years < 3:
-            return "1-3 years"
-        elif years < 5:
-            return "3-5 years"
+        if months < 3:
+            return "0 - 3 Months"
+        elif months < 7:
+            # 4-6 months falls into 7-9 bucket (closest match)
+            return "7 - 9 Months"
+        elif months < 10:
+            return "7 - 9 Months"
+        elif months < 13:
+            return "10 - 12 Months"
+        elif months < 19:
+            return "13 - 18 Months"
+        elif months < 24:
+            return "19 - 24 Months"
+        elif months < 36:
+            return "2 - 3 Years"
+        elif months < 60:
+            return "3 - 5 Years"
+        elif months < 120:
+            return "5 - 10 Years"
         else:
-            return "5+ years"
+            return "10 - 15 Years"
 
     def _calculate_time_in_profile(self, hire_date: date) -> str:
         """Calculate time in job profile.

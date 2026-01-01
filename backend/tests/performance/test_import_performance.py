@@ -94,7 +94,7 @@ def test_scipy_imported_when_intelligence_used() -> None:
             job_level="MT4",
             job_function="Engineer",
             location="USA",
-            manager="Boss",
+            direct_manager="Boss",
             hire_date=date(2020, 1, 1),
             tenure_category="2-5 years",
             time_in_job_profile="1-2 years",

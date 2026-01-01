@@ -40,7 +40,7 @@ def test_parse_when_valid_file_then_extracts_employee_data_correctly(
     assert emp.name == "Alice Smith"
     assert emp.business_title == "Senior Engineer"
     assert emp.job_level == "MT4"
-    assert emp.manager == "Bob Manager"
+    assert emp.direct_manager == "Bob Manager"
     assert emp.performance == PerformanceLevel.HIGH
     assert emp.potential == PotentialLevel.HIGH
 

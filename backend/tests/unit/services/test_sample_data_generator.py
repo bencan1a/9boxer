@@ -260,7 +260,7 @@ class TestRichEmployeeGenerator:
             "job_level",
             "job_function",
             "location",
-            "manager",
+            "direct_manager",
             "hire_date",
             "tenure_category",
             "time_in_job_profile",

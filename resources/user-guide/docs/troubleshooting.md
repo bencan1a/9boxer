@@ -26,7 +26,7 @@ Common issues and solutions for 9Boxer desktop application.
 
 **Saving & Exporting:**
 
-- [Changes not saving](#changes-not-saving) - Changes made but not in export
+- [Changes not in exported file](#changes-not-in-exported-file) - Changes made but not in export
 - [Can't export/apply changes](#no-modifications-to-export) - No modifications to export error
 - [Export failed error](#export-failed) - File won't download
 - [Can't find exported file](#cant-find-exported-file) - Downloaded file missing
@@ -60,19 +60,15 @@ flowchart TD
     FileSize -->|No| ReduceSize[Remove unnecessary columns/rows<br/>or split into smaller files]
     FileSize -->|Yes| CheckColumns{Has required columns?<br/>Employee ID, Worker,<br/>Performance, Potential}
 
-    CheckColumns -->|No| FixColumns[Add missing columns<br/>Check exact spelling and case]
-    CheckColumns -->|Yes| CheckCase{Column names<br/>EXACTLY match?<br/>Case-sensitive}
+    CheckColumns -->|No| FixColumns[Add missing columns<br/>Check spelling]
+    CheckColumns -->|Yes| CheckValues{Performance/Potential<br/>values valid?<br/>Low, Medium, High}
 
-    CheckCase -->|No| FixCase[Fix capitalization:<br/>Employee ID not employee id<br/>Worker not worker]
-    CheckCase -->|Yes| CheckValues{Performance/Potential<br/>values valid?<br/>Low, Medium, High}
-
-    CheckValues -->|No| FixValues[Fix values:<br/>Must be exactly<br/>Low, Medium, or High<br/>Case-sensitive]
+    CheckValues -->|No| FixValues[Fix values:<br/>Must be<br/>Low, Medium, or High]
     CheckValues -->|Yes| TestMinimal[Try minimal test file<br/>3 employees only]
 
     ConvertFile --> FileSize
     ReduceSize --> CheckColumns
-    FixColumns --> CheckCase
-    FixCase --> CheckValues
+    FixColumns --> CheckValues
     FixValues --> TestMinimal
 
     TestMinimal --> Works{Test file uploads?}
@@ -105,7 +101,7 @@ flowchart TD
     CheckBorder -->|No| NotRecorded[Changes not recorded<br/>Try moving again<br/>Refresh app if needed]
     CheckBorder -->|Yes| ClickedApply{Did you click<br/>Apply button?}
 
-    ClickedApply -->|No| MustApply[Changes NOT auto-saved<br/>Click File → Apply Changes<br/>to export]
+    ClickedApply -->|No| MustApply[Click File → Apply Changes<br/>to export to Excel]
     ClickedApply -->|Yes| CheckDownload{File downloaded<br/>to Downloads folder?}
 
     CheckDownload -->|No| PermissionCheck{Check download<br/>permissions}
@@ -294,7 +290,7 @@ Alternatively, go to **System Preferences → Security & Privacy** and allow the
 - "Missing required columns"
 - "No sheet found containing employee data"
 
-**Required columns** (exact names, case-sensitive):
+**Required columns:**
 
 - `Employee ID`
 - `Worker`
@@ -303,8 +299,7 @@ Alternatively, go to **System Preferences → Security & Privacy** and allow the
 
 **Solutions:**
 
-- Verify your Excel file has these exact column names
-- Column names are **case-sensitive** - capitalization must match exactly
+- Verify your Excel file has these column names
 - Check for extra spaces in column names
 - Ensure columns are in the first row (header row)
 
@@ -314,18 +309,11 @@ Alternatively, go to **System Preferences → Security & Privacy** and allow the
 Employee ID | Worker       | Performance | Potential
 ```
 
-**Common mistakes:**
-
-- `employee id` (lowercase) - WRONG
-- `Employee_ID` (underscore) - WRONG
-- `EmployeeID` (no space) - WRONG
-- `Employee ID ` (trailing space) - WRONG
-
 #### 4. Invalid Data Values
 
 **Problem:** Performance/Potential columns contain invalid values
 
-**Valid values** (case-sensitive):
+**Valid values:**
 
 - `Low`
 - `Medium`
@@ -333,12 +321,10 @@ Employee ID | Worker       | Performance | Potential
 
 **Common mistakes:**
 
-- `low` (lowercase) - WRONG
 - `L`, `M`, `H` (abbreviations) - WRONG
 - `1`, `2`, `3` (numbers) - WRONG
-- Extra spaces - WRONG
 
-**Solution:** Ensure all Performance and Potential values are exactly `Low`, `Medium`, or `High`
+**Solution:** Ensure all Performance and Potential values are `Low`, `Medium`, or `High`
 
 #### 5. Try a Minimal Test File
 
@@ -394,7 +380,7 @@ If the minimal file uploads successfully, the issue is with your original file d
 1. **Refresh** - Close and reopen the application
 2. **Re-upload** - Upload your file again
 3. **Check data** - Verify your Excel file has correct Performance/Potential values
-    - All values must be: Low, Medium, or High (case-sensitive)
+    - All values must be: Low, Medium, or High
 4. **Expand boxes** - Some boxes may be collapsed
     - Click the expand button (⛶ icon) on collapsed boxes
 5. **Clear browser cache** (web version) - Clear cache and reload
@@ -526,17 +512,15 @@ When the original file can't be updated, 9Boxer automatically falls back to "Sav
 3. **Re-upload and export** - Try uploading your file and exporting again
 4. **Check original file** - Ensure all original columns were in uploaded file
 
-### Changes Not Saving
+### Changes Not in Exported File
 
 **Problem:** Changes made but not reflected in exported file
 
-**Critical:** The app does NOT auto-save
-
 **Solutions:**
 
-1. **Click "Apply"** - Changes are NOT saved until you click the Apply button
-    - Look for the Apply button in the top bar
-    - Badge on Apply shows number of pending changes
+1. **Click "Apply"** - Export creates an Excel file with your changes
+    - Look for the Apply button in the File menu
+    - Badge shows number of changes to export
 2. **Check download folder** - The exported file downloads to your default location
     - Look for files starting with `modified_`
 3. **Verify changes were made** - Check the Changes tab to see tracked movements
@@ -591,13 +575,8 @@ When the original file can't be updated, 9Boxer automatically falls back to "Sav
 
 **Common causes:**
 
-!!! danger "Critical: No Auto-Save"
-    The application does NOT auto-save. All changes are lost if you:
-
-    - Close the app without exporting
-    - Upload a new file (replaces current session)
-    - Clear browser data (web version)
-    - Browser crashes (web version)
+- Uploaded a new file (replaces current session)
+- App crashed before changes were saved
 
 **Prevention:**
 
@@ -664,7 +643,7 @@ Not sure if it's a bug or a data issue? Sample data is your troubleshooting frie
 3. Sample data replaces your current session (200 employees)
 4. Test the feature you're having trouble with
 
-If the feature works with sample data, check your Excel file format - see [Uploading Data](uploading-data.md) for requirements.
+If the feature works with sample data, check your Excel file format - see [Employee Data](employee-data.md) for requirements.
 
 ---
 
@@ -681,7 +660,7 @@ If the feature works with sample data, check your Excel file format - see [Uploa
 1. **Review this Troubleshooting guide** - Check common issues above
 2. **Test with sample data** - Load sample data to verify the app works correctly
 3. **Check your workflow** - Review [Getting Started](getting-started.md) for correct steps
-4. **Verify Excel file requirements** - See [Uploading Data](uploading-data.md)
+4. **Verify Excel file requirements** - See [Employee Data](employee-data.md)
 5. **Test with minimal file** - Try uploading a minimal 3-employee test file
 6. **Check browser/system** - Ensure you're using a supported environment
     - Modern browser (Chrome, Edge, Firefox, Safari)
@@ -717,8 +696,7 @@ Use this checklist for quick diagnosis:
 - [ ] File is .xlsx or .xls format (not .csv or .txt)
 - [ ] File is less than 10MB
 - [ ] File has required columns: `Employee ID`, `Worker`, `Performance`, `Potential`
-- [ ] Column names match exactly (case-sensitive)
-- [ ] Performance/Potential values are: Low, Medium, High (case-sensitive)
+- [ ] Performance/Potential values are: Low, Medium, High
 
 **Display Issues:**
 
@@ -751,6 +729,6 @@ Use this checklist for quick diagnosis:
 ## Related Topics
 
 - [Getting Started](getting-started.md) - Quick start guide and basic workflow
-- [Uploading Data](uploading-data.md) - Excel file requirements and upload process
+- [Employee Data](employee-data.md) - Excel file requirements and upload process
 - [Exporting Your Changes](exporting.md) - Export process and troubleshooting
-- [Tips & Best Practices](tips.md) - Best practices to avoid common issues
+- [Best Practices](best-practices.md) - Best practices to avoid common issues

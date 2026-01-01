@@ -485,4 +485,4 @@ A: Retention isn't just about money. Try: stretch assignments, mentoring opportu
 
 ---
 
-**Ready to identify your flight risks?** [Load your data](../uploading-data.md) or practice with [sample data in the quickstart](../quickstart.md).
+**Ready to identify your flight risks?** [Load your data](../employee-data.md) or practice with [sample data in the quickstart](../quickstart.md).

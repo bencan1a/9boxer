@@ -482,4 +482,4 @@ A: Yes! Take screenshots of Statistics and Intelligence tabs. The visual charts 
 
 ---
 
-**Ready to analyze your distribution?** [Load your data](../uploading-data.md) or practice with [sample data in the quickstart](../quickstart.md).
+**Ready to analyze your distribution?** [Load your data](../employee-data.md) or practice with [sample data in the quickstart](../quickstart.md).

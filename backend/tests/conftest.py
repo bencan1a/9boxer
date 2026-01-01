@@ -55,7 +55,7 @@ def create_test_employee(
         job_level="MT4",
         job_function="Other",
         location="USA",
-        manager="Test Manager",
+        direct_manager="Test Manager",
         hire_date=date(2020, 1, 1),
         tenure_category="3-5 years",
         time_in_job_profile="2 years",
@@ -110,7 +110,7 @@ def create_simple_test_employee(
         job_level="MT4",
         job_function="Other",
         location="USA",
-        manager="Test Manager",
+        direct_manager="Test Manager",
         hire_date=date(2020, 1, 1),
         tenure_category="3-5 years",
         time_in_job_profile="2 years",
@@ -351,7 +351,7 @@ def sample_employees() -> list[Employee]:
             job_level="MT4",
             job_function="Engineering",
             location="USA",
-            manager="Bob Manager",
+            direct_manager="Bob Manager",
             hire_date=date(2020, 1, 15),
             tenure_category="3-5 years",
             time_in_job_profile="2 years",
@@ -373,7 +373,7 @@ def sample_employees() -> list[Employee]:
             job_level="MT4",
             job_function="Product Manager",
             location="USA",
-            manager="Bob Manager",
+            direct_manager="Bob Manager",
             hire_date=date(2019, 6, 1),
             tenure_category="5+ years",
             time_in_job_profile="3 years",
@@ -394,7 +394,7 @@ def sample_employees() -> list[Employee]:
             job_level="MT2",
             job_function="Sales",
             location="CAN",
-            manager="Alice Manager",
+            direct_manager="Alice Manager",
             hire_date=date(2021, 3, 10),
             tenure_category="1-3 years",
             time_in_job_profile="1 year",
@@ -412,7 +412,7 @@ def sample_employees() -> list[Employee]:
             job_level="MT3",
             job_function="Marketing",
             location="USA",
-            manager="Bob Manager",
+            direct_manager="Bob Manager",
             hire_date=date(2018, 9, 20),
             tenure_category="5+ years",
             time_in_job_profile="4 years",
@@ -430,7 +430,7 @@ def sample_employees() -> list[Employee]:
             job_level="MT1",
             job_function="Engineering",
             location="CAN",
-            manager="Alice Manager",
+            direct_manager="Alice Manager",
             hire_date=date(2022, 1, 5),
             tenure_category="<1 year",
             time_in_job_profile="6 months",
@@ -589,7 +589,7 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
         data_sheet.cell(row_idx, 4, emp.job_title)
         data_sheet.cell(row_idx, 5, emp.job_profile)
         data_sheet.cell(row_idx, 6, emp.job_level)
-        data_sheet.cell(row_idx, 7, emp.manager)
+        data_sheet.cell(row_idx, 7, emp.direct_manager)
         data_sheet.cell(row_idx, 8, emp.management_chain_04)
         data_sheet.cell(row_idx, 9, emp.management_chain_05)
         data_sheet.cell(row_idx, 10, emp.management_chain_06)
@@ -682,7 +682,7 @@ def rich_sample_excel_file(tmp_path: Path, rich_sample_employees_small: list[Emp
         data_sheet.cell(row_idx, 4, emp.job_title)
         data_sheet.cell(row_idx, 5, emp.job_profile)
         data_sheet.cell(row_idx, 6, emp.job_level)
-        data_sheet.cell(row_idx, 7, emp.manager)
+        data_sheet.cell(row_idx, 7, emp.direct_manager)
         data_sheet.cell(row_idx, 8, emp.management_chain_04)
         data_sheet.cell(row_idx, 9, emp.management_chain_05)
         data_sheet.cell(row_idx, 10, emp.management_chain_06)

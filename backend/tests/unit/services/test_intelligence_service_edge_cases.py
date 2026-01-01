@@ -51,7 +51,7 @@ def create_employee(
         job_level=level,
         job_function=function,
         location=location,
-        manager="Manager",
+        direct_manager="Manager",
         hire_date=date(2020, 1, 1),
         tenure_category=tenure,
         time_in_job_profile="1-2 years",
