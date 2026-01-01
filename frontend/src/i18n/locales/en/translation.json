@@ -426,6 +426,30 @@
       "apply": "Apply Changes",
       "applying": "Applying...",
       "errorFallback": "Could not update original file. Save to a new location instead?"
+    },
+    "about": {
+      "title": "About 9Boxer",
+      "description": "A powerful talent management tool for visualizing and managing employee performance using the 9-box grid methodology.",
+      "tagline": "Elevate your talent management with data-driven insights",
+      "shortDescription": "Talent management through the 9-box grid",
+      "version": "Version",
+      "technology": "Technology",
+      "copyright": "© 2024 9Boxer. All rights reserved.",
+      "userGuide": "User Guide",
+      "reportIssue": "Report Issue",
+      "features": {
+        "grid": {
+          "title": "9-Box Grid",
+          "description": "Intuitive drag-and-drop interface for employee placement and performance visualization"
+        },
+        "collaboration": {
+          "title": "Team Collaboration",
+          "description": "Share insights and calibrate assessments across your organization"
+        },
+        "tech": {
+          "title": "Built With"
+        }
+      }
     }
   },
   "sampleData": {

@@ -25,8 +25,8 @@ function getLogoSVG(size: number): string {
   const gradientMid = "#2a5298";
   const gradientEnd = "#7e22ce";
 
-  // Border color for light mode (dark borders)
-  const borderColor = "rgba(0, 0, 0, 0.3)";
+  // Always use light borders since the gradient background is always dark
+  const borderColor = "rgba(255, 255, 255, 0.4)";
 
   // Grid positions
   const positions = [
