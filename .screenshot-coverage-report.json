@@ -1,9 +1,9 @@
 {
   "totalComponents": 71,
-  "componentsWithStories": 55,
-  "componentsWithScreenshots": 25,
-  "totalScreenshots": 56,
-  "storybookScreenshots": 53,
+  "componentsWithStories": 56,
+  "componentsWithScreenshots": 26,
+  "totalScreenshots": 62,
+  "storybookScreenshots": 59,
   "fullAppScreenshots": 2,
   "manualScreenshots": 1,
   "componentBreakdown": [
@@ -159,9 +159,15 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/ExclusionDialog.tsx",
       "name": "ExclusionDialog",
-      "hasStory": false,
-      "screenshotCount": 0,
-      "screenshots": []
+      "hasStory": true,
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "exclusions-dialog",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.tsx",
@@ -431,7 +437,7 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.tsx",
       "name": "AnomalySection",
       "hasStory": true,
-      "screenshotCount": 4,
+      "screenshotCount": 8,
       "screenshots": [
         {
           "name": "quickstart-intelligence-bias-detected",
@@ -450,6 +456,26 @@
         },
         {
           "name": "intelligence-anomaly-red",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-location",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-function",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-level",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "intelligence-tenure",
           "source": "storybook",
           "manual": false
         }
@@ -745,7 +771,7 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.tsx",
       "name": "DistributionTable",
       "hasStory": true,
-      "screenshotCount": 2,
+      "screenshotCount": 3,
       "screenshots": [
         {
           "name": "quickstart-statistics-distribution",
@@ -754,6 +780,11 @@
         },
         {
           "name": "statistics-panel-distribution",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "distribution-table",
           "source": "storybook",
           "manual": false
         }
@@ -903,6 +934,17 @@
       "componentName": "DashboardEmptyState",
       "usedInScreenshots": 0,
       "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/ExclusionDialog.stories.tsx",
+      "componentName": "ExclusionDialog",
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "exclusions-dialog",
+          "storyId": "app-dashboard-exclusiondialog--default"
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.stories.tsx",
@@ -1111,7 +1153,7 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/AnomalySection.stories.tsx",
       "componentName": "AnomalySection",
-      "usedInScreenshots": 4,
+      "usedInScreenshots": 8,
       "screenshots": [
         {
           "name": "quickstart-intelligence-bias-detected",
@@ -1128,6 +1170,22 @@
         {
           "name": "intelligence-anomaly-red",
           "storyId": "app-right-panel-intelligence-anomalysection--red-status"
+        },
+        {
+          "name": "intelligence-location",
+          "storyId": "app-right-panel-intelligence-anomalysection--location-bias-detector"
+        },
+        {
+          "name": "intelligence-function",
+          "storyId": "app-right-panel-intelligence-anomalysection--function-bias-detector"
+        },
+        {
+          "name": "intelligence-level",
+          "storyId": "app-right-panel-intelligence-anomalysection--level-bias-detector"
+        },
+        {
+          "name": "intelligence-tenure",
+          "storyId": "app-right-panel-intelligence-anomalysection--tenure-bias-detector"
         }
       ]
     },
@@ -1321,7 +1379,7 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/panel/statistics/DistributionTable.stories.tsx",
       "componentName": "DistributionTable",
-      "usedInScreenshots": 2,
+      "usedInScreenshots": 3,
       "screenshots": [
         {
           "name": "quickstart-statistics-distribution",
@@ -1329,6 +1387,10 @@
         },
         {
           "name": "statistics-panel-distribution",
+          "storyId": "app-right-panel-statistics-distributiontable--balanced-distribution"
+        },
+        {
+          "name": "distribution-table",
           "storyId": "app-right-panel-statistics-distributiontable--balanced-distribution"
         }
       ]
