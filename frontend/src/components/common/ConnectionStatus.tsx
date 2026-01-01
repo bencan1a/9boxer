@@ -12,7 +12,7 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
-import { Refresh as RefreshIcon } from "@mui/icons-material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { useTranslation } from "react-i18next";
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 

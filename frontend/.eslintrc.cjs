@@ -46,11 +46,16 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        patterns: [
+        paths: [
           {
-            group: ['@mui/material', '@mui/icons-material'],
+            name: '@mui/material',
             message:
-              'Use named imports to enable tree-shaking: import Button from "@mui/material/Button"',
+              'Use path imports to enable tree-shaking: import Button from "@mui/material/Button"',
+          },
+          {
+            name: '@mui/icons-material',
+            message:
+              'Use path imports to enable tree-shaking: import AddIcon from "@mui/icons-material/Add"',
           },
         ],
       },
