@@ -646,6 +646,76 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId: "app-dialogs-applychangesdialog--with-error",
     cropping: "container",
   },
+
+  // Exclusion Dialog screenshot
+  "exclusions-dialog": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateExclusionsDialog",
+    path: "resources/user-guide/docs/images/screenshots/filters/exclusions-dialog.png",
+    description:
+      "Manage Exclusions dialog with search field, quick filter buttons, and employee checkbox list",
+    storyId: "app-dashboard-exclusiondialog--default",
+    cropping: "container",
+  },
+
+  // Intelligence Detector Screenshots (4 bias detectors)
+  "intelligence-location": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateLocationBias",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-location.png",
+    description:
+      "Location bias detector showing performance distribution across offices and remote workers",
+    storyId:
+      "app-right-panel-intelligence-anomalysection--location-bias-detector",
+    cropping: "container",
+  },
+  "intelligence-function": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateFunctionBias",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-function.png",
+    description:
+      "Job function bias detector showing performance distribution across departments",
+    storyId:
+      "app-right-panel-intelligence-anomalysection--function-bias-detector",
+    cropping: "container",
+  },
+  "intelligence-level": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateLevelBias",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-level.png",
+    description:
+      "Job level bias detector showing performance distribution across job levels",
+    storyId: "app-right-panel-intelligence-anomalysection--level-bias-detector",
+    cropping: "container",
+  },
+  "intelligence-tenure": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateTenureBias",
+    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-tenure.png",
+    description:
+      "Tenure bias detector showing performance distribution across tenure categories",
+    storyId:
+      "app-right-panel-intelligence-anomalysection--tenure-bias-detector",
+    cropping: "container",
+  },
+
+  // Distribution Table screenshot
+  "distribution-table": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateDistributionTable",
+    path: "resources/user-guide/docs/images/screenshots/statistics/distribution-table.png",
+    description:
+      "9-box distribution table showing employee counts and percentages per position",
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
+    cropping: "container",
+  },
 };
 
 /**

@@ -284,7 +284,7 @@ class TestFilterStatisticsConsistency:
 
             # All employees should have this manager
             for emp in employees:
-                assert emp["manager"] == manager
+                assert emp["direct_manager"] == manager
 
 
 class TestSessionFilterPersistence:

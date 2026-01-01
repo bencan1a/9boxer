@@ -669,7 +669,7 @@ When working with 200+ employees, optimize 9Boxer performance:
 
 - **Don't review everyone at once** - Cognitive overload leads to poor decisions
 - **Don't skip Intelligence analysis** - Missing critical bias patterns
-- **Don't forget to export** - No auto-save means work can be lost
+- **Don't forget to export** - Export at milestones to share with stakeholders
 - **Don't ignore performance issues** - Keep browser responsive by using filters
 - **Don't create single massive export** - Segment exports for stakeholder needs
 - **Don't rate new hires prematurely** - Wait 6-12 months for accurate ratings

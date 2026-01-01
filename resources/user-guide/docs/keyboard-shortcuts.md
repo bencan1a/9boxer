@@ -33,12 +33,6 @@ You'll use keyboard shortcuts when you're:
 - **Reviewing lots of employees** - Tab through fields and collapse boxes quickly
 - **Navigating with precision** - Keyboard shortcuts are often faster and more accurate than mouse clicks
 
-### Related Topics
-
-- [Settings](settings.md) - Learn about fullscreen mode and other view settings
-- [Working with Employees](working-with-employees.md) - Navigate between employee details
-- [Donut Mode](donut-mode.md) - Use keyboard shortcut to toggle donut exercise
-
 ---
 
 ## Navigation Shortcuts
@@ -158,32 +152,6 @@ Function key behavior is identical across platforms:
 
 ---
 
-## Quick Actions
-
-### Filter Operations
-
-Currently, filter operations use mouse/click interactions only. There are no dedicated keyboard shortcuts for:
-
-- Opening the filter drawer
-- Selecting filter criteria
-- Applying or clearing filters
-
-**Workaround:** Use ++tab++ to navigate through filter controls once the drawer is open.
-
-### Upload and Export
-
-File operations currently use mouse/click interactions:
-
-- **Upload:** Click the Upload button in the toolbar
-- **Export:** Click the Apply & Export button
-
-**No keyboard shortcuts available** for these critical actions (yet).
-
-!!! tip "Future Enhancement"
-    Keyboard shortcuts for upload and export are being considered for future releases.
-
----
-
 ## Accessibility Notes
 
 ### Screen Reader Support
@@ -293,9 +261,4 @@ When adding notes to multiple employees:
 
 ---
 
-## Related Topics
-
-- [Settings](settings.md) - Visual controls for zoom and view modes
-- [Working with Employees](working-with-employees.md) - Employee navigation and selection
-- [Donut Mode](donut-mode.md) - Learn about the donut exercise
-- [Settings](settings.md) - Customize your 9Boxer experience
+**Related:** [Settings](settings.md) · [Working with Employees](working-with-employees.md) · [Donut Mode](donut-mode.md)

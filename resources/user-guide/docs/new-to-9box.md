@@ -555,13 +555,13 @@ Avoid these pitfalls as you get started:
 
 ---
 
-### Mistake 5: Forgetting to Export
+### Mistake 5: Not Exporting for Stakeholders
 
-**Why it happens:** Not understanding that 9Boxer doesn't auto-save.
+**Why it happens:** Forgetting that others need the updated data.
 
-**The problem:** All work lost if app closes or crashes.
+**The problem:** Calibration decisions not shared with HR, managers, or leadership.
 
-**Solution:** Export frequently during your session. Always export before closing the app.
+**Solution:** Export at milestones - after calibration meetings, before quarterly reviews, when sharing with stakeholders.
 
 ---
 
@@ -612,7 +612,7 @@ For each box in your grid, create action plans:
 | Check if my distribution is realistic | View Statistics tab - compare to ideal guidelines |
 | Add notes to my ratings | Click employee > Changes tab > Type in Notes field |
 | Prepare for calibration | Review Statistics, identify uncertain employees, export current ratings |
-| Save my work | File > Apply Changes to Excel (no auto-save!) |
+| Save my work | File > Apply Changes to Excel |
 
 ---
 

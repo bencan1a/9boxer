@@ -8,7 +8,7 @@ Quick answers to common questions about 9Boxer. Can't find what you're looking f
 
 ### What file format does 9Boxer accept?
 
-9Boxer accepts Excel files (.xlsx and .xls). Your file needs at minimum four columns: Employee ID, Worker, Performance ratings, and Potential ratings. See [Uploading Data](uploading-data.md) for detailed requirements and examples.
+9Boxer accepts Excel files (.xlsx and .xls). Your file needs at minimum four columns: Employee ID, Worker, Performance ratings, and Potential ratings. See [Employee Data](employee-data.md) for detailed requirements and examples.
 
 ### How many employees can I manage in 9Boxer?
 
@@ -20,7 +20,7 @@ No, Excel is not required. 9Boxer reads and generates Excel files directly. You 
 
 ### Can I use a CSV file instead of Excel?
 
-No, CSV files are not supported. You must use Excel format (.xlsx or .xls). If you have a CSV file, open it in Excel or Google Sheets and save it as .xlsx before uploading. See [Uploading Data](uploading-data.md) for file format details.
+No, CSV files are not supported. You must use Excel format (.xlsx or .xls). If you have a CSV file, open it in Excel or Google Sheets and save it as .xlsx before uploading. See [Employee Data](employee-data.md) for file format details.
 
 ### What happens to my data? Is it stored in the cloud?
 
@@ -28,7 +28,7 @@ No, CSV files are not supported. You must use Excel format (.xlsx or .xls). If y
 
 ### Where can I get the sample file to test the app?
 
-The sample file (`Sample_People_List.xlsx`) is bundled with the application. Check your 9Boxer installation folder in the resources directory, or access it from the Help menu inside the app. See [Uploading Data](uploading-data.md) for more about the sample file.
+The sample file (`Sample_People_List.xlsx`) is bundled with the application. Check your 9Boxer installation folder in the resources directory, or access it from the Help menu inside the app. See [Employee Data](employee-data.md) for more about the sample file.
 
 ### Do I need to create an account or login?
 
@@ -78,9 +78,9 @@ The file saves to your computer's default download folder. The filename is `modi
 
 The export creates a new file - your original file is never modified. If you want to undo changes, simply re-upload your original file to start fresh. The export doesn't affect your source data at all.
 
-### Does the app auto-save my changes?
+### How do I save my changes?
 
-No. 9Boxer does NOT auto-save. You must click "Apply Changes to Excel" in the File menu to export your changes. All changes are lost if you close the app without exporting. Export frequently to avoid losing work!
+Click "Apply Changes to Excel" in the File menu to export your changes to an Excel file. This creates a file you can share with stakeholders or import into your HRIS.
 
 ### How do I share my grid with others?
 
@@ -88,7 +88,7 @@ Export your changes to create an Excel file, then share that file via email or y
 
 ### Can I continue working on my grid later?
 
-Yes. Export your changes to save your work. Later, upload the exported file to continue from where you left off. Each export becomes your new starting point. See [Exporting](exporting.md#after-export) for the workflow.
+Yes. Export your changes to save your work. Later, upload the exported file to continue from where you left off. Each export becomes your new starting point. See [Exporting](exporting.md#after-exporting) for the workflow.
 
 ### What's the difference between "Apply Changes" and just closing the app?
 
@@ -132,15 +132,15 @@ Make sure you're clicking directly on the employee tile (not the box background)
 
 ### Upload failed - what went wrong?
 
-Common causes: column names don't match exactly (case-sensitive!), Performance/Potential values aren't Low/Medium/High, or file exceeds 10MB. Check that you have all four required columns with exact names: `Employee ID`, `Worker`, `Performance`, `Potential`. See [Uploading Data](uploading-data.md#upload-errors-and-solutions) for detailed troubleshooting.
+Common causes: Performance/Potential values aren't Low/Medium/High, or file exceeds 10MB. Check that you have all four required columns: `Employee ID`, `Worker`, `Performance`, `Potential`. See [Employee Data](employee-data.md#common-upload-errors) for detailed troubleshooting.
 
 ### The grid looks wrong or incomplete - how do I reset?
 
 Close the app and reopen it, then re-upload your file. This resets the session completely. If the grid still looks wrong, check your Excel file for invalid Performance/Potential values (must be exactly Low, Medium, or High). See [Troubleshooting](troubleshooting.md#grid-looks-wrong-or-incomplete).
 
-### I lost my changes! Can I recover them?
+### How do I recover a previous version of my work?
 
-Unfortunately, no. 9Boxer doesn't auto-save or maintain session history. If you closed without exporting, your changes are lost. Best practice: export frequently during long sessions to avoid this. See [Exporting](exporting.md#best-practices-for-exporting).
+If you need to go back to an earlier state, re-upload your original Excel file or a previously exported version. Each export creates a snapshot you can return to. See [Exporting](exporting.md).
 
 ### Why does Windows warn me the app is unsafe during installation?
 
@@ -164,7 +164,7 @@ Statistics shows distribution across the 9 boxes (count and percentage). Intelli
 
 ### Can I export my change history?
 
-Yes. When you export, the Excel file includes columns showing which employees were modified, when they were moved, what changed, and any notes you added. Donut Mode placements are in separate columns. See [Exporting](exporting.md#whats-in-the-export) for the complete column reference.
+Yes. When you export, the Excel file includes columns showing which employees were modified, when they were moved, what changed, and any notes you added. Donut Mode placements are in separate columns. See [Exporting](exporting.md#whats-exported) for the complete column reference.
 
 ### What are filters and when should I use them?
 
@@ -176,7 +176,7 @@ Filters temporarily hide employees from view (reversible). Exclusions remove emp
 
 ### Does Donut Mode change the actual ratings?
 
-No. Donut Mode placements are exploratory only - they don't change actual Performance/Potential ratings. The placements are tracked separately and exported to distinct columns. Use donut insights to guide actual rating changes later. See [Donut Mode](donut-mode.md#how-donut-mode-differs-from-regular-changes).
+No. Donut Mode placements are exploratory only - they don't change actual Performance/Potential ratings. The placements are tracked separately and exported to distinct columns. Use donut insights to guide actual rating changes later. See [Donut Mode](donut-mode.md#regular-vs-donut-changes).
 
 ### Can I add notes without moving an employee?
 

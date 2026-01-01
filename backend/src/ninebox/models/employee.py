@@ -47,7 +47,7 @@ class Employee(BaseModel):
     location: str  # Last 3 characters of job_profile (country code)
 
     # Management
-    manager: str
+    direct_manager: str
     management_chain_01: str | None = None
     management_chain_02: str | None = None
     management_chain_03: str | None = None

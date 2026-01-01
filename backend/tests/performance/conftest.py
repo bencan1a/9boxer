@@ -58,7 +58,7 @@ def create_test_employee(
         job_level=f"MT{(employee_id % 5) + 1}",
         job_function=func,
         location="USA" if employee_id % 2 == 0 else "CAN",
-        manager=f"Manager {employee_id % 10}",
+        direct_manager=f"Manager {employee_id % 10}",
         management_chain_04=f"Manager {employee_id % 10}",
         management_chain_05=f"Director {employee_id % 5}",
         management_chain_06=None,
@@ -135,7 +135,7 @@ def create_excel_file(employees: list[Employee], file_path: Path) -> None:
         data_sheet.cell(row_idx, 4, emp.job_title)
         data_sheet.cell(row_idx, 5, emp.job_profile)
         data_sheet.cell(row_idx, 6, emp.job_level)
-        data_sheet.cell(row_idx, 7, emp.manager)
+        data_sheet.cell(row_idx, 7, emp.direct_manager)
         data_sheet.cell(row_idx, 8, emp.management_chain_04)
         data_sheet.cell(row_idx, 9, emp.management_chain_05)
         data_sheet.cell(row_idx, 10, emp.management_chain_06)

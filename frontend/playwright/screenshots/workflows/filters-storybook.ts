@@ -254,3 +254,33 @@ export async function generateActiveChips(
     waitTime: 500,
   });
 }
+
+/**
+ * Generate Exclusions Dialog screenshot
+ *
+ * Shows the ExclusionDialog with:
+ * - Quick filter buttons (VPs, Directors+, Managers, Clear All)
+ * - Search field
+ * - Employee checkbox list
+ * - Apply/Cancel buttons
+ *
+ * Uses Storybook story: app-dashboard-exclusiondialog--default
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateExclusionsDialog(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport to accommodate dialog
+  await page.setViewportSize({ width: 700, height: 800 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-exclusiondialog--default",
+    outputPath,
+    theme: "light",
+    waitTime: 2000,
+    selector: '[data-testid="exclusion-dialog"]',
+  });
+}

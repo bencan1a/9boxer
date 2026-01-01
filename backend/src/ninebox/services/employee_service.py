@@ -251,7 +251,7 @@ class EmployeeService:
 
         # Filter by manager
         if managers:
-            filtered = [e for e in filtered if e.manager in managers]
+            filtered = [e for e in filtered if e.direct_manager in managers]
 
         # Exclude specific employees (e.g., managers in the room)
         if exclude_ids:
@@ -284,7 +284,9 @@ class EmployeeService:
         locations = sorted({map_location_to_display(e.location) for e in employees if e.location})
 
         # Extract unique managers (exclude None and literal string "None")
-        managers = sorted({e.manager for e in employees if e.manager and e.manager != "None"})
+        managers = sorted(
+            {e.direct_manager for e in employees if e.direct_manager and e.direct_manager != "None"}
+        )
 
         # List all employees for exclusion selector
         employee_list = [
