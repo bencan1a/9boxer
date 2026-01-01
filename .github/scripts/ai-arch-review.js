@@ -47,7 +47,7 @@ const MAX_TOKENS = 8192;  // Larger token budget for architectural analysis
 // Architecture documentation paths
 const ARCHITECTURE_DOCS_PATHS = [
   'internal-docs/architecture/',
-  'CLAUDE.md',
+  'CLAUDE_INDEX.md',
   'AGENTS.md',
   'internal-docs/facts.json',
 ];

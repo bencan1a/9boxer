@@ -78,47 +78,61 @@ jobs:
               return;
             }
 
-            // Build summary comment
-            const summary = `## 🤖 AI Documentation Audit Summary
+            // Validate report has required structure
+            if (!report || !report.summary || !report.metadata) {
+              console.log('Audit report is missing required fields (summary or metadata)');
+              console.log('Report contents:', JSON.stringify(report, null, 2));
+              return;
+            }
 
-            **Audit Period:** Last ${report.metadata.daysScanned} days
-            **Generated:** ${new Date(report.metadata.generatedAt).toLocaleString()}
+            // Provide defaults for optional nested fields
+            const summary = report.summary || {};
+            const metadata = report.metadata || {};
+            const issues = report.issues || [];
+            const changes = report.changes || { stats: {} };
+            const documentation = report.documentation || {};
+
+            // Build summary comment
+            const summaryComment = `## 🤖 AI Documentation Audit Summary
+
+            **Audit Period:** Last ${metadata.daysScanned || 'N/A'} days
+            **Generated:** ${metadata.generatedAt ? new Date(metadata.generatedAt).toLocaleString() : 'N/A'}
 
             ### 📊 Results
-            - **Total Issues Found:** ${report.summary.totalIssues}
-            - **GitHub Issues Created:** ${report.issues.length}
+            - **Total Issues Found:** ${summary.totalIssues || 0}
+            - **GitHub Issues Created:** ${issues.length}
 
             ### 📋 By Type
-            ${Object.entries(report.summary.byType)
+            ${summary.byType ? Object.entries(summary.byType)
               .filter(([_, count]) => count > 0)
               .map(([type, count]) => `- ${type}: ${count}`)
-              .join('\n')}
+              .join('\n') : 'No issues by type'}
 
             ### 🚨 By Severity
-            ${Object.entries(report.summary.bySeverity)
+            ${summary.bySeverity ? Object.entries(summary.bySeverity)
               .filter(([_, count]) => count > 0)
               .map(([severity, count]) => {
                 const icon = severity === 'high' ? '🔴' : severity === 'medium' ? '🟡' : '🟢';
                 return `${icon} **${severity}:** ${count}`;
               })
-              .join('\n')}
+              .join('\n') : 'No issues by severity'}
 
-            ${report.issues.length > 0 ? `
+            ${issues.length > 0 ? `
             ### 🎫 Issues Created
-            ${report.issues.slice(0, 10).map(issue => `- #${issue.number}: ${issue.title}`).join('\n')}
-            ${report.issues.length > 10 ? `\n...and ${report.issues.length - 10} more` : ''}
+            ${issues.slice(0, 10).map(issue => `- #${issue.number}: ${issue.title}`).join('\n')}
+            ${issues.length > 10 ? `\n...and ${issues.length - 10} more` : ''}
             ` : ''}
 
             ### 📈 Code Activity
-            - Commits analyzed: ${report.changes.stats.totalCommits}
-            - Files changed: ${report.changes.stats.totalFiles}
-            - Documentation files: ${report.documentation.totalFiles}
+            - Commits analyzed: ${changes.stats?.totalCommits || 0}
+            - Files changed: ${changes.stats?.totalFiles || 0}
+            - Documentation files: ${documentation.totalFiles || 0}
 
             ---
             *View the [full audit report](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) in the workflow artifacts.*`;
 
             // Create a discussion or issue comment (if running on a PR)
             // For scheduled runs, we'll just log it
-            console.log(summary);
+            console.log(summaryComment);
 
             // Optionally, you could create a GitHub Discussion or post to Slack/Discord here
