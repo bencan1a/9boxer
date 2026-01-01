@@ -120,21 +120,25 @@ repos:
 
       # Fast unit tests for frontend changes (pre-push only)
       # Runs on pre-push stage to catch regressions without slowing commits
+      # Uses wrapper script for clearer error messages
       - id: frontend-test-fast
         name: fast frontend unit tests
-        entry: bash -c 'cd frontend && npm run test:fast'
+        entry: bash tools/run-tests-with-message.sh
         language: system
         files: ^frontend/src/.*\.(ts|tsx)$
         pass_filenames: false
         stages: [pre-push]
+        verbose: true
 
       # Bundle size regression check (pre-push only)
       # Validates production bundle against baseline limits
       # Runs only when frontend source files change to avoid unnecessary builds
+      # Uses wrapper script for clearer error messages
       - id: frontend-bundle-size
         name: check frontend bundle size
-        entry: bash -c 'cd frontend && npm run check:bundle'
+        entry: bash tools/run-bundle-check-with-message.sh
         language: system
         files: ^frontend/src/.*\.(ts|tsx)$
         pass_filenames: false
         stages: [pre-push]
+        verbose: true
