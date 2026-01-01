@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ExclusionList> = {
-  title: "Dashboard/Filters/ExclusionList",
+  title: "App/Dashboard/Filters/ExclusionList",
   component: ExclusionList,
   tags: ["autodocs"],
   parameters: {

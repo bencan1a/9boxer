@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/ChangeIndicator",
+  title: "App/Dashboard/ChangeIndicator",
   component: ChangeIndicator,
   parameters: {
     layout: "centered",

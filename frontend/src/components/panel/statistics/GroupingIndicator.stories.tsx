@@ -28,7 +28,7 @@ import { GroupingIndicator } from "./GroupingIndicator";
  * - Percentage aggregations with visual indicators
  */
 const meta: Meta<typeof GroupingIndicator> = {
-  title: "Panel/Statistics/GroupingIndicator",
+  title: "App/Right Panel/Statistics/GroupingIndicator",
   component: GroupingIndicator,
   tags: ["autodocs"],
   parameters: {

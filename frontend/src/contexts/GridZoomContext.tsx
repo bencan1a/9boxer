@@ -6,9 +6,9 @@
  * including localStorage persistence and design tokens.
  *
  * Zoom Levels:
- * - Level 0: Ultra Compact (48%) - Maximum information density
- * - Level 1: Compact (60%) - Very dense view
- * - Level 2: Normal (80%) - Default view
+ * - Level 0: Compact (50%) - Maximum information density
+ * - Level 1: Medium (75%) - Dense view
+ * - Level 2: Normal (100%) - Default view
  * - Level 3: Comfortable (125%) - Slightly larger than normal
  * - Level 4: Presentation (150%) - Maximum visibility from distance
  */
@@ -82,9 +82,9 @@ const GridZoomContext = createContext<GridZoomContextType | undefined>(
 // Constants
 const MIN_LEVEL = 0;
 const MAX_LEVEL = 4;
-const DEFAULT_LEVEL = 2; // Normal (80%)
+const DEFAULT_LEVEL = 2; // Normal (100%)
 const STORAGE_KEY = "app-zoom-level";
-const ZOOM_PERCENTAGES = ["48%", "60%", "80%", "125%", "150%"];
+const ZOOM_PERCENTAGES = ["50%", "75%", "100%", "125%", "150%"];
 
 /**
  * Get design tokens for a specific zoom level

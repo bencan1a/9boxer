@@ -10,8 +10,8 @@
  */
 
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, fireEvent } from "../../test/utils";
-import EmptyState from "../EmptyState";
+import { render, screen, fireEvent } from "../../../test/utils";
+import EmptyState from "../DashboardEmptyState";
 
 describe("EmptyState", () => {
   const defaultProps = {

@@ -13,7 +13,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("empty tile list", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--empty",
+      "app-grid-employeetilelist--empty",
       "employee-tile-list-empty"
     );
   });
@@ -21,7 +21,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("normal layout", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--normal-layout",
+      "app-grid-employeetilelist--normal-layout",
       "employee-tile-list-normal-layout"
     );
   });
@@ -29,7 +29,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("expanded layout", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--expanded-layout",
+      "app-grid-employeetilelist--expanded-layout",
       "employee-tile-list-expanded-layout"
     );
   });
@@ -37,7 +37,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("few employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--few-employees",
+      "app-grid-employeetilelist--few-employees",
       "employee-tile-list-few-employees"
     );
   });
@@ -45,7 +45,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("many employees scrollable", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--many-employees-scrollable",
+      "app-grid-employeetilelist--many-employees-scrollable",
       "employee-tile-list-many-employees-scrollable"
     );
   });
@@ -53,7 +53,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("donut mode layout", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--donut-mode",
+      "app-grid-employeetilelist--donut-mode",
       "employee-tile-list-donut-mode"
     );
   });
@@ -61,7 +61,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("with flags", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--with-flags",
+      "app-grid-employeetilelist--with-flags",
       "employee-tile-list-with-flags"
     );
   });
@@ -69,7 +69,7 @@ test.describe("EmployeeTileList Visual Tests", () => {
   test("with modified employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetilelist--with-modified-employees",
+      "app-grid-employeetilelist--with-modified-employees",
       "employee-tile-list-with-modified-employees"
     );
   });

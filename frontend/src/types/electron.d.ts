@@ -55,6 +55,19 @@ export interface ElectronAPI {
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
 
   /**
+   * Notify the main process that session restoration is complete.
+   * This will close the splash screen if it's still visible.
+   *
+   * @returns Promise resolving to success status
+   *
+   * @example
+   * ```typescript
+   * await window.electronAPI?.notifySessionRestored();
+   * ```
+   */
+  notifySessionRestored: () => Promise<{ success: boolean }>;
+
+  /**
    * OS theme detection and change notifications.
    */
   theme: {

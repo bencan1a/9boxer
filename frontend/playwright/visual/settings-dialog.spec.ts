@@ -13,7 +13,7 @@ test.describe("SettingsDialog Visual Tests", () => {
   test("closed settings dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "settings-settingsdialog--closed",
+      "app-settings-settingsdialog--closed",
       "settings-dialog-closed"
     );
   });
@@ -21,7 +21,7 @@ test.describe("SettingsDialog Visual Tests", () => {
   test("open settings dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "settings-settingsdialog--open",
+      "app-settings-settingsdialog--open",
       "settings-dialog-open"
     );
   });
@@ -29,7 +29,7 @@ test.describe("SettingsDialog Visual Tests", () => {
   test("light theme selected settings dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "settings-settingsdialog--light-theme-selected",
+      "app-settings-settingsdialog--light-theme-selected",
       "settings-dialog-light-theme-selected"
     );
   });
@@ -37,7 +37,7 @@ test.describe("SettingsDialog Visual Tests", () => {
   test("dark theme selected settings dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "settings-settingsdialog--dark-theme-selected",
+      "app-settings-settingsdialog--dark-theme-selected",
       "settings-dialog-dark-theme-selected"
     );
   });
@@ -45,7 +45,7 @@ test.describe("SettingsDialog Visual Tests", () => {
   test("auto theme selected settings dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "settings-settingsdialog--auto-theme-selected",
+      "app-settings-settingsdialog--auto-theme-selected",
       "settings-dialog-auto-theme-selected"
     );
   });

@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "@storybook/test";
+import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { EmployeeTileList } from "./EmployeeTileList";
 import type {
   Employee,
   PerformanceLevel,
   PotentialLevel,
-} from "@/types/employee";
+} from "../../types/employee";
 
 /**
  * EmployeeTileList is a wrapper component that manages the layout
@@ -28,7 +29,7 @@ import type {
  * - donutModeActive: Passes through to tiles
  */
 const meta: Meta<typeof EmployeeTileList> = {
-  title: "Grid/EmployeeTileList",
+  title: "App/Grid/EmployeeTileList",
   component: EmployeeTileList,
   tags: ["autodocs"],
   parameters: {
@@ -40,6 +41,13 @@ const meta: Meta<typeof EmployeeTileList> = {
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <GridZoomProvider>
+        <Story />
+      </GridZoomProvider>
+    ),
+  ],
   argTypes: {
     employees: {
       description: "Array of employee objects to display",

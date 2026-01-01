@@ -211,8 +211,12 @@ export const GridViewActive: Story = {
   tags: ["screenshot"],
   parameters: {
     screenshot: { enabled: true, id: "view-controls-grid-view" },
-    screenshot: { enabled: true, id: "zoom-controls" },
-    screenshot: { enabled: true, id: "view-controls-main-interface" },
+    docs: {
+      description: {
+        story:
+          "Default view with Grid mode active (toggle on left side) and standard 100% zoom level.",
+      },
+    },
   },
   decorators: [createMockDecorator()],
   args: {
@@ -223,14 +227,6 @@ export const GridViewActive: Story = {
     isDefaultZoom: true,
     hasSession: true,
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Default view with Grid mode active (toggle on left side) and standard 100% zoom level.",
-      },
-    },
-  },
 };
 
 /**
@@ -240,7 +236,12 @@ export const DonutViewActive: Story = {
   tags: ["screenshot"],
   parameters: {
     screenshot: { enabled: true, id: "view-controls-donut-view" },
-    screenshot: { enabled: true, id: "view-controls-donut-view" },
+    docs: {
+      description: {
+        story:
+          "Donut mode active, showing the view mode toggle switched to the right position.",
+      },
+    },
   },
   decorators: [createMockDecorator()],
   args: {
@@ -250,14 +251,6 @@ export const DonutViewActive: Story = {
     canZoomOut: true,
     isDefaultZoom: true,
     hasSession: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Donut mode active, showing the view mode toggle switched to the right position.",
-      },
-    },
   },
 };
 

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { ZoomControls } from "./ZoomControls";
 import Box from "@mui/material/Box";
 
 const meta: Meta<typeof ZoomControls> = {
-  title: "Common/ZoomControls",
+  title: "App/Common/ZoomControls",
   component: ZoomControls,
   tags: ["autodocs"],
   parameters: {
@@ -21,16 +22,18 @@ const meta: Meta<typeof ZoomControls> = {
   },
   decorators: [
     (Story) => (
-      <Box
-        sx={{
-          width: "100vw",
-          height: "100vh",
-          bgcolor: "background.default",
-          position: "relative",
-        }}
-      >
-        <Story />
-      </Box>
+      <GridZoomProvider>
+        <Box
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            bgcolor: "background.default",
+            position: "relative",
+          }}
+        >
+          <Story />
+        </Box>
+      </GridZoomProvider>
     ),
   ],
 };

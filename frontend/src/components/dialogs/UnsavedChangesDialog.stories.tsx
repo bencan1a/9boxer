@@ -3,11 +3,12 @@ import { UnsavedChangesDialog } from "./UnsavedChangesDialog";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof UnsavedChangesDialog> = {
-  title: "Dialogs/UnsavedChangesDialog",
+  title: "App/Dialogs/UnsavedChangesDialog",
   component: UnsavedChangesDialog,
   parameters: {
     layout: "centered",
   },
+  tags: ["autodocs"],
   args: {
     onApply: fn(),
     onDiscard: fn(),
@@ -26,6 +27,10 @@ export const SingleChange: Story = {
 };
 
 export const MultipleChanges: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "unsaved-changes-dialog" },
+  },
   args: {
     open: true,
     changeCount: 5,

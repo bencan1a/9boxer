@@ -2,29 +2,12 @@
  * Application entry point
  */
 
-import React, { Suspense } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import "./styles/panel-animations.css";
 import "./i18n/config"; // Initialize i18n before rendering
-
-// Loading component for i18n suspense
-const I18nLoader = () => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "100vh",
-      backgroundColor: "#1a1a1a",
-      color: "#ffffff",
-      fontSize: "16px",
-    }}
-  >
-    Loading translations...
-  </div>
-);
 
 // Error fallback for translation loading failures
 const I18nErrorFallback = () => (
@@ -63,9 +46,7 @@ const I18nErrorFallback = () => (
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary fallback={<I18nErrorFallback />}>
-      <Suspense fallback={<I18nLoader />}>
-        <App />
-      </Suspense>
+      <App />
     </ErrorBoundary>
   </React.StrictMode>
 );

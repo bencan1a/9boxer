@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "../../../test/utils";
 import { FileUploadDialog } from "../FileUploadDialog";
 import userEvent from "@testing-library/user-event";
+import { useSessionStore } from "../../../store/sessionStore";
 
 // Mock the session store
 const mockUploadFile = vi.fn();
@@ -9,10 +10,9 @@ const mockShowSuccess = vi.fn();
 const mockShowError = vi.fn();
 
 vi.mock("../../../store/sessionStore", () => ({
-  useSessionStore: () => ({
-    uploadFile: mockUploadFile,
-    isLoading: false,
-  }),
+  useSessionStore: vi.fn(),
+  selectUploadFile: vi.fn((state) => state.uploadFile),
+  selectIsLoading: vi.fn((state) => state.isLoading),
 }));
 
 vi.mock("../../../contexts/SnackbarContext", () => ({
@@ -29,6 +29,17 @@ describe("FileUploadDialog", () => {
     vi.clearAllMocks();
     // Mock window.electronAPI as undefined (web mode)
     delete (window as any).electronAPI;
+
+    // Mock useSessionStore to work with selectors
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector) => {
+        const mockState = {
+          uploadFile: mockUploadFile,
+          isLoading: false,
+        };
+        return selector ? selector(mockState) : mockState;
+      }
+    );
   });
 
   it("renders dialog with title and description when open", () => {

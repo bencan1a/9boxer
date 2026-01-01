@@ -22,6 +22,11 @@ import {
 } from "../helpers";
 
 test.describe("Panel Interactions Tests", () => {
+  // Ensure viewport is large enough to prevent panel auto-collapse (>1024px)
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+  });
+
   /**
    * Test 7.1 - Panel toggle collapse/expand
    *

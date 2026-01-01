@@ -320,7 +320,7 @@ const SpacingShowcase = () => {
 };
 
 const meta = {
-  title: "ThemeTest",
+  title: "Design System/Theme",
   parameters: {
     layout: "centered",
   },

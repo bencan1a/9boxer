@@ -9,13 +9,13 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
-import EmptyState from "./EmptyState";
+import EmptyState from "./DashboardEmptyState";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Components/EmptyState",
+  title: "App/Dashboard/EmptyState",
   component: EmptyState,
   parameters: {
     layout: "fullscreen",

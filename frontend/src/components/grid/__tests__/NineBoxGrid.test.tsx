@@ -71,6 +71,8 @@ vi.mock("../../../hooks/useFilters", () => ({
 // Mock the sessionStore
 vi.mock("../../../store/sessionStore", () => ({
   useSessionStore: vi.fn(),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+  selectMoveEmployeeDonut: vi.fn((state) => state.moveEmployeeDonut),
 }));
 
 describe("NineBoxGrid", () => {
@@ -78,14 +80,17 @@ describe("NineBoxGrid", () => {
     localStorage.clear();
     vi.clearAllMocks();
 
-    // Default mock - donut mode inactive
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session-id",
-      donutModeActive: false,
-      employees: mockEmployees, // Add employees array for EmployeeCount
-      moveEmployeeDonut: mockMoveEmployeeDonut,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    // Default mock - donut mode inactive, support selector pattern
+    vi.mocked(useSessionStore).mockImplementation((selector?: any) => {
+      const state = {
+        sessionId: "test-session-id",
+        donutModeActive: false,
+        employees: mockEmployees, // Add employees array for EmployeeCount
+        moveEmployeeDonut: mockMoveEmployeeDonut,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector ? selector(state) : state;
+    });
   });
 
   it("renders all 9 grid boxes with correct labels", () => {
@@ -138,13 +143,16 @@ describe("NineBoxGrid - Donut Mode", () => {
   });
 
   it("passes donutModeActive prop to GridBox when donut mode is active", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session-id",
-      donutModeActive: true,
-      employees: mockEmployees,
-      moveEmployeeDonut: mockMoveEmployeeDonut,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector?: any) => {
+      const state = {
+        sessionId: "test-session-id",
+        donutModeActive: true,
+        employees: mockEmployees,
+        moveEmployeeDonut: mockMoveEmployeeDonut,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector ? selector(state) : state;
+    });
 
     render(<NineBoxGrid />);
 
@@ -155,13 +163,16 @@ describe("NineBoxGrid - Donut Mode", () => {
   });
 
   it("passes donutModeActive as false when donut mode is inactive", () => {
-    vi.mocked(useSessionStore).mockReturnValue({
-      sessionId: "test-session-id",
-      donutModeActive: false,
-      employees: mockEmployees,
-      moveEmployeeDonut: mockMoveEmployeeDonut,
-      toggleDonutMode: mockToggleDonutMode,
-    } as any);
+    vi.mocked(useSessionStore).mockImplementation((selector?: any) => {
+      const state = {
+        sessionId: "test-session-id",
+        donutModeActive: false,
+        employees: mockEmployees,
+        moveEmployeeDonut: mockMoveEmployeeDonut,
+        toggleDonutMode: mockToggleDonutMode,
+      };
+      return selector ? selector(state) : state;
+    });
 
     render(<NineBoxGrid />);
 

@@ -25,7 +25,7 @@ import * as path from "path";
  * - Some flags checked (active)
  * - Count badge showing active filters
  *
- * Uses Storybook story: dashboard-filterdrawer--flags-active
+ * Uses Storybook story: app-dashboard-filterdrawer--flags-active
  * Expands the Flags section before capturing screenshot
  *
  * @param page - Playwright Page object
@@ -37,7 +37,11 @@ export async function generateFlagsFiltering(
 ): Promise<void> {
   // Navigate to story using the helper (ensures Storybook is running)
   const { navigateToStory } = await import("../storybook-screenshot");
-  await navigateToStory(page, "dashboard-filterdrawer--flags-active", "light");
+  await navigateToStory(
+    page,
+    "app-dashboard-filterdrawer--flags-active",
+    "light"
+  );
 
   // Wait for drawer to be visible
   await page.waitForSelector('[data-testid="filter-drawer"]', {
@@ -84,7 +88,7 @@ export async function generateReportingChainFilterActive(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filters-reportingchainfilter--with-employee-count",
+    storyId: "app-dashboard-filters-reportingchainfilter--with-employee-count",
     outputPath,
     theme: "dark",
     waitTime: 800,
@@ -114,7 +118,7 @@ export async function generateFilterDrawerOverview(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     outputPath,
     theme: "light",
     waitTime: 1500,
@@ -142,7 +146,7 @@ export async function generateMultipleFiltersActive(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    storyId: "app-dashboard-filterdrawer--multiple-filters-active",
     outputPath,
     theme: "light",
     waitTime: 1500,
@@ -166,7 +170,7 @@ export async function generateFilterDrawerAllExpanded(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     outputPath,
     theme: "light",
     waitTime: 1500,
@@ -193,7 +197,7 @@ export async function generateFilterDrawerClearAll(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filtersection--custom-content",
+    storyId: "app-dashboard-filters-filtersection--custom-content",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -216,7 +220,7 @@ export async function generateFilterDrawerCalibration(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    storyId: "app-dashboard-filterdrawer--multiple-filters-active",
     outputPath,
     theme: "light",
     waitTime: 1500,
@@ -244,7 +248,7 @@ export async function generateActiveChips(
   await page.setViewportSize({ width: 600, height: 400 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-appbar-pureappbar--with-active-filters",
+    storyId: "app-dashboard-appbar--with-active-filters",
     outputPath,
     theme: "light",
     waitTime: 500,

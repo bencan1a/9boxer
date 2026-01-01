@@ -21,6 +21,9 @@ vi.mock("../../../store/sessionStore", () => ({
     }
     return mockSessionState;
   },
+  selectSessionId: vi.fn((state) => state.sessionId),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+  selectToggleDonutMode: vi.fn((state) => state.toggleDonutMode),
 }));
 
 describe("ViewControls", () => {

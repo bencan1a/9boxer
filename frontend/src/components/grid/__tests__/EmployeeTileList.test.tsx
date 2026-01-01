@@ -4,6 +4,7 @@ import { EmployeeTileList } from "../EmployeeTileList";
 import { createMockEmployee } from "../../../test/mockData";
 import { GridZoomProvider } from "../../../contexts/GridZoomContext";
 import type { Employee } from "../../../types/employee";
+import { tokens } from "../../../theme/tokens";
 
 // Wrapper for GridZoomProvider
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -100,8 +101,9 @@ describe("EmployeeTileList", () => {
 
     const listContainer = container.firstChild as HTMLElement;
     const styles = window.getComputedStyle(listContainer);
-    // Default zoom level (level2) has gap of 12px = 1.5rem (12/8)
-    expect(styles.gap).toBe("1.5rem");
+    // Default zoom level (level2) - use token value for gap
+    const expectedGap = `${tokens.dimensions.gridZoom.level2.spacing.gap}px`;
+    expect(styles.gap).toBe(expectedGap);
   });
 
   it("passes onSelectEmployee callback to tiles", () => {

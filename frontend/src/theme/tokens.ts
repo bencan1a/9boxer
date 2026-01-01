@@ -183,13 +183,13 @@ export const dimensions = {
 
   // Grid zoom levels (5 discrete levels)
   // Base tile size: 250px-370px (reduced by 30px from original 280px-400px)
-  // Level 0: Ultra Compact (48%) - Maximum information density
-  // Level 1: Compact (60%) - Very dense view
-  // Level 2: Normal (80%) - Default view
+  // Level 0: Compact (50%) - Maximum information density
+  // Level 1: Medium (75%) - Dense view
+  // Level 2: Normal (100%) - Default view
   // Level 3: Comfortable (125%) - Slightly larger than normal
   // Level 4: Presentation (150%) - Maximum visibility from distance
   gridZoom: {
-    // Zoom level 0: Ultra Compact (48% scale) - New smallest size
+    // Zoom level 0: Compact (50% label) - Smallest size
     level0: {
       tile: {
         minWidth: 120, // 250 * 0.48
@@ -215,7 +215,7 @@ export const dimensions = {
       },
     },
 
-    // Zoom level 1: Compact (60% scale) - Old level 0
+    // Zoom level 1: Medium (75% label)
     level1: {
       tile: {
         minWidth: 150, // 250 * 0.6
@@ -241,7 +241,7 @@ export const dimensions = {
       },
     },
 
-    // Zoom level 2: Normal (80% scale - baseline/default) - Old level 1
+    // Zoom level 2: Normal (100% label - baseline/default)
     level2: {
       tile: {
         minWidth: 200, // 250 * 0.8
@@ -267,7 +267,7 @@ export const dimensions = {
       },
     },
 
-    // Zoom level 3: Comfortable (125% scale)
+    // Zoom level 3: Comfortable (125% label)
     level3: {
       tile: {
         minWidth: 313, // 250 * 1.25
@@ -293,7 +293,7 @@ export const dimensions = {
       },
     },
 
-    // Zoom level 4: Presentation (150% scale)
+    // Zoom level 4: Presentation (150% label)
     level4: {
       tile: {
         minWidth: 375, // 250 * 1.5
@@ -358,6 +358,18 @@ export const dimensions = {
     height: 12,
     thumbBorderRadius: 6,
     thumbBorderWidth: 3,
+  },
+
+  // Progress bar dimensions (used in ColoredPercentageBar)
+  progressBar: {
+    height: 8, // Standard progress bar height
+    labelMinWidth: 45, // Minimum width for percentage label alignment
+  },
+
+  // Distribution table / statistics (used in GroupingIndicator)
+  distributionTable: {
+    groupingColumnWidth: 120, // Width of grouping indicator column
+    groupingBorderWidth: 4, // Border width for grouping indicators
   },
 } as const;
 
