@@ -1,25 +1,12 @@
 {
-  "totalComponents": 70,
+  "totalComponents": 71,
   "componentsWithStories": 55,
-  "componentsWithScreenshots": 26,
+  "componentsWithScreenshots": 25,
   "totalScreenshots": 56,
-  "storybookScreenshots": 52,
-  "fullAppScreenshots": 3,
+  "storybookScreenshots": 53,
+  "fullAppScreenshots": 2,
   "manualScreenshots": 1,
   "componentBreakdown": [
-    {
-      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.tsx",
-      "name": "EmptyState",
-      "hasStory": true,
-      "screenshotCount": 1,
-      "screenshots": [
-        {
-          "name": "quickstart-empty-state-sample-button",
-          "source": "storybook",
-          "manual": false
-        }
-      ]
-    },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.tsx",
       "name": "Logo",
@@ -156,6 +143,13 @@
       "screenshots": []
     },
     {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/DashboardEmptyState.tsx",
+      "name": "DashboardEmptyState",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/DashboardPage.tsx",
       "name": "DashboardPage",
       "hasStory": false,
@@ -238,19 +232,8 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PureAppBar.tsx",
       "name": "PureAppBar",
       "hasStory": true,
-      "screenshotCount": 2,
-      "screenshots": [
-        {
-          "name": "filters-active-chips",
-          "source": "storybook",
-          "manual": false
-        },
-        {
-          "name": "view-controls-simplified-appbar",
-          "source": "storybook",
-          "manual": false
-        }
-      ]
+      "screenshotCount": 0,
+      "screenshots": []
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ExclusionList.tsx",
@@ -333,8 +316,14 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx",
       "name": "UnsavedChangesDialog",
       "hasStory": true,
-      "screenshotCount": 0,
-      "screenshots": []
+      "screenshotCount": 1,
+      "screenshots": [
+        {
+          "name": "unsaved-changes-dialog",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/events/EventDisplay.tsx",
@@ -354,6 +343,13 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/BoxHeader.tsx",
       "name": "BoxHeader",
       "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/DraggedEmployeeTile.tsx",
+      "name": "DraggedEmployeeTile",
+      "hasStory": false,
       "screenshotCount": 0,
       "screenshots": []
     },
@@ -806,17 +802,6 @@
   ],
   "storyBreakdown": [
     {
-      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/EmptyState.stories.tsx",
-      "componentName": "EmptyState",
-      "usedInScreenshots": 1,
-      "screenshots": [
-        {
-          "name": "quickstart-empty-state-sample-button",
-          "storyId": "components-emptystate--default"
-        }
-      ]
-    },
-    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/branding/Logo.stories.tsx",
       "componentName": "Logo",
       "usedInScreenshots": 0,
@@ -841,7 +826,7 @@
       "screenshots": [
         {
           "name": "quickstart-empty-state-sample-button",
-          "storyId": "components-emptystate--default"
+          "storyId": "app-dashboard-emptystate--default"
         }
       ]
     },
@@ -858,7 +843,7 @@
       "screenshots": [
         {
           "name": "quickstart-upload-dialog",
-          "storyId": "common-fileuploaddialog--open"
+          "storyId": "app-common-fileuploaddialog--open"
         }
       ]
     },
@@ -881,23 +866,23 @@
       "screenshots": [
         {
           "name": "calibration-donut-mode-toggle",
-          "storyId": "common-viewcontrols--donut-view-active"
+          "storyId": "app-common-viewcontrols--donut-view-active"
         },
         {
           "name": "zoom-controls",
-          "storyId": "common-viewcontrols--grid-view-active"
+          "storyId": "app-common-viewcontrols--grid-view-active"
         },
         {
           "name": "view-controls-main-interface",
-          "storyId": "common-viewcontrols--grid-view-active"
+          "storyId": "app-common-viewcontrols--grid-view-active"
         },
         {
           "name": "view-controls-grid-view",
-          "storyId": "common-viewcontrols--grid-view-active"
+          "storyId": "app-common-viewcontrols--grid-view-active"
         },
         {
           "name": "view-controls-donut-view",
-          "storyId": "common-viewcontrols--donut-view-active"
+          "storyId": "app-common-viewcontrols--donut-view-active"
         }
       ]
     },
@@ -914,21 +899,27 @@
       "screenshots": []
     },
     {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/DashboardEmptyState.stories.tsx",
+      "componentName": "DashboardEmptyState",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FileMenuButton.stories.tsx",
       "componentName": "FileMenuButton",
       "usedInScreenshots": 3,
       "screenshots": [
         {
           "name": "quickstart-file-menu-button",
-          "storyId": "dashboard-appbar-filemenubutton--no-file"
+          "storyId": "app-dashboard-filemenubutton--no-file"
         },
         {
           "name": "calibration-file-import",
-          "storyId": "dashboard-appbar-filemenubutton--menu-open"
+          "storyId": "app-dashboard-filemenubutton--menu-open"
         },
         {
           "name": "file-menu-apply-changes",
-          "storyId": "dashboard-appbar-filemenubutton--menu-open"
+          "storyId": "app-dashboard-filemenubutton--menu-open"
         }
       ]
     },
@@ -945,19 +936,19 @@
       "screenshots": [
         {
           "name": "filters-panel-expanded",
-          "storyId": "dashboard-filterdrawer--all-sections-expanded"
+          "storyId": "app-dashboard-filterdrawer--all-sections-expanded"
         },
         {
           "name": "filters-multiple-active",
-          "storyId": "dashboard-filterdrawer--multiple-filters-active"
+          "storyId": "app-dashboard-filterdrawer--multiple-filters-active"
         },
         {
           "name": "filters-flags-section",
-          "storyId": "dashboard-filterdrawer--flags-active"
+          "storyId": "app-dashboard-filterdrawer--flags-active"
         },
         {
           "name": "filters-reporting-chain",
-          "storyId": "dashboard-filterdrawer--reporting-chain-active"
+          "storyId": "app-dashboard-filterdrawer--reporting-chain-active"
         }
       ]
     },
@@ -968,25 +959,10 @@
       "screenshots": []
     },
     {
-      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PanelToggleButton.stories.tsx",
-      "componentName": "PanelToggleButton",
-      "usedInScreenshots": 0,
-      "screenshots": []
-    },
-    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/PureAppBar.stories.tsx",
       "componentName": "PureAppBar",
-      "usedInScreenshots": 2,
-      "screenshots": [
-        {
-          "name": "filters-active-chips",
-          "storyId": "dashboard-appbar-pureappbar--with-active-filters"
-        },
-        {
-          "name": "view-controls-simplified-appbar",
-          "storyId": "dashboard-appbar-pureappbar--file-loaded"
-        }
-      ]
+      "usedInScreenshots": 0,
+      "screenshots": []
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ExclusionList.stories.tsx",
@@ -1001,7 +977,7 @@
       "screenshots": [
         {
           "name": "filters-clear-all-button",
-          "storyId": "dashboard-filtersection--custom-content"
+          "storyId": "app-dashboard-filters-filtersection--custom-content"
         }
       ]
     },
@@ -1030,15 +1006,15 @@
       "screenshots": [
         {
           "name": "apply-changes-dialog-default",
-          "storyId": "dialogs-applychangesdialog--default"
+          "storyId": "app-dialogs-applychangesdialog--default"
         },
         {
           "name": "apply-changes-dialog-save-as",
-          "storyId": "dialogs-applychangesdialog--default"
+          "storyId": "app-dialogs-applychangesdialog--default"
         },
         {
           "name": "file-error-fallback",
-          "storyId": "dialogs-applychangesdialog--with-error"
+          "storyId": "app-dialogs-applychangesdialog--with-error"
         }
       ]
     },
@@ -1049,15 +1025,20 @@
       "screenshots": [
         {
           "name": "quickstart-load-sample-dialog",
-          "storyId": "dialogs-loadsampledialog--no-existing-data"
+          "storyId": "app-dialogs-loadsampledialog--no-existing-data"
         }
       ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.stories.tsx",
       "componentName": "UnsavedChangesDialog",
-      "usedInScreenshots": 0,
-      "screenshots": []
+      "usedInScreenshots": 1,
+      "screenshots": [
+        {
+          "name": "unsaved-changes-dialog",
+          "storyId": "app-dialogs-unsavedchangesdialog--multiple-changes"
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/events/EventDisplay.stories.tsx",
@@ -1084,15 +1065,15 @@
       "screenshots": [
         {
           "name": "changes-orange-border",
-          "storyId": "grid-employeetile--modified"
+          "storyId": "app-grid-employeetile--modified-normal-mode"
         },
         {
           "name": "employee-tile-normal",
-          "storyId": "grid-employeetile--default"
+          "storyId": "app-grid-employeetile--default"
         },
         {
           "name": "details-flag-badges",
-          "storyId": "grid-employeetile--with-flags"
+          "storyId": "app-grid-employeetile--with-flags"
         }
       ]
     },
@@ -1115,15 +1096,15 @@
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
-          "storyId": "grid-nineboxgrid--populated"
+          "storyId": "app-grid-nineboxgrid--populated"
         },
         {
           "name": "donut-mode-active-layout",
-          "storyId": "grid-nineboxgrid--donut-mode"
+          "storyId": "app-grid-nineboxgrid--donut-mode"
         },
         {
           "name": "grid-normal",
-          "storyId": "grid-nineboxgrid--populated"
+          "storyId": "app-grid-nineboxgrid--populated"
         }
       ]
     },
@@ -1134,19 +1115,19 @@
       "screenshots": [
         {
           "name": "quickstart-intelligence-bias-detected",
-          "storyId": "intelligence-anomalysection--red-status"
+          "storyId": "app-right-panel-intelligence-anomalysection--red-status"
         },
         {
           "name": "intelligence-anomaly-details",
-          "storyId": "intelligence-anomalysection--red-status"
+          "storyId": "app-right-panel-intelligence-anomalysection--red-status"
         },
         {
           "name": "intelligence-anomaly-green",
-          "storyId": "intelligence-anomalysection--green-status"
+          "storyId": "app-right-panel-intelligence-anomalysection--green-status"
         },
         {
           "name": "intelligence-anomaly-red",
-          "storyId": "intelligence-anomalysection--red-status"
+          "storyId": "app-right-panel-intelligence-anomalysection--red-status"
         }
       ]
     },
@@ -1157,7 +1138,7 @@
       "screenshots": [
         {
           "name": "intelligence-deviation-chart",
-          "storyId": "intelligence-deviationchart--mixed-significance"
+          "storyId": "app-right-panel-intelligence-deviationchart--mixed-significance"
         }
       ]
     },
@@ -1168,15 +1149,15 @@
       "screenshots": [
         {
           "name": "intelligence-summary-anomalies",
-          "storyId": "intelligence-intelligencesummary--needs-attention"
+          "storyId": "app-right-panel-intelligence-intelligencesummary--needs-attention"
         },
         {
           "name": "intelligence-summary-excellent",
-          "storyId": "intelligence-intelligencesummary--excellent-quality"
+          "storyId": "app-right-panel-intelligence-intelligencesummary--excellent-quality"
         },
         {
           "name": "intelligence-summary-needs-attention",
-          "storyId": "intelligence-intelligencesummary--needs-attention"
+          "storyId": "app-right-panel-intelligence-intelligencesummary--needs-attention"
         }
       ]
     },
@@ -1187,11 +1168,11 @@
       "screenshots": [
         {
           "name": "distribution-chart-ideal",
-          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+          "storyId": "app-right-panel-intelligence-leveldistributionchart--normal-distribution"
         },
         {
           "name": "intelligence-level-distribution",
-          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+          "storyId": "app-right-panel-intelligence-leveldistributionchart--normal-distribution"
         }
       ]
     },
@@ -1232,11 +1213,11 @@
       "screenshots": [
         {
           "name": "changes-tab",
-          "storyId": "panel-changetrackertab--default"
+          "storyId": "app-right-panel-changes-changetrackertab--default"
         },
         {
           "name": "notes-changes-tab-field",
-          "storyId": "components-panel-changetrackertab--grid-changes-only"
+          "storyId": "app-right-panel-changes-changetrackertab--grid-changes-only"
         }
       ]
     },
@@ -1247,11 +1228,11 @@
       "screenshots": [
         {
           "name": "distribution-chart-ideal",
-          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+          "storyId": "app-right-panel-intelligence-leveldistributionchart--normal-distribution"
         },
         {
           "name": "intelligence-level-distribution",
-          "storyId": "intelligence-leveldistributionchart--normal-distribution"
+          "storyId": "app-right-panel-intelligence-leveldistributionchart--normal-distribution"
         }
       ]
     },
@@ -1268,19 +1249,19 @@
       "screenshots": [
         {
           "name": "changes-employee-details",
-          "storyId": "panel-employeedetails--with-changes"
+          "storyId": "app-right-panel-details-employeedetails--with-changes"
         },
         {
           "name": "quickstart-employee-details-with-history",
-          "storyId": "panel-employeedetails--default"
+          "storyId": "app-right-panel-details-employeedetails--default"
         },
         {
           "name": "employee-details-panel-expanded",
-          "storyId": "panel-employeedetails--default"
+          "storyId": "app-right-panel-details-employeedetails--default"
         },
         {
           "name": "details-current-assessment",
-          "storyId": "panel-employeedetails--default-with-padding"
+          "storyId": "app-right-panel-details-employeedetails--default-with-padding"
         }
       ]
     },
@@ -1291,7 +1272,7 @@
       "screenshots": [
         {
           "name": "details-flags-ui",
-          "storyId": "panel-employeeflags--with-multiple-flags"
+          "storyId": "app-right-panel-details-employeeflags--with-multiple-flags"
         }
       ]
     },
@@ -1302,7 +1283,7 @@
       "screenshots": [
         {
           "name": "details-reporting-chain-clickable",
-          "storyId": "panel-managementchain--with-manager"
+          "storyId": "app-right-panel-details-managementchain--with-manager"
         }
       ]
     },
@@ -1313,15 +1294,15 @@
       "screenshots": [
         {
           "name": "changes-timeline-view",
-          "storyId": "panel-ratingstimeline--default"
+          "storyId": "app-right-panel-details-ratingstimeline--default"
         },
         {
           "name": "quickstart-timeline-history",
-          "storyId": "panel-ratingstimeline--with-history"
+          "storyId": "app-right-panel-details-ratingstimeline--with-history"
         },
         {
           "name": "timeline-employee-history",
-          "storyId": "panel-ratingstimeline--with-history"
+          "storyId": "app-right-panel-details-ratingstimeline--with-history"
         }
       ]
     },
@@ -1344,11 +1325,11 @@
       "screenshots": [
         {
           "name": "quickstart-statistics-distribution",
-          "storyId": "panel-statistics-distributiontable--balanced-distribution"
+          "storyId": "app-right-panel-statistics-distributiontable--balanced-distribution"
         },
         {
           "name": "statistics-panel-distribution",
-          "storyId": "panel-statistics-distributiontable--balanced-distribution"
+          "storyId": "app-right-panel-statistics-distributiontable--balanced-distribution"
         }
       ]
     },
@@ -1371,7 +1352,7 @@
       "screenshots": [
         {
           "name": "statistics-summary-cards",
-          "storyId": "panel-statistics-statisticssummary--default"
+          "storyId": "app-right-panel-statistics-statisticssummary--default"
         }
       ]
     },
@@ -1382,7 +1363,7 @@
       "screenshots": [
         {
           "name": "view-controls-settings-dialog",
-          "storyId": "settings-settingsdialog--open"
+          "storyId": "app-settings-settingsdialog--open"
         }
       ]
     },
