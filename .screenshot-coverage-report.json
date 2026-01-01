@@ -1,6 +1,6 @@
 {
-  "totalComponents": 71,
-  "componentsWithStories": 56,
+  "totalComponents": 72,
+  "componentsWithStories": 57,
   "componentsWithScreenshots": 26,
   "totalScreenshots": 62,
   "storybookScreenshots": 59,
@@ -278,6 +278,13 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ReportingChainFilter.tsx",
       "name": "ReportingChainFilter",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/AboutDialog.tsx",
+      "name": "AboutDialog",
       "hasStory": true,
       "screenshotCount": 0,
       "screenshots": []
@@ -1038,6 +1045,12 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ReportingChainFilter.stories.tsx",
       "componentName": "ReportingChainFilter",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dialogs/AboutDialog.stories.tsx",
+      "componentName": "AboutDialog",
       "usedInScreenshots": 0,
       "screenshots": []
     },
