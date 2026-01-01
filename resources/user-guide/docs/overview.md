@@ -61,7 +61,7 @@ Choose your path based on your experience and goals.
 
 **Core Workflows**
 
-- [Uploading Your Data](uploading-data.md) - Excel file requirements
+- [Employee Data](employee-data.md) - Excel file requirements
 - [Making Rating Changes](workflows/making-changes.md) - Move employees and track decisions
 - [Exporting Your Work](exporting.md) - Save results with audit trail
 
@@ -74,7 +74,7 @@ Choose your path based on your experience and goals.
 
 **Best Practices**
 
-- [Tips & Best Practices](tips.md) - Expert recommendations
+- [Best Practices](best-practices.md) - Expert recommendations
 - [Talent Calibration Workflow](workflows/talent-calibration.md) - Run effective meetings
 
 ---

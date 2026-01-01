@@ -28,7 +28,7 @@ Common issues to fix:
 - ❌ `"Med"` (abbreviation) → ✅ `"Medium"`
 - ❌ Employee ID "0123" formatted as number → ✅ Format as text to keep leading zeros
 
-See [Uploading Data](uploading-data.md) for complete requirements.
+See [Employee Data](employee-data.md) for complete requirements.
 
 ---
 

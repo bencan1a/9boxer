@@ -14,7 +14,7 @@ Export your modified employee data to Excel to save your work and share updated 
     - **Save to different file** - Creates a new file (preserves original)
 5. **Click Apply Changes**
 
-![Apply Changes dialog](images/screenshots/placeholder-apply-changes.png){: .screenshot-placeholder }
+![Apply Changes dialog](images/screenshots/file-ops/apply-changes-dialog-default.png)
 
 !!! success "Done"
     Your changes are saved to Excel. The file includes updated ratings plus change tracking columns.

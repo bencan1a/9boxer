@@ -36,7 +36,7 @@ This forces you to challenge "safe" center placements and reveals:
 2. The grid filters to show only Position 5 employees
 3. An **ACTIVE** indicator appears on the button
 
-![Donut Mode button in toolbar](images/screenshots/placeholder-donut-button.png){: .screenshot-placeholder }
+![Donut Mode button in toolbar](images/screenshots/view-controls/view-controls-donut.png)
 
 **To deactivate**: Click the button again.
 
@@ -55,7 +55,7 @@ This forces you to challenge "safe" center placements and reveals:
     - Purple border
     - Shows original position
 
-![Grid in Donut Mode showing employee tiles](images/screenshots/placeholder-donut-grid.png){: .screenshot-placeholder }
+![Grid in Donut Mode showing employee tiles](images/screenshots/donut-mode/donut-mode-grid-normal.png)
 
 ### Returning to Position 5
 
@@ -83,7 +83,7 @@ Each donut placement shows:
 - Movement (from Core Talent → donut position)
 - Notes field
 
-![Donut Changes tab](images/screenshots/placeholder-donut-changes.png){: .screenshot-placeholder }
+![Donut Changes tab](images/screenshots/workflow/workflow-donut-notes-example.png)
 
 ### Adding Notes
 

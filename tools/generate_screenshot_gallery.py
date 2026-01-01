@@ -199,10 +199,10 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
 
         <div class="stats">
             <div class="stat"><div class="stat-number">{total}</div><div class="stat-label">Total Screenshots</div></div>
-            <div class="stat"><div class="stat-number">{storybook}</div><div class="stat-label">Storybook ({storybook/total*100:.0f}%)</div></div>
-            <div class="stat"><div class="stat-number">{fullapp}</div><div class="stat-label">Full-App ({fullapp/total*100:.0f}%)</div></div>
-            <div class="stat"><div class="stat-number">{manual}</div><div class="stat-label">Manual ({manual/total*100:.0f}%)</div></div>
-            <div class="stat"><div class="stat-number">{automated}</div><div class="stat-label">Automated ({automated/total*100:.0f}%)</div></div>
+            <div class="stat"><div class="stat-number">{storybook}</div><div class="stat-label">Storybook ({storybook / total * 100:.0f}%)</div></div>
+            <div class="stat"><div class="stat-number">{fullapp}</div><div class="stat-label">Full-App ({fullapp / total * 100:.0f}%)</div></div>
+            <div class="stat"><div class="stat-number">{manual}</div><div class="stat-label">Manual ({manual / total * 100:.0f}%)</div></div>
+            <div class="stat"><div class="stat-number">{automated}</div><div class="stat-label">Automated ({automated / total * 100:.0f}%)</div></div>
         </div>
 """
 

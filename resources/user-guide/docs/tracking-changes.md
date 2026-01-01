@@ -26,7 +26,7 @@ To see all changes you've made:
 1. Click any employee (or the **Changes** tab in the right panel)
 2. View the table showing all movements
 
-![Changes tab showing movement table](images/screenshots/placeholder-changes-tab.png){: .screenshot-placeholder }
+![Changes tab showing movement table](images/screenshots/workflow/workflow-changes-good-note.png)
 
 Each row shows:
 
@@ -81,7 +81,7 @@ Notes create an audit trail for your decisions.
 2. Type your explanation
 3. Click outside to save (auto-saves)
 
-![Notes field in changes panel](images/screenshots/placeholder-change-notes.png){: .screenshot-placeholder }
+![Notes field in changes panel](images/screenshots/workflow/workflow-changes-add-note.png)
 
 !!! tip "Good Notes"
     Be specific: "Promoted to team lead Q4, exceeded all targets" is better than "Good performance"

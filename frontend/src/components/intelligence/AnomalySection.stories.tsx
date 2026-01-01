@@ -376,3 +376,120 @@ export const DetailsExpandedInteraction: Story = {
     },
   },
 };
+
+// =============================================================================
+// Screenshot Stories for Intelligence Documentation
+// Each represents one of the 4 bias detectors
+// =============================================================================
+
+/**
+ * Location Bias Detector - Screenshot for documentation
+ * Shows location-based analysis with typical office/remote distribution patterns.
+ */
+export const LocationBiasDetector: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-location" },
+    docs: {
+      description: {
+        story:
+          "Location bias detector showing performance distribution across offices and remote workers. " +
+          "Highlights when specific locations have significantly different high performer rates.",
+      },
+    },
+  },
+  args: {
+    title: "Location Analysis",
+    analysis: mockYellowAnalysis,
+    chartComponent: (
+      <DeviationChart
+        data={mockYellowAnalysis.deviations}
+        title="Performance by Location"
+      />
+    ),
+  },
+};
+
+/**
+ * Job Function Bias Detector - Screenshot for documentation
+ * Shows function-based analysis across departments.
+ */
+export const FunctionBiasDetector: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-function" },
+    docs: {
+      description: {
+        story:
+          "Job function bias detector showing performance distribution across departments. " +
+          "Identifies when certain functions (Engineering, Sales, etc.) have skewed ratings.",
+      },
+    },
+  },
+  args: {
+    title: "Job Function Analysis",
+    analysis: mockMixedSignificance,
+    chartComponent: (
+      <DeviationChart
+        data={mockMixedSignificance.deviations}
+        title="Performance by Job Function"
+      />
+    ),
+  },
+};
+
+/**
+ * Job Level Bias Detector - Screenshot for documentation
+ * Shows level-based analysis highlighting seniority bias patterns.
+ */
+export const LevelBiasDetector: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-level" },
+    docs: {
+      description: {
+        story:
+          "Job level bias detector showing performance distribution across job levels. " +
+          "Detects when ratings correlate too strongly with seniority rather than performance.",
+      },
+    },
+  },
+  args: {
+    title: "Job Level Analysis",
+    analysis: mockRedAnalysis,
+    chartComponent: (
+      <DeviationChart
+        data={mockRedAnalysis.deviations}
+        title="Performance by Job Level"
+      />
+    ),
+  },
+};
+
+/**
+ * Tenure Bias Detector - Screenshot for documentation
+ * Shows tenure-based analysis across employee tenure bands.
+ */
+export const TenureBiasDetector: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-tenure" },
+    docs: {
+      description: {
+        story:
+          "Tenure bias detector showing performance distribution across tenure categories. " +
+          "Identifies patterns like new hire optimism or long-tenure stagnation.",
+      },
+    },
+  },
+  args: {
+    title: "Tenure Analysis",
+    analysis: mockLargeSampleAnalysis,
+    chartComponent: (
+      <DeviationChart
+        data={mockLargeSampleAnalysis.deviations}
+        title="Performance by Tenure"
+      />
+    ),
+  },
+};

@@ -8,7 +8,7 @@ Filters help you focus on specific groups of employees without changing or delet
 
 Click the **Filters** button in the top bar to open the filter drawer.
 
-![Filters panel](images/screenshots/placeholder-filters-panel.png){: .screenshot-placeholder }
+![Filters panel](images/screenshots/filters/filters-panel-expanded.png)
 
 ### Available Filter Categories
 
@@ -46,7 +46,7 @@ To clear all filters, uncheck all boxes or click **Clear All**.
 
 Flags mark employees with special statuses. Filter by flags to quickly find specific groups.
 
-![Flags section in filter drawer](images/screenshots/placeholder-flags-filter.png){: .screenshot-placeholder }
+![Flags section in filter drawer](images/screenshots/filters/flags-section.png)
 
 **Available Flags:**
 
@@ -76,7 +76,7 @@ The Reporting Chain filter shows all employees who report to a specific managerâ
 2. Click on a **manager's name** in the organizational hierarchy
 3. The filter activates automatically
 
-![Reporting chain filter chip](images/screenshots/placeholder-reporting-chain.png){: .screenshot-placeholder }
+![Reporting chain filter chip](images/screenshots/filters/reporting-chain-filter.png)
 
 When active, you'll see:
 
@@ -103,7 +103,7 @@ Exclusions let you hide specific individuals from the grid. Use this to remove o
 2. Scroll to the bottom
 3. Click **Manage Exclusions**
 
-![Exclusions dialog](images/screenshots/placeholder-exclusions-dialog.png){: .screenshot-placeholder }
+![Exclusions dialog](images/screenshots/filters/exclusions-dialog.png)
 
 ### Two Ways to Exclude
 

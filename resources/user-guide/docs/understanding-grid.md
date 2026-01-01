@@ -13,8 +13,6 @@ The grid is a 3×3 matrix that plots employees on two dimensions:
 
 Each axis has three levels: **Low**, **Medium**, and **High**, creating 9 distinct positions.
 
-![Grid overview showing 9-box layout with axis labels](images/screenshots/placeholder-grid-overview.png){: .screenshot-placeholder }
-
 ### Visual Grid Structure
 
 ```
@@ -102,16 +100,12 @@ Bottom-left. Employees with performance and potential concerns. Requires attenti
 - **Yellow/Amber** (middle row) - Medium potential employees
 - **Orange** (bottom row) - Lower potential employees
 
-![Grid showing color zones](images/screenshots/placeholder-grid-color-zones.png){: .screenshot-placeholder }
-
 **Employee Tiles:**
 
 - **Blue tiles** - Default appearance (unchanged)
 - **Orange left border** - Employee moved during current session
 - **Purple border** - Employee placed in Donut Mode (also shows original position)
 - **Flag chips** - Colored indicators for special statuses (see [Flags](working-with-employees.md#employee-flags))
-
-![Employee tile visual indicators](images/screenshots/placeholder-tile-indicators.png){: .screenshot-placeholder }
 
 ---
 
@@ -123,8 +117,6 @@ When a box contains many employees, expand it for better viewing:
 2. Employees arrange in multiple columns (2-4 depending on screen size)
 3. Drag-and-drop continues to work normally
 4. **Click collapse icon** or press ++esc++ to collapse
-
-![Expanded grid box with multi-column layout](images/screenshots/placeholder-expanded-box.png){: .screenshot-placeholder }
 
 ---
 

@@ -82,8 +82,6 @@ These columns enable filtering and provide additional context:
 3. **Wait for processing** - Success notification appears when complete
 4. **Verify the upload** - Employees appear on the grid organized by ratings
 
-![Upload success notification](images/screenshots/placeholder-upload-success.png){: .screenshot-placeholder }
-
 ---
 
 ## File Requirements
