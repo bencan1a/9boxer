@@ -171,25 +171,19 @@ nav:
     - Donut Mode: donut-mode.md
     - Exporting: exporting.md
     - Settings: settings.md
-  - Workflows:
+  - Running Calibration:
     - Complete Calibration Reference: workflows/talent-calibration.md
     - Making Your First Changes: workflows/making-changes.md
     - Adding Notes & Documentation: workflows/adding-notes.md
     - Analyzing Your Talent Distribution: workflows/analyzing-distribution.md
     - Identifying Flight Risks: workflows/identifying-flight-risks.md
-  - Guides by Role:
-    - Executive Quick Reference: executive-quick-reference.md
-    - Managing Large Datasets (100+): large-dataset-guide.md
   - Reference:
     - Keyboard Shortcuts: keyboard-shortcuts.md
-    - Tips & Best Practices: tips.md
     - Best Practices: best-practices.md
-    - Feature Comparison: feature-comparison.md
-    - Common Decisions: common-decisions.md
+    - Large Datasets (100+): large-dataset-guide.md
     - Detection Methodology: detection-methodology.md
-  - Help:
     - Troubleshooting: troubleshooting.md
-    - Frequently Asked Questions: faq.md
+    - FAQ: faq.md
 
 # UPDATED: Custom CSS for design system alignment
 # design-tokens.css is auto-generated from frontend/src/theme/tokens.ts

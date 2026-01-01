@@ -8,8 +8,6 @@ This guide covers viewing employee details, moving employees on the grid, and ma
 
 Click any employee tile to open the details panel on the right with four tabs.
 
-![Employee details panel with four tabs](images/screenshots/placeholder-details-panel.png){: .screenshot-placeholder }
-
 ### Details Tab
 
 Shows complete employee information:
@@ -48,8 +46,6 @@ Drag and drop to move employees between grid positions.
 2. **Drag** to the destination box
 3. **Release** to drop them in place
 
-![Drag and drop sequence](images/screenshots/placeholder-drag-drop.png){: .screenshot-placeholder }
-
 When you move an employee:
 
 - An **orange left border** appears on the tile
@@ -71,8 +67,6 @@ Document why you moved someone:
 4. Type your explanation
 5. Click outside to save (auto-saves)
 
-![Notes field in Changes tab](images/screenshots/placeholder-notes-field.png){: .screenshot-placeholder }
-
 Notes help with calibration meetings, audit trails, and future reference.
 
 ---
@@ -84,8 +78,6 @@ See the complete movement history:
 1. Click an employee
 2. Go to the **Details tab**
 3. Scroll to the **Timeline section**
-
-![Timeline showing position changes](images/screenshots/placeholder-timeline.png){: .screenshot-placeholder }
 
 The timeline shows:
 
@@ -103,8 +95,6 @@ When a box has many employees, expand it for better visibility:
 2. Employees arrange in multiple columns
 3. Drag-and-drop still works
 4. **Click collapse** or press ++esc++ to close
-
-![Expanded box with multi-column layout](images/screenshots/placeholder-expanded-box.png){: .screenshot-placeholder }
 
 ---
 

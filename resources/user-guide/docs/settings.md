@@ -8,7 +8,7 @@ Customize 9Boxer's appearance and control how you view the grid.
 
 Click the **gear icon** (⚙) in the top-right to open Settings.
 
-![Settings dialog](images/screenshots/placeholder-settings-dialog.png){: .screenshot-placeholder }
+![Settings dialog](images/screenshots/view-controls/settings-dialog.png)
 
 ### Theme Mode
 
@@ -28,7 +28,7 @@ Your theme choice saves automatically and persists across sessions.
 
 A floating toolbar appears at the top-right of the grid with three control groups:
 
-![View Controls toolbar](images/screenshots/placeholder-view-controls.png){: .screenshot-placeholder }
+![View Controls toolbar](images/screenshots/view-controls/view-controls-grid.png)
 
 ### View Mode Toggle
 

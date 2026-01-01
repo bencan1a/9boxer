@@ -9,7 +9,7 @@ The Statistics tab shows how your employees are distributed across the 9-box gri
 1. Click any employee (or click in empty space)
 2. Click the **Statistics** tab (third tab) in the right panel
 
-![Statistics panel](images/screenshots/placeholder-statistics-panel.png){: .screenshot-placeholder }
+![Statistics panel](images/screenshots/statistics/statistics-panel-distribution.png)
 
 ---
 
@@ -17,7 +17,7 @@ The Statistics tab shows how your employees are distributed across the 9-box gri
 
 The table shows employee counts and percentages for each grid position:
 
-![Distribution table showing counts and percentages](images/screenshots/placeholder-distribution-table.png){: .screenshot-placeholder }
+![Distribution table showing counts and percentages](images/screenshots/statistics/distribution-table.png)
 
 Each cell shows:
 - **Count** - Number of employees in that box
@@ -33,7 +33,7 @@ The bar chart provides a visual overview:
 - Bar height indicates employee count
 - Makes imbalances obvious at a glance
 
-![Distribution chart](images/screenshots/placeholder-distribution-chart.png){: .screenshot-placeholder }
+![Distribution chart](images/screenshots/distribution-chart-ideal.png)
 
 ---
 

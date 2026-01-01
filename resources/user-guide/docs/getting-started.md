@@ -378,4 +378,4 @@ Re-import your post-calibration file, make the additional changes, add notes, an
 
 ---
 
-**Need help?** Check [Troubleshooting](troubleshooting.md) or browse [Tips & Best Practices](tips.md)
+**Need help?** Check [Troubleshooting](troubleshooting.md) or browse [Best Practices](best-practices.md)

@@ -144,7 +144,7 @@ In 2 minutes, you've experienced the complete workflow:
 
 **Ready to run a calibration?** → [Your First Calibration](getting-started.md) - Complete workflow guide
 
-**Ready to use your data?** → [Upload Your Own Data](uploading-data.md) - Excel file requirements
+**Ready to use your data?** → [Employee Data](employee-data.md) - Excel file requirements
 
 **New to 9-box methodology?** → [Understanding the Grid](understanding-grid.md) - What each position means
 

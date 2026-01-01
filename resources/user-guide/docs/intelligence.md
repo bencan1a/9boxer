@@ -9,7 +9,7 @@ The Intelligence tab automatically detects rating anomalies and potential bias i
 1. Click any employee (or click in empty space)
 2. Click the **Intelligence** tab (fourth tab) in the right panel
 
-![Intelligence panel](images/screenshots/placeholder-intelligence-panel.png){: .screenshot-placeholder }
+![Intelligence panel](images/screenshots/workflow/intelligence-summary-anomalies.png)
 
 ---
 
@@ -37,7 +37,7 @@ Intelligence analyzes your data across four dimensions:
 
 Detects offices or regions with skewed performance distributions compared to the organization overall.
 
-![Location bias analysis](images/screenshots/placeholder-intelligence-location.png){: .screenshot-placeholder }
+![Location bias analysis](images/screenshots/workflow/intelligence-location.png)
 
 **What to look for:**
 
@@ -55,7 +55,7 @@ Detects offices or regions with skewed performance distributions compared to the
 
 Detects departments with unusual distributions compared to organizational patterns.
 
-![Job function bias analysis](images/screenshots/placeholder-intelligence-function.png){: .screenshot-placeholder }
+![Job function bias analysis](images/screenshots/workflow/intelligence-function.png)
 
 **What to look for:**
 
@@ -73,7 +73,7 @@ Detects departments with unusual distributions compared to organizational patter
 
 Detects rating patterns that correlate too strongly with job level rather than actual performance.
 
-![Job level bias analysis](images/screenshots/placeholder-intelligence-level.png){: .screenshot-placeholder }
+![Job level bias analysis](images/screenshots/workflow/intelligence-level.png)
 
 **What to look for:**
 
@@ -91,7 +91,7 @@ Detects rating patterns that correlate too strongly with job level rather than a
 
 Detects rating patterns correlated with time at company rather than performance.
 
-![Tenure bias analysis](images/screenshots/placeholder-intelligence-tenure.png){: .screenshot-placeholder }
+![Tenure bias analysis](images/screenshots/workflow/intelligence-tenure.png)
 
 **What to look for:**
 
@@ -123,7 +123,7 @@ Each anomaly card shows:
 - **Deviation** amount
 - **Affected categories**
 
-![Anomaly card example](images/screenshots/placeholder-anomaly-card.png){: .screenshot-placeholder }
+![Anomaly card example](images/screenshots/workflow/intelligence-anomaly-red.png)
 
 ---
 

@@ -643,7 +643,7 @@ Not sure if it's a bug or a data issue? Sample data is your troubleshooting frie
 3. Sample data replaces your current session (200 employees)
 4. Test the feature you're having trouble with
 
-If the feature works with sample data, check your Excel file format - see [Uploading Data](uploading-data.md) for requirements.
+If the feature works with sample data, check your Excel file format - see [Employee Data](employee-data.md) for requirements.
 
 ---
 
@@ -660,7 +660,7 @@ If the feature works with sample data, check your Excel file format - see [Uploa
 1. **Review this Troubleshooting guide** - Check common issues above
 2. **Test with sample data** - Load sample data to verify the app works correctly
 3. **Check your workflow** - Review [Getting Started](getting-started.md) for correct steps
-4. **Verify Excel file requirements** - See [Uploading Data](uploading-data.md)
+4. **Verify Excel file requirements** - See [Employee Data](employee-data.md)
 5. **Test with minimal file** - Try uploading a minimal 3-employee test file
 6. **Check browser/system** - Ensure you're using a supported environment
     - Modern browser (Chrome, Edge, Firefox, Safari)
@@ -729,6 +729,6 @@ Use this checklist for quick diagnosis:
 ## Related Topics
 
 - [Getting Started](getting-started.md) - Quick start guide and basic workflow
-- [Uploading Data](uploading-data.md) - Excel file requirements and upload process
+- [Employee Data](employee-data.md) - Excel file requirements and upload process
 - [Exporting Your Changes](exporting.md) - Export process and troubleshooting
-- [Tips & Best Practices](tips.md) - Best practices to avoid common issues
+- [Best Practices](best-practices.md) - Best practices to avoid common issues

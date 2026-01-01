@@ -98,7 +98,7 @@ By plotting everyone on a 3x3 grid, you can quickly identify top talent, spot de
 
 - [Troubleshooting Guide](troubleshooting.md) - Common issues and solutions
 - [FAQ](faq.md) - Frequently asked questions
-- [Tips & Best Practices](tips.md) - Expert recommendations
+- [Best Practices](best-practices.md) - Expert recommendations
 
 **In the app:** Hover over any button for helpful tooltips.
 
