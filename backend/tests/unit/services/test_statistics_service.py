@@ -230,7 +230,7 @@ def test_calculate_distribution_when_percentage_calculation_then_rounds_correctl
             job_level="MT1",
             job_function="Other",
             location="USA",
-            manager="Manager",
+            direct_manager="Manager",
             hire_date=date.today(),
             tenure_category="1-3 years",
             time_in_job_profile="1 year",

@@ -14,8 +14,8 @@ Maximize the value of your talent reviews with these proven best practices. This
 
 **How:** Before uploading, verify your Excel file:
 
-- **Use exact column names** (case-sensitive): `Employee ID`, `Worker`, `Performance`, `Potential`
-- **Use valid rating values only**: `Low`, `Medium`, or `High` (exact capitalization)
+- **Use required column names**: `Employee ID`, `Worker`, `Performance`, `Potential`
+- **Use valid rating values only**: `Low`, `Medium`, or `High`
 - **Remove duplicate employees** (check for multiple rows with same Employee ID)
 - **Fix inconsistent formatting** (extra spaces, different capitalizations)
 - **Standardize department names** (e.g., "Engineering" not "engineering" or "Eng")
@@ -383,9 +383,6 @@ Follow the complete step-by-step process in the [Donut Mode Exercise guide](donu
 4. **Share with stakeholders** via secure file transfer (encrypted email, secure file sharing)
 5. **Follow file naming convention:** `talent_calibration_2024-Q4_FINAL.xlsx`
 
-!!! danger "Critical: No Auto-Save"
-    The application does NOT auto-save. Export before closing or all changes are lost!
-
 See [Exporting Your Changes](exporting.md) for export best practices and file management.
 
 ---
@@ -527,20 +524,14 @@ See [Exporting Your Changes](exporting.md) for export best practices and file ma
 
 **What:** Avoid working for long periods without exporting your changes.
 
-**Why:** 9Boxer has NO auto-save. If the app closes, crashes, or you upload a new file, all unsaved changes are permanently lost. Regular exports prevent catastrophic data loss.
-
-**How to avoid:**
-
-!!! danger "Critical: No Auto-Save"
-    The application does NOT auto-save. Export regularly to avoid losing work!
+**Why:** Exporting creates shareable files and preserves your work for compliance and record-keeping.
 
 **Export guidelines:**
 
-- ✅ **Export before closing** - Always save before closing the app
-- ✅ **Export during long sessions** - Save after every major set of changes (every 30-60 min)
-- ✅ **Export at milestones** - After reviewing each department, after calibration, before breaks
-- ✅ **Export before uploads** - Save current work before uploading a new file (uploading replaces session)
-- ✅ **Export before experiments** - Create backup before making speculative changes
+- ✅ **Export at milestones** - After reviewing each department, after calibration meetings
+- ✅ **Export before uploads** - Save current work before uploading a new file
+- ✅ **Export for sharing** - Create versions to share with stakeholders
+- ✅ **Export for backup** - Create backup before making speculative changes
 
 **File naming for frequent exports:**
 

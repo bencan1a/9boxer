@@ -734,7 +734,7 @@ class ExcelParser:
             job_level=str(row["Job Level - Primary Position"]).strip(),
             job_function=job_function,
             location=location,
-            manager=str(row.get("Worker's Manager", "")).strip()
+            direct_manager=str(row.get("Worker's Manager", "")).strip()
             if pd.notna(row.get("Worker's Manager"))
             else "",
             management_chain_01=str(row.get("Management Chain - Level 01")).strip()

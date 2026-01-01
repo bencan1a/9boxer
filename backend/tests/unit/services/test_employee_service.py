@@ -53,15 +53,15 @@ def test_filter_employees_when_by_manager_then_filters_correctly(
     """Test filtering by manager."""
     # Find a manager that exists in sample data
     test_manager = (
-        sample_employees[10].manager if len(sample_employees) > 10 else sample_employees[0].manager
+        sample_employees[10].direct_manager if len(sample_employees) > 10 else sample_employees[0].direct_manager
     )
-    expected_count = sum(1 for emp in sample_employees if emp.manager == test_manager)
+    expected_count = sum(1 for emp in sample_employees if emp.direct_manager == test_manager)
 
     filtered = employee_service.filter_employees(sample_employees, managers=[test_manager])
 
     assert len(filtered) == expected_count
     assert len(filtered) > 0  # Should have at least one employee
-    assert all(emp.manager == test_manager for emp in filtered)
+    assert all(emp.direct_manager == test_manager for emp in filtered)
 
 
 def test_filter_employees_when_exclude_ids_then_excludes_correctly(
@@ -87,9 +87,9 @@ def test_filter_employees_when_combined_filters_then_applies_and_logic(
     assert len(mt4_employees) > 0, "Need MT4 employees in sample data"
 
     # Use the manager of the first MT4 employee
-    test_manager = mt4_employees[0].manager
+    test_manager = mt4_employees[0].direct_manager
     expected_count = sum(
-        1 for emp in sample_employees if emp.job_level == "MT4" and emp.manager == test_manager
+        1 for emp in sample_employees if emp.job_level == "MT4" and emp.direct_manager == test_manager
     )
 
     filtered = employee_service.filter_employees(
@@ -99,7 +99,7 @@ def test_filter_employees_when_combined_filters_then_applies_and_logic(
     # Should only match employees that are MT4 AND managed by test_manager
     assert len(filtered) == expected_count
     assert len(filtered) > 0  # Should have at least one match
-    assert all(emp.job_level == "MT4" and emp.manager == test_manager for emp in filtered)
+    assert all(emp.job_level == "MT4" and emp.direct_manager == test_manager for emp in filtered)
 
 
 def test_filter_employees_when_by_performance_then_filters_correctly(
@@ -182,7 +182,7 @@ def test_get_filter_options_when_called_then_returns_correct_options(
     actual_levels = {emp.job_level for emp in sample_employees}
     actual_functions = {emp.job_function for emp in sample_employees}
     actual_managers = {
-        emp.manager for emp in sample_employees if emp.manager and emp.manager != "None"
+        emp.direct_manager for emp in sample_employees if emp.direct_manager and emp.direct_manager != "None"
     }
 
     # Check levels - should match what's in sample data

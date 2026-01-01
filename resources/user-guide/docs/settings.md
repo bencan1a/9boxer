@@ -1,156 +1,95 @@
-# Application Settings
+# Settings & View Controls
 
-Settings is where you customize 9Boxer to match your preferences.
-
-## When to Use This
-
-### Common Scenarios
-
-You'll use Settings when you're:
-
-- **Adjusting for your environment** - Switch to dark mode for long sessions or light mode when presenting
-- **Reducing eye strain** - Enable dark mode for low-light or late-night work
-- **Screen sharing** - Switch to light mode for better visibility during video calls
-- **Following your system theme** - Set Auto mode to match your system throughout the day
-- **First-time setup** - Configure your preferred theme when you first start using 9Boxer
-
-### Related Workflows
-
-- [Getting Started](getting-started.md) - Initial setup and configuration when you first use 9Boxer
-- [Preparing for Talent Calibration](workflows/talent-calibration.md) - Consider using light mode when sharing your screen during meetings
-
-### Real-World Example
-
-> 📋 **Scenario**
->
-> Marcus prefers dark mode for his daily work to reduce eye strain. But when he's about to share his screen in a calibration meeting with 8 participants, he switches to light mode in Settings for better visibility. After the meeting, he switches back to dark mode for his afternoon work session.
+Customize 9Boxer's appearance and control how you view the grid.
 
 ---
 
-## Accessing Settings
+## Settings Dialog
 
-Here's how to open Settings:
+Click the **gear icon** (⚙) in the top-right to open Settings.
 
-1. **Click the gear icon** (⚙) in the top app bar
-2. The Settings dialog opens
-3. Make your changes - they save automatically
-4. **Click the X** or click outside to close
-
-You'll find the gear icon in the top-right of the app bar.
-
-## Appearance Settings
+![Settings dialog](images/screenshots/placeholder-settings-dialog.png){: .screenshot-placeholder }
 
 ### Theme Mode
 
-You've got three theme choices:
+Choose your preferred appearance:
 
-!!! tip "Default Setting"
-    9Boxer defaults to **Auto (Follow System)** mode, which automatically matches your OS theme.
+| Mode | Description |
+|------|-------------|
+| **Light** | Bright, high-contrast interface (good for presenting) |
+| **Dark** | Reduced eye strain (good for extended use) |
+| **Auto** | Follows your system theme automatically |
 
-### Theme Options
+Your theme choice saves automatically and persists across sessions.
 
-> 📋 **Real-World Scenario**
->
-> Alex works from home and uses Auto mode to match her system theme. During the day, 9Boxer displays in light mode for comfortable viewing. When the sun sets at 6 PM, her MacOS automatically switches to dark mode, and 9Boxer instantly adjusts too, reducing eye strain during her evening calibration prep work.
+---
 
-**Light Mode**
-: Always use the light theme
-: Bright, high-contrast interface
-: Ideal for well-lit environments
-: Icon: ☀️ Sun icon
+## View Controls Toolbar
 
-**Dark Mode**
-: Always use the dark theme
-: Reduced eye strain in low-light conditions
-: Lower screen brightness
-: Icon: 🌙 Moon icon
+A floating toolbar appears at the top-right of the grid with three control groups:
 
-**Auto (Follow System)**
-: Automatically match your system theme preference
-: Switches between light and dark based on OS settings
-: Updates dynamically when system theme changes
-: Icon: 🔆 Brightness icon
+![View Controls toolbar](images/screenshots/placeholder-view-controls.png){: .screenshot-placeholder }
 
-### How to Change Theme
+### View Mode Toggle
 
-1. **Open Settings** by clicking the gear icon (⚙)
-2. **Navigate to Appearance section** (selected by default)
-3. **Select your preferred theme mode**:
-    - Click the radio button next to your choice
-    - The theme updates immediately
-4. **Close the dialog** - your preference is saved automatically
+Switch between Grid view and Donut Mode:
 
-### Theme Selection Indicator
+| Button | Mode | What It Shows |
+|--------|------|---------------|
+| Grid icon | **Grid View** | All employees on the full 9-box grid |
+| Donut icon | **Donut Mode** | Only Position 5 (Core Talent) employees |
 
-The Settings dialog shows your current theme selection with:
+See [Donut Mode](donut-mode.md) for details on the donut exercise.
 
-- **Current Selection box** - Displays your chosen theme mode with icon
-- **Active theme indicator** - When using "Auto" mode, shows which theme (light or dark) is currently active based on your system settings
-- **Real-time preview** - The application theme changes immediately as you select different options
+### Zoom Controls
 
-### Theme Persistence
+Adjust the grid size:
 
-Your theme choice:
+| Button | Action |
+|--------|--------|
+| **−** | Zoom out (make tiles smaller) |
+| **Reset** | Return to default zoom (100%) |
+| **+** | Zoom in (make tiles larger) |
+| **Percentage** | Shows current zoom level |
 
-- **Saves automatically** when you select it
-- **Persists across sessions** - the app remembers your choice
-- **Stored locally** in your browser's localStorage
-- **Won't affect your data** - changing theme doesn't touch your filters or employee data
+**Zoom range**: 50% to 150% in 10% increments.
 
-### System Theme Detection (Auto Mode)
+### Fullscreen Toggle
 
-When you use **Auto (Follow System)** mode:
+Click the fullscreen icon to maximize 9Boxer for distraction-free work.
 
-- 9Boxer detects your OS theme preference
-- **Windows**: Follows Windows theme settings (Settings → Personalization → Colors)
-- **macOS**: Follows macOS appearance (System Preferences → General → Appearance)
-- **Linux**: Follows desktop environment theme settings
-- **Dynamic updates**: Theme changes automatically when your OS theme changes (no restart needed)
+---
 
-The Settings dialog shows which theme is active: "Currently using light theme (from system)" or "Currently using dark theme (from system)"
+## Keyboard Shortcuts
 
-![Settings dialog modal window showing Appearance section with three theme options displayed as radio buttons: Light (sun icon), Dark (moon icon), and Auto/Follow System (brightness icon) with Auto currently selected, plus indicator showing "Currently using dark theme from system" and Close button at bottom](images/screenshots/view-controls/settings-dialog.png)
+| Shortcut | Action |
+|----------|--------|
+| ++ctrl+plus++ | Zoom in |
+| ++ctrl+minus++ | Zoom out |
+| ++ctrl+0++ | Reset zoom to 100% |
+| ++ctrl++ + scroll | Zoom with mouse wheel |
+| ++f11++ | Toggle fullscreen |
+| ++d++ | Toggle Donut Mode |
 
-The Settings dialog gives you three theme choices. Your selection saves automatically and persists across sessions.
+On macOS, use ++cmd++ instead of ++ctrl++.
 
-### Success! You've Changed Your Theme
+---
 
-You'll see:
-- Theme updates immediately across the entire app
-- Your preference saved automatically
-- Setting persists when you close and reopen
-- No need to refresh or restart
+## Quick Reference
 
-## Fullscreen Mode
+| I want to... | How to do it |
+|--------------|-------------|
+| Change theme | Gear icon → Select Light/Dark/Auto |
+| Zoom in | ++ctrl+plus++ or click + button |
+| Zoom out | ++ctrl+minus++ or click − button |
+| Reset zoom | ++ctrl+0++ or click reset button |
+| Enter fullscreen | ++f11++ or click fullscreen icon |
+| Exit fullscreen | ++f11++ or ++esc++ |
+| Toggle donut mode | Press ++d++ or click donut icon |
 
-![9Boxer application in fullscreen mode showing maximized grid view with employee tiles filling entire screen, toolbar at top with all controls visible, right panel with tabs accessible, and no browser chrome or system bars visible, demonstrating distraction-free workspace for focused calibration work](images/screenshots/view-controls/fullscreen-mode.png)
+---
 
-Press F11 (Windows/Linux) or Cmd+Ctrl+F (macOS) to enter fullscreen mode. This maximizes your workspace for focused calibration sessions.
+## Next Steps
 
-## Future Settings
-
-The Settings dialog is designed to accommodate additional preferences as the application evolves. Potential future settings may include:
-
-- Grid layout preferences
-- Export defaults
-- Notification preferences
-- Language/locale options
-- Data retention settings
-
-Check future releases for additional customization options.
-
-## Tips
-
-!!! tip "Theme Recommendations"
-    - **Auto mode** is recommended for most users - it adapts to your environment automatically
-    - **Dark mode** is preferred for extended use sessions to reduce eye strain
-    - **Light mode** is useful when presenting or sharing screen in bright environments
-
-!!! info "No Account Required"
-    All settings are stored locally on your device. No account or login is required. Your preferences are private and never leave your computer.
-
-## Related Topics
-
-- [Getting Started](getting-started.md) - Initial setup and first-time configuration
-- [Tips and Best Practices](tips.md) - General usage recommendations
-- [Troubleshooting](troubleshooting.md) - Resolve common issues
+- [Donut Mode](donut-mode.md) - Understanding the donut exercise
+- [Keyboard Shortcuts](keyboard-shortcuts.md) - Complete shortcut reference

@@ -78,9 +78,9 @@ The file saves to your computer's default download folder. The filename is `modi
 
 The export creates a new file - your original file is never modified. If you want to undo changes, simply re-upload your original file to start fresh. The export doesn't affect your source data at all.
 
-### Does the app auto-save my changes?
+### How do I save my changes?
 
-No. 9Boxer does NOT auto-save. You must click "Apply Changes to Excel" in the File menu to export your changes. All changes are lost if you close the app without exporting. Export frequently to avoid losing work!
+Click "Apply Changes to Excel" in the File menu to export your changes to an Excel file. This creates a file you can share with stakeholders or import into your HRIS.
 
 ### How do I share my grid with others?
 
@@ -132,15 +132,15 @@ Make sure you're clicking directly on the employee tile (not the box background)
 
 ### Upload failed - what went wrong?
 
-Common causes: column names don't match exactly (case-sensitive!), Performance/Potential values aren't Low/Medium/High, or file exceeds 10MB. Check that you have all four required columns with exact names: `Employee ID`, `Worker`, `Performance`, `Potential`. See [Uploading Data](uploading-data.md#upload-errors-and-solutions) for detailed troubleshooting.
+Common causes: Performance/Potential values aren't Low/Medium/High, or file exceeds 10MB. Check that you have all four required columns: `Employee ID`, `Worker`, `Performance`, `Potential`. See [Uploading Data](uploading-data.md#upload-errors-and-solutions) for detailed troubleshooting.
 
 ### The grid looks wrong or incomplete - how do I reset?
 
 Close the app and reopen it, then re-upload your file. This resets the session completely. If the grid still looks wrong, check your Excel file for invalid Performance/Potential values (must be exactly Low, Medium, or High). See [Troubleshooting](troubleshooting.md#grid-looks-wrong-or-incomplete).
 
-### I lost my changes! Can I recover them?
+### How do I recover a previous version of my work?
 
-Unfortunately, no. 9Boxer doesn't auto-save or maintain session history. If you closed without exporting, your changes are lost. Best practice: export frequently during long sessions to avoid this. See [Exporting](exporting.md#best-practices-for-exporting).
+If you need to go back to an earlier state, re-upload your original Excel file or a previously exported version. Each export creates a snapshot you can return to. See [Exporting](exporting.md#best-practices-for-exporting).
 
 ### Why does Windows warn me the app is unsafe during installation?
 

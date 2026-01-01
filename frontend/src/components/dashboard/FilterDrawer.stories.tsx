@@ -176,15 +176,12 @@ const withStoreState = (
       // Apply custom state
       storeUpdater(mockEmployees);
 
-      // Open the drawer
-      filterStore.toggleDrawer();
+      // Open the drawer directly (avoid toggle which causes flicker with multiple stories on docs page)
+      useFilterStore.setState({ isDrawerOpen: true });
 
       // Cleanup: close drawer on unmount
       return () => {
-        const store = useFilterStore.getState();
-        if (store.isDrawerOpen) {
-          store.toggleDrawer();
-        }
+        useFilterStore.setState({ isDrawerOpen: false });
       };
     }, []);
 

@@ -31,7 +31,7 @@ graph TD
 | Workflow | Best For | Time Required | Key Features Used |
 |----------|----------|---------------|-------------------|
 | **[2-Minute Quickstart](../quickstart.md)** | First-time users wanting to see the grid quickly | 2 minutes | Upload, basic viewing |
-| **[Getting Started](../getting-started.md)** | New users learning the complete workflow | 10 minutes | Upload, review, change, export |
+| **[Your First Calibration](../getting-started.md)** | Running your first calibration workflow | 10-15 minutes | Upload, review, change, export |
 | **[Talent Calibration](talent-calibration.md)** | Preparing for or conducting calibration meetings | 20-90 minutes | Statistics, Intelligence, Donut Mode, Filters |
 | **[Making Changes](making-changes.md)** | Moving employees to update ratings | 5-10 minutes | Drag-and-drop, change tracking |
 | **[Adding Notes](adding-notes.md)** | Documenting decisions and creating audit trails | 5 minutes to learn | Changes tab, notes fields |
@@ -219,8 +219,8 @@ Often, you'll use multiple workflows together. Here are common combinations:
    - No → Continue below
 
 4. **Do you want to learn how everything works?**
-   - Yes → [10-Minute Getting Started Guide](../getting-started.md)
-   - No → Browse [Feature Guides](../index.md#need-specific-help)
+   - Yes → [Your First Calibration](../getting-started.md)
+   - No → Browse [Common Tasks](../index.md#common-tasks)
 
 ---
 
@@ -237,5 +237,5 @@ Can't find the right workflow?
 **Quick Links:**
 
 - [← Back to Home](../index.md)
-- [All Workflows](../index.md#ready-to-make-changes)
-- [All Features](../index.md#need-specific-help)
+- [Common Tasks](../index.md#common-tasks)
+- [Need Help?](../index.md#need-help)

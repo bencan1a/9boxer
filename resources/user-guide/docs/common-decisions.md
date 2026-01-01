@@ -184,10 +184,9 @@ Stuck on a decision? This guide addresses frequent questions about which feature
 
 ---
 
-✅ **Before closing the app**
-- **CRITICAL:** No auto-save!
-- Closing without exporting loses ALL work
-- Get in the habit: Change → Export → Close
+✅ **Before uploading a new file**
+- Export current work before loading new data
+- Each upload starts a fresh session
 
 ---
 

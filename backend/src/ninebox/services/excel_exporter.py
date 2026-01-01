@@ -306,7 +306,7 @@ class ExcelExporter:
             data_sheet.cell(row_idx, 4, emp.job_title)
             data_sheet.cell(row_idx, 5, emp.job_profile)
             data_sheet.cell(row_idx, 6, emp.job_level)
-            data_sheet.cell(row_idx, 7, emp.manager)
+            data_sheet.cell(row_idx, 7, emp.direct_manager)
             data_sheet.cell(row_idx, 8, emp.management_chain_04)
             data_sheet.cell(row_idx, 9, emp.management_chain_05)
             data_sheet.cell(row_idx, 10, emp.management_chain_06)

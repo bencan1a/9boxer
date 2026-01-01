@@ -3,7 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn, userEvent, within } from "@storybook/test";
 import { FileMenuButton } from "./FileMenuButton";
 import Box from "@mui/material/Box";
 
@@ -135,7 +135,7 @@ export const Disabled: Story = {
 };
 
 /**
- * Menu open (controlled)
+ * Menu open state - uses play function to click button so anchorEl is properly set
  */
 export const MenuOpen: Story = {
   tags: ["screenshot"],
@@ -145,6 +145,10 @@ export const MenuOpen: Story = {
   args: {
     fileName: "employees.xlsx",
     changeCount: 3,
-    isOpen: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("file-menu-button");
+    await userEvent.click(button);
   },
 };

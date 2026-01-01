@@ -1,9 +1,12 @@
-# Preparing for Talent Calibration
+# Complete Calibration Reference
 
-> **Time:** 20-30 minutes
-> **Who this is for:** HR managers, department heads preparing for quarterly/annual talent reviews
+> **Time:** 20-30 minutes to read in full
+> **Who this is for:** HR managers, department heads running quarterly/annual talent reviews
+> **First time?** Start with [Your First Calibration](../getting-started.md) for a streamlined 15-minute guide
 
-Talent calibration meetings ensure consistent performance ratings across teams. This guide shows you how to use 9Boxer to prepare for, conduct, and follow up on calibration sessions.
+This is the comprehensive reference for talent calibration meetings. It includes complete checklists, common scenarios, troubleshooting, and advanced techniques. Use this guide when you need the full picture or want to handle edge cases.
+
+For a faster, essential-only workflow, see [Your First Calibration](../getting-started.md).
 
 ---
 

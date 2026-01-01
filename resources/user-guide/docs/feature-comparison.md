@@ -168,7 +168,7 @@ graph TD
 
 - ✅ You've finished your work session
 - ✅ You need to share results with others
-- ✅ Before closing the app (no auto-save!)
+- ✅ Before uploading a new file
 - ✅ After calibration meeting (capture decisions)
 
 **Wait to export when:**

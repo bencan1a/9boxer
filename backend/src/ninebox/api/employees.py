@@ -10,7 +10,11 @@ from ninebox.core.dependencies import get_employee_service, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.filters import EmployeeFilters
 from ninebox.services.employee_service import EmployeeService, is_big_mover
-from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+from ninebox.services.sample_data_generator import (
+    RichDatasetConfig,
+    generate_rich_dataset,
+    get_column_schema,
+)
 from ninebox.services.session_manager import SessionManager
 
 logger = logging.getLogger(__name__)
@@ -105,6 +109,32 @@ class GenerateSampleResponse(BaseModel):
     filename: str  # Filename of the generated dataset
 
 
+class ColumnSchemaItem(BaseModel):
+    """Schema for a single column in the Excel file."""
+
+    name: str = Field(description="Exact column name (case-sensitive)")
+    data_type: str = Field(description="Data type: string, integer, enum, date, boolean, datetime")
+    description: str = Field(description="Human-readable description")
+    required: bool = Field(description="Whether this column is required for 9Boxer")
+    category: str = Field(
+        description="Category: identity, ratings, organization, job_info, history, tracking, donut"
+    )
+    valid_values: list[str] | None = Field(
+        default=None, description="Valid values for enum-type columns"
+    )
+    example: str | None = Field(default=None, description="Example value")
+    used_for: str | None = Field(default=None, description="How 9Boxer uses this column")
+
+
+class ColumnSchemaResponse(BaseModel):
+    """Response containing column schema for Excel files."""
+
+    columns: list[ColumnSchemaItem]
+    total_columns: int
+    required_columns: int
+    categories: list[str]
+
+
 @router.get("", response_model=dict)
 async def get_employees(
     levels: str | None = Query(None, description="Comma-separated levels (e.g., 'MT2,MT4')"),
@@ -179,6 +209,53 @@ async def get_filter_options(
         )
 
     return emp_service.get_filter_options(session.current_employees)
+
+
+@router.get("/column-schema", response_model=ColumnSchemaResponse)
+async def get_excel_column_schema() -> ColumnSchemaResponse:
+    """Get the column schema for 9Boxer Excel files.
+
+    Returns metadata about all columns that 9Boxer recognizes, including:
+    - Required input columns (Employee ID, Worker, Performance, Potential)
+    - Optional input columns (job info, organization, history)
+    - Output columns added by 9Boxer (tracking, donut exercise)
+
+    This endpoint serves as the source of truth for documentation
+    and can be used to generate up-to-date column reference tables.
+
+    Returns:
+        ColumnSchemaResponse containing column definitions and metadata
+
+    Example:
+        >>> GET /api/employees/column-schema
+        >>> # Returns list of all columns with their metadata
+    """
+    schema = get_column_schema()
+
+    # Convert dataclass objects to Pydantic models
+    columns = [
+        ColumnSchemaItem(
+            name=col.name,
+            data_type=col.data_type,
+            description=col.description,
+            required=col.required,
+            category=col.category.value,
+            valid_values=col.valid_values,
+            example=col.example,
+            used_for=col.used_for,
+        )
+        for col in schema
+    ]
+
+    # Get unique categories in order
+    categories = list(dict.fromkeys(col.category for col in columns))
+
+    return ColumnSchemaResponse(
+        columns=columns,
+        total_columns=len(columns),
+        required_columns=sum(1 for col in columns if col.required),
+        categories=categories,
+    )
 
 
 @router.get("/{employee_id}", response_model=Employee)

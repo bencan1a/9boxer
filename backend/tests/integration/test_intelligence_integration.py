@@ -36,7 +36,7 @@ def _create_employee(
         location=location,
         job_function=job_function,
         job_level=job_level,
-        manager="Test Manager",
+        direct_manager="Test Manager",
         hire_date=date(2020, 1, 1),
         tenure_category=tenure_category,
         time_in_job_profile="1-2 years",

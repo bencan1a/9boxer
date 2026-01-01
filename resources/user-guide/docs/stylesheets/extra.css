@@ -527,6 +527,94 @@
 }
 
 /* ============================================================================
+   TABLE OF CONTENTS - RIGHT SIDEBAR
+   Remove scrolling container, show full list, widen for single-line items
+   ============================================================================ */
+
+/* Widen the right sidebar to fit TOC items on single lines */
+.md-sidebar--secondary {
+  width: 16rem;  /* Increased from default 12.1rem */
+}
+
+/* Remove max-height constraint that causes scrolling */
+.md-nav--secondary .md-nav__list {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Make the TOC sidebar not scroll internally */
+.md-sidebar--secondary .md-sidebar__inner {
+  overflow: visible;
+}
+
+/* Ensure the TOC wrapper doesn't constrain height */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  overflow: visible;
+}
+
+/* Allow TOC links to use full width without wrapping */
+.md-nav--secondary .md-nav__link {
+  white-space: nowrap;
+}
+
+/* Prevent ellipsis truncation on TOC items - show full text */
+.md-nav--secondary .md-ellipsis {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   SCREENSHOT PLACEHOLDERS
+   Visible placeholder boxes for screenshots that haven't been created yet
+   ============================================================================ */
+
+.screenshot-placeholder {
+  display: block;
+  width: 100%;
+  min-height: 200px;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(25, 118, 210, 0.1) 100%);
+  border: 2px dashed rgba(25, 118, 210, 0.3);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-md) 0;
+  position: relative;
+}
+
+.screenshot-placeholder::before {
+  content: "Screenshot Placeholder";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(25, 118, 210, 0.5);
+  font-size: 0.9rem;
+  font-weight: var(--typography-font-weight-medium);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] .screenshot-placeholder {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-md-color-scheme="slate"] .screenshot-placeholder::before {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* When the actual image loads, hide the placeholder styling */
+.screenshot-placeholder[src]:not([src*="placeholder"]) {
+  min-height: auto;
+  background: none;
+  border: none;
+}
+
+.screenshot-placeholder[src]:not([src*="placeholder"])::before {
+  display: none;
+}
+
+/* ============================================================================
    CUSTOM COMPONENTS
    ============================================================================ */
 
