@@ -13,6 +13,7 @@ import { FileUploadDialog } from "../common/FileUploadDialog";
 import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
 import { ApplyChangesDialog } from "../dialogs/ApplyChangesDialog";
 import { UnsavedChangesDialog } from "../dialogs/UnsavedChangesDialog";
+import { AboutDialog } from "../dialogs/AboutDialog";
 import { useSnackbar } from "../../contexts/SnackbarContext";
 import { apiClient } from "../../services/api";
 import { sampleDataService } from "../../services/sampleDataService";
@@ -57,9 +58,11 @@ export const AppBarContainer: React.FC = () => {
 
   // Local state for dialogs and menus
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [loadSampleDialogOpen, setLoadSampleDialogOpen] = useState(false);
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
+  const [helpMenuOpen, setHelpMenuOpen] = useState(false);
   const [applyChangesDialogOpen, setApplyChangesDialogOpen] = useState(false);
   const [applyError, setApplyError] = useState<string | undefined>(undefined);
   const [isApplying, setIsApplying] = useState(false);
@@ -371,6 +374,7 @@ export const AppBarContainer: React.FC = () => {
 
   // Handle help menu
   const handleUserGuideClick = async () => {
+    setHelpMenuOpen(false); // Close help menu
     try {
       // Check if running in Electron
       if (window.electronAPI?.openUserGuide) {
@@ -389,8 +393,8 @@ export const AppBarContainer: React.FC = () => {
   };
 
   const handleAboutClick = () => {
-    // Future: Open about dialog
-    logger.info("About clicked");
+    setHelpMenuOpen(false); // Close help menu before opening dialog
+    setAboutDialogOpen(true);
   };
 
   // Build filter tooltip message
@@ -451,8 +455,10 @@ export const AppBarContainer: React.FC = () => {
         isFilterDisabled={!sessionId}
         isExporting={isApplying}
         isFileMenuOpen={fileMenuOpen}
+        isHelpMenuOpen={helpMenuOpen}
         recentFiles={recentFiles}
         onFileMenuToggle={() => setFileMenuOpen(!fileMenuOpen)}
+        onHelpMenuToggle={() => setHelpMenuOpen(!helpMenuOpen)}
         onImportClick={handleImportClick}
         onLoadSampleClick={handleLoadSampleClick}
         onExportClick={handleExportClick}
@@ -468,6 +474,13 @@ export const AppBarContainer: React.FC = () => {
       <SettingsDialog
         open={settingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
+      />
+
+      <AboutDialog
+        open={aboutDialogOpen}
+        onClose={() => setAboutDialogOpen(false)}
+        variant="compact"
+        onUserGuideClick={handleUserGuideClick}
       />
 
       <FileUploadDialog
