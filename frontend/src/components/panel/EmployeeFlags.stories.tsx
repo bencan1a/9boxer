@@ -33,7 +33,7 @@ import type { Employee } from "@/types/employee";
  * - `data-testid="flag-chip-{flagKey}"` - Individual flag chips
  */
 const meta: Meta<typeof EmployeeFlags> = {
-  title: "Panel/EmployeeFlags",
+  title: "App/Right Panel/Details/EmployeeFlags",
   component: EmployeeFlags,
   tags: ["autodocs"],
   parameters: {
@@ -94,6 +94,10 @@ export const SingleFlag: Story = {
  * Demonstrates typical multi-flag scenario for documentation screenshots.
  */
 export const WithMultipleFlags: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "details-flags-ui" },
+  },
   args: {
     employee: {
       ...baseEmployee,

@@ -36,7 +36,7 @@ import {
  * - Uses Material-UI theme colors (success, warning, error)
  */
 const meta: Meta<typeof IntelligenceSummary> = {
-  title: "Intelligence/IntelligenceSummary",
+  title: "App/Right Panel/Intelligence/IntelligenceSummary",
   component: IntelligenceSummary,
   tags: ["autodocs"],
   parameters: {
@@ -70,6 +70,10 @@ export const Default: Story = {
  * Shows ideal calibration state with well-balanced distributions.
  */
 export const ExcellentQuality: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-summary-excellent" },
+  },
   args: {
     data: mockExcellentIntelligence,
   },
@@ -92,6 +96,11 @@ export const GoodQuality: Story = {
  * Immediate review and corrective action recommended.
  */
 export const NeedsAttention: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-summary-needs-attention" },
+    screenshot: { enabled: true, id: "intelligence-summary-needs-attention" },
+  },
   args: {
     data: mockNeedsAttentionIntelligence,
   },

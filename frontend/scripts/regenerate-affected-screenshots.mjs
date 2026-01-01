@@ -7,7 +7,7 @@
  * that were affected by code changes.
  *
  * Usage:
- *   node frontend/scripts/regenerate-affected-screenshots.js [--dry-run]
+ *   node frontend/scripts/regenerate-affected-screenshots.mjs [--dry-run]
  *
  * Options:
  *   --dry-run  Show what would be regenerated without actually doing it

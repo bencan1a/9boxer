@@ -55,7 +55,7 @@ const InteractiveErrorDemo = () => {
 };
 
 const meta: Meta<typeof ErrorBoundary> = {
-  title: "Common/ErrorBoundary",
+  title: "App/Common/ErrorBoundary",
   component: ErrorBoundary,
   tags: ["autodocs"],
   parameters: {

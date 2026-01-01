@@ -23,7 +23,7 @@ import Typography from "@mui/material/Typography";
  * - Progress bars with conditional formatting
  */
 const meta: Meta<typeof ColoredPercentageBar> = {
-  title: "Panel/Statistics/ColoredPercentageBar",
+  title: "App/Right Panel/Statistics/ColoredPercentageBar",
   component: ColoredPercentageBar,
   tags: ["autodocs"],
   parameters: {

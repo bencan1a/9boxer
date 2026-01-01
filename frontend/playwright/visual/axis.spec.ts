@@ -13,19 +13,23 @@ test.describe("Axis Visual Tests", () => {
   test("horizontal axis default", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-axis--horizontal",
+      "app-grid-axis--horizontal",
       "axis-horizontal"
     );
   });
 
   test("vertical axis default", async ({ page }) => {
-    await snapshotStoryBothThemes(page, "grid-axis--vertical", "axis-vertical");
+    await snapshotStoryBothThemes(
+      page,
+      "app-grid-axis--vertical",
+      "axis-vertical"
+    );
   });
 
   test("horizontal axis custom label", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-axis--custom-horizontal-label",
+      "app-grid-axis--custom-horizontal-label",
       "axis-horizontal-custom"
     );
   });
@@ -33,7 +37,7 @@ test.describe("Axis Visual Tests", () => {
   test("vertical axis custom label", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-axis--custom-vertical-label",
+      "app-grid-axis--custom-vertical-label",
       "axis-vertical-custom"
     );
   });
@@ -41,7 +45,7 @@ test.describe("Axis Visual Tests", () => {
   test("hidden horizontal axis", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-axis--hidden-horizontal",
+      "app-grid-axis--hidden-horizontal",
       "axis-horizontal-hidden"
     );
   });
@@ -49,7 +53,7 @@ test.describe("Axis Visual Tests", () => {
   test("hidden vertical axis", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-axis--hidden-vertical",
+      "app-grid-axis--hidden-vertical",
       "axis-vertical-hidden"
     );
   });

@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dialogs/LoadSampleDialog",
+  title: "App/Dialogs/LoadSampleDialog",
   component: LoadSampleDialog,
   parameters: {
     layout: "centered",
@@ -69,8 +69,9 @@ const DialogWrapper = (args: {
  * Default state - no existing data, no warning
  */
 export const NoExistingData: Story = {
-  render: () => <DialogWrapper hasExistingData={false} />,
+  tags: ["screenshot"],
   parameters: {
+    screenshot: { enabled: true, id: "quickstart-load-sample-dialog" },
     docs: {
       description: {
         story:
@@ -78,6 +79,7 @@ export const NoExistingData: Story = {
       },
     },
   },
+  render: () => <DialogWrapper hasExistingData={false} />,
 };
 
 /**

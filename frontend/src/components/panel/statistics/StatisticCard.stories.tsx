@@ -21,7 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
  * - KPI visualizations
  */
 const meta: Meta<typeof StatisticCard> = {
-  title: "Panel/Statistics/StatisticCard",
+  title: "App/Right Panel/Statistics/StatisticCard",
   component: StatisticCard,
   tags: ["autodocs"],
   parameters: {

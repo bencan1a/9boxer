@@ -28,7 +28,7 @@ import type {
  * - Below employee information section
  */
 const meta: Meta<typeof RatingsTimeline> = {
-  title: "Panel/RatingsTimeline",
+  title: "App/Right Panel/Details/RatingsTimeline",
   component: RatingsTimeline,
   tags: ["autodocs"],
   parameters: {
@@ -92,6 +92,10 @@ const baseEmployee: Employee = {
  * Demonstrates upward trajectory in performance over time.
  */
 export const WithHistory: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "timeline-employee-history" },
+  },
   args: {
     employee: {
       ...baseEmployee,

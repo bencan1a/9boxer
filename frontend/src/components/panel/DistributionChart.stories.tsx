@@ -22,7 +22,7 @@ import type { PositionDistribution } from "@/types/api";
  * - position_label: human-readable label (e.g., "9 - Star Performer")
  */
 const meta: Meta<typeof DistributionChart> = {
-  title: "Panel/DistributionChart",
+  title: "App/Right Panel/Statistics/DistributionChart",
   component: DistributionChart,
   tags: ["autodocs"],
   parameters: {

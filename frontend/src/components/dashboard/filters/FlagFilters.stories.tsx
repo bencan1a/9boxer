@@ -5,7 +5,7 @@ import { fn } from "@storybook/test";
 import { FLAGS } from "../../../constants/flags";
 
 const meta: Meta<typeof FlagFilters> = {
-  title: "Dashboard/Filters/FlagFilters",
+  title: "App/Dashboard/Filters/FlagFilters",
   component: FlagFilters,
   tags: ["autodocs"],
   parameters: {

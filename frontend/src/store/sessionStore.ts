@@ -34,6 +34,7 @@ interface SessionState {
   filename: string | null;
   filePath: string | null;
   isLoading: boolean;
+  isRestoringSession: boolean;
   error: string | null;
   selectedEmployeeId: number | null;
 
@@ -82,6 +83,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   filename: null,
   filePath: null,
   isLoading: false,
+  isRestoringSession: false,
   error: null,
   selectedEmployeeId: null,
 
@@ -423,7 +425,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       return false;
     }
 
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, isRestoringSession: true, error: null });
     try {
       // Try to restore from existing backend session first
       if (cachedSessionId) {
@@ -460,6 +462,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             donutEvents: [],
             selectedEmployeeId,
             isLoading: false,
+            isRestoringSession: false,
             error: null,
           });
 
@@ -505,6 +508,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutEvents: [],
         hasSampleData: false,
         isLoading: false,
+        isRestoringSession: false,
         error: null,
       });
       return false;
@@ -518,6 +522,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutEvents: [],
         hasSampleData: false,
         isLoading: false,
+        isRestoringSession: false,
         error: null,
       });
       return false;
@@ -623,6 +628,8 @@ export const selectEvents = (state: SessionState) => state.events;
 export const selectFilename = (state: SessionState) => state.filename;
 export const selectFilePath = (state: SessionState) => state.filePath;
 export const selectIsLoading = (state: SessionState) => state.isLoading;
+export const selectIsRestoringSession = (state: SessionState) =>
+  state.isRestoringSession;
 export const selectError = (state: SessionState) => state.error;
 export const selectSelectedEmployeeId = (state: SessionState) =>
   state.selectedEmployeeId;

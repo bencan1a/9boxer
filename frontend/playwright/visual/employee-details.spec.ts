@@ -13,7 +13,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("default employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--default",
+      "app-right-panel-details-employeedetails--default",
       "employee-details-default"
     );
   });
@@ -21,7 +21,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("minimal data employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--minimal-data",
+      "app-right-panel-details-employeedetails--minimal-data",
       "employee-details-minimal-data"
     );
   });
@@ -29,7 +29,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("no manager employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--no-manager",
+      "app-right-panel-details-employeedetails--no-manager",
       "employee-details-no-manager"
     );
   });
@@ -37,7 +37,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("long fields employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--long-fields",
+      "app-right-panel-details-employeedetails--long-fields",
       "employee-details-long-fields"
     );
   });
@@ -45,7 +45,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("modified in session employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--modified-in-session",
+      "app-right-panel-details-employeedetails--modified-in-session",
       "employee-details-modified-in-session"
     );
   });
@@ -53,7 +53,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("low performer employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--low-performer",
+      "app-right-panel-details-employeedetails--low-performer",
       "employee-details-low-performer"
     );
   });
@@ -61,7 +61,7 @@ test.describe("EmployeeDetails Visual Tests", () => {
   test("high potential development employee details", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-employeedetails--high-potential-development",
+      "app-right-panel-details-employeedetails--high-potential-development",
       "employee-details-high-potential-development"
     );
   });

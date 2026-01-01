@@ -80,6 +80,8 @@ const lazyLoadBackend = {
       .then((resources) => {
         // Add to i18next resource bundles for caching
         i18n.addResourceBundle(language, namespace, resources, true, true);
+        // Explicitly emit loaded event to trigger component re-renders
+        i18n.emit("loaded", { lng: language });
         callback(null, resources);
       })
       .catch((error) => {
@@ -126,10 +128,13 @@ i18n
       lookupLocalStorage: "9boxer-language",
     },
     react: {
-      useSuspense: true, // Enable suspense for async loading
+      useSuspense: false, // Disable suspense - use event-driven re-rendering instead
+      // Re-render components when language changes or resources load
+      bindI18n: "languageChanged loaded",
+      // Re-render when new language resources are added
+      bindI18nStore: "added",
     },
-    // Don't load resources synchronously - we'll load them on-demand
-    resources: {},
+    // Don't set resources - let the backend handle all language loading on-demand
   });
 
 // Preload English immediately for faster initial render

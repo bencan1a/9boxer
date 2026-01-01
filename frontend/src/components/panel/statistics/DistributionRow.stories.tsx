@@ -25,7 +25,7 @@ import { GroupingIndicator } from "./GroupingIndicator";
  * - Employee allocation summaries
  */
 const meta: Meta<typeof DistributionRow> = {
-  title: "Panel/Statistics/DistributionRow",
+  title: "App/Right Panel/Statistics/DistributionRow",
   component: DistributionRow,
   tags: ["autodocs"],
   parameters: {

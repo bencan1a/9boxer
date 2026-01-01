@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ReportingChainFilter> = {
-  title: "Dashboard/Filters/ReportingChainFilter",
+  title: "App/Dashboard/Filters/ReportingChainFilter",
   component: ReportingChainFilter,
   tags: ["autodocs"],
   parameters: {

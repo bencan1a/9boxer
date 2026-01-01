@@ -114,7 +114,7 @@ export const ColoredPercentageBar: React.FC<ColoredPercentageBarProps> = ({
           variant="determinate"
           value={percentage}
           sx={{
-            height: 8, // Specific to progress bars
+            height: theme.tokens.dimensions.progressBar.height,
             borderRadius: theme.tokens.radius.sm / 8, // Convert 4px to MUI units (0.5)
             backgroundColor: theme.palette.action.hover,
             "& .MuiLinearProgress-bar": {
@@ -130,7 +130,7 @@ export const ColoredPercentageBar: React.FC<ColoredPercentageBarProps> = ({
         <Typography
           variant="body2"
           sx={{
-            minWidth: 45,
+            minWidth: theme.tokens.dimensions.progressBar.labelMinWidth,
             textAlign: "right",
           }}
           data-testid={`${testId || "colored-percentage-bar"}-label`}

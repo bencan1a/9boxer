@@ -22,8 +22,9 @@ import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { FileUploadDialog } from "../common/FileUploadDialog";
 import { ViewControls } from "../common/ViewControls";
-import { EmptyState } from "../EmptyState";
+import { EmptyState } from "./DashboardEmptyState";
 import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useSession } from "../../hooks/useSession";
 import {
   useSessionStore,
@@ -31,6 +32,7 @@ import {
   selectClearSession,
   selectLoadEmployees,
   selectEmployees,
+  selectIsRestoringSession,
 } from "../../store/sessionStore";
 import {
   useUiStore,
@@ -59,6 +61,7 @@ export const DashboardPage: React.FC = () => {
   const clearSession = useSessionStore(selectClearSession);
   const loadEmployees = useSessionStore(selectLoadEmployees);
   const employees = useSessionStore(selectEmployees);
+  const isRestoringSession = useSessionStore(selectIsRestoringSession);
 
   const isRightPanelCollapsed = useUiStore(selectIsRightPanelCollapsed);
   const rightPanelSize = useUiStore(selectRightPanelSize);
@@ -141,7 +144,14 @@ export const DashboardPage: React.FC = () => {
 
   // Restore session from localStorage on mount
   useEffect(() => {
-    restoreSession();
+    const initializeSession = async () => {
+      await restoreSession();
+      // Notify Electron that session restoration is complete so splash screen can close
+      if (window.electronAPI?.notifySessionRestored) {
+        await window.electronAPI.notifySessionRestored();
+      }
+    };
+    initializeSession();
   }, [restoreSession]);
 
   // Initialize panel state on mount
@@ -294,7 +304,18 @@ export const DashboardPage: React.FC = () => {
             overflow: "auto",
           }}
         >
-          {!sessionId ? (
+          {isRestoringSession ? (
+            <Box
+              sx={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <LoadingSpinner message={t("common.loading")} size={60} />
+            </Box>
+          ) : !sessionId ? (
             <>
               <EmptyState
                 onLoadSampleData={handleLoadSampleClick}

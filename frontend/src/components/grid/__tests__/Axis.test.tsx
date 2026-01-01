@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "../../../test/utils";
 import { Axis } from "../Axis";
+import { tokens } from "../../../theme/tokens";
 
 describe("Axis", () => {
   describe("horizontal orientation", () => {
@@ -53,7 +54,9 @@ describe("Axis", () => {
       const axis = screen.getByTestId("grid-axis-vertical");
       const styles = window.getComputedStyle(axis);
 
-      expect(styles.width).toBe("64px");
+      // Use design token for vertical axis width
+      const expectedWidth = `${tokens.dimensions.axis.verticalWidth}px`;
+      expect(styles.width).toBe(expectedWidth);
       expect(styles.writingMode).toBe("vertical-rl");
       expect(styles.transform).toBe("rotate(180deg)");
     });

@@ -137,8 +137,8 @@ export default defineConfig({
 
   // Global setup/teardown for backend server
   // Backend is started once before all tests and stopped after all tests
-  globalSetup: require.resolve("./playwright/global-setup.ts"),
-  globalTeardown: require.resolve("./playwright/global-teardown.ts"),
+  globalSetup: "./playwright/global-setup.ts",
+  globalTeardown: "./playwright/global-teardown.ts",
 
   // Auto-start both dev server and Storybook before running tests
   // Backend is handled by globalSetup

@@ -32,7 +32,7 @@ import type {
  * - `data-testid="manager-chain-button-{index}"` - Manager card buttons
  */
 const meta: Meta<typeof ManagementChain> = {
-  title: "Panel/ManagementChain",
+  title: "App/Right Panel/Details/ManagementChain",
   component: ManagementChain,
   tags: ["autodocs"],
   parameters: {
@@ -97,6 +97,10 @@ const baseEmployee: Employee = {
  * Demonstrates typical organization structure.
  */
 export const WithManager: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "details-reporting-chain-clickable" },
+  },
   args: {
     employee: {
       ...baseEmployee,

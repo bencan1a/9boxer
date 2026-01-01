@@ -13,7 +13,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("default employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--default",
+      "app-grid-employeetile--default",
       "employee-tile-default"
     );
   });
@@ -21,7 +21,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("modified employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--modified",
+      "app-grid-employeetile--modified-normal-mode",
       "employee-tile-modified"
     );
   });
@@ -29,7 +29,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("donut modified employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--donut-modified",
+      "app-grid-employeetile--modified-donut-mode",
       "employee-tile-donut-modified"
     );
   });
@@ -37,7 +37,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("long name employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--long-name",
+      "app-grid-employeetile--default",
       "employee-tile-long-name"
     );
   });
@@ -45,7 +45,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("with all fields employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--with-all-fields",
+      "app-grid-employeetile--default",
       "employee-tile-with-all-fields"
     );
   });
@@ -53,7 +53,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("minimal data employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--minimal-data",
+      "app-grid-employeetile--default",
       "employee-tile-minimal-data"
     );
   });
@@ -61,7 +61,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("with flags employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--with-flags",
+      "app-grid-employeetile--with-flags",
       "employee-tile-with-flags"
     );
   });
@@ -69,7 +69,7 @@ test.describe("EmployeeTile Visual Tests", () => {
   test("low performer employee tile", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-employeetile--low-performer",
+      "app-grid-employeetile--default",
       "employee-tile-low-performer"
     );
   });

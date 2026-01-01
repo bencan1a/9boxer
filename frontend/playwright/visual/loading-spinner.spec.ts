@@ -13,7 +13,7 @@ test.describe("LoadingSpinner Visual Tests", () => {
   test("default spinner appearance", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-loadingspinner--default",
+      "app-common-loadingspinner--default",
       "loading-spinner-default"
     );
   });
@@ -21,7 +21,7 @@ test.describe("LoadingSpinner Visual Tests", () => {
   test("small spinner appearance", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-loadingspinner--small",
+      "app-common-loadingspinner--small",
       "loading-spinner-small"
     );
   });
@@ -29,7 +29,7 @@ test.describe("LoadingSpinner Visual Tests", () => {
   test("large spinner appearance", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-loadingspinner--large",
+      "app-common-loadingspinner--large",
       "loading-spinner-large"
     );
   });
@@ -37,7 +37,7 @@ test.describe("LoadingSpinner Visual Tests", () => {
   test("with custom color", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-loadingspinner--with-custom-color",
+      "app-common-loadingspinner--with-custom-color",
       "loading-spinner-custom-color"
     );
   });

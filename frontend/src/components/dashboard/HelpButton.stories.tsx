@@ -8,7 +8,7 @@ import { HelpButton } from "./HelpButton";
 import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/HelpButton",
+  title: "App/Dashboard/HelpButton",
   component: HelpButton,
   parameters: {
     layout: "centered",

@@ -13,7 +13,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("balanced distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--balanced-distribution",
+      "app-right-panel-statistics-distributionchart--balanced-distribution",
       "distribution-chart-balanced"
     );
   });
@@ -21,7 +21,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("skewed distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--skewed-distribution",
+      "app-right-panel-statistics-distributionchart--skewed-distribution",
       "distribution-chart-skewed"
     );
   });
@@ -29,7 +29,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("empty data distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--empty-data",
+      "app-right-panel-statistics-distributionchart--empty-data",
       "distribution-chart-empty"
     );
   });
@@ -37,7 +37,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("high performer heavy distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--high-performer-heavy",
+      "app-right-panel-statistics-distributionchart--high-performer-heavy",
       "distribution-chart-high-performer-heavy"
     );
   });
@@ -45,7 +45,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("small dataset distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--small-dataset",
+      "app-right-panel-statistics-distributionchart--small-dataset",
       "distribution-chart-small-dataset"
     );
   });
@@ -53,7 +53,7 @@ test.describe("DistributionChart Visual Tests", () => {
   test("sparse distribution chart", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-distributionchart--sparse-distribution",
+      "app-right-panel-statistics-distributionchart--sparse-distribution",
       "distribution-chart-sparse"
     );
   });

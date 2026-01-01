@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
 import { ColoredPercentageBar } from "./ColoredPercentageBar";
+import { tokens } from "@/theme/tokens";
 
 describe("ColoredPercentageBar", () => {
   describe("Rendering", () => {
@@ -188,14 +189,15 @@ describe("ColoredPercentageBar", () => {
   });
 
   describe("Progress Bar Properties", () => {
-    it("has correct height of 8px", () => {
+    it("has correct height from design tokens", () => {
       const { container } = render(
         <ColoredPercentageBar percentage={50} position={5} />
       );
 
       const progressBar = container.querySelector(".MuiLinearProgress-root");
       const style = window.getComputedStyle(progressBar!);
-      expect(style.height).toBe("8px");
+      const expectedHeight = `${tokens.dimensions.progressBar.height}px`;
+      expect(style.height).toBe(expectedHeight);
     });
 
     it("has border radius applied", () => {
@@ -207,12 +209,13 @@ describe("ColoredPercentageBar", () => {
       expect(progressBar).toBeTruthy();
     });
 
-    it("label has minimum width for alignment", () => {
+    it("label has minimum width for alignment from design tokens", () => {
       render(<ColoredPercentageBar percentage={5} position={5} />);
 
       const label = screen.getByText("5.0%");
       const style = window.getComputedStyle(label);
-      expect(style.minWidth).toBe("45px");
+      const expectedMinWidth = `${tokens.dimensions.progressBar.labelMinWidth}px`;
+      expect(style.minWidth).toBe(expectedMinWidth);
     });
 
     it("label is right-aligned", () => {

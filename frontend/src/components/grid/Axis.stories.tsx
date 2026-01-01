@@ -24,7 +24,7 @@ import { Axis } from "./Axis";
  * principle and allows flexible composition.
  */
 const meta: Meta<typeof Axis> = {
-  title: "Grid/Axis",
+  title: "App/Grid/Axis",
   component: Axis,
   tags: ["autodocs"],
   parameters: {

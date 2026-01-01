@@ -31,6 +31,11 @@ interface ElectronAPI {
   }>;
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
   showLogs: () => Promise<{ success: boolean }>;
+  /**
+   * Notify the main process that session restoration is complete.
+   * This will close the splash screen if it's still visible.
+   */
+  notifySessionRestored: () => Promise<{ success: boolean }>;
   theme: {
     /**
      * Get the current system theme preference.
@@ -120,6 +125,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
    */
   showLogs: (): Promise<{ success: boolean }> =>
     ipcRenderer.invoke("app:showLogs"),
+
+  /**
+   * Notify the main process that session restoration is complete.
+   * This will close the splash screen if it's still visible.
+   *
+   * @returns Promise resolving to success status
+   *
+   * @example
+   * ```typescript
+   * await window.electronAPI.notifySessionRestored();
+   * ```
+   */
+  notifySessionRestored: (): Promise<{ success: boolean }> =>
+    ipcRenderer.invoke("app:sessionRestored"),
 
   // OS Theme Detection
   theme: {

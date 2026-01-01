@@ -181,7 +181,7 @@ export async function generateSettingsDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "settings-settingsdialog--open",
+    storyId: "app-settings-settingsdialog--open",
     outputPath,
     theme: "light",
     waitTime: 1000,

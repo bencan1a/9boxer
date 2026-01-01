@@ -9,7 +9,7 @@ import {
 } from "../../types/events";
 
 const meta = {
-  title: "Components/Panel/EmployeeChangesSummary",
+  title: "App/Right Panel/Changes/EmployeeChangesSummary",
   component: EmployeeChangesSummary,
   parameters: {
     layout: "padded",

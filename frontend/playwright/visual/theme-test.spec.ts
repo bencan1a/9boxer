@@ -13,7 +13,7 @@ test.describe("Theme Visual Tests", () => {
   test("color palette showcase", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "themetest--color-palette",
+      "design-system-theme--color-palette",
       "theme-color-palette"
     );
   });
@@ -21,12 +21,16 @@ test.describe("Theme Visual Tests", () => {
   test("typography showcase", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "themetest--typography",
+      "design-system-theme--typography",
       "theme-typography"
     );
   });
 
   test("spacing showcase", async ({ page }) => {
-    await snapshotStoryBothThemes(page, "themetest--spacing", "theme-spacing");
+    await snapshotStoryBothThemes(
+      page,
+      "design-system-theme--spacing",
+      "theme-spacing"
+    );
   });
 });

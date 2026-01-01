@@ -8,7 +8,7 @@ import { FileMenuButton } from "./FileMenuButton";
 import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/FileMenuButton",
+  title: "App/Dashboard/FileMenuButton",
   component: FileMenuButton,
   parameters: {
     layout: "padded",
@@ -61,6 +61,10 @@ type Story = StoryObj<typeof meta>;
  * No file selected
  */
 export const NoFile: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "quickstart-file-menu-button" },
+  },
   args: {
     fileName: undefined,
     changeCount: 0,
@@ -134,6 +138,10 @@ export const Disabled: Story = {
  * Menu open (controlled)
  */
 export const MenuOpen: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "file-menu-apply-changes" },
+  },
   args: {
     fileName: "employees.xlsx",
     changeCount: 3,
