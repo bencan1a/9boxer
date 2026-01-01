@@ -5,10 +5,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { PureAppBar } from "./PureAppBar";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/PureAppBar",
+  title: "App/Dashboard/AppBar",
   component: PureAppBar,
   parameters: {
     layout: "fullscreen",
@@ -67,6 +67,10 @@ export const EmptyState: Story = {
  * File loaded - No changes
  */
 export const FileLoaded: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-simplified-appbar" },
+  },
   args: {
     fileName: "employees.xlsx",
     changeCount: 0,
@@ -106,6 +110,10 @@ export const ManyChanges: Story = {
  * With active filters
  */
 export const WithActiveFilters: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "filters-active-chips" },
+  },
   args: {
     fileName: "employees.xlsx",
     changeCount: 5,
@@ -170,29 +178,4 @@ export const HelpMenuOpen: Story = {
     isFilterDisabled: false,
     isHelpMenuOpen: true,
   },
-};
-
-/**
- * Responsive - Mobile view
- */
-export const MobileView: Story = {
-  args: {
-    fileName: "employees.xlsx",
-    changeCount: 3,
-    hasActiveFilters: false,
-    filterTooltip: "Filter employees",
-    isFilterDisabled: false,
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: "mobile1",
-    },
-  },
-  decorators: [
-    (Story) => (
-      <Box sx={{ width: "375px" }}>
-        <Story />
-      </Box>
-    ),
-  ],
 };

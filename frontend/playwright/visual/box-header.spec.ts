@@ -13,7 +13,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("normal box header", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--normal",
+      "app-grid-boxheader--normal",
       "box-header-normal"
     );
   });
@@ -21,7 +21,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("expanded box header", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--expanded",
+      "app-grid-boxheader--expanded",
       "box-header-expanded"
     );
   });
@@ -29,7 +29,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("collapsed box header", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--collapsed",
+      "app-grid-boxheader--collapsed",
       "box-header-collapsed"
     );
   });
@@ -37,7 +37,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("empty box header", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--empty",
+      "app-grid-boxheader--empty",
       "box-header-empty"
     );
   });
@@ -45,7 +45,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("box header with many employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--many-employees",
+      "app-grid-boxheader--many-employees",
       "box-header-many-employees"
     );
   });
@@ -53,7 +53,7 @@ test.describe("BoxHeader Visual Tests", () => {
   test("development position box header", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-boxheader--development-position",
+      "app-grid-boxheader--development-position",
       "box-header-development-position"
     );
   });

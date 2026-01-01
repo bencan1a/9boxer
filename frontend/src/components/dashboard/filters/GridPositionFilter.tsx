@@ -6,7 +6,11 @@
  */
 
 import React from "react";
-import { Box, Typography, Button, ButtonBase, alpha } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import ButtonBase from "@mui/material/ButtonBase";
+import { alpha } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import {

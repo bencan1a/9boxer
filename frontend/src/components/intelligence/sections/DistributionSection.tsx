@@ -3,7 +3,9 @@
  */
 
 import React from "react";
-import { Box, Card, CardContent } from "@mui/material";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import { useTranslation } from "react-i18next";
 import { SectionHeader } from "../atoms/SectionHeader";
 import { DistributionStats } from "../atoms/DistributionStats";

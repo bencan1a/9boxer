@@ -4,6 +4,23 @@
  * This file maps screenshot identifiers to their workflow modules, functions,
  * output paths, and descriptions. Each screenshot is defined by metadata that
  * tells the generator which function to call and where to save the output.
+ *
+ * ## Story Tagging System
+ *
+ * All Storybook stories referenced in this config (via `storyId`) are tagged
+ * with metadata to indicate their purpose:
+ *
+ * - `['autodocs', 'screenshot']` - Stories used for screenshot generation
+ * - `['autodocs', 'experimental']` - Experimental/testing stories (zoom, variants)
+ * - `['autodocs']` - Regular component documentation stories
+ *
+ * This tagging helps organize the Storybook UI and makes it easy to identify
+ * which stories are critical for documentation vs. temporary testing.
+ *
+ * ### Validation
+ *
+ * Run `npm run stories:validate-screenshots` to verify that all story IDs
+ * in this config have the correct 'screenshot' tag in their story files.
  */
 
 /**
@@ -76,7 +93,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateEmployeeTileModified",
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png",
     description: "Employee tile with full orange modified border (2px)",
-    storyId: "grid-employeetile--modified",
+    storyId: "app-grid-employeetile--modified-normal-mode",
     cropping: "element",
   },
   "changes-employee-details": {
@@ -86,7 +103,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png",
     description:
       "Employee details panel showing updated ratings with visible changes",
-    storyId: "panel-employeedetails--with-changes",
+    storyId: "app-right-panel-details-employeedetails--with-changes",
     cropping: "panel",
   },
   "changes-timeline-view": {
@@ -95,7 +112,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateRatingsTimeline",
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png",
     description: "Performance History timeline in employee details",
-    storyId: "panel-ratingstimeline--default",
+    storyId: "app-right-panel-details-ratingstimeline--default",
     cropping: "panel",
   },
   "changes-tab": {
@@ -104,7 +121,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateChangesTab",
     path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png",
     description: "Changes tab with employee movements",
-    storyId: "panel-changetrackertab--default",
+    storyId: "app-right-panel-changes-changetrackertab--default",
     cropping: "panel",
   },
 
@@ -115,7 +132,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateChangesTab",
     path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png",
     description: "Changes tab with note field highlighted",
-    storyId: "components-panel-changetrackertab--grid-changes-only",
+    storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
     cropping: "panel",
   },
 
@@ -126,7 +143,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateActiveChips",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png",
     description: "AppBar with active filter chips and orange dot indicator",
-    storyId: "dashboard-appbar-pureappbar--with-active-filters",
+    storyId: "app-dashboard-appbar--with-active-filters",
     cropping: "element",
   },
   "filters-panel-expanded": {
@@ -135,7 +152,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateFilterDrawerAllExpanded",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
     description: "Filter panel expanded showing all filter options",
-    storyId: "dashboard-filterdrawer--all-sections-expanded",
+    storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     cropping: "container",
   },
   "filters-clear-all-button": {
@@ -144,7 +161,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateFilterDrawerClearAll",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png",
     description: "Filter section with Clear All button",
-    storyId: "dashboard-filtersection--custom-content",
+    storyId: "app-dashboard-filters-filtersection--custom-content",
     cropping: "container",
   },
 
@@ -156,7 +173,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png",
     description:
       'File menu button in toolbar showing "No file selected" empty state',
-    storyId: "dashboard-appbar-filemenubutton--no-file",
+    storyId: "app-dashboard-filemenubutton--no-file",
     cropping: "element",
   },
   "quickstart-upload-dialog": {
@@ -166,7 +183,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
     description:
       "File upload dialog with file selection input and upload button",
-    storyId: "common-fileuploaddialog--open",
+    storyId: "app-common-fileuploaddialog--open",
     cropping: "container",
   },
   "quickstart-grid-populated": {
@@ -175,7 +192,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateGridPopulated",
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png",
     description: "Populated 9-box grid after successful file upload",
-    storyId: "grid-nineboxgrid--populated",
+    storyId: "app-grid-nineboxgrid--populated",
     cropping: "container",
   },
   "quickstart-empty-state-sample-button": {
@@ -185,7 +202,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-empty-state-sample-button.png",
     description:
       "Empty state showing 'Load Sample Data' button for quick onboarding (quickstart tour step 1)",
-    storyId: "components-emptystate--default",
+    storyId: "app-dashboard-emptystate--default",
     cropping: "container",
   },
   "quickstart-load-sample-dialog": {
@@ -195,7 +212,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-load-sample-dialog.png",
     description:
       "Load Sample Data confirmation dialog explaining the 200-employee dataset (quickstart tour step 1)",
-    storyId: "dialogs-loadsampledialog--no-existing-data",
+    storyId: "app-dialogs-loadsampledialog--no-existing-data",
     cropping: "container",
   },
   "quickstart-employee-details-with-history": {
@@ -205,7 +222,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-employee-details-with-history.png",
     description:
       "Employee details panel showing flags, reporting chain, and complete job information (quickstart tour step 2)",
-    storyId: "panel-employeedetails--default",
+    storyId: "app-right-panel-details-employeedetails--default",
     cropping: "panel",
   },
   "quickstart-timeline-history": {
@@ -215,7 +232,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-timeline-history.png",
     description:
       "Performance history timeline showing 3-year rating progression (quickstart tour step 3)",
-    storyId: "panel-ratingstimeline--with-history",
+    storyId: "app-right-panel-details-ratingstimeline--with-history",
     cropping: "panel",
   },
   "quickstart-intelligence-bias-detected": {
@@ -225,7 +242,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-intelligence-bias-detected.png",
     description:
       "Intelligence panel showing detected bias patterns in sample data (USA +15%, Sales +20%) - quickstart tour step 5",
-    storyId: "intelligence-anomalysection--red-status",
+    storyId: "app-right-panel-intelligence-anomalysection--red-status",
     cropping: "container",
   },
   "quickstart-statistics-distribution": {
@@ -235,7 +252,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-statistics-distribution.png",
     description:
       "Statistics tab showing healthy distribution patterns in sample data (quickstart tour step 4)",
-    storyId: "panel-statistics-distributiontable--balanced-distribution",
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
     cropping: "panel",
   },
   // Calibration workflow screenshots (5 screenshots)
@@ -246,7 +264,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
     description:
       "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
-    storyId: "dashboard-appbar-filemenubutton--menu-open",
+    storyId: "app-dashboard-filemenubutton--menu-open",
     cropping: "container",
   },
   "intelligence-summary-anomalies": {
@@ -256,7 +274,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-anomalies.png",
     description:
       "Intelligence summary showing low quality score and high anomaly count",
-    storyId: "intelligence-intelligencesummary--needs-attention",
+    storyId:
+      "app-right-panel-intelligence-intelligencesummary--needs-attention",
     cropping: "container",
   },
   "intelligence-anomaly-details": {
@@ -266,7 +285,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-details.png",
     description:
       "Anomaly section showing severe statistical anomalies requiring investigation",
-    storyId: "intelligence-anomalysection--red-status",
+    storyId: "app-right-panel-intelligence-anomalysection--red-status",
     cropping: "container",
   },
   "distribution-chart-ideal": {
@@ -276,7 +295,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/distribution-chart-ideal.png",
     description:
       "Distribution section showing ideal talent distribution across 9-box grid",
-    storyId: "intelligence-leveldistributionchart--normal-distribution",
+    storyId:
+      "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
   },
 
@@ -288,7 +308,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-excellent.png",
     description:
       "IntelligenceSummary component with excellent quality score (85+), showing green status and low anomaly count",
-    storyId: "intelligence-intelligencesummary--excellent-quality",
+    storyId:
+      "app-right-panel-intelligence-intelligencesummary--excellent-quality",
     cropping: "container",
   },
   "intelligence-summary-needs-attention": {
@@ -298,7 +319,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-needs-attention.png",
     description:
       "IntelligenceSummary component with low quality score (<50), showing red status and high anomaly count requiring attention",
-    storyId: "intelligence-intelligencesummary--needs-attention",
+    storyId:
+      "app-right-panel-intelligence-intelligencesummary--needs-attention",
     cropping: "container",
   },
   "intelligence-anomaly-green": {
@@ -308,7 +330,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-green.png",
     description:
       "AnomalySection component with green status (p > 0.05), showing no significant statistical issues",
-    storyId: "intelligence-anomalysection--green-status",
+    storyId: "app-right-panel-intelligence-anomalysection--green-status",
     cropping: "container",
   },
   "intelligence-anomaly-red": {
@@ -318,7 +340,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-red.png",
     description:
       "AnomalySection component with red status (p < 0.01), showing severe statistical anomalies requiring investigation",
-    storyId: "intelligence-anomalysection--red-status",
+    storyId: "app-right-panel-intelligence-anomalysection--red-status",
     cropping: "container",
   },
   "intelligence-deviation-chart": {
@@ -328,7 +350,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-deviation-chart.png",
     description:
       "DeviationChart showing expected vs actual performance distribution with mixed significance levels (green/yellow/red bars)",
-    storyId: "intelligence-deviationchart--mixed-significance",
+    storyId: "app-right-panel-intelligence-deviationchart--mixed-significance",
     cropping: "container",
   },
   "intelligence-level-distribution": {
@@ -338,7 +360,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-level-distribution.png",
     description:
       "LevelDistributionChart showing normal distribution of Low/Medium/High performers across job levels",
-    storyId: "intelligence-leveldistributionchart--normal-distribution",
+    storyId:
+      "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
   },
   "calibration-donut-mode-toggle": {
@@ -347,7 +370,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateViewControlsDonutView",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
     description: "ViewControls toolbar with donut mode toggle active",
-    storyId: "common-viewcontrols--donut-view-active",
+    storyId: "app-common-viewcontrols--donut-view-active",
     cropping: "container",
   },
   // Statistics workflow screenshots (4 Storybook-based screenshots)
@@ -358,7 +381,8 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png",
     description:
       "Statistics panel distribution table with grouping indicators (balanced distribution)",
-    storyId: "panel-statistics-distributiontable--balanced-distribution",
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
   },
   "statistics-summary-cards": {
     source: "storybook",
@@ -367,7 +391,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/statistics/statistics-summary-cards.png",
     description:
       "Three summary cards showing total employees, modified employees, and high performers",
-    storyId: "panel-statistics-statisticssummary--default",
+    storyId: "app-right-panel-statistics-statisticssummary--default",
   },
 
   // Donut mode screenshots (1 screenshot)
@@ -378,7 +402,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png",
     description:
       "Active donut mode layout with concentric circles and ghost tiles",
-    storyId: "grid-nineboxgrid--donut-mode",
+    storyId: "app-grid-nineboxgrid--donut-mode",
     cropping: "container",
   },
 
@@ -389,7 +413,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateGridPopulated",
     path: "resources/user-guide/docs/images/screenshots/grid-normal.png",
     description: "Standard 9-box grid with employee tiles",
-    storyId: "grid-nineboxgrid--populated",
+    storyId: "app-grid-nineboxgrid--populated",
     cropping: "container",
   },
   "employee-tile-normal": {
@@ -398,7 +422,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateEmployeeTileNormal",
     path: "resources/user-guide/docs/images/screenshots/employee-tile-normal.png",
     description: "Individual employee tile showing name and role",
-    storyId: "grid-employeetile--default",
+    storyId: "app-grid-employeetile--default",
   },
 
   // Additional features screenshots (5 screenshots)
@@ -408,7 +432,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateRatingsTimeline",
     path: "resources/user-guide/docs/images/screenshots/timeline-employee-history.png",
     description: "Employee movement timeline showing historical positions",
-    storyId: "panel-ratingstimeline--with-history",
+    storyId: "app-right-panel-details-ratingstimeline--with-history",
   },
   "employee-details-panel-expanded": {
     source: "storybook",
@@ -416,7 +440,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateEmployeeDetailsPanel",
     path: "resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png",
     description: "Expanded employee details panel with all information",
-    storyId: "panel-employeedetails--default",
+    storyId: "app-right-panel-details-employeedetails--default",
   },
   "file-menu-apply-changes": {
     source: "storybook",
@@ -424,7 +448,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateFileMenuApplyChanges",
     path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
     description: "File menu dropdown open showing menu options",
-    storyId: "dashboard-appbar-filemenubutton--menu-open",
+    storyId: "app-dashboard-filemenubutton--menu-open",
     cropping: "container",
   },
 
@@ -436,7 +460,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/zoom-controls.png",
     description:
       "ViewControls toolbar showing zoom controls, view toggle, and fullscreen button",
-    storyId: "common-viewcontrols--grid-view-active",
+    storyId: "app-common-viewcontrols--grid-view-active",
     cropping: "container",
   },
 
@@ -448,14 +472,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/main-interface.png",
     description:
       "ViewControls toolbar showing all controls: view toggle, zoom, and fullscreen",
-    storyId: "common-viewcontrols--grid-view-active",
+    storyId: "app-common-viewcontrols--grid-view-active",
     cropping: "container",
   },
   "view-controls-grid-view": {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateViewControlsGridView",
-    storyId: "common-viewcontrols--grid-view-active",
+    storyId: "app-common-viewcontrols--grid-view-active",
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png",
     description:
       "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
@@ -465,7 +489,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateViewControlsDonutView",
-    storyId: "common-viewcontrols--donut-view-active",
+    storyId: "app-common-viewcontrols--donut-view-active",
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
     description: "ViewControls toolbar with Donut view active",
     cropping: "container",
@@ -477,7 +501,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png",
     description:
       "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
-    storyId: "settings-settingsdialog--open",
+    storyId: "app-settings-settingsdialog--open",
     cropping: "container",
   },
   "view-controls-simplified-appbar": {
@@ -487,7 +511,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png",
     description:
       "Simplified AppBar showing only Logo, File menu, Help button, and Settings button",
-    storyId: "dashboard-appbar-pureappbar--file-loaded",
+    storyId: "app-dashboard-appbar--file-loaded",
   },
   "view-controls-fullscreen": {
     source: "full-app",
@@ -507,7 +531,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png",
     description:
       "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips with exterior padding",
-    storyId: "panel-employeedetails--default-with-padding",
+    storyId: "app-right-panel-details-employeedetails--default-with-padding",
     cropping: "element",
   },
   "details-flags-ui": {
@@ -517,7 +541,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/details-panel/flags-ui.png",
     description:
       "Flags section in Details panel with Add Flag picker and colored flag chips",
-    storyId: "panel-employeeflags--with-multiple-flags",
+    storyId: "app-right-panel-details-employeeflags--with-multiple-flags",
     cropping: "container",
   },
   "details-flag-badges": {
@@ -527,7 +551,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
     description:
       "Employee tiles showing individual colored flag badges (16px circular) in top-right corner",
-    storyId: "grid-employeetile--with-flags",
+    storyId: "app-grid-employeetile--with-flags",
     cropping: "container",
   },
   "details-reporting-chain-clickable": {
@@ -537,7 +561,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-clickable.png",
     description:
       "Reporting Chain section with clickable manager names (blue underlined links)",
-    storyId: "panel-managementchain--with-manager",
+    storyId: "app-right-panel-details-managementchain--with-manager",
     cropping: "container",
   },
   // FilterDrawer screenshots (4 new screenshots)
@@ -548,7 +572,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/filters/filters-multiple-active.png",
     description:
       "FilterDrawer with multiple filter types active: Job Functions, Locations, Flags, and Reporting Chain filters with count badges",
-    storyId: "dashboard-filterdrawer--multiple-filters-active",
+    storyId: "app-dashboard-filterdrawer--multiple-filters-active",
     cropping: "container",
   },
   "filters-flags-section": {
@@ -558,7 +582,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/filters/flags-section.png",
     description:
       "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
-    storyId: "dashboard-filterdrawer--flags-active",
+    storyId: "app-dashboard-filterdrawer--flags-active",
     cropping: "container",
   },
   "filters-reporting-chain": {
@@ -568,7 +592,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/filters/reporting-chain-filter.png",
     description:
       "Reporting Chain section in FilterDrawer with active manager filter chip",
-    storyId: "dashboard-filterdrawer--reporting-chain-active",
+    storyId: "app-dashboard-filterdrawer--reporting-chain-active",
     cropping: "container",
   },
 
@@ -583,12 +607,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     cropping: "container",
   },
   "unsaved-changes-dialog": {
-    source: "full-app",
+    source: "storybook",
     workflow: "file-operations",
     function: "generateUnsavedChangesDialog",
     path: "resources/user-guide/docs/images/screenshots/file-ops/unsaved-changes-dialog.png",
     description:
       "Unsaved Changes protection dialog with Apply Changes, Discard, and Cancel options",
+    storyId: "app-dialogs-unsavedchangesdialog--multiple-changes",
     cropping: "container",
   },
   "apply-changes-dialog-default": {
@@ -598,7 +623,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-default.png",
     description:
       "Apply Changes dialog in default mode (update original file, checkbox unchecked)",
-    storyId: "dialogs-applychangesdialog--default",
+    storyId: "app-dialogs-applychangesdialog--default",
     cropping: "container",
   },
   "apply-changes-dialog-save-as": {
@@ -608,7 +633,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-save-as.png",
     description:
       "Apply Changes dialog in save-as mode (save to different file, checkbox checked)",
-    storyId: "dialogs-applychangesdialog--default",
+    storyId: "app-dialogs-applychangesdialog--default",
     cropping: "container",
   },
   "file-error-fallback": {
@@ -618,7 +643,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/file-ops/file-error-fallback.png",
     description:
       "File error fallback - error message when original file can't be updated",
-    storyId: "dialogs-applychangesdialog--with-error",
+    storyId: "app-dialogs-applychangesdialog--with-error",
     cropping: "container",
   },
 };

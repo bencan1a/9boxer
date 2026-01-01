@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "../../../test/utils";
 import { FilterSection } from "./FilterSection";
-import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 describe("FilterSection", () => {
   const mockOnToggle = vi.fn();

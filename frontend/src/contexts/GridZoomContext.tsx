@@ -6,9 +6,9 @@
  * including localStorage persistence and design tokens.
  *
  * Zoom Levels:
- * - Level 0: Ultra Compact (48%) - Maximum information density
- * - Level 1: Compact (60%) - Very dense view
- * - Level 2: Normal (80%) - Default view
+ * - Level 0: Compact (50%) - Maximum information density
+ * - Level 1: Medium (75%) - Dense view
+ * - Level 2: Normal (100%) - Default view
  * - Level 3: Comfortable (125%) - Slightly larger than normal
  * - Level 4: Presentation (150%) - Maximum visibility from distance
  */
@@ -25,10 +25,16 @@ import { tokens } from "../theme/tokens";
 
 // Type for the zoom level tokens
 interface ZoomTokens {
-  tile: { minWidth: number; maxWidth: number; padding: number };
+  tile: {
+    minWidth: number;
+    maxWidth: number;
+    paddingY: number;
+    paddingX: number;
+    dragHandleWidth: number;
+  };
   font: { name: string; titleLevel: string; metadata: string };
   icon: { dragHandle: number; flag: number; history: number };
-  spacing: { gap: number; flagGap: number };
+  spacing: { gap: number; flagGap: number; boxPadding: number };
 }
 
 interface GridZoomContextType {
@@ -61,6 +67,12 @@ interface GridZoomContextType {
 
   /** Check if at default zoom (level 2) */
   isAtDefault: boolean;
+
+  /** Whether the panel is currently being resized */
+  isResizing: boolean;
+
+  /** Set the resizing state */
+  setIsResizing: (isResizing: boolean) => void;
 }
 
 const GridZoomContext = createContext<GridZoomContextType | undefined>(
@@ -70,9 +82,9 @@ const GridZoomContext = createContext<GridZoomContextType | undefined>(
 // Constants
 const MIN_LEVEL = 0;
 const MAX_LEVEL = 4;
-const DEFAULT_LEVEL = 2; // Normal (80%)
+const DEFAULT_LEVEL = 2; // Normal (100%)
 const STORAGE_KEY = "app-zoom-level";
-const ZOOM_PERCENTAGES = ["48%", "60%", "80%", "125%", "150%"];
+const ZOOM_PERCENTAGES = ["50%", "75%", "100%", "125%", "150%"];
 
 /**
  * Get design tokens for a specific zoom level
@@ -123,11 +135,26 @@ function saveZoomLevel(level: number): void {
  * Single source of truth for grid zoom state.
  * Handles state management, persistence, and design tokens.
  */
-export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
+export const GridZoomProvider: React.FC<{
+  children: React.ReactNode;
+  isResizing?: boolean;
+  setIsResizing?: (isResizing: boolean) => void;
+}> = ({
   children,
+  isResizing: externalIsResizing = false,
+  setIsResizing: externalSetIsResizing,
 }) => {
   // Initialize from localStorage
   const [level, setLevelState] = useState<number>(() => loadSavedZoomLevel());
+
+  // Internal isResizing state (used if not provided externally)
+  const [internalIsResizing, setInternalIsResizing] = useState(false);
+
+  // Use external state if parent is managing it (setter provided), otherwise use internal state
+  const isResizing = externalSetIsResizing
+    ? externalIsResizing
+    : internalIsResizing;
+  const setIsResizing = externalSetIsResizing || setInternalIsResizing;
 
   // Memoize the tokens for the current level
   const currentTokens = useMemo(() => getTokensForLevel(level), [level]);
@@ -180,6 +207,8 @@ export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
       canZoomIn: canZoomInValue,
       canZoomOut: canZoomOutValue,
       isAtDefault: isAtDefaultValue,
+      isResizing,
+      setIsResizing,
     }),
     [
       level,
@@ -192,6 +221,8 @@ export const GridZoomProvider: React.FC<{ children: React.ReactNode }> = ({
       canZoomInValue,
       canZoomOutValue,
       isAtDefaultValue,
+      isResizing,
+      setIsResizing,
     ]
   );
 

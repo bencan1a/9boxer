@@ -39,7 +39,7 @@ import { SettingsDialog } from "./SettingsDialog";
  * - `data-testid="language-option-{code}"` - Language options
  */
 const meta: Meta<typeof SettingsDialog> = {
-  title: "Settings/SettingsDialog",
+  title: "App/Settings/SettingsDialog",
   component: SettingsDialog,
   tags: ["autodocs"],
   parameters: {
@@ -78,6 +78,10 @@ export const Closed: Story = {
  * Shows all preference sections with current selections.
  */
 export const Open: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-settings-dialog" },
+  },
   args: {
     open: true,
     onClose: fn(),

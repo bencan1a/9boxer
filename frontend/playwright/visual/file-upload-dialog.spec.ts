@@ -17,7 +17,7 @@ test.describe("FileUploadDialog Visual Tests", () => {
   test("open dialog", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-fileuploaddialog--open",
+      "app-common-fileuploaddialog--open",
       "file-upload-dialog-open"
     );
   });
@@ -25,7 +25,7 @@ test.describe("FileUploadDialog Visual Tests", () => {
   test("with file selected", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-fileuploaddialog--with-file",
+      "app-common-fileuploaddialog--with-file",
       "file-upload-dialog-with-file"
     );
   });
@@ -34,7 +34,7 @@ test.describe("FileUploadDialog Visual Tests", () => {
     // Mask the progress indicator as it may animate
     await snapshotStory(
       page,
-      "common-fileuploaddialog--uploading",
+      "app-common-fileuploaddialog--uploading",
       "file-upload-dialog-uploading-light.png",
       {
         theme: "light",
@@ -43,7 +43,7 @@ test.describe("FileUploadDialog Visual Tests", () => {
     );
     await snapshotStory(
       page,
-      "common-fileuploaddialog--uploading",
+      "app-common-fileuploaddialog--uploading",
       "file-upload-dialog-uploading-dark.png",
       {
         theme: "dark",
@@ -55,7 +55,7 @@ test.describe("FileUploadDialog Visual Tests", () => {
   test("error state", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "common-fileuploaddialog--error",
+      "app-common-fileuploaddialog--error",
       "file-upload-dialog-error"
     );
   });

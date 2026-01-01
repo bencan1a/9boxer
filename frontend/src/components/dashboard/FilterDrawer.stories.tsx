@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React, { useEffect } from "react";
 import { FilterDrawer } from "./FilterDrawer";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import {
   Employee,
   PerformanceLevel,
@@ -197,7 +197,7 @@ const withStoreState = (
 };
 
 const meta: Meta<typeof FilterDrawer> = {
-  title: "Dashboard/FilterDrawer",
+  title: "App/Dashboard/FilterDrawer",
   component: FilterDrawer,
   tags: ["autodocs"],
   parameters: {
@@ -319,15 +319,9 @@ export const FlagsSectionExpanded: Story = {
  * CRITICAL for documentation screenshots ⭐
  */
 export const FlagsActive: Story = {
-  decorators: [
-    withStoreState(() => {
-      const store = useFilterStore.getState();
-      store.toggleFlag("promotion_ready");
-      store.toggleFlag("succession_candidate");
-      store.toggleFlag("high_retention_priority");
-    }),
-  ],
+  tags: ["screenshot"],
   parameters: {
+    screenshot: { enabled: true, id: "filters-flags-section" },
     docs: {
       description: {
         story:
@@ -339,6 +333,14 @@ export const FlagsActive: Story = {
       },
     },
   },
+  decorators: [
+    withStoreState(() => {
+      const store = useFilterStore.getState();
+      store.toggleFlag("promotion_ready");
+      store.toggleFlag("succession_candidate");
+      store.toggleFlag("high_retention_priority");
+    }),
+  ],
 };
 
 /**
@@ -346,13 +348,9 @@ export const FlagsActive: Story = {
  * CRITICAL for documentation screenshots ⭐
  */
 export const ReportingChainActive: Story = {
-  decorators: [
-    withStoreState(() => {
-      const store = useFilterStore.getState();
-      store.setReportingChainFilter("Jane Smith");
-    }),
-  ],
+  tags: ["screenshot"],
   parameters: {
+    screenshot: { enabled: true, id: "filters-reporting-chain" },
     docs: {
       description: {
         story:
@@ -364,12 +362,32 @@ export const ReportingChainActive: Story = {
       },
     },
   },
+  decorators: [
+    withStoreState(() => {
+      const store = useFilterStore.getState();
+      store.setReportingChainFilter("Jane Smith");
+    }),
+  ],
 };
 
 /**
  * Multiple filters active - combination of different filter types
  */
 export const MultipleFiltersActive: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "filters-multiple-active" },
+    docs: {
+      description: {
+        story:
+          "Complex filtering scenario with multiple filter types active simultaneously. " +
+          "Combines: 2 job functions (Engineering, Product), 1 location (USA), " +
+          "2 flags (Promotion Ready, Succession Candidate), and reporting chain (Jane Smith). " +
+          "All filters are applied as AND conditions. " +
+          "Count badges show active filters in each section.",
+      },
+    },
+  },
   decorators: [
     withStoreState(() => {
       const store = useFilterStore.getState();
@@ -385,34 +403,15 @@ export const MultipleFiltersActive: Story = {
       store.setReportingChainFilter("Jane Smith");
     }),
   ],
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Complex filtering scenario with multiple filter types active simultaneously. " +
-          "Combines: 2 job functions (Engineering, Product), 1 location (USA), " +
-          "2 flags (Promotion Ready, Succession Candidate), and reporting chain (Jane Smith). " +
-          "All filters are applied as AND conditions. " +
-          "Count badges show active filters in each section.",
-      },
-    },
-  },
 };
 
 /**
  * All sections expanded - full drawer anatomy
  */
 export const AllSectionsExpanded: Story = {
-  decorators: [
-    withStoreState(() => {
-      const store = useFilterStore.getState();
-      // Add some filters to show counts
-      store.toggleJobFunction("Engineering");
-      store.toggleLocation("USA");
-      store.toggleFlag("promotion_ready");
-    }),
-  ],
+  tags: ["screenshot"],
   parameters: {
+    screenshot: { enabled: true, id: "filters-panel-expanded" },
     docs: {
       description: {
         story:
@@ -424,6 +423,15 @@ export const AllSectionsExpanded: Story = {
       },
     },
   },
+  decorators: [
+    withStoreState(() => {
+      const store = useFilterStore.getState();
+      // Add some filters to show counts
+      store.toggleJobFunction("Engineering");
+      store.toggleLocation("USA");
+      store.toggleFlag("promotion_ready");
+    }),
+  ],
 };
 
 /**

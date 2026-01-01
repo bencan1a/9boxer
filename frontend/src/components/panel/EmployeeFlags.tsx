@@ -10,7 +10,11 @@
  */
 
 import React, { useState } from "react";
-import { Box, Chip, Autocomplete, TextField, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";

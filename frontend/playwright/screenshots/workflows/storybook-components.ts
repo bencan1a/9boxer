@@ -39,7 +39,7 @@ export async function generateEmployeeTileModified(
   await page.setViewportSize({ width: 800, height: 600 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "grid-employeetile--modified",
+    storyId: "app-grid-employeetile--modified-normal-mode",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -66,7 +66,7 @@ export async function generateEmployeeTileNormal(
   await page.setViewportSize({ width: 800, height: 600 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "grid-employeetile--default",
+    storyId: "app-grid-employeetile--default",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -94,7 +94,7 @@ export async function generateEmployeeDetailsPanel(
   await page.setViewportSize({ width: 600, height: 900 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeedetails--default",
+    storyId: "app-right-panel-details-employeedetails--default",
     outputPath,
     theme: "light",
     fullPage: false,
@@ -122,7 +122,7 @@ export async function generateEmployeeDetailsPanelWithChanges(
   await page.setViewportSize({ width: 600, height: 900 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeedetails--with-changes",
+    storyId: "app-right-panel-details-employeedetails--with-changes",
     outputPath,
     theme: "light",
     fullPage: false,
@@ -151,7 +151,7 @@ export async function generateRatingsTimeline(
   await page.setViewportSize({ width: 600, height: 900 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-ratingstimeline--with-history",
+    storyId: "app-right-panel-details-ratingstimeline--with-history",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -174,7 +174,7 @@ export async function generateManagementChain(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-managementchain--default",
+    storyId: "app-right-panel-details-managementchain--default",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -202,7 +202,7 @@ export async function generateChangesTab(
   await page.setViewportSize({ width: 600, height: 900 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "components-panel-changetrackertab--grid-changes-only",
+    storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -225,7 +225,7 @@ export async function generateDistributionChart(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-distributionchart--default",
+    storyId: "app-right-panel-statistics-distributionchart--default",
     outputPath,
     theme: "light",
     waitTime: 800, // Chart animations
@@ -248,7 +248,7 @@ export async function generateGridBox(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "grid-gridbox--default",
+    storyId: "app-grid-gridbox--default",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -271,7 +271,7 @@ export async function generateGridBoxExpanded(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "grid-gridbox--expanded",
+    storyId: "app-grid-gridbox--expanded",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -295,7 +295,7 @@ export async function generateZoomControls(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "common-zoomcontrols--default",
+    storyId: "app-common-zoomcontrols--default",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -321,7 +321,7 @@ export async function generateFileUploadDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "common-fileuploaddialog--open",
+    storyId: "app-common-fileuploaddialog--open",
     outputPath,
     theme: "light",
     fullPage: false,
@@ -346,7 +346,7 @@ export async function generateSettingsDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "settings-settingsdialog--default",
+    storyId: "app-settings-settingsdialog--default",
     outputPath,
     theme: "light",
     fullPage: false,
@@ -369,7 +369,7 @@ export async function generateLoadingSpinner(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "common-loadingspinner--default",
+    storyId: "app-common-loadingspinner--default",
     outputPath,
     theme: "light",
     waitTime: 800, // Let spinner animate for a moment
@@ -392,7 +392,7 @@ export async function generateLanguageSelector(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "common-languageselector--default",
+    storyId: "app-common-languageselector--default",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -415,7 +415,7 @@ export async function generateEmployeeChangesSummary(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeechangessummary--default",
+    storyId: "app-right-panel-details-employeechangessummary--default",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -442,7 +442,7 @@ export async function generateEmployeeTileFlagged(
   await page.setViewportSize({ width: 800, height: 600 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "grid-employeetile--with-flags",
+    storyId: "app-grid-employeetile--with-flags",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -470,7 +470,7 @@ export async function generateFileMenuButtonNoFile(
   await page.setViewportSize({ width: 600, height: 400 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-appbar-filemenubutton--no-file",
+    storyId: "app-dashboard-filemenubutton--no-file",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -494,7 +494,7 @@ export async function generateFileMenuButtonWithChanges(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-appbar-filemenubutton--with-changes",
+    storyId: "app-dashboard-filemenubutton--with-changes",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -512,7 +512,7 @@ export async function generateFileMenuButtonWithChanges(
  * then uses Playwright to hover over Import item before screenshot.
  *
  * Replaces: calibration.ts generateFileImport() full-app workflow
- * Story: dashboard-appbar-filemenubutton--menu-open
+ * Story: app-dashboard-filemenubutton--menu-open
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -531,7 +531,7 @@ export async function generateFileMenuImport(
   // Navigate to MenuOpen story
   await navigateToStory(
     page,
-    "dashboard-appbar-filemenubutton--menu-open",
+    "app-dashboard-filemenubutton--menu-open",
     "light"
   );
 
@@ -552,7 +552,7 @@ export async function generateFileMenuImport(
   await page.screenshot({ path: outputPath, fullPage: true });
 
   console.log(
-    `  ✓ Captured from Storybook with hover: dashboard-appbar-filemenubutton--menu-open (light theme)`
+    `  ✓ Captured from Storybook with hover: app-dashboard-filemenubutton--menu-open (light theme)`
   );
 }
 
@@ -578,7 +578,7 @@ export async function generateFileMenuApplyChanges(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-appbar-filemenubutton--menu-open",
+    storyId: "app-dashboard-filemenubutton--menu-open",
     outputPath,
     theme: "light",
     waitTime: 1000,
@@ -610,7 +610,7 @@ export async function generateGridPopulated(
   await page.setViewportSize({ width: 1200, height: 1200 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "grid-nineboxgrid--populated",
+    storyId: "app-grid-nineboxgrid--populated",
     outputPath,
     theme: "light",
     waitTime: 1000, // Grid has animations and drag-drop setup
@@ -644,7 +644,7 @@ export async function generateDonutModeActive(
   await page.setViewportSize({ width: 1200, height: 1000 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "grid-nineboxgrid--donut-mode",
+    storyId: "app-grid-nineboxgrid--donut-mode",
     outputPath,
     theme: "light",
     waitTime: 1000, // Grid animations
@@ -675,7 +675,7 @@ export async function generateSimplifiedAppBar(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "dashboard-appbar-pureappbar--file-loaded",
+    storyId: "app-dashboard-appbar--file-loaded",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -704,7 +704,7 @@ export async function generateViewControlsGridView(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "common-viewcontrols--grid-view-active",
+    storyId: "app-common-viewcontrols--grid-view-active",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -733,7 +733,7 @@ export async function generateViewControlsDonutView(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "common-viewcontrols--donut-view-active",
+    storyId: "app-common-viewcontrols--donut-view-active",
     outputPath,
     theme: "light",
     waitTime: 300,
@@ -746,7 +746,7 @@ export async function generateViewControlsDonutView(
  * Captures the EmptyState component showing the "Load Sample Data" button
  * for the quickstart guided tour.
  *
- * Story: components-emptystate--default
+ * Story: app-dashboard-emptystate--default
  *
  * @param page - Playwright Page object
  * @param outputPath - Absolute path where screenshot should be saved
@@ -759,7 +759,7 @@ export async function generateEmptyStateWithSampleButton(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "components-emptystate--default",
+    storyId: "app-dashboard-emptystate--default",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -782,7 +782,7 @@ export async function generateLoadSampleDialog(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "dialogs-loadsampledialog--no-existing-data",
+    storyId: "app-dialogs-loadsampledialog--no-existing-data",
     outputPath,
     theme: "light",
     waitTime: 800, // Dialog has animations

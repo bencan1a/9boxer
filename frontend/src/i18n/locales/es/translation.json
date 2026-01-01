@@ -41,6 +41,8 @@
       "fileNotFound": "Archivo no encontrado: {{filename}}",
       "fileLoaded": "Cargado {{filename}}",
       "loadError": "Error al cargar el archivo",
+      "exportError": "Error al exportar los cambios",
+      "recentFilesCleared": "Archivos recientes borrados",
       "electronApiRequired": "La carga de archivos requiere la aplicación de escritorio"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[A,A]",
         "fullLabel": "Estrella [A,A]",
         "guidance": "Alto desempeño con alto potencial. Talento crítico para retener y desarrollar para roles de liderazgo. Enfocarse en retención, planificación de sucesión, desarrollo ejecutivo y asignaciones desafiantes."
-      }
+      },
+      "unknown": "Desconocido"
     }
   },
   "panel": {
@@ -418,6 +421,7 @@
     "applyChanges": {
       "title": "Aplicar Cambios al Archivo",
       "applyTo": "Aplicar cambios a:",
+      "defaultBehavior": "Sus cambios se guardarán en el archivo original.",
       "saveAsNew": "Guardar como archivo nuevo en su lugar",
       "apply": "Aplicar Cambios",
       "applying": "Aplicando...",

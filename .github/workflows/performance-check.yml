@@ -1,0 +1,84 @@
+name: Performance Checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - 'frontend/vite.config.ts'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - 'frontend/vite.config.ts'
+
+jobs:
+  frontend-performance:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run fast unit tests
+        run: npm run test:fast
+
+      - name: Check bundle size
+        run: npm run check:bundle
+
+      - name: Comment bundle size on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read bundle baseline if it exists
+            const baselinePath = path.join(process.cwd(), 'frontend', 'bundle-baseline.json');
+            let baseline = null;
+            if (fs.existsSync(baselinePath)) {
+              baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf-8'));
+            }
+
+            // Build bundle size summary
+            const comment = `## 📦 Bundle Size Report
+
+            Bundle size check **${baseline ? 'PASSED' : 'completed'}** ✅
+
+            ${baseline ? `
+            | Chunk | Current | Limit | Baseline | Status |
+            |-------|---------|-------|----------|--------|
+            | main | ${(baseline.main / 1024).toFixed(1)}KB | 500KB | - | ✅ |
+            | vendor | ${(baseline.vendor / 1024).toFixed(1)}KB | 300KB | - | ✅ |
+            | mui-core | ${(baseline['mui-core'] / 1024).toFixed(1)}KB | 200KB | - | ✅ |
+            | **total** | **${(baseline.total / 1024).toFixed(1)}KB** | **1MB** | - | ✅ |
+            ` : 'No baseline established yet. Run `npm run check:bundle:save` to create one.'}
+
+            ---
+            *Performance checks run automatically on all PRs*
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

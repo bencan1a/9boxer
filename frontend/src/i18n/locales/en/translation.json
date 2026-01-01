@@ -41,6 +41,8 @@
       "fileNotFound": "File not found: {{filename}}",
       "fileLoaded": "Loaded {{filename}}",
       "loadError": "Failed to load file",
+      "exportError": "Failed to export changes",
+      "recentFilesCleared": "Recent files cleared",
       "electronApiRequired": "File loading requires desktop application"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[H,H]",
         "fullLabel": "Star [H,H]",
         "guidance": "Top performers with high potential. Critical talent to retain and develop for leadership roles. Focus on retention, succession planning, executive development, and challenging assignments."
-      }
+      },
+      "unknown": "Unknown"
     }
   },
   "panel": {
@@ -418,6 +421,7 @@
     "applyChanges": {
       "title": "Apply Changes to File",
       "applyTo": "Apply changes to:",
+      "defaultBehavior": "Your changes will be saved to the original file.",
       "saveAsNew": "Save as new file instead",
       "apply": "Apply Changes",
       "applying": "Applying...",

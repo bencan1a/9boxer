@@ -23,7 +23,7 @@ import { BoxHeader } from "./BoxHeader";
  * - `data-testid="grid-box-{position}-count"` - Employee count badge
  */
 const meta: Meta<typeof BoxHeader> = {
-  title: "Grid/BoxHeader",
+  title: "App/Grid/BoxHeader",
   component: BoxHeader,
   tags: ["autodocs"],
   parameters: {

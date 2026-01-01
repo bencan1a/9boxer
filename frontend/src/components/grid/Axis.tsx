@@ -13,8 +13,10 @@
  */
 
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@mui/material/styles";
 
 /**
  * Props for the Axis component
@@ -43,6 +45,7 @@ export const Axis: React.FC<AxisProps> = ({
   showLabel = true,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Default labels based on orientation
   const defaultLabel =
@@ -78,7 +81,7 @@ export const Axis: React.FC<AxisProps> = ({
   return (
     <Box
       sx={{
-        width: 64,
+        width: theme.tokens.dimensions.axis.verticalWidth,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

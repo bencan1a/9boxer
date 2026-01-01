@@ -3,11 +3,12 @@ import { ApplyChangesDialog } from "./ApplyChangesDialog";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ApplyChangesDialog> = {
-  title: "Dialogs/ApplyChangesDialog",
+  title: "App/Dialogs/ApplyChangesDialog",
   component: ApplyChangesDialog,
   parameters: {
     layout: "centered",
   },
+  tags: ["autodocs"],
   args: {
     onApply: fn(() => Promise.resolve()),
     onCancel: fn(),
@@ -18,6 +19,10 @@ export default meta;
 type Story = StoryObj<typeof ApplyChangesDialog>;
 
 export const Default: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "apply-changes-dialog-default" },
+  },
   args: {
     open: true,
     filename: "employees.xlsx",
@@ -25,6 +30,10 @@ export const Default: Story = {
 };
 
 export const WithError: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "file-error-fallback" },
+  },
   args: {
     open: true,
     filename: "missing.xlsx",

@@ -32,7 +32,7 @@ import { GridPositionFilter } from "./GridPositionFilter";
  * - `data-testid="grid-position-clear-button"` - Clear selection button
  */
 const meta: Meta<typeof GridPositionFilter> = {
-  title: "Dashboard/Filters/GridPositionFilter",
+  title: "App/Dashboard/Filters/GridPositionFilter",
   component: GridPositionFilter,
   tags: ["autodocs"],
   parameters: {

@@ -9,7 +9,7 @@ import {
 } from "../../types/events";
 
 const meta = {
-  title: "Components/Panel/ChangeTrackerTab",
+  title: "App/Right Panel/Changes/ChangeTrackerTab",
   component: ChangeTrackerTab,
   parameters: {
     layout: "centered",
@@ -143,6 +143,10 @@ export const NoChanges: Story = {
  * Change tracker with only grid movements (no donut mode).
  */
 export const GridChangesOnly: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "notes-changes-tab-field" },
+  },
   render: () => {
     useSessionStore.setState({
       events: gridEvents,

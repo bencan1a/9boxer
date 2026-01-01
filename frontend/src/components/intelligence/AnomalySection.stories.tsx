@@ -26,7 +26,7 @@ import {
 } from "../../mocks/mockIntelligence";
 
 const meta: Meta<typeof AnomalySection> = {
-  title: "Intelligence/AnomalySection",
+  title: "App/Right Panel/Intelligence/AnomalySection",
   component: AnomalySection,
   tags: ["autodocs"],
   parameters: {
@@ -63,6 +63,10 @@ type Story = StoryObj<typeof AnomalySection>;
  * All deviations are within expected ranges, no action needed.
  */
 export const GreenStatus: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-anomaly-green" },
+  },
   args: {
     title: "Location Analysis",
     analysis: mockGreenAnalysis,
@@ -97,6 +101,12 @@ export const YellowStatus: Story = {
  * Significant deviations detected requiring investigation and potential action.
  */
 export const RedStatus: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-anomaly-red" },
+    screenshot: { enabled: true, id: "quickstart-intelligence-bias-detected" },
+    screenshot: { enabled: true, id: "intelligence-anomaly-details" },
+  },
   args: {
     title: "Level Analysis",
     analysis: mockRedAnalysis,

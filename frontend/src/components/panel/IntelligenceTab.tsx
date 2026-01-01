@@ -11,13 +11,11 @@
  */
 
 import React from "react";
-import {
-  Box,
-  CircularProgress,
-  Alert,
-  Button,
-  AlertTitle,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import AlertTitle from "@mui/material/AlertTitle";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";

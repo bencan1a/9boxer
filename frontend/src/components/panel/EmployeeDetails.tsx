@@ -14,15 +14,13 @@
  */
 
 import React from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Chip,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { Employee, PotentialLevel } from "../../types/employee";

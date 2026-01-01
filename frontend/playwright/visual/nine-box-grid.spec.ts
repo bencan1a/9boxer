@@ -13,7 +13,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("default populated grid", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--default",
+      "app-grid-nineboxgrid--default",
       "nine-box-grid-default"
     );
   });
@@ -21,7 +21,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("empty grid", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--empty",
+      "app-grid-nineboxgrid--empty",
       "nine-box-grid-empty"
     );
   });
@@ -29,7 +29,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("populated grid", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--populated",
+      "app-grid-nineboxgrid--populated",
       "nine-box-grid-populated"
     );
   });
@@ -37,7 +37,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("skewed distribution", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--skewed-distribution",
+      "app-grid-nineboxgrid--skewed-distribution",
       "nine-box-grid-skewed-distribution"
     );
   });
@@ -45,7 +45,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("single box concentration", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--single-box-concentration",
+      "app-grid-nineboxgrid--single-box-concentration",
       "nine-box-grid-single-box-concentration"
     );
   });
@@ -53,7 +53,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("with box expanded", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--with-box-expanded",
+      "app-grid-nineboxgrid--with-box-expanded",
       "nine-box-grid-with-box-expanded"
     );
   });
@@ -61,7 +61,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("donut mode", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--donut-mode",
+      "app-grid-nineboxgrid--donut-mode",
       "nine-box-grid-donut-mode"
     );
   });
@@ -69,7 +69,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("with flags", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--with-flags",
+      "app-grid-nineboxgrid--with-flags",
       "nine-box-grid-with-flags"
     );
   });
@@ -77,7 +77,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("with modified employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--with-modified-employees",
+      "app-grid-nineboxgrid--with-modified-employees",
       "nine-box-grid-with-modified-employees"
     );
   });
@@ -85,7 +85,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("loading state", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--loading-state",
+      "app-grid-nineboxgrid--loading-state",
       "nine-box-grid-loading-state"
     );
   });
@@ -93,7 +93,7 @@ test.describe("NineBoxGrid Visual Tests", () => {
   test("sparse distribution", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-nineboxgrid--sparse-distribution",
+      "app-grid-nineboxgrid--sparse-distribution",
       "nine-box-grid-sparse-distribution"
     );
   });

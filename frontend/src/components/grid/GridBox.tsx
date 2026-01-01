@@ -2,9 +2,10 @@
  * Grid box component (droppable)
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { Box, alpha } from "@mui/material";
+import Box from "@mui/material/Box";
+import { alpha } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import { Employee } from "../../types/employee";
 import { BoxHeader } from "./BoxHeader";
@@ -14,6 +15,7 @@ import {
   getPositionGuidance,
 } from "../../constants/positionLabels";
 import { logger } from "../../utils/logger";
+import { useGridZoom } from "../../contexts/GridZoomContext";
 
 interface GridBoxProps {
   position: number;
@@ -46,49 +48,53 @@ export const GridBox: React.FC<GridBoxProps> = ({
   }
 
   const theme = useTheme();
+  const { isResizing, tokens } = useGridZoom();
   const { setNodeRef, isOver } = useDroppable({
     id: `grid-${position}`,
     data: { position },
   });
 
-  // Background color based on position (performance/potential)
+  // Background color based on position (performance/potential) - Memoized
   // Position layout: [7=L,H], [8=M,H], [9=H,H] (top row)
   //                  [4=L,M], [5=M,M], [6=H,M] (middle row)
   //                  [1=L,L], [2=M,L], [3=H,L] (bottom row)
-  const getBackgroundColor = (pos: number): string => {
+  const baseBackgroundColor = useMemo(() => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
-    if ([6, 8, 9].includes(pos)) {
+    if ([6, 8, 9].includes(position)) {
       return theme.palette.gridBox.highPerformer;
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
-    if ([1, 2, 4].includes(pos)) {
+    if ([1, 2, 4].includes(position)) {
       return theme.palette.gridBox.needsAttention;
     }
     // Solid Performer: [M,M] = position 5
-    if (pos === 5) {
+    if (position === 5) {
       return theme.palette.gridBox.solidPerformer;
     }
     // Development: [L,H], [H,L] = positions 7, 3
-    if ([3, 7].includes(pos)) {
+    if ([3, 7].includes(position)) {
       return theme.palette.gridBox.development;
     }
     // Fallback (should not happen)
     return theme.palette.background.default;
-  };
+  }, [position, theme.palette.gridBox, theme.palette.background.default]);
 
-  // Calculate dynamic styling based on expansion state
-  const getBoxStyling = () => {
-    const bgColor = getBackgroundColor(position);
+  // Calculate dynamic styling based on expansion state - Memoized
+  const boxStyling = useMemo(() => {
+    const bgColor = baseBackgroundColor;
 
     const baseStyles = {
       border: 2,
       borderColor: isOver ? "primary.main" : "divider",
       borderRadius: 1,
-      p: 1.5,
+      p: `${tokens.spacing.boxPadding}px`,
       backgroundColor: isOver
         ? alpha(theme.palette.primary.main, 0.15)
         : bgColor,
-      transition: `min-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, max-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, background-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-style ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, box-shadow ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
+      // Disable transitions during resize for better performance
+      transition: isResizing
+        ? "none"
+        : `min-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, max-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, background-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-style ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, box-shadow ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
       userSelect: "none" as const,
       overflowY: isCollapsed ? ("hidden" as const) : ("auto" as const),
     };
@@ -127,12 +133,31 @@ export const GridBox: React.FC<GridBoxProps> = ({
       minHeight: theme.tokens.dimensions.gridBox.normalMin,
       maxHeight: theme.tokens.dimensions.gridBox.normalMax,
     };
-  };
+  }, [
+    baseBackgroundColor,
+    isOver,
+    isCollapsed,
+    isExpanded,
+    isResizing,
+    tokens.spacing.boxPadding,
+    theme.palette.primary.main,
+    theme.palette.primary.light,
+    theme.tokens.duration.normal,
+    theme.tokens.easing.easeInOut,
+    theme.tokens.opacity.gridCollapsedDragOver,
+    theme.tokens.opacity.gridCollapsedIdle,
+    theme.tokens.dimensions.gridBox.collapsedMin,
+    theme.tokens.dimensions.gridBox.collapsedMax,
+    theme.tokens.dimensions.gridBox.expandedMin,
+    theme.tokens.dimensions.gridBox.expandedViewportOffset,
+    theme.tokens.dimensions.gridBox.normalMin,
+    theme.tokens.dimensions.gridBox.normalMax,
+  ]);
 
   return (
     <Box
       ref={setNodeRef}
-      sx={getBoxStyling()}
+      sx={boxStyling}
       aria-expanded={isExpanded}
       data-testid={`grid-box-${position}`}
     >

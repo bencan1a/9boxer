@@ -13,7 +13,12 @@
  */
 
 import React, { useState } from "react";
-import { Box, Typography, Paper, Stack, Tabs, Tab } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useTranslation } from "react-i18next";

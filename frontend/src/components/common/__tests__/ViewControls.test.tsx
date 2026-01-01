@@ -21,6 +21,9 @@ vi.mock("../../../store/sessionStore", () => ({
     }
     return mockSessionState;
   },
+  selectSessionId: vi.fn((state) => state.sessionId),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+  selectToggleDonutMode: vi.fn((state) => state.toggleDonutMode),
 }));
 
 describe("ViewControls", () => {
@@ -74,11 +77,11 @@ describe("ViewControls", () => {
     expect(screen.getByTestId("fullscreen-toggle-button")).toBeInTheDocument();
   });
 
-  it("displays current zoom percentage (default 80%)", () => {
+  it("displays current zoom percentage (default 100%)", () => {
     render(<ViewControls />);
 
     const percentageDisplay = screen.getByTestId("zoom-percentage");
-    expect(percentageDisplay).toHaveTextContent("80%");
+    expect(percentageDisplay).toHaveTextContent("100%");
   });
 
   it("increases zoom percentage when zoom in button is clicked", () => {
@@ -87,7 +90,7 @@ describe("ViewControls", () => {
     const zoomInButton = screen.getByTestId("zoom-in-button");
     fireEvent.click(zoomInButton);
 
-    // Should go from 80% to 125%
+    // Should go from 100% to 125%
     expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("125%");
   });
 
@@ -97,11 +100,11 @@ describe("ViewControls", () => {
     const zoomOutButton = screen.getByTestId("zoom-out-button");
     fireEvent.click(zoomOutButton);
 
-    // Should go from 80% to 60%
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("60%");
+    // Should go from 100% to 75%
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("75%");
   });
 
-  it("resets zoom to 80% when reset button is clicked", () => {
+  it("resets zoom to 100% when reset button is clicked", () => {
     render(<ViewControls />);
 
     // First zoom in to enable reset button
@@ -113,7 +116,7 @@ describe("ViewControls", () => {
     const resetButton = screen.getByTestId("zoom-reset-button");
     fireEvent.click(resetButton);
 
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("80%");
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("100%");
   });
 
   it("toggles view mode when grid button is clicked", async () => {

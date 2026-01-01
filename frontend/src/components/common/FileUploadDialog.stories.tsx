@@ -22,7 +22,7 @@ import { SnackbarProvider } from "../../contexts/SnackbarContext";
  * - Max size: 10MB
  */
 const meta: Meta<typeof FileUploadDialog> = {
-  title: "Common/FileUploadDialog",
+  title: "App/Common/FileUploadDialog",
   component: FileUploadDialog,
   tags: ["autodocs"],
   parameters: {
@@ -57,6 +57,10 @@ type Story = StoryObj<typeof FileUploadDialog>;
  * Shows the initial state when users first open the dialog.
  */
 export const Open: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "quickstart-upload-dialog" },
+  },
   args: {
     open: true,
   },

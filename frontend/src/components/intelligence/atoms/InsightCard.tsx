@@ -3,15 +3,13 @@
  */
 
 import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Button,
-  LinearProgress,
-  Chip,
-} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
+import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";

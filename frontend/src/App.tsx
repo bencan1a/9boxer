@@ -5,7 +5,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, Box } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
 import { getTheme } from "./theme/theme";
 import { useUiStore } from "./store/uiStore";
 import { DashboardPage } from "./components/dashboard/DashboardPage";
@@ -13,19 +14,23 @@ import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
 import { logger } from "./utils/logger";
 import { initializeConfig } from "./config";
-import { LoadingSpinner } from "./components/common/LoadingSpinner";
+import { initPerformanceMonitoring } from "./utils/performance";
 
 const App: React.FC = () => {
-  // Track configuration initialization state
-  const [configReady, setConfigReady] = useState(false);
-
   // Get effective theme from store
   const effectiveTheme = useUiStore((state) => state.effectiveTheme);
 
   // Create dynamic theme based on effective theme
   const theme = useMemo(() => getTheme(effectiveTheme), [effectiveTheme]);
 
-  // Initialize configuration before rendering main app
+  // Initialize performance monitoring
+  useEffect(() => {
+    initPerformanceMonitoring();
+  }, []);
+
+  // Initialize configuration in parallel with UI render (non-blocking)
+  // The config initialization is fast (just IPC call to get backend URL)
+  // and the API client will use the default URL until config is ready
   useEffect(() => {
     async function init() {
       try {
@@ -34,8 +39,6 @@ const App: React.FC = () => {
       } catch (error) {
         logger.error("[App] Failed to initialize configuration:", error);
         // Continue anyway with default configuration
-      } finally {
-        setConfigReady(true);
       }
     }
     init();
@@ -99,30 +102,6 @@ const App: React.FC = () => {
       window.removeEventListener("unhandledrejection", handleRejection);
     };
   }, []);
-
-  // Show loading screen while initializing configuration
-  if (!configReady) {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-            backgroundColor: "background.default",
-          }}
-        >
-          <LoadingSpinner
-            size={60}
-            message="Connecting to backend..."
-            overlay={false}
-          />
-        </Box>
-      </ThemeProvider>
-    );
-  }
 
   return (
     <ErrorBoundary>

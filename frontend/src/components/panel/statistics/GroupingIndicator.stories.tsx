@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import { GroupingIndicator } from "./GroupingIndicator";
 
 /**
@@ -30,7 +28,7 @@ import { GroupingIndicator } from "./GroupingIndicator";
  * - Percentage aggregations with visual indicators
  */
 const meta: Meta<typeof GroupingIndicator> = {
-  title: "Panel/Statistics/GroupingIndicator",
+  title: "App/Right Panel/Statistics/GroupingIndicator",
   component: GroupingIndicator,
   tags: ["autodocs"],
   parameters: {

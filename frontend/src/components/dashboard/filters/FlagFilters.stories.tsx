@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FlagFilters } from "./FlagFilters";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { fn } from "@storybook/test";
 import { FLAGS } from "../../../constants/flags";
 
 const meta: Meta<typeof FlagFilters> = {
-  title: "Dashboard/Filters/FlagFilters",
+  title: "App/Dashboard/Filters/FlagFilters",
   component: FlagFilters,
   tags: ["autodocs"],
   parameters: {

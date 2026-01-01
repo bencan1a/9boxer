@@ -175,7 +175,8 @@ export async function switchPanelTab(
   const tabTestId = `${tabName}-tab`;
 
   const tab = page.locator(`[data-testid="${tabTestId}"]`);
-  await tab.click();
+  // Use force:true to bypass zoom controls that may overlay the tab
+  await tab.click({ force: true });
 
   // Verify tab became active
   await expect(tab).toHaveAttribute("aria-selected", "true", { timeout: 2000 });

@@ -19,7 +19,10 @@
  */
 
 import React from "react";
-import { TableCell, Box, Typography, alpha } from "@mui/material";
+import TableCell from "@mui/material/TableCell";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 
 export interface GroupingIndicatorProps {
@@ -112,8 +115,8 @@ export const GroupingIndicator: React.FC<GroupingIndicatorProps> = ({
       data-testid={testId || `grouping-indicator-${groupType}`}
       sx={{
         position: "relative",
-        width: 120,
-        borderLeft: `4px solid ${groupColor}`,
+        width: theme.tokens.dimensions.distributionTable.groupingColumnWidth,
+        borderLeft: `${theme.tokens.dimensions.distributionTable.groupingBorderWidth}px solid ${groupColor}`,
         backgroundColor: alpha(groupColor, 0.05),
         verticalAlign: "middle",
         borderBottom: "none", // Remove bottom border for cleaner rowSpan appearance

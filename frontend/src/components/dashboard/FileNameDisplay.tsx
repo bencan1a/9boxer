@@ -4,7 +4,9 @@
  */
 
 import React from "react";
-import { Typography, Box, Tooltip } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
 
 /**

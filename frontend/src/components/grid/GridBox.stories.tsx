@@ -1,12 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "@storybook/test";
 import { DndContext } from "@dnd-kit/core";
+import Box from "@mui/material/Box";
 import { GridBox } from "./GridBox";
+import { GridZoomProvider } from "../../contexts/GridZoomContext";
+import { tokens } from "../../theme/tokens";
 import type {
   Employee,
   PerformanceLevel,
   PotentialLevel,
-} from "@/types/employee";
+} from "../../types/employee";
 
 /**
  * GridBox is a droppable container representing one of the 9 positions in the nine-box grid.
@@ -31,19 +34,21 @@ import type {
  * - `data-testid="grid-box-{position}-count"` - Employee count badge
  */
 const meta: Meta<typeof GridBox> = {
-  title: "Grid/GridBox",
+  title: "App/Grid/GridBox",
   component: GridBox,
-  tags: ["autodocs"],
+  tags: ["autodocs", "experimental"],
   parameters: {
     layout: "padded",
   },
   decorators: [
     (Story) => (
-      <DndContext>
-        <div style={{ width: 600, maxHeight: 500 }}>
-          <Story />
-        </div>
-      </DndContext>
+      <GridZoomProvider>
+        <DndContext>
+          <div style={{ width: 600, maxHeight: 500 }}>
+            <Story />
+          </div>
+        </DndContext>
+      </GridZoomProvider>
     ),
   ],
   argTypes: {
@@ -278,5 +283,187 @@ export const Development: Story = {
     onExpand: fn(),
     onCollapse: fn(),
     donutModeActive: false,
+  },
+};
+
+/**
+ * ============================================================================
+ * ZOOM LEVEL EXPERIMENTATION
+ * ============================================================================
+ */
+
+/**
+ * Get zoom tokens for a specific level
+ */
+const getZoomTokens = (level: number) => {
+  const levelKey = `level${level}` as keyof typeof tokens.dimensions.gridZoom;
+  return tokens.dimensions.gridZoom[levelKey];
+};
+
+/**
+ * Interactive Zoom - Many Employees
+ *
+ * Experiment with different zoom levels on a populated grid box.
+ * Use the zoom level control to see how employee tiles scale.
+ *
+ * **How to use:**
+ * 1. Use the "zoomLevel" control to select 0-4
+ * 2. Observe how tiles scale (size, fonts, icons, spacing)
+ * 3. Test with expanded/collapsed states
+ * 4. Verify information density at each level
+ */
+export const ManyEmployees_ZoomInteractive: Story = {
+  name: "🔍 Many Employees: Zoom Interactive",
+  render: (args) => {
+    // @ts-expect-error - zoomLevel is a custom arg
+    const zoomLevel = args.zoomLevel ?? 2;
+    const zoomTokens = getZoomTokens(zoomLevel);
+
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          p: 2,
+        }}
+      >
+        {/* Info Banner */}
+        <Box
+          sx={{
+            p: 2,
+            mb: 2,
+            bgcolor: "info.main",
+            color: "white",
+            borderRadius: 1,
+            fontFamily: "monospace",
+            fontSize: "0.875rem",
+          }}
+        >
+          <div>
+            <strong>Zoom Level {zoomLevel}</strong> -{" "}
+            {
+              [
+                "Ultra Compact (48%)",
+                "Compact (60%)",
+                "Normal (80%)",
+                "Comfortable (125%)",
+                "Presentation (150%)",
+              ][zoomLevel]
+            }
+          </div>
+          <div>
+            Tile: {zoomTokens.tile.minWidth}px-{zoomTokens.tile.maxWidth}px |
+            Gap: {zoomTokens.spacing.gap}px | Box Padding:{" "}
+            {zoomTokens.spacing.boxPadding}px
+          </div>
+          <div style={{ marginTop: "4px", opacity: 0.9 }}>
+            💡 CSS overrides preview zoom behavior. Toggle expanded/collapsed to
+            see density changes.
+          </div>
+        </Box>
+
+        {/* GridBox with Zoom Applied */}
+        <Box
+          sx={{
+            width: 600,
+            maxHeight: 500,
+            // Apply zoom tokens via CSS overrides
+            "& .MuiCard-root": {
+              minWidth: `${zoomTokens.tile.minWidth}px !important`,
+              maxWidth: `${zoomTokens.tile.maxWidth}px !important`,
+            },
+            "& .MuiCardContent-root": {
+              padding: `${zoomTokens.tile.padding}px !important`,
+            },
+            "& .MuiTypography-subtitle2": {
+              fontSize: `${zoomTokens.font.name} !important`,
+            },
+            "& .MuiTypography-body2": {
+              fontSize: `${zoomTokens.font.titleLevel} !important`,
+            },
+            "& [data-testid^='flag-badge']": {
+              width: `${zoomTokens.icon.flag}px !important`,
+              height: `${zoomTokens.icon.flag}px !important`,
+            },
+            "& .MuiSvgIcon-root": {
+              fontSize: `${zoomTokens.icon.dragHandle}px !important`,
+            },
+            // Override box padding
+            "& > div": {
+              padding: `${zoomTokens.spacing.boxPadding}px !important`,
+            },
+            // Override tile list grid
+            "& [data-testid='employee-tile-list']": {
+              gridTemplateColumns: `repeat(auto-fill, minmax(${zoomTokens.tile.minWidth}px, 1fr)) !important`,
+              gap: `${zoomTokens.spacing.gap}px !important`,
+            },
+          }}
+        >
+          <GridZoomProvider>
+            <DndContext>
+              <GridBox
+                position={args.position || 9}
+                employees={args.employees || manyEmployees}
+                shortLabel={args.shortLabel || "H,H"}
+                onSelectEmployee={args.onSelectEmployee || fn()}
+                isExpanded={args.isExpanded}
+                isCollapsed={args.isCollapsed}
+                onExpand={args.onExpand || fn()}
+                onCollapse={args.onCollapse || fn()}
+                donutModeActive={args.donutModeActive || false}
+              />
+            </DndContext>
+          </GridZoomProvider>
+        </Box>
+      </Box>
+    );
+  },
+  args: {
+    position: 9,
+    employees: manyEmployees,
+    shortLabel: "H,H",
+    onSelectEmployee: fn(),
+    isExpanded: true,
+    isCollapsed: false,
+    onExpand: fn(),
+    onCollapse: fn(),
+    donutModeActive: false,
+    zoomLevel: 2,
+  },
+  argTypes: {
+    zoomLevel: {
+      control: {
+        type: "select",
+        labels: {
+          0: "Level 0: Ultra Compact (48%)",
+          1: "Level 1: Compact (60%)",
+          2: "Level 2: Normal (80%)",
+          3: "Level 3: Comfortable (125%)",
+          4: "Level 4: Presentation (150%)",
+        },
+      },
+      options: [0, 1, 2, 3, 4],
+      description:
+        "Grid zoom level (0=Ultra Compact, 2=Normal, 4=Presentation)",
+    },
+    isExpanded: {
+      control: "boolean",
+      description: "Whether the box is in expanded state (full height)",
+    },
+    isCollapsed: {
+      control: "boolean",
+      description: "Whether the box is in collapsed state (minimal height)",
+    },
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Interactive zoom experimentation for GridBox with many employees. Use zoom level and expansion controls to test different density scenarios.",
+      },
+    },
   },
 };

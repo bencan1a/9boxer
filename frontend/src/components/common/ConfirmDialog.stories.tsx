@@ -5,10 +5,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { ConfirmDialog } from "./ConfirmDialog";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 
 const meta = {
-  title: "Common/ConfirmDialog",
+  title: "App/Common/ConfirmDialog",
   component: ConfirmDialog,
   parameters: {
     layout: "centered",

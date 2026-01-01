@@ -13,56 +13,56 @@ test.describe("GridBox Visual Tests", () => {
   test("empty grid box", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--empty",
-      "grid-box-empty"
+      "app-grid-gridbox--empty",
+      "app-grid-box-empty"
     );
   });
 
   test("grid box with employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--with-employees",
-      "grid-box-with-employees"
+      "app-grid-gridbox--with-employees",
+      "app-grid-box-with-employees"
     );
   });
 
   test("collapsed grid box", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--collapsed",
-      "grid-box-collapsed"
+      "app-grid-gridbox--collapsed",
+      "app-grid-box-collapsed"
     );
   });
 
   test("expanded grid box", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--expanded",
-      "grid-box-expanded"
+      "app-grid-gridbox--expanded",
+      "app-grid-box-expanded"
     );
   });
 
   test("grid box with many employees", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--many-employees",
-      "grid-box-many-employees"
+      "app-grid-gridbox--many-employees",
+      "app-grid-box-many-employees"
     );
   });
 
   test("needs attention grid box", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--needs-attention",
-      "grid-box-needs-attention"
+      "app-grid-gridbox--needs-attention",
+      "app-grid-box-needs-attention"
     );
   });
 
   test("development grid box", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "grid-gridbox--development",
-      "grid-box-development"
+      "app-grid-gridbox--development",
+      "app-grid-box-development"
     );
   });
 });

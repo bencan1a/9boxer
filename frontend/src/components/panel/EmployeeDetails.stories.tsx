@@ -30,7 +30,7 @@ import type { GridMoveEvent } from "../../types/events";
  * - Requires session store context for changes tracking
  */
 const meta: Meta<typeof EmployeeDetails> = {
-  title: "Panel/EmployeeDetails",
+  title: "App/Right Panel/Details/EmployeeDetails",
   component: EmployeeDetails,
   tags: ["autodocs"],
   parameters: {
@@ -97,6 +97,10 @@ const fullEmployee: Employee = {
  * Shows all sections populated with realistic employee information.
  */
 export const Default: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "employee-details-panel-expanded" },
+  },
   args: {
     employee: fullEmployee,
   },
@@ -216,6 +220,10 @@ export const ModifiedInSession: Story = {
  * Used for documentation screenshot: changes-employee-details
  */
 export const WithChanges: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "changes-employee-details" },
+  },
   args: {
     employee: {
       ...fullEmployee,
@@ -312,6 +320,10 @@ export const HighPotentialDevelopment: Story = {
  * Used for documentation screenshot: details-current-assessment
  */
 export const DefaultWithPadding: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "details-current-assessment" },
+  },
   args: {
     employee: fullEmployee,
   },
