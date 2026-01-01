@@ -20,6 +20,122 @@
 
 ---
 
+## Tagging Stories for Screenshot Generation
+
+To make a Storybook story available for screenshot automation, you must add **both** the story-level tag and screenshot parameters:
+
+### Required Metadata
+
+Every screenshot story needs:
+
+1. **Story-level tag**: `tags: ["screenshot"]`
+2. **Screenshot parameters**: `parameters: { screenshot: { enabled: true, id: 'unique-id' } }`
+
+### Example
+
+```typescript
+export const MyStory: Story = {
+  tags: ["screenshot"],  // ← Story-level tag for filtering
+  parameters: {
+    screenshot: {
+      enabled: true,      // ← Enable screenshot capture
+      id: 'feature-name'  // ← Unique ID for filename
+    },
+  },
+  args: {
+    // Story args...
+  },
+};
+```
+
+### Complete Example from EmployeeTile
+
+```typescript
+/**
+ * Default employee tile with complete data.
+ * Shows standard appearance with all key information.
+ */
+export const Default: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: 'employee-tile-normal' },
+  },
+  args: {
+    employee: baseEmployee,
+    onSelect: fn(),
+    donutModeActive: false,
+  },
+};
+```
+
+### Best Practices
+
+**Unique IDs:**
+- Use descriptive, kebab-case names: `employee-tile-normal`, `filter-panel-expanded`
+- Match the screenshot purpose: `changes-orange-border`, `details-flag-badges`
+- Keep IDs short but meaningful
+
+**What NOT to do:**
+```typescript
+// ❌ DON'T add "screenshot" to file-level tags
+const meta = {
+  tags: ["autodocs", "screenshot"],  // Wrong! This applies to ALL stories
+};
+
+// ❌ DON'T forget the story-level tag
+export const MyStory: Story = {
+  parameters: {
+    screenshot: { enabled: true, id: 'my-screenshot' },
+  },
+  // Missing: tags: ["screenshot"]
+};
+
+// ❌ DON'T reuse screenshot IDs
+export const Story1: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: 'employee-tile' },
+  },
+};
+export const Story2: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: 'employee-tile' },  // Duplicate ID!
+  },
+};
+```
+
+### Finding Screenshot Stories
+
+Filter in Storybook UI:
+- Click the filter dropdown in Storybook
+- Select "screenshot" tag
+- Should show exactly 49 stories (as of December 2024)
+
+Validate with script:
+```bash
+cd frontend
+npx tsx scripts/validate-screenshot-tags.ts
+```
+
+### Screenshot Registry
+
+All screenshot stories are registered in:
+```
+frontend/playwright/screenshots/config.ts
+```
+
+When adding a new screenshot story:
+1. Tag the story with metadata (as shown above)
+2. Add entry to `config.ts` specifying:
+   - Source story ID
+   - Workflow name
+   - Cropping strategy
+   - Dimension constraints
+   - Output filename
+
+---
+
 ## Overview
 
 This guide ensures all documentation screenshots are:
