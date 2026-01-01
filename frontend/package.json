@@ -32,6 +32,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:fast": "vitest run --reporter=dot --bail=5",
+    "test:perf": "vitest run --reporter=verbose --testNamePattern='(Performance|Memory Leak)'",
     "test:coverage": "vitest run --coverage",
     "test:cleanup": "node scripts/cleanup-dev-servers.mjs",
     "check:bundle": "node scripts/check-bundle-size.mjs",
