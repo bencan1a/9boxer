@@ -3,7 +3,10 @@
  */
 
 import React from "react";
-import { Box, Typography, Paper, Stack } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { useTranslation } from "react-i18next";
 import { useSessionStore } from "../../store/sessionStore";

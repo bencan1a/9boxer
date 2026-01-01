@@ -13,7 +13,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("with manager chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--with-manager",
+      "app-right-panel-details-managementchain--with-manager",
       "management-chain-with-manager"
     );
   });
@@ -21,7 +21,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("no manager chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--no-manager",
+      "app-right-panel-details-managementchain--no-manager",
       "management-chain-no-manager"
     );
   });
@@ -29,7 +29,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("deep hierarchy chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--deep-hierarchy",
+      "app-right-panel-details-managementchain--deep-hierarchy",
       "management-chain-deep-hierarchy"
     );
   });
@@ -37,7 +37,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("shallow hierarchy chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--shallow-hierarchy",
+      "app-right-panel-details-managementchain--shallow-hierarchy",
       "management-chain-shallow-hierarchy"
     );
   });
@@ -45,7 +45,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("with duplicates chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--with-duplicates",
+      "app-right-panel-details-managementchain--with-duplicates",
       "management-chain-with-duplicates"
     );
   });
@@ -53,7 +53,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("manager chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--manager-chain",
+      "app-right-panel-details-managementchain--manager-chain",
       "management-chain-manager-chain"
     );
   });
@@ -61,7 +61,7 @@ test.describe("ManagementChain Visual Tests", () => {
   test("new hire chain", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-managementchain--new-hire",
+      "app-right-panel-details-managementchain--new-hire",
       "management-chain-new-hire"
     );
   });

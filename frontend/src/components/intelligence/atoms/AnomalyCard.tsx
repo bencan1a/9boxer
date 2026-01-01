@@ -3,16 +3,14 @@
  */
 
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Chip,
-  Box,
-  IconButton,
-  Collapse,
-  Button,
-} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Collapse from "@mui/material/Collapse";
+import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import ErrorIcon from "@mui/icons-material/Error";

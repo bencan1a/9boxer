@@ -30,6 +30,7 @@ describe("useElectronAPI", () => {
         saveFileDialog: vi.fn(),
         readFile: vi.fn(),
         openUserGuide: vi.fn(),
+        notifySessionRestored: vi.fn(),
         theme: {
           getSystemTheme: vi.fn(),
           onSystemThemeChange: vi.fn(),
@@ -66,6 +67,7 @@ describe("useElectronAPI", () => {
         saveFileDialog: vi.fn(),
         readFile: vi.fn(),
         openUserGuide: vi.fn(),
+        notifySessionRestored: vi.fn(),
         theme: {
           getSystemTheme: vi.fn(),
           onSystemThemeChange: vi.fn(),
@@ -211,6 +213,7 @@ describe("useElectronAPI", () => {
         saveFileDialog: vi.fn(),
         readFile: vi.fn(),
         openUserGuide: vi.fn(),
+        notifySessionRestored: vi.fn(),
         theme: {
           getSystemTheme: vi.fn(),
           onSystemThemeChange: vi.fn(),
@@ -325,6 +328,7 @@ describe("useElectronAPI", () => {
         saveFileDialog: vi.fn(),
         readFile: vi.fn(),
         openUserGuide: vi.fn(),
+        notifySessionRestored: vi.fn(),
         theme: {
           getSystemTheme: vi.fn(),
           onSystemThemeChange: vi.fn(),

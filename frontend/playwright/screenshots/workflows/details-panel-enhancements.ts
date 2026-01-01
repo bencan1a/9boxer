@@ -41,7 +41,7 @@ export async function generateCurrentAssessmentEnhanced(
   await page.setViewportSize({ width: 450, height: 800 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeedetails--default-with-padding",
+    storyId: "app-right-panel-details-employeedetails--default-with-padding",
     outputPath,
     theme: "light",
     waitTime: 1000,
@@ -72,7 +72,7 @@ export async function generateFlagsUI(
   await page.setViewportSize({ width: 450, height: 300 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-employeeflags--with-multiple-flags",
+    storyId: "app-right-panel-details-employeeflags--with-multiple-flags",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -293,7 +293,7 @@ export async function generateReportingChainClickable(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-managementchain--with-manager",
+    storyId: "app-right-panel-details-managementchain--with-manager",
     outputPath,
     theme: "light",
     waitTime: 800,

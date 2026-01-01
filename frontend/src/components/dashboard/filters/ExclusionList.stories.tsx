@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ExclusionList } from "./ExclusionList";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ExclusionList> = {
-  title: "Dashboard/Filters/ExclusionList",
+  title: "App/Dashboard/Filters/ExclusionList",
   component: ExclusionList,
   tags: ["autodocs"],
   parameters: {

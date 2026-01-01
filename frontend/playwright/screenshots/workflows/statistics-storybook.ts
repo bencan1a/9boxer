@@ -43,7 +43,8 @@ export async function generatePanelDistribution(
   await page.setViewportSize({ width: 600, height: 900 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-statistics-distributiontable--balanced-distribution",
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
     outputPath,
     theme: "light",
     waitTime: 800,
@@ -69,7 +70,8 @@ export async function generateTrendIndicators(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-statistics-coloredpercentagebar--all-positions-comparison",
+    storyId:
+      "app-right-panel-statistics-coloredpercentagebar--all-positions-comparison",
     outputPath,
     theme: "light",
     waitTime: 800,
@@ -96,7 +98,8 @@ export async function generateGroupingIndicators(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-statistics-groupingindicator--all-groupings-together",
+    storyId:
+      "app-right-panel-statistics-groupingindicator--all-groupings-together",
     outputPath,
     theme: "light",
     waitTime: 800,
@@ -125,7 +128,7 @@ export async function generateSummaryCards(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "panel-statistics-statisticssummary--default",
+    storyId: "app-right-panel-statistics-statisticssummary--default",
     outputPath,
     theme: "light",
     waitTime: 800,
@@ -150,7 +153,8 @@ export async function generateStatisticsRedFlags(
   outputPath: string
 ): Promise<void> {
   await captureStorybookScreenshot(page, {
-    storyId: "panel-statistics-distributiontable--skewed-distribution",
+    storyId:
+      "app-right-panel-statistics-distributiontable--skewed-distribution",
     outputPath,
     theme: "light",
     waitTime: 800,

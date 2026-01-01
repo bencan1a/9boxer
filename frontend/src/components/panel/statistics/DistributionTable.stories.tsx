@@ -23,7 +23,7 @@ import type { PositionDistribution } from "@/types/api";
  * - Talent calibration reviews
  */
 const meta: Meta<typeof DistributionTable> = {
-  title: "Panel/Statistics/DistributionTable",
+  title: "App/Right Panel/Statistics/DistributionTable",
   component: DistributionTable,
   tags: ["autodocs"],
   parameters: {
@@ -60,6 +60,11 @@ const createDistribution = (
  * Shows even spread across all positions with healthy grouping percentages.
  */
 export const BalancedDistribution: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "statistics-panel-distribution" },
+    screenshot: { enabled: true, id: "statistics-panel-distribution" },
+  },
   args: {
     distribution: createDistribution({
       9: 12,

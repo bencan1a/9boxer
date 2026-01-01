@@ -1,5 +1,6 @@
 import React from "react";
-import { Chip, Badge } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import Badge from "@mui/material/Badge";
 import { useTheme } from "@mui/material/styles";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 

@@ -11,7 +11,10 @@
  */
 
 import React from "react";
-import { Box, Typography, Paper, ButtonBase } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import ButtonBase from "@mui/material/ButtonBase";
 import { useTheme, alpha } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { useTranslation } from "react-i18next";

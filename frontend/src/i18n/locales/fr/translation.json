@@ -41,6 +41,8 @@
       "fileNotFound": "Fichier introuvable : {{filename}}",
       "fileLoaded": "{{filename}} chargé",
       "loadError": "Échec du chargement du fichier",
+      "exportError": "Échec de l'exportation des modifications",
+      "recentFilesCleared": "Fichiers récents effacés",
       "electronApiRequired": "Le chargement de fichiers nécessite l'application de bureau"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[É,É]",
         "fullLabel": "Star [É,É]",
         "guidance": "Meilleurs performeurs avec un haut potentiel. Talents critiques à fidéliser et développer pour des postes de direction. Privilégier la rétention, la planification de succession, le développement exécutif et les missions stimulantes."
-      }
+      },
+      "unknown": "Inconnu"
     }
   },
   "panel": {
@@ -355,6 +358,7 @@
     "applyChanges": {
       "title": "Appliquer les modifications au fichier",
       "applyTo": "Appliquer les modifications à:",
+      "defaultBehavior": "Vos modifications seront enregistrées dans le fichier d'origine.",
       "saveAsNew": "Enregistrer comme nouveau fichier à la place",
       "apply": "Appliquer les modifications",
       "applying": "Application en cours...",

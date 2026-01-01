@@ -1,0 +1,3032 @@
+
+> 9boxer-electron@1.0.0 test
+> vitest
+
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90mC:/Git_Repos/9boxer/frontend[39m
+
+[90mstdout[2m | src/components/panel/__tests__/EmployeeDetails.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/grid/__tests__/GridBox.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/panel/__tests__/EmployeeChangesSummary.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/panel/statistics/StatisticCard.test.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 661[2mms[22m[39m
+ [32m✓[39m src/components/panel/__tests__/ManagementChain.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 692[2mms[22m[39m
+[90mstdout[2m | src/components/dashboard/__tests__/ApplyChangesWorkflow.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/dashboard/__tests__/UnsavedChangesWorkflow.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/dashboard/filters/ReportingChainFilter.test.tsx [2m([22m[2m16 tests[22m[2m)[22m[33m 1129[2mms[22m[39m
+ [32m✓[39m src/components/grid/__tests__/GridBox.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 876[2mms[22m[39m
+     [33m[2m✓[22m[39m renders with short label and employee count badge [33m 318[2mms[22m[39m
+ [32m✓[39m src/components/panel/__tests__/EmployeeDetails.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 1186[2mms[22m[39m
+ [32m✓[39m src/components/intelligence/sections/__tests__/DistributionSection.test.tsx [2m([22m[2m27 tests[22m[2m)[22m[33m 2727[2mms[22m[39m
+       [33m[2m✓[22m[39m maintains proper component hierarchy [33m 318[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/FileMenuButton.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 3015[2mms[22m[39m
+     [33m[2m✓[22m[39m opens menu when button is clicked [33m 466[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onImportClick when import menu item is clicked [33m 507[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onExportClick when export menu item is clicked [33m 450[2mms[22m[39m
+     [33m[2m✓[22m[39m hides export when no changes [33m 595[2mms[22m[39m
+     [33m[2m✓[22m[39m disables export when isExporting is true [33m 647[2mms[22m[39m
+[90mstdout[2m | src/components/panel/__tests__/ChangeTrackerTab.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mDialog Display[2m > [22m[2mrenders when open is true
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/dashboard/__tests__/RecentFileLoadingWorkflow.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mDialog Display[2m > [22m[2mdoes not render when open is false
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mDialog Display[2m > [22m[2mcalls onClose when close button is clicked
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mdisplays all theme options
+[22m[39mi18next: languageChanged en
+
+ [32m✓[39m src/components/panel/statistics/DistributionRow.test.tsx [2m([22m[2m20 tests[22m[2m)[22m[33m 739[2mms[22m[39m
+ [32m✓[39m src/components/intelligence/sections/__tests__/AnomaliesSection.test.tsx [2m([22m[2m26 tests[22m[2m)[22m[33m 4394[2mms[22m[39m
+       [33m[2m✓[22m[39m does not show critical badge when no critical anomalies [33m 315[2mms[22m[39m
+       [33m[2m✓[22m[39m displays multiple severity badges simultaneously [33m 311[2mms[22m[39m
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mshows current theme selection
+[22m[39mi18next: languageChanged en
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mRendering with data[2m > [22m[2mrenders when chart title is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mRendering with data[2m > [22m[2mrenders when data array has items
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mRendering with data[2m > [22m[2mdisplays when categories are present in data
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mData handling[2m > [22m[2mrenders when single category is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mData handling[2m > [22m[2mrenders when multiple categories are provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mData handling[2m > [22m[2mrenders when mixed significance data is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mData handling[2m > [22m[2mrenders when long category names are provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mChart structure[2m > [22m[2mrenders when ResponsiveContainer wraps chart
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mChart structure[2m > [22m[2mrenders when BarChart is present in DOM
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mtransforms when observed_high_pct is converted correctly
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mhandles when z_score values are present
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mhandles when p_value is optional
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mAccessibility[2m > [22m[2mhas when accessible title for screen readers
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/DeviationChart.test.tsx[2m > [22m[2mDeviationChart[2m > [22m[2mAccessibility[2m > [22m[2mmaintains when structure for keyboard navigation
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+ [32m✓[39m src/components/intelligence/__tests__/DeviationChart.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 391[2mms[22m[39m
+[90mstdout[2m | src/components/panel/__tests__/StatisticsTab.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/panel/__tests__/StatisticsTab.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 347[2mms[22m[39m
+[90mstderr[2m | src/components/intelligence/__tests__/AnomalySection.test.tsx[2m > [22m[2mAnomalySection[2m > [22m[2mRendering with different status levels[2m > [22m[2mrenders with green status and correct chip
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mcalls setThemeMode when theme is changed
+[22m[39mi18next: languageChanged en
+
+[90mstderr[2m | src/components/intelligence/__tests__/AnomalySection.test.tsx[2m > [22m[2mAnomalySection[2m > [22m[2mRendering with different status levels[2m > [22m[2mrenders with yellow status and correct chip
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/AnomalySection.test.tsx[2m > [22m[2mAnomalySection[2m > [22m[2mRendering with different status levels[2m > [22m[2mrenders with red status and correct chip
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mdisplays current theme indicator
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mshows effective theme when in auto mode
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mTheme Selection[2m > [22m[2mupdates to dark theme in auto mode
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mdisplays language section
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mdisplays all language options
+[22m[39mi18next: languageChanged en
+
+[90mstderr[2m | src/components/intelligence/__tests__/AnomalySection.test.tsx[2m > [22m[2mAnomalySection[2m > [22m[2mChart component integration[2m > [22m[2mpasses deviations data to DeviationChart
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mshows current language selection
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mhas correct test IDs for language options
+[22m[39mi18next: languageChanged en
+
+ [32m✓[39m src/components/panel/statistics/GroupingIndicator.test.tsx [2m([22m[2m25 tests[22m[2m)[22m[33m 1004[2mms[22m[39m
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mallows selecting a different language
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mnormalizes language codes with variants
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mnormalizes language codes with variants
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLanguage Selection[2m > [22m[2mdisplays language icon for each option
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLayout and Structure[2m > [22m[2mseparates theme and language sections with divider
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLayout and Structure[2m > [22m[2mdisplays sections in correct order
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mLayout and Structure[2m > [22m[2mmaintains consistent spacing and styling
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mAccessibility[2m > [22m[2mhas accessible theme selection radio group
+[22m[39mi18next: languageChanged en
+
+[90mstderr[2m | src/components/dashboard/__tests__/RecentFileLoadingWorkflow.test.tsx[2m > [22m[2mRecentFileLoadingWorkflow[2m > [22m[2mLoad file success[2m > [22m[2mshould show success message and call uploadFile on successful file read
+[22m[39mWarning: Failed prop type: Invalid prop `disabled` of type `object` supplied to `ForwardRef(Button)`, expected `boolean`.
+    at Button (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Button\Button.js:231:30)
+    at FileUploadDialog (C:/Git_Repos/9boxer/frontend/src/components/common/FileUploadDialog.tsx:39:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at SnackbarProvider (C:/Git_Repos/9boxer/frontend/src/contexts/SnackbarContext.tsx:22:3)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+ [32m✓[39m src/components/intelligence/atoms/__tests__/InsightCard.test.tsx [2m([22m[2m48 tests[22m[2m)[22m[33m 2480[2mms[22m[39m
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mAccessibility[2m > [22m[2mhas accessible language selection radio group
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx[2m > [22m[2mClose File Workflow Integration[2m > [22m[2mcloses session and clears state when Close File is clicked
+[22m[39m[INFO] Session closed successfully
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mAccessibility[2m > [22m[2mhas proper ARIA label for close button
+[22m[39mi18next: languageChanged en
+
+[90mstdout[2m | src/components/settings/__tests__/SettingsDialog.test.tsx[2m > [22m[2mSettingsDialog[2m > [22m[2mAccessibility[2m > [22m[2mallows keyboard navigation through options
+[22m[39mi18next: languageChanged en
+
+ [32m✓[39m src/components/settings/__tests__/SettingsDialog.test.tsx [2m([22m[2m23 tests[22m[2m)[22m[33m 5848[2mms[22m[39m
+       [33m[2m✓[22m[39m renders when open is true [33m 356[2mms[22m[39m
+       [33m[2m✓[22m[39m displays all theme options [33m 707[2mms[22m[39m
+       [33m[2m✓[22m[39m shows current theme selection [33m 1596[2mms[22m[39m
+       [33m[2m✓[22m[39m calls setThemeMode when theme is changed [33m 668[2mms[22m[39m
+[90mstdout[2m | src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx[2m > [22m[2mClose File Workflow Integration[2m > [22m[2mclears localStorage when closing session
+[22m[39m[INFO] Session closed successfully
+
+[90mstdout[2m | src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx[2m > [22m[2mClose File Workflow Integration[2m > [22m[2mcloses file menu after clicking Close File
+[22m[39m[INFO] Session closed successfully
+
+ [32m✓[39m src/components/intelligence/__tests__/AnomalySection.test.tsx [2m([22m[2m42 tests[22m[2m)[22m[33m 6692[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with green status and correct chip [33m 2437[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with yellow status and correct chip [33m 590[2mms[22m[39m
+       [33m[2m✓[22m[39m collapses details table when header is clicked again [33m 587[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/RecentFileLoadingWorkflow.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 6963[2mms[22m[39m
+       [33m[2m✓[22m[39m should call readFile, uploadFile, and loadEmployees when loading a recent file [33m 3449[2mms[22m[39m
+       [33m[2m✓[22m[39m should clear session before loading a new file [33m 863[2mms[22m[39m
+       [33m[2m✓[22m[39m should show error when readFile fails [33m 622[2mms[22m[39m
+       [33m[2m✓[22m[39m should show success message and call uploadFile on successful file read [33m 437[2mms[22m[39m
+       [33m[2m✓[22m[39m should show error message when uploadFile fails [33m 485[2mms[22m[39m
+       [33m[2m✓[22m[39m should show error about desktop app required when Electron API is not available [33m 538[2mms[22m[39m
+       [33m[2m✓[22m[39m should log error and show user-friendly message on file loading error [33m 565[2mms[22m[39m
+[90mstdout[2m | src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx[2m > [22m[2mClose File Workflow Integration[2m > [22m[2mreturns UI to empty state after closing file
+[22m[39m[INFO] Session closed successfully
+
+ [32m✓[39m src/components/dashboard/__tests__/CloseFileWorkflow.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 3755[2mms[22m[39m
+     [33m[2m✓[22m[39m does not show Close File menu item when no file is loaded [33m 1140[2mms[22m[39m
+     [33m[2m✓[22m[39m shows Close File menu item when file is loaded [33m 332[2mms[22m[39m
+     [33m[2m✓[22m[39m closes session and clears state when Close File is clicked [33m 529[2mms[22m[39m
+     [33m[2m✓[22m[39m clears localStorage when closing session [33m 409[2mms[22m[39m
+     [33m[2m✓[22m[39m handles API errors when closing session [33m 537[2mms[22m[39m
+     [33m[2m✓[22m[39m closes file menu after clicking Close File [33m 435[2mms[22m[39m
+     [33m[2m✓[22m[39m returns UI to empty state after closing file [33m 372[2mms[22m[39m
+[90mstdout[2m | src/components/dashboard/__tests__/UnsavedChangesWorkflow.test.tsx[2m > [22m[2mUnsaved Changes Workflow[2m > [22m[2mClose File with unsaved changes[2m > [22m[2mcloses session after discarding changes
+[22m[39m[INFO] Session closed successfully
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Discard is clicked
+[22m[39mWarning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at Backdrop (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Backdrop\Backdrop.js:60:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Discard is clicked
+[22m[39mWarning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Discard is clicked
+[22m[39mWarning: An update to ForwardRef(Modal) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Cancel is clicked
+[22m[39mWarning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at Backdrop (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Backdrop\Backdrop.js:60:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Cancel is clicked
+[22m[39mWarning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstderr[2m | src/components/dialogs/__tests__/DialogsIntegration.test.tsx[2m > [22m[2mDialogs Integration[2m > [22m[2mcloses UnsavedChangesDialog when Cancel is clicked
+[22m[39mWarning: An update to ForwardRef(Modal) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at UnsavedChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/UnsavedChangesDialog.tsx:23:3)
+    at DialogFlowWrapper (C:/Git_Repos/9boxer/frontend/src/components/dialogs/__tests__/DialogsIntegration.test.tsx:14:87)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstdout[2m | src/components/events/__tests__/EventDisplay.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/dashboard/__tests__/UnsavedChangesWorkflow.test.tsx[2m > [22m[2mUnsaved Changes Workflow[2m > [22m[2mRecent File with unsaved changes[2m > [22m[2mloads recent file after discarding changes
+[22m[39m[INFO] Recent file loaded { filePath: [32m'/path/to/recent.xlsx'[39m, fileName: [32m'recent.xlsx'[39m }
+
+ [32m✓[39m src/components/dialogs/__tests__/DialogsIntegration.test.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 4261[2mms[22m[39m
+     [33m[2m✓[22m[39m transitions from UnsavedChangesDialog to ApplyChangesDialog [33m 978[2mms[22m[39m
+     [33m[2m✓[22m[39m returns to UnsavedChangesDialog when canceling ApplyChangesDialog [33m 719[2mms[22m[39m
+     [33m[2m✓[22m[39m closes UnsavedChangesDialog when Discard is clicked [33m 527[2mms[22m[39m
+     [33m[2m✓[22m[39m closes UnsavedChangesDialog when Cancel is clicked [33m 427[2mms[22m[39m
+     [33m[2m✓[22m[39m provides apply and cancel options in ApplyChangesDialog [33m 652[2mms[22m[39m
+ [32m✓[39m src/components/panel/__tests__/EmployeeChangesSummary.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 13350[2mms[22m[39m
+     [33m[2m✓[22m[39m displays regular change for employee [33m 740[2mms[22m[39m
+     [33m[2m✓[22m[39m displays both normal and donut changes for the same employee [33m 1212[2mms[22m[39m
+     [33m[2m✓[22m[39m sorts changes by timestamp with most recent first [33m 797[2mms[22m[39m
+     [33m[2m✓[22m[39m displays change without notes correctly with editable field [33m 660[2mms[22m[39m
+     [33m[2m✓[22m[39m displays position labels in movement chips [33m 719[2mms[22m[39m
+     [33m[2m✓[22m[39m displays timestamp in localized format [33m 2285[2mms[22m[39m
+     [33m[2m✓[22m[39m allows editing notes for regular changes [33m 2022[2mms[22m[39m
+     [33m[2m✓[22m[39m allows editing notes for donut changes [33m 2176[2mms[22m[39m
+     [33m[2m✓[22m[39m allows adding notes to change without existing notes [33m 2083[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/UnsavedChangesWorkflow.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 12594[2mms[22m[39m
+       [33m[2m✓[22m[39m does not show unsaved changes dialog when no unsaved changes exist [33m 4201[2mms[22m[39m
+       [33m[2m✓[22m[39m shows unsaved changes dialog when unsaved changes exist [33m 1822[2mms[22m[39m
+       [33m[2m✓[22m[39m opens upload dialog after discarding changes [33m 1249[2mms[22m[39m
+       [33m[2m✓[22m[39m stays on current screen when canceling unsaved changes dialog [33m 849[2mms[22m[39m
+       [33m[2m✓[22m[39m shows unsaved changes dialog when unsaved changes exist [33m 503[2mms[22m[39m
+       [33m[2m✓[22m[39m opens load sample dialog after discarding changes [33m 711[2mms[22m[39m
+       [33m[2m✓[22m[39m shows unsaved changes dialog when unsaved changes exist [33m 395[2mms[22m[39m
+       [33m[2m✓[22m[39m closes session after discarding changes [33m 634[2mms[22m[39m
+       [33m[2m✓[22m[39m shows unsaved changes dialog when unsaved changes exist [33m 395[2mms[22m[39m
+       [33m[2m✓[22m[39m loads recent file after discarding changes [33m 843[2mms[22m[39m
+       [33m[2m✓[22m[39m shows placeholder message when Apply Changes is clicked [33m 988[2mms[22m[39m
+ [32m✓[39m src/components/panel/__tests__/ChangeTrackerTab.test.tsx [2m([22m[2m28 tests[22m[2m)[22m[33m 10509[2mms[22m[39m
+     [33m[2m✓[22m[39m displays change tracker heading when changes exist [33m 2550[2mms[22m[39m
+     [33m[2m✓[22m[39m displays change list when changes exist [33m 835[2mms[22m[39m
+     [33m[2m✓[22m[39m calls updateChangeNotes when notes field is blurred after editing [33m 458[2mms[22m[39m
+     [33m[2m✓[22m[39m calls updateChangeNotes with empty string when notes are cleared [33m 430[2mms[22m[39m
+     [33m[2m✓[22m[39m sorts changes by most recent first [33m 415[2mms[22m[39m
+     [33m[2m✓[22m[39m displays multiple changes correctly [33m 325[2mms[22m[39m
+     [33m[2m✓[22m[39m handles focus and blur for different employees separately [33m 683[2mms[22m[39m
+     [33m[2m✓[22m[39m logs error to console when updateChangeNotes fails [33m 311[2mms[22m[39m
+     [33m[2m✓[22m[39m calls updateDonutChangeNotes when donut change notes are edited [33m 509[2mms[22m[39m
+     [33m[2m✓[22m[39m displays correct change counts in tab labels [33m 319[2mms[22m[39m
+     [33m[2m✓[22m[39m switches between regular and donut changes tabs correctly [33m 381[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/EmptyState.test.tsx [2m([22m[2m26 tests[22m[2m)[22m[33m 1788[2mms[22m[39m
+       [33m[2m✓[22m[39m renders primary action button [33m 307[2mms[22m[39m
+ [32m✓[39m src/components/common/__tests__/ConfirmDialog.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 3026[2mms[22m[39m
+     [33m[2m✓[22m[39m renders dialog when open [33m 641[2mms[22m[39m
+     [33m[2m✓[22m[39m renders default button labels [33m 432[2mms[22m[39m
+     [33m[2m✓[22m[39m renders custom button labels [33m 323[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onClose when cancel button is clicked [33m 310[2mms[22m[39m
+[90mstderr[2m | src/components/dashboard/__tests__/ApplyChangesWorkflow.test.tsx[2m > [22m[2mApply Changes Workflow Integration[2m > [22m[2mshows loading state while applying changes
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to AppBarContainer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to AppBarContainer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to AppBarContainer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to AppBarContainer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to AppBarContainer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at Backdrop (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Backdrop\Backdrop.js:60:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at ApplyChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx:35:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to TransitionGroup inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TransitionGroup (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\TransitionGroup.js:57:30)
+    at span
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at TouchRipple (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\TouchRipple.js:139:59)
+    at span
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at ButtonBase (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\ButtonBase.js:94:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at SwitchBase (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\internal\SwitchBase.js:72:7)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Checkbox (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Checkbox\Checkbox.js:78:59)
+    at label
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at FormControlLabel (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\FormControlLabel\FormControlLabel.js:106:59)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at DialogActions (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\DialogActions\DialogActions.js:55:59)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Paper (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Paper\Paper.js:70:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at ApplyChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx:35:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to TransitionGroup inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TransitionGroup (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\TransitionGroup.js:57:30)
+    at span
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at TouchRipple (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\TouchRipple.js:139:59)
+    at button
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at ButtonBase (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\ButtonBase.js:94:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Button (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Button\Button.js:231:30)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Box (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\createBox.js:31:41)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at DialogActions (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\DialogActions\DialogActions.js:55:59)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Paper (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Paper\Paper.js:70:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at ApplyChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx:35:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to TransitionGroup inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TransitionGroup (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\TransitionGroup.js:57:30)
+    at span
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at TouchRipple (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\TouchRipple.js:139:59)
+    at button
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at ButtonBase (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\ButtonBase\ButtonBase.js:94:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Button (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Button\Button.js:231:30)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Box (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\createBox.js:31:41)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at DialogActions (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\DialogActions\DialogActions.js:55:59)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Paper (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Paper\Paper.js:70:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at ApplyChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx:35:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+Warning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at FocusTrap (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Unstable_TrapFocus\FocusTrap.js:86:5)
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Dialog (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Dialog\Dialog.js:161:59)
+    at ApplyChangesDialog (C:/Git_Repos/9boxer/frontend/src/components/dialogs/ApplyChangesDialog.tsx:35:3)
+    at AppBarContainer (C:/Git_Repos/9boxer/frontend/src/components/dashboard/AppBarContainer.tsx:37:58)
+    at GridZoomProvider (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:43:3)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at AllTheProviders (C:/Git_Repos/9boxer/frontend/src/test/utils.tsx:21:28)
+
+[90mstdout[2m | src/components/dashboard/__tests__/RecentFilesWorkflow.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/dashboard/__tests__/ApplyChangesWorkflow.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 14211[2mms[22m[39m
+     [33m[2m✓[22m[39m shows error when trying to export with no session [33m 3224[2mms[22m[39m
+     [33m[2m✓[22m[39m shows ApplyChangesDialog when export is clicked with active session [33m 2685[2mms[22m[39m
+     [33m[2m✓[22m[39m calls API correctly when applying changes in update_original mode [33m 1305[2mms[22m[39m
+     [33m[2m✓[22m[39m calls API correctly when applying changes in save_new mode [33m 1074[2mms[22m[39m
+     [33m[2m✓[22m[39m shows success message and closes dialog on successful apply [33m 1132[2mms[22m[39m
+     [33m[2m✓[22m[39m shows error in dialog and keeps dialog open on apply failure [33m 757[2mms[22m[39m
+     [33m[2m✓[22m[39m handles API exception and shows error in dialog [33m 904[2mms[22m[39m
+     [33m[2m✓[22m[39m closes dialog without calling API when cancel is clicked [33m 1063[2mms[22m[39m
+     [33m[2m✓[22m[39m shows loading state while applying changes [33m 1263[2mms[22m[39m
+     [33m[2m✓[22m[39m does not call save file dialog when user cancels in save_new mode [33m 800[2mms[22m[39m
+ [32m✓[39m src/components/events/__tests__/EventDisplay.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 3082[2mms[22m[39m
+       [33m[2m✓[22m[39m displays grid move with position labels [33m 446[2mms[22m[39m
+       [33m[2m✓[22m[39m displays timestamp icon with tooltip [33m 460[2mms[22m[39m
+       [33m[2m✓[22m[39m allows editing notes when showNotes is true [33m 1608[2mms[22m[39m
+ [32m✓[39m src/components/common/__tests__/FileUploadDialog.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 2680[2mms[22m[39m
+     [33m[2m✓[22m[39m renders dialog with title and description when open [33m 589[2mms[22m[39m
+     [33m[2m✓[22m[39m disables upload button when no file is selected [33m 321[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onClose when cancel button is clicked [33m 358[2mms[22m[39m
+     [33m[2m✓[22m[39m shows error when file size exceeds 10MB [33m 990[2mms[22m[39m
+ [32m✓[39m src/components/intelligence/atoms/__tests__/SectionHeader.test.tsx [2m([22m[2m38 tests[22m[2m)[22m[33m 2720[2mms[22m[39m
+       [33m[2m✓[22m[39m shows tooltip on info icon hover [33m 693[2mms[22m[39m
+       [33m[2m✓[22m[39m tooltip is accessible via keyboard [33m 306[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/RecentFilesWorkflow.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 2250[2mms[22m[39m
+     [33m[2m✓[22m[39m loads recent files from API on mount [33m 469[2mms[22m[39m
+     [33m[2m✓[22m[39m displays recent files in the file menu [33m 654[2mms[22m[39m
+     [33m[2m✓[22m[39m limits display to 5 most recent files [33m 305[2mms[22m[39m
+     [33m[2m✓[22m[39m handles API errors gracefully when loading recent files [33m 425[2mms[22m[39m
+[90mstdout[2m | src/components/grid/__tests__/EmployeeTileList.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/intelligence/atoms/__tests__/DistributionStats.test.tsx [2m([22m[2m34 tests[22m[2m)[22m[33m 11902[2mms[22m[39m
+       [33m[2m✓[22m[39m uses correct colors for development positions [33m 505[2mms[22m[39m
+       [33m[2m✓[22m[39m shows positive deviation with plus sign [33m 305[2mms[22m[39m
+       [33m[2m✓[22m[39m shows negative deviation without extra sign [33m 446[2mms[22m[39m
+       [33m[2m✓[22m[39m handles partial ideal percentages [33m 330[2mms[22m[39m
+       [33m[2m✓[22m[39m handles empty distribution [33m 333[2mms[22m[39m
+       [33m[2m✓[22m[39m handles zero total gracefully [33m 459[2mms[22m[39m
+       [33m[2m✓[22m[39m handles decimal percentages correctly [33m 383[2mms[22m[39m
+       [33m[2m✓[22m[39m handles 100% in single position [33m 346[2mms[22m[39m
+       [33m[2m✓[22m[39m has testid for each position [33m 414[2mms[22m[39m
+       [33m[2m✓[22m[39m displays percentages with one decimal place [33m 790[2mms[22m[39m
+       [33m[2m✓[22m[39m rounds percentages correctly [33m 649[2mms[22m[39m
+       [33m[2m✓[22m[39m calculates exact deviation correctly [33m 806[2mms[22m[39m
+       [33m[2m✓[22m[39m shows deviation at exactly 5% threshold [33m 696[2mms[22m[39m
+       [33m[2m✓[22m[39m shows deviation at exactly -5% threshold [33m 1641[2mms[22m[39m
+[90mstderr[2m | src/components/dashboard/__tests__/HelpButton.test.tsx[2m > [22m[2mHelpButton[2m > [22m[2mcalls onUserGuideClick when user guide menu item is clicked
+[22m[39mWarning: An update to Transition inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Transition (C:\Git_Repos\9boxer\frontend\node_modules\react-transition-group\cjs\Transition.js:135:30)
+    at Fade (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Fade\Fade.js:37:39)
+    at Backdrop (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Backdrop\Backdrop.js:60:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at div
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Portal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Portal\Portal.js:34:5)
+    at Modal (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Modal\Modal.js:88:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Popover (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Popover\Popover.js:102:59)
+    at C:\Git_Repos\9boxer\frontend\node_modules\@emotion\react\dist\emotion-element-e8f4cc37.development.cjs.js:60:23
+    at Menu (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\Menu\Menu.js:76:59)
+    at HelpButton (C:/Git_Repos/9boxer/frontend/src/components/dashboard/HelpButton.tsx:23:11)
+    at DefaultPropsProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\DefaultPropsProvider\DefaultPropsProvider.js:18:3)
+    at RtlProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\RtlProvider\index.js:19:7)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\private-theming\node\ThemeProvider\ThemeProvider.js:39:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\system\ThemeProvider\ThemeProvider.js:53:5)
+    at ThemeProvider (C:\Git_Repos\9boxer\frontend\node_modules\@mui\material\node\styles\ThemeProvider.js:21:14)
+    at I18nextProvider (file:///C:/Git_Repos/9boxer/frontend/node_modules/react-i18next/dist/es/I18nextProvider.js:4:3)
+    at I18nTestWrapper (C:/Git_Repos/9boxer/frontend/src/test/i18nTestUtils.tsx:39:3)
+    at TestWrapper (C:/Git_Repos/9boxer/frontend/src/components/dashboard/__tests__/HelpButton.test.tsx:17:24)
+
+[90mstdout[2m | src/components/grid/__tests__/EmployeeTileList.test.tsx[2m > [22m[2mEmployeeTileList[2m > [22m[2mpasses onSelectEmployee callback to tiles
+[22m[39m[DEBUG] Card clicked - selecting employee: [33m1[39m Alice
+
+ [32m✓[39m src/components/intelligence/__tests__/IntelligenceSummary.test.tsx [2m([22m[2m29 tests[22m[2m)[22m[33m 16004[2mms[22m[39m
+       [33m[2m✓[22m[39m renders three summary cards when given data [33m 2547[2mms[22m[39m
+       [33m[2m✓[22m[39m displays quality score value correctly [33m 529[2mms[22m[39m
+       [33m[2m✓[22m[39m calculates and displays total anomaly count correctly [33m 373[2mms[22m[39m
+       [33m[2m✓[22m[39m displays anomaly count breakdown with chips [33m 323[2mms[22m[39m
+       [33m[2m✓[22m[39m displays excellent status when score is 80 or above [33m 406[2mms[22m[39m
+       [33m[2m✓[22m[39m displays good status when score is between 50 and 79 [33m 547[2mms[22m[39m
+       [33m[2m✓[22m[39m displays needs attention status when score is below 50 [33m 615[2mms[22m[39m
+       [33m[2m✓[22m[39m displays needs attention status at boundary score of 49 [33m 374[2mms[22m[39m
+       [33m[2m✓[22m[39m handles perfect score of 100 correctly [33m 817[2mms[22m[39m
+       [33m[2m✓[22m[39m handles zero score correctly [33m 623[2mms[22m[39m
+       [33m[2m✓[22m[39m handles zero anomalies correctly [33m 1003[2mms[22m[39m
+       [33m[2m✓[22m[39m handles high anomaly count correctly [33m 1437[2mms[22m[39m
+       [33m[2m✓[22m[39m handles low anomaly count correctly [33m 1468[2mms[22m[39m
+       [33m[2m✓[22m[39m displays correct green anomaly count [33m 678[2mms[22m[39m
+       [33m[2m✓[22m[39m displays correct yellow anomaly count [33m 575[2mms[22m[39m
+       [33m[2m✓[22m[39m displays correct red anomaly count [33m 645[2mms[22m[39m
+       [33m[2m✓[22m[39m displays all yellow anomalies when no green or red exist [33m 422[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with proper semantic structure [33m 313[2mms[22m[39m
+       [33m[2m✓[22m[39m uses Material-UI semantic color tokens for quality indicators [33m 344[2mms[22m[39m
+       [33m[2m✓[22m[39m integrates with i18n translation system [33m 491[2mms[22m[39m
+       [33m[2m✓[22m[39m renders correctly with excellent intelligence data [33m 325[2mms[22m[39m
+ [31m❯[39m src/components/dialogs/ApplyChangesDialog.test.tsx [2m([22m[2m8 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 16070[2mms[22m[39m
+     [33m[2m✓[22m[39m displays filename when rendered [33m 4112[2mms[22m[39m
+     [33m[2m✓[22m[39m displays default behavior message [33m 910[2mms[22m[39m
+     [33m[2m✓[22m[39m checkbox is unchecked by default [33m 1753[2mms[22m[39m
+[31m     [31m×[31m calls onApply with update_original when unchecked[39m[33m 5817[2mms[22m[39m
+     [33m[2m✓[22m[39m prompts for new path when checkbox is checked [33m 1678[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onCancel when Cancel button clicked [33m 1375[2mms[22m[39m
+     [32m✓[39m shows error message when provided[32m 249[2mms[22m[39m
+     [32m✓[39m shows loading state when isLoading is true[32m 175[2mms[22m[39m
+ [32m✓[39m src/components/grid/__tests__/EmployeeTileList.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 10671[2mms[22m[39m
+     [33m[2m✓[22m[39m renders empty list without errors [33m 1726[2mms[22m[39m
+     [33m[2m✓[22m[39m renders all employees in the list [33m 4377[2mms[22m[39m
+     [33m[2m✓[22m[39m always uses grid layout for multi-column support [33m 2476[2mms[22m[39m
+     [33m[2m✓[22m[39m uses grid layout when expanded [33m 610[2mms[22m[39m
+     [33m[2m✓[22m[39m applies correct gap based on zoom level [33m 532[2mms[22m[39m
+     [33m[2m✓[22m[39m passes onSelectEmployee callback to tiles [33m 433[2mms[22m[39m
+[90mstderr[2m | src/components/dashboard/__tests__/HelpButton.test.tsx[2m > [22m[2mHelpButton[2m > [22m[2mdisables button when disabled prop is true
+[22m[39mMUI: You are providing a disabled `button` child to the Tooltip component.
+A disabled element does not fire events.
+Tooltip needs to listen to the child element's events to display the title.
+
+Add a simple wrapper element, such as a `span`.
+
+ [31m❯[39m src/components/panel/__tests__/EmployeeFlags.test.tsx [2m([22m[2m7 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 10919[2mms[22m[39m
+[31m     [31m×[31m displays set flags as chips when employee has flags[39m[33m 7774[2mms[22m[39m
+     [33m[2m✓[22m[39m shows flag picker when employee has available flags [33m 960[2mms[22m[39m
+     [33m[2m✓[22m[39m removes flag when delete button is clicked [33m 993[2mms[22m[39m
+     [33m[2m✓[22m[39m shows picker input element [33m 593[2mms[22m[39m
+     [33m[2m✓[22m[39m shows empty state when employee has no flags [33m 301[2mms[22m[39m
+     [32m✓[39m applies correct colors to flag chips[32m 243[2mms[22m[39m
+     [32m✓[39m handles employee with undefined flags[32m 41[2mms[22m[39m
+ [31m❯[39m src/components/dashboard/filters/FlagFilters.test.tsx [2m([22m[2m18 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 13905[2mms[22m[39m
+       [33m[2m✓[22m[39m renders container with correct test id [33m 1730[2mms[22m[39m
+       [33m[2m✓[22m[39m renders all flag options [33m 711[2mms[22m[39m
+       [33m[2m✓[22m[39m displays employee counts correctly [33m 515[2mms[22m[39m
+       [32m✓[39m renders with empty flag options[32m 44[2mms[22m[39m
+       [32m✓[39m renders with zero counts[32m 175[2mms[22m[39m
+       [32m✓[39m checks boxes for selected flags[32m 235[2mms[22m[39m
+       [33m[2m✓[22m[39m unchecks boxes for unselected flags [33m 344[2mms[22m[39m
+       [33m[2m✓[22m[39m handles all flags selected [33m 994[2mms[22m[39m
+[31m       [31m×[31m calls onFlagToggle when checkbox is clicked[39m[33m 5558[2mms[22m[39m
+       [33m[2m✓[22m[39m calls onFlagToggle with correct flag key for each checkbox [33m 2513[2mms[22m[39m
+       [33m[2m✓[22m[39m calls onFlagToggle when unchecking a selected flag [33m 673[2mms[22m[39m
+       [32m✓[39m has proper ARIA labels for all checkboxes[32m 16[2mms[22m[39m
+       [32m✓[39m has proper test IDs for all checkboxes[32m 25[2mms[22m[39m
+       [32m✓[39m renders correctly in light theme[32m 13[2mms[22m[39m
+       [32m✓[39m renders correctly in dark theme[32m 55[2mms[22m[39m
+       [32m✓[39m handles flags with special characters in keys[32m 16[2mms[22m[39m
+       [32m✓[39m handles large counts correctly[32m 13[2mms[22m[39m
+       [32m✓[39m handles rapid toggle interactions[32m 255[2mms[22m[39m
+ [31m❯[39m src/components/dashboard/__tests__/HelpButton.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 11076[2mms[22m[39m
+     [33m[2m✓[22m[39m renders help button [33m 2194[2mms[22m[39m
+[31m     [31m×[31m opens menu when button is clicked[39m[33m 5101[2mms[22m[39m
+     [33m[2m✓[22m[39m calls onUserGuideClick when user guide menu item is clicked [33m 3236[2mms[22m[39m
+     [32m✓[39m calls onAboutClick when about menu item is clicked[32m 256[2mms[22m[39m
+     [32m✓[39m disables button when disabled prop is true[32m 15[2mms[22m[39m
+     [32m✓[39m closes menu after selecting an item[32m 214[2mms[22m[39m
+ [32m✓[39m src/components/intelligence/sections/__tests__/InsightsSection.test.tsx [2m([22m[2m30 tests[22m[2m)[22m[33m 16948[2mms[22m[39m
+       [33m[2m✓[22m[39m shows empty state when insights array is empty [33m 1473[2mms[22m[39m
+       [33m[2m✓[22m[39m shows empty state with correct i18n text [33m 403[2mms[22m[39m
+       [33m[2m✓[22m[39m does not render insight cards when empty [33m 425[2mms[22m[39m
+       [33m[2m✓[22m[39m renders section header with correct title [33m 1192[2mms[22m[39m
+       [33m[2m✓[22m[39m uses correct i18n keys for section title [33m 386[2mms[22m[39m
+       [33m[2m✓[22m[39m renders insight cards for each insight [33m 1072[2mms[22m[39m
+       [33m[2m✓[22m[39m passes onAction prop to insight cards [33m 735[2mms[22m[39m
+       [33m[2m✓[22m[39m passes showConfidence prop to insight cards [33m 341[2mms[22m[39m
+       [33m[2m✓[22m[39m renders multiple insights correctly (stress test) [33m 1406[2mms[22m[39m
+       [33m[2m✓[22m[39m counts recommendations correctly [33m 1725[2mms[22m[39m
+       [33m[2m✓[22m[39m counts observations correctly [33m 3105[2mms[22m[39m
+       [33m[2m✓[22m[39m counts warnings correctly [33m 1352[2mms[22m[39m
+       [33m[2m✓[22m[39m shows recommendation count badge when recommendations exist [33m 603[2mms[22m[39m
+       [33m[2m✓[22m[39m shows warning count badge when warnings exist [33m 622[2mms[22m[39m
+       [33m[2m✓[22m[39m does not show recommendation badge when no recommendations [33m 317[2mms[22m[39m
+       [33m[2m✓[22m[39m does not show observation badge when no observations [33m 473[2mms[22m[39m
+ [31m❯[39m src/components/intelligence/atoms/__tests__/AnomalyCard.test.tsx [2m([22m[2m41 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 17357[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with critical severity [33m 396[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with warning severity [33m 305[2mms[22m[39m
+       [33m[2m✓[22m[39m renders with info severity [33m 568[2mms[22m[39m
+       [33m[2m✓[22m[39m displays title and description correctly [33m 426[2mms[22m[39m
+       [32m✓[39m shows affected employee count with correct pluralization[32m 291[2mms[22m[39m
+       [32m✓[39m displays confidence percentage[32m 236[2mms[22m[39m
+       [33m[2m✓[22m[39m displays anomaly type [33m 398[2mms[22m[39m
+       [33m[2m✓[22m[39m shows suggestion when available [33m 2248[2mms[22m[39m
+       [33m[2m✓[22m[39m hides suggestion when not available [33m 471[2mms[22m[39m
+       [33m[2m✓[22m[39m expands suggestion when Show button clicked [33m 1218[2mms[22m[39m
+[31m       [31m×[31m collapses suggestion when Hide button clicked[39m[33m 7631[2mms[22m[39m
+       [33m[2m✓[22m[39m has aria-expanded on expand button [33m 1236[2mms[22m[39m
+       [33m[2m✓[22m[39m calls onClick when card is clicked [33m 382[2mms[22m[39m
+       [33m[2m✓[22m[39m does not call onClick when onDismiss button is clicked [33m 454[2mms[22m[39m
+       [32m✓[39m does not call onClick when expand button is clicked[32m 268[2mms[22m[39m
+       [32m✓[39m calls onDismiss when dismiss button clicked[32m 36[2mms[22m[39m
+       [32m✓[39m shows dismiss button when onDismiss provided and showActions is true[32m 26[2mms[22m[39m
+       [32m✓[39m hides dismiss button when showActions is false[32m 25[2mms[22m[39m
+       [32m✓[39m hides dismiss button when onDismiss not provided[32m 48[2mms[22m[39m
+       [32m✓[39m has role='button' when onClick provided[32m 58[2mms[22m[39m
+       [32m✓[39m does not have role='button' when onClick not provided[32m 39[2mms[22m[39m
+       [32m✓[39m has ARIA label when clickable[32m 55[2mms[22m[39m
+       [32m✓[39m does not have ARIA label when not clickable[32m 22[2mms[22m[39m
+       [32m✓[39m has tabIndex when clickable[32m 26[2mms[22m[39m
+       [32m✓[39m does not have tabIndex when not clickable[32m 28[2mms[22m[39m
+       [32m✓[39m dismiss button has aria-label[32m 30[2mms[22m[39m
+       [32m✓[39m responds to Enter key when clickable[32m 27[2mms[22m[39m
+       [32m✓[39m responds to Space key when clickable[32m 28[2mms[22m[39m
+       [32m✓[39m does not respond to other keys[32m 28[2mms[22m[39m
+       [32m✓[39m does not respond to keys when not clickable[32m 29[2mms[22m[39m
+       [32m✓[39m uses correct styling for critical severity[32m 39[2mms[22m[39m
+       [32m✓[39m uses correct styling for warning severity[32m 38[2mms[22m[39m
+       [32m✓[39m uses correct styling for info severity[32m 31[2mms[22m[39m
+       [32m✓[39m uses i18n keys for severity labels[32m 21[2mms[22m[39m
+       [32m✓[39m uses i18n keys for button text[32m 73[2mms[22m[39m
+       [32m✓[39m uses i18n keys for employee count[32m 29[2mms[22m[39m
+       [32m✓[39m handles zero affected employees[32m 23[2mms[22m[39m
+       [32m✓[39m handles very low confidence[32m 14[2mms[22m[39m
+       [32m✓[39m handles maximum confidence[32m 24[2mms[22m[39m
+       [32m✓[39m handles long titles without breaking layout[32m 13[2mms[22m[39m
+       [32m✓[39m handles long descriptions without breaking layout[32m 14[2mms[22m[39m
+ [31m❯[39m src/components/panel/statistics/DistributionTable.test.tsx [2m([22m[2m18 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 11488[2mms[22m[39m
+[31m       [31m×[31m renders table container[39m[33m 6912[2mms[22m[39m
+       [33m[2m✓[22m[39m renders table title [33m 1162[2mms[22m[39m
+       [33m[2m✓[22m[39m renders all 9 distribution rows [33m 828[2mms[22m[39m
+       [33m[2m✓[22m[39m renders table headers [33m 711[2mms[22m[39m
+       [33m[2m✓[22m[39m sorts distribution in custom order (9,8,6, 7,5,3, 4,2,1) [33m 719[2mms[22m[39m
+       [32m✓[39m renders grouping indicators when groupedStats provided[32m 169[2mms[22m[39m
+       [32m✓[39m does not render grouping indicators when groupedStats not provided[32m 85[2mms[22m[39m
+       [32m✓[39m renders high performers grouping indicator at position 9[32m 53[2mms[22m[39m
+       [32m✓[39m renders middle tier grouping indicator at position 7[32m 109[2mms[22m[39m
+       [32m✓[39m renders low performers grouping indicator at position 4[32m 62[2mms[22m[39m
+       [33m[2m✓[22m[39m marks rows with count=0 as empty [33m 367[2mms[22m[39m
+       [32m✓[39m uses default test ID when not provided[32m 50[2mms[22m[39m
+       [32m✓[39m uses custom test ID when provided[32m 29[2mms[22m[39m
+       [32m✓[39m passes correct props to DistributionRow components[32m 35[2mms[22m[39m
+       [32m✓[39m all positions render their respective rows[32m 55[2mms[22m[39m
+       [32m✓[39m handles empty distribution array[32m 19[2mms[22m[39m
+       [32m✓[39m handles all zero counts[32m 49[2mms[22m[39m
+       [32m✓[39m handles missing positions in distribution[32m 37[2mms[22m[39m
+ [31m❯[39m src/components/grid/__tests__/ViewModeToggle.test.tsx [2m([22m[2m14 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 12874[2mms[22m[39m
+     [33m[2m✓[22m[39m renders Grid and Donut view buttons [33m 2664[2mms[22m[39m
+     [33m[2m✓[22m[39m shows Grid mode as selected when donutModeActive is false [33m 859[2mms[22m[39m
+     [33m[2m✓[22m[39m shows Donut mode as selected when donutModeActive is true [33m 1253[2mms[22m[39m
+[31m     [31m×[31m calls toggleDonutMode with true when Donut button is clicked from Grid mode[39m[33m 5412[2mms[22m[39m
+     [33m[2m✓[22m[39m calls toggleDonutMode with false when Grid button is clicked from Donut mode [33m 1727[2mms[22m[39m
+     [32m✓[39m is disabled when no sessionId exists[32m 53[2mms[22m[39m
+     [32m✓[39m is enabled when sessionId exists[32m 83[2mms[22m[39m
+     [32m✓[39m shows Grid mode active tooltip when in Grid mode[32m 215[2mms[22m[39m
+     [32m✓[39m shows Donut mode active tooltip when in Donut mode[32m 269[2mms[22m[39m
+     [32m✓[39m does not change mode when clicking the already selected button[32m 186[2mms[22m[39m
+     [32m✓[39m responds to keyboard shortcut (D key) to toggle mode[32m 34[2mms[22m[39m
+     [32m✓[39m does not respond to keyboard shortcut when no session exists[32m 14[2mms[22m[39m
+     [32m✓[39m does not respond to keyboard shortcut with modifier keys[32m 15[2mms[22m[39m
+     [32m✓[39m has correct ARIA labels for accessibility[32m 59[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/PureAppBar.test.tsx [2m([22m[2m14 tests[22m[2m)[22m[33m 1137[2mms[22m[39m
+[90mstderr[2m | src/hooks/__tests__/useIntelligence.test.ts[2m > [22m[2museIntelligence[2m > [22m[2mError handling[2m > [22m[2mclears previous error on successful refetch
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+
+[90mstderr[2m | src/hooks/__tests__/useIntelligence.test.ts[2m > [22m[2museIntelligence[2m > [22m[2mError handling[2m > [22m[2mclears previous error on successful refetch
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+
+[90mstderr[2m | src/hooks/__tests__/useIntelligence.test.ts[2m > [22m[2museIntelligence[2m > [22m[2mManual refetch[2m > [22m[2mrefetches data when refetch is called
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+
+[90mstderr[2m | src/hooks/__tests__/useIntelligence.test.ts[2m > [22m[2museIntelligence[2m > [22m[2mManual refetch[2m > [22m[2mrefetches data when refetch is called
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstderr[2m | src/hooks/__tests__/useIntelligence.test.ts[2m > [22m[2museIntelligence[2m > [22m[2mEdge cases[2m > [22m[2mhandles rapid consecutive refetch calls
+[22m[39mWarning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:328:5)
+
+ [32m✓[39m src/hooks/__tests__/useIntelligence.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 817[2mms[22m[39m
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mrenders all 9 grid boxes with correct labels
+[22m[39m[Performance] NineBoxGrid nested-update: 8.38ms
+[Performance] NineBoxGrid update: 12.41ms
+[Performance] NineBoxGrid nested-update: 0.82ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mrenders all 9 grid boxes with correct labels
+[22m[39m[Performance] NineBoxGrid mount: 76.94ms (slower than 60fps)
+
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mdistributes employees to correct positions
+[22m[39m[Performance] NineBoxGrid nested-update: 13.35ms
+[Performance] NineBoxGrid nested-update: 0.18ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mdistributes employees to correct positions
+[22m[39m[Performance] NineBoxGrid mount: 84.59ms (slower than 60fps)
+[Performance] NineBoxGrid update: 45.94ms (slower than 60fps)
+
+[90mstdout[2m | src/components/grid/__tests__/EmployeeTile.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mdisplays axis labels for Performance and Potential
+[22m[39m[Performance] NineBoxGrid nested-update: 7.47ms
+[Performance] NineBoxGrid nested-update: 0.13ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mdisplays axis labels for Performance and Potential
+[22m[39m[Performance] NineBoxGrid mount: 28.30ms (slower than 60fps)
+[Performance] NineBoxGrid update: 19.04ms (slower than 60fps)
+
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mrenders empty boxes when no employees are in a position
+[22m[39m[Performance] NineBoxGrid nested-update: 4.17ms
+[Performance] NineBoxGrid update: 11.49ms
+[Performance] NineBoxGrid nested-update: 0.17ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid[2m > [22m[2mrenders empty boxes when no employees are in a position
+[22m[39m[Performance] NineBoxGrid mount: 57.16ms (slower than 60fps)
+
+ [32m✓[39m src/components/dialogs/UnsavedChangesDialog.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 972[2mms[22m[39m
+     [33m[2m✓[22m[39m displays change count when rendered [33m 318[2mms[22m[39m
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid - Donut Mode[2m > [22m[2mpasses donutModeActive prop to GridBox when donut mode is active
+[22m[39m[Performance] NineBoxGrid nested-update: 15.11ms
+[Performance] NineBoxGrid update: 4.21ms
+[Performance] NineBoxGrid nested-update: 0.10ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid - Donut Mode[2m > [22m[2mpasses donutModeActive prop to GridBox when donut mode is active
+[22m[39m[Performance] NineBoxGrid mount: 109.69ms (slower than 60fps)
+
+ [32m✓[39m src/components/common/__tests__/ZoomControls.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 1011[2mms[22m[39m
+ [32m✓[39m src/components/panel/statistics/ColoredPercentageBar.test.tsx [2m([22m[2m23 tests[22m[2m)[22m[33m 1407[2mms[22m[39m
+[90mstdout[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid - Donut Mode[2m > [22m[2mpasses donutModeActive as false when donut mode is inactive
+[22m[39m[Performance] NineBoxGrid nested-update: 2.98ms
+[Performance] NineBoxGrid update: 4.73ms
+[Performance] NineBoxGrid nested-update: 0.10ms
+
+[90mstderr[2m | src/components/grid/__tests__/NineBoxGrid.test.tsx[2m > [22m[2mNineBoxGrid - Donut Mode[2m > [22m[2mpasses donutModeActive as false when donut mode is inactive
+[22m[39m[Performance] NineBoxGrid mount: 49.06ms (slower than 60fps)
+
+ [32m✓[39m src/components/grid/__tests__/NineBoxGrid.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 1385[2mms[22m[39m
+     [33m[2m✓[22m[39m renders all 9 grid boxes with correct labels [33m 573[2mms[22m[39m
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mRendering with data[2m > [22m[2mrenders when chart title is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mRendering with data[2m > [22m[2mrenders when data array has items
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mRendering with data[2m > [22m[2muses when default baseline percentage when not provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+ [32m✓[39m src/components/common/__tests__/ViewControls.test.tsx [2m([22m[2m18 tests[22m[2m)[22m[33m 1358[2mms[22m[39m
+     [33m[2m✓[22m[39m renders all control groups when session exists [33m 342[2mms[22m[39m
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mRendering with data[2m > [22m[2maccepts when custom baseline percentage
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstdout[2m | src/components/grid/__tests__/EmployeeTile.test.tsx[2m > [22m[2mEmployeeTile[2m > [22m[2mcalls onSelect when employee card is clicked
+[22m[39m[DEBUG] Card clicked - selecting employee: [33m1[39m John Doe
+
+[90mstdout[2m | src/components/dashboard/filters/GridPositionFilter.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when single level is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when multiple levels are provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when high-skewed distribution is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when low-skewed distribution is provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when small sample sizes are provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mData handling[2m > [22m[2mrenders when many levels are provided
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mChart structure[2m > [22m[2mrenders when ResponsiveContainer wraps chart
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mChart structure[2m > [22m[2mrenders when BarChart is present in DOM
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mChart structure[2m > [22m[2mdisplays when baseline note text is present
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mtransforms when percentage values correctly
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mhandles when zero total counts
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mStatistical data transformation[2m > [22m[2mcalculates when stacked percentages correctly
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mBaseline reference line[2m > [22m[2mrenders when baseline at 25 percent
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mBaseline reference line[2m > [22m[2mrenders when baseline at 15 percent
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mBaseline reference line[2m > [22m[2mrenders when baseline at 40 percent
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+ [32m✓[39m src/components/grid/__tests__/EmployeeTile.test.tsx [2m([22m[2m15 tests[22m[2m)[22m[33m 1068[2mms[22m[39m
+     [33m[2m✓[22m[39m displays employee name, title, and job level [33m 315[2mms[22m[39m
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mAccessibility[2m > [22m[2mhas when accessible title for screen readers
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mAccessibility[2m > [22m[2mmaintains when structure for keyboard navigation
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+[90mstderr[2m | src/components/intelligence/__tests__/LevelDistributionChart.test.tsx[2m > [22m[2mLevelDistributionChart[2m > [22m[2mAccessibility[2m > [22m[2mprovides when baseline note for context
+[22m[39mThe width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+ [32m✓[39m src/components/intelligence/__tests__/LevelDistributionChart.test.tsx [2m([22m[2m25 tests[22m[2m)[22m[33m 844[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/filters/ExclusionList.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 1005[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/filters/FilterSection.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 723[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/filters/GridPositionFilter.test.tsx [2m([22m[2m15 tests[22m[2m)[22m[33m 1132[2mms[22m[39m
+[90mstdout[2m | src/components/grid/__tests__/EmployeeCount.test.tsx
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/components/common/__tests__/EmptyState.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 1053[2mms[22m[39m
+[90mstdout[2m | src/store/__tests__/StoreIntegration.test.tsx[2m > [22m[2mStore Integration Tests[2m > [22m[2mhandles session expiration and file reload
+[22m[39m[DEBUG] Session expired, attempting to reload file from disk
+[DEBUG] Auto-reloading file from: /path/to/file.xlsx
+
+[90mstdout[2m | src/store/__tests__/StoreIntegration.test.tsx[2m > [22m[2mStore Integration Tests[2m > [22m[2mhandles session expiration and file reload
+[22m[39m[DEBUG] File auto-reloaded successfully
+
+[90mstdout[2m | src/store/__tests__/StoreIntegration.test.tsx[2m > [22m[2mStore Integration Tests[2m > [22m[2msession close workflow clears all related state
+[22m[39m[INFO] Session closed successfully
+
+ [32m✓[39m src/store/__tests__/StoreIntegration.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m src/components/grid/__tests__/Axis.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 596[2mms[22m[39m
+ [32m✓[39m src/components/grid/__tests__/BoxHeader.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 575[2mms[22m[39m
+Error: useGridZoom must be used within a GridZoomProvider
+    at useGridZoom (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:247:11)
+    at C:/Git_Repos/9boxer/frontend/src/contexts/__tests__/GridZoomContext.test.tsx:334:26
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:330:27)
+    at renderWithHooks (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+    at mountIndeterminateComponent (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+    at beginWork (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+    at HTMLUnknownElement.callCallback (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+    at innerInvokeEventListeners (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:360:16)
+    at invokeEventListeners (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:296:3)
+Error: useGridZoom must be used within a GridZoomProvider
+    at useGridZoom (C:/Git_Repos/9boxer/frontend/src/contexts/GridZoomContext.tsx:247:11)
+    at C:/Git_Repos/9boxer/frontend/src/contexts/__tests__/GridZoomContext.test.tsx:334:26
+    at TestComponent (C:\Git_Repos\9boxer\frontend\node_modules\@testing-library\react\dist\pure.js:330:27)
+    at renderWithHooks (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+    at mountIndeterminateComponent (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+    at beginWork (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+    at HTMLUnknownElement.callCallback (C:\Git_Repos\9boxer\frontend\node_modules\react-dom\cjs\react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+    at innerInvokeEventListeners (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:360:16)
+    at invokeEventListeners (C:\Git_Repos\9boxer\frontend\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:296:3)
+ [32m✓[39m src/components/grid/__tests__/EmployeeCount.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 598[2mms[22m[39m
+ [32m✓[39m src/contexts/__tests__/GridZoomContext.test.tsx [2m([22m[2m23 tests[22m[2m)[22m[32m 158[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/ChangeIndicator.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 107[2mms[22m[39m
+ [32m✓[39m src/components/dashboard/__tests__/FileNameDisplay.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 129[2mms[22m[39m
+ [32m✓[39m src/components/panel/statistics/StatisticsSummary.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 1106[2mms[22m[39m
+ [32m✓[39m src/hooks/__tests__/useFilters.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+ [32m✓[39m src/hooks/__tests__/useElectronAPI.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m src/components/panel/__tests__/RatingsTimeline.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 778[2mms[22m[39m
+     [33m[2m✓[22m[39m renders performance history heading when displayed [33m 366[2mms[22m[39m
+[90mstdout[2m | src/hooks/__tests__/useEmployees.test.ts
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/hooks/__tests__/useEmployees.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mupdates status when connection status changes to connected
+[22m[39m[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: connected
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mincrements retry count when status changes to reconnecting
+[22m[39m[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: reconnecting
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mresets retry count when status changes to connected
+[22m[39m[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: connected
+[useConnectionStatus] API client updated to: http://localhost:38000
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mupdates API client base URL when port changes on connection
+[22m[39m[useConnectionStatus] Status changed: connected
+[useConnectionStatus] API client updated to: http://localhost:38001
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mdoes not update API client base URL when port is not provided
+[22m[39m[useConnectionStatus] Status changed: connected
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mElectron mode (isElectron = true)[2m > [22m[2mhandles disconnected status
+[22m[39m[useConnectionStatus] Status changed: disconnected
+
+[90mstdout[2m | src/hooks/__tests__/useConnectionStatus.test.ts[2m > [22m[2museConnectionStatus[2m > [22m[2mEdge cases[2m > [22m[2mhandles rapid status changes
+[22m[39m[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: connected
+[useConnectionStatus] API client updated to: http://localhost:38000
+[useConnectionStatus] Status changed: reconnecting
+[useConnectionStatus] Status changed: disconnected
+
+ [32m✓[39m src/hooks/__tests__/useConnectionStatus.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+[90mstdout[2m | src/hooks/__tests__/useStatistics.test.ts
+[22m[39mi18next: languageChanged en
+i18next: initialized {
+  debug: [33mtrue[39m,
+  initAsync: [33mtrue[39m,
+  ns: [ [32m'translation'[39m ],
+  defaultNS: [ [32m'translation'[39m ],
+  fallbackLng: [ [32m'en'[39m ],
+  fallbackNS: [33mfalse[39m,
+  supportedLngs: [
+    [32m'en'[39m, [32m'es'[39m,
+    [32m'fr'[39m, [32m'de'[39m,
+    [32m'cs'[39m, [32m'ja'[39m,
+    [32m'hi'[39m, [32m'cimode'[39m
+  ],
+  nonExplicitSupportedLngs: [33mfalse[39m,
+  load: [32m'all'[39m,
+  preload: [33mfalse[39m,
+  simplifyPluralSuffix: [33mtrue[39m,
+  keySeparator: [32m'.'[39m,
+  nsSeparator: [32m':'[39m,
+  pluralSeparator: [32m'_'[39m,
+  contextSeparator: [32m'_'[39m,
+  partialBundledLanguages: [33mfalse[39m,
+  saveMissing: [33mfalse[39m,
+  updateMissing: [33mfalse[39m,
+  saveMissingTo: [32m'fallback'[39m,
+  saveMissingPlurals: [33mtrue[39m,
+  missingKeyHandler: [33mfalse[39m,
+  missingInterpolationHandler: [33mfalse[39m,
+  postProcess: [33mfalse[39m,
+  postProcessPassResolved: [33mfalse[39m,
+  returnNull: [33mfalse[39m,
+  returnEmptyString: [33mtrue[39m,
+  returnObjects: [33mfalse[39m,
+  joinArrays: [33mfalse[39m,
+  returnedObjectHandler: [33mfalse[39m,
+  parseMissingKeyHandler: [33mfalse[39m,
+  appendNamespaceToMissingKey: [33mfalse[39m,
+  appendNamespaceToCIMode: [33mfalse[39m,
+  overloadTranslationOptionHandler: [36m[Function: overloadTranslationOptionHandler][39m,
+  interpolation: {
+    escapeValue: [33mfalse[39m,
+    format: [36m[Function: bound format][39m,
+    prefix: [32m'{{'[39m,
+    suffix: [32m'}}'[39m,
+    formatSeparator: [32m','[39m,
+    unescapePrefix: [32m'-'[39m,
+    nestingPrefix: [32m'$t('[39m,
+    nestingSuffix: [32m')'[39m,
+    nestingOptionsSeparator: [32m','[39m,
+    maxReplaces: [33m1000[39m,
+    skipOnVariables: [33mtrue[39m
+  },
+  cacheInBuiltFormats: [33mtrue[39m,
+  detection: {
+    order: [ [32m'localStorage'[39m, [32m'navigator'[39m ],
+    caches: [ [32m'localStorage'[39m ],
+    lookupLocalStorage: [32m'9boxer-language'[39m,
+    lookupQuerystring: [32m'lng'[39m,
+    lookupCookie: [32m'i18next'[39m,
+    lookupSessionStorage: [32m'i18nextLng'[39m,
+    excludeCacheFor: [ [32m'cimode'[39m ],
+    convertDetectedLanguage: [36m[Function: convertDetectedLanguage][39m
+  },
+  react: { useSuspense: [33mtrue[39m },
+  resources: {},
+  ignoreJSONStructure: [33mtrue[39m
+}
+
+ [32m✓[39m src/store/__tests__/uiStore.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/hooks/__tests__/useStatistics.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/utils/__tests__/sortEmployees.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/hooks/__tests__/useSession.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+[90mstdout[2m | src/services/__tests__/zoomService.test.ts[2m > [22m[2mzoomService[2m > [22m[2mlocalStorage persistence[2m > [22m[2mloads saved zoom level from localStorage
+[22m[39m[ZoomService] Restored zoom level: 150%
+
+ [32m✓[39m src/services/__tests__/zoomService.test.ts [2m([22m[2m39 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/components/dialogs/ApplyChangesDialog.test.tsx[2m > [22mApplyChangesDialog[2m > [22mcalls onApply with update_original when unchecked
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/dialogs/ApplyChangesDialog.test.tsx:[2m56:3[22m[39m
+    [90m 54| [39m  })[33m;[39m
+    [90m 55| [39m
+    [90m 56| [39m  [34mit[39m([32m"calls onApply with update_original when unchecked"[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m   | [39m  [31m^[39m
+    [90m 57| [39m    [34mrender[39m(
+    [90m 58| [39m      [33m<[39m[33mApplyChangesDialog[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/grid/__tests__/ViewModeToggle.test.tsx[2m > [22mViewModeToggle[2m > [22mcalls toggleDonutMode with true when Donut button is clicked from Grid mode
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/grid/__tests__/ViewModeToggle.test.tsx:[2m87:3[22m[39m
+    [90m 85| [39m  })[33m;[39m
+    [90m 86| [39m
+    [90m 87| [39m  it("calls toggleDonutMode with true when Donut button is clicked fro…
+    [90m   | [39m  [31m^[39m
+    [90m 88| [39m    [35mconst[39m user [33m=[39m userEvent[33m.[39m[34msetup[39m()[33m;[39m
+    [90m 89| [39m    vi[33m.[39m[34mmocked[39m(useSessionStore)[33m.[39m[34mmockImplementation[39m((selector[33m:[39m any) [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/panel/statistics/DistributionTable.test.tsx[2m > [22mDistributionTable[2m > [22mRendering[2m > [22mrenders table container
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/panel/statistics/DistributionTable.test.tsx:[2m21:5[22m[39m
+    [90m 19| [39m[34mdescribe[39m([32m"DistributionTable"[39m[33m,[39m () [33m=>[39m {
+    [90m 20| [39m  [34mdescribe[39m([32m"Rendering"[39m[33m,[39m () [33m=>[39m {
+    [90m 21| [39m    [34mit[39m([32m"renders table container"[39m[33m,[39m () [33m=>[39m {
+    [90m   | [39m    [31m^[39m
+    [90m 22| [39m      [35mconst[39m distribution [33m=[39m [34mcreateMockDistribution[39m({
+    [90m 23| [39m        [34m9[39m[33m:[39m [34m10[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/panel/__tests__/EmployeeFlags.test.tsx[2m > [22mEmployeeFlags[2m > [22mdisplays set flags as chips when employee has flags
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/panel/__tests__/EmployeeFlags.test.tsx:[2m66:3[22m[39m
+    [90m 64| [39m  })[33m;[39m
+    [90m 65| [39m
+    [90m 66| [39m  [34mit[39m([32m"displays set flags as chips when employee has flags"[39m[33m,[39m () [33m=>[39m {
+    [90m   | [39m  [31m^[39m
+    [90m 67| [39m    [34mrender[39m([33m<[39m[33mEmployeeFlags[39m [33memployee[39m[33m=[39m[33m{[39mmockEmployee[33m}[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m 68| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/intelligence/atoms/__tests__/AnomalyCard.test.tsx[2m > [22mAnomalyCard[2m > [22mSuggestion expansion[2m > [22mcollapses suggestion when Hide button clicked
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/intelligence/atoms/__tests__/AnomalyCard.test.tsx:[2m123:5[22m[39m
+    [90m121| [39m    })[33m;[39m
+    [90m122| [39m
+    [90m123| [39m    [34mit[39m([32m"collapses suggestion when Hide button clicked"[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m   | [39m    [31m^[39m
+    [90m124| [39m      [34mrender[39m([33m<[39m[33mAnomalyCard[39m [33manomaly[39m[33m=[39m[33m{[39mmockFunctionAnomaly[33m}[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m125| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/dashboard/filters/FlagFilters.test.tsx[2m > [22mFlagFilters[2m > [22mUser Interactions[2m > [22mcalls onFlagToggle when checkbox is clicked
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/dashboard/filters/FlagFilters.test.tsx:[2m215:5[22m[39m
+    [90m213| [39m
+    [90m214| [39m  [34mdescribe[39m([32m"User Interactions"[39m[33m,[39m () [33m=>[39m {
+    [90m215| [39m    [34mit[39m([32m"calls onFlagToggle when checkbox is clicked"[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m   | [39m    [31m^[39m
+    [90m216| [39m      [35mconst[39m user [33m=[39m userEvent[33m.[39m[34msetup[39m()[33m;[39m
+    [90m217| [39m      [35mconst[39m handleToggle [33m=[39m vi[33m.[39m[34mfn[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/components/dashboard/__tests__/HelpButton.test.tsx[2m > [22mHelpButton[2m > [22mopens menu when button is clicked
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m src/components/dashboard/__tests__/HelpButton.test.tsx:[2m29:3[22m[39m
+    [90m 27| [39m  })[33m;[39m
+    [90m 28| [39m
+    [90m 29| [39m  [34mit[39m([32m"opens menu when button is clicked"[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m   | [39m  [31m^[39m
+    [90m 30| [39m    [35mconst[39m user [33m=[39m userEvent[33m.[39m[34msetup[39m()[33m;[39m
+    [90m 31| [39m    [34mrender[39m(
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m7 failed[39m[22m[2m | [22m[1m[32m63 passed[39m[22m[90m (70)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[2m | [22m[1m[32m1166 passed[39m[22m[90m (1173)[39m
+[2m   Start at [22m 11:41:51
+[2m   Duration [22m 44.27s[2m (transform 13.09s, setup 14.30s, import 80.08s, tests 281.01s, environment 70.76s)[22m

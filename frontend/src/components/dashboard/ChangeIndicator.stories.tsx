@@ -5,10 +5,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { ChangeIndicator } from "./ChangeIndicator";
-import { Button, Box } from "@mui/material";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/ChangeIndicator",
+  title: "App/Dashboard/ChangeIndicator",
   component: ChangeIndicator,
   parameters: {
     layout: "centered",

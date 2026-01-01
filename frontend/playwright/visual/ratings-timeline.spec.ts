@@ -13,7 +13,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("with history ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--with-history",
+      "app-right-panel-details-ratingstimeline--with-history",
       "ratings-timeline-with-history"
     );
   });
@@ -21,7 +21,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("no history ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--no-history",
+      "app-right-panel-details-ratingstimeline--no-history",
       "ratings-timeline-no-history"
     );
   });
@@ -29,7 +29,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("multiple years ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--multiple-years",
+      "app-right-panel-details-ratingstimeline--multiple-years",
       "ratings-timeline-multiple-years"
     );
   });
@@ -37,7 +37,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("inconsistent ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--inconsistent-ratings",
+      "app-right-panel-details-ratingstimeline--inconsistent-ratings",
       "ratings-timeline-inconsistent"
     );
   });
@@ -45,7 +45,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("short history high potential ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--short-history-high-potential",
+      "app-right-panel-details-ratingstimeline--short-history-high-potential",
       "ratings-timeline-short-history-high-potential"
     );
   });
@@ -53,7 +53,7 @@ test.describe("RatingsTimeline Visual Tests", () => {
   test("performance concern ratings timeline", async ({ page }) => {
     await snapshotStoryBothThemes(
       page,
-      "panel-ratingstimeline--performance-concern",
+      "app-right-panel-details-ratingstimeline--performance-concern",
       "ratings-timeline-performance-concern"
     );
   });

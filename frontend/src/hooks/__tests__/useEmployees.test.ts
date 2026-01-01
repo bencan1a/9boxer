@@ -12,7 +12,10 @@ import {
 
 // Mock dependencies
 vi.mock("../useSession");
-vi.mock("../../store/sessionStore");
+vi.mock("../../store/sessionStore", () => ({
+  useSessionStore: vi.fn(),
+  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
+}));
 vi.mock("../useFilters");
 
 // Helper to create test employee
@@ -66,9 +69,15 @@ describe("useEmployees", () => {
       selectedEmployeeId: null,
     });
 
-    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      donutModeActive: false,
-    });
+    // Mock useSessionStore to work with selectors
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector) => {
+        const mockState = {
+          donutModeActive: false,
+        };
+        return selector ? selector(mockState) : mockState;
+      }
+    );
 
     (useFilters as ReturnType<typeof vi.fn>).mockReturnValue({
       applyFilters: mockApplyFilters,
@@ -144,8 +153,14 @@ describe("useEmployees", () => {
 
   describe("Donut mode (donutModeActive = true)", () => {
     beforeEach(() => {
-      (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        donutModeActive: true,
+      // Mock useSessionStore to work with selectors - donut mode active
+      (
+        useSessionStore as unknown as ReturnType<typeof vi.fn>
+      ).mockImplementation((selector) => {
+        const mockState = {
+          donutModeActive: true,
+        };
+        return selector ? selector(mockState) : mockState;
       });
     });
 

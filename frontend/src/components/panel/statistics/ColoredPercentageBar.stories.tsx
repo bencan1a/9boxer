@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ColoredPercentageBar } from "./ColoredPercentageBar";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 /**
  * ColoredPercentageBar displays a progress bar with dynamic color based on position and percentage.
@@ -22,7 +23,7 @@ import { Box, Typography } from "@mui/material";
  * - Progress bars with conditional formatting
  */
 const meta: Meta<typeof ColoredPercentageBar> = {
-  title: "Panel/Statistics/ColoredPercentageBar",
+  title: "App/Right Panel/Statistics/ColoredPercentageBar",
   component: ColoredPercentageBar,
   tags: ["autodocs"],
   parameters: {

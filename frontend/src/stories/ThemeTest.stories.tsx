@@ -1,12 +1,10 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Box,
-  Typography as MuiTypography,
-  Paper,
-  Stack,
-  Chip,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import MuiTypography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 
 /**
@@ -322,7 +320,7 @@ const SpacingShowcase = () => {
 };
 
 const meta = {
-  title: "ThemeTest",
+  title: "Design System/Theme",
   parameters: {
     layout: "centered",
   },

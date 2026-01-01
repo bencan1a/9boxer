@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { NineBoxGrid } from "./NineBoxGrid";
 import type { Employee } from "../../types/employee";
@@ -313,9 +314,9 @@ const withStoreState = (
  * - `data-testid="grid-box-{position}-count"` - Employee count badges
  */
 const meta: Meta<typeof NineBoxGrid> = {
-  title: "Grid/NineBoxGrid",
+  title: "App/Grid/NineBoxGrid",
   component: NineBoxGrid,
-  tags: ["autodocs"],
+  tags: ["autodocs", "experimental"],
   parameters: {
     layout: "centered",
     docs: {
@@ -390,13 +391,9 @@ export const Empty: Story = {
  * - Some needing attention (positions 1, 2, 4)
  */
 export const Populated: Story = {
-  decorators: [
-    withStoreState((employees) => {
-      // Return all employees distributed across grid
-      return employees;
-    }),
-  ],
+  tags: ["screenshot"],
   parameters: {
+    screenshot: { enabled: true, id: "grid-normal" },
     docs: {
       description: {
         story:
@@ -404,6 +401,12 @@ export const Populated: Story = {
       },
     },
   },
+  decorators: [
+    withStoreState((employees) => {
+      // Return all employees distributed across grid
+      return employees;
+    }),
+  ],
 };
 
 /**
@@ -504,6 +507,16 @@ export const WithBoxExpanded: Story = {
  * without permanently changing employee positions.
  */
 export const DonutMode: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "donut-mode-active-layout" },
+    docs: {
+      description: {
+        story:
+          "Donut mode for calibration. Shows position 5 employees with some temporarily moved to boxes 6, 7, and 8 for 'what-if' analysis. Moved employees display purple donut mode borders in their new positions (never in center box).",
+      },
+    },
+  },
   decorators: [
     withStoreState((employees) => {
       // Filter to only position 5 employees (donut mode shows only Core Talent box)
@@ -538,14 +551,6 @@ export const DonutMode: Story = {
       return position5Employees;
     }),
   ],
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Donut mode for calibration. Shows position 5 employees with some temporarily moved to boxes 6, 7, and 8 for 'what-if' analysis. Moved employees display purple donut mode borders in their new positions (never in center box).",
-      },
-    },
-  },
 };
 
 /**

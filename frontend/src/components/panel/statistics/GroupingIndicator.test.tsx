@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import { GroupingIndicator } from "./GroupingIndicator";
+import { tokens } from "@/theme/tokens";
 
 // Helper to render GroupingIndicator in a table context
 const renderInTable = (
@@ -63,9 +67,10 @@ describe("GroupingIndicator", () => {
       const tableCell = container.querySelector("td[rowspan]");
       const style = window.getComputedStyle(tableCell!);
 
-      // Should have green border (success color)
+      // Should have green border (success color) with design token width
       expect(style.borderLeftStyle).toBe("solid");
-      expect(style.borderLeftWidth).toBe("4px");
+      const expectedBorderWidth = `${tokens.dimensions.distributionTable.groupingBorderWidth}px`;
+      expect(style.borderLeftWidth).toBe(expectedBorderWidth);
     });
 
     it("uses warning color when percentage is too low (<20%)", () => {
@@ -144,10 +149,11 @@ describe("GroupingIndicator", () => {
 
       const tableCell = container.querySelector("td[rowspan]");
       const style = window.getComputedStyle(tableCell!);
-      expect(style.width).toBe("120px");
+      const expectedWidth = `${tokens.dimensions.distributionTable.groupingColumnWidth}px`;
+      expect(style.width).toBe(expectedWidth);
     });
 
-    it("has border-left with 4px solid", () => {
+    it("has border-left with design token width", () => {
       const { container } = renderInTable({
         groupType: "high",
         percentage: 30,
@@ -155,7 +161,8 @@ describe("GroupingIndicator", () => {
 
       const tableCell = container.querySelector("td[rowspan]");
       const style = window.getComputedStyle(tableCell!);
-      expect(style.borderLeftWidth).toBe("4px");
+      const expectedBorderWidth = `${tokens.dimensions.distributionTable.groupingBorderWidth}px`;
+      expect(style.borderLeftWidth).toBe(expectedBorderWidth);
       expect(style.borderLeftStyle).toBe("solid");
     });
   });

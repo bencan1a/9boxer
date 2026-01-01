@@ -4,17 +4,15 @@
  */
 
 import React, { useState } from "react";
-import {
-  Button,
-  Menu,
-  MenuItem,
-  CircularProgress,
-  Divider,
-  Box,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UploadFileIcon from "@mui/icons-material/UploadFile";

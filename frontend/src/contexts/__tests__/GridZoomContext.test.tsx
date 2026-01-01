@@ -360,7 +360,9 @@ describe("GridZoomContext", () => {
       expect(tokens).toHaveProperty("tile");
       expect(tokens.tile).toHaveProperty("minWidth");
       expect(tokens.tile).toHaveProperty("maxWidth");
-      expect(tokens.tile).toHaveProperty("padding");
+      expect(tokens.tile).toHaveProperty("paddingY");
+      expect(tokens.tile).toHaveProperty("paddingX");
+      expect(tokens.tile).toHaveProperty("dragHandleWidth");
 
       expect(tokens).toHaveProperty("font");
       expect(tokens.font).toHaveProperty("name");
@@ -375,6 +377,7 @@ describe("GridZoomContext", () => {
       expect(tokens).toHaveProperty("spacing");
       expect(tokens.spacing).toHaveProperty("gap");
       expect(tokens.spacing).toHaveProperty("flagGap");
+      expect(tokens.spacing).toHaveProperty("boxPadding");
     });
 
     it("provides numeric values for tile dimensions", () => {
@@ -386,7 +389,9 @@ describe("GridZoomContext", () => {
 
       expect(typeof tokens.tile.minWidth).toBe("number");
       expect(typeof tokens.tile.maxWidth).toBe("number");
-      expect(typeof tokens.tile.padding).toBe("number");
+      expect(typeof tokens.tile.paddingY).toBe("number");
+      expect(typeof tokens.tile.paddingX).toBe("number");
+      expect(typeof tokens.tile.dragHandleWidth).toBe("number");
     });
 
     it("provides string values for font sizes", () => {

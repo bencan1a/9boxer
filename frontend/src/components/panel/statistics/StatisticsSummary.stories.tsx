@@ -22,7 +22,7 @@ import { StatisticsSummary } from "./StatisticsSummary";
  * - Session summary displays
  */
 const meta: Meta<typeof StatisticsSummary> = {
-  title: "Panel/Statistics/StatisticsSummary",
+  title: "App/Right Panel/Statistics/StatisticsSummary",
   component: StatisticsSummary,
   tags: ["autodocs"],
   parameters: {
@@ -52,6 +52,10 @@ type Story = StoryObj<typeof StatisticsSummary>;
  * Shows a realistic distribution of employees.
  */
 export const Default: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "statistics-summary-cards" },
+  },
   args: {
     totalEmployees: 125,
     modifiedEmployees: 23,

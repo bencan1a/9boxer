@@ -758,6 +758,13 @@ function setupIpcHandlers(): void {
     console.log("🔌 Renderer requested backend URL:", BACKEND_URL);
     return BACKEND_URL;
   });
+
+  // Handle session restoration completion notification
+  ipcMain.handle("app:sessionRestored", () => {
+    console.log("✅ Session restoration complete, closing splash screen");
+    closeSplashScreen();
+    return { success: true };
+  });
 }
 
 /**
@@ -915,10 +922,10 @@ app.on("ready", async () => {
     // Remove the application menu for a cleaner interface
     Menu.setApplicationMenu(null);
 
-    // Close splash when main window is ready to show
+    // Show main window when ready, but keep splash visible until session restoration completes
     mainWindow?.once("ready-to-show", () => {
       console.log("🎉 Main window ready to show");
-      closeSplashScreen();
+      // Don't close splash yet - wait for session restoration
 
       // Restore maximized state if needed
       if (mainWindow && windowStateManager) {
@@ -928,7 +935,7 @@ app.on("ready", async () => {
       mainWindow?.show();
       mainWindow?.focus();
       mainWindow?.moveTop();
-      console.log("✅ Main window shown and focused");
+      console.log("✅ Main window shown and focused (splash still visible)");
 
       // Start health monitoring after app is fully loaded
       startHealthMonitoring();

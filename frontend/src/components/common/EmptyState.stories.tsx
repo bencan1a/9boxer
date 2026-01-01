@@ -11,7 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 const meta = {
-  title: "Common/EmptyState",
+  title: "App/Common/EmptyState",
   component: EmptyState,
   parameters: {
     layout: "centered",

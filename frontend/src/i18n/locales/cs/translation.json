@@ -41,6 +41,8 @@
       "fileNotFound": "Soubor nenalezen: {{filename}}",
       "fileLoaded": "Načten {{filename}}",
       "loadError": "Nepodařilo se načíst soubor",
+      "exportError": "Nepodařilo se exportovat změny",
+      "recentFilesCleared": "Nedávné soubory vymazány",
       "electronApiRequired": "Načítání souborů vyžaduje desktopovou aplikaci"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[V,V]",
         "fullLabel": "Hvězda [V,V]",
         "guidance": "Špičkoví pracovníci s vysokým potenciálem. Kritický talent k udržení a rozvoji pro vedoucí role. Zaměřte se na udržení, plánování nástupnictví, rozvoj vedoucích pracovníků a náročné úkoly."
-      }
+      },
+      "unknown": "Neznámý"
     }
   },
   "panel": {
@@ -355,6 +358,7 @@
     "applyChanges": {
       "title": "Použít změny na soubor",
       "applyTo": "Použít změny na:",
+      "defaultBehavior": "Vaše změny budou uloženy do původního souboru.",
       "saveAsNew": "Místo toho uložit jako nový soubor",
       "apply": "Použít změny",
       "applying": "Aplikuji...",

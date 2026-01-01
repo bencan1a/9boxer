@@ -391,8 +391,10 @@ class TestPerformanceBenchmarks:
         restore_time_ms = (end_time - start_time) * 1000
 
         # Verify session restored correctly
-        assert len(new_manager.sessions) == 1
-        restored_session = list(new_manager.sessions.values())[0]
+        # Note: May have multiple sessions when running with other tests,
+        # so find the specific session for "local-user" created by this test
+        assert "local-user" in new_manager.sessions, "Test session not found"
+        restored_session = new_manager.sessions["local-user"]
         assert len(restored_session.original_employees) == 100
 
         # Performance target: < 100ms

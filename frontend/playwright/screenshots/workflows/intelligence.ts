@@ -115,7 +115,8 @@ export async function intelligenceSummaryExcellent(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-intelligencesummary--excellent-quality",
+    storyId:
+      "app-right-panel-intelligence-intelligencesummary--excellent-quality",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -139,7 +140,8 @@ export async function intelligenceSummaryNeedsAttention(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-intelligencesummary--needs-attention",
+    storyId:
+      "app-right-panel-intelligence-intelligencesummary--needs-attention",
     outputPath,
     theme: "light",
     waitTime: 500,
@@ -163,7 +165,7 @@ export async function intelligenceAnomalyGreen(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-anomalysection--green-status",
+    storyId: "app-right-panel-intelligence-anomalysection--green-status",
     outputPath,
     theme: "light",
     waitTime: 800, // Allow chart animations
@@ -187,7 +189,7 @@ export async function intelligenceAnomalyRed(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-anomalysection--red-status",
+    storyId: "app-right-panel-intelligence-anomalysection--red-status",
     outputPath,
     theme: "light",
     waitTime: 800, // Allow chart animations
@@ -211,7 +213,7 @@ export async function intelligenceDeviationChart(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-deviationchart--mixed-significance",
+    storyId: "app-right-panel-intelligence-deviationchart--mixed-significance",
     outputPath,
     theme: "light",
     waitTime: 800, // Allow chart animations
@@ -235,7 +237,8 @@ export async function intelligenceLevelDistribution(
   await page.setViewportSize({ width: 500, height: 700 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "intelligence-leveldistributionchart--normal-distribution",
+    storyId:
+      "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
     outputPath,
     theme: "light",
     waitTime: 800, // Allow chart animations

@@ -41,6 +41,8 @@
       "fileNotFound": "ファイルが見つかりません: {{filename}}",
       "fileLoaded": "{{filename}}を読み込みました",
       "loadError": "ファイルの読み込みに失敗しました",
+      "exportError": "変更のエクスポートに失敗しました",
+      "recentFilesCleared": "最近のファイルをクリアしました",
       "electronApiRequired": "ファイルの読み込みにはデスクトップアプリケーションが必要です"
     },
     "filterDrawer": {
@@ -174,7 +176,8 @@
         "shortLabel": "[高,高]",
         "fullLabel": "スター人材 [高,高]",
         "guidance": "高いポテンシャルを持つトップパフォーマー。リーダーシップ役割のために定着・育成すべき重要な人材。定着、後継者計画、エグゼクティブ育成、挑戦的なアサインメントに注力します。"
-      }
+      },
+      "unknown": "不明"
     }
   },
   "panel": {
@@ -355,6 +358,7 @@
     "applyChanges": {
       "title": "ファイルに変更を適用",
       "applyTo": "変更を適用:",
+      "defaultBehavior": "変更は元のファイルに保存されます。",
       "saveAsNew": "代わりに新しいファイルとして保存",
       "apply": "変更を適用",
       "applying": "適用中...",

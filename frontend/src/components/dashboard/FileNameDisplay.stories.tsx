@@ -4,10 +4,10 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { FileNameDisplay } from "./FileNameDisplay";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const meta = {
-  title: "Dashboard/AppBar/FileNameDisplay",
+  title: "App/Dashboard/FileNameDisplay",
   component: FileNameDisplay,
   parameters: {
     layout: "centered",

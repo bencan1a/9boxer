@@ -3,14 +3,12 @@
  */
 
 import React from "react";
-import {
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  FormControl,
-  Box,
-  Typography,
-} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import SelectChangeEvent from "@mui/material/SelectChangeEvent";
+import FormControl from "@mui/material/FormControl";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../i18n";
 import LanguageIcon from "@mui/icons-material/Language";

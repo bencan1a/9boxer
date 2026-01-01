@@ -41,7 +41,7 @@ import {
  * have disproportionate distributions of high or low performers.
  */
 const meta = {
-  title: "Intelligence/LevelDistributionChart",
+  title: "App/Right Panel/Intelligence/LevelDistributionChart",
   component: LevelDistributionChart,
   parameters: {
     layout: "centered",
@@ -77,6 +77,11 @@ type Story = StoryObj<typeof meta>;
  * Shows a healthy, balanced distribution across job levels.
  */
 export const NormalDistribution: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-level-distribution" },
+    screenshot: { enabled: true, id: "intelligence-level-distribution" },
+  },
   args: {
     data: mockLevelDistributionNormal,
     title: "Performance Distribution by Job Level",

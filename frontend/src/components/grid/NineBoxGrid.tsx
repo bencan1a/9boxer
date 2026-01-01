@@ -15,39 +15,58 @@
  *   - filters-before-after: Before/after filtering comparison
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Profiler } from "react";
 import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
 } from "@dnd-kit/core";
-import { Box, Typography, Card, CardContent, Tooltip } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import HistoryIcon from "@mui/icons-material/History";
 import { GridBox } from "./GridBox";
 import { EmployeeCount } from "./EmployeeCount";
 import { Axis } from "./Axis";
+import { DraggedEmployeeTile } from "./DraggedEmployeeTile";
 import { useEmployees } from "../../hooks/useEmployees";
-import { useSessionStore } from "../../store/sessionStore";
+import {
+  useSessionStore,
+  selectDonutModeActive,
+  selectMoveEmployeeDonut,
+} from "../../store/sessionStore";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
-import { getFlagDisplayName, getFlagColor } from "../../constants/flags";
-import { getPositionLabel } from "../../constants/positionLabels";
+import { useGridZoom } from "../../contexts/GridZoomContext";
 
 const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 
 /**
- * Truncate string to max length with ellipsis
+ * Performance profiler callback for NineBoxGrid
+ * Logs render performance and warns about slow renders
  */
-const truncate = (str: string, maxLength: number): string => {
-  if (str.length <= maxLength) return str;
-  return str.substring(0, maxLength) + "…";
+const onRenderCallback = (
+  id: string,
+  phase: "mount" | "update" | "nested-update",
+  actualDuration: number
+) => {
+  // Only log in development mode
+  if (import.meta.env.DEV) {
+    // Warn if render takes longer than 16ms (60fps threshold)
+    if (actualDuration > 16) {
+      console.warn(
+        `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms (slower than 60fps)`
+      );
+    } else {
+      console.log(
+        `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms`
+      );
+    }
+  }
 };
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
+  const { isResizing, tokens } = useGridZoom();
   const {
     employeesByPosition,
     getShortPositionLabel,
@@ -56,7 +75,9 @@ export const NineBoxGrid: React.FC = () => {
     selectEmployee,
   } = useEmployees();
 
-  const { donutModeActive, moveEmployeeDonut } = useSessionStore();
+  // Use granular selectors to minimize re-renders
+  const donutModeActive = useSessionStore(selectDonutModeActive);
+  const moveEmployeeDonut = useSessionStore(selectMoveEmployeeDonut);
 
   const [activeEmployee, setActiveEmployee] = useState<Employee | null>(null);
   const [expandedPosition, setExpandedPosition] = useState<number | null>(
@@ -189,7 +210,7 @@ export const NineBoxGrid: React.FC = () => {
     }
 
     // Expanded mode: Make target row/col large, others small
-    const smallSize = "80px";
+    const smallSize = `${theme.tokens.dimensions.gridContainer.collapsedBoxSize}px`;
     const largeSize = "1fr";
 
     const cols = [smallSize, smallSize, smallSize];
@@ -207,264 +228,106 @@ export const NineBoxGrid: React.FC = () => {
   const gridTemplate = getGridTemplate(expandedPosition);
 
   return (
-    <DndContext
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
-    >
-      <Box
-        sx={{
-          p: 2,
-          minHeight: "calc(100vh - 80px)",
-          width: "100%",
-          userSelect: "none",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        data-testid="nine-box-grid"
+    <Profiler id="NineBoxGrid" onRender={onRenderCallback}>
+      <DndContext
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
-        {/* Header row with Performance label, employee count, and view mode toggle */}
         <Box
-          sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
+          sx={{
+            p: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            minHeight: `calc(100vh - ${theme.tokens.dimensions.appBar.height}px)`,
+            width: "100%",
+            userSelect: "none",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          data-testid="nine-box-grid"
         >
-          <Box sx={{ width: 64 }} /> {/* Spacer for left label alignment */}
+          {/* Header row with Performance label, employee count, and view mode toggle */}
           <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 2,
-            }}
+            sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
           >
-            {/* Left: Empty for balance */}
-            <Box sx={{ width: 120 }} />
-
-            {/* Center: Performance label + Employee count */}
+            <Box sx={{ width: 64 }} /> {/* Spacer for left label alignment */}
             <Box
               sx={{
+                flex: 1,
                 display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
                 gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Axis orientation="horizontal" />
-              <EmployeeCount />
+              {/* Left: Empty for balance */}
+              <Box sx={{ width: 120 }} />
+
+              {/* Center: Performance label + Employee count */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
+              >
+                <Axis orientation="horizontal" />
+                <EmployeeCount />
+              </Box>
+
+              {/* Right: Empty for balance (view controls moved to floating position) */}
+              <Box sx={{ width: 120 }} />
             </Box>
+          </Box>
 
-            {/* Right: Empty for balance (view controls moved to floating position) */}
-            <Box sx={{ width: 120 }} />
+          <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
+            {/* Left axis label */}
+            <Axis orientation="vertical" />
+
+            {/* Grid */}
+            <Box
+              sx={{
+                flex: 1,
+                display: "grid",
+                gridTemplateColumns: gridTemplate.gridTemplateColumns,
+                gridTemplateRows: gridTemplate.gridTemplateRows,
+                gap: 2,
+                // Disable transitions during resize for better performance
+                transition: isResizing
+                  ? "none"
+                  : `grid-template-columns ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, grid-template-rows ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, gap ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
+              }}
+            >
+              {gridPositions.flat().map((position) => (
+                <GridBox
+                  key={position}
+                  position={position}
+                  employees={employeesByPosition[position] || []}
+                  shortLabel={getShortPositionLabel(position)}
+                  onSelectEmployee={selectEmployee}
+                  isExpanded={expandedPosition === position}
+                  isCollapsed={
+                    expandedPosition !== null && expandedPosition !== position
+                  }
+                  onExpand={() => handleExpandBox(position)}
+                  onCollapse={handleCollapseBox}
+                  donutModeActive={donutModeActive}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
 
-        <Box sx={{ display: "flex", flex: 1, minHeight: 0, width: "100%" }}>
-          {/* Left axis label */}
-          <Axis orientation="vertical" />
-
-          {/* Grid */}
-          <Box
-            sx={{
-              flex: 1,
-              display: "grid",
-              gridTemplateColumns: gridTemplate.gridTemplateColumns,
-              gridTemplateRows: gridTemplate.gridTemplateRows,
-              gap: 2,
-              transition: `grid-template-columns ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, grid-template-rows ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, gap ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
-            }}
-          >
-            {gridPositions.flat().map((position) => (
-              <GridBox
-                key={position}
-                position={position}
-                employees={employeesByPosition[position] || []}
-                shortLabel={getShortPositionLabel(position)}
-                onSelectEmployee={selectEmployee}
-                isExpanded={expandedPosition === position}
-                isCollapsed={
-                  expandedPosition !== null && expandedPosition !== position
-                }
-                onExpand={() => handleExpandBox(position)}
-                onCollapse={handleCollapseBox}
-                donutModeActive={donutModeActive}
-              />
-            ))}
-          </Box>
-        </Box>
-      </Box>
-
-      {/* Drag Overlay - shows the dragged item */}
-      <DragOverlay dropAnimation={null}>
-        {activeEmployee
-          ? (() => {
-              // Calculate flags, movement state, and original position (same logic as EmployeeTile)
-              const flags = activeEmployee.flags || [];
-              const hasMoved = donutModeActive
-                ? Boolean(activeEmployee.donut_position)
-                : activeEmployee.modified_in_session;
-              const originalPosition = donutModeActive
-                ? activeEmployee.grid_position
-                : activeEmployee.original_grid_position || null;
-              const originalPositionLabel = originalPosition
-                ? getPositionLabel(originalPosition)
-                : null;
-
-              return (
-                <Card
-                  sx={{
-                    mb: 1,
-                    minWidth: 280,
-                    maxWidth: 400,
-                    cursor: "grabbing",
-                    display: "flex",
-                    opacity: 0.9,
-                    userSelect: "none",
-                    position: "relative",
-                    border: 2,
-                    borderStyle: "solid",
-                    borderColor: (() => {
-                      if (donutModeActive && activeEmployee.donut_position) {
-                        return theme.tokens.colors.semantic.donutMode; // Purple
-                      }
-                      if (activeEmployee.modified_in_session) {
-                        return theme.palette.secondary.main; // Orange
-                      }
-                      return "divider";
-                    })(),
-                    boxShadow: 6,
-                  }}
-                >
-                  {/* Flag Badges - Top Right Strip */}
-                  {flags.length > 0 && (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: theme.tokens.spacing.xs,
-                        right: theme.tokens.spacing.xs,
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 0.5,
-                        zIndex: 1,
-                      }}
-                    >
-                      {flags.map((flag, index) => (
-                        <Tooltip
-                          key={index}
-                          title={getFlagDisplayName(flag)}
-                          arrow
-                          placement="top"
-                        >
-                          <Box
-                            sx={{
-                              width: 16,
-                              height: 16,
-                              borderRadius: "50%",
-                              backgroundColor: getFlagColor(flag),
-                              border: 2,
-                              borderColor: "background.paper",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                            role="img"
-                            aria-label={getFlagDisplayName(flag)}
-                          />
-                        </Tooltip>
-                      ))}
-                    </Box>
-                  )}
-
-                  {/* Drag Handle */}
-                  <Box
-                    sx={{
-                      width: 24,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "grabbing",
-                      borderRight: 1,
-                      borderColor: "divider",
-                      backgroundColor: "action.hover",
-                    }}
-                  >
-                    <DragIndicatorIcon
-                      sx={{ fontSize: 16, color: "action.active" }}
-                    />
-                  </Box>
-
-                  {/* Card Content */}
-                  <CardContent
-                    sx={{ p: 1.5, "&:last-child": { pb: 1.5 }, flex: 1, pr: 3 }}
-                  >
-                    {/* Row 1: Name */}
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight="bold"
-                      gutterBottom
-                    >
-                      {activeEmployee.name}
-                    </Typography>
-
-                    {/* Row 2: Title | Level (left) + Original Position (right) */}
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      {/* Left side: Title | Level inline */}
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        fontSize="0.75rem"
-                        sx={{
-                          flex: 1,
-                          minWidth: 0,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {truncate(activeEmployee.business_title, 16)} |{" "}
-                        {truncate(activeEmployee.job_level, 16)}
-                      </Typography>
-
-                      {/* Right side: Original Position Indicator with Tooltip */}
-                      {hasMoved && originalPositionLabel && (
-                        <Tooltip
-                          title="Original position at session start"
-                          arrow
-                          placement="top"
-                        >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 0.5,
-                              flexShrink: 0,
-                            }}
-                          >
-                            <HistoryIcon
-                              sx={{
-                                fontSize: 12,
-                                color: "text.disabled",
-                              }}
-                            />
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              fontSize={
-                                theme.tokens.typography.fontSize.caption
-                              }
-                              sx={{ whiteSpace: "nowrap" }}
-                            >
-                              {originalPositionLabel}
-                            </Typography>
-                          </Box>
-                        </Tooltip>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              );
-            })()
-          : null}
-      </DragOverlay>
-    </DndContext>
+        {/* Drag Overlay - shows the dragged item */}
+        <DragOverlay dropAnimation={null}>
+          {activeEmployee && (
+            <DraggedEmployeeTile
+              employee={activeEmployee}
+              donutModeActive={donutModeActive}
+            />
+          )}
+        </DragOverlay>
+      </DndContext>
+    </Profiler>
   );
 };

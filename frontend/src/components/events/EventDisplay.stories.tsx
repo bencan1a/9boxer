@@ -9,7 +9,7 @@ import {
 import { fn } from "@storybook/test";
 
 const meta = {
-  title: "Components/Events/EventDisplay",
+  title: "App/Right Panel/Changes/EventDisplay",
   component: EventDisplay,
   parameters: {
     layout: "padded",

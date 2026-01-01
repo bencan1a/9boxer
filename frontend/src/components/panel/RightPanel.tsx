@@ -3,7 +3,10 @@
  */
 
 import React, { useState } from "react";
-import { Box, Tabs, Tab, Paper } from "@mui/material";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { DetailsTab } from "./DetailsTab";

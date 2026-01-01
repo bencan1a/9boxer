@@ -6,15 +6,13 @@
  */
 
 import React from "react";
-import {
-  Box,
-  Typography,
-  Chip,
-  Stack,
-  TextField,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";

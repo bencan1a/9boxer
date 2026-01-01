@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ErrorBoundary } from "./ErrorBoundary";
-import { Box, Typography, Button } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { useState } from "react";
 
 // Component that throws an error on demand
@@ -53,7 +55,7 @@ const InteractiveErrorDemo = () => {
 };
 
 const meta: Meta<typeof ErrorBoundary> = {
-  title: "Common/ErrorBoundary",
+  title: "App/Common/ErrorBoundary",
   component: ErrorBoundary,
   tags: ["autodocs"],
   parameters: {

@@ -183,18 +183,20 @@ export const dimensions = {
 
   // Grid zoom levels (5 discrete levels)
   // Base tile size: 250px-370px (reduced by 30px from original 280px-400px)
-  // Level 0: Ultra Compact (48%) - Maximum information density
-  // Level 1: Compact (60%) - Very dense view
-  // Level 2: Normal (80%) - Default view
+  // Level 0: Compact (50%) - Maximum information density
+  // Level 1: Medium (75%) - Dense view
+  // Level 2: Normal (100%) - Default view
   // Level 3: Comfortable (125%) - Slightly larger than normal
   // Level 4: Presentation (150%) - Maximum visibility from distance
   gridZoom: {
-    // Zoom level 0: Ultra Compact (48% scale) - New smallest size
+    // Zoom level 0: Compact (50% label) - Smallest size
     level0: {
       tile: {
         minWidth: 120, // 250 * 0.48
         maxWidth: 178, // 370 * 0.48
-        padding: 7, // 1.5 * 0.48 (from CardContent default)
+        paddingY: 4, // Vertical padding (top/bottom)
+        paddingX: 6, // Horizontal padding (left, between drag handle and content)
+        dragHandleWidth: 16, // Compact drag handle
       },
       font: {
         name: "0.7rem", // Very small for ultra compact
@@ -207,17 +209,20 @@ export const dimensions = {
         history: 9,
       },
       spacing: {
-        gap: 6, // Very tight spacing
+        gap: 4, // Very tight spacing between tiles
         flagGap: 2,
+        boxPadding: 4, // Minimal padding inside grid boxes
       },
     },
 
-    // Zoom level 1: Compact (60% scale) - Old level 0
+    // Zoom level 1: Medium (75% label)
     level1: {
       tile: {
         minWidth: 150, // 250 * 0.6
         maxWidth: 222, // 370 * 0.6
-        padding: 9, // 1.5 * 0.6
+        paddingY: 5, // Vertical padding (top/bottom)
+        paddingX: 7, // Horizontal padding (left, between drag handle and content)
+        dragHandleWidth: 18, // Compact drag handle
       },
       font: {
         name: "0.8rem",
@@ -230,17 +235,20 @@ export const dimensions = {
         history: 10,
       },
       spacing: {
-        gap: 8,
+        gap: 6, // Tight spacing between tiles
         flagGap: 3,
+        boxPadding: 6, // Compact padding inside grid boxes
       },
     },
 
-    // Zoom level 2: Normal (80% scale - baseline/default) - Old level 1
+    // Zoom level 2: Normal (100% label - baseline/default)
     level2: {
       tile: {
         minWidth: 200, // 250 * 0.8
         maxWidth: 296, // 370 * 0.8
-        padding: 12, // 1.5 * 0.8
+        paddingY: 6, // Vertical padding (top/bottom)
+        paddingX: 8, // Horizontal padding (left, between drag handle and content)
+        dragHandleWidth: 20, // Normal drag handle
       },
       font: {
         name: "0.95rem",
@@ -253,17 +261,20 @@ export const dimensions = {
         history: 11,
       },
       spacing: {
-        gap: 12,
+        gap: 8, // Normal spacing between tiles
         flagGap: 3,
+        boxPadding: 8, // Normal padding inside grid boxes
       },
     },
 
-    // Zoom level 3: Comfortable (125% scale)
+    // Zoom level 3: Comfortable (125% label)
     level3: {
       tile: {
         minWidth: 313, // 250 * 1.25
         maxWidth: 463, // 370 * 1.25
-        padding: 19, // 1.5 * 1.25 ≈ 19px
+        paddingY: 10, // Vertical padding (top/bottom)
+        paddingX: 12, // Horizontal padding (left, between drag handle and content)
+        dragHandleWidth: 24, // Comfortable drag handle
       },
       font: {
         name: "1.25rem",
@@ -276,17 +287,20 @@ export const dimensions = {
         history: 15,
       },
       spacing: {
-        gap: 20,
+        gap: 12, // Comfortable spacing between tiles
         flagGap: 5,
+        boxPadding: 12, // Comfortable padding inside grid boxes
       },
     },
 
-    // Zoom level 4: Presentation (150% scale)
+    // Zoom level 4: Presentation (150% label)
     level4: {
       tile: {
         minWidth: 375, // 250 * 1.5
         maxWidth: 555, // 370 * 1.5
-        padding: 24, // 1.5 * 1.5 = 2.25 → 24px
+        paddingY: 14, // Vertical padding (top/bottom)
+        paddingX: 16, // Horizontal padding (left, between drag handle and content)
+        dragHandleWidth: 28, // Presentation drag handle
       },
       font: {
         name: "1.5rem",
@@ -299,8 +313,9 @@ export const dimensions = {
         history: 18,
       },
       spacing: {
-        gap: 24,
+        gap: 16, // Presentation spacing between tiles
         flagGap: 6,
+        boxPadding: 16, // Presentation padding inside grid boxes
       },
     },
   },
@@ -316,12 +331,45 @@ export const dimensions = {
     logoSize: 28, // App logo icon size
   },
 
+  // Grid container dimensions
+  gridContainer: {
+    padding: 16, // Container padding (p: 2)
+    collapsedBoxSize: 80, // Size of collapsed boxes in expanded mode
+  },
+
+  // Axis dimensions
+  axis: {
+    verticalWidth: 64, // Width of vertical axis label
+  },
+
+  // Box header (fixed sizing, does not scale with zoom)
+  boxHeader: {
+    marginBottom: 8, // mb: 1
+    gap: 16, // gap: 2 (16px)
+    gapCollapsed: 4, // gap: 0.5 (4px)
+    iconMargin: 8, // ml: 1 (8px)
+    badgeFontSize: "0.65rem",
+    badgeHeight: 16,
+  },
+
   // Scrollbar dimensions
   scrollbar: {
     width: 12,
     height: 12,
     thumbBorderRadius: 6,
     thumbBorderWidth: 3,
+  },
+
+  // Progress bar dimensions (used in ColoredPercentageBar)
+  progressBar: {
+    height: 8, // Standard progress bar height
+    labelMinWidth: 45, // Minimum width for percentage label alignment
+  },
+
+  // Distribution table / statistics (used in GroupingIndicator)
+  distributionTable: {
+    groupingColumnWidth: 120, // Width of grouping indicator column
+    groupingBorderWidth: 4, // Border width for grouping indicators
   },
 } as const;
 

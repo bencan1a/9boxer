@@ -39,7 +39,7 @@ import {
  * in talent distribution.
  */
 const meta = {
-  title: "Intelligence/DeviationChart",
+  title: "App/Right Panel/Intelligence/DeviationChart",
   component: DeviationChart,
   parameters: {
     layout: "centered",
@@ -115,6 +115,10 @@ export const AllNonSignificant: Story = {
  * Shows a realistic scenario with varying levels of statistical significance.
  */
 export const MixedSignificance: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "intelligence-deviation-chart" },
+  },
   args: {
     data: mockDeviationMixed,
     title: "Performance Distribution with Mixed Anomalies",

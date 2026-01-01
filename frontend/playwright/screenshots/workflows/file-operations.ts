@@ -12,13 +12,8 @@
  */
 
 import { Page } from "@playwright/test";
-import { loadSampleData } from "../../helpers/fixtures";
 import { closeAllDialogsAndOverlays, waitForUiSettle } from "../../helpers/ui";
-import { ensureChangesExist } from "../../helpers/assertions";
-import {
-  waitForCssTransition,
-  CSS_TRANSITION_DURATIONS,
-} from "../../helpers/visualValidation";
+import { captureStorybookScreenshot } from "../storybook-screenshot";
 
 /**
  * Generate File menu with recent files list
@@ -46,7 +41,9 @@ export async function generateFileMenuWithRecents(
   await waitForUiSettle(page, 1.0);
 
   // Click Load Sample Data button
-  const loadSampleButton = page.locator('[data-testid="load-sample-button"]');
+  const loadSampleButton = page.locator(
+    '[data-testid="load-sample-data-button"]'
+  );
   await loadSampleButton.click();
   await waitForUiSettle(page, 0.3);
 
@@ -87,7 +84,7 @@ export async function generateFileMenuWithRecents(
  * - Discard Changes (lose all changes)
  * - Cancel (return to work)
  *
- * Requires actual changes to exist to trigger the dialog.
+ * Note: Uses Storybook story for reliable, fast screenshot generation.
  */
 export async function generateUnsavedChangesDialog(
   page: Page,
@@ -96,54 +93,13 @@ export async function generateUnsavedChangesDialog(
   // Set viewport to match container size (no excess whitespace)
   await page.setViewportSize({ width: 500, height: 700 });
 
-  // Load sample data
-  await loadSampleData(page);
-  await waitForUiSettle(page, 0.5);
-
-  // Close any dialogs
-  await closeAllDialogsAndOverlays(page);
-
-  // Create changes to trigger unsaved changes protection
-  await ensureChangesExist(page, 2);
-  await waitForUiSettle(page, 0.5);
-
-  // Trigger unsaved changes dialog by trying to load sample data again
-  // Open File menu
-  const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
-  await fileMenuButton.click();
-
-  // Wait for menu to be visible (state-based wait)
-  await page
-    .locator('[role="menu"]')
-    .waitFor({ state: "visible", timeout: 5000 });
-
-  // Click "Load Sample Dataset" which should trigger unsaved changes dialog
-  const loadSampleMenuItem = page.locator(
-    '[data-testid="load-sample-menu-item"]'
-  );
-  await loadSampleMenuItem.click();
-
-  // Wait for dialog to appear (state-based wait, not arbitrary timeout)
-  const dialog = page
-    .locator('[role="dialog"]')
-    .filter({ hasText: "Unsaved Changes" });
-  await dialog.waitFor({ state: "visible", timeout: 5000 });
-  await waitForUiSettle(page, 0.3);
-
-  // Click "Import Data" which should trigger unsaved changes dialog
-  const importButton = page.locator('[data-testid="import-data-menu-item"]');
-  await importButton.click();
-
-  // Wait for dialog to appear and fully render
-  await waitForUiSettle(page, 1.0);
-
-  // Capture the unsaved changes dialog
-  await dialog.screenshot({
-    path: outputPath,
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dialogs-unsavedchangesdialog--multiple-changes",
+    outputPath,
+    theme: "light",
+    waitTime: 800, // Dialog has animations
+    selector: '[role="dialog"]', // Dialog renders in portal
   });
-
-  // Close dialog
-  await page.keyboard.press("Escape");
 }
 
 /**
@@ -166,16 +122,12 @@ export async function generateApplyChangesDialogDefault(
   // Set viewport to match container size (no excess whitespace)
   await page.setViewportSize({ width: 500, height: 700 });
 
-  // Navigate to Storybook story for Apply Changes Dialog
-  await page.goto(
-    "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--default&viewMode=story"
-  );
-  await waitForUiSettle(page, 1.0);
-
-  // Capture the dialog
-  const dialog = page.locator('[data-testid="apply-changes-dialog"]');
-  await dialog.screenshot({
-    path: outputPath,
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dialogs-applychangesdialog--default",
+    outputPath,
+    theme: "light",
+    waitTime: 800, // Dialog has animations
+    selector: '[role="dialog"]', // Dialog renders in portal
   });
 }
 
@@ -196,25 +148,40 @@ export async function generateApplyChangesDialogSaveAs(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
   // Set viewport to match container size (no excess whitespace)
   await page.setViewportSize({ width: 500, height: 700 });
 
   // Navigate to Storybook Default story
-  await page.goto(
-    "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--default&viewMode=story"
+  await navigateToStory(
+    page,
+    "app-dialogs-applychangesdialog--default",
+    "light"
   );
-  await waitForUiSettle(page, 1.0);
+
+  // Wait for dialog to be visible
+  await page.waitForSelector('[role="dialog"]', { state: "visible" });
+  await page.waitForTimeout(800);
 
   // Click the checkbox to show save-as mode
   const checkbox = page.locator('[data-testid="save-as-new-checkbox"]');
   await checkbox.click();
-  await waitForUiSettle(page, 0.5);
+  await page.waitForTimeout(500);
 
   // Capture the dialog
-  const dialog = page.locator('[data-testid="apply-changes-dialog"]');
+  const dialog = page.locator('[role="dialog"]');
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
   await dialog.screenshot({
     path: outputPath,
   });
+
+  console.log(
+    `  ✓ Captured from Storybook with checkbox: app-dialogs-applychangesdialog--default (light theme)`
+  );
 }
 
 /**
@@ -232,15 +199,11 @@ export async function generateFileErrorFallback(
   // Set viewport to match container size (no excess whitespace)
   await page.setViewportSize({ width: 500, height: 700 });
 
-  // Navigate to WithError Storybook story
-  await page.goto(
-    "http://localhost:6006/iframe.html?id=dialogs-applychangesdialog--with-error&viewMode=story"
-  );
-  await waitForUiSettle(page, 1.0);
-
-  // Capture the dialog with error message
-  const dialog = page.locator('[data-testid="apply-changes-dialog"]');
-  await dialog.screenshot({
-    path: outputPath,
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dialogs-applychangesdialog--with-error",
+    outputPath,
+    theme: "light",
+    waitTime: 800, // Dialog has animations
+    selector: '[role="dialog"]', // Dialog renders in portal
   });
 }

@@ -6,7 +6,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@/test/utils";
 import userEvent from "@testing-library/user-event";
 import { SectionHeader } from "../SectionHeader";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 describe("SectionHeader", () => {

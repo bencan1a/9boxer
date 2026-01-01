@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  ButtonGroup,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import IconButton from "@mui/material/IconButton";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import GridViewIcon from "@mui/icons-material/GridView";
 import DonutLargeIcon from "@mui/icons-material/DonutLarge";
@@ -173,7 +171,7 @@ function ViewControlsMock({
 }
 
 const meta: Meta<typeof ViewControlsMock> = {
-  title: "Common/ViewControls",
+  title: "App/Common/ViewControls",
   component: ViewControlsMock,
   parameters: {
     layout: "centered",
@@ -183,6 +181,7 @@ const meta: Meta<typeof ViewControlsMock> = {
           "Floating toolbar providing view mode toggle (Grid/Donut), zoom controls, and fullscreen toggle. " +
           "Positioned absolutely at top-right of the application.",
       },
+      tags: ["autodocs"],
     },
   },
 };
@@ -209,6 +208,16 @@ function createMockDecorator(hasSession: boolean = true) {
  * Default state: Grid view active, 100% zoom
  */
 export const GridViewActive: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-grid-view" },
+    docs: {
+      description: {
+        story:
+          "Default view with Grid mode active (toggle on left side) and standard 100% zoom level.",
+      },
+    },
+  },
   decorators: [createMockDecorator()],
   args: {
     donutMode: false,
@@ -218,20 +227,22 @@ export const GridViewActive: Story = {
     isDefaultZoom: true,
     hasSession: true,
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Default view with Grid mode active (toggle on left side) and standard 100% zoom level.",
-      },
-    },
-  },
 };
 
 /**
  * Donut view active: Shows toggle in donut mode state
  */
 export const DonutViewActive: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "view-controls-donut-view" },
+    docs: {
+      description: {
+        story:
+          "Donut mode active, showing the view mode toggle switched to the right position.",
+      },
+    },
+  },
   decorators: [createMockDecorator()],
   args: {
     donutMode: true,
@@ -240,14 +251,6 @@ export const DonutViewActive: Story = {
     canZoomOut: true,
     isDefaultZoom: true,
     hasSession: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Donut mode active, showing the view mode toggle switched to the right position.",
-      },
-    },
   },
 };
 

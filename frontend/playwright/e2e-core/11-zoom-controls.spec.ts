@@ -32,6 +32,12 @@ test.describe("Zoom Controls Tests", () => {
   test("11.1 - should zoom in, out, and reset", async ({ page }) => {
     // Arrange: Load sample data
     await page.goto("/");
+    // Clear localStorage to ensure clean state
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+    await page.reload();
     await loadSampleData(page);
 
     // Assert: Verify initial zoom level is 100%
@@ -78,14 +84,13 @@ test.describe("Zoom Controls Tests", () => {
     await page.goto("/");
     await loadSampleData(page);
 
-    // Act: Zoom in multiple times to reach higher zoom level
-    await zoomIn(page);
+    // Act: Zoom in twice to reach max level (100% -> 125% -> 150%)
     await zoomIn(page);
     await zoomIn(page);
 
-    // Get zoom level before reload
+    // Get zoom level before reload (should be 150% - max level)
     const zoomBeforeReload = await getZoomLevel(page);
-    expect(zoomBeforeReload).toBeGreaterThan(100);
+    expect(zoomBeforeReload).toBe(150);
 
     // Act: Reload page
     await page.reload();
