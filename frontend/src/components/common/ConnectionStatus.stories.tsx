@@ -3,7 +3,7 @@ import { fn } from "@storybook/test";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-import { Refresh as RefreshIcon } from "@mui/icons-material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { useTranslation } from "react-i18next";
 
 // Create a standalone component that mimics ConnectionStatus behavior
@@ -89,7 +89,7 @@ const ConnectionStatusDemo = ({
 };
 
 const meta: Meta<typeof ConnectionStatusDemo> = {
-  title: "Common/ConnectionStatus",
+  title: "App/Common/ConnectionStatus",
   component: ConnectionStatusDemo,
   tags: ["autodocs"],
   parameters: {
