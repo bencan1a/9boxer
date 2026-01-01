@@ -42,10 +42,10 @@ describe("ZoomControls", () => {
     expect(screen.getByTestId("fullscreen-toggle-button")).toBeInTheDocument();
   });
 
-  it("displays current zoom percentage (default is 80%)", () => {
+  it("displays current zoom percentage (default is 100%)", () => {
     render(<ZoomControls />);
 
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("80%");
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("100%");
   });
 
   it("increases zoom percentage when zoom in button is clicked", () => {
@@ -54,7 +54,7 @@ describe("ZoomControls", () => {
     const zoomInButton = screen.getByTestId("zoom-in-button");
     fireEvent.click(zoomInButton);
 
-    // Should go from 80% to 125%
+    // Should go from 100% to 125%
     expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("125%");
   });
 
@@ -64,11 +64,11 @@ describe("ZoomControls", () => {
     const zoomOutButton = screen.getByTestId("zoom-out-button");
     fireEvent.click(zoomOutButton);
 
-    // Should go from 80% to 60%
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("60%");
+    // Should go from 100% to 75%
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("75%");
   });
 
-  it("resets zoom to 80% when reset button is clicked", () => {
+  it("resets zoom to 100% when reset button is clicked", () => {
     render(<ZoomControls />);
 
     // First zoom in
@@ -79,7 +79,7 @@ describe("ZoomControls", () => {
     // Then reset
     const resetButton = screen.getByTestId("zoom-reset-button");
     fireEvent.click(resetButton);
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("80%");
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("100%");
   });
 
   it("disables zoom out button at minimum zoom", () => {
@@ -87,10 +87,10 @@ describe("ZoomControls", () => {
 
     // Zoom out to minimum
     const zoomOutButton = screen.getByTestId("zoom-out-button");
-    fireEvent.click(zoomOutButton); // 80% -> 60%
-    fireEvent.click(zoomOutButton); // 60% -> 48%
+    fireEvent.click(zoomOutButton); // 100% -> 75%
+    fireEvent.click(zoomOutButton); // 75% -> 50%
 
-    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("48%");
+    expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("50%");
 
     // Zoom out button should be disabled
     expect(zoomOutButton).toBeDisabled();
@@ -101,7 +101,7 @@ describe("ZoomControls", () => {
 
     // Zoom in to maximum
     const zoomInButton = screen.getByTestId("zoom-in-button");
-    fireEvent.click(zoomInButton); // 80% -> 125%
+    fireEvent.click(zoomInButton); // 100% -> 125%
     fireEvent.click(zoomInButton); // 125% -> 150%
 
     expect(screen.getByTestId("zoom-percentage")).toHaveTextContent("150%");
@@ -115,7 +115,7 @@ describe("ZoomControls", () => {
 
     const resetButton = screen.getByTestId("zoom-reset-button");
 
-    // Should be disabled at default (80%)
+    // Should be disabled at default (100%)
     expect(resetButton).toBeDisabled();
 
     // Zoom in
