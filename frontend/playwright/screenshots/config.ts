@@ -50,6 +50,21 @@ export type CroppingStrategy =
   | "grid"
   | "full-page";
 
+/**
+ * Quality rating for screenshot assessment
+ */
+export type ScreenshotQuality = "good" | "needs-improvement" | "poor";
+
+/**
+ * Known issues that can affect screenshot quality
+ */
+export type ScreenshotIssue =
+  | "light-mode"
+  | "excessive-whitespace"
+  | "wrong-content"
+  | "poor-cropping"
+  | "missing-padding";
+
 export interface ScreenshotMetadata {
   /** Source type: storybook (component) or full-app (workflow) */
   source: ScreenshotSource;
@@ -67,6 +82,18 @@ export interface ScreenshotMetadata {
   cropping?: CroppingStrategy;
   /** For Storybook screenshots: the story ID (e.g., 'grid-employeetile--modified') */
   storyId?: string;
+
+  // Quality assessment fields (added for screenshot inventory tracking)
+  /** User-facing caption describing what this screenshot is intended to show */
+  caption?: string;
+  /** Quality assessment: good, needs-improvement, or poor */
+  quality?: ScreenshotQuality;
+  /** List of identified quality issues */
+  issues?: ScreenshotIssue[];
+  /** Detailed explanation of what's wrong and what should change */
+  issueExplanation?: string;
+  /** Documentation pages that reference this screenshot */
+  usedIn?: string[];
 }
 
 /**
@@ -86,6 +113,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Base grid for 3-panel drag sequence (requires manual composition)",
     manual: true,
     cropping: "grid",
+    caption:
+      "Grid showing drag-and-drop workflow for moving employees between boxes",
+    quality: "good",
+    usedIn: ["getting-started.md", "workflows/making-changes.md"],
   },
   "changes-orange-border": {
     source: "storybook",
@@ -95,6 +126,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Employee tile with full orange modified border (2px)",
     storyId: "app-grid-employeetile--modified-normal-mode",
     cropping: "element",
+    caption:
+      "Employee tile with orange border indicating the employee has been modified",
+    quality: "good",
+    usedIn: ["quickstart.md", "workflows/making-changes.md"],
   },
   "changes-employee-details": {
     source: "storybook",
@@ -105,6 +140,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Employee details panel showing updated ratings with visible changes",
     storyId: "app-right-panel-details-employeedetails--with-changes",
     cropping: "panel",
+    caption:
+      "Employee details panel showing 'Modified in Session' badge and recent changes",
+    quality: "good",
+    usedIn: ["workflows/making-changes.md"],
   },
   "changes-timeline-view": {
     source: "storybook",
@@ -114,6 +153,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Performance History timeline in employee details",
     storyId: "app-right-panel-details-ratingstimeline--default",
     cropping: "panel",
+    caption:
+      "Performance History timeline showing multi-year rating progression",
+    quality: "good",
+    usedIn: ["workflows/making-changes.md"],
   },
   "changes-tab": {
     source: "storybook",
@@ -123,6 +166,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Changes tab with employee movements",
     storyId: "app-right-panel-changes-changetrackertab--default",
     cropping: "panel",
+    caption:
+      "Changes tab showing table of employee movements with from/to positions",
+    quality: "good",
+    usedIn: ["workflows/making-changes.md"],
   },
 
   // Notes workflow screenshots (1 screenshot)
@@ -134,18 +181,14 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Changes tab with note field highlighted",
     storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
     cropping: "panel",
+    caption:
+      "Changes tab showing how to add notes to document rating change decisions",
+    quality: "good",
+    usedIn: ["tracking-changes.md", "workflows/adding-notes.md"],
   },
 
   // Filters workflow screenshots (3 screenshots)
-  "filters-active-chips": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateActiveChips",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-active-chips.png",
-    description: "AppBar with active filter chips and orange dot indicator",
-    storyId: "app-dashboard-appbar--with-active-filters",
-    cropping: "element",
-  },
+  // REMOVED: filters-active-chips - unused (no documentation references)
   "filters-panel-expanded": {
     source: "storybook",
     workflow: "filters-storybook",
@@ -154,38 +197,22 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Filter panel expanded showing all filter options",
     storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     cropping: "container",
+    caption:
+      "Filter panel showing Job Levels, Job Functions, and Locations filter sections",
+    quality: "good",
+    usedIn: [
+      "filters.md",
+      "quickstart.md",
+      "getting-started.md",
+      "workflows/talent-calibration.md",
+      "workflows/identifying-flight-risks.md",
+    ],
   },
-  "filters-clear-all-button": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateFilterDrawerClearAll",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-clear-all-button.png",
-    description: "Filter section with Clear All button",
-    storyId: "app-dashboard-filters-filtersection--custom-content",
-    cropping: "container",
-  },
+  // REMOVED: filters-clear-all-button - unused (no documentation references)
 
   // Quickstart workflow screenshots (10 screenshots - guided tour)
-  "quickstart-file-menu-button": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateFileMenuButtonNoFile",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-file-menu-button.png",
-    description:
-      'File menu button in toolbar showing "No file selected" empty state',
-    storyId: "app-dashboard-filemenubutton--no-file",
-    cropping: "element",
-  },
-  "quickstart-upload-dialog": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateFileUploadDialog",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-upload-dialog.png",
-    description:
-      "File upload dialog with file selection input and upload button",
-    storyId: "app-common-fileuploaddialog--open",
-    cropping: "container",
-  },
+  // REMOVED: quickstart-file-menu-button - unused (no documentation references)
+  // REMOVED: quickstart-upload-dialog - unused (no documentation references)
   "quickstart-grid-populated": {
     source: "storybook",
     workflow: "storybook-components",
@@ -194,6 +221,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description: "Populated 9-box grid after successful file upload",
     storyId: "app-grid-nineboxgrid--populated",
     cropping: "container",
+    caption:
+      "9-box grid showing employees distributed across performance and potential boxes",
+    quality: "good",
+    usedIn: ["quickstart.md", "getting-started.md"],
   },
   "quickstart-empty-state-sample-button": {
     source: "storybook",
@@ -204,17 +235,11 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Empty state showing 'Load Sample Data' button for quick onboarding (quickstart tour step 1)",
     storyId: "app-dashboard-emptystate--default",
     cropping: "container",
+    caption: "Empty state with Load Sample Data and Upload Excel File buttons",
+    quality: "good",
+    usedIn: ["quickstart.md"],
   },
-  "quickstart-load-sample-dialog": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateLoadSampleDialog",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-load-sample-dialog.png",
-    description:
-      "Load Sample Data confirmation dialog explaining the 200-employee dataset (quickstart tour step 1)",
-    storyId: "app-dialogs-loadsampledialog--no-existing-data",
-    cropping: "container",
-  },
+  // REMOVED: quickstart-load-sample-dialog - unused (no documentation references)
   "quickstart-employee-details-with-history": {
     source: "storybook",
     workflow: "storybook-components",
@@ -224,27 +249,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Employee details panel showing flags, reporting chain, and complete job information (quickstart tour step 2)",
     storyId: "app-right-panel-details-employeedetails--default",
     cropping: "panel",
+    caption:
+      "Employee details panel showing job info, flags, and current assessment",
+    quality: "good",
+    usedIn: ["quickstart.md"],
   },
-  "quickstart-timeline-history": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateRatingsTimeline",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-timeline-history.png",
-    description:
-      "Performance history timeline showing 3-year rating progression (quickstart tour step 3)",
-    storyId: "app-right-panel-details-ratingstimeline--with-history",
-    cropping: "panel",
-  },
-  "quickstart-intelligence-bias-detected": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceAnomalyRed",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-intelligence-bias-detected.png",
-    description:
-      "Intelligence panel showing detected bias patterns in sample data (USA +15%, Sales +20%) - quickstart tour step 5",
-    storyId: "app-right-panel-intelligence-anomalysection--red-status",
-    cropping: "container",
-  },
+  // REMOVED: quickstart-timeline-history - unused (no documentation references)
+  // REMOVED: quickstart-intelligence-bias-detected - duplicate of intelligence-anomaly-red (same storyId)
   "quickstart-statistics-distribution": {
     source: "storybook",
     workflow: "statistics-storybook",
@@ -255,6 +266,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-statistics-distributiontable--balanced-distribution",
     cropping: "panel",
+    caption:
+      "Statistics panel showing employee distribution across 9-box positions",
+    quality: "good",
   },
   // Calibration workflow screenshots (5 screenshots)
   "calibration-file-import": {
@@ -263,9 +277,12 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     function: "generateFileMenuImport",
     path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
     description:
-      "File menu open with Import Data menu item highlighted (Storybook: dashboard-appbar-filemenubutton--menu-open)",
+      "File menu open with Import Data menu item highlighted (cropped to menu only)",
     storyId: "app-dashboard-filemenubutton--menu-open",
-    cropping: "container",
+    cropping: "element",
+    caption: "File menu dropdown showing Import Data option",
+    quality: "good",
+    usedIn: ["workflows/talent-calibration.md"],
   },
   "intelligence-summary-anomalies": {
     source: "storybook",
@@ -277,17 +294,18 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-intelligence-intelligencesummary--needs-attention",
     cropping: "container",
+    caption:
+      "Intelligence summary showing quality score and anomaly indicators",
+    quality: "good",
+    usedIn: [
+      "intelligence.md",
+      "getting-started.md",
+      "best-practices.md",
+      "workflows/talent-calibration.md",
+      "workflows/analyzing-distribution.md",
+    ],
   },
-  "intelligence-anomaly-details": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceAnomalyRed",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-details.png",
-    description:
-      "Anomaly section showing severe statistical anomalies requiring investigation",
-    storyId: "app-right-panel-intelligence-anomalysection--red-status",
-    cropping: "container",
-  },
+  // REMOVED: intelligence-anomaly-details - duplicate of intelligence-anomaly-red (same storyId)
   "distribution-chart-ideal": {
     source: "storybook",
     workflow: "intelligence",
@@ -298,41 +316,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
     cropping: "container",
+    caption: "Stacked bar chart showing performance distribution by job level",
+    quality: "good",
+    usedIn: ["statistics.md"],
   },
 
   // Intelligence component screenshots (Storybook-based)
-  "intelligence-summary-excellent": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceSummaryExcellent",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-excellent.png",
-    description:
-      "IntelligenceSummary component with excellent quality score (85+), showing green status and low anomaly count",
-    storyId:
-      "app-right-panel-intelligence-intelligencesummary--excellent-quality",
-    cropping: "container",
-  },
-  "intelligence-summary-needs-attention": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceSummaryNeedsAttention",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-needs-attention.png",
-    description:
-      "IntelligenceSummary component with low quality score (<50), showing red status and high anomaly count requiring attention",
-    storyId:
-      "app-right-panel-intelligence-intelligencesummary--needs-attention",
-    cropping: "container",
-  },
-  "intelligence-anomaly-green": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceAnomalyGreen",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-green.png",
-    description:
-      "AnomalySection component with green status (p > 0.05), showing no significant statistical issues",
-    storyId: "app-right-panel-intelligence-anomalysection--green-status",
-    cropping: "container",
-  },
+  // REMOVED: intelligence-summary-excellent - unused (no documentation references)
+  // REMOVED: intelligence-summary-needs-attention - unused (no documentation references)
+  // REMOVED: intelligence-anomaly-green - unused (no documentation references)
   "intelligence-anomaly-red": {
     source: "storybook",
     workflow: "intelligence",
@@ -342,37 +334,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "AnomalySection component with red status (p < 0.01), showing severe statistical anomalies requiring investigation",
     storyId: "app-right-panel-intelligence-anomalysection--red-status",
     cropping: "container",
+    caption: "Anomaly card showing red severe status requiring investigation",
+    quality: "good",
+    usedIn: ["intelligence.md", "quickstart.md"],
   },
-  "intelligence-deviation-chart": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceDeviationChart",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-deviation-chart.png",
-    description:
-      "DeviationChart showing expected vs actual performance distribution with mixed significance levels (green/yellow/red bars)",
-    storyId: "app-right-panel-intelligence-deviationchart--mixed-significance",
-    cropping: "container",
-  },
-  "intelligence-level-distribution": {
-    source: "storybook",
-    workflow: "intelligence",
-    function: "intelligenceLevelDistribution",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-level-distribution.png",
-    description:
-      "LevelDistributionChart showing normal distribution of Low/Medium/High performers across job levels",
-    storyId:
-      "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
-    cropping: "container",
-  },
-  "calibration-donut-mode-toggle": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateViewControlsDonutView",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-donut-mode-toggle.png",
-    description: "ViewControls toolbar with donut mode toggle active",
-    storyId: "app-common-viewcontrols--donut-view-active",
-    cropping: "container",
-  },
+  // REMOVED: intelligence-deviation-chart - unused (no documentation references)
+  // REMOVED: intelligence-level-distribution - unused (no documentation references)
+  // REMOVED: calibration-donut-mode-toggle - unused (no documentation references)
   // Statistics workflow screenshots (4 Storybook-based screenshots)
   "statistics-panel-distribution": {
     source: "storybook",
@@ -383,98 +351,36 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Statistics panel distribution table with grouping indicators (balanced distribution)",
     storyId:
       "app-right-panel-statistics-distributiontable--balanced-distribution",
+    caption:
+      "Distribution table showing employee counts and percentages by position",
+    quality: "good",
+    usedIn: [
+      "statistics.md",
+      "quickstart.md",
+      "getting-started.md",
+      "workflows/talent-calibration.md",
+      "workflows/analyzing-distribution.md",
+    ],
   },
-  "statistics-summary-cards": {
-    source: "storybook",
-    workflow: "statistics-storybook",
-    function: "generateSummaryCards",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-summary-cards.png",
-    description:
-      "Three summary cards showing total employees, modified employees, and high performers",
-    storyId: "app-right-panel-statistics-statisticssummary--default",
-  },
+  // REMOVED: statistics-summary-cards - unused (no documentation references)
 
-  // Donut mode screenshots (1 screenshot)
-  "donut-mode-active-layout": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateDonutModeActive",
-    path: "resources/user-guide/docs/images/screenshots/donut/donut-mode-active-layout.png",
-    description:
-      "Active donut mode layout with concentric circles and ghost tiles",
-    storyId: "app-grid-nineboxgrid--donut-mode",
-    cropping: "container",
-  },
+  // Donut mode screenshots - Note: donut-mode-active-layout is a duplicate of donut-mode-grid-normal (same storyId)
+  // REMOVED: donut-mode-active-layout - duplicate of donut-mode-grid-normal (same storyId: app-grid-nineboxgrid--donut-mode)
 
-  // Grid and basic UI screenshots (2 screenshots)
-  "grid-normal": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateGridPopulated",
-    path: "resources/user-guide/docs/images/screenshots/grid-normal.png",
-    description: "Standard 9-box grid with employee tiles",
-    storyId: "app-grid-nineboxgrid--populated",
-    cropping: "container",
-  },
-  "employee-tile-normal": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateEmployeeTileNormal",
-    path: "resources/user-guide/docs/images/screenshots/employee-tile-normal.png",
-    description: "Individual employee tile showing name and role",
-    storyId: "app-grid-employeetile--default",
-  },
+  // Grid and basic UI screenshots
+  // REMOVED: grid-normal - duplicate of quickstart-grid-populated (same storyId)
+  // REMOVED: employee-tile-normal - unused (no documentation references)
 
-  // Additional features screenshots (5 screenshots)
-  "timeline-employee-history": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateRatingsTimeline",
-    path: "resources/user-guide/docs/images/screenshots/timeline-employee-history.png",
-    description: "Employee movement timeline showing historical positions",
-    storyId: "app-right-panel-details-ratingstimeline--with-history",
-  },
-  "employee-details-panel-expanded": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateEmployeeDetailsPanel",
-    path: "resources/user-guide/docs/images/screenshots/employee-details-panel-expanded.png",
-    description: "Expanded employee details panel with all information",
-    storyId: "app-right-panel-details-employeedetails--default",
-  },
-  "file-menu-apply-changes": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateFileMenuApplyChanges",
-    path: "resources/user-guide/docs/images/screenshots/file-menu-apply-changes.png",
-    description: "File menu dropdown open showing menu options",
-    storyId: "app-dashboard-filemenubutton--menu-open",
-    cropping: "container",
-  },
+  // Additional features screenshots
+  // REMOVED: timeline-employee-history - duplicate of quickstart-timeline-history (same storyId)
+  // REMOVED: employee-details-panel-expanded - duplicate of quickstart-employee-details-with-history (same storyId)
+  // REMOVED: file-menu-apply-changes - unused (no documentation references, exporting-file-menu-apply-changes is used instead)
 
-  // Zoom controls screenshot (1 screenshot)
-  "zoom-controls": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateViewControlsGridView",
-    path: "resources/user-guide/docs/images/screenshots/zoom-controls.png",
-    description:
-      "ViewControls toolbar showing zoom controls, view toggle, and fullscreen button",
-    storyId: "app-common-viewcontrols--grid-view-active",
-    cropping: "container",
-  },
+  // Zoom controls screenshot
+  // REMOVED: zoom-controls - unused (no documentation references)
 
-  // ViewControls consolidation screenshots (6 screenshots)
-  "view-controls-main-interface": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateViewControlsGridView",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/main-interface.png",
-    description:
-      "ViewControls toolbar showing all controls: view toggle, zoom, and fullscreen",
-    storyId: "app-common-viewcontrols--grid-view-active",
-    cropping: "container",
-  },
+  // ViewControls consolidation screenshots
+  // REMOVED: view-controls-main-interface - unused (no documentation references)
   "view-controls-grid-view": {
     source: "storybook",
     workflow: "storybook-components",
@@ -484,6 +390,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     description:
       "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
     cropping: "container",
+    caption: "View controls with grid view mode selected",
+    quality: "good",
+    usedIn: ["settings.md"],
   },
   "view-controls-donut-view": {
     source: "storybook",
@@ -493,6 +402,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
     description: "ViewControls toolbar with Donut view active",
     cropping: "container",
+    caption: "View controls with donut view mode selected",
+    quality: "good",
+    usedIn: ["donut-mode.md"],
   },
   "view-controls-settings-dialog": {
     source: "storybook",
@@ -503,78 +415,20 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
     storyId: "app-settings-settingsdialog--open",
     cropping: "container",
+    caption: "Settings dialog showing appearance and language preferences",
+    quality: "good",
+    usedIn: ["settings.md"],
   },
-  "view-controls-simplified-appbar": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateSimplifiedAppBar",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/simplified-appbar.png",
-    description:
-      "Simplified AppBar showing only Logo, File menu, Help button, and Settings button",
-    storyId: "app-dashboard-appbar--file-loaded",
-  },
-  "view-controls-fullscreen": {
-    source: "full-app",
-    workflow: "view-controls",
-    function: "generateFullscreenMode",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/fullscreen-mode.png",
-    description:
-      "Application in fullscreen mode (note: actual fullscreen requires F11, this shows pre-fullscreen view)",
-    cropping: "full-page",
-  },
+  // REMOVED: view-controls-simplified-appbar - unused (no documentation references)
+  // REMOVED: view-controls-fullscreen - unused (no documentation references)
 
-  // Details Panel enhancements screenshots (6 screenshots)
-  "details-current-assessment": {
-    source: "storybook",
-    workflow: "details-panel-enhancements",
-    function: "generateCurrentAssessmentEnhanced",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/current-assessment-enhanced.png",
-    description:
-      "Enhanced Current Assessment section showing box name, grid coordinates, color-coded performance/potential chips with exterior padding",
-    storyId: "app-right-panel-details-employeedetails--default-with-padding",
-    cropping: "element",
-  },
-  "details-flags-ui": {
-    source: "storybook",
-    workflow: "details-panel-enhancements",
-    function: "generateFlagsUI",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/flags-ui.png",
-    description:
-      "Flags section in Details panel with Add Flag picker and colored flag chips",
-    storyId: "app-right-panel-details-employeeflags--with-multiple-flags",
-    cropping: "container",
-  },
-  "details-flag-badges": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateEmployeeTileFlagged",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/flag-badges.png",
-    description:
-      "Employee tiles showing individual colored flag badges (16px circular) in top-right corner",
-    storyId: "app-grid-employeetile--with-flags",
-    cropping: "container",
-  },
-  "details-reporting-chain-clickable": {
-    source: "storybook",
-    workflow: "details-panel-enhancements",
-    function: "generateReportingChainClickable",
-    path: "resources/user-guide/docs/images/screenshots/details-panel/reporting-chain-clickable.png",
-    description:
-      "Reporting Chain section with clickable manager names (blue underlined links)",
-    storyId: "app-right-panel-details-managementchain--with-manager",
-    cropping: "container",
-  },
-  // FilterDrawer screenshots (4 new screenshots)
-  "filters-multiple-active": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateMultipleFiltersActive",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-multiple-active.png",
-    description:
-      "FilterDrawer with multiple filter types active: Job Functions, Locations, Flags, and Reporting Chain filters with count badges",
-    storyId: "app-dashboard-filterdrawer--multiple-filters-active",
-    cropping: "container",
-  },
+  // Details Panel enhancements screenshots
+  // REMOVED: details-current-assessment - unused (no documentation references)
+  // REMOVED: details-flags-ui - unused (no documentation references)
+  // REMOVED: details-flag-badges - unused (no documentation references)
+  // REMOVED: details-reporting-chain-clickable - unused (no documentation references)
+  // FilterDrawer screenshots
+  // REMOVED: filters-multiple-active - unused (no documentation references)
   "filters-flags-section": {
     source: "storybook",
     workflow: "filters-storybook",
@@ -584,6 +438,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
     storyId: "app-dashboard-filterdrawer--flags-active",
     cropping: "container",
+    caption: "Flags filter section showing available flag types with counts",
+    quality: "good",
+    usedIn: ["filters.md"],
   },
   "filters-reporting-chain": {
     source: "storybook",
@@ -594,18 +451,13 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Reporting Chain section in FilterDrawer with active manager filter chip",
     storyId: "app-dashboard-filterdrawer--reporting-chain-active",
     cropping: "container",
+    caption: "Reporting chain filter chip showing filtered manager",
+    quality: "good",
+    usedIn: ["filters.md"],
   },
 
-  // File Operations workflow screenshots (5 screenshots)
-  "file-menu-recent-files": {
-    source: "full-app",
-    workflow: "file-operations",
-    function: "generateFileMenuWithRecents",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-recent-files.png",
-    description:
-      "File menu dropdown showing recent files list, import, apply changes, and close options",
-    cropping: "container",
-  },
+  // File Operations workflow screenshots
+  // REMOVED: file-menu-recent-files - unused (no documentation references)
   "unsaved-changes-dialog": {
     source: "storybook",
     workflow: "file-operations",
@@ -615,6 +467,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Unsaved Changes protection dialog with Apply Changes, Discard, and Cancel options",
     storyId: "app-dialogs-unsavedchangesdialog--multiple-changes",
     cropping: "container",
+    caption: "Warning dialog showing unsaved changes with action options",
+    quality: "good",
+    usedIn: ["troubleshooting.md"],
   },
   "apply-changes-dialog-default": {
     source: "storybook",
@@ -625,17 +480,11 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Apply Changes dialog in default mode (update original file, checkbox unchecked)",
     storyId: "app-dialogs-applychangesdialog--default",
     cropping: "container",
+    caption: "Apply Changes dialog for exporting changes to Excel",
+    quality: "good",
+    usedIn: ["exporting.md"],
   },
-  "apply-changes-dialog-save-as": {
-    source: "storybook",
-    workflow: "file-operations",
-    function: "generateApplyChangesDialogSaveAs",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-save-as.png",
-    description:
-      "Apply Changes dialog in save-as mode (save to different file, checkbox checked)",
-    storyId: "app-dialogs-applychangesdialog--default",
-    cropping: "container",
-  },
+  // REMOVED: apply-changes-dialog-save-as - unused (no documentation references)
   "file-error-fallback": {
     source: "storybook",
     workflow: "file-operations",
@@ -645,6 +494,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "File error fallback - error message when original file can't be updated",
     storyId: "app-dialogs-applychangesdialog--with-error",
     cropping: "container",
+    caption: "Error dialog shown when original file cannot be updated",
+    quality: "good",
+    usedIn: ["troubleshooting.md"],
   },
 
   // Exclusion Dialog screenshot
@@ -657,6 +509,9 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Manage Exclusions dialog with search field, quick filter buttons, and employee checkbox list",
     storyId: "app-dashboard-exclusiondialog--default",
     cropping: "container",
+    caption: "Exclusions dialog for managing which employees to hide from view",
+    quality: "good",
+    usedIn: ["filters.md"],
   },
 
   // Intelligence Detector Screenshots (4 bias detectors)
@@ -670,6 +525,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-intelligence-anomalysection--location-bias-detector",
     cropping: "container",
+    caption:
+      "Location bias analysis showing expected vs actual performance by location",
+    quality: "good",
+    usedIn: ["intelligence.md"],
   },
   "intelligence-function": {
     source: "storybook",
@@ -681,6 +540,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-intelligence-anomalysection--function-bias-detector",
     cropping: "container",
+    caption:
+      "Job function bias analysis showing performance distribution by department",
+    quality: "good",
+    usedIn: ["intelligence.md"],
   },
   "intelligence-level": {
     source: "storybook",
@@ -691,6 +554,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
       "Job level bias detector showing performance distribution across job levels",
     storyId: "app-right-panel-intelligence-anomalysection--level-bias-detector",
     cropping: "container",
+    caption:
+      "Job level bias analysis showing performance patterns across seniority levels",
+    quality: "good",
+    usedIn: ["intelligence.md"],
   },
   "intelligence-tenure": {
     source: "storybook",
@@ -702,6 +569,10 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-intelligence-anomalysection--tenure-bias-detector",
     cropping: "container",
+    caption:
+      "Tenure bias analysis showing performance patterns by years of service",
+    quality: "good",
+    usedIn: ["intelligence.md"],
   },
 
   // Distribution Table screenshot
@@ -715,7 +586,77 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     storyId:
       "app-right-panel-statistics-distributiontable--balanced-distribution",
     cropping: "container",
+    caption:
+      "Distribution table showing counts and percentages for each 9-box position",
+    quality: "good",
+    usedIn: ["statistics.md"],
   },
+
+  // Additional screenshots found in documentation audit
+  "donut-mode-grid-normal": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutModeGrid",
+    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-grid-normal.png",
+    description: "Grid in donut mode showing employee tiles",
+    storyId: "app-grid-nineboxgrid--donut-mode",
+    cropping: "container",
+    caption: "9-box grid displayed in donut mode for center-box validation",
+    quality: "good",
+    usedIn: ["donut-mode.md"],
+  },
+  "workflow-donut-notes-example": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutChangesTab",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-donut-notes-example.png",
+    description:
+      "Donut changes tab showing tracked movements with calibration notes",
+    storyId: "app-right-panel-changes-changetrackertab--donut-changes",
+    cropping: "panel",
+    caption: "Changes tab showing donut mode movements with descriptive notes",
+    quality: "good",
+    usedIn: ["donut-mode.md"],
+  },
+  "workflow-changes-good-note": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateChangesTabWithNotes",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png",
+    description:
+      "Changes tab showing employee movements with well-documented notes",
+    storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
+    cropping: "panel",
+    caption: "Changes tab with detailed notes documenting rating decisions",
+    quality: "good",
+    usedIn: ["best-practices.md", "tracking-changes.md"],
+  },
+  "workflow-grid-axes-labeled": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridWithAxesLabeled",
+    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-grid-axes-labeled.png",
+    description: "9-box grid with Performance and Potential axes labeled",
+    storyId: "app-grid-nineboxgrid--populated",
+    cropping: "container",
+    caption:
+      "Annotated grid showing Performance (horizontal) and Potential (vertical) axes",
+    quality: "good",
+    usedIn: ["new-to-9box.md"],
+  },
+  // REMOVED: calibration-filters-panel - duplicate of filters-panel-expanded (same storyId)
+  "exporting-file-menu-apply-changes": {
+    source: "full-app",
+    workflow: "file-operations",
+    function: "generateFileMenuApplyChanges",
+    path: "resources/user-guide/docs/images/screenshots/exporting/file-menu-apply-changes.png",
+    description: "File menu with Apply Changes option highlighted",
+    cropping: "container",
+    caption: "File menu showing Apply Changes option for exporting to Excel",
+    quality: "good",
+    usedIn: ["getting-started.md"],
+  },
+  // REMOVED: filters-overview - duplicate of filters-panel-expanded (same storyId)
 };
 
 /**
@@ -760,4 +701,77 @@ export function getManualScreenshots(): Record<string, ScreenshotMetadata> {
       ([_, metadata]) => metadata.manual === true
     )
   );
+}
+
+/**
+ * Get screenshots that are NOT referenced in any documentation
+ * (candidates for removal to reduce maintenance burden)
+ *
+ * @returns Record of unused screenshot configurations
+ */
+export function getUnusedScreenshots(): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(
+      ([_, metadata]) => !metadata.usedIn || metadata.usedIn.length === 0
+    )
+  );
+}
+
+/**
+ * Get screenshots by quality assessment
+ *
+ * @param quality The quality rating to filter by
+ * @returns Record of screenshot configurations matching the quality
+ */
+export function getScreenshotsByQuality(
+  quality: ScreenshotQuality
+): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(
+      ([_, metadata]) => metadata.quality === quality
+    )
+  );
+}
+
+/**
+ * Get screenshots with a specific issue
+ *
+ * @param issue The issue to filter by
+ * @returns Record of screenshot configurations with the specified issue
+ */
+export function getScreenshotsByIssue(
+  issue: ScreenshotIssue
+): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(([_, metadata]) =>
+      metadata.issues?.includes(issue)
+    )
+  );
+}
+
+/**
+ * Get summary statistics for screenshot quality
+ */
+export function getScreenshotQualitySummary(): {
+  total: number;
+  good: number;
+  needsImprovement: number;
+  poor: number;
+  withLightMode: number;
+  withWrongContent: number;
+  unused: number;
+} {
+  const entries = Object.values(screenshotConfig);
+  return {
+    total: entries.length,
+    good: entries.filter((m) => m.quality === "good").length,
+    needsImprovement: entries.filter((m) => m.quality === "needs-improvement")
+      .length,
+    poor: entries.filter((m) => m.quality === "poor").length,
+    withLightMode: entries.filter((m) => m.issues?.includes("light-mode"))
+      .length,
+    withWrongContent: entries.filter((m) => m.issues?.includes("wrong-content"))
+      .length,
+    unused: entries.filter((m) => !m.usedIn || m.usedIn.length === 0).length,
+  };
 }
