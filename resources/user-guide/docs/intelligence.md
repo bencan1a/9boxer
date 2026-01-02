@@ -9,6 +9,8 @@ The Intelligence tab automatically detects rating anomalies and potential bias i
 1. Click any employee (or click in empty space)
 2. Click the **Intelligence** tab (fourth tab) in the right panel
 
+![Right panel showing the Intelligence tab location among the panel tabs](images/screenshots/intelligence/intelligence-tab-location.png)
+
 ![Intelligence panel](images/screenshots/workflow/intelligence-summary-anomalies.png)
 
 ---
@@ -16,6 +18,8 @@ The Intelligence tab automatically detects rating anomalies and potential bias i
 ## Quality Score
 
 At the top, you'll see an overall quality score (0-100) summarizing your data health.
+
+![Quality score display at top of Intelligence panel showing overall data health rating](images/screenshots/intelligence/intelligence-quality-score.png)
 
 | Score | Rating | What It Means |
 |-------|--------|---------------|
@@ -122,6 +126,8 @@ Each anomaly card shows:
 - **Expected count** vs **Actual count**
 - **Deviation** amount
 - **Affected categories**
+
+![Anomaly card detail view showing expected vs actual counts and deviation metrics](images/screenshots/intelligence/intelligence-anomaly-card-detail.png)
 
 ![Anomaly card example](images/screenshots/workflow/intelligence-anomaly-red.png)
 

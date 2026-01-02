@@ -22,12 +22,16 @@ const getIsDev = () => !app.isPackaged;
 
 // Backend configuration
 // Default to port 38000 to avoid conflicts with common services on 38000
-let BACKEND_PORT = 38000; // Default, will be updated by backend
+let BACKEND_PORT = parseInt(process.env.BACKEND_PORT || "38000", 10);
 let BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
 const BACKEND_STARTUP_TIMEOUT = 30; // seconds
 const PORT_DISCOVERY_TIMEOUT = 5; // seconds
 const HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
 const HEALTH_CHECK_TIMEOUT = 5000; // 5 seconds
+
+// External backend mode: skip spawning backend, connect to existing server
+// Useful for devcontainer development with uvicorn
+const USE_EXTERNAL_BACKEND = process.env.USE_EXTERNAL_BACKEND === "true";
 
 // Connection monitoring state
 let healthCheckInterval: NodeJS.Timeout | null = null;
@@ -900,13 +904,19 @@ app.on("ready", async () => {
     // Show splash screen first
     createSplashScreen();
 
-    // Start backend while splash is visible and capture the port
-    const discoveredPort = await startBackend();
+    if (USE_EXTERNAL_BACKEND) {
+      // External backend mode: connect to existing backend (e.g., uvicorn in devcontainer)
+      console.log(`🔌 Using external backend at ${BACKEND_URL}`);
+      console.log("   Set USE_EXTERNAL_BACKEND=true, skipping backend spawn");
+    } else {
+      // Start backend while splash is visible and capture the port
+      const discoveredPort = await startBackend();
 
-    // Update global port and URL with discovered values
-    BACKEND_PORT = discoveredPort;
-    BACKEND_URL = `http://localhost:${discoveredPort}`;
-    console.log(`🔌 Backend URL updated to: ${BACKEND_URL}`);
+      // Update global port and URL with discovered values
+      BACKEND_PORT = discoveredPort;
+      BACKEND_URL = `http://localhost:${discoveredPort}`;
+      console.log(`🔌 Backend URL updated to: ${BACKEND_URL}`);
+    }
 
     // Wait for backend health check
     const ready = await waitForBackend();
@@ -1009,8 +1019,8 @@ app.on("window-all-closed", () => {
   // Stop health monitoring
   stopHealthMonitoring();
 
-  // Kill backend before quitting
-  if (backendProcess) {
+  // Kill backend before quitting (skip in external backend mode)
+  if (!USE_EXTERNAL_BACKEND && backendProcess) {
     console.log("🛑 Stopping backend...");
     backendProcess.kill();
   }
@@ -1088,6 +1098,13 @@ async function gracefulShutdown(): Promise<void> {
 
   // Stop health monitoring first
   stopHealthMonitoring();
+
+  // Skip backend cleanup in external backend mode
+  if (USE_EXTERNAL_BACKEND) {
+    console.log("🛑 External backend mode - skipping backend shutdown");
+    console.log("✅ Graceful shutdown complete");
+    return;
+  }
 
   // Give backend time to save session data
   if (backendProcess && !backendProcess.killed) {

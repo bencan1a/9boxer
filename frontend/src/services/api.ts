@@ -18,6 +18,10 @@ import {
   IntelligenceData,
   DonutModeToggleResponse,
   MoveDonutRequest,
+  CalibrationSummaryData,
+  LLMAvailability,
+  LLMSummaryResult,
+  GenerateSummaryRequest,
 } from "../types/api";
 import { Employee } from "../types/employee";
 import { TrackableEvent } from "../types/events";
@@ -383,6 +387,34 @@ class ApiClient {
         await this.client.get<IntelligenceData>("/api/intelligence");
       return response.data;
     });
+  }
+
+  // ==================== Calibration Summary Methods ====================
+
+  async getCalibrationSummary(): Promise<CalibrationSummaryData> {
+    return withRetry(async () => {
+      const response = await this.client.get<CalibrationSummaryData>(
+        "/api/calibration-summary"
+      );
+      return response.data;
+    });
+  }
+
+  async checkLLMAvailability(): Promise<LLMAvailability> {
+    const response = await this.client.get<LLMAvailability>(
+      "/api/calibration-summary/llm-availability"
+    );
+    return response.data;
+  }
+
+  async generateLLMSummary(
+    selectedInsightIds: string[]
+  ): Promise<LLMSummaryResult> {
+    const response = await this.client.post<LLMSummaryResult>(
+      "/api/calibration-summary/generate-summary",
+      { selected_insight_ids: selectedInsightIds } as GenerateSummaryRequest
+    );
+    return response.data;
   }
 
   // ==================== Preferences Methods ====================

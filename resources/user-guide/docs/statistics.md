@@ -9,6 +9,8 @@ The Statistics tab shows how your employees are distributed across the 9-box gri
 1. Click any employee (or click in empty space)
 2. Click the **Statistics** tab (third tab) in the right panel
 
+![Right panel showing the Statistics tab location among the panel tabs](images/screenshots/statistics/statistics-tab-location.png)
+
 ![Statistics panel](images/screenshots/statistics/statistics-panel-distribution.png)
 
 ---
@@ -70,6 +72,10 @@ Use the grouping dropdown to analyze distribution by different dimensions:
 - **By Location** - Compare offices or regions
 - **By Job Level** - Compare ICs vs managers
 
+![Statistics panel with grouping dropdown menu open showing options](images/screenshots/statistics/statistics-grouping-dropdown.png)
+
+![Statistics showing distribution grouped by department](images/screenshots/statistics/statistics-grouped-distribution.png)
+
 This helps identify if certain groups have unusual distributions.
 
 ---
@@ -81,6 +87,8 @@ Apply filters first, then check Statistics to see that group's distribution in i
 1. Filter to a specific department (e.g., Engineering)
 2. Open Statistics tab
 3. See only that department's distribution
+
+![Statistics panel showing distribution for a filtered subset](images/screenshots/statistics/statistics-with-filters.png)
 
 This reveals department-specific patterns the global view hides.
 

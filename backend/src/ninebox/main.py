@@ -7,7 +7,14 @@ import socket
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ninebox.api import employees, intelligence, preferences, session, statistics
+from ninebox.api import (
+    calibration_summary,
+    employees,
+    intelligence,
+    preferences,
+    session,
+    statistics,
+)
 from ninebox.core.config import settings
 from ninebox.core.dependencies import get_session_manager
 
@@ -45,6 +52,7 @@ app.include_router(session.router, prefix="/api")
 app.include_router(employees.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
 app.include_router(intelligence.router, prefix="/api")
+app.include_router(calibration_summary.router, prefix="/api")
 app.include_router(preferences.router, prefix="/api")
 
 
