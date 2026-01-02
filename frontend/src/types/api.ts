@@ -105,6 +105,20 @@ export interface AnomalyDeviation {
   is_significant: boolean;
 }
 
+export interface ManagerDeviation {
+  category: string; // Manager name
+  team_size: number;
+  high_pct: number;
+  medium_pct: number;
+  low_pct: number;
+  high_deviation: number;
+  medium_deviation: number;
+  low_deviation: number;
+  total_deviation: number;
+  z_score: number;
+  is_significant: boolean;
+}
+
 export interface DimensionAnalysis {
   chi_square: number;
   p_value: number;
@@ -113,6 +127,17 @@ export interface DimensionAnalysis {
   sample_size: number;
   status: "green" | "yellow" | "red";
   deviations: AnomalyDeviation[];
+  interpretation: string;
+}
+
+export interface ManagerAnalysis {
+  chi_square: number;
+  p_value: number;
+  effect_size: number;
+  degrees_of_freedom: number;
+  sample_size: number;
+  status: "green" | "yellow" | "red";
+  deviations: ManagerDeviation[];
   interpretation: string;
 }
 
@@ -127,6 +152,7 @@ export interface IntelligenceData {
   function_analysis: DimensionAnalysis;
   level_analysis: DimensionAnalysis;
   tenure_analysis: DimensionAnalysis;
+  manager_analysis: ManagerAnalysis;
 }
 
 // Calibration Summary types

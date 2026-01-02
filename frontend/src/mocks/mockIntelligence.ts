@@ -1,9 +1,15 @@
 /**
  * Mock data for Intelligence tab components
- * Provides realistic statistical scenarios for DimensionAnalysis
+ * Provides realistic statistical scenarios for DimensionAnalysis and ManagerAnalysis
  */
 
-import type { DimensionAnalysis, AnomalyDeviation } from "../types/api";
+import type {
+  DimensionAnalysis,
+  AnomalyDeviation,
+  ManagerAnalysis,
+  ManagerDeviation,
+} from "../types/api";
+import { createManagerDeviation } from "./mockChartData";
 
 /**
  * Creates a mock deviation with realistic statistical values
@@ -254,6 +260,67 @@ export const mockLongCategoryNames: DimensionAnalysis = {
 };
 
 // =============================================================================
+// Manager Analysis Mocks
+// =============================================================================
+
+/**
+ * Green status - Well-calibrated managers (close to 20/70/10 baseline)
+ */
+export const mockGreenManagerAnalysis: ManagerAnalysis = {
+  chi_square: 0.0,
+  p_value: 0.85,
+  effect_size: 0.05,
+  degrees_of_freedom: 0,
+  sample_size: 150,
+  status: "green",
+  deviations: [
+    createManagerDeviation("Manager A", 20, 20.0, 70.0, 10.0),
+    createManagerDeviation("Manager B", 18, 22.2, 66.7, 11.1),
+    createManagerDeviation("Manager C", 22, 18.2, 72.7, 9.1),
+  ],
+  interpretation:
+    "Manager rating distributions are generally aligned with the 20/70/10 baseline. No significant anomalies detected.",
+};
+
+/**
+ * Yellow status - Moderate manager bias detected
+ */
+export const mockYellowManagerAnalysis: ManagerAnalysis = {
+  chi_square: 0.0,
+  p_value: 0.032,
+  effect_size: 0.25,
+  degrees_of_freedom: 0,
+  sample_size: 150,
+  status: "yellow",
+  deviations: [
+    createManagerDeviation("Slightly High Manager", 20, 28.0, 65.0, 7.0),
+    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1),
+    createManagerDeviation("Slightly Low Manager", 19, 15.8, 73.7, 10.5),
+  ],
+  interpretation:
+    "Notable manager rating pattern detected (p=0.0320, medium effect). Slightly High Manager (team size: 20): 28.0% high performers (vs 20% baseline, above by 8.0%). Total deviation: 16.0% (z=1.79). Small sample sizes limit statistical significance.",
+};
+
+/**
+ * Red status - Severe manager bias detected
+ */
+export const mockRedManagerAnalysis: ManagerAnalysis = {
+  chi_square: 0.0,
+  p_value: 0.0001,
+  effect_size: 0.52,
+  degrees_of_freedom: 0,
+  sample_size: 150,
+  status: "red",
+  deviations: [
+    createManagerDeviation("High Bias Manager", 20, 50.0, 45.0, 5.0),
+    createManagerDeviation("Low Bias Manager", 18, 5.6, 77.8, 16.7),
+    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1),
+  ],
+  interpretation:
+    "Manager rating bias detected (2 managers with significant deviations) (p=0.0001, large effect). High Bias Manager (team size: 20): 50.0% high performers (vs 20% baseline, above by 30.0%). Total deviation: 60.0% (z=6.71).",
+};
+
+// =============================================================================
 // Full IntelligenceData Mocks for IntelligenceSummary Component
 // =============================================================================
 
@@ -266,7 +333,7 @@ import type { IntelligenceData } from "../types/api";
 export const mockExcellentIntelligence: IntelligenceData = {
   quality_score: 92,
   anomaly_count: {
-    green: 4,
+    green: 5,
     yellow: 0,
     red: 0,
   },
@@ -274,6 +341,7 @@ export const mockExcellentIntelligence: IntelligenceData = {
   function_analysis: mockGreenAnalysis,
   level_analysis: mockGreenAnalysis,
   tenure_analysis: mockGreenAnalysis,
+  manager_analysis: mockGreenManagerAnalysis,
 };
 
 /**
@@ -284,13 +352,14 @@ export const mockGoodIntelligence: IntelligenceData = {
   quality_score: 73,
   anomaly_count: {
     green: 2,
-    yellow: 2,
+    yellow: 3,
     red: 0,
   },
   location_analysis: mockYellowAnalysis,
   function_analysis: mockGreenAnalysis,
   level_analysis: mockYellowAnalysis,
   tenure_analysis: mockGreenAnalysis,
+  manager_analysis: mockYellowManagerAnalysis,
 };
 
 /**
@@ -302,12 +371,13 @@ export const mockNeedsAttentionIntelligence: IntelligenceData = {
   anomaly_count: {
     green: 0,
     yellow: 1,
-    red: 3,
+    red: 4,
   },
   location_analysis: mockRedAnalysis,
   function_analysis: mockRedAnalysis,
   level_analysis: mockYellowAnalysis,
   tenure_analysis: mockRedAnalysis,
+  manager_analysis: mockRedManagerAnalysis,
 };
 
 /**
@@ -319,12 +389,13 @@ export const mockHighAnomalyCount: IntelligenceData = {
   anomaly_count: {
     green: 1,
     yellow: 8,
-    red: 15,
+    red: 16,
   },
   location_analysis: mockMixedSignificance,
   function_analysis: mockRedAnalysis,
   level_analysis: mockRedAnalysis,
   tenure_analysis: mockLargeSampleAnalysis,
+  manager_analysis: mockRedManagerAnalysis,
 };
 
 /**
@@ -334,7 +405,7 @@ export const mockHighAnomalyCount: IntelligenceData = {
 export const mockLowAnomalyCount: IntelligenceData = {
   quality_score: 95,
   anomaly_count: {
-    green: 4,
+    green: 5,
     yellow: 0,
     red: 0,
   },
@@ -342,6 +413,7 @@ export const mockLowAnomalyCount: IntelligenceData = {
   function_analysis: mockAllNonSignificant,
   level_analysis: mockGreenAnalysis,
   tenure_analysis: mockSmallSampleAnalysis,
+  manager_analysis: mockGreenManagerAnalysis,
 };
 
 /**
@@ -352,11 +424,12 @@ export const mockMixedIntelligence: IntelligenceData = {
   quality_score: 67,
   anomaly_count: {
     green: 1,
-    yellow: 2,
+    yellow: 3,
     red: 1,
   },
   location_analysis: mockYellowAnalysis,
   function_analysis: mockRedAnalysis,
   level_analysis: mockYellowAnalysis,
   tenure_analysis: mockGreenAnalysis,
+  manager_analysis: mockYellowManagerAnalysis,
 };

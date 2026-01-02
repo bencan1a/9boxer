@@ -335,6 +335,17 @@
         "wellCalibrated": "Les répartitions d'évaluations semblent bien calibrées sur toutes les dimensions.",
         "someAnomalies": "Quelques anomalies détectées. Consultez les sections ci-dessous pour plus de détails.",
         "significantAnomalies": "Anomalies importantes détectées. Examen immédiat recommandé."
+      },
+      "managerAnalysis": "Manager Rating Distribution",
+      "managerDistribution": "Manager Distribution (High/Medium/Low)",
+      "manager": {
+        "category": "Manager",
+        "teamSize": "Team Size",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "totalDeviation": "Total Deviation",
+        "baseline": "Baseline"
       }
     },
     "changesSummary": {

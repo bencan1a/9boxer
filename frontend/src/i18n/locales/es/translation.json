@@ -342,6 +342,17 @@
         "wellCalibrated": "Las distribuciones de calificación parecen bien calibradas en todas las dimensiones.",
         "someAnomalies": "Se detectaron algunas anomalías. Revise las secciones a continuación para más detalles.",
         "significantAnomalies": "Se detectaron anomalías significativas. Se recomienda revisión inmediata."
+      },
+      "managerAnalysis": "Manager Rating Distribution",
+      "managerDistribution": "Manager Distribution (High/Medium/Low)",
+      "manager": {
+        "category": "Manager",
+        "teamSize": "Team Size",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "totalDeviation": "Total Deviation",
+        "baseline": "Baseline"
       }
     }
   },

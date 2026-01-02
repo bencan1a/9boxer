@@ -10,22 +10,24 @@
  *   - distribution-chart-ideal: Distribution chart showing ideal vs actual employee distribution
  */
 
-import React from "react";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import AlertTitle from "@mui/material/AlertTitle";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
-import { EmptyState } from "../common/EmptyState";
-import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
-import { AnomalySection } from "../intelligence/AnomalySection";
-import { DeviationChart } from "../intelligence/DeviationChart";
-import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
-import { CalibrationSummarySection } from "../intelligence/CalibrationSummarySection";
 import { ApiError } from "../../services/api";
+import { EmptyState } from "../common/EmptyState";
+import { AnomalySection } from "../intelligence/AnomalySection";
+import { CalibrationSummarySection } from "../intelligence/CalibrationSummarySection";
+import { DeviationChart } from "../intelligence/DeviationChart";
+import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
+import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
+import { ManagerAnomalySection } from "../intelligence/ManagerAnomalySection";
+import { ManagerDistributionChart } from "../intelligence/ManagerDistributionChart";
 
 export const IntelligenceTab: React.FC = () => {
   const { t } = useTranslation();
@@ -218,6 +220,20 @@ export const IntelligenceTab: React.FC = () => {
             <DeviationChart
               data={data.tenure_analysis.deviations}
               title={t("panel.intelligenceTab.highPerformerByTenure")}
+            />
+          }
+        />
+      </Box>
+
+      {/* Manager Analysis */}
+      <Box data-testid="manager-analysis-section">
+        <ManagerAnomalySection
+          title={t("panel.intelligenceTab.managerAnalysis")}
+          analysis={data.manager_analysis}
+          chartComponent={
+            <ManagerDistributionChart
+              data={data.manager_analysis.deviations}
+              title={t("panel.intelligenceTab.managerDistribution")}
             />
           }
         />
