@@ -643,12 +643,11 @@ def _build_qualified_managers(
 
     # Build qualified_managers dict: manager_name -> reports
     # Convert from ID-based (OrgService) to name-based (for backwards compatibility)
-    logger = logging.getLogger(__name__)
     qualified_managers = {}
     for manager_id in manager_ids:
         manager = org_service.get_employee_by_id(manager_id)
         if not manager:
-            logger.error(
+            logging.getLogger(__name__).error(
                 f"Manager ID {manager_id} found in org tree but not in employee list. "
                 f"This indicates data corruption. Skipping manager."
             )
