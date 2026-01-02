@@ -46,7 +46,7 @@ export async function generatePanelDistribution(
     storyId:
       "app-right-panel-statistics-distributiontable--balanced-distribution",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }
@@ -73,7 +73,7 @@ export async function generateTrendIndicators(
     storyId:
       "app-right-panel-statistics-coloredpercentagebar--all-positions-comparison",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }
@@ -101,7 +101,7 @@ export async function generateGroupingIndicators(
     storyId:
       "app-right-panel-statistics-groupingindicator--all-groupings-together",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }
@@ -130,7 +130,7 @@ export async function generateSummaryCards(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-statistics-statisticssummary--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }
@@ -156,7 +156,7 @@ export async function generateStatisticsRedFlags(
     storyId:
       "app-right-panel-statistics-distributiontable--skewed-distribution",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
     selector: '[data-testid="distribution-table"]',
   });
@@ -183,7 +183,7 @@ export async function generateDistributionTable(
     storyId:
       "app-right-panel-statistics-distributiontable--balanced-distribution",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }

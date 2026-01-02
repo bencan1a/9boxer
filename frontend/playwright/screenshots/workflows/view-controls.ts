@@ -183,7 +183,7 @@ export async function generateSettingsDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-settings-settingsdialog--open",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
     selector: '[role="dialog"]', // Dialog renders in portal, not in storybook root
   });
