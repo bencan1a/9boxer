@@ -29,6 +29,7 @@ import {
   getPositionName,
   getShortPositionLabel,
 } from "../../constants/positionLabels";
+import { PERFORMANCE_BUCKETS } from "../../constants/performanceBuckets";
 import { EmployeeFlags } from "./EmployeeFlags";
 import { EmployeeChangesSummary } from "./EmployeeChangesSummary";
 
@@ -52,11 +53,11 @@ const getPotentialColor = (level: PotentialLevel): string => {
 // Get background color for performance/potential chips based on grid position
 const getBoxColor = (position: number, theme: any): string => {
   // High Performers: positions 6, 8, 9
-  if ([6, 8, 9].includes(position)) {
+  if (PERFORMANCE_BUCKETS.High.includes(position)) {
     return theme.palette.gridBox.highPerformer;
   }
   // Needs Attention: positions 1, 2, 4
-  if ([1, 2, 4].includes(position)) {
+  if (PERFORMANCE_BUCKETS.Low.includes(position)) {
     return theme.palette.gridBox.needsAttention;
   }
   // Solid Performer: position 5
