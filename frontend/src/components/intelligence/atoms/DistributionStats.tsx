@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import type { DistributionData } from "../../../types/intelligence";
+import { PERFORMANCE_BUCKETS } from "../../../constants/performanceBuckets";
 
 export interface DistributionStatsProps {
   /**
@@ -93,13 +94,13 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
    */
   const getPositionColor = (position: number): string => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
-    if ([6, 8, 9].includes(position)) {
+    if (PERFORMANCE_BUCKETS.High.includes(position)) {
       return (
         theme.palette.gridBox?.highPerformer || theme.palette.success.light
       );
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
-    if ([1, 2, 4].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Low.includes(position)) {
       return theme.palette.gridBox?.needsAttention || theme.palette.error.light;
     }
     // Solid Performer: [M,M] = position 5
@@ -107,7 +108,7 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
       return theme.palette.gridBox?.solidPerformer || theme.palette.info.light;
     }
     // Development: [L,H], [H,L] = positions 7, 3
-    if ([3, 7].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
       return theme.palette.gridBox?.development || theme.palette.warning.light;
     }
     return theme.palette.action.hover;
