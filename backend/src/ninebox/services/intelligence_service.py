@@ -783,8 +783,8 @@ def calculate_manager_analysis(
                 "medium_deviation": round(cast("float", mgr["medium_deviation"]), 1),
                 "low_deviation": round(cast("float", mgr["low_deviation"]), 1),
                 "total_deviation": round(cast("float", mgr["total_deviation"]), 1),
-                "z_score": round(z_score, 2),
-                "is_significant": abs(z_score) >= 2.0,
+                "z_score": round(float(z_score), 2),
+                "is_significant": bool(abs(z_score) >= 2.0),
             }
         )
 
@@ -792,18 +792,20 @@ def calculate_manager_analysis(
 
     # Calculate summary statistics for overall status
     significant_count = sum(1 for d in deviations if d["is_significant"])
-    max_deviation = max((d["total_deviation"] for d in deviations), default=0)
+    max_deviation = max((cast("float", d["total_deviation"]) for d in deviations), default=0.0)
 
     # Determine status based on deviations
     # For manager analysis, we use deviation-based thresholds rather than chi-square
-    p_value = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
-    effect_size = max_deviation / 100.0  # Normalize to 0-1 scale
+    # NOTE: This is a heuristic metric used internally for status determination,
+    # not a real p-value from a statistical test. See issue #156 for details.
+    heuristic_score = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
+    effect_size = float(max_deviation) / 100.0  # Normalize to 0-1 scale
 
-    # Generate status
-    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
+    # Generate status (uses heuristic_score internally for fallback logic)
+    status = _get_status(heuristic_score, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_manager_interpretation(
         status,
-        p_value,
+        heuristic_score,
         effect_size,
         deviations,
         total_manager_count,
@@ -812,10 +814,10 @@ def calculate_manager_analysis(
     )
 
     return {
-        "chi_square": 0.0,  # Not applicable for manager analysis
-        "p_value": round(p_value, 4),
+        "chi_square": None,  # Not applicable - manager analysis uses heuristic ranking
+        "p_value": None,  # Not available - using heuristic approach, not chi-square test
         "effect_size": round(effect_size, 3),
-        "degrees_of_freedom": 0,  # Not applicable for manager analysis
+        "degrees_of_freedom": None,  # Not applicable - no chi-square test performed
         "sample_size": len(employees),
         "status": status,
         "deviations": deviations,
@@ -1130,7 +1132,7 @@ def _generate_tenure_interpretation(
 
 def _generate_manager_interpretation(
     status: str,
-    p_value: float,
+    heuristic_score: float,
     effect_size: float,
     deviations: list[dict[str, Any]],
     total_manager_count: int,
@@ -1139,7 +1141,19 @@ def _generate_manager_interpretation(
 ) -> str:
     """Generate human-readable interpretation for manager analysis.
 
-    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall score.
+
+    Args:
+        status: Traffic light status ("green", "yellow", or "red")
+        heuristic_score: Internal heuristic metric (1.0 - anomaly_ratio), not a statistical p-value
+        effect_size: Normalized effect size (0-1 scale)
+        deviations: List of manager deviation dictionaries
+        total_manager_count: Total number of managers analyzed
+        max_displayed: Maximum number of managers to display
+        qualified_managers: Dictionary mapping manager names to employee lists
+
+    Returns:
+        Human-readable interpretation string
     """
     # Check for significant individual deviations FIRST
     significant_devs = [d for d in deviations if d.get("is_significant", False)]
@@ -1191,7 +1205,7 @@ def _generate_manager_interpretation(
         summary = (
             f"{context_msg}"
             f"{sig_count} out of {total_manager_count} managers have significant rating distribution "
-            f"deviations (p={p_value:.4f}, {effect_desc} effect).{commonality_msg}"
+            f"deviations ({effect_desc} effect).{commonality_msg}"
         )
 
         return summary
@@ -1210,7 +1224,7 @@ def _generate_manager_interpretation(
 
         return (
             f"{context_msg}"
-            f"Notable rating patterns detected (p={p_value:.4f}, {effect_desc} effect), "
+            f"Notable rating patterns detected ({effect_desc} effect), "
             f"but small sample sizes limit statistical significance."
         )
 
@@ -1224,7 +1238,7 @@ def _generate_manager_interpretation(
         )
 
     # Rare edge case
-    return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
+    return "Anomaly detected but no specific deviations identified."
 
 
 # Global intelligence service instance
