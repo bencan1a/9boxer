@@ -146,6 +146,72 @@ This guide ensures all documentation screenshots are:
 
 ---
 
+## Visual Quality Standards
+
+All screenshots must adhere to these quality standards:
+
+### 1. Dark Mode Standard
+**All screenshots must use dark mode** for visual consistency across documentation.
+
+- Configure Storybook stories to render in dark theme
+- Full-app screenshots must have dark mode enabled
+- Light mode screenshots are not acceptable and should be regenerated
+
+### 2. Adaptive Viewport Sizing
+**Adapt width and height to show the intended object clearly.**
+
+- Wide screenshots for horizontal content (grids, tables, charts)
+- Narrow screenshots for vertical content (panels, dialogs, menus)
+- Don't use a fixed viewport size for all screenshots - size to content
+
+### 3. Minimal Whitespace
+**Eliminate extraneous whitespace around the object.**
+
+- Crop closely to the intended object via Storybook element targeting
+- Remove empty space above, below, and beside the content
+- Show only what's necessary to understand the feature
+
+### 4. Consistent Padding
+**Objects should have 10px padding on all sides.**
+
+- Provides visual breathing room without excess space
+- Ensures content doesn't touch screenshot edges
+- Apply consistently across all screenshots
+
+### 5. Focused Framing
+**Screenshot should focus on the object in question as closely as possible.**
+
+- Avoid capturing unrelated UI elements
+- If showing a dropdown menu, don't include the entire application
+- For dialogs, crop to the dialog with minimal backdrop
+- For panels, crop to the panel content area
+
+### 6. Documented Purpose
+**Every screenshot must have a clear caption documenting its purpose.**
+
+- Caption describes what the user should see/learn from the screenshot
+- Stored in `config.ts` as the `caption` field
+- Used as reference for screenshot regeneration and quality assessment
+
+### Quality Assessment Criteria
+
+Each screenshot in `config.ts` includes a quality assessment:
+
+| Rating | Criteria |
+|--------|----------|
+| `good` | Meets all 6 standards above |
+| `needs-improvement` | Meets most standards but has minor issues |
+| `poor` | Fails multiple standards, should be regenerated |
+
+Common issues tracked in the `issues` array:
+- `light-mode` - Screenshot is in light mode
+- `excessive-whitespace` - Too much empty space around content
+- `wrong-content` - Content doesn't match intended purpose
+- `poor-cropping` - Includes unnecessary UI elements
+- `missing-padding` - Content touches edges
+
+---
+
 ## Technical Specifications
 
 ### File Format

@@ -65,7 +65,7 @@ So 9Boxer was built to solve these problems:
 ## Common Tasks
 
 **Preparing for calibration?**
-[Talent Calibration Workflow](workflows/talent-calibration.md) - Complete guide to before, during, and after
+[Best Practices](best-practices.md) - Complete guide to before, during, and after calibration
 
 **Making rating changes?**
 [Making Changes](workflows/making-changes.md) - How to move employees and document decisions

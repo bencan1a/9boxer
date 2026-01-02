@@ -264,6 +264,72 @@ export const DonutChangesOnly: Story = {
 };
 
 /**
+ * Donut changes with descriptive calibration notes.
+ * Used for workflow-donut-notes-example screenshot showing donut mode tracking.
+ */
+export const DonutChanges: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "workflow-donut-notes-example" },
+  },
+  render: () => {
+    const calibrationDonutEvents: DonutMoveEvent[] = [
+      {
+        event_id: "donut-cal-1",
+        event_type: "donut_move",
+        employee_id: 201,
+        employee_name: "Sarah Chen",
+        timestamp: "2025-12-24T10:00:00Z",
+        old_position: 5,
+        new_position: 9,
+        old_performance: "Medium",
+        new_performance: "High",
+        old_potential: "Medium",
+        new_potential: "High",
+        notes:
+          "Confirmed star performer after calibration discussion. Strong Q4 results and leadership potential.",
+      },
+      {
+        event_id: "donut-cal-2",
+        event_type: "donut_move",
+        employee_id: 202,
+        employee_name: "Michael Park",
+        timestamp: "2025-12-24T10:15:00Z",
+        old_position: 8,
+        new_position: 5,
+        old_performance: "High",
+        new_performance: "Medium",
+        old_potential: "Medium",
+        new_potential: "Medium",
+        notes:
+          "Adjusted after peer comparison. Strong performer but potential rating was too high.",
+      },
+      {
+        event_id: "donut-cal-3",
+        event_type: "donut_move",
+        employee_id: 203,
+        employee_name: "Jennifer Lopez",
+        timestamp: "2025-12-24T10:30:00Z",
+        old_position: 4,
+        new_position: 7,
+        old_performance: "Low",
+        new_performance: "Medium",
+        old_potential: "Medium",
+        new_potential: "High",
+        notes: "Upward adjustment based on recent project leadership success.",
+      },
+    ];
+
+    useSessionStore.setState({
+      events: [],
+      donutEvents: calibrationDonutEvents,
+      donutModeActive: true,
+    });
+    return <ChangeTrackerTab />;
+  },
+};
+
+/**
  * Single change for quick review.
  */
 export const SingleChange: Story = {

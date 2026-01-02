@@ -43,7 +43,7 @@ export async function generateCurrentAssessmentEnhanced(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-employeedetails--default-with-padding",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }
@@ -74,7 +74,7 @@ export async function generateFlagsUI(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-employeeflags--with-multiple-flags",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -295,7 +295,7 @@ export async function generateReportingChainClickable(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-managementchain--with-manager",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800,
   });
 }

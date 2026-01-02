@@ -53,6 +53,42 @@
         .badge-fullapp { background: #ff9800; color: white; }
         .badge-manual { background: #f44336; color: white; }
         .badge-automated { background: #2196f3; color: white; }
+
+        /* Quality assessment badges */
+        .quality-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+        .quality-good { background: #4caf50; color: white; }
+        .quality-needs-improvement { background: #ff9800; color: white; }
+        .quality-poor { background: #f44336; color: white; }
+        .quality-unassessed { background: #9e9e9e; color: white; }
+
+        /* Issue chips */
+        .issues-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .issue-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .issue-chip.light-mode { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+        .issue-chip.excessive-whitespace { background: #e3f2fd; color: #1565c0; border-color: #90caf9; }
+        .issue-chip.wrong-content { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+        .issue-chip.poor-cropping { background: #f3e5f5; color: #7b1fa2; border-color: #ce93d8; }
+        .issue-chip.missing-padding { background: #e0f2f1; color: #00695c; border-color: #80cbc4; }
+
+        /* Used in section */
+        .used-in { font-size: 11px; color: #666; margin-top: 8px; }
+        .used-in-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .used-in-page { display: inline-block; padding: 2px 6px; background: #e8f5e9; color: #2e7d32; border-radius: 3px; font-size: 10px; }
+
+        /* Caption styling */
+        .screenshot-caption { background: #f5f5f5; padding: 8px 12px; border-radius: 4px; margin: 8px 0; font-style: italic; color: #555; border-left: 3px solid #1976d2; }
+
+        /* Assessment section in review column */
+        .assessment-section { background: #fafafa; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #e0e0e0; }
+        .assessment-label { font-size: 11px; color: #666; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
+
+        /* Issue explanation box */
+        .issue-explanation { background: #fff3e0; border: 1px solid #ffcc80; border-left: 4px solid #ff9800; padding: 12px; border-radius: 4px; margin-top: 10px; font-size: 12px; line-height: 1.5; }
+        .issue-explanation.severe { background: #ffebee; border-color: #ef9a9a; border-left-color: #f44336; }
+        .issue-explanation strong { color: #e65100; display: block; margin-bottom: 4px; }
+        .issue-explanation.severe strong { color: #c62828; }
+        .explanation-section { margin-bottom: 8px; }
+        .explanation-section:last-child { margin-bottom: 0; }
         .screenshot-img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .screenshot-img:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; }
         .path { font-family: 'Courier New', monospace; font-size: 11px; color: #666; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 5px; }
@@ -82,10 +118,16 @@
         <!-- Toolbar -->
         <div class="toolbar">
             <div class="filter-buttons">
+                <span style="margin-right: 8px; color: #666; font-size: 12px;">Review Status:</span>
                 <button class="btn-filter active" onclick="filterScreenshots('all')">All</button>
-                <button class="btn-filter" onclick="filterScreenshots('approved')">Approved</button>
-                <button class="btn-filter" onclick="filterScreenshots('needs-work')">Needs Work</button>
+                <button class="btn-filter" onclick="filterScreenshots('approved')">Agreed</button>
+                <button class="btn-filter" onclick="filterScreenshots('needs-work')">Amended</button>
                 <button class="btn-filter" onclick="filterScreenshots('unreviewed')">Unreviewed</button>
+                <span style="margin: 0 15px; border-left: 1px solid #ccc; height: 20px;"></span>
+                <span style="margin-right: 8px; color: #666; font-size: 12px;">AI Quality:</span>
+                <button class="btn-filter" onclick="filterByQuality('good')">Good</button>
+                <button class="btn-filter" onclick="filterByQuality('needs-improvement')">Needs Work</button>
+                <button class="btn-filter" onclick="filterByQuality('poor')">Poor</button>
             </div>
             <div class="action-buttons">
                 <button class="btn-export" onclick="exportReviews()">Export Reviews (JSON)</button>
@@ -97,12 +139,13 @@
 
         <!-- Stats -->
         <div class="stats">
-            <div class="stat"><div class="stat-number">47</div><div class="stat-label">Total Screenshots</div></div>
-            <div class="stat approved"><div class="stat-number" id="stat-approved">0</div><div class="stat-label">Approved</div></div>
-            <div class="stat needs-work"><div class="stat-number" id="stat-needs-work">0</div><div class="stat-label">Needs Work</div></div>
-            <div class="stat unreviewed"><div class="stat-number" id="stat-unreviewed">47</div><div class="stat-label">Unreviewed</div></div>
-            <div class="stat"><div class="stat-number">45</div><div class="stat-label">Storybook</div></div>
-            <div class="stat"><div class="stat-number">2</div><div class="stat-label">Full-App</div></div>
+            <div class="stat"><div class="stat-number">35</div><div class="stat-label">Total Screenshots</div></div>
+            <div class="stat approved"><div class="stat-number" id="stat-approved">0</div><div class="stat-label">Agreed</div></div>
+            <div class="stat needs-work"><div class="stat-number" id="stat-needs-work">0</div><div class="stat-label">Amended</div></div>
+            <div class="stat unreviewed"><div class="stat-number" id="stat-unreviewed">35</div><div class="stat-label">Unreviewed</div></div>
+            <div class="stat" style="border-left: 2px solid #ddd; padding-left: 15px;"><div class="stat-number" id="stat-quality-good" style="color: #4caf50;">0</div><div class="stat-label">AI: Good</div></div>
+            <div class="stat"><div class="stat-number" id="stat-quality-needs" style="color: #ff9800;">0</div><div class="stat-label">AI: Needs Work</div></div>
+            <div class="stat"><div class="stat-number" id="stat-quality-poor" style="color: #f44336;">0</div><div class="stat-label">AI: Poor</div></div>
         </div>
 
         <h2 id="changes-workflow">Changes Workflow <span class="category-count">(5 screenshots)</span></h2>
@@ -115,14 +158,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="changes-drag-sequence" data-status="unreviewed">
+                <tr data-screenshot="changes-drag-sequence" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">changes-drag-sequence</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Grid showing drag-and-drop workflow for moving employees between boxes</div>
                         <div>
                             <span class="badge badge-fullapp">Full-App</span>
                             <span class="badge badge-manual">Manual</span>
                         </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">getting-started.md</span><span class="used-in-page">workflows/making-changes.md</span></div></div>
 
                         <div class="path">workflow/making-changes-drag-sequence-base.png</div>
                     </td>
@@ -134,30 +181,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('changes-drag-sequence', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('changes-drag-sequence', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('changes-drag-sequence', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-changes-drag-sequence"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="changes-orange-border" data-status="unreviewed">
+                <tr data-screenshot="changes-orange-border" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">changes-orange-border</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Employee tile with full orange modified border (2px)</div>
+                        <div class="screenshot-caption">Employee tile with orange border indicating the employee has been modified</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: grid-employeetile--modified</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">quickstart.md</span><span class="used-in-page">workflows/making-changes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-grid-employeetile--modified-normal-mode</div>
                         <div class="path">workflow/making-changes-orange-border.png</div>
                     </td>
                     <td class="image-cell">
@@ -168,30 +226,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('changes-orange-border', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('changes-orange-border', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('changes-orange-border', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-changes-orange-border"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="changes-employee-details" data-status="unreviewed">
+                <tr data-screenshot="changes-employee-details" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">changes-employee-details</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Employee details panel showing 'Modified in Session' badge and recent changes</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-employeedetails--with-changes</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">workflows/making-changes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-details-employeedetails--with-changes</div>
                         <div class="path">workflow/making-changes-employee-details.png</div>
                     </td>
                     <td class="image-cell">
@@ -202,30 +271,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('changes-employee-details', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('changes-employee-details', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('changes-employee-details', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-changes-employee-details"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="changes-timeline-view" data-status="unreviewed">
+                <tr data-screenshot="changes-timeline-view" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">changes-timeline-view</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Performance History timeline in employee details</div>
+                        <div class="screenshot-caption">Performance History timeline showing multi-year rating progression</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-ratingstimeline--default</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">workflows/making-changes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-details-ratingstimeline--default</div>
                         <div class="path">workflow/making-changes-timeline.png</div>
                     </td>
                     <td class="image-cell">
@@ -236,30 +316,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('changes-timeline-view', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('changes-timeline-view', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('changes-timeline-view', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-changes-timeline-view"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="changes-tab" data-status="unreviewed">
+                <tr data-screenshot="changes-tab" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">changes-tab</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Changes tab with employee movements</div>
+                        <div class="screenshot-caption">Changes tab showing table of employee movements with from/to positions</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-changetrackertab--default</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">workflows/making-changes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-changes-changetrackertab--default</div>
                         <div class="path">workflow/making-changes-changes-tab.png</div>
                     </td>
                     <td class="image-cell">
@@ -270,16 +361,23 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('changes-tab', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('changes-tab', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('changes-tab', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-changes-tab"></div>
                         </div>
@@ -288,7 +386,7 @@
             </tbody>
         </table>
 
-        <h2 id="notes-workflow">Notes Workflow <span class="category-count">(1 screenshot)</span></h2>
+        <h2 id="notes-workflow">Notes Workflow <span class="category-count">(2 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -298,15 +396,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="notes-changes-tab-field" data-status="unreviewed">
+                <tr data-screenshot="notes-changes-tab-field" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">notes-changes-tab-field</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Changes tab with note field highlighted</div>
+                        <div class="screenshot-caption">Changes tab showing how to add notes to document rating change decisions</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: components-panel-changetrackertab--grid-changes-only</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">tracking-changes.md</span><span class="used-in-page">workflows/adding-notes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-changes-changetrackertab--grid-changes-only</div>
                         <div class="path">workflow/workflow-changes-add-note.png</div>
                     </td>
                     <td class="image-cell">
@@ -317,25 +419,77 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('notes-changes-tab-field', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('notes-changes-tab-field', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('notes-changes-tab-field', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-notes-changes-tab-field"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="workflow-donut-notes-example" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">workflow-donut-notes-example</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">Donut changes tab showing tracked movements with calibration notes</div>
+                        <div class="screenshot-caption">Changes tab showing donut mode movements with descriptive notes</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">donut-mode.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-changes-changetrackertab--donut-changes</div>
+                        <div class="path">workflow/workflow-donut-notes-example.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/workflow/workflow-donut-notes-example.png"
+                             alt="workflow-donut-notes-example"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('workflow-donut-notes-example', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('workflow-donut-notes-example', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('workflow-donut-notes-example', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-workflow-donut-notes-example"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="filters-workflow">Filters Workflow <span class="category-count">(6 screenshots)</span></h2>
+        <h2 id="filters-workflow">Filters Workflow <span class="category-count">(4 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -345,49 +499,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="filters-active-chips" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">filters-active-chips</div>
-                        <div class="screenshot-desc">AppBar with active filter chips and orange dot indicator</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: dashboard-appbar-pureappbar--with-active-filters</div>
-                        <div class="path">filters/filters-active-chips.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/filters/filters-active-chips.png"
-                             alt="filters-active-chips"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('filters-active-chips', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('filters-active-chips', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('filters-active-chips', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-filters-active-chips"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="filters-panel-expanded" data-status="unreviewed">
+                <tr data-screenshot="filters-panel-expanded" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">filters-panel-expanded</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Filter panel expanded showing all filter options</div>
+                        <div class="screenshot-caption">Filter panel showing Job Levels, Job Functions, and Locations filter sections</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: dashboard-filterdrawer--all-sections-expanded</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">filters.md</span><span class="used-in-page">quickstart.md</span><span class="used-in-page">getting-started.md</span><span class="used-in-page">workflows/talent-calibration.md</span><span class="used-in-page">workflows/identifying-flight-risks.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-filterdrawer--all-sections-expanded</div>
                         <div class="path">filters/filters-panel-expanded.png</div>
                     </td>
                     <td class="image-cell">
@@ -398,98 +522,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('filters-panel-expanded', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('filters-panel-expanded', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('filters-panel-expanded', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-filters-panel-expanded"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="filters-clear-all-button" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">filters-clear-all-button</div>
-                        <div class="screenshot-desc">Filter section with Clear All button</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: dashboard-filtersection--custom-content</div>
-                        <div class="path">filters/filters-clear-all-button.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/filters/filters-clear-all-button.png"
-                             alt="filters-clear-all-button"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('filters-clear-all-button', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('filters-clear-all-button', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('filters-clear-all-button', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-filters-clear-all-button"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="filters-multiple-active" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">filters-multiple-active</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: dashboard-filterdrawer--multiple-filters-active</div>
-                        <div class="path">filters/filters-multiple-active.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/filters/filters-multiple-active.png"
-                             alt="filters-multiple-active"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('filters-multiple-active', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('filters-multiple-active', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('filters-multiple-active', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-filters-multiple-active"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="filters-flags-section" data-status="unreviewed">
+                <tr data-screenshot="filters-flags-section" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">filters-flags-section</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Flags filter section showing available flag types with counts</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: dashboard-filterdrawer--flags-active</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">filters.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-filterdrawer--flags-active</div>
                         <div class="path">filters/flags-section.png</div>
                     </td>
                     <td class="image-cell">
@@ -500,30 +567,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('filters-flags-section', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('filters-flags-section', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('filters-flags-section', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-filters-flags-section"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="filters-reporting-chain" data-status="unreviewed">
+                <tr data-screenshot="filters-reporting-chain" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">filters-reporting-chain</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Reporting chain filter chip showing filtered manager</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: dashboard-filterdrawer--reporting-chain-active</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">filters.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-filterdrawer--reporting-chain-active</div>
                         <div class="path">filters/reporting-chain-filter.png</div>
                     </td>
                     <td class="image-cell">
@@ -534,25 +612,77 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('filters-reporting-chain', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('filters-reporting-chain', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('filters-reporting-chain', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-filters-reporting-chain"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="exclusions-dialog" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">exclusions-dialog</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Exclusions dialog for managing which employees to hide from view</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">filters.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-exclusiondialog--default</div>
+                        <div class="path">filters/exclusions-dialog.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/filters/exclusions-dialog.png"
+                             alt="exclusions-dialog"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('exclusions-dialog', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('exclusions-dialog', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('exclusions-dialog', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-exclusions-dialog"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="quickstart-workflow">Quickstart Workflow <span class="category-count">(3 screenshots)</span></h2>
+        <h2 id="quickstart-workflow">Quickstart Workflow <span class="category-count">(4 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -562,83 +692,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="quickstart-file-menu-button" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">quickstart-file-menu-button</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: dashboard-appbar-filemenubutton--no-file</div>
-                        <div class="path">quickstart/quickstart-file-menu-button.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/quickstart/quickstart-file-menu-button.png"
-                             alt="quickstart-file-menu-button"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('quickstart-file-menu-button', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('quickstart-file-menu-button', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('quickstart-file-menu-button', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-quickstart-file-menu-button"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="quickstart-upload-dialog" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">quickstart-upload-dialog</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: common-fileuploaddialog--open</div>
-                        <div class="path">quickstart/quickstart-upload-dialog.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/quickstart/quickstart-upload-dialog.png"
-                             alt="quickstart-upload-dialog"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('quickstart-upload-dialog', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('quickstart-upload-dialog', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('quickstart-upload-dialog', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-quickstart-upload-dialog"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="quickstart-grid-populated" data-status="unreviewed">
+                <tr data-screenshot="quickstart-grid-populated" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">quickstart-grid-populated</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">Populated 9-box grid after successful file upload</div>
+                        <div class="screenshot-caption">9-box grid showing employees distributed across performance and potential boxes</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: grid-nineboxgrid--populated</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">quickstart.md</span><span class="used-in-page">getting-started.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-grid-nineboxgrid--populated</div>
                         <div class="path">quickstart/quickstart-grid-populated.png</div>
                     </td>
                     <td class="image-cell">
@@ -649,25 +715,167 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('quickstart-grid-populated', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('quickstart-grid-populated', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('quickstart-grid-populated', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-quickstart-grid-populated"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="quickstart-empty-state-sample-button" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-empty-state-sample-button</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Empty state with Load Sample Data and Upload Excel File buttons</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">quickstart.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-emptystate--default</div>
+                        <div class="path">quickstart/quickstart-empty-state-sample-button.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/quickstart/quickstart-empty-state-sample-button.png"
+                             alt="quickstart-empty-state-sample-button"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('quickstart-empty-state-sample-button', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('quickstart-empty-state-sample-button', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('quickstart-empty-state-sample-button', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-quickstart-empty-state-sample-button"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="quickstart-employee-details-with-history" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-employee-details-with-history</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Employee details panel showing job info, flags, and current assessment</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">quickstart.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-details-employeedetails--default</div>
+                        <div class="path">quickstart/quickstart-employee-details-with-history.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/quickstart/quickstart-employee-details-with-history.png"
+                             alt="quickstart-employee-details-with-history"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('quickstart-employee-details-with-history', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('quickstart-employee-details-with-history', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('quickstart-employee-details-with-history', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-quickstart-employee-details-with-history"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="quickstart-statistics-distribution" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">quickstart-statistics-distribution</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Statistics panel showing employee distribution across 9-box positions</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+
+
+                        <div class="path">quickstart/quickstart-statistics-distribution.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/quickstart/quickstart-statistics-distribution.png"
+                             alt="quickstart-statistics-distribution"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('quickstart-statistics-distribution', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('quickstart-statistics-distribution', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('quickstart-statistics-distribution', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-quickstart-statistics-distribution"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="calibration-workflow">Calibration Workflow <span class="category-count">(4 screenshots)</span></h2>
+        <h2 id="calibration-workflow">Calibration Workflow <span class="category-count">(1 screenshot)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -677,15 +885,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="calibration-file-import" data-status="unreviewed">
+                <tr data-screenshot="calibration-file-import" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">calibration-file-import</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">File menu dropdown showing Import Data option</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: dashboard-appbar-filemenubutton--menu-open</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">workflows/talent-calibration.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dashboard-filemenubutton--menu-open</div>
                         <div class="path">workflow/calibration-file-import.png</div>
                     </td>
                     <td class="image-cell">
@@ -696,127 +908,32 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('calibration-file-import', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('calibration-file-import', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('calibration-file-import', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-calibration-file-import"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="calibration-statistics-red-flags" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">calibration-statistics-red-flags</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: panel-statistics-distributiontable--skewed-distribution</div>
-                        <div class="path">workflow/calibration-statistics-red-flags.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/calibration-statistics-red-flags.png"
-                             alt="calibration-statistics-red-flags"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('calibration-statistics-red-flags', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('calibration-statistics-red-flags', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('calibration-statistics-red-flags', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-calibration-statistics-red-flags"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="calibration-donut-mode-toggle" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">calibration-donut-mode-toggle</div>
-                        <div class="screenshot-desc">ViewControls toolbar with donut mode toggle active</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: common-viewcontrols--donut-view-active</div>
-                        <div class="path">workflow/calibration-donut-mode-toggle.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/calibration-donut-mode-toggle.png"
-                             alt="calibration-donut-mode-toggle"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('calibration-donut-mode-toggle', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('calibration-donut-mode-toggle', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('calibration-donut-mode-toggle', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-calibration-donut-mode-toggle"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="calibration-donut-mode-grid" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">calibration-donut-mode-grid</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: grid-nineboxgrid--donut-mode</div>
-                        <div class="path">workflow/calibration-donut-mode-grid.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/calibration-donut-mode-grid.png"
-                             alt="calibration-donut-mode-grid"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('calibration-donut-mode-grid', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('calibration-donut-mode-grid', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('calibration-donut-mode-grid', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-calibration-donut-mode-grid"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="intelligence-components">Intelligence Components <span class="category-count">(8 screenshots)</span></h2>
+        <h2 id="intelligence-components">Intelligence Components <span class="category-count">(6 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -826,15 +943,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="intelligence-summary-anomalies" data-status="unreviewed">
+                <tr data-screenshot="intelligence-summary-anomalies" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">intelligence-summary-anomalies</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Intelligence summary showing quality score and anomaly indicators</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--needs-attention</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span><span class="used-in-page">getting-started.md</span><span class="used-in-page">best-practices.md</span><span class="used-in-page">workflows/talent-calibration.md</span><span class="used-in-page">workflows/analyzing-distribution.md</span></div></div>
+
                         <div class="path">workflow/intelligence-summary-anomalies.png</div>
                     </td>
                     <td class="image-cell">
@@ -845,166 +966,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('intelligence-summary-anomalies', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('intelligence-summary-anomalies', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('intelligence-summary-anomalies', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-intelligence-summary-anomalies"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="intelligence-anomaly-details" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">intelligence-anomaly-details</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: intelligence-anomalysection--red-status</div>
-                        <div class="path">workflow/intelligence-anomaly-details.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-anomaly-details.png"
-                             alt="intelligence-anomaly-details"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-anomaly-details', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-anomaly-details', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-anomaly-details', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-anomaly-details"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="intelligence-summary-excellent" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">intelligence-summary-excellent</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--excellent-quality</div>
-                        <div class="path">workflow/intelligence-summary-excellent.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-summary-excellent.png"
-                             alt="intelligence-summary-excellent"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-summary-excellent', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-summary-excellent', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-summary-excellent', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-summary-excellent"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="intelligence-summary-needs-attention" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">intelligence-summary-needs-attention</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: intelligence-intelligencesummary--needs-attention</div>
-                        <div class="path">workflow/intelligence-summary-needs-attention.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-summary-needs-attention.png"
-                             alt="intelligence-summary-needs-attention"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-summary-needs-attention', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-summary-needs-attention', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-summary-needs-attention', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-summary-needs-attention"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="intelligence-anomaly-green" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">intelligence-anomaly-green</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: intelligence-anomalysection--green-status</div>
-                        <div class="path">workflow/intelligence-anomaly-green.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-anomaly-green.png"
-                             alt="intelligence-anomaly-green"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-anomaly-green', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-anomaly-green', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-anomaly-green', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-anomaly-green"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="intelligence-anomaly-red" data-status="unreviewed">
+                <tr data-screenshot="intelligence-anomaly-red" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">intelligence-anomaly-red</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Anomaly card showing red severe status requiring investigation</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: intelligence-anomalysection--red-status</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span><span class="used-in-page">quickstart.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-intelligence-anomalysection--red-status</div>
                         <div class="path">workflow/intelligence-anomaly-red.png</div>
                     </td>
                     <td class="image-cell">
@@ -1015,86 +1011,205 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('intelligence-anomaly-red', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('intelligence-anomaly-red', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('intelligence-anomaly-red', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-intelligence-anomaly-red"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="intelligence-deviation-chart" data-status="unreviewed">
+                <tr data-screenshot="intelligence-location" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">intelligence-deviation-chart</div>
+                        <div class="screenshot-name">intelligence-location</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Location bias analysis showing expected vs actual performance by location</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: intelligence-deviationchart--mixed-significance</div>
-                        <div class="path">workflow/intelligence-deviation-chart.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span></div></div>
+
+                        <div class="path">workflow/intelligence-location.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-deviation-chart.png"
-                             alt="intelligence-deviation-chart"
+                        <img src="docs/images/screenshots/workflow/intelligence-location.png"
+                             alt="intelligence-location"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-deviation-chart', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('intelligence-location', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-deviation-chart', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('intelligence-location', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-deviation-chart', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-deviation-chart"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('intelligence-location', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-intelligence-location"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="intelligence-level-distribution" data-status="unreviewed">
+                <tr data-screenshot="intelligence-function" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">intelligence-level-distribution</div>
+                        <div class="screenshot-name">intelligence-function</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Job function bias analysis showing performance distribution by department</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: intelligence-leveldistributionchart--normal-distribution</div>
-                        <div class="path">workflow/intelligence-level-distribution.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span></div></div>
+
+                        <div class="path">workflow/intelligence-function.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/workflow/intelligence-level-distribution.png"
-                             alt="intelligence-level-distribution"
+                        <img src="docs/images/screenshots/workflow/intelligence-function.png"
+                             alt="intelligence-function"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('intelligence-level-distribution', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('intelligence-function', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('intelligence-level-distribution', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('intelligence-function', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('intelligence-level-distribution', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-intelligence-level-distribution"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('intelligence-function', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-intelligence-function"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="intelligence-level" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-level</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Job level bias analysis showing performance patterns across seniority levels</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-intelligence-anomalysection--level-bias-detector</div>
+                        <div class="path">workflow/intelligence-level.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/workflow/intelligence-level.png"
+                             alt="intelligence-level"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('intelligence-level', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('intelligence-level', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('intelligence-level', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-intelligence-level"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="intelligence-tenure" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">intelligence-tenure</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Tenure bias analysis showing performance patterns by years of service</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">intelligence.md</span></div></div>
+
+                        <div class="path">workflow/intelligence-tenure.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/workflow/intelligence-tenure.png"
+                             alt="intelligence-tenure"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('intelligence-tenure', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('intelligence-tenure', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('intelligence-tenure', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-intelligence-tenure"></div>
                         </div>
                     </td>
                 </tr>
@@ -1111,15 +1226,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="statistics-panel-distribution" data-status="unreviewed">
+                <tr data-screenshot="statistics-panel-distribution" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">statistics-panel-distribution</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Distribution table showing employee counts and percentages by position</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-statistics-distributiontable--balanced-distribution</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">statistics.md</span><span class="used-in-page">quickstart.md</span><span class="used-in-page">getting-started.md</span><span class="used-in-page">workflows/talent-calibration.md</span><span class="used-in-page">workflows/analyzing-distribution.md</span></div></div>
+
                         <div class="path">statistics/statistics-panel-distribution.png</div>
                     </td>
                     <td class="image-cell">
@@ -1130,52 +1249,70 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('statistics-panel-distribution', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('statistics-panel-distribution', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('statistics-panel-distribution', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-statistics-panel-distribution"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="statistics-summary-cards" data-status="unreviewed">
+                <tr data-screenshot="distribution-table" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">statistics-summary-cards</div>
+                        <div class="screenshot-name">distribution-table</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Distribution table showing counts and percentages for each 9-box position</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-statistics-statisticssummary--default</div>
-                        <div class="path">statistics/statistics-summary-cards.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">statistics.md</span></div></div>
+
+                        <div class="path">statistics/distribution-table.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/statistics/statistics-summary-cards.png"
-                             alt="statistics-summary-cards"
+                        <img src="docs/images/screenshots/statistics/distribution-table.png"
+                             alt="distribution-table"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('statistics-summary-cards', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('distribution-table', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('statistics-summary-cards', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('distribution-table', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('statistics-summary-cards', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-statistics-summary-cards"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('distribution-table', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-distribution-table"></div>
                         </div>
                     </td>
                 </tr>
@@ -1192,44 +1329,55 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="donut-mode-active-layout" data-status="unreviewed">
+                <tr data-screenshot="donut-mode-grid-normal" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">donut-mode-active-layout</div>
-                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-name">donut-mode-grid-normal</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">Grid in donut mode showing employee tiles</div>
+                        <div class="screenshot-caption">9-box grid displayed in donut mode for center-box validation</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: grid-nineboxgrid--donut-mode</div>
-                        <div class="path">donut/donut-mode-active-layout.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">donut-mode.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-grid-nineboxgrid--donut-mode</div>
+                        <div class="path">donut-mode/donut-mode-grid-normal.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/donut/donut-mode-active-layout.png"
-                             alt="donut-mode-active-layout"
+                        <img src="docs/images/screenshots/donut-mode/donut-mode-grid-normal.png"
+                             alt="donut-mode-grid-normal"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('donut-mode-active-layout', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('donut-mode-grid-normal', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('donut-mode-active-layout', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('donut-mode-grid-normal', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('donut-mode-active-layout', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-donut-mode-active-layout"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('donut-mode-grid-normal', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-donut-mode-grid-normal"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="grid-and-basic-ui">Grid and Basic UI <span class="category-count">(2 screenshots)</span></h2>
+        <h2 id="additional-features">Additional Features <span class="category-count">(7 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -1239,96 +1387,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="grid-normal" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">grid-normal</div>
-                        <div class="screenshot-desc">Standard 9-box grid with employee tiles</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: grid-nineboxgrid--populated</div>
-                        <div class="path">grid-normal.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/grid-normal.png"
-                             alt="grid-normal"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('grid-normal', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('grid-normal', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('grid-normal', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-grid-normal"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="employee-tile-normal" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">employee-tile-normal</div>
-                        <div class="screenshot-desc">Individual employee tile showing name and role</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: grid-employeetile--default</div>
-                        <div class="path">employee-tile-normal.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/employee-tile-normal.png"
-                             alt="employee-tile-normal"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('employee-tile-normal', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('employee-tile-normal', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('employee-tile-normal', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-employee-tile-normal"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2 id="additional-features">Additional Features <span class="category-count">(3 screenshots)</span></h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="description-cell">Description</th>
-                    <th class="image-cell">Screenshot</th>
-                    <th class="review-cell">Review</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-screenshot="distribution-chart-ideal" data-status="unreviewed">
+                <tr data-screenshot="distribution-chart-ideal" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">distribution-chart-ideal</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Stacked bar chart showing performance distribution by job level</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: intelligence-leveldistributionchart--normal-distribution</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">statistics.md</span></div></div>
+
                         <div class="path">distribution-chart-ideal.png</div>
                     </td>
                     <td class="image-cell">
@@ -1339,93 +1410,302 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('distribution-chart-ideal', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('distribution-chart-ideal', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('distribution-chart-ideal', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-distribution-chart-ideal"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="timeline-employee-history" data-status="unreviewed">
+                <tr data-screenshot="unsaved-changes-dialog" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">timeline-employee-history</div>
-                        <div class="screenshot-desc">Employee movement timeline showing historical positions</div>
+                        <div class="screenshot-name">unsaved-changes-dialog</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Warning dialog showing unsaved changes with action options</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: panel-ratingstimeline--with-history</div>
-                        <div class="path">timeline-employee-history.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">troubleshooting.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dialogs-unsavedchangesdialog--multiple-changes</div>
+                        <div class="path">file-ops/unsaved-changes-dialog.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/timeline-employee-history.png"
-                             alt="timeline-employee-history"
+                        <img src="docs/images/screenshots/file-ops/unsaved-changes-dialog.png"
+                             alt="unsaved-changes-dialog"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('timeline-employee-history', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('unsaved-changes-dialog', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('timeline-employee-history', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('unsaved-changes-dialog', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('timeline-employee-history', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-timeline-employee-history"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('unsaved-changes-dialog', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-unsaved-changes-dialog"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="file-menu-apply-changes" data-status="unreviewed">
+                <tr data-screenshot="apply-changes-dialog-default" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
-                        <div class="screenshot-name">file-menu-apply-changes</div>
-                        <div class="screenshot-desc">File menu dropdown open showing menu options</div>
+                        <div class="screenshot-name">apply-changes-dialog-default</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Apply Changes dialog for exporting changes to Excel</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: dashboard-appbar-filemenubutton--menu-open</div>
-                        <div class="path">file-menu-apply-changes.png</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">exporting.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dialogs-applychangesdialog--default</div>
+                        <div class="path">file-ops/apply-changes-dialog-default.png</div>
                     </td>
                     <td class="image-cell">
-                        <img src="docs/images/screenshots/file-menu-apply-changes.png"
-                             alt="file-menu-apply-changes"
+                        <img src="docs/images/screenshots/file-ops/apply-changes-dialog-default.png"
+                             alt="apply-changes-dialog-default"
                              class="screenshot-img"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('file-menu-apply-changes', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                <button class="status-btn" onclick="setStatus('apply-changes-dialog-default', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
-                                <button class="status-btn" onclick="setStatus('file-menu-apply-changes', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                <button class="status-btn" onclick="setStatus('apply-changes-dialog-default', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('file-menu-apply-changes', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-file-menu-apply-changes"></div>
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('apply-changes-dialog-default', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-apply-changes-dialog-default"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="file-error-fallback" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">file-error-fallback</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Error dialog shown when original file cannot be updated</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">troubleshooting.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-dialogs-applychangesdialog--with-error</div>
+                        <div class="path">file-ops/file-error-fallback.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/file-ops/file-error-fallback.png"
+                             alt="file-error-fallback"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('file-error-fallback', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('file-error-fallback', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('file-error-fallback', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-file-error-fallback"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="workflow-changes-good-note" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">workflow-changes-good-note</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">Changes tab showing employee movements with well-documented notes</div>
+                        <div class="screenshot-caption">Changes tab with detailed notes documenting rating decisions</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">best-practices.md</span><span class="used-in-page">tracking-changes.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-right-panel-changes-changetrackertab--grid-changes-only</div>
+                        <div class="path">workflow/workflow-changes-good-note.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/workflow/workflow-changes-good-note.png"
+                             alt="workflow-changes-good-note"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('workflow-changes-good-note', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('workflow-changes-good-note', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('workflow-changes-good-note', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-workflow-changes-good-note"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="workflow-grid-axes-labeled" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">workflow-grid-axes-labeled</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">9-box grid with Performance and Potential axes labeled</div>
+                        <div class="screenshot-caption">Annotated grid showing Performance (horizontal) and Potential (vertical) axes</div>
+                        <div>
+                            <span class="badge badge-storybook">Storybook</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">new-to-9box.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-grid-nineboxgrid--populated</div>
+                        <div class="path">workflow/workflow-grid-axes-labeled.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/workflow/workflow-grid-axes-labeled.png"
+                             alt="workflow-grid-axes-labeled"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('workflow-grid-axes-labeled', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('workflow-grid-axes-labeled', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('workflow-grid-axes-labeled', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-workflow-grid-axes-labeled"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-screenshot="exporting-file-menu-apply-changes" data-status="unreviewed" data-quality="good">
+                    <td class="description-cell">
+                        <div class="screenshot-name">exporting-file-menu-apply-changes</div>
+                        <span class="quality-badge quality-good">Good</span>
+                        <div class="screenshot-desc">File menu with Apply Changes option highlighted</div>
+                        <div class="screenshot-caption">File menu showing Apply Changes option for exporting to Excel</div>
+                        <div>
+                            <span class="badge badge-fullapp">Full-App</span>
+                            <span class="badge badge-automated">Automated</span>
+                        </div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">getting-started.md</span></div></div>
+
+                        <div class="path">exporting/file-menu-apply-changes.png</div>
+                    </td>
+                    <td class="image-cell">
+                        <img src="docs/images/screenshots/exporting/file-menu-apply-changes.png"
+                             alt="exporting-file-menu-apply-changes"
+                             class="screenshot-img"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
+                    </td>
+                    <td class="review-cell">
+                        <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
+                            <div class="status-buttons">
+                                <button class="status-btn" onclick="setStatus('exporting-file-menu-apply-changes', 'approved')">
+                                    <span class="status-icon">✓</span>Agree
+                                </button>
+                                <button class="status-btn" onclick="setStatus('exporting-file-menu-apply-changes', 'needs-work')">
+                                    <span class="status-icon">✗</span>Amend
+                                </button>
+                            </div>
+                            <textarea class="notes-field"
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
+                                      onchange="saveNotes('exporting-file-menu-apply-changes', this.value)"></textarea>
+                            <div class="review-timestamp" id="timestamp-exporting-file-menu-apply-changes"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2 id="zoom-controls">Zoom Controls <span class="category-count">(1 screenshot)</span></h2>
+        <h2 id="viewcontrols">ViewControls <span class="category-count">(3 screenshots)</span></h2>
         <table>
             <thead>
                 <tr>
@@ -1435,96 +1715,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-screenshot="zoom-controls" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">zoom-controls</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: common-viewcontrols--grid-view-active</div>
-                        <div class="path">zoom-controls.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/zoom-controls.png"
-                             alt="zoom-controls"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('zoom-controls', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('zoom-controls', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('zoom-controls', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-zoom-controls"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2 id="viewcontrols">ViewControls <span class="category-count">(6 screenshots)</span></h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="description-cell">Description</th>
-                    <th class="image-cell">Screenshot</th>
-                    <th class="review-cell">Review</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-screenshot="view-controls-main-interface" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">view-controls-main-interface</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: common-viewcontrols--grid-view-active</div>
-                        <div class="path">view-controls/main-interface.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/view-controls/main-interface.png"
-                             alt="view-controls-main-interface"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('view-controls-main-interface', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('view-controls-main-interface', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('view-controls-main-interface', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-view-controls-main-interface"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="view-controls-grid-view" data-status="unreviewed">
+                <tr data-screenshot="view-controls-grid-view" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">view-controls-grid-view</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">View controls with grid view mode selected</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: common-viewcontrols--grid-view-active</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">settings.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-common-viewcontrols--grid-view-active</div>
                         <div class="path">view-controls/view-controls-grid.png</div>
                     </td>
                     <td class="image-cell">
@@ -1535,30 +1738,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('view-controls-grid-view', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('view-controls-grid-view', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('view-controls-grid-view', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-view-controls-grid-view"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="view-controls-donut-view" data-status="unreviewed">
+                <tr data-screenshot="view-controls-donut-view" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">view-controls-donut-view</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">ViewControls toolbar with Donut view active</div>
+                        <div class="screenshot-caption">View controls with donut view mode selected</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: common-viewcontrols--donut-view-active</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">donut-mode.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-common-viewcontrols--donut-view-active</div>
                         <div class="path">view-controls/view-controls-donut.png</div>
                     </td>
                     <td class="image-cell">
@@ -1569,30 +1783,41 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('view-controls-donut-view', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('view-controls-donut-view', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('view-controls-donut-view', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-view-controls-donut-view"></div>
                         </div>
                     </td>
                 </tr>
-                <tr data-screenshot="view-controls-settings-dialog" data-status="unreviewed">
+                <tr data-screenshot="view-controls-settings-dialog" data-status="unreviewed" data-quality="good">
                     <td class="description-cell">
                         <div class="screenshot-name">view-controls-settings-dialog</div>
+                        <span class="quality-badge quality-good">Good</span>
                         <div class="screenshot-desc">No description</div>
+                        <div class="screenshot-caption">Settings dialog showing appearance and language preferences</div>
                         <div>
                             <span class="badge badge-storybook">Storybook</span>
                             <span class="badge badge-automated">Automated</span>
                         </div>
-                        <div class="screenshot-meta">Story: settings-settingsdialog--open</div>
+
+                        <div class="used-in">Used in:<div class="used-in-list"><span class="used-in-page">settings.md</span></div></div>
+                        <div class="screenshot-meta">Story: app-settings-settingsdialog--open</div>
                         <div class="path">view-controls/settings-dialog.png</div>
                     </td>
                     <td class="image-cell">
@@ -1603,269 +1828,25 @@
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                <span class="quality-badge quality-good">Good</span>
+
+
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('view-controls-settings-dialog', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('view-controls-settings-dialog', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="Quality: Good"
                                       onchange="saveNotes('view-controls-settings-dialog', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-view-controls-settings-dialog"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="view-controls-simplified-appbar" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">view-controls-simplified-appbar</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: dashboard-appbar-pureappbar--file-loaded</div>
-                        <div class="path">view-controls/simplified-appbar.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/view-controls/simplified-appbar.png"
-                             alt="view-controls-simplified-appbar"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('view-controls-simplified-appbar', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('view-controls-simplified-appbar', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('view-controls-simplified-appbar', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-view-controls-simplified-appbar"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="view-controls-fullscreen" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">view-controls-fullscreen</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-fullapp">Full-App</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-
-                        <div class="path">view-controls/fullscreen-mode.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/view-controls/fullscreen-mode.png"
-                             alt="view-controls-fullscreen"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('view-controls-fullscreen', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('view-controls-fullscreen', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('view-controls-fullscreen', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-view-controls-fullscreen"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2 id="details-panel">Details Panel <span class="category-count">(5 screenshots)</span></h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="description-cell">Description</th>
-                    <th class="image-cell">Screenshot</th>
-                    <th class="review-cell">Review</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-screenshot="employee-details-panel-expanded" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">employee-details-panel-expanded</div>
-                        <div class="screenshot-desc">Expanded employee details panel with all information</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: panel-employeedetails--default</div>
-                        <div class="path">employee-details-panel-expanded.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/employee-details-panel-expanded.png"
-                             alt="employee-details-panel-expanded"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('employee-details-panel-expanded', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('employee-details-panel-expanded', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('employee-details-panel-expanded', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-employee-details-panel-expanded"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="details-current-assessment" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">details-current-assessment</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: panel-employeedetails--default-with-padding</div>
-                        <div class="path">details-panel/current-assessment-enhanced.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/details-panel/current-assessment-enhanced.png"
-                             alt="details-current-assessment"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('details-current-assessment', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('details-current-assessment', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('details-current-assessment', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-details-current-assessment"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="details-flags-ui" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">details-flags-ui</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: panel-employeeflags--with-multiple-flags</div>
-                        <div class="path">details-panel/flags-ui.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/details-panel/flags-ui.png"
-                             alt="details-flags-ui"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('details-flags-ui', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('details-flags-ui', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('details-flags-ui', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-details-flags-ui"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="details-flag-badges" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">details-flag-badges</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: grid-employeetile--with-flags</div>
-                        <div class="path">details-panel/flag-badges.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/details-panel/flag-badges.png"
-                             alt="details-flag-badges"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('details-flag-badges', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('details-flag-badges', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('details-flag-badges', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-details-flag-badges"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-screenshot="details-reporting-chain-clickable" data-status="unreviewed">
-                    <td class="description-cell">
-                        <div class="screenshot-name">details-reporting-chain-clickable</div>
-                        <div class="screenshot-desc">No description</div>
-                        <div>
-                            <span class="badge badge-storybook">Storybook</span>
-                            <span class="badge badge-automated">Automated</span>
-                        </div>
-                        <div class="screenshot-meta">Story: panel-managementchain--with-manager</div>
-                        <div class="path">details-panel/reporting-chain-clickable.png</div>
-                    </td>
-                    <td class="image-cell">
-                        <img src="docs/images/screenshots/details-panel/reporting-chain-clickable.png"
-                             alt="details-reporting-chain-clickable"
-                             class="screenshot-img"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3EImage not yet generated%3C/text%3E%3C/svg%3E'">
-                    </td>
-                    <td class="review-cell">
-                        <div class="review-controls">
-                            <div class="status-buttons">
-                                <button class="status-btn" onclick="setStatus('details-reporting-chain-clickable', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
-                                </button>
-                                <button class="status-btn" onclick="setStatus('details-reporting-chain-clickable', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
-                                </button>
-                            </div>
-                            <textarea class="notes-field"
-                                      placeholder="Add review notes..."
-                                      onchange="saveNotes('details-reporting-chain-clickable', this.value)"></textarea>
-                            <div class="review-timestamp" id="timestamp-details-reporting-chain-clickable"></div>
                         </div>
                     </td>
                 </tr>
@@ -1873,7 +1854,7 @@
         </table>
 
         <p style="margin-top: 40px; text-align: center; color: #999; font-size: 14px;">
-            Generated: 2025-12-28 | Total: 47 screenshots (45 Storybook, 2 Full-App, 1 Manual)
+            Generated: 2025-12-28 | Total: 35 screenshots (33 Storybook, 2 Full-App, 1 Manual)
         </p>
     </div>
 
@@ -2007,20 +1988,32 @@
             let approved = 0;
             let needsWork = 0;
             let unreviewed = 0;
+            let qualityGood = 0;
+            let qualityNeeds = 0;
+            let qualityPoor = 0;
 
             document.querySelectorAll('tr[data-screenshot]').forEach(row => {
                 const screenshot = row.dataset.screenshot;
                 const review = reviews[screenshot];
                 const status = review ? review.status : 'unreviewed';
+                const quality = row.dataset.quality || '';
 
                 if (status === 'approved') approved++;
                 else if (status === 'needs-work') needsWork++;
                 else unreviewed++;
+
+                // Count quality assessments
+                if (quality === 'good') qualityGood++;
+                else if (quality === 'needs-improvement') qualityNeeds++;
+                else if (quality === 'poor') qualityPoor++;
             });
 
             document.getElementById('stat-approved').textContent = approved;
             document.getElementById('stat-needs-work').textContent = needsWork;
             document.getElementById('stat-unreviewed').textContent = unreviewed;
+            document.getElementById('stat-quality-good').textContent = qualityGood;
+            document.getElementById('stat-quality-needs').textContent = qualityNeeds;
+            document.getElementById('stat-quality-poor').textContent = qualityPoor;
         }
 
         // Filter screenshots
@@ -2046,6 +2039,25 @@
                 if (currentFilter === 'all') {
                     row.classList.remove('hidden');
                 } else if (currentFilter === status) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        // Filter by AI quality assessment
+        function filterByQuality(quality) {
+            // Reset all filter buttons
+            document.querySelectorAll('.btn-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            currentFilter = 'quality-' + quality;
+
+            document.querySelectorAll('tr[data-screenshot]').forEach(row => {
+                const rowQuality = row.dataset.quality || '';
+                if (rowQuality === quality) {
                     row.classList.remove('hidden');
                 } else {
                     row.classList.add('hidden');

@@ -107,7 +107,7 @@ Intelligence automatically detects bias patterns:
 - "Sales function shows rating inflation"
 - "Manager X rates significantly higher than peers"
 
-![Intelligence panel showing detected patterns](images/screenshots/quickstart/quickstart-intelligence-bias-detected.png)
+![Intelligence panel showing detected patterns](images/screenshots/intelligence/intelligence-anomaly-red.png)
 
 These insights help you ask the right questions in calibration meetings.
 
@@ -148,4 +148,4 @@ In 2 minutes, you've experienced the complete workflow:
 
 **New to 9-box methodology?** → [Understanding the Grid](understanding-grid.md) - What each position means
 
-**Want the complete reference?** → [Complete Calibration Reference](workflows/talent-calibration.md) - All checklists and scenarios
+**Want the complete reference?** → [Best Practices Guide](best-practices.md) - All checklists and scenarios
