@@ -45,6 +45,7 @@ class IntelligenceResponse(TypedDict):
     function_analysis: DimensionAnalysis
     level_analysis: DimensionAnalysis
     tenure_analysis: DimensionAnalysis
+    manager_analysis: DimensionAnalysis
 
 
 @router.get("", response_model=None)

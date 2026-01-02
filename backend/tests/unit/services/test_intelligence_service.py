@@ -615,17 +615,18 @@ def test_overall_intelligence_aggregation() -> None:
     assert "function_analysis" in result
     assert "level_analysis" in result
     assert "tenure_analysis" in result
+    assert "manager_analysis" in result
 
     # Quality score should be 0-100
     assert 0 <= result["quality_score"] <= 100
 
-    # Anomaly counts should sum to 4 (one per dimension)
+    # Anomaly counts should sum to 5 (one per dimension: location, function, level, tenure, manager)
     total_analyses = (
         result["anomaly_count"]["green"]
         + result["anomaly_count"]["yellow"]
         + result["anomaly_count"]["red"]
     )
-    assert total_analyses == 4
+    assert total_analyses == 5
 
 
 def test_quality_score_calculation() -> None:
@@ -662,9 +663,12 @@ def test_quality_score_calculation() -> None:
 
     result = calculate_overall_intelligence(employees)
 
-    # With uniform distribution, all should be green
-    assert result["anomaly_count"]["green"] == 4
-    assert result["quality_score"] == 100
+    # With uniform distribution across location/function/level/tenure, all analyses should be green
+    # Note: Manager analysis is also green because test data doesn't create valid manager relationships
+    # (all employees report to "Test Manager" which doesn't exist as an employee)
+    assert result["anomaly_count"]["green"] == 5
+    assert result["anomaly_count"]["red"] == 0
+    assert result["quality_score"] == 100  # 5 out of 5 green = 100%
 
 
 def test_empty_employee_list() -> None:

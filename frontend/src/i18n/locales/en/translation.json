@@ -275,10 +275,21 @@
       "performanceDistributionByLevel": "Performance Distribution by Level",
       "tenureAnalysis": "Tenure Analysis",
       "highPerformerByTenure": "High Performer % by Tenure",
+      "managerAnalysis": "Manager Rating Distribution",
+      "managerDistribution": "Manager Distribution (High/Medium/Low)",
       "performanceLevel": {
         "low": "Low Performance",
         "medium": "Medium Performance",
         "high": "High Performance"
+      },
+      "manager": {
+        "category": "Manager",
+        "teamSize": "Team Size",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "totalDeviation": "Total Deviation",
+        "baseline": "Baseline"
       },
       "anomaly": {
         "noIssues": "No Issues",
@@ -298,7 +309,7 @@
         "observedPercent": "Observed %",
         "expectedPercent": "Expected %",
         "zScore": "Z-Score",
-        "significant": "Significant?",
+        "significant": "Statistically Significant",
         "yes": "Yes",
         "no": "No",
         "viewDetailsAria": "View details for {{title}}",

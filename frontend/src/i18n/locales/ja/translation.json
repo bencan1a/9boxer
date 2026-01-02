@@ -335,6 +335,17 @@
         "wellCalibrated": "評価分布はすべての次元で適切に較正されています。",
         "someAnomalies": "いくつかの異常が検出されました。詳細については以下のセクションをご確認ください。",
         "significantAnomalies": "重大な異常が検出されました。早急な確認を推奨します。"
+      },
+      "managerAnalysis": "Manager Rating Distribution",
+      "managerDistribution": "Manager Distribution (High/Medium/Low)",
+      "manager": {
+        "category": "Manager",
+        "teamSize": "Team Size",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "totalDeviation": "Total Deviation",
+        "baseline": "Baseline"
       }
     },
     "changesSummary": {
@@ -363,6 +374,30 @@
       "apply": "変更を適用",
       "applying": "適用中...",
       "errorFallback": "元のファイルを更新できませんでした。新しい場所に保存しますか?"
+    },
+    "about": {
+      "title": "About 9Boxer",
+      "description": "A powerful talent management tool for visualizing and managing employee performance using the 9-box grid methodology.",
+      "tagline": "Elevate your talent management with data-driven insights",
+      "shortDescription": "Talent management through the 9-box grid",
+      "version": "Version",
+      "technology": "Technology",
+      "copyright": "© 2024 9Boxer. All rights reserved.",
+      "userGuide": "User Guide",
+      "reportIssue": "Report Issue",
+      "features": {
+        "grid": {
+          "title": "9-Box Grid",
+          "description": "Intuitive drag-and-drop interface for employee placement and performance visualization"
+        },
+        "collaboration": {
+          "title": "Team Collaboration",
+          "description": "Share insights and calibrate assessments across your organization"
+        },
+        "tech": {
+          "title": "Built With"
+        }
+      }
     }
   },
   "sampleData": {
