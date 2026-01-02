@@ -5,7 +5,7 @@
 import { useCallback, useMemo } from "react";
 import { Employee } from "../types/employee";
 import { useFilterStore } from "../store/filterStore";
-import { getAllFlags, getFlagDisplayName } from "../constants/flags";
+import { getAllFlags } from "../constants/flags";
 
 export interface FilterOptions {
   levels: string[];
@@ -73,9 +73,11 @@ export const useFilters = () => {
     selectedJobFunctions,
     selectedLocations,
     selectedManagers,
+    selectedManagerEmployeeIds,
     selectedFlags,
     excludedEmployeeIds,
     reportingChainFilter,
+    reportingChainEmployeeIds,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
@@ -116,23 +118,27 @@ export const useFilters = () => {
           if (!selectedLocations.includes(displayLocation)) return false;
         }
 
-        // Filter by managers
-        if (selectedManagers.length > 0) {
-          if (!selectedManagers.includes(emp.manager)) return false;
+        // Filter by managers (using employee IDs from org service)
+        // This uses the same backend org hierarchy logic as the intelligence panel
+        if (
+          selectedManagers.length > 0 &&
+          selectedManagerEmployeeIds.size > 0
+        ) {
+          // Check if this employee is in any of the selected managers' org hierarchies
+          let isUnderSelectedManager = false;
+          for (const [_, reportIds] of selectedManagerEmployeeIds) {
+            if (reportIds.includes(emp.employee_id)) {
+              isUnderSelectedManager = true;
+              break;
+            }
+          }
+          if (!isUnderSelectedManager) return false;
         }
 
-        // Filter by reporting chain
-        if (reportingChainFilter) {
-          const chainFilter = reportingChainFilter.toLowerCase();
-          const hasManagerInChain =
-            emp.manager?.toLowerCase() === chainFilter ||
-            emp.management_chain_01?.toLowerCase() === chainFilter ||
-            emp.management_chain_02?.toLowerCase() === chainFilter ||
-            emp.management_chain_03?.toLowerCase() === chainFilter ||
-            emp.management_chain_04?.toLowerCase() === chainFilter ||
-            emp.management_chain_05?.toLowerCase() === chainFilter ||
-            emp.management_chain_06?.toLowerCase() === chainFilter;
-          if (!hasManagerInChain) return false;
+        // Filter by reporting chain (using employee IDs from org service)
+        if (reportingChainFilter && reportingChainEmployeeIds.length > 0) {
+          if (!reportingChainEmployeeIds.includes(emp.employee_id))
+            return false;
         }
 
         // Filter by flags (employee must have ALL selected flags)
@@ -155,9 +161,11 @@ export const useFilters = () => {
       selectedJobFunctions,
       selectedLocations,
       selectedManagers,
+      selectedManagerEmployeeIds,
       selectedFlags,
       excludedEmployeeIds,
       reportingChainFilter,
+      reportingChainEmployeeIds,
     ]
   );
 
@@ -253,6 +261,7 @@ export const useFilters = () => {
     selectedFlags,
     excludedEmployeeIds,
     reportingChainFilter,
+    reportingChainEmployeeIds,
     isDrawerOpen,
     hasActiveFilters: hasActiveFilters(),
 
