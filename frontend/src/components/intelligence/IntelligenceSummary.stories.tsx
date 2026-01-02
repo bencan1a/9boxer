@@ -8,6 +8,9 @@ import {
   mockLowAnomalyCount,
   mockMixedIntelligence,
   mockYellowAnalysis,
+  mockGreenManagerAnalysis,
+  mockYellowManagerAnalysis,
+  mockRedManagerAnalysis,
 } from "../../mocks/mockIntelligence";
 
 /**
@@ -99,7 +102,6 @@ export const NeedsAttention: Story = {
   tags: ["screenshot"],
   parameters: {
     screenshot: { enabled: true, id: "intelligence-summary-needs-attention" },
-    screenshot: { enabled: true, id: "intelligence-summary-needs-attention" },
   },
   args: {
     data: mockNeedsAttentionIntelligence,
@@ -137,7 +139,7 @@ export const PerfectScore: Story = {
     data: {
       quality_score: 100,
       anomaly_count: {
-        green: 4,
+        green: 5,
         yellow: 0,
         red: 0,
       },
@@ -145,6 +147,7 @@ export const PerfectScore: Story = {
       function_analysis: mockExcellentIntelligence.function_analysis,
       level_analysis: mockExcellentIntelligence.level_analysis,
       tenure_analysis: mockExcellentIntelligence.tenure_analysis,
+      manager_analysis: mockGreenManagerAnalysis,
     },
   },
 };
@@ -160,12 +163,13 @@ export const ZeroScore: Story = {
       anomaly_count: {
         green: 0,
         yellow: 0,
-        red: 12,
+        red: 15,
       },
       location_analysis: mockNeedsAttentionIntelligence.location_analysis,
       function_analysis: mockNeedsAttentionIntelligence.function_analysis,
       level_analysis: mockNeedsAttentionIntelligence.level_analysis,
       tenure_analysis: mockNeedsAttentionIntelligence.tenure_analysis,
+      manager_analysis: mockRedManagerAnalysis,
     },
   },
 };
@@ -179,7 +183,7 @@ export const BoundaryExcellent: Story = {
     data: {
       quality_score: 80,
       anomaly_count: {
-        green: 3,
+        green: 4,
         yellow: 1,
         red: 0,
       },
@@ -187,6 +191,7 @@ export const BoundaryExcellent: Story = {
       function_analysis: mockExcellentIntelligence.function_analysis,
       level_analysis: mockExcellentIntelligence.level_analysis,
       tenure_analysis: mockExcellentIntelligence.tenure_analysis,
+      manager_analysis: mockGreenManagerAnalysis,
     },
   },
 };
@@ -201,13 +206,14 @@ export const BoundaryNeedsAttention: Story = {
       quality_score: 50,
       anomaly_count: {
         green: 1,
-        yellow: 2,
+        yellow: 3,
         red: 1,
       },
       location_analysis: mockYellowAnalysis,
       function_analysis: mockGoodIntelligence.function_analysis,
       level_analysis: mockYellowAnalysis,
       tenure_analysis: mockGoodIntelligence.tenure_analysis,
+      manager_analysis: mockYellowManagerAnalysis,
     },
   },
 };
@@ -222,13 +228,14 @@ export const AllYellowAnomalies: Story = {
       quality_score: 68,
       anomaly_count: {
         green: 0,
-        yellow: 8,
+        yellow: 10,
         red: 0,
       },
       location_analysis: mockYellowAnalysis,
       function_analysis: mockYellowAnalysis,
       level_analysis: mockYellowAnalysis,
       tenure_analysis: mockYellowAnalysis,
+      manager_analysis: mockYellowManagerAnalysis,
     },
   },
 };
@@ -251,6 +258,7 @@ export const ZeroAnomalies: Story = {
       function_analysis: mockExcellentIntelligence.function_analysis,
       level_analysis: mockExcellentIntelligence.level_analysis,
       tenure_analysis: mockExcellentIntelligence.tenure_analysis,
+      manager_analysis: mockGreenManagerAnalysis,
     },
   },
 };
