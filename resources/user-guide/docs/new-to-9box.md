@@ -1,5 +1,7 @@
 # New to 9-Box? Start Here
 
+> **Quick navigation:** Ready to run your first calibration? Jump to [Quick Workflow](getting-started.md). Want hands-on best practices? See the [Complete Guide](best-practices.md).
+
 Welcome! This guide introduces you to the 9-box methodology and helps you get started with 9Boxer. Whether you're a department head evaluating your team for the first time or a manager learning this talent framework, you'll find everything you need to understand what the 9-box grid shows and how to use it effectively.
 
 ---
@@ -16,6 +18,315 @@ This guide is designed for:
 > **Real-World Example**
 >
 > Marcus is an Engineering Department Head managing 25 people across 3 teams. He's been asked to prepare 9-box ratings for the quarterly talent review but has never used this framework. This guide helps him understand what the grid means, how to interpret positions, and how to get started with confidence.
+
+---
+
+## Why Calibration Matters
+
+Let's be honest: Calibration can feel uncomfortable. You're sitting in a room with peers, discussing whether someone is really a "high performer" or just "solid." Managers sometimes feel like they're defending their people or being attacked for their ratings.
+
+That discomfort is exactly why calibration matters.
+
+### What Calibration Achieves
+
+The core problem is simple: Without calibration, every manager develops their own internal bar for performance. Manager A hands out "high performer" ratings to anyone who shows up on time and does their job. Manager B reserves "high performer" for people who consistently exceed expectations and show leadership.
+
+Result: Two employees doing similar work, performing at similar levels, get wildly different ratings depending on who their manager is.
+
+**That's not fair to anyone.**
+
+Calibration fixes this by:
+
+- **Creating consistent expectations** across all managers at each level
+- **Making rating patterns visible** so they can be discussed and aligned
+- **Developing manager judgment** about what good performance actually looks like
+- **Ensuring fair ratings** regardless of who someone reports to
+
+### The Dual Purpose: Rating Employees AND Assessing Managers
+
+Here's something most people don't talk about: Calibration serves two purposes simultaneously.
+
+**Purpose 1: Assigning performance ratings** that are fair and consistent.
+
+**Purpose 2: Assessing managers' understanding** of "what good looks like."
+
+When you review ratings level-by-level across managers, patterns emerge. If Manager A consistently rates higher than peers, it's not "Manager A is wrong." It's "Manager A's bar for performance might need calibrating" - or "Manager A's team might genuinely be stronger - let's compare evidence."
+
+This is healthy organizational development, not a gotcha game.
+
+### The Wrong Mindset vs. The Right Mindset
+
+**WRONG MINDSET (Defensive):**
+
+- "I need to fight for my people to keep their ratings"
+- "HR is checking up on me to see if I'm too lenient"
+- "If I change a rating in calibration, I failed that person"
+- "This is about protecting my team from other managers"
+
+**RIGHT MINDSET (Collaborative):**
+
+- "I want to make sure my bar for performance matches the organization's expectations"
+- "This helps me become a better manager by calibrating my judgment"
+- "Honest, fair ratings help my team members understand where they really stand"
+- "We're aligning on standards so everyone gets fair treatment"
+
+The question isn't "Are you rating too high or too low?" The question is "Do we all mean the same thing when we say 'high performance'?"
+
+When everyone's aligned on that question, calibration becomes productive instead of adversarial.
+
+### How Good Calibration Aligns Standards
+
+When done well, calibration is an organizational health tool. Here's what it reveals:
+
+**Pattern: Different Rating Standards**
+
+- Manager A rates 18 out of 20 people as "High Performance"
+- Peers rate 20% as "High Performance"
+- **The conversation:** Is Manager A's team genuinely stronger, or do we need to align on standards?
+- **The outcome:** Either evidence supports Manager A's team quality, or standards get aligned
+
+**Pattern: Different Bar for Excellence**
+
+- Manager B has zero employees in top-right (Stars)
+- Peers have 10-15% Stars
+- **The conversation:** Does Manager B's bar differ from peers, or do they genuinely lack top talent?
+- **The outcome:** Understanding Manager B's standards and aligning with organizational expectations
+
+**Pattern: New Hire Rating Differences**
+
+- All employees hired in past 6 months rated "High Potential"
+- **The conversation:** Are we rating potential based on interviews or actual performance?
+- **The outcome:** More realistic potential assessments based on evidence
+
+Done well, calibration helps workers and managers understand what great performance actually looks like. Done poorly, it becomes a defensive battle where managers protect their turf.
+
+### How 9Boxer Supports Good Calibration
+
+The 9-box grid and 9Boxer tool make calibration more effective by:
+
+**Visualizing patterns:**
+
+- Grade inflation becomes obvious when you see one manager's distribution vs. others
+- Talent gaps are visible when you filter by level and see who you have (or don't have)
+- Cross-manager comparisons are easy when you can see all "Senior Engineers" on screen together
+
+**Providing structure:**
+
+- Level-based filtering ensures fair comparisons (similar work)
+- Intelligence analysis identifies statistical patterns automatically
+- Change tracking creates audit trail of calibration decisions
+
+**Creating shared language:**
+
+- Everyone looking at same grid, same data
+- Positions have clear definitions (Star, Core Performer, etc.)
+- Visual representation reduces ambiguity
+
+The tool doesn't make calibration easy - it's still hard work - but it makes it fairer and more transparent.
+
+---
+
+## The Level-Based Calibration Approach
+
+Here's the key insight most people miss: **Don't try to calibrate 200 people at once.**
+
+### Start with Levels, Not Teams
+
+The most effective calibration looks at employees by level and function, not by manager.
+
+**Why?** Because you need to compare people doing similar work to ensure fairness.
+
+- Comparing all "Senior Engineers" across managers → Fair
+- Comparing one manager's mixed team → Misses cross-manager patterns
+
+### The Typical Flow
+
+Most effective calibrations follow this pattern:
+
+1. **Start at lower levels** (ICs, individual contributors)
+2. **Work up level by level** (Managers → Directors → VPs)
+3. **Use level + function filters** ("Engineering Managers", "Sales ICs")
+4. **Finish with intelligence filters** to catch remaining anomalies
+
+**Why this order?**
+
+- Lower levels have more people = more data for pattern detection
+- Easier to calibrate similar roles before tackling leadership
+- Level-based review ensures consistent bar of excellence per level
+- Intelligence filters work best AFTER you've done bulk alignment
+
+### Typical Filter Progression
+
+**Session 1: Filter to "Individual Contributors" → "Engineering"**
+
+- Review all Engineering ICs together
+- Ensure consistent bar for "high performer" at IC level
+
+**Session 2: Filter to "Individual Contributors" → "Sales"**
+
+- Review all Sales ICs together
+- Compare to Engineering standards
+
+**Session 3: Filter to "Managers" → All departments**
+
+- Review all first-line managers together
+- Different bar than ICs - looking for leadership
+
+**Session 4: Intelligence tab**
+
+- Final sweep for anomalies and outliers
+- Catch anything the level-based review missed
+
+### What About Manager-by-Manager Review?
+
+You might be thinking: "Shouldn't we review each manager's team so we can understand their rating patterns?"
+
+Here's the thing: Level-based review SHOWS you each manager's patterns without creating silos.
+
+When you filter to "All Individual Contributors":
+
+- You see Manager A's ICs next to Manager B's ICs next to Manager C's ICs
+- Patterns become obvious: "Manager A rated 80% of their ICs as High, while B and C rated 20%"
+- Discussion becomes productive: "Manager A, tell us about your high performers and how they compare to Manager B's"
+
+**Manager-by-manager review encourages:** "Defend my people"
+
+**Level-based review encourages:** "Let's align on what 'high performance' means"
+
+---
+
+## Your Role in Calibration
+
+How you show up in calibration depends on your role. Here's what to focus on:
+
+### As a Participating Manager
+
+**Come prepared with evidence:**
+
+- Don't just bring gut feelings - bring specific examples
+- For each high performer: What did they deliver? What impact did it have?
+- For each concern: What's missing? What needs to improve?
+
+**Stay curious about how others see it differently:**
+
+- Ask: "How does my high performer compare to yours?"
+- Ask: "What does 'high performance' look like for this level in your experience?"
+- Ask: "Am I being too harsh or too lenient compared to organizational standards?"
+
+**Be willing to adjust ratings based on new perspective:**
+
+- Changing your rating based on new information isn't flip-flopping - it's good judgment
+- Say: "Hearing that, I think Medium is actually more accurate for where they are right now"
+- Remember: Calibration is where learning happens
+
+### As a Facilitator
+
+**Create psychological safety:**
+
+- Acknowledge the discomfort: "I know this is uncomfortable. We're going to disagree about some of these ratings, and that's okay."
+- Separate identity from opinion: "We're discussing ratings, not evaluating each other as managers."
+- Model changing your mind: Publicly adjust your own rating at least once to normalize flexibility
+
+**Make patterns visible without attacking anyone:**
+
+- Instead of: "Your ratings are too high"
+- Say: "Let's compare your high performers to Sarah's and see what differences we notice"
+- Instead of: "These people don't really deserve to be Stars"
+- Say: "Walk me through what you're seeing that puts them in the Star category - what are they delivering?"
+
+**Drive toward alignment, not force outcomes:**
+
+- Your goal: Consistent expectations across all managers at each level
+- Not your goal: Catch managers being "too lenient" or "too harsh"
+- Ask: "Based on what we've discussed, does anyone want to revise their initial rating?"
+- Remember: If the group convinces someone, that's alignment. If you force it, that's just compliance.
+
+### Language That Helps vs. Hurts
+
+The words you choose matter. Here's how to make calibration conversations productive:
+
+**Instead of (judgmental):** "Your ratings are too high"
+**Say (collaborative):** "Let's compare your high performers to Sarah's and see what differences we notice"
+
+**Instead of (judgmental):** "These people don't really deserve to be Stars"
+**Say (inquiry):** "Walk me through what you're seeing that puts them in the Star category"
+
+**Instead of (attacking):** "You're inflating your team's performance"
+**Say (alignment-seeking):** "Your bar for 'high performance' might be different than the org's - let's make sure we're aligned"
+
+The frame shift: From "Who's right?" to "Are we aligned?"
+
+When calibration focuses on alignment rather than judgment, everyone relaxes. Managers feel safe sharing their reasoning. The group can have honest conversations about what performance standards should be.
+
+---
+
+## How Calibration Connects to Organizational Health
+
+Calibration is more than a process - it's a diagnostic tool that reveals what's really happening in your organization.
+
+### What Calibration Reveals About Your Culture
+
+Pay attention to what your calibration discussions reveal about your culture. The patterns tell you things that surveys and engagement scores never will.
+
+| If calibration looks like this... | Your org probably has... |
+|-----------------------------------|-------------------------|
+| Managers fight for every rating | Siloed, competitive culture |
+| Everyone agrees too easily | Fear of conflict, groupthink |
+| Senior leaders' ratings never get challenged | Hierarchy over truth-telling |
+| Same people are Stars every year, no movement | Stagnation, favoritism |
+| Lots of movement, no clear pattern | Unclear performance expectations |
+| Center box is 70%+ of employees | Avoidance of differentiation |
+
+If managers can't disagree productively, that's a team health issue to address beyond calibration. If senior leaders' ratings are immune from challenge, you have a psychological safety opportunity.
+
+Use calibration insights to improve the organization, not just rate individuals.
+
+### Trust-Building Through Calibration
+
+**Trust is built when:**
+
+- Ratings change based on evidence, not politics
+- The process is consistent year over year
+- People see that calibration decisions lead to action
+- Managers who over-rate or under-rate are coached to improve
+
+**Trust is destroyed when:**
+
+- Protected pets get protected ratings
+- Calibration is theater that changes nothing
+- Some managers are exempt from scrutiny
+- Employees never learn how they compare to peers
+
+Your employees may never be in the calibration room, but they will experience its effects. If calibration improves accuracy and fairness, employees will eventually trust that their ratings mean something. If calibration is theater that protects favorites and punishes those without advocates, employees will eventually figure that out too - and the best ones will leave.
+
+### How to Avoid Calibration Becoming Political
+
+**Data first, discussion second**
+
+Start every calibration by looking at the actual distribution data before anyone advocates for anyone. This depersonalizes the discussion.
+
+**Level-based review**
+
+When you review all Senior Engineers together, it's harder to play politics because you're comparing across managers. Everyone's patterns are visible.
+
+**Document the reasoning**
+
+When a rating changes, write down why: "Moved to Medium because, compared to other High Performers at this level, they didn't demonstrate [specific criteria]." Documentation creates accountability.
+
+**Check outcomes over time**
+
+Track whether calibration decisions predict actual outcomes (promotions, exits, development success). If your Stars keep leaving and your under-performers keep getting promoted, your calibration needs recalibration.
+
+---
+
+**Ready to run your first calibration?** See [Quick Calibration Workflow](getting-started.md)
+
+**Want the complete guide?** See [Complete Calibration Guide](best-practices.md)
+
+**Need deeper guidance on specific topics?**
+
+- [Creating Psychological Safety in Calibration](reference/psychological-safety.md) - Build trust and open dialogue
+- [Power Dynamics and Politics in Calibration](reference/power-dynamics-and-politics.md) - Navigate influence and credibility
 
 ---
 
@@ -46,6 +357,18 @@ Here's the key insight: **performance and potential are different things.**
 - Your best employees combine both: high performance today AND high potential for tomorrow
 
 This is why we need a grid instead of a single rating - it captures both dimensions at once.
+
+### The "Excellent IC Who Should Stay IC" Scenario
+
+A common question: If someone is an excellent individual contributor who doesn't want management, are they "High Potential"?
+
+**The answer:** Potential means capacity for growth and expanded scope, not desire for promotion or management.
+
+An excellent senior engineer who doesn't want to manage people can still be High Potential if they can take on increasingly complex problems, influence architecture at broader scope, or mentor others technically without formal management responsibility.
+
+They are NOT High Potential if they've reached the ceiling of work they can handle, or if adding scope would decrease their performance.
+
+**Key insight:** Not wanting to be a people manager doesn't automatically mean Low Potential. Many IC career paths have high potential for growth without management.
 
 ---
 
@@ -78,7 +401,7 @@ The 9-box grid creates a common language for talent discussions:
 - Ensures managers use consistent rating standards
 - Makes talent visible across organizational boundaries
 - Prevents grade inflation ("everyone is High Performance")
-- Identifies rating bias (one manager rates everyone high, another rates everyone low)
+- Identifies rating patterns (one manager rates everyone high, another rates everyone low)
 
 !!! note "Why This Matters"
     Without the 9-box framework, talent discussions become subjective debates. The grid provides structure, making it easier to compare employees fairly and make data-driven decisions about promotions, development, and resource allocation.
@@ -129,7 +452,7 @@ Let's start with the positions you'll focus on most:
 
 **Target population:** 10-15% of your workforce
 
-**Red flag:** If you have 50% Stars, you're over-rating. Be more selective.
+**Note:** If you have 50% Stars, your bar may need recalibrating. Be more selective.
 
 ---
 
@@ -149,17 +472,17 @@ Let's start with the positions you'll focus on most:
 
 **Target population:** 50-60% of your workforce
 
-**Warning:** The center box often becomes a default placement for "I'm not sure where they belong." Use [Donut Mode](donut-mode.md) to validate these ratings.
+**Note:** The center box often becomes a default placement for "I'm not sure where they belong." Use [Donut Mode](donut-mode.md) to review these ratings.
 
 ---
 
-#### Position 1: Too New / Problem (Low Performance, Low Potential)
+#### Position 1: Too New / Under-Performer (Low Performance, Low Potential)
 
 **Bottom-left corner - Requires attention**
 
 **Who belongs here:**
 - **New hires:** Too early to rate accurately (give them time)
-- **Performance issues:** Not meeting expectations with limited growth capacity
+- **Performance concerns:** Not meeting expectations with limited growth capacity
 
 **What to do with them:**
 - **For new employees:** Provide onboarding support, reassess in 6-12 months
@@ -167,7 +490,7 @@ Let's start with the positions you'll focus on most:
 
 **Target population:** 5-10% of your workforce
 
-**Critical:** Don't confuse "too new to rate" with "performance problem." They're different situations requiring different actions.
+**Critical:** Don't confuse "too new to rate" with "performance concerns." They're different situations requiring different actions.
 
 ---
 
@@ -215,7 +538,7 @@ As you prepare for calibration meetings, here are typical situations you'll enco
 
 **Situation:** You rated 80% of your team as High Performance because you genuinely believe they're all doing great work.
 
-**The problem:** Statistical reality says not everyone can be above average. This indicates grade inflation.
+**The reality:** Statistical reality says not everyone can be above average. This suggests different standards.
 
 **What to do:**
 1. Compare your team to organizational benchmarks (typically 15-20% High Performance)
@@ -231,7 +554,7 @@ As you prepare for calibration meetings, here are typical situations you'll enco
 
 **Situation:** You can rate current performance easily but struggle to assess future potential.
 
-**The problem:** Potential is harder to evaluate than performance, especially for new managers.
+**The challenge:** Potential is harder to evaluate than performance, especially for new managers.
 
 **What to do:**
 1. **Ask these questions:**
@@ -252,7 +575,7 @@ As you prepare for calibration meetings, here are typical situations you'll enco
 
 **Situation:** You placed 70% of your team in the center box (Core Performers) because you're not comfortable differentiating.
 
-**The problem:** This avoids difficult decisions and hides both stars and under-performers.
+**The reality:** This avoids difficult decisions and hides both stars and under-performers.
 
 **What to do:**
 1. **Run Donut Mode exercise** to force differentiation ([see complete guide](donut-mode.md))
@@ -270,7 +593,7 @@ As you prepare for calibration meetings, here are typical situations you'll enco
 
 **Situation:** You have 5 employees hired in the past 3 months. Where do they belong?
 
-**The problem:** Rating new hires too early leads to inflated ratings based on potential rather than proven performance.
+**The reality:** Rating new hires too early leads to inflated ratings based on potential rather than proven performance.
 
 **What to do:**
 1. **Place new hires in Position 1 (Too New)** or default to Medium/Medium with a note
@@ -287,7 +610,7 @@ As you prepare for calibration meetings, here are typical situations you'll enco
 
 **Situation:** Your best performer is also rated High Potential, but they've told you they don't want to be a manager.
 
-**The problem:** Confusing "high performance" with "high potential for leadership."
+**The reality:** Confusing "high performance" with "high potential for leadership."
 
 **What to do:**
 1. **Clarify what Potential means:**
@@ -388,7 +711,7 @@ Now transfer your ratings to 9Boxer:
 
 ---
 
-### Step 5: Validate with Donut Mode (30 minutes, optional but recommended)
+### Step 5: Review with Donut Mode (30 minutes, optional but recommended)
 
 If your center box is crowded (>60% of employees), run the Donut Mode exercise:
 
@@ -422,13 +745,13 @@ Notes help you remember your reasoning and defend ratings in calibration.
 
 ### Step 7: Review Distribution and Export (15 minutes)
 
-Before calibration, validate your work:
+Before calibration, review your work:
 
 1. **Check Statistics tab:**
    - Is distribution realistic? (10-15% Stars, 50-60% middle tier)
-   - Any red flags? (too many high, too few stars)
+   - Any patterns? (too many high, too few stars)
 2. **Check Intelligence tab:**
-   - Any anomalies or bias patterns detected?
+   - Any patterns detected?
 3. **Review Changes tab:**
    - Do all changes have notes?
 4. **Export to Excel:**
@@ -489,8 +812,8 @@ Your initial ratings are a starting point, not the final answer.
 
 **Calibration helps:**
 - Ensure consistent standards across managers
-- Validate ratings through peer discussion
-- Identify and correct bias
+- Review ratings through peer discussion
+- Identify and align on standards
 - Build consensus on borderline cases
 
 Come to calibration prepared to discuss and adjust.
@@ -519,7 +842,7 @@ Avoid these pitfalls as you get started:
 
 **Why it happens:** Fear of difficult conversations, uncertainty about criteria.
 
-**The problem:** Avoids differentiation, hides both stars and under-performers.
+**The reality:** Avoids differentiation, hides both stars and under-performers.
 
 **Solution:** Use Donut Mode to force ranking. Ask "If they can't all be Medium, who's actually higher or lower?"
 
@@ -529,7 +852,7 @@ Avoid these pitfalls as you get started:
 
 **Why it happens:** Intuitive assumption that top performers are also high potential.
 
-**The problem:** Misses excellent individual contributors (High Performance, Low Potential) and future leaders still developing (Low Performance, High Potential).
+**The reality:** Misses excellent individual contributors (High Performance, Low Potential) and future leaders still developing (Low Performance, High Potential).
 
 **Solution:** Rate each dimension separately using distinct questions. See [Understanding the Grid](understanding-grid.md#axis-definitions).
 
@@ -539,7 +862,7 @@ Avoid these pitfalls as you get started:
 
 **Why it happens:** Optimism from successful hiring, pressure to complete all ratings.
 
-**The problem:** Inflates potential ratings based on interviews, not actual performance.
+**The reality:** Inflates potential ratings based on interviews, not actual performance.
 
 **Solution:** Mark new hires as "Too New to Rate" in Position 1 or default to Medium/Medium with a note. Reassess after 6-12 months.
 
@@ -549,7 +872,7 @@ Avoid these pitfalls as you get started:
 
 **Why it happens:** Time pressure, assuming you'll remember later.
 
-**The problem:** Can't defend ratings in calibration, lose reasoning over time.
+**The reality:** Can't defend ratings in calibration, lose reasoning over time.
 
 **Solution:** Add brief notes as you rate. 1-2 sentences per employee is enough.
 
@@ -559,7 +882,7 @@ Avoid these pitfalls as you get started:
 
 **Why it happens:** Forgetting that others need the updated data.
 
-**The problem:** Calibration decisions not shared with HR, managers, or leadership.
+**The reality:** Calibration decisions not shared with HR, managers, or leadership.
 
 **Solution:** Export at milestones - after calibration meetings, before quarterly reviews, when sharing with stakeholders.
 
@@ -579,9 +902,9 @@ Once you've completed your initial 9-box assessment:
 
 ### Learn Advanced Features
 
-- **[Donut Mode](donut-mode.md)** - Validate center box placements
+- **[Donut Mode](donut-mode.md)** - Review center box placements
 - **[Filters](filters.md)** - Focus on specific teams or rating tiers
-- **[Statistics and Intelligence](statistics.md)** - Analyze patterns and bias
+- **[Statistics and Intelligence](statistics.md)** - Analyze patterns and rating differences
 - **[Tracking Changes](tracking-changes.md)** - Document calibration adjustments
 
 ### Plan Development Actions
@@ -608,7 +931,7 @@ For each box in your grid, create action plans:
 | Know how many Stars I should have | Target 10-15% of workforce in Position 9 |
 | Rate a new hire | Place in Position 1 (Too New) or Medium/Medium with note, reassess in 6 months |
 | Differentiate Performance vs Potential | Performance = current role execution, Potential = future advancement capacity |
-| Validate my center box | Run [Donut Mode exercise](donut-mode.md) |
+| Review my center box | Run [Donut Mode exercise](donut-mode.md) |
 | Check if my distribution is realistic | View Statistics tab - compare to ideal guidelines |
 | Add notes to my ratings | Click employee > Changes tab > Type in Notes field |
 | Prepare for calibration | Review Statistics, identify uncertain employees, export current ratings |
@@ -621,7 +944,7 @@ For each box in your grid, create action plans:
 - **[Getting Started](getting-started.md)** - Complete walkthrough of uploading data and using 9Boxer
 - **[Understanding the Grid](understanding-grid.md)** - Detailed descriptions of all 9 positions
 - **[Donut Mode](donut-mode.md)** - Advanced technique for validating center box ratings
-- **[Statistics and Intelligence](statistics.md)** - Analyze distribution and detect rating bias
+- **[Statistics and Intelligence](statistics.md)** - Analyze distribution and identify rating patterns
 - **[Best Practices](best-practices.md)** - Proven strategies for effective talent reviews
 - **[FAQ](faq.md)** - Answers to common questions from new users
 
