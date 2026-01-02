@@ -815,7 +815,7 @@ def _calculate_manager_statistics(
                 "medium_deviation": round(cast("float", mgr["medium_deviation"]), 1),
                 "low_deviation": round(cast("float", mgr["low_deviation"]), 1),
                 "total_deviation": round(cast("float", mgr["total_deviation"]), 1),
-                "z_score": round(float(z_score), 2),
+                "z_score": round(z_score, 2),
                 "is_significant": bool(abs(z_score) >= 2.0),
             }
         )

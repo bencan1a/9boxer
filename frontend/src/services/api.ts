@@ -140,6 +140,22 @@ class ApiClient {
     console.log(`[ApiClient] Base URL updated to: ${baseURL}`);
   }
 
+  /**
+   * Generic GET request with retry logic
+   *
+   * This method provides a generic way to make GET requests with the same
+   * retry logic that other API methods use via withRetry().
+   *
+   * @param url - The URL path to request (relative to base URL)
+   * @returns Promise with the response data
+   */
+  async get<T>(url: string): Promise<T> {
+    return withRetry(async () => {
+      const response = await this.client.get<T>(url);
+      return response.data;
+    });
+  }
+
   // ==================== Session Methods ====================
 
   async upload(file: File, filePath?: string): Promise<UploadResponse> {
