@@ -42,14 +42,14 @@ def test_get_employees_when_filter_by_manager_then_filters_correctly(
     # Get all employees to find a manager name
     all_response = test_client.get("/api/employees", headers=session_with_employees)
     all_data = all_response.json()
-    first_manager = all_data["employees"][0]["manager"]
+    first_manager = all_data["employees"][0]["direct_manager"]
 
     response = test_client.get(f"/api/employees?managers={first_manager}", headers=session_with_employees)
 
     assert response.status_code == 200
     data = response.json()
     assert data["filtered"] > 0
-    assert all(emp["manager"] == first_manager for emp in data["employees"])
+    assert all(emp["direct_manager"] == first_manager for emp in data["employees"])
 
 
 def test_get_employees_when_exclude_ids_then_excludes_correctly(

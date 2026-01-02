@@ -249,7 +249,7 @@ export async function captureStorybookScreenshot(
   const {
     storyId,
     outputPath,
-    theme = "light",
+    theme = "dark",
     fullPage = false,
     selector = "#storybook-root",
     waitTime = 500,

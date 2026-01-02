@@ -1,5 +1,7 @@
 # Best Practices for 9Boxer
 
+> **Quick navigation:** First time running calibration? Start with [Quick Workflow](getting-started.md). Looking for specific guidance? Jump to [difficult scenarios](reference/difficult-scenarios.md) or [filter strategy](reference/filtering-decision-tree.md).
+
 Maximize the value of your talent reviews with these proven best practices. This guide organizes recommendations by workflow stage, helping you make the most of 9Boxer from preparation through follow-through.
 
 ---
@@ -8,15 +10,15 @@ Maximize the value of your talent reviews with these proven best practices. This
 
 ### Prepare Your Data in Excel First
 
-**What:** Clean and validate your employee data before uploading to 9Boxer.
+**What:** Clean and review your employee data before uploading to 9Boxer.
 
-**Why:** Data quality issues cause upload failures, missing employees, and inaccurate analysis. Fixing problems in Excel before upload saves time and prevents frustration during your review session.
+**Why:** Data quality issues cause upload failures, missing employees, and inaccurate analysis. Fixing issues in Excel before upload saves time and prevents frustration during your review session.
 
 **How:** Before uploading, verify your Excel file:
 
 - **Use required column names**: `Employee ID`, `Worker`, `Performance`, `Potential`
 - **Use valid rating values only**: `Low`, `Medium`, or `High`
-- **Remove duplicate employees** (check for multiple rows with same Employee ID)
+- **Remove duplicate employees** (look for multiple rows with same Employee ID)
 - **Fix inconsistent formatting** (extra spaces, different capitalizations)
 - **Standardize department names** (e.g., "Engineering" not "engineering" or "Eng")
 - **Ensure complete data** (no blank cells in required columns)
@@ -36,21 +38,9 @@ See [Employee Data](employee-data.md) for complete requirements.
 
 **What:** Define what "High Performance" and "High Potential" mean for your organization before rating anyone.
 
-**Why:** Inconsistent rating definitions lead to skewed distributions and unfair comparisons. If one manager rates generously while another is strict, the grid won't reflect reality and calibration becomes difficult.
+**Why:** Inconsistent rating definitions lead to skewed distributions and unfair comparisons.
 
-**How:** Create a simple rubric defining performance and potential levels. Share this with all managers contributing ratings.
-
-**Example rubric:**
-
-**Performance Scale:**
-- **Low (1-3):** Meets some expectations, needs improvement in key areas
-- **Medium (4-7):** Consistently meets expectations, reliable contributor
-- **High (8-10):** Exceeds expectations, delivers exceptional results
-
-**Potential Scale:**
-- **Low:** Best in current role, limited advancement capacity
-- **Medium:** Could advance 1-2 levels with development
-- **High:** Leadership potential, could advance 3+ levels
+**How:** Create a simple rubric defining performance levels (Low: needs improvement, Medium: meets expectations, High: exceeds expectations) and potential levels (Low: best in current role, Medium: could advance 1-2 levels, High: leadership potential 3+ levels). Share this with all managers contributing ratings.
 
 See [Understanding the Grid](understanding-grid.md#axis-definitions) for detailed guidance on defining ratings.
 
@@ -60,17 +50,9 @@ See [Understanding the Grid](understanding-grid.md#axis-definitions) for detaile
 
 **What:** Save a copy of your source Excel file before making any changes.
 
-**Why:** You need a baseline to compare against, and you may need to restart if something goes wrong. Without a backup, you can't recover from accidental data loss or corruption.
+**Why:** You need a baseline to compare against and the ability to restart if something goes wrong.
 
-**How:**
-
-1. Save a master copy before uploading: `talent_data_ORIGINAL_2024-Q4.xlsx`
-2. Store backups in a secure, separate location (not just the same folder)
-3. Maintain version history: `talent_data_2024-Q4-v1.xlsx`, `v2.xlsx`, etc.
-4. Never overwrite your original file
-
-!!! tip "Date your filenames"
-    Use ISO date format (YYYY-MM-DD) in filenames for easy sorting: `talent_data_2024-12-20.xlsx`
+**How:** Save a master copy before uploading (`talent_data_ORIGINAL_2024-Q4.xlsx`), store backups in a secure location, maintain version history, and never overwrite your original file. Use ISO date format (YYYY-MM-DD) in filenames for easy sorting.
 
 ---
 
@@ -78,15 +60,9 @@ See [Understanding the Grid](understanding-grid.md#axis-definitions) for detaile
 
 **What:** Align with leadership on the purpose, timeline, and expected outcomes of the talent review session.
 
-**Why:** Without alignment, you may waste time reviewing the wrong employees, using incorrect criteria, or producing outputs nobody needs. Stakeholder buy-in ensures your work drives real decisions.
+**Why:** Without alignment, you may waste time reviewing the wrong employees or producing outputs nobody needs.
 
-**How:**
-
-- **Clarify the goal:** Calibration? Succession planning? Performance review prep?
-- **Define scope:** Which departments, levels, or teams to review?
-- **Agree on timeline:** When do final results need to be delivered?
-- **Confirm deliverables:** What format do stakeholders need (Excel export, summary report, presentation)?
-- **Establish rating criteria:** Use the same performance/potential definitions as stakeholders
+**How:** Clarify the goal (calibration, succession planning, performance review prep), define scope (departments, levels, teams), agree on timeline and deliverables format, and establish shared rating criteria.
 
 ---
 
@@ -94,16 +70,9 @@ See [Understanding the Grid](understanding-grid.md#axis-definitions) for detaile
 
 **What:** Decide how you'll organize your review work before you begin.
 
-**Why:** Reviewing hundreds of employees at once is overwhelming and inefficient. A structured approach ensures thorough, consistent reviews without missing anyone.
+**Why:** Reviewing hundreds of employees at once is overwhelming and inefficient.
 
-**How:** Choose a review strategy based on your organization:
-
-- **By department:** Review Engineering, then Marketing, then Sales
-- **By manager:** Review each manager's team separately for calibration
-- **By level:** Review all directors, then all managers, then all ICs
-- **By rating tier:** Start with Stars, then review under-performers, then middle tier
-
-Use [Filters](filters.md) to implement your chosen structure during the session.
+**How:** Choose a review strategy: by department, by level (all directors, then all managers, then all ICs), or by rating tier. Use [Filters](filters.md) to implement your chosen structure during the session.
 
 ---
 
@@ -113,25 +82,11 @@ Use [Filters](filters.md) to implement your chosen structure during the session.
 
 **What:** Use clear, distinct criteria to differentiate Performance (current role) from Potential (future capacity).
 
-**Why:** Confusing these dimensions leads to misplaced employees. High performers aren't automatically high potential, and vice versa. Each dimension measures something different.
+**Why:** Confusing these dimensions leads to misplaced employees. High performers aren't automatically high potential, and vice versa.
 
-**How:** Ask these specific questions:
+**How:** For Performance, ask how well they execute in their current role and what results they've delivered. For Potential, ask how far they could advance and whether they can take on broader scope or leadership.
 
-**For Performance:**
-- How well does this person execute in their current role?
-- Do they meet, exceed, or fall short of expectations?
-- What results have they delivered recently?
-
-**For Potential:**
-- How far could this person advance in the organization?
-- Do they have the capacity to take on broader scope or leadership?
-- Can they learn new skills and adapt to different roles?
-
-**Common patterns:**
-
-- **High Performance + Low Potential:** Excellent individual contributor, best in current role
-- **Low Performance + High Potential:** New hire still ramping, or struggling in wrong role but has capacity
-- **High Performance + High Potential:** Star - top talent with leadership capacity
+**Common patterns:** High Performance + Low Potential (excellent IC, best in current role), Low Performance + High Potential (new hire ramping or wrong role but has capacity), High Performance + High Potential (Star with leadership capacity).
 
 See [Understanding the Grid](understanding-grid.md) for detailed position descriptions.
 
@@ -139,19 +94,11 @@ See [Understanding the Grid](understanding-grid.md) for detailed position descri
 
 ### Review Employee Context Before Rating
 
-**What:** Check an employee's details, timeline, and organizational context before making rating decisions.
+**What:** Review an employee's details, timeline, and organizational context before making rating decisions.
 
-**Why:** Ratings should reflect the full picture. Without context, you might overlook recent promotions, performance trends, or role changes that affect proper placement.
+**Why:** Ratings should reflect the full picture including recent promotions, performance trends, or role changes.
 
-**How:** Before moving or rating an employee:
-
-1. **Click the employee tile** to open the Details panel
-2. **Review the Timeline** to see previous movements and trajectory
-3. **Check job level and manager** to understand organizational context
-4. **Note recent changes** (promotions, role changes, transfers)
-5. **Consider the trend** (improving vs. declining performance)
-
-This context-informed approach ensures rating changes are justified and documented.
+**How:** Click the employee tile to open the Details panel. Review the Timeline to see previous movements and trajectory, note job level and manager, and consider recent changes and performance trends.
 
 See [Working with Employees](working-with-employees.md) for complete details panel guide.
 
@@ -161,17 +108,9 @@ See [Working with Employees](working-with-employees.md) for complete details pan
 
 **What:** Use a consistent decision framework when employees fall between two ratings.
 
-**Why:** Without a systematic approach, borderline decisions become arbitrary and inconsistent. This undermines trust in the entire rating process.
+**Why:** Without a systematic approach, borderline decisions become arbitrary and inconsistent.
 
-**How:** For employees who seem "between" Medium and High:
-
-1. **Compare to clear examples:** Is this person more like your definite Highs or definite Mediums?
-2. **Apply the 6-month test:** Where will they likely be in 6 months if trends continue?
-3. **Use the promotion test:** Would you promote this person tomorrow if a role opened?
-4. **Check peer comparison:** How do they compare to others at the same level/role?
-5. **Default to conservative:** When truly uncertain, rate Medium and revisit in next cycle
-
-**Document borderline decisions** with notes explaining your reasoning. This helps in calibration discussions.
+**How:** Compare to clear examples, apply the 6-month test (where will they be if trends continue?), use the promotion test (would you promote them tomorrow?), review peer comparison, and default to conservative when uncertain. Document borderline decisions with notes explaining your reasoning.
 
 ---
 
@@ -208,90 +147,105 @@ See [Tracking Changes](tracking-changes.md) for complete note-taking guidance.
 
 ---
 
-### Use Filters to Maintain Focus
+### Use Filters Strategically During Calibration
 
-**What:** Apply filters to review small, manageable groups of employees at a time.
+**What:** Use level-based filtering as your primary calibration approach, not manager-by-manager reviews.
 
-**Why:** Reviewing hundreds of employees simultaneously is cognitively overwhelming and leads to inconsistent decisions. Filtering lets you focus on comparable groups and maintain rating consistency.
+**Why:** Calibration is about ensuring consistent standards across managers at each level. Reviewing by level reveals rating patterns and prevents defensive silos. Manager-by-manager filtering encourages "defend my turf" mentality instead of collaborative alignment.
 
-**How:** Don't try to review everyone at once:
+**How:** Start with level-based filtering (all ICs, then all Managers), refine by function if needed, and finish with Intelligence for anomaly detection.
 
-- **Focus on one department, level, or manager at a time**
-- **Use filters to narrow your view** to 20-50 employees
-- **Clear filters between different focus areas** to avoid confusion
-- **Apply multiple filters** to drill down: "High Potential" + "Engineering" shows engineering's future leaders
+**Key principle:** Never filter manager-by-manager during calibration - this creates silos instead of cross-manager comparison.
 
-**Workflow example:**
+**Why level-first works:** When you filter to "All Individual Contributors," you see Manager A's ICs next to Manager B's ICs next to Manager C's ICs. Patterns become obvious: "Manager A rated 80% as High, Manager B rated 20% as High." This reveals manager patterns without creating defensiveness.
 
-1. Filter to "Engineering Department"
-2. Review and rate all engineering employees
-3. Export progress: `talent_engineering_complete.xlsx`
-4. Clear filters, apply "Marketing Department"
-5. Repeat
-
-See [Filters](filters.md) for complete filtering strategies.
+For complete filter strategy including the decision tree, when to use each filter type, and session flows for different organization sizes, see [Filter Strategy Reference](reference/filtering-decision-tree.md). For global organizations, also review [Cultural Calibration](reference/cultural-calibration.md) to address location-based rating differences.
 
 ---
 
 ## During Calibration: Meeting Workflow
 
+### Prepare Before the Meeting Starts
+
+**What:** Complete essential preparation steps before your calibration session begins.
+
+**Why:** Walking into a calibration meeting unprepared wastes time and leads to unproductive discussions.
+
+**How:** Review Statistics tab (check distribution percentages), check Intelligence tab (note red/yellow highlights), list borderline cases, test your filters, and share meeting agenda with discussion topics ahead of time.
+
+Before your meeting, review [Creating Psychological Safety](reference/psychological-safety.md) for tactics to build trust and enable honest discussions.
+
+---
+
 ### Use Filters to Focus Discussions
 
-**What:** During calibration meetings, filter the grid to show only the employees being discussed.
+**What:** During calibration meetings, work level-by-level across all managers, not manager-by-manager.
 
-**Why:** Keeping all employees visible during calibration is distracting and makes it hard to focus. Filters let participants concentrate on specific teams or rating tiers without visual clutter.
+**Why:** Cross-manager level comparison ensures consistent standards and reveals rating patterns.
 
-**How:** Common calibration filter strategies:
+**How:** Project 9Boxer and apply level-based filters to guide discussion. Set level filter (e.g., "Individual Contributor"), review cohort together noting which managers' ratings differ, discuss specific employees, make adjustments via drag-and-drop as group reaches consensus, add notes documenting decisions, move to next level and repeat, then do final Intelligence sweep.
 
-- **By manager:** "Show me Sarah's team" - discuss one manager's ratings at a time
-- **By department:** "Let's calibrate Engineering" - ensure consistency within department
-- **By rating tier:** "Show all Stars" - validate that all high ratings are justified
-- **By anomaly:** "Show Low Performance + High Potential" - discuss unusual combinations
+**Example meeting structure:** 0:00-0:30 All ICs, 0:30-0:50 All Managers, 0:50-1:00 Intelligence review.
 
-**Meeting workflow:**
+See [Filters](filters.md) for complete filtering guide.
 
-1. **Project 9Boxer screen** so all participants can see
-2. **Apply filter** to focus on discussion topic
-3. **Discuss each employee** using visible details
-4. **Make adjustments** via drag-and-drop in real-time
-5. **Add notes collaboratively** documenting consensus
-6. **Export after meeting** to capture calibration decisions
+---
 
-See [Filters](filters.md) for all available filter options.
+### Stay Organized During the Session
+
+**What:** Follow a consistent workflow during live calibration to keep meetings productive and ensure nothing gets missed.
+
+**Why:** Long calibration meetings can become chaotic without structure.
+
+**How:** Open 9Boxer with data loaded and share your screen. For each employee, use filters to focus on relevant level, click tile to show details, facilitate discussion, reach consensus, make rating changes via drag-and-drop, and add notes immediately. Throughout the meeting, watch the File menu badge, review Statistics periodically, keep discussions moving (2-3 minutes per employee max), and table contentious cases. Before ending, review Changes tab to ensure all moves have notes, verify Statistics shows improved distribution, and agree on next steps.
+
+---
+
+### Keep Discussions Moving
+
+**What:** Set time limits for each employee discussion and stick to them.
+
+**Why:** Time-boxing prevents unproductive debates and keeps calibration on schedule.
+
+**How:** Allow 2-3 minutes per employee maximum, set a timer if helpful, table contentious cases for offline follow-up, focus on clear outliers first, and save borderline cases for last. If a discussion goes past 5 minutes, table it and schedule a separate meeting for complex cases.
+
+For specific guidance on handling difficult moments when discussions stall or become contentious, see [Difficult Calibration Scenarios](reference/difficult-scenarios.md).
 
 ---
 
 ### Review Statistics to Identify Patterns
 
-**What:** Use the Statistics tab to detect rating patterns and potential bias before finalizing calibration.
+**What:** Use the Statistics tab to identify rating patterns that spark productive calibration conversations.
 
-**Why:** Statistical analysis reveals patterns humans miss: one manager rating everyone high, one department with no stars, or skewed distributions. These patterns indicate calibration issues that need discussion.
+**Why:** Statistical analysis reveals patterns you might miss when looking at individual employees. Different rating standards across managers, concentrated distributions, or unusual patterns - these are conversation starters, not issues to fix.
 
-**How:** Before finalizing calibration, check the Statistics tab for:
+**How:** Before finalizing calibration, review the Statistics tab for patterns worth discussing:
 
-- **Overall distribution:** Is it realistic (not everyone High or Low)?
-- **Manager comparison:** Do some managers rate consistently higher/lower than peers?
-- **Department comparison:** Are distributions similar across departments?
-- **Anomaly flags:** Red/yellow highlights indicate statistical outliers
+- **Overall distribution:** Does it match your organization's reality?
+- **Manager comparison:** Do different managers have different rating standards?
+- **Department comparison:** Are distributions different across departments?
+- **Intelligence flags:** Red/yellow highlights show statistical patterns worth exploring
 
-**Common patterns to watch for:**
+**Patterns that spark good conversations:**
 
-- ⚠️ One manager rates everyone as "High" (leniency bias)
-- ⚠️ One department has no Stars (under-rating or talent gap?)
-- ⚠️ All new hires rated "High Potential" (premature ratings)
-- ⚠️ One location consistently lower than others (harsh raters or real performance issues?)
+- 💬 Manager A rates 80% as "High" while Manager B rates 20% as "High" → **Standards may differ - let's compare what "high performance" means to each**
+- 💬 Engineering has 30% Stars while Sales has 5% → **Is this real talent difference or different expectations? Let's discuss**
+- 💬 All employees hired in past 6 months rated "High Potential" → **Are we rating based on interviews or actual evidence? Worth reviewing**
+- 💬 One location rates consistently lower than others → **Cultural difference in rating standards or actual performance gap? Good discussion topic**
 
-![Intelligence tab showing anomaly detection with red and yellow warning cards indicating statistical outliers including manager leniency bias and department rating inconsistencies requiring calibration discussion before finalizing performance assessments](images/screenshots/workflow/intelligence-summary-anomalies.png)
+![Intelligence tab showing pattern detection with red and yellow cards indicating statistical patterns including different manager rating standards and department rating variations that benefit from calibration discussion before finalizing performance assessments](images/screenshots/workflow/intelligence-summary-anomalies.png)
 
-The Intelligence tab highlights anomalies that need discussion. Use these red flags to drive calibration conversations.
+The Intelligence tab highlights patterns that benefit from group discussion. Use these insights to start conversations about standards and alignment.
 
-**Calibration questions to ask:**
+**Questions that lead to productive calibration:**
 
-- "Why does Team A have 30% Stars while Team B has 5%?"
-- "Are Manager X's standards aligned with Manager Y's?"
-- "Should we recalibrate Department Z's ratings?"
+- "Manager A, your team has 30% Stars while Manager B has 5%. Walk us through what you're seeing that puts them in that category."
+- "Engineering and Sales have very different distributions. Do we need different standards, or should we align?"
+- "Location X rates lower across the board. Is this cultural, or are we seeing real performance differences?"
 
-See [Statistics and Intelligence](statistics.md) for complete analysis features.
+The goal is understanding and alignment, not finding who's "right" or "wrong."
+
+For navigating the interpersonal dynamics when discussing these patterns, see [Power Dynamics and Politics](reference/power-dynamics-and-politics.md). For complete analysis features, see [Statistics and Intelligence](statistics.md).
 
 ---
 
@@ -303,7 +257,7 @@ See [Statistics and Intelligence](statistics.md) for complete analysis features.
 
 **How:** During calibration meetings:
 
-1. **Keep Changes tab visible** (or check it periodically)
+1. **Keep Changes tab visible** (or review it periodically)
 2. **Watch the change count** on the File menu badge
 3. **Ensure every change has a note** before moving to next employee
 4. **Review the full list** before ending the meeting
@@ -344,7 +298,7 @@ See [Tracking Changes](tracking-changes.md) for change management workflow.
 
 ---
 
-### Use Donut Mode to Validate the Center Box
+### Use Donut Mode to Review the Center Box
 
 **What:** During calibration, activate Donut Mode to force-rank employees currently rated "Medium Performance, Medium Potential."
 
@@ -369,19 +323,9 @@ Follow the complete step-by-step process in the [Donut Mode Exercise guide](donu
 
 **What:** Export final ratings immediately after calibration and distribute to stakeholders within 24 hours.
 
-**Why:** Delays between calibration and follow-through reduce impact and let decisions become stale. Prompt action maintains momentum and signals that talent decisions matter.
+**Why:** Delays between calibration and follow-through reduce impact and let decisions become stale.
 
-**How:**
-
-1. **Export immediately** after calibration meeting ends (while 9Boxer is still open)
-2. **Verify the export** by opening the Excel file
-3. **Check for completeness:**
-   - All changes saved correctly
-   - Notes appear in the export
-   - Modified in Session column marks changed employees
-   - Original data preserved
-4. **Share with stakeholders** via secure file transfer (encrypted email, secure file sharing)
-5. **Follow file naming convention:** `talent_calibration_2024-Q4_FINAL.xlsx`
+**How:** Export immediately after the meeting while 9Boxer is still open. Verify the export shows all changes, notes, and the "Modified in Session" column. Share with stakeholders via secure file transfer using clear naming: `talent_calibration_2024-Q4_FINAL.xlsx`
 
 See [Exporting Your Changes](exporting.md) for export best practices and file management.
 
@@ -391,36 +335,17 @@ See [Exporting Your Changes](exporting.md) for export best practices and file ma
 
 **What:** Use the finalized grid to create targeted development strategies for each position.
 
-**Why:** The 9-box grid is a planning tool, not just a rating system. Different positions require different talent strategies. Without follow-through, the grid is just an interesting visualization.
+**Why:** The 9-box grid is a planning tool, not just a rating system. Different positions require different talent strategies.
 
-**How:** Develop box-specific action plans:
+**How:** Each box needs a different approach:
 
-**Stars (High Performance, High Potential):**
-- **Priority:** Retention and advancement
-- **Actions:** Succession planning, stretch assignments, leadership development, retention bonuses
-- **Cadence:** Quarterly check-ins, fast-track promotion timelines
+- **Stars** - Retention and advancement (succession planning, stretch assignments, fast-track promotions)
+- **High Potential** - Accelerate development (mentorship, leadership training, cross-functional projects)
+- **High Performers** - Leverage expertise (technical leadership, knowledge sharing, SME roles)
+- **Core Performers** - Maintain engagement (skill development, clear goals, ongoing feedback)
+- **Under-Performers** - Performance improvement or transition (PIPs, coaching, role reassessment)
 
-**High Potential (Medium Performance, High Potential):**
-- **Priority:** Accelerate development
-- **Actions:** Mentorship, leadership training, cross-functional projects
-- **Cadence:** Monthly development check-ins
-
-**High Performers (High Performance, Medium Potential):**
-- **Priority:** Leverage expertise
-- **Actions:** Technical leadership, knowledge sharing, subject matter expert roles
-- **Cadence:** Quarterly recognition and role optimization
-
-**Core Performers (Medium Performance, Medium Potential):**
-- **Priority:** Maintain engagement
-- **Actions:** Skill development, clear goals, ongoing feedback
-- **Cadence:** Standard performance review cycle
-
-**Under-Performers (Low Performance positions):**
-- **Priority:** Performance improvement or transition
-- **Actions:** Performance improvement plans, coaching, role reassessment, or managed exits
-- **Cadence:** Weekly or bi-weekly check-ins
-
-**Export filtered views** for each box to share targeted lists with managers.
+Export filtered views for each box to share targeted lists with managers.
 
 ---
 
@@ -428,22 +353,11 @@ See [Exporting Your Changes](exporting.md) for export best practices and file ma
 
 **What:** Set specific dates for the next talent review cycle before ending the current one.
 
-**Why:** Without scheduled follow-up, talent reviews become one-off events rather than ongoing processes. Regular cycles ensure ratings stay current and development plans get executed.
+**Why:** Without scheduled follow-up, talent reviews become one-off events rather than ongoing processes.
 
-**How:**
+**How:** Decide review frequency (quarterly recommended), schedule the next review before ending the current session, and send calendar invites to all participants. Use current export as baseline for next review.
 
-1. **Decide review frequency:** Quarterly (recommended), semi-annual, or annual
-2. **Schedule next review date** before current session ends
-3. **Send calendar invites** to all participants
-4. **Set milestone check-ins** between full reviews (mid-quarter progress checks)
-5. **Use current export as baseline** for next review (re-upload and compare)
-
-**Recommended calendar:**
-
-- **Q1:** Full talent review and calibration
-- **Q2:** Mid-year check-in (review Stars and Under-Performers only)
-- **Q3:** Full talent review and calibration
-- **Q4:** Year-end review and development planning
+**Recommended:** Quarterly full reviews with mid-quarter progress checks for Stars and Under-Performers.
 
 ---
 
@@ -451,26 +365,17 @@ See [Exporting Your Changes](exporting.md) for export best practices and file ma
 
 **What:** Share calibration results with employees and managers in a structured, professional manner.
 
-**Why:** Transparency builds trust, but raw grid data can be misinterpreted or demotivating. Thoughtful communication ensures talent decisions drive development rather than defensiveness.
+**Why:** Transparency builds trust, but raw grid data can be misinterpreted or demotivating.
 
 **How:**
 
-**For managers:**
-- Share full grid and export data
-- Provide context: overall distribution, calibration decisions, next steps
-- Equip them to discuss ratings with their reports
-- Review development actions for each box
+**For managers:** Share full grid with context about distribution, calibration decisions, and development actions for each box.
 
-**For employees:**
-- Share individual ratings as part of performance review conversation
-- Focus on development path, not grid position label
-- Discuss specific actions and support available
-- Frame potential honestly but encouragingly
+**For employees:** Share individual ratings as part of performance conversations, focusing on development path and support available rather than grid labels.
 
-**What NOT to share:**
-- ❌ Raw grid labels ("You're in the Problem box")
-- ❌ Comparisons to specific peers ("Jane is a Star, you're not")
-- ❌ Grid position without context or development plan
+**Never share:** Raw grid labels without context, peer comparisons, or position without development plan.
+
+For detailed guidance on manager-employee conversations after calibration, see [Post-Calibration Conversations](reference/post-calibration-conversations.md).
 
 ---
 
@@ -478,23 +383,36 @@ See [Exporting Your Changes](exporting.md) for export best practices and file ma
 
 **What:** Keep dated exports at key points to track talent trends over time.
 
-**Why:** Single-point-in-time snapshots can't show trends. Historical data reveals patterns: who's improving, which teams are developing talent, whether interventions worked.
+**Why:** Historical data reveals patterns like who's improving, which teams develop talent effectively, and whether interventions worked.
 
-**How:** Export and archive at these milestones:
+**How:** Export and archive at quarterly sessions, annual reviews, calibration meetings, performance cycles, and before major changes. Use naming convention: `talent_[event]_[YYYY-MM-DD].xlsx`
 
-- **Quarterly exports:** `talent_2024-Q1.xlsx`, `talent_2024-Q2.xlsx`, etc.
-- **Annual exports:** `talent_2024_year_end.xlsx`
-- **Calibration sessions:** `talent_calibration_2024-Q4.xlsx`
-- **Performance cycles:** `talent_before_reviews.xlsx`, `talent_after_reviews.xlsx`
-- **Before major changes:** `talent_before_reorg_2024-Q3.xlsx`
+Use historical data to track employee trajectories, measure development progress, evaluate interventions, and support succession planning.
 
-**Use historical data to:**
-- Track individual employee trajectories over time
-- Measure team/department development progress
-- Evaluate effectiveness of development interventions
-- Support succession planning and promotion decisions
+For comprehensive guidance on using multi-year data to improve calibration quality, see [Multi-Year Tracking](reference/multi-year-tracking.md).
 
-**File naming convention:** `talent_[event]_[YYYY-MM-DD].xlsx`
+!!! tip "Compare Before and After"
+    Open pre-calibration and post-calibration exports side-by-side to see total impact. Follow up quickly by sending results within 24 hours while the discussion is fresh. Plan the next calibration session before everyone leaves the meeting.
+
+---
+
+## Common Calibration Scenarios
+
+During calibration you'll encounter common challenges that require facilitation skill and courage. Here are some you'll see:
+
+**Grade inflation** - Manager rates 35% as high performers when benchmarks suggest 20%. Solution: View all high performers side-by-side to compare evidence and identify different standards.
+
+**Protected pet** - Senior leader shields an underperformer from honest discussion. Solution: Ask for specific evidence that justifies the rating compared to other high performers discussed that day.
+
+**New manager** - First-time manager rated everyone high due to inexperience. Solution: Private pre-meeting conversation to calibrate their understanding before group session.
+
+**Crowded center** - 70% of employees land in Medium/Medium. Solution: Use Donut Mode to force differentiation or ask forced-choice questions about promotions and exits.
+
+**Cultural differences** - Asia office rates 80% as Medium/Low while US office rates 60% as High. Solution: Decide whether to normalize globally or accept local standards, then communicate the decision clearly.
+
+**Recency bias** - Employee had terrible Q1-Q3 but excellent Q4, manager rates High based on recent memory. Solution: Frame rating as full-period assessment, distinguish "improving" from "sustained high performance."
+
+For detailed guidance on handling each scenario with facilitator scripts, psychological safety tactics, and power dynamics navigation, see [Difficult Scenarios Reference](reference/difficult-scenarios.md).
 
 ---
 
@@ -543,19 +461,19 @@ See [Exporting Your Changes](exporting.md) for detailed export workflow.
 
 ---
 
-### Don't Skip Validation Steps
+### Don't Skip Review Steps
 
-**What:** Avoid rushing through validation checks like Statistics review, Donut Mode, and Changes tab review.
+**What:** Avoid rushing through review steps like Statistics review, Donut Mode, and Changes tab review.
 
-**Why:** Skipping validation leads to errors that undermine trust in the process: missed rating bias, inconsistent calibration, undocumented changes, or employees placed incorrectly.
+**Why:** Skipping review steps leads to errors that undermine trust in the process: missed rating patterns, inconsistent calibration, undocumented changes, or employees placed incorrectly.
 
 **How to avoid:**
 
 **Before finalizing ratings, always:**
 
-1. ✅ **Check Statistics tab** for distribution and anomalies
+1. ✅ **Review Statistics tab** for distribution and patterns
 2. ✅ **Review Changes tab** to ensure all changes have notes
-3. ✅ **Validate center box** with Donut Mode (if using this technique)
+3. ✅ **Review center box** with Donut Mode (if using this technique)
 4. ✅ **Compare across managers/departments** for consistency
 5. ✅ **Open exported file** to verify it saved correctly
 
@@ -566,43 +484,43 @@ See [Exporting Your Changes](exporting.md) for detailed export workflow.
 - Donut Mode exercise: 20-30 minutes (optional but valuable)
 - Total: ~15-40 minutes of validation prevents hours of rework
 
-**Warning signs you skipped validation:**
+**Warning signs you skipped review steps:**
 
 - ⚠️ Exported file has changes without notes
-- ⚠️ Statistical anomalies you didn't investigate
+- ⚠️ Statistical patterns you didn't investigate
 - ⚠️ Stakeholders question rating consistency
 - ⚠️ Center box is overpopulated (>60% of employees)
 
 ---
 
-### Don't Ignore Statistical Anomalies
+### Don't Ignore Statistical Patterns
 
-**What:** Avoid dismissing red or yellow anomaly flags in the Intelligence tab without investigation.
+**What:** Avoid dismissing red or yellow highlights in the Intelligence tab without investigation.
 
-**Why:** Anomalies indicate potential rating bias, data quality issues, or real organizational problems. Ignoring them means you're signing off on potentially unfair or inaccurate ratings.
+**Why:** Patterns indicate potential rating differences, data quality issues, or real organizational patterns. Ignoring them means you're signing off on potentially unfair or inaccurate ratings.
 
 **How to avoid:**
 
 1. **Open the Intelligence tab** before finalizing ratings
-2. **Investigate each red/yellow flag:**
-   - Red flag = Severe anomaly (requires explanation or correction)
-   - Yellow flag = Moderate anomaly (worth discussing)
+2. **Investigate each red/yellow highlight:**
+   - Red highlight = Strong pattern (worth discussing or explaining)
+   - Yellow highlight = Moderate pattern (worth discussing)
 3. **Ask "Why is this happening?"**
    - Is it real (genuine performance difference)?
-   - Is it bias (manager rating leniency/harshness)?
+   - Is it different standards (manager rating approaches differ)?
    - Is it data quality (wrong department assignment)?
 4. **Document your finding** in notes or separate report
 5. **Take action:**
-   - Recalibrate if bias detected
+   - Recalibrate if different standards detected
    - Fix data quality issues
-   - Accept if anomaly is justified and document reasoning
+   - Accept if pattern is genuine and document reasoning
 
-**Common anomalies to investigate:**
+**Common patterns to investigate:**
 
 - Manager A has 40% Stars while Manager B has 5%
 - Engineering department has no Low performers
 - All employees hired in past 6 months rated "High Potential"
-- One location significantly higher/lower than others
+- One location rates significantly higher/lower than others
 
 See [Statistics and Intelligence](statistics.md) for complete anomaly detection features.
 
@@ -622,7 +540,7 @@ See [Statistics and Intelligence](statistics.md) for complete anomaly detection 
 - **Focus on ramp trajectory:** Are they learning quickly? Showing potential?
 - **Defer definitive ratings** until you have performance data from actual work
 
-**Exception:** If new hire came from internal transfer or you have extensive prior work history, earlier rating may be justified. Document the reasoning.
+**Exception:** If new hire came from internal transfer or you have extensive prior work history, earlier rating may be appropriate. Document the reasoning.
 
 ---
 
@@ -672,7 +590,7 @@ See [Statistics and Intelligence](statistics.md) for complete anomaly detection 
 
 **Exclusion filters (Clear unwanted):**
 
-- Review **all employees EXCEPT Sales** → Select filters, check all but Sales
+- Review **all employees EXCEPT Sales** → Select filters, select all but Sales
 - Review **only non-managers** → Exclude "Manager" job level
 
 **Sequential filtering workflow:**
@@ -765,6 +683,7 @@ See [Donut Mode](donut-mode.md) for complete exercise guide.
 
 ## Related Topics
 
+### Core Workflow Guides
 - [Getting Started](getting-started.md) - Complete walkthrough for new users
 - [Understanding the Grid](understanding-grid.md) - Detailed explanation of all 9 positions
 - [Tracking Changes](tracking-changes.md) - How to add notes and document decisions
@@ -773,3 +692,12 @@ See [Donut Mode](donut-mode.md) for complete exercise guide.
 - [Statistics and Intelligence](statistics.md) - Data analysis and anomaly detection
 - [Filters](filters.md) - Focus on specific employee groups
 - [Troubleshooting](troubleshooting.md) - Solutions for common issues
+
+### Specialized Calibration References
+- [Filter Strategy Reference](reference/filtering-decision-tree.md) - Complete filtering decision tree and session flows
+- [Creating Psychological Safety](reference/psychological-safety.md) - Build trust and enable honest discussion
+- [Power Dynamics and Politics](reference/power-dynamics-and-politics.md) - Navigate influence and credibility in calibration
+- [Difficult Calibration Scenarios](reference/difficult-scenarios.md) - Handle protected pets, layoffs, and contentious moments
+- [Post-Calibration Conversations](reference/post-calibration-conversations.md) - Communicate outcomes to employees
+- [Cultural Calibration](reference/cultural-calibration.md) - Navigate global and cross-cultural differences
+- [Multi-Year Tracking](reference/multi-year-tracking.md) - Use historical data to improve calibration

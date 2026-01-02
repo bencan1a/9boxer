@@ -42,7 +42,7 @@ const MAX_TOKENS = 4096;
 
 // Core internal docs that should be updated, not replaced
 const CORE_INTERNAL_DOCS = [
-  'CLAUDE.md',
+  'CLAUDE_INDEX.md',
   'AGENTS.md',
   'GITHUB_AGENT.md',
   'internal-docs/CONTEXT.md',
@@ -64,7 +64,7 @@ const INTERNAL_DOCS_PREAMBLE = `## 📖 Documentation References for Agents
 Before working on these tasks, review these key resources:
 
 **Core Documentation:**
-- [CLAUDE.md](CLAUDE.md) - Main entry point for AI agents
+- [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Main entry point for AI agents
 - [AGENTS.md](AGENTS.md) - Development workflow and command reference
 - [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) - Documentation system rules
 
@@ -75,7 +75,7 @@ Before working on these tasks, review these key resources:
 - **Agent-Optimized Language**: Present tense, active voice, actionable commands
 
 **Where Things Live:**
-- Core guides: \`CLAUDE.md\`, \`AGENTS.md\`, \`GITHUB_AGENT.md\`
+- Core guides: \`CLAUDE_INDEX.md\`, \`AGENTS.md\`, \`GITHUB_AGENT.md\`
 - Architecture: \`internal-docs/architecture/\`
 - Design system: \`internal-docs/design-system/\`
 - Testing: \`internal-docs/testing/\`
@@ -258,7 +258,7 @@ function loadInternalDocumentation() {
   const internalDocsDir = path.join(PROJECT_ROOT, 'internal-docs');
 
   // Core root-level docs
-  const rootDocs = ['CLAUDE.md', 'AGENTS.md', 'GITHUB_AGENT.md', 'README.md'];
+  const rootDocs = ['CLAUDE_INDEX.md', 'AGENTS.md', 'GITHUB_AGENT.md', 'README.md'];
 
   rootDocs.forEach((docName) => {
     const fullPath = path.join(PROJECT_ROOT, docName);
@@ -376,7 +376,7 @@ function buildInternalDocsContext(changes, internalDocs, newDocs) {
   context.push('5. **Single Source of Truth**: No duplicates, no conflicts');
 
   context.push('\n## Core Internal Docs Structure:');
-  context.push('- `CLAUDE.md` - Main entry point for AI agents');
+  context.push('- `CLAUDE_INDEX.md` - Main entry point for AI agents');
   context.push('- `AGENTS.md` - Development workflow guidance');
   context.push('- `internal-docs/architecture/` - System design');
   context.push('- `internal-docs/design-system/` - UI component guidelines');
@@ -515,7 +515,7 @@ Analyze the recent code changes and current INTERNAL documentation to identify i
 
 **Remember**: This is documentation for AI AGENTS, not end users. Focus on:
 
-1. **New Features Not in CLAUDE.md**: Any new features/systems that agents need to know about
+1. **New Features Not in CLAUDE_INDEX.md**: Any new features/systems that agents need to know about
 2. **Outdated Agent Instructions**: Instructions that no longer match current code
 3. **Testing Docs Drift**: Testing patterns that don't reflect current test structure
 4. **Conflicting Recommendations**: Contradictory guidance in different docs

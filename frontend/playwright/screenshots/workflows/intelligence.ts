@@ -118,7 +118,7 @@ export async function intelligenceSummaryExcellent(
     storyId:
       "app-right-panel-intelligence-intelligencesummary--excellent-quality",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -143,7 +143,7 @@ export async function intelligenceSummaryNeedsAttention(
     storyId:
       "app-right-panel-intelligence-intelligencesummary--needs-attention",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -167,7 +167,7 @@ export async function intelligenceAnomalyGreen(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-intelligence-anomalysection--green-status",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Allow chart animations
   });
 }
@@ -191,7 +191,7 @@ export async function intelligenceAnomalyRed(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-intelligence-anomalysection--red-status",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Allow chart animations
   });
 }
@@ -215,7 +215,7 @@ export async function intelligenceDeviationChart(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-intelligence-deviationchart--mixed-significance",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Allow chart animations
   });
 }
@@ -233,14 +233,14 @@ export async function intelligenceLevelDistribution(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  // Set viewport to match container size (no excess whitespace)
-  await page.setViewportSize({ width: 500, height: 700 });
+  // Wider viewport to prevent legend wrapping
+  await page.setViewportSize({ width: 700, height: 600 });
 
   await captureStorybookScreenshot(page, {
     storyId:
       "app-right-panel-intelligence-leveldistributionchart--normal-distribution",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Allow chart animations
   });
 }
