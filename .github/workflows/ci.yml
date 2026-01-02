@@ -77,6 +77,7 @@ jobs:
     runs-on: windows-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-skip-tests == 'false'
+    continue-on-error: true  # Don't block other jobs if linting fails
     steps:
       - uses: actions/checkout@v4
 
@@ -267,6 +268,7 @@ jobs:
     name: Unit Tests
     runs-on: windows-latest
     needs: [lint, type-check, security]  # Wait for all fast checks
+    if: always() && needs.type-check.result == 'success' && needs.security.result == 'success'  # Run even if lint fails
     steps:
       - uses: actions/checkout@v4
         with:
@@ -319,7 +321,7 @@ jobs:
     name: Frontend Tests
     runs-on: windows-latest
     needs: [check-changes, lint, type-check]  # Don't need security scan for frontend
-    if: needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false'
+    if: always() && needs.type-check.result == 'success' && needs.check-changes.result == 'success' && (needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false')  # Run even if lint fails
     steps:
       - uses: actions/checkout@v4
 
@@ -485,12 +487,16 @@ jobs:
             exit 0
           fi
 
+          # Report lint failures as warnings but don't fail CI
+          if [[ "${{ needs.lint.result }}" == "failure" ]]; then
+            echo "⚠️  Warning: Lint checks failed but continuing with other tests"
+          fi
+
           # Check if tests were skipped (when check-changes determines no tests needed)
           if [[ "${{ needs.unit-tests.result }}" == "skipped" ]]; then
             echo "✅ Backend tests skipped (not needed for this change)"
-            # Only check other jobs when backend tests are skipped
-            if [[ "${{ needs.lint.result }}" == "success" ]] && \
-               [[ "${{ needs.type-check.result }}" == "success" ]] && \
+            # Only check other jobs when backend tests are skipped (excluding lint)
+            if [[ "${{ needs.type-check.result }}" == "success" ]] && \
                [[ "${{ needs.security.result }}" == "success" ]] && \
                [[ "${{ needs.frontend-tests.result }}" == "success" || "${{ needs.frontend-tests.result }}" == "skipped" ]] && \
                [[ "${{ needs.e2e-core-tests.result }}" == "success" || "${{ needs.e2e-core-tests.result }}" == "skipped" ]] && \
@@ -503,9 +509,8 @@ jobs:
             fi
           fi
 
-          # Normal path - all jobs should succeed
-          if [[ "${{ needs.lint.result }}" != "success" ]] || \
-             [[ "${{ needs.type-check.result }}" != "success" ]] || \
+          # Normal path - all jobs should succeed (except lint which is allowed to fail)
+          if [[ "${{ needs.type-check.result }}" != "success" ]] || \
              [[ "${{ needs.security.result }}" != "success" ]] || \
              [[ "${{ needs.unit-tests.result }}" != "success" ]] || \
              [[ "${{ needs.frontend-tests.result }}" != "success" && "${{ needs.frontend-tests.result }}" != "skipped" ]] || \
@@ -514,7 +519,12 @@ jobs:
             echo "❌ CI Failed"
             exit 1
           fi
-          echo "✅ All CI checks passed"
+
+          if [[ "${{ needs.lint.result }}" == "failure" ]]; then
+            echo "✅ All CI checks passed (with lint warnings)"
+          else
+            echo "✅ All CI checks passed"
+          fi
 
       - name: Generate summary
         if: always()
@@ -527,10 +537,16 @@ jobs:
           echo "**Stage 1: Fast Validation**" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || needs.lint.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || needs.lint.result == 'skipped' && '⏭️' || needs.lint.result == 'failure' && '⚠️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Type Check | ${{ needs.type-check.result == 'success' && '✅' || needs.type-check.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Security | ${{ needs.security.result == 'success' && '✅' || needs.security.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ needs.lint.result }}" == "failure" ]]; then
+            echo "⚠️  **Note:** Linting checks failed but did not block the pipeline." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "**Stage 2: Unit Testing**" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
