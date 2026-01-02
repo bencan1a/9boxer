@@ -3,7 +3,7 @@
 import logging
 from typing import TypedDict
 
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 
 from ninebox.core.dependencies import get_session_manager
 from ninebox.models.employee import Employee
@@ -53,7 +53,7 @@ class AllReportsResponse(TypedDict):
 
 @router.get("/managers", response_model=None)
 async def get_managers(
-    min_team_size: int = 1,
+    min_team_size: int = Query(default=1, ge=1, description="Minimum team size to filter managers"),
     session_mgr: SessionManager = Depends(get_session_manager),
 ) -> ManagerListResponse:
     """
