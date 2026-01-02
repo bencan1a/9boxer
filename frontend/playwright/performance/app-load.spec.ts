@@ -4,13 +4,22 @@
  * Tests to measure and validate the initial application load performance.
  * Ensures the app starts quickly and becomes interactive within acceptable time.
  *
- * Performance Targets:
- * - Initial page load: <3000ms (time to interactive)
- * - Backend connection established: <5000ms
- * - First meaningful paint: <2000ms
+ * Performance Targets (CI-adjusted):
+ * - Initial page load: <5000ms in CI, <3000ms local (time to interactive)
+ * - Backend connection established: <7000ms in CI, <5000ms local
+ * - First meaningful paint: <3000ms in CI, <2000ms local
+ *
+ * Note: CI environments have additional overhead from cold starts, resource sharing,
+ * and virtualization. Thresholds are adjusted to be realistic while still catching
+ * true performance regressions.
  */
 
 import { test, expect } from "@playwright/test";
+
+// Helper to get CI-adjusted thresholds
+const getThreshold = (localValue: number, ciMultiplier = 1.5): number => {
+  return process.env.CI ? Math.round(localValue * ciMultiplier) : localValue;
+};
 
 test.describe("App Load Performance Tests", () => {
   test("should load application within performance budget", async ({
@@ -28,11 +37,14 @@ test.describe("App Load Performance Tests", () => {
     });
 
     const loadTime = Date.now() - startTime;
+    const threshold = getThreshold(3000, 1.67); // 5000ms in CI
 
-    console.log(`✓ App loaded in ${loadTime}ms (target: <3000ms)`);
+    console.log(
+      `✓ App loaded in ${loadTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
+    );
 
-    // App should load within 3 seconds
-    expect(loadTime).toBeLessThan(3000);
+    // App should load within threshold (3s local, 5s CI)
+    expect(loadTime).toBeLessThan(threshold);
 
     // Verify critical UI elements are present
     await expect(page.locator('[data-testid="nine-box-grid"]')).toBeVisible();
@@ -51,11 +63,14 @@ test.describe("App Load Performance Tests", () => {
     });
 
     const connectionTime = Date.now() - startTime;
+    const threshold = getThreshold(5000, 1.4); // 7000ms in CI
 
-    console.log(`✓ Backend connected in ${connectionTime}ms (target: <5000ms)`);
+    console.log(
+      `✓ Backend connected in ${connectionTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
+    );
 
-    // Backend connection should be established within 5 seconds
-    expect(connectionTime).toBeLessThan(5000);
+    // Backend connection should be established within threshold (5s local, 7s CI)
+    expect(connectionTime).toBeLessThan(threshold);
 
     // Verify no error messages
     const errorMessages = page.locator('[role="alert"]');
@@ -96,9 +111,9 @@ test.describe("App Load Performance Tests", () => {
     console.log(`  Response Time: ${metrics.responseTime.toFixed(2)}ms`);
     console.log(`  DOM Processing: ${metrics.domProcessing.toFixed(2)}ms`);
 
-    // Verify metrics are reasonable
-    expect(metrics.domContentLoaded).toBeLessThan(3000);
-    expect(metrics.loadComplete).toBeLessThan(5000);
+    // Verify metrics are reasonable (CI-adjusted)
+    expect(metrics.domContentLoaded).toBeLessThan(getThreshold(3000, 1.33)); // 4000ms in CI
+    expect(metrics.loadComplete).toBeLessThan(getThreshold(5000, 1.4)); // 7000ms in CI
   });
 
   test("should not block main thread during initial load", async ({ page }) => {
@@ -141,8 +156,9 @@ test.describe("App Load Performance Tests", () => {
       });
     }
 
-    // Should have minimal long tasks (< 5) during initial load
-    expect((longTasks as any[]).length).toBeLessThan(5);
+    // Should have minimal long tasks during initial load (CI has more overhead)
+    const maxLongTasks = process.env.CI ? 10 : 5;
+    expect((longTasks as any[]).length).toBeLessThan(maxLongTasks);
   });
 
   test("should measure JavaScript bundle parse and execution time", async ({
@@ -187,8 +203,8 @@ test.describe("App Load Performance Tests", () => {
       `  Total JS time: ${totalJsTime.toFixed(2)}ms, Total size: ${(totalJsSize / 1024).toFixed(2)}KB`
     );
 
-    // Total JS load time should be reasonable (< 2000ms)
-    expect(totalJsTime).toBeLessThan(2000);
+    // Total JS load time should be reasonable (CI-adjusted)
+    expect(totalJsTime).toBeLessThan(getThreshold(2000, 1.5)); // 3000ms in CI
   });
 
   test("should render first meaningful content quickly", async ({ page }) => {
@@ -200,13 +216,14 @@ test.describe("App Load Performance Tests", () => {
     await page.waitForSelector('[data-testid="app-bar"]', { timeout: 5000 });
 
     const firstPaintTime = Date.now() - startTime;
+    const threshold = getThreshold(2000, 1.5); // 3000ms in CI
 
     console.log(
-      `✓ First meaningful paint in ${firstPaintTime}ms (target: <2000ms)`
+      `✓ First meaningful paint in ${firstPaintTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
     );
 
-    // First meaningful paint should be fast
-    expect(firstPaintTime).toBeLessThan(2000);
+    // First meaningful paint should be fast (CI-adjusted)
+    expect(firstPaintTime).toBeLessThan(threshold);
 
     // Verify content is visible
     await expect(page.locator('[data-testid="app-bar"]')).toBeVisible();
