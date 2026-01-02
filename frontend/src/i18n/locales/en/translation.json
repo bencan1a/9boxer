@@ -395,7 +395,9 @@
         "focus_area": "Focus Area",
         "recommendation": "Recommendation",
         "time_allocation": "Time Allocation"
-      }
+      },
+      "affectedEmployees": "{{count}} employee affected",
+      "affectedEmployees_other": "{{count}} employees affected"
     },
     "severity": {
       "critical": "Critical",
@@ -537,6 +539,7 @@
     "hide": "Hide",
     "show": "Show",
     "dismiss": "Dismiss",
+    "loading": "Loading...",
     "fileUpload": {
       "dialogTitle": "Import Excel File",
       "description": "Import a 9-Box talent mapping Excel file (.xlsx or .xls)",

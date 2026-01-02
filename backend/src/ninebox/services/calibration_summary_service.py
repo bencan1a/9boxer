@@ -5,8 +5,8 @@ calibration meetings. It generates a data overview, time allocation recommendati
 and actionable insights derived from employee rating distributions.
 """
 
+import hashlib
 import logging
-import uuid
 from collections import Counter
 from typing import Any, TypedDict
 
@@ -141,6 +141,22 @@ STARS_HIGH_THRESHOLD = 25.0  # Warn if > 25% are stars
 
 class CalibrationSummaryService:
     """Service for generating calibration meeting preparation data."""
+
+    @staticmethod
+    def _generate_insight_id(prefix: str, *components: Any) -> str:
+        """Generate a deterministic insight ID from components.
+
+        Args:
+            prefix: ID prefix (e.g., "focus", "anomaly", "rec")
+            *components: Variable components to hash for uniqueness
+
+        Returns:
+            Deterministic insight ID
+        """
+        # Create a stable hash from all components
+        content = "-".join(str(c) for c in components)
+        hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:8]
+        return f"{prefix}-{hash_suffix}"
 
     def calculate_summary(self, employees: list[Employee]) -> CalibrationSummaryResponse:
         """Calculate complete calibration summary.
@@ -380,7 +396,9 @@ class CalibrationSummaryService:
         if data_overview["center_box_percentage"] > CENTER_BOX_WARNING_THRESHOLD:
             insights.append(
                 Insight(
-                    id=f"focus-crowded-center-{uuid.uuid4().hex[:8]}",
+                    id=self._generate_insight_id(
+                        "focus-crowded-center", data_overview["center_box_count"]
+                    ),
                     type="focus_area",
                     category="distribution",
                     priority="medium",
@@ -402,7 +420,7 @@ class CalibrationSummaryService:
         if data_overview["stars_percentage"] < STARS_LOW_THRESHOLD:
             insights.append(
                 Insight(
-                    id=f"focus-low-stars-{uuid.uuid4().hex[:8]}",
+                    id=self._generate_insight_id("focus-low-stars", data_overview["stars_count"]),
                     type="focus_area",
                     category="distribution",
                     priority="high",
@@ -424,7 +442,7 @@ class CalibrationSummaryService:
         if data_overview["stars_percentage"] > STARS_HIGH_THRESHOLD:
             insights.append(
                 Insight(
-                    id=f"focus-high-stars-{uuid.uuid4().hex[:8]}",
+                    id=self._generate_insight_id("focus-high-stars", data_overview["stars_count"]),
                     type="focus_area",
                     category="distribution",
                     priority="high",
@@ -469,7 +487,7 @@ class CalibrationSummaryService:
             # create a general insight
             insights.append(
                 Insight(
-                    id=f"anomaly-{category}-general-{uuid.uuid4().hex[:8]}",
+                    id=self._generate_insight_id("anomaly-general", category, status),
                     type="anomaly",
                     category=category,
                     priority="medium" if status == "yellow" else "high",
@@ -501,7 +519,7 @@ class CalibrationSummaryService:
 
             insights.append(
                 Insight(
-                    id=f"anomaly-{category}-{category_name.lower().replace(' ', '-')[:20]}-{uuid.uuid4().hex[:8]}",
+                    id=self._generate_insight_id("anomaly", category, category_name),
                     type="anomaly",
                     category=category,
                     priority=priority,
@@ -557,7 +575,7 @@ class CalibrationSummaryService:
         )
 
         return Insight(
-            id=f"rec-time-allocation-{uuid.uuid4().hex[:8]}",
+            id=self._generate_insight_id("rec-time-allocation", duration, total_employees),
             type="time_allocation",
             category="time",
             priority="low",
