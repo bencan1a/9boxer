@@ -64,12 +64,14 @@ export const useOrgHierarchy = () => {
       const fallbackManagers = Array.from(
         new Set(employees.map((emp) => emp.manager).filter(Boolean))
       )
-        .sort()
         .map((name, index) => ({
-          employee_id: -1, // Unknown ID in fallback
+          employee_id: -1 - index, // Synthetic unique ID in fallback
           name,
           team_size: employees.filter((emp) => emp.manager === name).length,
-        }));
+        }))
+        .sort(
+          (a, b) => b.team_size - a.team_size || a.name.localeCompare(b.name)
+        );
       setManagers(fallbackManagers);
     } finally {
       setIsLoading(false);
