@@ -6,6 +6,7 @@ export { ExclusionList } from "./ExclusionList";
 export { FilterSection } from "./FilterSection";
 export { FlagFilters } from "./FlagFilters";
 export { GridPositionFilter } from "./GridPositionFilter";
+export { OrgTreeFilter } from "./OrgTreeFilter";
 export { ReportingChainFilter } from "./ReportingChainFilter";
 
 export type { ExclusionListProps } from "./ExclusionList";

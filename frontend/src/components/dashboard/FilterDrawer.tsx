@@ -35,7 +35,12 @@ import { useFilters } from "../../hooks/useFilters";
 import { useSession } from "../../hooks/useSession";
 import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 import { ExclusionDialog } from "./ExclusionDialog";
-import { FilterSection, FlagFilters, ReportingChainFilter } from "./filters";
+import {
+  FilterSection,
+  FlagFilters,
+  OrgTreeFilter,
+  ReportingChainFilter,
+} from "./filters";
 
 // Helper function to create valid test IDs from values
 const sanitizeTestId = (value: string): string => {
@@ -46,7 +51,7 @@ export const FilterDrawer: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { employees } = useSession();
-  const { managers: orgManagers } = useOrgHierarchy(); // Get managers from OrgService
+  const { managers: orgManagers, getReportIds } = useOrgHierarchy(); // Get managers from OrgService
   const {
     selectedLevels,
     selectedJobFunctions,
@@ -69,6 +74,33 @@ export const FilterDrawer: React.FC = () => {
 
   const [exclusionDialogOpen, setExclusionDialogOpen] = useState(false);
 
+  /**
+   * Handle manager toggle - fetch employee IDs from org service
+   * This ensures we use the same backend org hierarchy logic as the intelligence panel
+   */
+  const handleToggleManager = async (managerName: string) => {
+    // Find the manager in the org managers list to get their employee ID
+    const manager = orgManagers.find((m) => m.name === managerName);
+    if (!manager) {
+      console.warn(`Manager "${managerName}" not found in org hierarchy`);
+      toggleManager(managerName, []);
+      return;
+    }
+
+    try {
+      // Fetch employee IDs from org service (same as intelligence panel)
+      const employeeIds = await getReportIds(manager.employee_id);
+      toggleManager(managerName, employeeIds);
+    } catch (error) {
+      console.error(
+        `Failed to fetch employee IDs for manager ${managerName}:`,
+        error
+      );
+      // Fallback to empty array on error
+      toggleManager(managerName, []);
+    }
+  };
+
   // Track expanded state for each filter section
   const [expandedSections, setExpandedSections] = useState({
     levels: true,
@@ -89,17 +121,8 @@ export const FilterDrawer: React.FC = () => {
   // Get available filter options from current employee data
   // Memoize to avoid reprocessing on every render (e.g., when drawer opens/closes)
   const filterOptions = useMemo(() => {
-    const baseOptions = getAvailableOptions(employees);
-
-    // Override managers with OrgService-sourced list
-    // Use manager names from org hierarchy (sorted by team size, then name)
-    const managerNames = orgManagers.map((m) => m.name);
-
-    return {
-      ...baseOptions,
-      managers: managerNames,
-    };
-  }, [employees, getAvailableOptions, orgManagers]);
+    return getAvailableOptions(employees);
+  }, [employees, getAvailableOptions]);
 
   return (
     <>
@@ -242,7 +265,7 @@ export const FilterDrawer: React.FC = () => {
                 ))}
               </FormGroup>
             </FilterSection>
-            {/* Managers Section */}
+            {/* Managers Section - Org Hierarchy Tree */}
             <FilterSection
               title={t("dashboard.filterDrawer.managers")}
               count={selectedManagers.length}
@@ -250,27 +273,12 @@ export const FilterDrawer: React.FC = () => {
               onToggle={() => toggleSection("managers")}
               testId="filter-accordion-managers"
             >
-              <FormGroup>
-                {filterOptions.managers.map((manager) => (
-                  <FormControlLabel
-                    key={manager}
-                    control={
-                      <Checkbox
-                        checked={selectedManagers.includes(manager)}
-                        onChange={() => toggleManager(manager)}
-                        size="small"
-                        data-testid={`filter-checkbox-managers-${sanitizeTestId(manager)}`}
-                        data-manager-name={manager}
-                      />
-                    }
-                    label={
-                      <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                        {manager}
-                      </Typography>
-                    }
-                  />
-                ))}
-              </FormGroup>
+              <OrgTreeFilter
+                managers={orgManagers}
+                employees={employees}
+                selectedManagers={selectedManagers}
+                onToggleManager={handleToggleManager}
+              />
             </FilterSection>
             {/* Flags Section */}
             <FilterSection

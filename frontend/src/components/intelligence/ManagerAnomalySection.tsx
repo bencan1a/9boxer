@@ -47,7 +47,16 @@ export const ManagerAnomalySection: React.FC<ManagerAnomalySectionProps> = ({
   const { setReportingChainFilter } = useFilterStore();
 
   const handleManagerClick = (managerName: string) => {
-    setReportingChainFilter(managerName);
+    // Find the employee IDs for this manager from the deviations data
+    const managerData = analysis.deviations.find(
+      (deviation) => deviation.category === managerName
+    );
+    if (managerData) {
+      setReportingChainFilter(managerName, managerData.employee_ids);
+    } else {
+      console.warn(`Manager "${managerName}" not found in deviations`);
+      setReportingChainFilter(managerName, []);
+    }
   };
 
   // Get status icon and color
