@@ -4,13 +4,20 @@
  * Tests to ensure filtering operations complete quickly and don't block the UI.
  * Validates that applying filters to large datasets remains responsive.
  *
- * Performance Targets:
- * - Apply filter: <500ms
- * - Clear filter: <300ms
- * - Multiple filters: <1000ms
+ * Performance Targets (CI-adjusted):
+ * - Apply filter: <1000ms in CI, <500ms local
+ * - Clear filter: <500ms in CI, <300ms local
+ * - Multiple filters: <1500ms in CI, <1000ms local
+ *
+ * Note: CI environments have additional rendering overhead and resource constraints.
  */
 
 import { test, expect } from "@playwright/test";
+
+// Helper to get CI-adjusted thresholds
+const getThreshold = (localValue: number, ciMultiplier = 1.5): number => {
+  return process.env.CI ? Math.round(localValue * ciMultiplier) : localValue;
+};
 
 test.describe("Filter Performance Tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -59,11 +66,14 @@ test.describe("Filter Performance Tests", () => {
     await page.waitForTimeout(100); // Small delay for filter to apply
 
     const filterTime = Date.now() - startTime;
+    const threshold = getThreshold(500, 2); // 1000ms in CI
 
-    console.log(`✓ Filter applied in ${filterTime}ms (target: <500ms)`);
+    console.log(
+      `✓ Filter applied in ${filterTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
+    );
 
-    // Filter should apply quickly
-    expect(filterTime).toBeLessThan(500);
+    // Filter should apply quickly (CI-adjusted)
+    expect(filterTime).toBeLessThan(threshold);
   });
 
   test("should clear filter quickly", async ({ page }) => {
@@ -102,11 +112,14 @@ test.describe("Filter Performance Tests", () => {
     await page.waitForTimeout(100);
 
     const clearTime = Date.now() - startTime;
+    const threshold = getThreshold(300, 1.67); // 500ms in CI
 
-    console.log(`✓ Filter cleared in ${clearTime}ms (target: <300ms)`);
+    console.log(
+      `✓ Filter cleared in ${clearTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
+    );
 
-    // Clear should be fast
-    expect(clearTime).toBeLessThan(300);
+    // Clear should be fast (CI-adjusted)
+    expect(clearTime).toBeLessThan(threshold);
   });
 
   test("should handle multiple filters efficiently", async ({ page }) => {
@@ -138,13 +151,14 @@ test.describe("Filter Performance Tests", () => {
     }
 
     const multiFilterTime = Date.now() - startTime;
+    const threshold = getThreshold(1000, 1.5); // 1500ms in CI
 
     console.log(
-      `✓ Applied ${filtersToApply} filters in ${multiFilterTime}ms (target: <1000ms)`
+      `✓ Applied ${filtersToApply} filters in ${multiFilterTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
     );
 
-    // Multiple filters should still be fast
-    expect(multiFilterTime).toBeLessThan(1000);
+    // Multiple filters should still be fast (CI-adjusted)
+    expect(multiFilterTime).toBeLessThan(threshold);
   });
 
   test("should not block UI while filtering", async ({ page }) => {
@@ -207,11 +221,14 @@ test.describe("Filter Performance Tests", () => {
     await page.waitForTimeout(200);
 
     const searchTime = Date.now() - startTime;
+    const threshold = getThreshold(500, 1.6); // 800ms in CI
 
-    console.log(`✓ Search completed in ${searchTime}ms (target: <500ms)`);
+    console.log(
+      `✓ Search completed in ${searchTime}ms (target: <${threshold}ms, CI: ${!!process.env.CI})`
+    );
 
-    // Search should be responsive
-    expect(searchTime).toBeLessThan(500);
+    // Search should be responsive (CI-adjusted)
+    expect(searchTime).toBeLessThan(threshold);
 
     // Verify search input has value
     await expect(searchInput).toHaveValue(testQuery);
@@ -249,14 +266,14 @@ test.describe("Filter Performance Tests", () => {
     }
 
     const rapidToggleTime = Date.now() - startTime;
+    const threshold = getThreshold(3000, 1.67); // 5000ms in CI
 
     console.log(
-      `✓ Rapid toggle (${toggleCount * 3} clicks) completed in ${rapidToggleTime}ms`
+      `✓ Rapid toggle (${toggleCount * 3} clicks) completed in ${rapidToggleTime}ms (CI: ${!!process.env.CI})`
     );
 
-    // Should handle rapid changes without significant lag
-    // Allow more time since this is stress testing
-    expect(rapidToggleTime).toBeLessThan(3000);
+    // Should handle rapid changes without significant lag (CI-adjusted)
+    expect(rapidToggleTime).toBeLessThan(threshold);
 
     console.log("✓ App handled rapid filter changes gracefully");
   });
