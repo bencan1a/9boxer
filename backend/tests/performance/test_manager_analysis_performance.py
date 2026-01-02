@@ -4,6 +4,7 @@ Tests the performance of recursive org tree building in calculate_manager_analys
 with large, deeply nested organizations to ensure it scales appropriately.
 """
 
+import importlib.util
 import random
 from datetime import date
 from typing import Any
@@ -13,13 +14,8 @@ import pytest
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.intelligence_service import calculate_manager_analysis
 
-# Check if pytest-benchmark is available
-try:
-    import pytest_benchmark  # noqa: F401
-
-    BENCHMARK_AVAILABLE = True
-except ImportError:
-    BENCHMARK_AVAILABLE = False
+# Check if pytest-benchmark is available without importing it
+BENCHMARK_AVAILABLE = importlib.util.find_spec("pytest_benchmark") is not None
 
 pytestmark = [
     pytest.mark.performance,
@@ -219,7 +215,7 @@ class TestManagerAnalysisPerformance:
             seed=42,
         )
 
-        def run_analysis() -> dict:
+        def run_analysis() -> dict[str, Any]:
             return calculate_manager_analysis(employees, min_team_size=10)
 
         result = benchmark(run_analysis)
@@ -257,7 +253,7 @@ class TestManagerAnalysisPerformance:
             seed=42,
         )
 
-        def run_analysis() -> dict:
+        def run_analysis() -> dict[str, Any]:
             return calculate_manager_analysis(employees, min_team_size=10)
 
         result = benchmark(run_analysis)
@@ -294,7 +290,7 @@ class TestManagerAnalysisPerformance:
             seed=42,
         )
 
-        def run_analysis() -> dict:
+        def run_analysis() -> dict[str, Any]:
             return calculate_manager_analysis(employees, min_team_size=10)
 
         result = benchmark(run_analysis)
