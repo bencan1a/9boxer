@@ -8,6 +8,12 @@ export { DevModeIndicator } from "./DevModeIndicator";
 export { EmptyState } from "./EmptyState";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { FileUploadDialog } from "./FileUploadDialog";
+export { FilterToolbar } from "./FilterToolbar";
+export type {
+  FilterToolbarProps,
+  ActiveFilter,
+  FilterToolbarVariant,
+} from "./FilterToolbar";
 export { LanguageSelector } from "./LanguageSelector";
 export { LoadingSpinner } from "./LoadingSpinner";
 export { ViewControls } from "./ViewControls";
