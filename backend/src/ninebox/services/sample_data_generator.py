@@ -529,7 +529,7 @@ class ManagementChainBuilder:
                 level="MT5",
                 title=self._get_title("MT5"),
                 manager=manager.employee_id,
-                chain_06=manager.employee_id,
+                chain_01=manager.employee_id,  # CEO is direct manager
             )
             employee_counter += 1
 
@@ -543,8 +543,8 @@ class ManagementChainBuilder:
                 level="MT4",
                 title=self._get_title("MT4"),
                 manager=manager.employee_id,
-                chain_05=manager.employee_id,
-                chain_06=manager.chain_06,
+                chain_01=manager.employee_id,  # VP is direct manager
+                chain_02=manager.chain_01,  # CEO from VP's chain
             )
             employee_counter += 1
 
@@ -558,9 +558,9 @@ class ManagementChainBuilder:
                 level="MT3",
                 title=self._get_title("MT3"),
                 manager=manager.employee_id,
-                chain_04=manager.employee_id,
-                chain_05=manager.chain_05,
-                chain_06=manager.chain_06,
+                chain_01=manager.employee_id,  # Director is direct manager
+                chain_02=manager.chain_01,  # VP from Director's chain
+                chain_03=manager.chain_02,  # CEO from Director's chain
             )
             employee_counter += 1
 
@@ -574,10 +574,10 @@ class ManagementChainBuilder:
                 level="MT2",
                 title=self._get_title("MT2"),
                 manager=manager.employee_id,
-                chain_03=manager.employee_id,
-                chain_04=manager.chain_04,
-                chain_05=manager.chain_05,
-                chain_06=manager.chain_06,
+                chain_01=manager.employee_id,  # Manager is direct manager
+                chain_02=manager.chain_01,  # Director from Manager's chain
+                chain_03=manager.chain_02,  # VP from Manager's chain
+                chain_04=manager.chain_03,  # CEO from Manager's chain
             )
             employee_counter += 1
 
@@ -590,12 +590,10 @@ class ManagementChainBuilder:
                 level="MT1",
                 title=self._get_title("MT1"),
                 manager=manager.employee_id,
-                chain_01=manager.employee_id,
-                chain_02=manager.chain_04,
-                chain_03=manager.chain_05,
-                chain_04=manager.chain_06,
-                chain_05=None,
-                chain_06=None,
+                chain_01=manager.employee_id,  # Manager is direct manager
+                chain_02=manager.chain_01,  # Director from Manager's chain
+                chain_03=manager.chain_02,  # VP from Manager's chain
+                chain_04=manager.chain_03,  # CEO from Manager's chain
             )
             employee_counter += 1
 

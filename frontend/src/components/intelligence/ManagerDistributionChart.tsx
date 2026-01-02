@@ -47,7 +47,14 @@ export const ManagerDistributionChart: React.FC<
   const { setReportingChainFilter } = useFilterStore();
 
   const handleManagerClick = (managerName: string) => {
-    setReportingChainFilter(managerName);
+    // Find the employee IDs for this manager from the data
+    const managerData = data.find((item) => item.category === managerName);
+    if (managerData) {
+      setReportingChainFilter(managerName, managerData.employee_ids);
+    } else {
+      console.warn(`Manager "${managerName}" not found in data`);
+      setReportingChainFilter(managerName, []);
+    }
   };
 
   if (!data || data.length === 0) {

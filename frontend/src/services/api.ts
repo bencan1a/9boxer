@@ -63,8 +63,10 @@ async function withRetry<T>(
       // Only retry on connection errors (no response), not on HTTP errors (4xx/5xx)
       const isAxiosError = axios.isAxiosError(error);
       const hasResponse = isAxiosError && error.response !== undefined;
+      const isApiErrorWithStatus =
+        error instanceof ApiError && error.statusCode !== undefined;
 
-      if (hasResponse) {
+      if (hasResponse || isApiErrorWithStatus) {
         // Don't retry on HTTP errors (client/server errors)
         throw error;
       }
