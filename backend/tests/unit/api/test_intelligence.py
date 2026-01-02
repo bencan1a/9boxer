@@ -63,6 +63,7 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         analysis = data[dimension]
 
@@ -104,6 +105,7 @@ def test_get_intelligence_when_called_then_p_values_in_valid_range(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         p_value = data[dimension]["p_value"]
         assert 0 <= p_value <= 1, f"{dimension} p-value {p_value} out of range"
@@ -123,6 +125,7 @@ def test_get_intelligence_when_called_then_effect_sizes_non_negative(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         effect_size = data[dimension]["effect_size"]
         assert effect_size >= 0, f"{dimension} effect_size {effect_size} is negative"
@@ -146,13 +149,15 @@ def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
+        "manager_analysis",
     ]:
         status = data[dimension]["status"]
         actual_counts[status] += 1
 
-    # Total anomalies should sum to 4 (one per dimension)
+    # Total anomalies should sum to 5 (one per dimension including manager_analysis)
     total_anomalies = anomaly_count["green"] + anomaly_count["yellow"] + anomaly_count["red"]
-    assert total_anomalies == 4, f"Expected 4 dimensions, got {total_anomalies}"
+    assert total_anomalies == 5, f"Expected 5 dimensions, got {total_anomalies}"
 
 
 def test_get_intelligence_when_called_multiple_times_then_returns_consistent_results(
@@ -195,6 +200,7 @@ def test_get_intelligence_when_analyzes_full_dataset_then_uses_all_employees(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         sample_size = intelligence_data[dimension]["sample_size"]
         # Sample size should be related to total employees (may be 0 if service not implemented)
@@ -216,6 +222,7 @@ def test_get_intelligence_when_severity_green_then_p_value_high(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         analysis = data[dimension]
         if analysis["status"] == "green":
@@ -242,6 +249,7 @@ def test_get_intelligence_when_sample_insufficient_then_flags_appropriately(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         analysis = data[dimension]
         # Interpretation should provide context
@@ -263,6 +271,7 @@ def test_get_intelligence_when_called_then_deviations_are_lists(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         deviations = data[dimension]["deviations"]
         assert isinstance(deviations, list)
@@ -299,6 +308,8 @@ def test_get_intelligence_when_response_then_matches_typeddict_structure(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
+        "manager_analysis",
     }
     assert set(data.keys()) == expected_keys
 
@@ -321,5 +332,7 @@ def test_get_intelligence_when_response_then_matches_typeddict_structure(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
+        "manager_analysis",
     ]:
         assert set(data[dimension].keys()) == dimension_keys
