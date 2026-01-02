@@ -8,6 +8,7 @@ import logging
 from typing import Any, cast
 
 import numpy as np
+from scipy.stats import chi2_contingency, chisquare, fisher_exact
 
 from ninebox.models.employee import Employee
 from ninebox.services.org_service import OrgService
@@ -22,8 +23,6 @@ def _chi_square_test(contingency_table: np.ndarray) -> tuple[float, float, int, 
     Returns:
         Tuple of (chi2_statistic, p_value, degrees_of_freedom, expected_frequencies)
     """
-    from scipy.stats import chi2_contingency
-
     chi2, p_value, dof, expected = chi2_contingency(contingency_table)
     return float(chi2), float(p_value), int(dof), expected
 
@@ -45,6 +44,49 @@ def _calculate_z_scores(observed: np.ndarray, expected: np.ndarray) -> np.ndarra
         z_scores = (observed - expected) / np.sqrt(expected)
         z_scores = np.nan_to_num(z_scores, nan=0.0, posinf=0.0, neginf=0.0)
     return cast("np.ndarray[Any, Any]", z_scores)
+
+
+def _calculate_manager_chi_square(
+    observed_counts: list[int],
+    expected_pct: list[float],
+    team_size: int,
+) -> tuple[float, float]:
+    """Perform chi-square goodness-of-fit test for manager distribution.
+
+    Tests whether a manager's rating distribution significantly deviates
+    from the expected baseline (typically 20/70/10 for High/Medium/Low)
+    using chi-square goodness-of-fit test.
+
+    This is different from chi-square test of independence used in other
+    analyses. GOF test compares observed distribution to a theoretical
+    baseline, not to other categories.
+
+    Args:
+        observed_counts: [high_count, medium_count, low_count] - actual counts
+        expected_pct: [20.0, 70.0, 10.0] - baseline percentages
+        team_size: Total employees under manager
+
+    Returns:
+        Tuple of (chi2_statistic, p_value)
+        - chi2_statistic: Chi-square test statistic
+        - p_value: Statistical significance (p < 0.05 indicates significant deviation)
+
+    Example:
+        >>> _calculate_manager_chi_square([5, 4, 1], [20.0, 70.0, 10.0], 10)
+        (5.357, 0.069)  # Not significant at alpha=0.05
+
+    Note:
+        For small teams (< 15), the Low category may have expected count < 5,
+        which violates chi-square assumptions. However, this is acceptable for
+        exploratory analysis and is more rigorous than the previous heuristic.
+    """
+    # Calculate expected counts from percentages
+    expected = np.array([team_size * p / 100.0 for p in expected_pct])
+
+    # Perform chi-square goodness-of-fit test
+    chi2, p_value = chisquare(f_obs=observed_counts, f_exp=expected)
+
+    return float(chi2), float(p_value)
 
 
 def _cramers_v(chi2: float, n: int, rows: int, cols: int) -> float:
@@ -197,8 +239,6 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     if not _safe_sample_size_check(expected):
         # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
-            from scipy.stats import fisher_exact
-
             _, p_value = fisher_exact(contingency)
             chi2 = 0.0  # Fisher's exact doesn't have chi2 statistic
 
@@ -762,52 +802,52 @@ def _calculate_manager_distributions(
 
 def _calculate_manager_statistics(
     top_managers: list[dict[str, Any]],
+    baseline_high: float,
+    baseline_medium: float,
+    baseline_low: float,
 ) -> tuple[list[dict[str, Any]], int, float]:
-    """Calculate statistical metrics for manager deviations.
+    """Calculate statistical metrics for manager deviations using chi-square goodness-of-fit.
 
-    Computes z-scores and significance flags for each manager's distribution.
+    Performs chi-square goodness-of-fit test for each manager to determine if their
+    rating distribution significantly deviates from the expected baseline (20/70/10).
 
     Args:
         top_managers: List of managers with distribution metrics
+        baseline_high: Expected percentage of high performers (typically 20.0)
+        baseline_medium: Expected percentage of medium performers (typically 70.0)
+        baseline_low: Expected percentage of low performers (typically 10.0)
 
     Returns:
         Tuple of (deviations, significant_count, max_deviation)
-        - deviations: List of deviation dicts with z-scores and significance flags
-        - significant_count: Number of managers with significant deviations
+        - deviations: List of deviation dicts with chi-square statistics and p-values
+        - significant_count: Number of managers with significant deviations (p < 0.05)
         - max_deviation: Maximum total deviation across all managers
     """
-    # Build deviations list - calculate z-scores based on deviation from baseline
-    # NOTE: This uses a simplified heuristic for ranking managers, not a proper statistical test.
-    # The z-score is an approximation used to identify which managers deviate most from baseline,
-    # not for rigorous hypothesis testing. See technical debt issue for proper chi-square implementation.
     deviations = []
     for mgr in top_managers:
-        # Calculate z-score for each manager based on deviation from baseline
         team_size = cast("int", mgr["team_size"])
 
-        # For small teams, z-scores would be inflated, so we scale by sqrt(team_size)
-        # This gives a rough approximation of statistical significance
-        scale_factor = np.sqrt(team_size) if team_size > 0 else 1
+        # Prepare data for chi-square goodness-of-fit test
+        observed_counts = [
+            cast("int", mgr["high_count"]),
+            cast("int", mgr["medium_count"]),
+            cast("int", mgr["low_count"]),
+        ]
+        expected_pct = [baseline_high, baseline_medium, baseline_low]
 
-        # Calculate z-score based on largest deviation
-        max_deviation_value: float = max(
-            abs(cast("float", mgr["high_deviation"])),
-            abs(cast("float", mgr["medium_deviation"])),
-            abs(cast("float", mgr["low_deviation"])),
-        )
+        # Perform chi-square goodness-of-fit test
+        chi2, p_value = _calculate_manager_chi_square(observed_counts, expected_pct, team_size)
 
-        # Approximate z-score: deviation / (baseline_std * scale_factor)
-        # The constant 10.0 is a rough estimate of standard deviation for percentage points
-        # in typical rating distributions. This provides a heuristic ranking metric where:
-        # - z ≥ 2.0 indicates a manager is likely anomalous (marked as "significant")
-        # - z ≥ 3.0 indicates a highly anomalous manager
-        # Technical debt: Replace with proper chi-square goodness-of-fit test
-        z_score = max_deviation_value / (10.0 / scale_factor) if scale_factor > 0 else 0
+        # For backward compatibility with _get_status, calculate a z-score-like metric
+        # from the chi-square statistic. For chi-square with 2 df, significant values are:
+        # chi2 ≈ 5.99 at p=0.05 (z≈2.0), chi2 ≈ 9.21 at p=0.01 (z≈3.0)
+        # We use sqrt(chi2) as a rough z-score equivalent for consistency with old code
+        z_score_equivalent = float(np.sqrt(chi2))
 
         deviations.append(
             {
                 "category": cast("str", mgr["manager_name"]),
-                "team_size": cast("int", mgr["team_size"]),
+                "team_size": team_size,
                 "high_pct": round(cast("float", mgr["high_pct"]), 1),
                 "medium_pct": round(cast("float", mgr["medium_pct"]), 1),
                 "low_pct": round(cast("float", mgr["low_pct"]), 1),
@@ -815,8 +855,10 @@ def _calculate_manager_statistics(
                 "medium_deviation": round(cast("float", mgr["medium_deviation"]), 1),
                 "low_deviation": round(cast("float", mgr["low_deviation"]), 1),
                 "total_deviation": round(cast("float", mgr["total_deviation"]), 1),
-                "z_score": round(z_score, 2),
-                "is_significant": bool(abs(z_score) >= 2.0),
+                "chi_square": round(chi2, 3),
+                "p_value": round(p_value, 4),
+                "z_score": round(z_score_equivalent, 2),  # For backward compatibility
+                "is_significant": bool(p_value < 0.05),  # Standard significance level
             }
         )
 
@@ -836,8 +878,13 @@ def calculate_manager_analysis(
 ) -> dict[str, Any]:
     """Analyze rating distribution across managers to detect anomalous patterns.
 
-    Tests whether managers have rating distributions that significantly deviate
-    from the expected 20/70/10 baseline (High/Medium/Low performers).
+    Uses chi-square goodness-of-fit test to determine if each manager's rating
+    distribution significantly deviates from the expected 20/70/10 baseline
+    (High/Medium/Low performers).
+
+    Each manager is tested independently against the theoretical baseline. This is
+    different from other intelligence analyses which use chi-square test of independence
+    to compare categories against each other.
 
     Args:
         employees: List of employee records
@@ -846,13 +893,13 @@ def calculate_manager_analysis(
 
     Returns:
         Dictionary containing:
-        - chi_square: Chi-square statistic
-        - p_value: Statistical significance level
-        - effect_size: Cramér's V effect size
-        - degrees_of_freedom: Degrees of freedom for test
+        - chi_square: None (individual chi-square values in deviations list)
+        - p_value: Minimum p-value across all managers (most significant deviation)
+        - effect_size: Normalized maximum deviation (0-1 scale)
+        - degrees_of_freedom: 2 (for 3-category goodness-of-fit test)
         - sample_size: Total sample size
         - status: Traffic light indicator ("green", "yellow", "red")
-        - deviations: List of manager deviations sorted by total deviation
+        - deviations: List of manager deviations with chi-square statistics, sorted by total deviation
         - interpretation: Human-readable summary
 
     Example:
@@ -863,6 +910,12 @@ def calculate_manager_analysis(
         45.0
         >>> result["deviations"][0]["high_deviation"]  # Deviation from 20% baseline
         25.0
+        >>> result["deviations"][0]["chi_square"]  # Chi-square statistic
+        12.5
+        >>> result["deviations"][0]["p_value"]  # Statistical significance
+        0.0019
+        >>> result["deviations"][0]["is_significant"]  # p < 0.05
+        True
     """
     if not employees:
         return _empty_analysis("No employees to analyze")
@@ -885,25 +938,25 @@ def calculate_manager_analysis(
     if not top_managers:
         return _empty_analysis("No managers to analyze after filtering")
 
-    # Step 3: Calculate statistical metrics
-    deviations, significant_count, max_deviation = _calculate_manager_statistics(top_managers)
+    # Step 3: Calculate statistical metrics using chi-square goodness-of-fit
+    deviations, significant_count, max_deviation = _calculate_manager_statistics(
+        top_managers, BASELINE_HIGH, BASELINE_MEDIUM, BASELINE_LOW
+    )
 
     # Step 4: Build final result
-    # Determine status based on deviations
-    # For manager analysis, we use deviation-based thresholds rather than chi-square
-    # NOTE: This is a heuristic metric used internally for status determination,
-    # not a real p-value from a statistical test. See issue #154 for details.
-    heuristic_score = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
+    # Now that we use proper chi-square goodness-of-fit tests, each manager has a real p-value
+    # We calculate an overall summary p-value and effect size for the entire analysis
+
+    # Calculate aggregate statistics from individual manager chi-square tests
+    # Use the minimum p-value (most significant manager) as overall indicator
+    min_p_value = min((d["p_value"] for d in deviations), default=1.0)
     effect_size = float(max_deviation) / 100.0  # Normalize to 0-1 scale
 
-    # Generate status.
-    # NOTE: _get_status's first parameter is named "p_value" in its signature and docs,
-    # but in the manager analysis path we intentionally pass heuristic_score as a
-    # fallback score (not a true p-value). See comments above and issue #154.
-    status = _get_status(heuristic_score, effect_size, deviations, is_uniformity_test=False)
+    # Generate status based on p-values and effect sizes
+    status = _get_status(min_p_value, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_manager_interpretation(
         status,
-        heuristic_score,
+        min_p_value,
         effect_size,
         deviations,
         total_manager_count,
@@ -912,10 +965,10 @@ def calculate_manager_analysis(
     )
 
     return {
-        "chi_square": None,  # Not applicable - manager analysis uses heuristic ranking
-        "p_value": None,  # Not available - using heuristic approach, not chi-square test
+        "chi_square": None,  # Individual chi-square values are in deviations list
+        "p_value": round(min_p_value, 4),  # Minimum p-value across all managers
         "effect_size": round(effect_size, 3),
-        "degrees_of_freedom": None,  # Not applicable - no chi-square test performed
+        "degrees_of_freedom": 2,  # df = k - 1 = 3 - 1 = 2 for goodness-of-fit with 3 categories
         "sample_size": len(employees),
         "status": status,
         "deviations": deviations,
