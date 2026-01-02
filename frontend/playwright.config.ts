@@ -133,6 +133,27 @@ export default defineConfig({
         storageState: undefined,
       },
     },
+
+    // ===== Performance Tests =====
+    // End-to-end performance testing for critical user workflows
+    {
+      name: "performance",
+      testDir: "./playwright/performance",
+      timeout: 60000, // Longer timeout for performance measurements
+      retries: process.env.CI ? 1 : 0,
+      fullyParallel: false, // Run sequentially for consistent performance metrics
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:5173",
+        viewport: { width: 1920, height: 1080 },
+        headless: true,
+        actionTimeout: 15000,
+        trace: "retain-on-failure",
+        screenshot: "only-on-failure",
+        video: "retain-on-failure",
+        storageState: undefined,
+      },
+    },
   ],
 
   // Global setup/teardown for backend server
