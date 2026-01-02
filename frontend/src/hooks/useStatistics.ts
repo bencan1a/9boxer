@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { Employee, PerformanceLevel } from "../types/employee";
 import { PositionDistribution } from "../types/api";
 import { getPositionLabel } from "../constants/positionLabels";
+import { PERFORMANCE_BUCKETS } from "../constants/performanceBuckets";
 
 interface StatisticsData {
   total_employees: number;
@@ -92,7 +93,7 @@ export const useStatistics = (
 
     // Calculate grouped statistics
     // Group 1: Boxes 6, 8, 9 (high performers)
-    const highPerformerPositions = [6, 8, 9];
+    const highPerformerPositions = PERFORMANCE_BUCKETS.High;
     const highPerformerCount = highPerformerPositions.reduce(
       (sum, pos) => sum + distributionDict[pos].count,
       0
@@ -101,7 +102,7 @@ export const useStatistics = (
       total > 0 ? (highPerformerCount / total) * 100 : 0;
 
     // Group 2: Boxes 3, 5, 7 (middle tier)
-    const middleTierPositions = [3, 5, 7];
+    const middleTierPositions = PERFORMANCE_BUCKETS.Medium;
     const middleTierCount = middleTierPositions.reduce(
       (sum, pos) => sum + distributionDict[pos].count,
       0
@@ -110,7 +111,7 @@ export const useStatistics = (
       total > 0 ? (middleTierCount / total) * 100 : 0;
 
     // Group 3: Boxes 1, 2, 4 (low performers)
-    const lowPerformerPositions = [1, 2, 4];
+    const lowPerformerPositions = PERFORMANCE_BUCKETS.Low;
     const lowPerformerCount = lowPerformerPositions.reduce(
       (sum, pos) => sum + distributionDict[pos].count,
       0

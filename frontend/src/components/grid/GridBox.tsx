@@ -14,6 +14,7 @@ import {
   getPositionName,
   getPositionGuidance,
 } from "../../constants/positionLabels";
+import { PERFORMANCE_BUCKETS } from "../../constants/performanceBuckets";
 import { logger } from "../../utils/logger";
 import { useGridZoom } from "../../contexts/GridZoomContext";
 
@@ -60,11 +61,11 @@ export const GridBox: React.FC<GridBoxProps> = ({
   //                  [1=L,L], [2=M,L], [3=H,L] (bottom row)
   const baseBackgroundColor = useMemo(() => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
-    if ([6, 8, 9].includes(position)) {
+    if (PERFORMANCE_BUCKETS.High.includes(position)) {
       return theme.palette.gridBox.highPerformer;
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
-    if ([1, 2, 4].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Low.includes(position)) {
       return theme.palette.gridBox.needsAttention;
     }
     // Solid Performer: [M,M] = position 5
@@ -72,7 +73,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
       return theme.palette.gridBox.solidPerformer;
     }
     // Development: [L,H], [H,L] = positions 7, 3
-    if ([3, 7].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
       return theme.palette.gridBox.development;
     }
     // Fallback (should not happen)
