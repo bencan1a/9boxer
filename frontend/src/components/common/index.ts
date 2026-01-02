@@ -14,6 +14,8 @@ export type {
   ActiveFilter,
   FilterToolbarVariant,
 } from "./FilterToolbar";
+export { FilterToolbarContainer } from "./FilterToolbarContainer";
+export type { FilterToolbarContainerProps } from "./FilterToolbarContainer";
 export { LanguageSelector } from "./LanguageSelector";
 export { LoadingSpinner } from "./LoadingSpinner";
 export { ViewControls } from "./ViewControls";

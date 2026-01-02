@@ -25,9 +25,9 @@ import {
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import { GridBox } from "./GridBox";
-import { EmployeeCount } from "./EmployeeCount";
 import { Axis } from "./Axis";
 import { DraggedEmployeeTile } from "./DraggedEmployeeTile";
+import { FilterToolbarContainer } from "../common/FilterToolbarContainer";
 import { useEmployees } from "../../hooks/useEmployees";
 import {
   useSessionStore,
@@ -66,7 +66,7 @@ const onRenderCallback = (
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
-  const { isResizing, tokens } = useGridZoom();
+  const { isResizing } = useGridZoom();
   const {
     employeesByPosition,
     getShortPositionLabel,
@@ -245,7 +245,7 @@ export const NineBoxGrid: React.FC = () => {
           }}
           data-testid="nine-box-grid"
         >
-          {/* Header row with Performance label, employee count, and view mode toggle */}
+          {/* Header row with Performance label and FilterToolbar */}
           <Box
             sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
           >
@@ -254,29 +254,17 @@ export const NineBoxGrid: React.FC = () => {
               sx={{
                 flex: 1,
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 alignItems: "center",
                 gap: 2,
+                position: "relative",
               }}
             >
-              {/* Left: Empty for balance */}
-              <Box sx={{ width: 120 }} />
+              {/* Left: FilterToolbar (positioned absolutely) */}
+              <FilterToolbarContainer variant="compact" />
 
-              {/* Center: Performance label + Employee count */}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  flexDirection: { xs: "column", sm: "row" },
-                }}
-              >
-                <Axis orientation="horizontal" />
-                <EmployeeCount />
-              </Box>
-
-              {/* Right: Empty for balance (view controls moved to floating position) */}
-              <Box sx={{ width: 120 }} />
+              {/* Center: Performance label */}
+              <Axis orientation="horizontal" />
             </Box>
           </Box>
 
