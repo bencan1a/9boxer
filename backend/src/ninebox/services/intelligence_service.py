@@ -10,6 +10,7 @@ from typing import Any, cast
 import numpy as np
 
 from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.org_service import OrgService
 
 
@@ -703,9 +704,15 @@ def calculate_manager_analysis(
         # High: positions 9, 8, 6
         # Medium: positions 7, 5, 3
         # Low: positions 4, 2, 1
-        high_count = sum(1 for emp in valid_reports if emp.grid_position in [9, 8, 6])
-        medium_count = sum(1 for emp in valid_reports if emp.grid_position in [7, 5, 3])
-        low_count = sum(1 for emp in valid_reports if emp.grid_position in [4, 2, 1])
+        high_count = sum(
+            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["High"]
+        )
+        medium_count = sum(
+            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["Medium"]
+        )
+        low_count = sum(
+            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["Low"]
+        )
 
         team_size = len(valid_reports)
         high_pct = (high_count / team_size * 100) if team_size > 0 else 0
