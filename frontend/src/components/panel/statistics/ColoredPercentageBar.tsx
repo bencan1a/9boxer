@@ -21,6 +21,7 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import { PERFORMANCE_BUCKETS } from "../../../constants/performanceBuckets";
 
 export interface ColoredPercentageBarProps {
   /** Percentage value (0-100) */
@@ -73,21 +74,21 @@ export const ColoredPercentageBar: React.FC<ColoredPercentageBarProps> = ({
    */
   const getPercentageBarColor = (): string => {
     // High performers (9, 8, 6) - Want these positions to be well-populated
-    if ([9, 8, 6].includes(position)) {
+    if (PERFORMANCE_BUCKETS.High.includes(position)) {
       return percentage >= 8
         ? theme.palette.success.main // Green - good representation
         : theme.palette.warning.main; // Orange - underrepresented
     }
 
     // Middle tier (7, 5, 3) - Want balanced distribution (not too high or low)
-    if ([7, 5, 3].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
       return percentage >= 8 && percentage <= 15
         ? theme.palette.info.main // Blue - balanced
         : theme.palette.warning.main; // Orange - skewed
     }
 
     // Low performers (4, 2, 1) - Want these positions to be minimal
-    if ([4, 2, 1].includes(position)) {
+    if (PERFORMANCE_BUCKETS.Low.includes(position)) {
       return percentage <= 8
         ? theme.palette.success.main // Green - few low performers (good)
         : theme.palette.error.main; // Red - too many low performers (concerning)

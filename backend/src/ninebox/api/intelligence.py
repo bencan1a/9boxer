@@ -26,10 +26,10 @@ class AnomalyCount(TypedDict):
 class DimensionAnalysis(TypedDict):
     """Analysis for a single dimension."""
 
-    chi_square: float
-    p_value: float
+    chi_square: float | None  # None for manager analysis (uses heuristic approach)
+    p_value: float | None  # None for manager analysis (no statistical test performed)
     effect_size: float
-    degrees_of_freedom: int
+    degrees_of_freedom: int | None  # None for manager analysis
     sample_size: int
     status: str  # "green" | "yellow" | "red"
     deviations: list[dict]
