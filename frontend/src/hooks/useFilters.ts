@@ -181,11 +181,15 @@ export const useFilters = () => {
       // Extract unique job levels
       const levels = Array.from(
         new Set(
-          employees.map((emp) => {
-            // Extract level code (e.g., "MT2" from "MT2 - Team Lead")
-            const match = emp.job_level.match(/(MT\d+)/);
-            return match ? match[1] : emp.job_level;
-          })
+          employees
+            .map((emp) => {
+              // Skip employees without job_level
+              if (!emp.job_level) return null;
+              // Extract level code (e.g., "MT2" from "MT2 - Team Lead")
+              const match = emp.job_level.match(/(MT\d+)/);
+              return match ? match[1] : emp.job_level;
+            })
+            .filter((level): level is string => Boolean(level))
         )
       ).sort();
 
@@ -206,7 +210,7 @@ export const useFilters = () => {
 
       // Extract unique managers
       const managers = Array.from(
-        new Set(employees.map((emp) => emp.manager))
+        new Set(employees.map((emp) => emp.manager).filter(Boolean))
       ).sort();
 
       // Extract flags with counts (only flags that exist in the dataset)
