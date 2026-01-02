@@ -620,7 +620,7 @@ Now that you know how to make changes, consider these next steps:
 : [Understand the export process](../exporting.md) - save your work and share with HR or managers.
 
 **Prepare for a calibration meeting**
-: [Follow the calibration workflow](talent-calibration.md) - use 9Boxer during group talent reviews.
+: [Follow the best practices guide](../best-practices.md) - use 9Boxer during group talent reviews.
 
 **Understand change tracking**
 : [Deep dive into the Changes tab](../tracking-changes.md) - see full history and manage notes.

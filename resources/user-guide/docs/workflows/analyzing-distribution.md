@@ -446,7 +446,7 @@ You've successfully analyzed your distribution when you can answer:
 
 ## Related Workflows
 
-- [Talent Calibration Preparation](talent-calibration.md) - Use distribution analysis as input to calibration meetings
+- [Best Practices](../best-practices.md) - Use distribution analysis as input to calibration meetings
 - [Making Rating Changes](making-changes.md) - Recalibrate employees based on distribution insights
 - [Adding Notes & Documentation](adding-notes.md) - Document rationale for distribution-driven changes
 

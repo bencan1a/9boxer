@@ -172,7 +172,6 @@ nav:
     - Exporting: exporting.md
     - Settings: settings.md
   - Running Calibration:
-    - Complete Calibration Reference: workflows/talent-calibration.md
     - Making Your First Changes: workflows/making-changes.md
     - Adding Notes & Documentation: workflows/adding-notes.md
     - Analyzing Your Talent Distribution: workflows/analyzing-distribution.md
@@ -182,6 +181,14 @@ nav:
     - Best Practices: best-practices.md
     - Large Datasets (100+): large-dataset-guide.md
     - Detection Methodology: detection-methodology.md
+    - Calibration Deep Dives:
+      - Filter Strategy: reference/filtering-decision-tree.md
+      - Power Dynamics & Politics: reference/power-dynamics-and-politics.md
+      - Psychological Safety: reference/psychological-safety.md
+      - Difficult Scenarios: reference/difficult-scenarios.md
+      - Post-Calibration Conversations: reference/post-calibration-conversations.md
+      - Cultural Calibration: reference/cultural-calibration.md
+      - Multi-Year Tracking: reference/multi-year-tracking.md
     - Troubleshooting: troubleshooting.md
     - FAQ: faq.md
 

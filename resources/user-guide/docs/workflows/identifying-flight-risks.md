@@ -61,7 +61,7 @@ Not everyone who leaves is a "flight risk" worth worrying about. Focus on:
 
 You'll see only employees in the High Performance column (Positions 3, 6, 9).
 
-![Filters panel with High Performance selected showing flight risk candidates](../images/screenshots/filters/filters-overview.png)
+![Filters panel with High Performance selected showing flight risk candidates](../images/screenshots/filters/filters-panel-expanded.png)
 
 ### Review the Grid
 
@@ -450,7 +450,7 @@ Sarah, VP of People at a 150-person startup, used this workflow when she noticed
 ## Related Workflows
 
 - [Analyzing Distribution](analyzing-distribution.md) - Understand overall talent distribution before diving into flight risk
-- [Talent Calibration](talent-calibration.md) - Use calibration to validate flight risk assessments and align on retention priorities
+- [Best Practices](../best-practices.md) - Use calibration to validate flight risk assessments and align on retention priorities
 - [Making Changes](making-changes.md) - Update ratings when employees improve after retention interventions
 
 ---

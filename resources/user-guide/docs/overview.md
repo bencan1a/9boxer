@@ -51,7 +51,7 @@ Choose your path based on your experience and goals.
 |---------------|------------|
 | **New to 9Boxer** | [2-Minute Quickstart](quickstart.md) - See value immediately |
 | **First-time 9-box user** | [Understanding the Grid](understanding-grid.md) - Learn the framework |
-| **Preparing for calibration** | [Talent Calibration Workflow](workflows/talent-calibration.md) - Step-by-step guide |
+| **Preparing for calibration** | [Best Practices](best-practices.md) - Step-by-step calibration guide |
 | **HR Manager** | [Getting Started Guide](getting-started.md) - Complete workflow |
 | **Looking for specific help** | [Troubleshooting](troubleshooting.md) - Solve common issues |
 
@@ -74,8 +74,8 @@ Choose your path based on your experience and goals.
 
 **Best Practices**
 
-- [Best Practices](best-practices.md) - Expert recommendations
-- [Talent Calibration Workflow](workflows/talent-calibration.md) - Run effective meetings
+- [Best Practices](best-practices.md) - Expert recommendations and calibration workflows
+- [Large Datasets Guide](large-dataset-guide.md) - Handling 100+ employees
 
 ---
 
