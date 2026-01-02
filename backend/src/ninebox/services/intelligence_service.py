@@ -797,11 +797,14 @@ def calculate_manager_analysis(
     # Determine status based on deviations
     # For manager analysis, we use deviation-based thresholds rather than chi-square
     # NOTE: This is a heuristic metric used internally for status determination,
-    # not a real p-value from a statistical test. See issue #156 for details.
+    # not a real p-value from a statistical test. See issue #154 for details.
     heuristic_score = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
     effect_size = float(max_deviation) / 100.0  # Normalize to 0-1 scale
 
-    # Generate status (uses heuristic_score internally for fallback logic)
+    # Generate status.
+    # NOTE: _get_status's first parameter is named "p_value" in its signature and docs,
+    # but in the manager analysis path we intentionally pass heuristic_score as a
+    # fallback score (not a true p-value). See comments above and issue #154.
     status = _get_status(heuristic_score, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_manager_interpretation(
         status,
