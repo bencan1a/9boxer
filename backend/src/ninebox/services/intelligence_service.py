@@ -598,60 +598,31 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
     }
 
 
-def calculate_manager_analysis(
-    employees: list[Employee],
-    min_team_size: int = 10,
-    max_displayed: int = 10,
-) -> dict[str, Any]:
-    """Analyze rating distribution across managers to detect anomalous patterns.
-
-    Tests whether managers have rating distributions that significantly deviate
-    from the expected 20/70/10 baseline (High/Medium/Low performers).
+def _build_qualified_managers(
+    employees: list[Employee], min_team_size: int
+) -> tuple[dict[str, list[Employee]], dict[str, Any] | None]:
+    """Build organization tree and filter managers by minimum team size.
 
     Args:
         employees: List of employee records
-        min_team_size: Minimum organization size for manager to be included (default: 10)
-        max_displayed: Maximum number of managers to return (default: 10)
+        min_team_size: Minimum organization size for manager to be included
 
     Returns:
-        Dictionary containing:
-        - chi_square: Chi-square statistic
-        - p_value: Statistical significance level
-        - effect_size: Cramér's V effect size
-        - degrees_of_freedom: Degrees of freedom for test
-        - sample_size: Total sample size
-        - status: Traffic light indicator ("green", "yellow", "red")
-        - deviations: List of manager deviations sorted by total deviation
-        - interpretation: Human-readable summary
-
-    Example:
-        >>> result = calculate_manager_analysis(employees, min_team_size=10)
-        >>> result["deviations"][0]["category"]  # Most anomalous manager
-        'Jane Smith'
-        >>> result["deviations"][0]["high_pct"]  # Actual high performer %
-        45.0
-        >>> result["deviations"][0]["high_deviation"]  # Deviation from 20% baseline
-        25.0
+        Tuple of (qualified_managers dict, error_result or None)
+        - qualified_managers: Dict mapping manager_name -> list of reports
+        - error_result: Error analysis dict if no qualified managers found, None otherwise
     """
-    if not employees:
-        return _empty_analysis("No employees to analyze")
-
-    # Configuration
-    BASELINE_HIGH = 20.0
-    BASELINE_MEDIUM = 70.0
-    BASELINE_LOW = 10.0
-
     # Use OrgService to build org tree (replaces 60+ lines of manual tree building)
     # OrgService validates structure and handles all edge cases (cycles, orphans, etc.)
     #
     # Validation is disabled because:
     # 1. Test data may have incomplete org structures (manager references without manager employees)
     # 2. Analysis focuses on rating distributions, not org structure correctness
-    # 3. Validation adds minimal value here since we skip missing managers anyway (line 671)
+    # 3. Validation adds minimal value here since we skip missing managers anyway
     # 4. Sample data generator ensures data integrity for production use
     #
     # Trade-off: We accept potentially invalid org structures to allow flexible test data.
-    # Invalid manager references are logged as errors (line 672) rather than raising exceptions.
+    # Invalid manager references are logged as errors rather than raising exceptions.
     org_service = OrgService(employees, validate=False)
 
     # Filter managers by minimum team size
@@ -660,11 +631,11 @@ def calculate_manager_analysis(
     if not manager_ids:
         all_manager_ids = org_service.find_managers(min_team_size=1)
         if not all_manager_ids:
-            return _empty_analysis("No managers found in dataset")
+            return {}, _empty_analysis("No managers found in dataset")
 
         # Get team size range for error message
         all_team_sizes = [len(org_service.get_all_reports(mgr_id)) for mgr_id in all_manager_ids]
-        return _empty_analysis(
+        return {}, _empty_analysis(
             f"No managers with team size >= {min_team_size}. "
             f"Found {len(all_manager_ids)} managers with teams of "
             f"{min(all_team_sizes)}-{max(all_team_sizes)} employees."
@@ -686,64 +657,126 @@ def calculate_manager_analysis(
         reports = org_service.get_all_reports(manager_id)
         qualified_managers[manager.name] = reports
 
-    # Calculate rating distributions for each manager
+    return qualified_managers, None
+
+
+def _calculate_single_manager_distribution(
+    manager_name: str,
+    reports: list[Employee],
+    baseline_high: float,
+    baseline_medium: float,
+    baseline_low: float,
+) -> dict[str, Any]:
+    """Calculate rating distribution for a single manager.
+
+    Args:
+        manager_name: Name of the manager
+        reports: List of employees reporting to this manager
+        baseline_high: Baseline percentage for high performers
+        baseline_medium: Baseline percentage for medium performers
+        baseline_low: Baseline percentage for low performers
+
+    Returns:
+        Dictionary containing distribution metrics
+    """
+    # Validate grid positions and filter out invalid ones
+    valid_reports = [emp for emp in reports if emp.grid_position in range(1, 10)]
+    invalid_count = len(reports) - len(valid_reports)
+
+    if invalid_count > 0:
+        logging.getLogger(__name__).warning(
+            f"Manager '{manager_name}' has {invalid_count} employee(s) with invalid "
+            f"grid positions (not in 1-9). These employees are excluded from distribution analysis."
+        )
+
+    # Count employees in each performance bucket
+    # High: positions 9, 8, 6
+    # Medium: positions 7, 5, 3
+    # Low: positions 4, 2, 1
+    high_count = sum(1 for emp in valid_reports if emp.grid_position in [9, 8, 6])
+    medium_count = sum(1 for emp in valid_reports if emp.grid_position in [7, 5, 3])
+    low_count = sum(1 for emp in valid_reports if emp.grid_position in [4, 2, 1])
+
+    team_size = len(valid_reports)
+    high_pct = (high_count / team_size * 100) if team_size > 0 else 0
+    medium_pct = (medium_count / team_size * 100) if team_size > 0 else 0
+    low_pct = (low_count / team_size * 100) if team_size > 0 else 0
+
+    # Calculate deviations from baseline
+    high_deviation = high_pct - baseline_high
+    medium_deviation = medium_pct - baseline_medium
+    low_deviation = low_pct - baseline_low
+
+    total_deviation = abs(high_deviation) + abs(medium_deviation) + abs(low_deviation)
+
+    return {
+        "manager_name": manager_name,
+        "team_size": team_size,
+        "high_count": high_count,
+        "medium_count": medium_count,
+        "low_count": low_count,
+        "high_pct": high_pct,
+        "medium_pct": medium_pct,
+        "low_pct": low_pct,
+        "high_deviation": high_deviation,
+        "medium_deviation": medium_deviation,
+        "low_deviation": low_deviation,
+        "total_deviation": total_deviation,
+    }
+
+
+def _calculate_manager_distributions(
+    qualified_managers: dict[str, list[Employee]],
+    baseline_high: float,
+    baseline_medium: float,
+    baseline_low: float,
+    max_displayed: int,
+) -> tuple[list[dict[str, Any]], int]:
+    """Calculate rating distributions for all managers.
+
+    Args:
+        qualified_managers: Dict mapping manager_name -> list of reports
+        baseline_high: Baseline percentage for high performers
+        baseline_medium: Baseline percentage for medium performers
+        baseline_low: Baseline percentage for low performers
+        max_displayed: Maximum number of managers to return
+
+    Returns:
+        Tuple of (top_managers, total_manager_count)
+        - top_managers: List of top N most anomalous managers with distribution metrics
+        - total_manager_count: Total number of managers analyzed
+    """
     manager_distributions = []
     for manager_name, reports in qualified_managers.items():
-        # Validate grid positions and filter out invalid ones
-        valid_reports = [emp for emp in reports if emp.grid_position in range(1, 10)]
-        invalid_count = len(reports) - len(valid_reports)
-
-        if invalid_count > 0:
-            logger.warning(
-                f"Manager '{manager_name}' has {invalid_count} employee(s) with invalid "
-                f"grid positions (not in 1-9). These employees are excluded from distribution analysis."
-            )
-
-        # Count employees in each performance bucket
-        # High: positions 9, 8, 6
-        # Medium: positions 7, 5, 3
-        # Low: positions 4, 2, 1
-        high_count = sum(1 for emp in valid_reports if emp.grid_position in [9, 8, 6])
-        medium_count = sum(1 for emp in valid_reports if emp.grid_position in [7, 5, 3])
-        low_count = sum(1 for emp in valid_reports if emp.grid_position in [4, 2, 1])
-
-        team_size = len(valid_reports)
-        high_pct = (high_count / team_size * 100) if team_size > 0 else 0
-        medium_pct = (medium_count / team_size * 100) if team_size > 0 else 0
-        low_pct = (low_count / team_size * 100) if team_size > 0 else 0
-
-        # Calculate deviations from baseline
-        high_deviation = high_pct - BASELINE_HIGH
-        medium_deviation = medium_pct - BASELINE_MEDIUM
-        low_deviation = low_pct - BASELINE_LOW
-
-        total_deviation = abs(high_deviation) + abs(medium_deviation) + abs(low_deviation)
-
-        manager_distributions.append(
-            {
-                "manager_name": manager_name,
-                "team_size": team_size,
-                "high_count": high_count,
-                "medium_count": medium_count,
-                "low_count": low_count,
-                "high_pct": high_pct,
-                "medium_pct": medium_pct,
-                "low_pct": low_pct,
-                "high_deviation": high_deviation,
-                "medium_deviation": medium_deviation,
-                "low_deviation": low_deviation,
-                "total_deviation": total_deviation,
-            }
+        distribution = _calculate_single_manager_distribution(
+            manager_name, reports, baseline_high, baseline_medium, baseline_low
         )
+        manager_distributions.append(distribution)
 
     # Sort by total deviation (most anomalous first) and limit to top N
     manager_distributions.sort(key=lambda x: cast("Any", x["total_deviation"]), reverse=True)
     total_manager_count = len(manager_distributions)
     top_managers = manager_distributions[:max_displayed]
 
-    if not top_managers:
-        return _empty_analysis("No managers to analyze after filtering")
+    return top_managers, total_manager_count
 
+
+def _calculate_manager_statistics(
+    top_managers: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], int, float]:
+    """Calculate statistical metrics for manager deviations.
+
+    Computes z-scores and significance flags for each manager's distribution.
+
+    Args:
+        top_managers: List of managers with distribution metrics
+
+    Returns:
+        Tuple of (deviations, significant_count, max_deviation)
+        - deviations: List of deviation dicts with z-scores and significance flags
+        - significant_count: Number of managers with significant deviations
+        - max_deviation: Maximum total deviation across all managers
+    """
     # Build deviations list - calculate z-scores based on deviation from baseline
     # NOTE: This uses a simplified heuristic for ranking managers, not a proper statistical test.
     # The z-score is an approximation used to identify which managers deviate most from baseline,
@@ -790,10 +823,73 @@ def calculate_manager_analysis(
 
     # Already sorted by total_deviation, no need to re-sort
 
-    # Calculate summary statistics for overall status
+    # Calculate summary statistics
     significant_count = sum(1 for d in deviations if d["is_significant"])
-    max_deviation = max((d["total_deviation"] for d in deviations), default=0)
+    max_deviation = max((cast("float", d["total_deviation"]) for d in deviations), default=0.0)
 
+    return deviations, significant_count, max_deviation
+
+
+def calculate_manager_analysis(
+    employees: list[Employee],
+    min_team_size: int = 10,
+    max_displayed: int = 10,
+) -> dict[str, Any]:
+    """Analyze rating distribution across managers to detect anomalous patterns.
+
+    Tests whether managers have rating distributions that significantly deviate
+    from the expected 20/70/10 baseline (High/Medium/Low performers).
+
+    Args:
+        employees: List of employee records
+        min_team_size: Minimum organization size for manager to be included (default: 10)
+        max_displayed: Maximum number of managers to return (default: 10)
+
+    Returns:
+        Dictionary containing:
+        - chi_square: Chi-square statistic
+        - p_value: Statistical significance level
+        - effect_size: Cramér's V effect size
+        - degrees_of_freedom: Degrees of freedom for test
+        - sample_size: Total sample size
+        - status: Traffic light indicator ("green", "yellow", "red")
+        - deviations: List of manager deviations sorted by total deviation
+        - interpretation: Human-readable summary
+
+    Example:
+        >>> result = calculate_manager_analysis(employees, min_team_size=10)
+        >>> result["deviations"][0]["category"]  # Most anomalous manager
+        'Jane Smith'
+        >>> result["deviations"][0]["high_pct"]  # Actual high performer %
+        45.0
+        >>> result["deviations"][0]["high_deviation"]  # Deviation from 20% baseline
+        25.0
+    """
+    if not employees:
+        return _empty_analysis("No employees to analyze")
+
+    # Configuration
+    BASELINE_HIGH = 20.0
+    BASELINE_MEDIUM = 70.0
+    BASELINE_LOW = 10.0
+
+    # Step 1: Build org tree and filter managers
+    qualified_managers, error_result = _build_qualified_managers(employees, min_team_size)
+    if error_result:
+        return error_result
+
+    # Step 2: Calculate distributions for each manager
+    top_managers, total_manager_count = _calculate_manager_distributions(
+        qualified_managers, BASELINE_HIGH, BASELINE_MEDIUM, BASELINE_LOW, max_displayed
+    )
+
+    if not top_managers:
+        return _empty_analysis("No managers to analyze after filtering")
+
+    # Step 3: Calculate statistical metrics
+    deviations, significant_count, max_deviation = _calculate_manager_statistics(top_managers)
+
+    # Step 4: Build final result
     # Determine status based on deviations
     # For manager analysis, we use deviation-based thresholds rather than chi-square
     p_value = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
