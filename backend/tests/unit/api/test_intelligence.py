@@ -149,8 +149,7 @@ def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
-        "manager_analysis",
-        "manager_analysis",
+        "manager_analysis"
     ]:
         status = data[dimension]["status"]
         actual_counts[status] += 1
@@ -308,7 +307,6 @@ def test_get_intelligence_when_response_then_matches_typeddict_structure(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
-        "manager_analysis",
         "manager_analysis",
     }
     assert set(data.keys()) == expected_keys

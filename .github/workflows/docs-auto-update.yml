@@ -196,8 +196,7 @@ jobs:
 
       - name: Start Backend (for screenshot generation)
         run: |
-          # Activate venv and start backend in background
-          . .venv/bin/activate
+          # Start backend in background (dependencies installed system-wide by setup-python-env)
           # Start uvicorn using --app-dir to avoid fragile directory changes
           uvicorn --app-dir backend/src ninebox.main:app --host 127.0.0.1 --port 38000 > backend.log 2>&1 &
           BACKEND_PID=$!

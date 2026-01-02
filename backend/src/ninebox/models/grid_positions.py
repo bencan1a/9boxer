@@ -32,6 +32,27 @@ POSITION_LABELS_BY_NUMBER: dict[int, str] = {
     1: "Underperformer [L,L]",
 }
 
+# Performance bucket mappings
+# These define which grid positions fall into each performance category
+PERFORMANCE_BUCKETS: dict[str, list[int]] = {
+    "High": [9, 8, 6],
+    "Medium": [7, 5, 3],
+    "Low": [4, 2, 1],
+}
+
+# Reverse mapping: grid position -> performance category
+GRID_POSITION_PERFORMANCE_MAP: dict[int, str] = {
+    9: "High",
+    8: "High",
+    6: "High",
+    7: "Medium",
+    5: "Medium",
+    3: "Medium",
+    4: "Low",
+    2: "Low",
+    1: "Low",
+}
+
 
 def get_position_label(perf: PerformanceLevel, pot: PotentialLevel) -> str:
     """Get the human-readable label for a grid position.
@@ -109,3 +130,26 @@ def calculate_grid_position(perf: PerformanceLevel, pot: PotentialLevel) -> int:
         PotentialLevel.HIGH: 6,
     }
     return pot_map[pot] + perf_map[perf]
+
+
+def get_performance_category(grid_position: int) -> str | None:
+    """Get performance category (High/Medium/Low) for a grid position.
+
+    Args:
+        grid_position: Grid position (1-9)
+
+    Returns:
+        Performance category string ("High", "Medium", or "Low")
+        Returns None if position is invalid
+
+    Examples:
+        >>> get_performance_category(9)
+        'High'
+        >>> get_performance_category(5)
+        'Medium'
+        >>> get_performance_category(1)
+        'Low'
+        >>> get_performance_category(10)
+        None
+    """
+    return GRID_POSITION_PERFORMANCE_MAP.get(grid_position)
