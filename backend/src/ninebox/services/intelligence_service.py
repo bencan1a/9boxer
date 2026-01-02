@@ -8,6 +8,7 @@ import logging
 from typing import Any, cast
 
 import numpy as np
+from scipy.stats import chi2_contingency, chisquare, fisher_exact
 
 from ninebox.models.employee import Employee
 from ninebox.services.org_service import OrgService
@@ -22,8 +23,6 @@ def _chi_square_test(contingency_table: np.ndarray) -> tuple[float, float, int, 
     Returns:
         Tuple of (chi2_statistic, p_value, degrees_of_freedom, expected_frequencies)
     """
-    from scipy.stats import chi2_contingency
-
     chi2, p_value, dof, expected = chi2_contingency(contingency_table)
     return float(chi2), float(p_value), int(dof), expected
 
@@ -81,8 +80,6 @@ def _calculate_manager_chi_square(
         which violates chi-square assumptions. However, this is acceptable for
         exploratory analysis and is more rigorous than the previous heuristic.
     """
-    from scipy.stats import chisquare
-
     # Calculate expected counts from percentages
     expected = np.array([team_size * p / 100.0 for p in expected_pct])
 
@@ -242,8 +239,6 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     if not _safe_sample_size_check(expected):
         # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
-            from scipy.stats import fisher_exact
-
             _, p_value = fisher_exact(contingency)
             chi2 = 0.0  # Fisher's exact doesn't have chi2 statistic
 

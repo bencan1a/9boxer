@@ -144,10 +144,10 @@ def test_manager_analysis_significance_threshold() -> None:
         if i <= 4:  # 3 high = 30%
             perf = PerformanceLevel.HIGH
             pot = PotentialLevel.HIGH
-        elif i <= 11:  # 7 medium = 70%
+        elif i <= 10:  # 6 medium = 60%
             perf = PerformanceLevel.MEDIUM
             pot = PotentialLevel.MEDIUM
-        else:  # 0 low = 0%
+        else:  # 1 low = 10%
             perf = PerformanceLevel.LOW
             pot = PotentialLevel.LOW
 
