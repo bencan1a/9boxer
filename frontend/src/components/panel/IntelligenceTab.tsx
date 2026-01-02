@@ -22,8 +22,10 @@ import { useIntelligence } from "../../hooks/useIntelligence";
 import { EmptyState } from "../common/EmptyState";
 import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
 import { AnomalySection } from "../intelligence/AnomalySection";
+import { ManagerAnomalySection } from "../intelligence/ManagerAnomalySection";
 import { DeviationChart } from "../intelligence/DeviationChart";
 import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
+import { ManagerDistributionChart } from "../intelligence/ManagerDistributionChart";
 import { ApiError } from "../../services/api";
 
 export const IntelligenceTab: React.FC = () => {
@@ -214,6 +216,20 @@ export const IntelligenceTab: React.FC = () => {
             <DeviationChart
               data={data.tenure_analysis.deviations}
               title={t("panel.intelligenceTab.highPerformerByTenure")}
+            />
+          }
+        />
+      </Box>
+
+      {/* Manager Analysis */}
+      <Box data-testid="manager-analysis-section">
+        <ManagerAnomalySection
+          title={t("panel.intelligenceTab.managerAnalysis")}
+          analysis={data.manager_analysis}
+          chartComponent={
+            <ManagerDistributionChart
+              data={data.manager_analysis.deviations}
+              title={t("panel.intelligenceTab.managerDistribution")}
             />
           }
         />

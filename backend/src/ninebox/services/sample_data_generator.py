@@ -3,7 +3,7 @@
 This module generates synthetic employee datasets with:
 - Realistic organizational hierarchies (6-level management chains)
 - Performance history over 3 years
-- Statistical bias patterns (location, function)
+- Statistical bias patterns (location, function, manager)
 - Complete coverage of all grid positions and flags
 - Reproducible results via seed parameter
 
@@ -797,7 +797,12 @@ class RichEmployeeGenerator:
     - Pyramid distribution for job levels
     - All 9 grid positions covered
     - All 8 flag types distributed (10-20% of employees)
-    - Optional bias patterns (+15% for USA, +20% for Sales)
+    - Optional bias patterns:
+      - USA location: +60% boost to high performance
+      - Sales function: +65% boost to high performance
+      - Engineering Manager: 50% high / 40% medium / 10% low (vs 20/70/10 baseline)
+      - VP Product: 5% high / 75% medium / 20% low (vs 20/70/10 baseline)
+      - Director Sales: 35% high / 60% medium / 5% low (vs 20/70/10 baseline)
 
     Example:
         >>> config = RichDatasetConfig(size=100, seed=42)
@@ -856,6 +861,14 @@ class RichEmployeeGenerator:
         # Generate flags (10-20% of employees)
         flags_list = self._generate_flags(config.size)
 
+        # PASS 1: Generate names for all employees first
+        # This allows us to reference actual employee names when setting manager fields
+        employee_names: dict[str, str] = {}
+        for emp_id in employee_ids:
+            numeric_id = int(emp_id[3:])  # Extract from "EMP0001" format
+            employee_names[emp_id] = self._generate_name(numeric_id)
+
+        # PASS 2: Create Employee objects with correct manager names
         for idx, emp_id in enumerate(employee_ids):
             node = hierarchy[emp_id]
 
@@ -866,12 +879,19 @@ class RichEmployeeGenerator:
             function = functions[idx]
             grid_pos = grid_positions[idx]
 
-            # Apply bias if enabled
+            # Apply bias if enabled (pass manager employee ID for direct lookup)
             if config.include_bias:
-                grid_pos = self._apply_bias(grid_pos, location, function)
+                grid_pos = self._apply_bias(grid_pos, location, function, node.manager, hierarchy)
 
             # Convert grid position to performance/potential
             performance, potential = self._grid_to_perf_pot(grid_pos)
+
+            # Get manager name for Employee object creation
+            manager_name = (
+                self._get_manager_name(node.manager, hierarchy, employee_names)
+                if node.manager
+                else "None"
+            )
 
             # Generate hire date (random in last 7 years)
             days_ago = self.rng.randint(0, 7 * 365)
@@ -896,12 +916,9 @@ class RichEmployeeGenerator:
             talent_indicator = self._get_talent_indicator(performance, potential)
 
             # Create employee
-            manager_name = (
-                self._get_manager_name(node.manager, hierarchy) if node.manager else "None"
-            )
             employee = Employee(
                 employee_id=numeric_id,
-                name=self._generate_name(numeric_id),
+                name=employee_names[emp_id],  # Use pre-generated name from Pass 1
                 business_title=node.title,
                 job_title=node.title,
                 job_profile=f"{node.title}, {function}-{location}",
@@ -909,12 +926,24 @@ class RichEmployeeGenerator:
                 job_function=function,
                 location=location,
                 direct_manager=manager_name if manager_name else "None",
-                management_chain_01=self._get_manager_name(node.chain_01, hierarchy),
-                management_chain_02=self._get_manager_name(node.chain_02, hierarchy),
-                management_chain_03=self._get_manager_name(node.chain_03, hierarchy),
-                management_chain_04=self._get_manager_name(node.chain_04, hierarchy),
-                management_chain_05=self._get_manager_name(node.chain_05, hierarchy),
-                management_chain_06=self._get_manager_name(node.chain_06, hierarchy),
+                management_chain_01=self._get_manager_name(
+                    node.chain_01, hierarchy, employee_names
+                ),
+                management_chain_02=self._get_manager_name(
+                    node.chain_02, hierarchy, employee_names
+                ),
+                management_chain_03=self._get_manager_name(
+                    node.chain_03, hierarchy, employee_names
+                ),
+                management_chain_04=self._get_manager_name(
+                    node.chain_04, hierarchy, employee_names
+                ),
+                management_chain_05=self._get_manager_name(
+                    node.chain_05, hierarchy, employee_names
+                ),
+                management_chain_06=self._get_manager_name(
+                    node.chain_06, hierarchy, employee_names
+                ),
                 hire_date=hire_date,
                 tenure_category=tenure_category,
                 time_in_job_profile=time_in_profile,
@@ -1005,13 +1034,22 @@ class RichEmployeeGenerator:
         self.rng.shuffle(flags_list)
         return flags_list
 
-    def _apply_bias(self, grid_pos: int, location: str, function: str) -> int:
+    def _apply_bias(
+        self,
+        grid_pos: int,
+        location: str,
+        function: str,
+        manager_emp_id: str | None,
+        hierarchy: dict[str, ManagementNode],
+    ) -> int:
         """Apply bias patterns to grid position.
 
         Args:
             grid_pos: Original grid position
             location: Employee location
             function: Employee job function
+            manager_emp_id: Direct manager's employee ID (e.g., "EMP0001")
+            hierarchy: Organizational hierarchy for looking up manager titles
 
         Returns:
             Adjusted grid position
@@ -1019,13 +1057,61 @@ class RichEmployeeGenerator:
         Example:
             >>> generator = RichEmployeeGenerator()
             >>> generator.rng = random.Random(42)
-            >>> # USA location gets strong boost to high performance
-            >>> pos = generator._apply_bias(4, "USA", "Engineering")
+            >>> hierarchy = {"EMP0001": ManagementNode("EMP0001", "MT3", "Engineering Manager", None)}
+            >>> pos = generator._apply_bias(4, "USA", "Engineering", "EMP0001", hierarchy)
             >>> pos >= 4
             True
         """
         if self.rng is None:
             self.rng = random.Random()  # nosec B311 - Using for sample data generation, not cryptography
+
+        # Manager-specific bias patterns (applied first for priority)
+        # These create anomalous rating distributions for testing manager analysis
+        # We use the manager's employee ID to look up their job title from hierarchy
+        if manager_emp_id and manager_emp_id in hierarchy:
+            performance, potential = self._grid_to_perf_pot(grid_pos)
+
+            # Get manager's job title directly from hierarchy (no reverse lookup needed!)
+            manager_title = hierarchy[manager_emp_id].title
+
+            if manager_title:
+                # Engineering Manager: High bias (50% high, 40% medium, 10% low)
+                # Target: 50% high performers (vs 20% baseline = +30% deviation)
+                if "Engineering Manager" in manager_title:
+                    # Force 50% to high, 40% to medium, 10% to low
+                    rand_val = self.rng.random()
+                    if rand_val < 0.50:  # 50% high
+                        performance = PerformanceLevel.HIGH
+                    elif rand_val < 0.90:  # 40% medium
+                        performance = PerformanceLevel.MEDIUM
+                    else:  # 10% low
+                        performance = PerformanceLevel.LOW
+                    grid_pos = self._perf_pot_to_grid(performance, potential)
+
+                # VP Product: Low bias (5% high, 75% medium, 20% low)
+                # Target: 5% high performers (vs 20% baseline = -15% deviation)
+                elif "VP Product" in manager_title:
+                    # Force 5% to high, 75% to medium, 20% to low
+                    rand_val = self.rng.random()
+                    if rand_val < 0.05:  # 5% high
+                        performance = PerformanceLevel.HIGH
+                    elif rand_val < 0.80:  # 75% medium
+                        performance = PerformanceLevel.MEDIUM
+                    else:  # 20% low
+                        performance = PerformanceLevel.LOW
+                    grid_pos = self._perf_pot_to_grid(performance, potential)
+
+                # Director Sales: Medium-high bias (35% high, 60% medium, 5% low)
+                # Target: 35% high performers (vs 20% baseline = +15% deviation)
+                elif "Director Sales" in manager_title:
+                    rand_val = self.rng.random()
+                    if rand_val < 0.35:  # 35% high
+                        performance = PerformanceLevel.HIGH
+                    elif rand_val < 0.95:  # 60% medium
+                        performance = PerformanceLevel.MEDIUM
+                    else:  # 5% low
+                        performance = PerformanceLevel.LOW
+                    grid_pos = self._perf_pot_to_grid(performance, potential)
 
         # USA location: 60% boost rate to high performance
         # With 200 employees / 8 locations = 25 per location
@@ -1292,26 +1378,31 @@ class RichEmployeeGenerator:
         return f"{first} {last}"
 
     def _get_manager_name(
-        self, emp_id: str | None, hierarchy: dict[str, ManagementNode]
+        self,
+        emp_id: str | None,
+        _hierarchy: dict[str, ManagementNode],
+        employee_names: dict[str, str],
     ) -> str | None:
         """Get manager name from employee ID.
 
         Args:
             emp_id: Manager's employee ID (can be None for CEO)
             hierarchy: Organizational hierarchy
+            employee_names: Mapping of employee IDs to generated names
 
         Returns:
-            Manager name or None
+            Manager's actual employee name (not job title) or None
 
         Example:
             >>> generator = RichEmployeeGenerator()
             >>> hierarchy = {"EMP0001": ManagementNode("EMP0001", "MT6", "CEO", None)}
-            >>> generator._get_manager_name("EMP0001", hierarchy)
-            'CEO'
+            >>> employee_names = {"EMP0001": "Alice Johnson"}
+            >>> generator._get_manager_name("EMP0001", hierarchy, employee_names)
+            'Alice Johnson'
         """
         if emp_id is None:
             return None
-        return hierarchy[emp_id].title if emp_id in hierarchy else None
+        return employee_names.get(emp_id)
 
     def _generate_development_focus(self, potential: PotentialLevel) -> str | None:
         """Generate development focus based on potential.

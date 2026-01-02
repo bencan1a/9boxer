@@ -196,7 +196,7 @@ describe("IntelligenceSummary", () => {
         mockLowAnomalyCount.anomaly_count.red;
 
       expect(totalCount).toHaveTextContent(expectedTotal.toString());
-      expect(expectedTotal).toBeLessThanOrEqual(4); // Verify it's actually low
+      expect(expectedTotal).toBeLessThanOrEqual(5); // Verify it's low (max 5 analysis types)
     });
   });
 
@@ -327,7 +327,7 @@ describe("IntelligenceSummary", () => {
       render(<IntelligenceSummary data={mockLowAnomalyCount} />);
 
       const totalCount = screen.getByTestId("total-anomaly-count");
-      expect(parseInt(totalCount.textContent || "0")).toBeLessThanOrEqual(4);
+      expect(parseInt(totalCount.textContent || "0")).toBeLessThanOrEqual(5);
     });
 
     it("renders correctly with mixed intelligence data", () => {
