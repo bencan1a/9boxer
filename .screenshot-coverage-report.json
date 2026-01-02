@@ -1,6 +1,6 @@
 {
-  "totalComponents": 72,
-  "componentsWithStories": 57,
+  "totalComponents": 74,
+  "componentsWithStories": 58,
   "componentsWithScreenshots": 18,
   "totalScreenshots": 35,
   "storybookScreenshots": 33,
@@ -443,6 +443,20 @@
           "manual": false
         }
       ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/ManagerAnomalySection.tsx",
+      "name": "ManagerAnomalySection",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/ManagerDistributionChart.tsx",
+      "name": "ManagerDistributionChart",
+      "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/MockDataDemo.tsx",
@@ -1028,6 +1042,12 @@
           "storyId": "app-right-panel-intelligence-leveldistributionchart--normal-distribution"
         }
       ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/ManagerDistributionChart.stories.tsx",
+      "componentName": "ManagerDistributionChart",
+      "usedInScreenshots": 0,
+      "screenshots": []
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/intelligence/atoms/AnomalyCard.stories.tsx",
