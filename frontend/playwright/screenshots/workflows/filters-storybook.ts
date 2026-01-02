@@ -40,7 +40,7 @@ export async function generateFlagsFiltering(
   await navigateToStory(
     page,
     "app-dashboard-filterdrawer--flags-active",
-    "light"
+    "dark"
   );
 
   // Wait for drawer to be visible
@@ -120,7 +120,7 @@ export async function generateFilterDrawerOverview(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1500,
     selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
   });
@@ -148,7 +148,7 @@ export async function generateMultipleFiltersActive(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filterdrawer--multiple-filters-active",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1500,
     selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
   });
@@ -172,7 +172,7 @@ export async function generateFilterDrawerAllExpanded(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filterdrawer--all-sections-expanded",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1500,
     selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
   });
@@ -199,7 +199,7 @@ export async function generateFilterDrawerClearAll(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filters-filtersection--custom-content",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -222,7 +222,7 @@ export async function generateFilterDrawerCalibration(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filterdrawer--multiple-filters-active",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1500,
     selector: '[data-testid="filter-drawer"]', // Drawer renders in portal
   });
@@ -250,7 +250,7 @@ export async function generateActiveChips(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-appbar--with-active-filters",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -279,7 +279,7 @@ export async function generateExclusionsDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-exclusiondialog--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 2000,
     selector: '[data-testid="exclusion-dialog"]',
   });

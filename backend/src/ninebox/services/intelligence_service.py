@@ -598,6 +598,237 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
     }
 
 
+def _build_qualified_managers(
+    employees: list[Employee], min_team_size: int
+) -> tuple[dict[str, list[Employee]], dict[str, Any] | None]:
+    """Build organization tree and filter managers by minimum team size.
+
+    Args:
+        employees: List of employee records
+        min_team_size: Minimum organization size for manager to be included
+
+    Returns:
+        Tuple of (qualified_managers dict, error_result or None)
+        - qualified_managers: Dict mapping manager_name -> list of reports
+        - error_result: Error analysis dict if no qualified managers found, None otherwise
+    """
+    # Use OrgService to build org tree (replaces 60+ lines of manual tree building)
+    # OrgService validates structure and handles all edge cases (cycles, orphans, etc.)
+    #
+    # Validation is disabled because:
+    # 1. Test data may have incomplete org structures (manager references without manager employees)
+    # 2. Analysis focuses on rating distributions, not org structure correctness
+    # 3. Validation adds minimal value here since we skip missing managers anyway
+    # 4. Sample data generator ensures data integrity for production use
+    #
+    # Trade-off: We accept potentially invalid org structures to allow flexible test data.
+    # Invalid manager references are logged as errors rather than raising exceptions.
+    org_service = OrgService(employees, validate=False)
+
+    # Filter managers by minimum team size
+    manager_ids = org_service.find_managers(min_team_size=min_team_size)
+
+    if not manager_ids:
+        all_manager_ids = org_service.find_managers(min_team_size=1)
+        if not all_manager_ids:
+            return {}, _empty_analysis("No managers found in dataset")
+
+        # Get team size range for error message
+        all_team_sizes = [len(org_service.get_all_reports(mgr_id)) for mgr_id in all_manager_ids]
+        return {}, _empty_analysis(
+            f"No managers with team size >= {min_team_size}. "
+            f"Found {len(all_manager_ids)} managers with teams of "
+            f"{min(all_team_sizes)}-{max(all_team_sizes)} employees."
+        )
+
+    # Build qualified_managers dict: manager_name -> reports
+    # Convert from ID-based (OrgService) to name-based (for backwards compatibility)
+    qualified_managers = {}
+    for manager_id in manager_ids:
+        manager = org_service.get_employee_by_id(manager_id)
+        if not manager:
+            logging.getLogger(__name__).error(
+                f"Manager ID {manager_id} found in org tree but not in employee list. "
+                f"This indicates data corruption. Skipping manager."
+            )
+            continue
+
+        reports = org_service.get_all_reports(manager_id)
+        qualified_managers[manager.name] = reports
+
+    return qualified_managers, None
+
+
+def _calculate_single_manager_distribution(
+    manager_name: str,
+    reports: list[Employee],
+    baseline_high: float,
+    baseline_medium: float,
+    baseline_low: float,
+) -> dict[str, Any]:
+    """Calculate rating distribution for a single manager.
+
+    Args:
+        manager_name: Name of the manager
+        reports: List of employees reporting to this manager
+        baseline_high: Baseline percentage for high performers
+        baseline_medium: Baseline percentage for medium performers
+        baseline_low: Baseline percentage for low performers
+
+    Returns:
+        Dictionary containing distribution metrics
+    """
+    # Validate grid positions and filter out invalid ones
+    valid_reports = [emp for emp in reports if emp.grid_position in range(1, 10)]
+    invalid_count = len(reports) - len(valid_reports)
+
+    if invalid_count > 0:
+        logging.getLogger(__name__).warning(
+            f"Manager '{manager_name}' has {invalid_count} employee(s) with invalid "
+            f"grid positions (not in 1-9). These employees are excluded from distribution analysis."
+        )
+
+    # Count employees in each performance bucket
+    # High: positions 9, 8, 6
+    # Medium: positions 7, 5, 3
+    # Low: positions 4, 2, 1
+    high_count = sum(1 for emp in valid_reports if emp.grid_position in [9, 8, 6])
+    medium_count = sum(1 for emp in valid_reports if emp.grid_position in [7, 5, 3])
+    low_count = sum(1 for emp in valid_reports if emp.grid_position in [4, 2, 1])
+
+    team_size = len(valid_reports)
+    high_pct = (high_count / team_size * 100) if team_size > 0 else 0
+    medium_pct = (medium_count / team_size * 100) if team_size > 0 else 0
+    low_pct = (low_count / team_size * 100) if team_size > 0 else 0
+
+    # Calculate deviations from baseline
+    high_deviation = high_pct - baseline_high
+    medium_deviation = medium_pct - baseline_medium
+    low_deviation = low_pct - baseline_low
+
+    total_deviation = abs(high_deviation) + abs(medium_deviation) + abs(low_deviation)
+
+    return {
+        "manager_name": manager_name,
+        "team_size": team_size,
+        "high_count": high_count,
+        "medium_count": medium_count,
+        "low_count": low_count,
+        "high_pct": high_pct,
+        "medium_pct": medium_pct,
+        "low_pct": low_pct,
+        "high_deviation": high_deviation,
+        "medium_deviation": medium_deviation,
+        "low_deviation": low_deviation,
+        "total_deviation": total_deviation,
+    }
+
+
+def _calculate_manager_distributions(
+    qualified_managers: dict[str, list[Employee]],
+    baseline_high: float,
+    baseline_medium: float,
+    baseline_low: float,
+    max_displayed: int,
+) -> tuple[list[dict[str, Any]], int]:
+    """Calculate rating distributions for all managers.
+
+    Args:
+        qualified_managers: Dict mapping manager_name -> list of reports
+        baseline_high: Baseline percentage for high performers
+        baseline_medium: Baseline percentage for medium performers
+        baseline_low: Baseline percentage for low performers
+        max_displayed: Maximum number of managers to return
+
+    Returns:
+        Tuple of (top_managers, total_manager_count)
+        - top_managers: List of top N most anomalous managers with distribution metrics
+        - total_manager_count: Total number of managers analyzed
+    """
+    manager_distributions = []
+    for manager_name, reports in qualified_managers.items():
+        distribution = _calculate_single_manager_distribution(
+            manager_name, reports, baseline_high, baseline_medium, baseline_low
+        )
+        manager_distributions.append(distribution)
+
+    # Sort by total deviation (most anomalous first) and limit to top N
+    manager_distributions.sort(key=lambda x: cast("Any", x["total_deviation"]), reverse=True)
+    total_manager_count = len(manager_distributions)
+    top_managers = manager_distributions[:max_displayed]
+
+    return top_managers, total_manager_count
+
+
+def _calculate_manager_statistics(
+    top_managers: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], int, float]:
+    """Calculate statistical metrics for manager deviations.
+
+    Computes z-scores and significance flags for each manager's distribution.
+
+    Args:
+        top_managers: List of managers with distribution metrics
+
+    Returns:
+        Tuple of (deviations, significant_count, max_deviation)
+        - deviations: List of deviation dicts with z-scores and significance flags
+        - significant_count: Number of managers with significant deviations
+        - max_deviation: Maximum total deviation across all managers
+    """
+    # Build deviations list - calculate z-scores based on deviation from baseline
+    # NOTE: This uses a simplified heuristic for ranking managers, not a proper statistical test.
+    # The z-score is an approximation used to identify which managers deviate most from baseline,
+    # not for rigorous hypothesis testing. See technical debt issue for proper chi-square implementation.
+    deviations = []
+    for mgr in top_managers:
+        # Calculate z-score for each manager based on deviation from baseline
+        team_size = cast("int", mgr["team_size"])
+
+        # For small teams, z-scores would be inflated, so we scale by sqrt(team_size)
+        # This gives a rough approximation of statistical significance
+        scale_factor = np.sqrt(team_size) if team_size > 0 else 1
+
+        # Calculate z-score based on largest deviation
+        max_deviation_value: float = max(
+            abs(cast("float", mgr["high_deviation"])),
+            abs(cast("float", mgr["medium_deviation"])),
+            abs(cast("float", mgr["low_deviation"])),
+        )
+
+        # Approximate z-score: deviation / (baseline_std * scale_factor)
+        # The constant 10.0 is a rough estimate of standard deviation for percentage points
+        # in typical rating distributions. This provides a heuristic ranking metric where:
+        # - z ≥ 2.0 indicates a manager is likely anomalous (marked as "significant")
+        # - z ≥ 3.0 indicates a highly anomalous manager
+        # Technical debt: Replace with proper chi-square goodness-of-fit test
+        z_score = max_deviation_value / (10.0 / scale_factor) if scale_factor > 0 else 0
+
+        deviations.append(
+            {
+                "category": cast("str", mgr["manager_name"]),
+                "team_size": cast("int", mgr["team_size"]),
+                "high_pct": round(cast("float", mgr["high_pct"]), 1),
+                "medium_pct": round(cast("float", mgr["medium_pct"]), 1),
+                "low_pct": round(cast("float", mgr["low_pct"]), 1),
+                "high_deviation": round(cast("float", mgr["high_deviation"]), 1),
+                "medium_deviation": round(cast("float", mgr["medium_deviation"]), 1),
+                "low_deviation": round(cast("float", mgr["low_deviation"]), 1),
+                "total_deviation": round(cast("float", mgr["total_deviation"]), 1),
+                "z_score": round(float(z_score), 2),
+                "is_significant": bool(abs(z_score) >= 2.0),
+            }
+        )
+
+    # Already sorted by total_deviation, no need to re-sort
+
+    # Calculate summary statistics
+    significant_count = sum(1 for d in deviations if d["is_significant"])
+    max_deviation = max((cast("float", d["total_deviation"]) for d in deviations), default=0.0)
+
+    return deviations, significant_count, max_deviation
+
+
 def calculate_manager_analysis(
     employees: list[Employee],
     min_team_size: int = 10,
@@ -641,169 +872,38 @@ def calculate_manager_analysis(
     BASELINE_MEDIUM = 70.0
     BASELINE_LOW = 10.0
 
-    # Use OrgService to build org tree (replaces 60+ lines of manual tree building)
-    # OrgService validates structure and handles all edge cases (cycles, orphans, etc.)
-    #
-    # Validation is disabled because:
-    # 1. Test data may have incomplete org structures (manager references without manager employees)
-    # 2. Analysis focuses on rating distributions, not org structure correctness
-    # 3. Validation adds minimal value here since we skip missing managers anyway (line 671)
-    # 4. Sample data generator ensures data integrity for production use
-    #
-    # Trade-off: We accept potentially invalid org structures to allow flexible test data.
-    # Invalid manager references are logged as errors (line 672) rather than raising exceptions.
-    org_service = OrgService(employees, validate=False)
+    # Step 1: Build org tree and filter managers
+    qualified_managers, error_result = _build_qualified_managers(employees, min_team_size)
+    if error_result:
+        return error_result
 
-    # Filter managers by minimum team size
-    manager_ids = org_service.find_managers(min_team_size=min_team_size)
-
-    if not manager_ids:
-        all_manager_ids = org_service.find_managers(min_team_size=1)
-        if not all_manager_ids:
-            return _empty_analysis("No managers found in dataset")
-
-        # Get team size range for error message
-        all_team_sizes = [len(org_service.get_all_reports(mgr_id)) for mgr_id in all_manager_ids]
-        return _empty_analysis(
-            f"No managers with team size >= {min_team_size}. "
-            f"Found {len(all_manager_ids)} managers with teams of "
-            f"{min(all_team_sizes)}-{max(all_team_sizes)} employees."
-        )
-
-    # Build qualified_managers dict: manager_name -> reports
-    # Convert from ID-based (OrgService) to name-based (for backwards compatibility)
-    logger = logging.getLogger(__name__)
-    qualified_managers = {}
-    for manager_id in manager_ids:
-        manager = org_service.get_employee_by_id(manager_id)
-        if not manager:
-            logger.error(
-                f"Manager ID {manager_id} found in org tree but not in employee list. "
-                f"This indicates data corruption. Skipping manager."
-            )
-            continue
-
-        reports = org_service.get_all_reports(manager_id)
-        qualified_managers[manager.name] = reports
-
-    # Calculate rating distributions for each manager
-    manager_distributions = []
-    for manager_name, reports in qualified_managers.items():
-        # Validate grid positions and filter out invalid ones
-        valid_reports = [emp for emp in reports if emp.grid_position in range(1, 10)]
-        invalid_count = len(reports) - len(valid_reports)
-
-        if invalid_count > 0:
-            logger.warning(
-                f"Manager '{manager_name}' has {invalid_count} employee(s) with invalid "
-                f"grid positions (not in 1-9). These employees are excluded from distribution analysis."
-            )
-
-        # Count employees in each performance bucket
-        # High: positions 9, 8, 6
-        # Medium: positions 7, 5, 3
-        # Low: positions 4, 2, 1
-        high_count = sum(1 for emp in valid_reports if emp.grid_position in [9, 8, 6])
-        medium_count = sum(1 for emp in valid_reports if emp.grid_position in [7, 5, 3])
-        low_count = sum(1 for emp in valid_reports if emp.grid_position in [4, 2, 1])
-
-        team_size = len(valid_reports)
-        high_pct = (high_count / team_size * 100) if team_size > 0 else 0
-        medium_pct = (medium_count / team_size * 100) if team_size > 0 else 0
-        low_pct = (low_count / team_size * 100) if team_size > 0 else 0
-
-        # Calculate deviations from baseline
-        high_deviation = high_pct - BASELINE_HIGH
-        medium_deviation = medium_pct - BASELINE_MEDIUM
-        low_deviation = low_pct - BASELINE_LOW
-
-        total_deviation = abs(high_deviation) + abs(medium_deviation) + abs(low_deviation)
-
-        manager_distributions.append(
-            {
-                "manager_name": manager_name,
-                "team_size": team_size,
-                "high_count": high_count,
-                "medium_count": medium_count,
-                "low_count": low_count,
-                "high_pct": high_pct,
-                "medium_pct": medium_pct,
-                "low_pct": low_pct,
-                "high_deviation": high_deviation,
-                "medium_deviation": medium_deviation,
-                "low_deviation": low_deviation,
-                "total_deviation": total_deviation,
-            }
-        )
-
-    # Sort by total deviation (most anomalous first) and limit to top N
-    manager_distributions.sort(key=lambda x: cast("Any", x["total_deviation"]), reverse=True)
-    total_manager_count = len(manager_distributions)
-    top_managers = manager_distributions[:max_displayed]
+    # Step 2: Calculate distributions for each manager
+    top_managers, total_manager_count = _calculate_manager_distributions(
+        qualified_managers, BASELINE_HIGH, BASELINE_MEDIUM, BASELINE_LOW, max_displayed
+    )
 
     if not top_managers:
         return _empty_analysis("No managers to analyze after filtering")
 
-    # Build deviations list - calculate z-scores based on deviation from baseline
-    # NOTE: This uses a simplified heuristic for ranking managers, not a proper statistical test.
-    # The z-score is an approximation used to identify which managers deviate most from baseline,
-    # not for rigorous hypothesis testing. See technical debt issue for proper chi-square implementation.
-    deviations = []
-    for mgr in top_managers:
-        # Calculate z-score for each manager based on deviation from baseline
-        team_size = cast("int", mgr["team_size"])
+    # Step 3: Calculate statistical metrics
+    deviations, significant_count, max_deviation = _calculate_manager_statistics(top_managers)
 
-        # For small teams, z-scores would be inflated, so we scale by sqrt(team_size)
-        # This gives a rough approximation of statistical significance
-        scale_factor = np.sqrt(team_size) if team_size > 0 else 1
-
-        # Calculate z-score based on largest deviation
-        max_deviation_value: float = max(
-            abs(cast("float", mgr["high_deviation"])),
-            abs(cast("float", mgr["medium_deviation"])),
-            abs(cast("float", mgr["low_deviation"])),
-        )
-
-        # Approximate z-score: deviation / (baseline_std * scale_factor)
-        # The constant 10.0 is a rough estimate of standard deviation for percentage points
-        # in typical rating distributions. This provides a heuristic ranking metric where:
-        # - z ≥ 2.0 indicates a manager is likely anomalous (marked as "significant")
-        # - z ≥ 3.0 indicates a highly anomalous manager
-        # Technical debt: Replace with proper chi-square goodness-of-fit test
-        z_score = max_deviation_value / (10.0 / scale_factor) if scale_factor > 0 else 0
-
-        deviations.append(
-            {
-                "category": cast("str", mgr["manager_name"]),
-                "team_size": cast("int", mgr["team_size"]),
-                "high_pct": round(cast("float", mgr["high_pct"]), 1),
-                "medium_pct": round(cast("float", mgr["medium_pct"]), 1),
-                "low_pct": round(cast("float", mgr["low_pct"]), 1),
-                "high_deviation": round(cast("float", mgr["high_deviation"]), 1),
-                "medium_deviation": round(cast("float", mgr["medium_deviation"]), 1),
-                "low_deviation": round(cast("float", mgr["low_deviation"]), 1),
-                "total_deviation": round(cast("float", mgr["total_deviation"]), 1),
-                "z_score": round(z_score, 2),
-                "is_significant": bool(abs(z_score) >= 2.0),
-            }
-        )
-
-    # Already sorted by total_deviation, no need to re-sort
-
-    # Calculate summary statistics for overall status
-    significant_count = sum(1 for d in deviations if d["is_significant"])
-    max_deviation = max((d["total_deviation"] for d in deviations), default=0)
-
+    # Step 4: Build final result
     # Determine status based on deviations
     # For manager analysis, we use deviation-based thresholds rather than chi-square
-    p_value = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
-    effect_size = max_deviation / 100.0  # Normalize to 0-1 scale
+    # NOTE: This is a heuristic metric used internally for status determination,
+    # not a real p-value from a statistical test. See issue #154 for details.
+    heuristic_score = 1.0 - (significant_count / len(deviations)) if deviations else 1.0
+    effect_size = float(max_deviation) / 100.0  # Normalize to 0-1 scale
 
-    # Generate status
-    status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
+    # Generate status.
+    # NOTE: _get_status's first parameter is named "p_value" in its signature and docs,
+    # but in the manager analysis path we intentionally pass heuristic_score as a
+    # fallback score (not a true p-value). See comments above and issue #154.
+    status = _get_status(heuristic_score, effect_size, deviations, is_uniformity_test=False)
     interpretation = _generate_manager_interpretation(
         status,
-        p_value,
+        heuristic_score,
         effect_size,
         deviations,
         total_manager_count,
@@ -812,10 +912,10 @@ def calculate_manager_analysis(
     )
 
     return {
-        "chi_square": 0.0,  # Not applicable for manager analysis
-        "p_value": round(p_value, 4),
+        "chi_square": None,  # Not applicable - manager analysis uses heuristic ranking
+        "p_value": None,  # Not available - using heuristic approach, not chi-square test
         "effect_size": round(effect_size, 3),
-        "degrees_of_freedom": 0,  # Not applicable for manager analysis
+        "degrees_of_freedom": None,  # Not applicable - no chi-square test performed
         "sample_size": len(employees),
         "status": status,
         "deviations": deviations,
@@ -1130,7 +1230,7 @@ def _generate_tenure_interpretation(
 
 def _generate_manager_interpretation(
     status: str,
-    p_value: float,
+    heuristic_score: float,
     effect_size: float,
     deviations: list[dict[str, Any]],
     total_manager_count: int,
@@ -1139,7 +1239,19 @@ def _generate_manager_interpretation(
 ) -> str:
     """Generate human-readable interpretation for manager analysis.
 
-    CRITICAL: Check for significant individual deviations FIRST, regardless of overall p-value.
+    CRITICAL: Check for significant individual deviations FIRST, regardless of overall score.
+
+    Args:
+        status: Traffic light status ("green", "yellow", or "red")
+        heuristic_score: Internal heuristic metric (1.0 - anomaly_ratio), not a statistical p-value
+        effect_size: Normalized effect size (0-1 scale)
+        deviations: List of manager deviation dictionaries
+        total_manager_count: Total number of managers analyzed
+        max_displayed: Maximum number of managers to display
+        qualified_managers: Dictionary mapping manager names to employee lists
+
+    Returns:
+        Human-readable interpretation string
     """
     # Check for significant individual deviations FIRST
     significant_devs = [d for d in deviations if d.get("is_significant", False)]
@@ -1191,7 +1303,7 @@ def _generate_manager_interpretation(
         summary = (
             f"{context_msg}"
             f"{sig_count} out of {total_manager_count} managers have significant rating distribution "
-            f"deviations (p={p_value:.4f}, {effect_desc} effect).{commonality_msg}"
+            f"deviations ({effect_desc} effect).{commonality_msg}"
         )
 
         return summary
@@ -1210,7 +1322,7 @@ def _generate_manager_interpretation(
 
         return (
             f"{context_msg}"
-            f"Notable rating patterns detected (p={p_value:.4f}, {effect_desc} effect), "
+            f"Notable rating patterns detected ({effect_desc} effect), "
             f"but small sample sizes limit statistical significance."
         )
 
@@ -1224,7 +1336,7 @@ def _generate_manager_interpretation(
         )
 
     # Rare edge case
-    return f"Anomaly detected (p={p_value:.4f}) but no specific deviations identified."
+    return "Anomaly detected but no specific deviations identified."
 
 
 # Global intelligence service instance

@@ -40,6 +40,18 @@ def parse_config_ts() -> dict[str, dict[str, Any]]:
 
     config_str = match.group(1)
 
+    # Pre-process: join multi-line string concatenations into single lines
+    # Pattern: "string" + \n "string" -> "string string"
+    # Run multiple times to handle chained concatenations
+    prev_len = 0
+    while len(config_str) != prev_len:
+        prev_len = len(config_str)
+        config_str = re.sub(r'" \+\s*\n\s+"', " ", config_str)
+
+    # Also join key: \n "value" patterns (key on one line, value on next)
+    # Pattern: issueExplanation:\n      "value" -> issueExplanation: "value"
+    config_str = re.sub(r'issueExplanation:\s*\n\s+"', 'issueExplanation: "', config_str)
+
     # Parse each screenshot entry
     screenshots: dict[str, dict[str, Any]] = {}
     current_key = None
@@ -81,6 +93,34 @@ def parse_config_ts() -> dict[str, dict[str, Any]]:
                 story_match = re.search(r'"(.+?)"', line)
                 if story_match:
                     current_data["storyId"] = story_match.group(1)
+            elif line.startswith("caption:"):
+                caption_match = re.search(r'"(.+?)"', line)
+                if caption_match:
+                    current_data["caption"] = caption_match.group(1)
+            elif line.startswith("quality:"):
+                quality_match = re.search(r'"(.+?)"', line)
+                if quality_match:
+                    current_data["quality"] = quality_match.group(1)
+            elif line.startswith("issues:"):
+                # Parse issues array - look for the closing ]
+                issues_match = re.search(r"\[([^\]]*)\]", line)
+                if issues_match:
+                    issues_str = issues_match.group(1)
+                    issues = re.findall(r'"([^"]+)"', issues_str)
+                    current_data["issues"] = issues
+            elif line.startswith("usedIn:"):
+                # Parse usedIn array
+                used_match = re.search(r"\[([^\]]*)\]", line)
+                if used_match:
+                    used_str = used_match.group(1)
+                    used_in = re.findall(r'"([^"]+)"', used_str)
+                    current_data["usedIn"] = used_in
+            elif line.startswith("issueExplanation:") and current_key:
+                # After pre-processing, multi-line strings are joined
+                # Extract the full explanation from the line
+                expl_match = re.search(r'issueExplanation:\s*"(.+)"', line)
+                if expl_match:
+                    current_data["issueExplanation"] = expl_match.group(1)
 
     # Add last screenshot
     if current_key:
@@ -214,6 +254,42 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
         .badge-fullapp {{ background: #ff9800; color: white; }}
         .badge-manual {{ background: #f44336; color: white; }}
         .badge-automated {{ background: #2196f3; color: white; }}
+
+        /* Quality assessment badges */
+        .quality-badge {{ display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }}
+        .quality-good {{ background: #4caf50; color: white; }}
+        .quality-needs-improvement {{ background: #ff9800; color: white; }}
+        .quality-poor {{ background: #f44336; color: white; }}
+        .quality-unassessed {{ background: #9e9e9e; color: white; }}
+
+        /* Issue chips */
+        .issues-list {{ display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }}
+        .issue-chip {{ display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }}
+        .issue-chip.light-mode {{ background: #fff3e0; color: #e65100; border-color: #ffcc80; }}
+        .issue-chip.excessive-whitespace {{ background: #e3f2fd; color: #1565c0; border-color: #90caf9; }}
+        .issue-chip.wrong-content {{ background: #ffebee; color: #c62828; border-color: #ef9a9a; }}
+        .issue-chip.poor-cropping {{ background: #f3e5f5; color: #7b1fa2; border-color: #ce93d8; }}
+        .issue-chip.missing-padding {{ background: #e0f2f1; color: #00695c; border-color: #80cbc4; }}
+
+        /* Used in section */
+        .used-in {{ font-size: 11px; color: #666; margin-top: 8px; }}
+        .used-in-list {{ display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }}
+        .used-in-page {{ display: inline-block; padding: 2px 6px; background: #e8f5e9; color: #2e7d32; border-radius: 3px; font-size: 10px; }}
+
+        /* Caption styling */
+        .screenshot-caption {{ background: #f5f5f5; padding: 8px 12px; border-radius: 4px; margin: 8px 0; font-style: italic; color: #555; border-left: 3px solid #1976d2; }}
+
+        /* Assessment section in review column */
+        .assessment-section {{ background: #fafafa; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #e0e0e0; }}
+        .assessment-label {{ font-size: 11px; color: #666; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }}
+
+        /* Issue explanation box */
+        .issue-explanation {{ background: #fff3e0; border: 1px solid #ffcc80; border-left: 4px solid #ff9800; padding: 12px; border-radius: 4px; margin-top: 10px; font-size: 12px; line-height: 1.5; }}
+        .issue-explanation.severe {{ background: #ffebee; border-color: #ef9a9a; border-left-color: #f44336; }}
+        .issue-explanation strong {{ color: #e65100; display: block; margin-bottom: 4px; }}
+        .issue-explanation.severe strong {{ color: #c62828; }}
+        .explanation-section {{ margin-bottom: 8px; }}
+        .explanation-section:last-child {{ margin-bottom: 0; }}
         .screenshot-img {{ max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
         .screenshot-img:hover {{ box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; }}
         .path {{ font-family: 'Courier New', monospace; font-size: 11px; color: #666; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 5px; }}
@@ -243,10 +319,16 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
         <!-- Toolbar -->
         <div class="toolbar">
             <div class="filter-buttons">
+                <span style="margin-right: 8px; color: #666; font-size: 12px;">Review Status:</span>
                 <button class="btn-filter active" onclick="filterScreenshots('all')">All</button>
-                <button class="btn-filter" onclick="filterScreenshots('approved')">Approved</button>
-                <button class="btn-filter" onclick="filterScreenshots('needs-work')">Needs Work</button>
+                <button class="btn-filter" onclick="filterScreenshots('approved')">Agreed</button>
+                <button class="btn-filter" onclick="filterScreenshots('needs-work')">Amended</button>
                 <button class="btn-filter" onclick="filterScreenshots('unreviewed')">Unreviewed</button>
+                <span style="margin: 0 15px; border-left: 1px solid #ccc; height: 20px;"></span>
+                <span style="margin-right: 8px; color: #666; font-size: 12px;">AI Quality:</span>
+                <button class="btn-filter" onclick="filterByQuality('good')">Good</button>
+                <button class="btn-filter" onclick="filterByQuality('needs-improvement')">Needs Work</button>
+                <button class="btn-filter" onclick="filterByQuality('poor')">Poor</button>
             </div>
             <div class="action-buttons">
                 <button class="btn-export" onclick="exportReviews()">Export Reviews (JSON)</button>
@@ -259,11 +341,12 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
         <!-- Stats -->
         <div class="stats">
             <div class="stat"><div class="stat-number">{total}</div><div class="stat-label">Total Screenshots</div></div>
-            <div class="stat approved"><div class="stat-number" id="stat-approved">0</div><div class="stat-label">Approved</div></div>
-            <div class="stat needs-work"><div class="stat-number" id="stat-needs-work">0</div><div class="stat-label">Needs Work</div></div>
+            <div class="stat approved"><div class="stat-number" id="stat-approved">0</div><div class="stat-label">Agreed</div></div>
+            <div class="stat needs-work"><div class="stat-number" id="stat-needs-work">0</div><div class="stat-label">Amended</div></div>
             <div class="stat unreviewed"><div class="stat-number" id="stat-unreviewed">{total}</div><div class="stat-label">Unreviewed</div></div>
-            <div class="stat"><div class="stat-number">{storybook}</div><div class="stat-label">Storybook</div></div>
-            <div class="stat"><div class="stat-number">{fullapp}</div><div class="stat-label">Full-App</div></div>
+            <div class="stat" style="border-left: 2px solid #ddd; padding-left: 15px;"><div class="stat-number" id="stat-quality-good" style="color: #4caf50;">0</div><div class="stat-label">AI: Good</div></div>
+            <div class="stat"><div class="stat-number" id="stat-quality-needs" style="color: #ff9800;">0</div><div class="stat-label">AI: Needs Work</div></div>
+            <div class="stat"><div class="stat-number" id="stat-quality-poor" style="color: #f44336;">0</div><div class="stat-label">AI: Poor</div></div>
         </div>
 """
 
@@ -279,6 +362,11 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
             description = data.get("description", "No description")
             path = data.get("path", "")
             story_id = data.get("storyId", "")
+            caption = data.get("caption", "")
+            quality = data.get("quality", "")
+            issues = data.get("issues", [])
+            used_in = data.get("usedIn", [])
+            issue_explanation = data.get("issueExplanation", "")
 
             # Convert path to relative from HTML location (resources/user-guide/)
             # Path format: resources/user-guide/docs/images/screenshots/...
@@ -296,20 +384,87 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
                 else '<span class="badge badge-automated">Automated</span>'
             )
 
+            # Quality badge
+            quality_labels = {
+                "good": ("Good", "quality-good"),
+                "needs-improvement": ("Needs Improvement", "quality-needs-improvement"),
+                "poor": ("Poor", "quality-poor"),
+            }
+            quality_label, quality_class = quality_labels.get(
+                quality, ("Unassessed", "quality-unassessed")
+            )
+            quality_badge = f'<span class="quality-badge {quality_class}">{quality_label}</span>'
+
+            # Issues chips
+            issues_html = ""
+            if issues:
+                issue_chips = "".join(
+                    f'<span class="issue-chip {issue}">{issue.replace("-", " ").title()}</span>'
+                    for issue in issues
+                )
+                issues_html = f'<div class="issues-list">{issue_chips}</div>'
+
+            # Used in section
+            used_in_html = ""
+            if used_in:
+                pages = "".join(f'<span class="used-in-page">{page}</span>' for page in used_in)
+                used_in_html = (
+                    f'<div class="used-in">Used in:<div class="used-in-list">{pages}</div></div>'
+                )
+
+            # Caption display
+            caption_html = f'<div class="screenshot-caption">{caption}</div>' if caption else ""
+
             # Story meta
             story_meta = f'<div class="screenshot-meta">Story: {story_id}</div>' if story_id else ""
 
             # Path display
             path_display = path.replace("resources/user-guide/docs/images/screenshots/", "")
 
-            html += f"""                <tr data-screenshot="{key}" data-status="unreviewed">
+            # Generate assessment notes for textarea default
+            assessment_notes = ""
+            if quality or issues:
+                notes_parts = []
+                if quality:
+                    notes_parts.append(f"Quality: {quality_label}")
+                if issues:
+                    notes_parts.append(f"Issues: {', '.join(i.replace('-', ' ') for i in issues)}")
+                assessment_notes = " | ".join(notes_parts)
+
+            # Format issue explanation with structured sections
+            explanation_html = ""
+            if issue_explanation:
+                # Parse PROBLEM/EXPECTED/FIX format if present
+                severity_class = "severe" if quality == "poor" else ""
+                formatted_explanation = (
+                    issue_explanation.replace(
+                        "PROBLEM:", "<div class='explanation-section'><strong>Problem:</strong>"
+                    )
+                    .replace(
+                        "EXPECTED:",
+                        "</div><div class='explanation-section'><strong>Expected:</strong>",
+                    )
+                    .replace("FIX:", "</div><div class='explanation-section'><strong>Fix:</strong>")
+                )
+                # Close any open div
+                if "<div class='explanation-section'>" in formatted_explanation:
+                    formatted_explanation += "</div>"
+                explanation_html = (
+                    f'<div class="issue-explanation {severity_class}">{formatted_explanation}</div>'
+                )
+
+            html += f"""                <tr data-screenshot="{key}" data-status="unreviewed" data-quality="{quality}">
                     <td class="description-cell">
                         <div class="screenshot-name">{key}</div>
+                        {quality_badge}
                         <div class="screenshot-desc">{description}</div>
+                        {caption_html}
                         <div>
                             {source_badge}
                             {type_badge}
                         </div>
+                        {issues_html}
+                        {used_in_html}
                         {story_meta}
                         <div class="path">{path_display}</div>
                     </td>
@@ -321,16 +476,23 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
                     </td>
                     <td class="review-cell">
                         <div class="review-controls">
+                            <div class="assessment-section">
+                                <div class="assessment-label">AI Assessment</div>
+                                {quality_badge}
+                                {issues_html}
+                                {explanation_html}
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" onclick="setStatus('{key}', 'approved')">
-                                    <span class="status-icon">✓</span>Approve
+                                    <span class="status-icon">✓</span>Agree
                                 </button>
                                 <button class="status-btn" onclick="setStatus('{key}', 'needs-work')">
-                                    <span class="status-icon">✗</span>Needs Work
+                                    <span class="status-icon">✗</span>Amend
                                 </button>
                             </div>
                             <textarea class="notes-field"
-                                      placeholder="Add review notes..."
+                                      placeholder="Add your notes or amendments..."
+                                      data-default="{assessment_notes}"
                                       onchange="saveNotes('{key}', this.value)"></textarea>
                             <div class="review-timestamp" id="timestamp-{key}"></div>
                         </div>
@@ -485,20 +647,32 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
             let approved = 0;
             let needsWork = 0;
             let unreviewed = 0;
+            let qualityGood = 0;
+            let qualityNeeds = 0;
+            let qualityPoor = 0;
 
             document.querySelectorAll('tr[data-screenshot]').forEach(row => {
                 const screenshot = row.dataset.screenshot;
                 const review = reviews[screenshot];
                 const status = review ? review.status : 'unreviewed';
+                const quality = row.dataset.quality || '';
 
                 if (status === 'approved') approved++;
                 else if (status === 'needs-work') needsWork++;
                 else unreviewed++;
+
+                // Count quality assessments
+                if (quality === 'good') qualityGood++;
+                else if (quality === 'needs-improvement') qualityNeeds++;
+                else if (quality === 'poor') qualityPoor++;
             });
 
             document.getElementById('stat-approved').textContent = approved;
             document.getElementById('stat-needs-work').textContent = needsWork;
             document.getElementById('stat-unreviewed').textContent = unreviewed;
+            document.getElementById('stat-quality-good').textContent = qualityGood;
+            document.getElementById('stat-quality-needs').textContent = qualityNeeds;
+            document.getElementById('stat-quality-poor').textContent = qualityPoor;
         }
 
         // Filter screenshots
@@ -524,6 +698,25 @@ def generate_html(screenshots: dict[str, dict[str, Any]]) -> str:
                 if (currentFilter === 'all') {
                     row.classList.remove('hidden');
                 } else if (currentFilter === status) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        // Filter by AI quality assessment
+        function filterByQuality(quality) {
+            // Reset all filter buttons
+            document.querySelectorAll('.btn-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            currentFilter = 'quality-' + quality;
+
+            document.querySelectorAll('tr[data-screenshot]').forEach(row => {
+                const rowQuality = row.dataset.quality || '';
+                if (rowQuality === quality) {
                     row.classList.remove('hidden');
                 } else {
                     row.classList.add('hidden');

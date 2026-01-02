@@ -17,7 +17,7 @@ The Statistics tab shows how your employees are distributed across the 9-box gri
 
 The table shows employee counts and percentages for each grid position:
 
-![Distribution table showing counts and percentages](images/screenshots/statistics/distribution-table.png)
+![Distribution table showing counts and percentages](images/screenshots/statistics/statistics-panel-distribution.png)
 
 Each cell shows:
 - **Count** - Number of employees in that box

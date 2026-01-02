@@ -146,13 +146,14 @@ def test_get_intelligence_when_called_then_anomaly_counts_match_severity(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     ]:
         status = data[dimension]["status"]
         actual_counts[status] += 1
 
-    # Total anomalies should sum to 4 (one per dimension)
+    # Total anomalies should sum to 5 (one per dimension)
     total_anomalies = anomaly_count["green"] + anomaly_count["yellow"] + anomaly_count["red"]
-    assert total_anomalies == 4, f"Expected 4 dimensions, got {total_anomalies}"
+    assert total_anomalies == 5, f"Expected 5 dimensions, got {total_anomalies}"
 
 
 def test_get_intelligence_when_called_multiple_times_then_returns_consistent_results(
@@ -299,6 +300,7 @@ def test_get_intelligence_when_response_then_matches_typeddict_structure(
         "function_analysis",
         "level_analysis",
         "tenure_analysis",
+        "manager_analysis",
     }
     assert set(data.keys()) == expected_keys
 

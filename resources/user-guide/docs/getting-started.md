@@ -3,6 +3,7 @@
 > **Time to complete:** 10-15 minutes
 > **What you'll accomplish:** Run your first talent calibration workflow from data upload to final export
 > **Brand new to 9Boxer?** Start with the [2-minute quickstart](quickstart.md) to get familiar with the basics
+> **New to calibration philosophy?** Read [why calibration matters](new-to-9box.md#why-calibration-matters) first
 
 This guide walks you through the essential calibration workflow. You'll learn how to prepare data, review distribution, identify discussion topics, run the meeting, and export results.
 
@@ -28,7 +29,7 @@ flowchart LR
 
 1. **Prepare** - Get your Excel file ready
 2. **Upload** - Load data into 9Boxer (2 min)
-3. **Review** - Check distribution and spot anomalies (5 min)
+3. **Review** - Check distribution and identify patterns (5 min)
 4. **Meet** - Run calibration discussion with screen sharing
 5. **Export** - Save final ratings with full audit trail (2 min)
 
@@ -85,7 +86,7 @@ You'll see:
 
 ## Step 2: Check Your Distribution (3 minutes)
 
-Now let's validate your ratings before the calibration meeting.
+Now let's review your ratings before the calibration meeting.
 
 ### Review the Statistics Tab
 
@@ -93,103 +94,144 @@ Click the **Statistics** tab in the right panel to see how your talent is distri
 
 ![Statistics tab showing distribution table and chart](images/screenshots/statistics/statistics-panel-distribution.png)
 
-**Look for these red flags:**
+**Patterns that spark good conversations:**
 
-- ⚠️ **Too many "High" ratings** (>25% in top row) - Possible grade inflation
-- ⚠️ **Too few Stars** (<5% in top-right corner) - Succession planning risk
-- ⚠️ **Everyone clustered in center** (>70% in position 5) - Poor differentiation
+- 💬 **Many "High" ratings** (>25% in top row) - Worth discussing standards across managers
+- 💬 **Few Stars** (<5% in top-right corner) - Opportunity to identify hidden talent
+- 💬 **Most people in center** (>70% in position 5) - Discussion opportunity about differentiation
 
 **Healthy distribution typically looks like:**
 
 - 10-15% in Stars (top-right corner)
 - 50-60% in middle tier (positions 4-6)
-- Less than 10% in bottom-left (Problems/Too New)
+- Less than 10% in bottom-left (Too New/Under-Performers)
 
 ### Check the Intelligence Tab
 
-Click the **Intelligence** tab to spot statistical anomalies.
+Click the **Intelligence** tab to identify statistical patterns.
 
 Intelligence runs analysis behind the scenes to find:
 
-- **Location bias** - Do certain offices rate higher/lower?
-- **Function bias** - Are some departments inflating ratings?
-- **Manager patterns** - Which managers show unusual rating patterns?
+- **Location patterns** - Do certain offices rate higher/lower?
+- **Function patterns** - Are some departments' standards different?
+- **Manager patterns** - Which managers show different rating approaches?
 - **Tenure effects** - Are new hires rated differently?
 
 ![Intelligence summary showing quality score and anomaly count](images/screenshots/workflow/intelligence-summary-anomalies.png)
 
-Red anomalies = critical issues requiring discussion.
-Yellow anomalies = worth reviewing in the meeting.
+Red highlights = strong patterns worth discussing.
+Yellow highlights = patterns to explore in the meeting.
 
 !!! note "Make a Note"
-    Write down which anomalies you want to discuss. For example: "Engineering has 30% Stars vs. 10% company-wide - is this justified?"
+    Write down which patterns you want to discuss. For example: "Engineering has 30% Stars vs. 10% company-wide - let's compare standards and see if this reflects real talent differences."
 
 > 💡 **Why This Matters**
 >
-> Distribution review gives you specific talking points backed by data. Instead of vague concerns, you'll walk into the meeting saying "Alex, you rated 18 of 20 as High Performance. Let's discuss your top 5."
+> During your meeting, you'll use level-based filtering as your PRIMARY approach (all ICs, then all Managers, etc.). Intelligence serves as your FINAL sweep to identify patterns that survived the structured review. Think of it as: level-first for bulk calibration, Intelligence for pattern detection.
 
 ---
 
 ## Step 3: Prepare Discussion Topics (5 minutes)
 
-Use filters to identify specific employees who need calibration.
+Don't try to calibrate 200 people at once. Use filters to review manageable groups.
 
-### Find Borderline Cases
+### The Filter Strategy: Level First
+
+Here's what most people get wrong: They review manager-by-manager or try to look at everyone at once.
+
+**The right approach:** Review by level across all managers. This reveals rating patterns and ensures fairness.
 
 Click the **Filters** button to open the left panel.
 
-**Try these filter combinations:**
+### Small Organizations (<100 employees)
 
-=== "High Performers"
-    **Goal:** Validate all high performers truly deserve it
+Review in these sessions:
 
-    - Performance: Check "High" only
-    - Review each employee - do they have evidence of high performance?
+**Session 1: All Individual Contributors**
+```
+Filter: Job Level = "Individual Contributor"
+What you're looking for:
+- Do all managers use similar standards for ICs?
+- Where do managers' standards differ - worth discussing?
+- Who are the standout performers at this level?
 
-    **Questions to prepare:**
-    - Who might actually be a Star (High Potential too)?
-    - Who is just meeting expectations, not exceeding?
+Time: 30-45 minutes
+```
 
-=== "Borderline Stars"
-    **Goal:** Find High Performers who might be future leaders
+**Session 2: All Managers**
+```
+Filter: Job Level = "Manager"
+What you're looking for:
+- Who shows leadership capacity?
+- Different bar than ICs - looking for people management skills
+- Succession pipeline for leadership roles
 
-    - Performance: "High"
-    - Potential: "Medium" or "High"
+Time: 20-30 minutes
+```
 
-    **Questions to prepare:**
-    - Who is ready for promotion?
-    - Who shows leadership capacity?
+**Session 3: Intelligence Sweep**
+```
+Tool: Intelligence tab
+What you're looking for:
+- Patterns that survived your level-based review
+- Statistical insights worth discussing
+- Final patterns you might have missed
 
-=== "Manager Comparison"
-    **Goal:** Compare one manager's ratings to others
+Time: 10 minutes
+```
 
-    - Managers: Select one manager
-    - Review their distribution vs. company averages
+### Large Organizations (>100 employees)
 
-    **Questions to prepare:**
-    - Does this manager rate higher/lower than peers?
-    - Are there patterns in their ratings?
+Break it down by function within each level:
 
-![Filters panel with specific calibration selections active](images/screenshots/workflow/calibration-filters-panel.png)
+**Week 1: Individual Contributors by Function**
+- Session 1: IC + Engineering
+- Session 2: IC + Sales
+- Session 3: IC + Other functions
+
+**Week 2: Managers and Leaders**
+- Session 4: All Managers (across functions)
+- Session 5: Directors and above
+- Session 6: Intelligence pattern review
+
+![Filters panel showing level-based filtering](images/screenshots/filters/filters-panel-expanded.png)
+
+### Why Level-First Works
+
+When you filter to "All Individual Contributors":
+
+- You see Manager A's ICs next to Manager B's ICs next to Manager C's ICs
+- Patterns become obvious: "Manager A rated 80% as High, Manager B rated 20% as High"
+- Discussion becomes productive: "Let's compare these high performers and align on standards"
+
+**This reveals manager patterns without creating defensiveness.**
+
+> 💡 **Why This Matters**
+>
+> Comparing people at the same level ensures fairness. You can't tell if a "High Performer" rating is calibrated by looking at one manager's mixed team. You need to see all Senior Engineers together, or all Managers together, to compare standards and ensure consistent expectations.
 
 ### Create Your Discussion List
 
-Based on your review, make a prioritized list:
+Based on your level-by-level review, make a prioritized list:
 
 **High priority:**
-- Employees flagged in Intelligence tab (anomalies)
-- Borderline Stars (High Performers who might be promoted)
+- Rating patterns across managers at each level (different standards)
+- Borderline placements within each level cohort
 - Anyone in extremes (top-right or bottom-left corners)
 
 **Medium priority:**
-- Manager-specific patterns (one manager's ratings vs. others)
-- Distribution imbalances (too many/few in certain boxes)
-- Cross-functional comparisons
+- Distribution imbalances (too many/few in certain boxes per level)
+- Cross-functional comparisons at same level
+- Employees flagged in Intelligence tab (final sweep)
 
 **Document your questions:**
-- "Why is Sarah a Star this year but was Medium/Medium last year?"
-- "Engineering has 85% in center box vs. 50% company-wide. What's driving that?"
-- "Alex, you have 8 Stars but company average is 3. Let's walk through your top performers."
+- "Manager A rated 80% of ICs as High Performance, but Manager B rated 15%. Let's compare what 'high performance' means to each and align on standards."
+- "When we look at all Senior Engineers together, who stands out?"
+- "Engineering has 85% in center box vs. 50% company-wide at this level. What's driving that pattern?"
+
+For the complete filter strategy and decision tree, see [Filter Strategy Reference](reference/filtering-decision-tree.md).
+
+When difficult situations arise during calibration, refer to [Handling Difficult Scenarios](reference/difficult-scenarios.md) for specific guidance.
 
 ---
 
@@ -206,22 +248,24 @@ Here's how to use 9Boxer during your live calibration session.
 
 ### Work Through Discussions
 
-For each discussion topic:
+Work level-by-level through your planned sessions:
 
-1. **Use filters** to focus on the relevant group
-   - Filter by manager to review one person's team
-   - Filter by performance level to validate a cohort
-   - Filter by department to compare patterns
+1. **Set the level filter** for this session
+   - Example: Job Level = "Individual Contributor"
+   - Now you're looking at all ICs across all managers
+   - This makes patterns visible
 
-2. **Show employee details**
-   - Click the employee tile
+2. **Review the cohort together**
+   - Look at distribution for this level
+   - Note which managers' ratings differ from peers
+   - Identify borderline placements
+
+3. **Discuss specific employees**
+   - Click employee tile to show details
    - Review Details tab (job level, manager, tenure)
    - Show Timeline if they have rating history
-
-3. **Facilitate discussion**
-   - Present your calibration question
    - Let manager explain their rating
-   - Ask group for feedback
+   - Ask group: "How does this compare to other [level] employees?"
    - Reach consensus on correct rating
 
 4. **Make changes in real-time**
@@ -232,7 +276,7 @@ For each discussion topic:
 5. **Document every decision**
    - Click employee → Changes tab
    - Add note explaining the calibration decision
-   - Example: "Calibration 2024-Q4: Moved to Star - consensus on sustained high performance + demonstrated leadership potential"
+   - Example: "Calibration 2024-Q4: Moved to Star after comparing to other Senior Engineers - consensus on sustained high performance + demonstrated leadership potential"
 
 ![Three-panel sequence showing drag and drop: clicking, dragging, and dropping an employee tile](images/screenshots/workflow/making-changes-drag-sequence-base.png)
 
@@ -244,7 +288,7 @@ For each discussion topic:
 - **Check distribution** - Periodically review Statistics tab to see distribution shift
 
 !!! tip "Meeting Flow Tip"
-    Filter one manager at a time to review their full team together. This helps everyone see rating patterns and makes comparisons easier.
+    Work through one level at a time (all ICs, then all Managers, then all Directors). This ensures fair comparisons and makes rating patterns visible across managers.
 
 ---
 
@@ -257,7 +301,7 @@ When the meeting is done, export your final calibrated ratings.
 Do a final check:
 
 1. **Click Statistics tab** - Does distribution look calibrated now?
-2. **Click Intelligence tab** - Are major anomalies addressed?
+2. **Click Intelligence tab** - Are major patterns addressed?
 3. **Click Changes tab** - Does every move have a note?
 
 ### Export Final Ratings
@@ -284,7 +328,7 @@ Open the Excel file to verify:
 Congratulations! You've completed your first calibration workflow:
 
 - ✅ Uploaded employee data
-- ✅ Reviewed distribution and spotted anomalies
+- ✅ Reviewed distribution and identified patterns
 - ✅ Prepared discussion topics
 - ✅ Made changes during the meeting
 - ✅ Exported final ratings with full audit trail
@@ -310,15 +354,24 @@ Send the exported file to:
 
 ### Ready for Advanced Calibration Techniques?
 
-→ [Complete Calibration Reference](workflows/talent-calibration.md)
+→ [Best Practices Guide](best-practices.md)
 
-This comprehensive 874-line guide includes:
+This comprehensive guide includes:
 - Detailed checklists for before/during/after meetings
-- Advanced filtering techniques for large datasets
-- Donut Mode exercise for validating center box placements
+- Common calibration scenarios with solutions
+- Advanced filtering strategies and validation techniques
 - Handling disagreements and contentious cases
 - Statistical anomaly deep-dive
 - Post-meeting follow-up workflows
+
+### Want to Go Deeper on Specific Challenges?
+
+Reference appendices for specialized topics:
+
+- [Filter Strategy Reference](reference/filtering-decision-tree.md) - Complete filtering decision tree and session planning
+- [Creating Psychological Safety](reference/psychological-safety.md) - Build trust in calibration discussions
+- [Difficult Scenarios](reference/difficult-scenarios.md) - Handle protected pets, layoff fears, and contentious moments
+- [Post-Calibration Conversations](reference/post-calibration-conversations.md) - Communicate outcomes effectively
 
 ### Want to Understand Specific Features?
 
@@ -328,7 +381,7 @@ Choose based on what you need:
 |--------------|---------|
 | Understand what each grid position means | [Understanding the 9-Box Grid](understanding-grid.md) |
 | Learn advanced filtering techniques | [Filters and Focus Tools](filters.md) |
-| Validate my center box placements | [Donut Mode Validation Exercise](donut-mode.md) |
+| Review my center box placements | [Donut Mode Review Exercise](donut-mode.md) |
 | Understand statistical analysis | [Statistics and Intelligence](statistics.md) |
 | See all my changes in one place | [Tracking Changes](tracking-changes.md) |
 | Export best practices and column details | [Exporting Results](exporting.md) |
@@ -350,7 +403,7 @@ Bookmark these common actions:
 | Filter the grid | Click Filters button → Select criteria |
 | Export my work | File menu → Apply X Changes to Excel |
 | Check distribution | Click Statistics tab in right panel |
-| Spot anomalies | Click Intelligence tab in right panel |
+| Identify patterns | Click Intelligence tab in right panel |
 
 ---
 
