@@ -12,7 +12,7 @@ Quick navigation to all documentation categories:
 - **[AGENTS.md](../AGENTS.md)** - Development workflow guide (command cheatsheet and workflows)
 - **[GITHUB_AGENT.md](../GITHUB_AGENT.md)** - GitHub Copilot onboarding guide
 - **[README.md](../README.md)** - Project overview
-- **[BUILD.md](../BUILD.md)**, **[DEPLOYMENT.md](../DEPLOYMENT.md)** - Build and deployment guides
+- **[architecture/build-process.md](architecture/build-process.md)**, **[architecture/deployment.md](architecture/deployment.md)** - Build and deployment guides
 
 ### Documentation Categories
 
