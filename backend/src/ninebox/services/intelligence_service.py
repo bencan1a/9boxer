@@ -10,7 +10,6 @@ from typing import Any, cast
 import numpy as np
 
 from ninebox.models.employee import Employee
-from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.org_service import OrgService
 
 
@@ -659,19 +658,6 @@ def _build_qualified_managers(
 
     return qualified_managers, None
 
-        # Count employees in each performance bucket
-        # High: positions 9, 8, 6
-        # Medium: positions 7, 5, 3
-        # Low: positions 4, 2, 1
-        high_count = sum(
-            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["High"]
-        )
-        medium_count = sum(
-            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["Medium"]
-        )
-        low_count = sum(
-            1 for emp in valid_reports if emp.grid_position in PERFORMANCE_BUCKETS["Low"]
-        )
 
 def _calculate_single_manager_distribution(
     manager_name: str,
