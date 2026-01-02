@@ -147,6 +147,8 @@ def get_llm_service() -> LLMService:
     Uses @lru_cache to ensure only one instance is created per application lifecycle.
     Can be overridden in tests using app.dependency_overrides.
 
+    Loads API key and model from settings (which reads from .env file).
+
     Returns:
         LLMService: Singleton LLM service instance
 
@@ -156,4 +158,6 @@ def get_llm_service() -> LLMService:
         ...     if service.is_available()["available"]:
         ...         summary = service.generate_summary(...)
     """
-    return LLMService()
+    from ninebox.core.config import settings
+
+    return LLMService(api_key=settings.anthropic_api_key, model=settings.llm_model)

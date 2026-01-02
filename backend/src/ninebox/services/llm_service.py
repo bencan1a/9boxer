@@ -83,13 +83,18 @@ Respond in valid JSON format with this structure:
 class LLMService:
     """Service for generating AI-powered calibration summaries."""
 
-    def __init__(self) -> None:
+    def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
         """Initialize the LLM service.
 
         The service will be available only if ANTHROPIC_API_KEY is set.
+
+        Args:
+            api_key: Optional API key override (from settings or env var)
+            model: Optional model override (from settings or env var)
         """
-        self.api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.model = os.getenv("LLM_MODEL", DEFAULT_MODEL)
+        # Try passed parameters first, fall back to environment variables
+        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.model = model or os.getenv("LLM_MODEL", DEFAULT_MODEL)
         self._client: Any = None
 
         if self.api_key:
@@ -344,7 +349,7 @@ Respond with valid JSON only."""
                 summary=result.get("summary", ""),
                 key_recommendations=result.get("key_recommendations", []),
                 discussion_points=result.get("discussion_points", []),
-                model_used=self.model,
+                model_used=self.model or DEFAULT_MODEL,
             )
 
         except Exception as e:

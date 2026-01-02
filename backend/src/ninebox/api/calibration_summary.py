@@ -117,8 +117,9 @@ class GenerateSummaryRequest(BaseModel):
     # Maximum insights allowed to prevent DoS
     MAX_INSIGHTS: ClassVar[int] = 50
 
-    # Valid insight ID pattern: type-description-hexid (e.g., focus-crowded-center-a1b2c3d4)
-    INSIGHT_ID_PATTERN: ClassVar[Pattern[str]] = re.compile(r"^[a-z]+-[a-z0-9-]+-[a-f0-9]{8}$")
+    # Valid insight ID pattern: type-description-hexid (e.g., focus-crowded-center-a1b2c3d4, anomaly-513398ea)
+    # Pattern: starts with letter, contains letters/numbers/dashes, ends with dash + 8 hex chars
+    INSIGHT_ID_PATTERN: ClassVar[Pattern[str]] = re.compile(r"^[a-z][a-z0-9-]+-[a-f0-9]{8}$")
 
     @field_validator("selected_insight_ids")
     @classmethod
