@@ -17,6 +17,8 @@
 
 All changes save automatically. No manual save needed.
 
+![Apply button in toolbar showing badge with number of pending changes](images/screenshots/toolbar/apply-button-with-badge.png)
+
 ---
 
 ## Viewing Changes
@@ -59,6 +61,8 @@ Employees are grouped into performance tiers based on their grid position:
 A **Big Mover** is automatically flagged when an employee crosses from:
 - Low tier → High tier (e.g., Box 2 → Box 9)
 - High tier → Low tier (e.g., Box 6 → Box 1)
+
+![Employee tile with Big Mover flag chip indicating significant tier change](images/screenshots/grid/employee-tile-big-mover-flag.png)
 
 ### Why Big Movers Matter
 
@@ -110,6 +114,8 @@ When donut changes exist, you'll see two tabs: **Regular Changes** and **Donut C
 | **Big Mover flag** | Employee crossed performance tiers |
 | **Badge on Apply button** | Number of unsaved changes |
 | **Empty changes tab** | No movements yet |
+
+![Grid showing visual indicators: orange borders on modified tiles and Big Mover flags](images/screenshots/grid/grid-change-indicators.png)
 
 ---
 

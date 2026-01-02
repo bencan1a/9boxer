@@ -197,6 +197,163 @@ export const WithFlags: Story = {
 };
 
 /**
+ * Donut Mode
+ *
+ * Employee tile in donut mode with purple border and original position indicator.
+ * Shows how the tile appears when placed in the donut (center box) during calibration.
+ * Used for donut-mode-employee-tile-purple screenshot.
+ */
+export const DonutMode: Story = {
+  name: "Donut Mode",
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "donut-mode-employee-tile-purple" },
+  },
+  args: {
+    employee: {
+      ...baseEmployee,
+      grid_position: 5, // Original position (center box in donut mode)
+      donut_position: 8, // Moved to position 8 in donut mode
+      donut_performance: "Medium" as PerformanceLevel,
+      donut_potential: "High" as PotentialLevel,
+      donut_modified: true,
+      donut_last_modified: "2025-12-31T11:00:00Z",
+    },
+    onSelect: fn(),
+    donutModeActive: true,
+  },
+};
+
+/**
+ * All Tile States Composite
+ *
+ * Shows all 4 employee tile states side by side for documentation:
+ * 1. Default (blue) - Standard employee tile
+ * 2. Modified (orange border) - Employee modified in current session
+ * 3. Donut Mode (purple border) - Employee repositioned in calibration mode
+ * 4. With Flags - Employee with flag chips displayed
+ *
+ * Used for grid-employee-tile-states screenshot.
+ */
+export const AllStatesComposite: Story = {
+  name: "All States Composite",
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "grid-employee-tile-states" },
+    layout: "padded",
+  },
+  decorators: [
+    () => (
+      <GridZoomProvider>
+        <DndContext>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: 3,
+              p: 2,
+              backgroundColor: "background.default",
+              borderRadius: 1,
+              maxWidth: 720,
+            }}
+          >
+            {/* Default Blue */}
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ mb: 1, display: "block", color: "text.secondary" }}
+              >
+                Default
+              </Typography>
+              <EmployeeTile
+                employee={baseEmployee}
+                onSelect={fn()}
+                donutModeActive={false}
+              />
+            </Box>
+
+            {/* Modified Orange Border */}
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ mb: 1, display: "block", color: "text.secondary" }}
+              >
+                Modified (Orange Border)
+              </Typography>
+              <EmployeeTile
+                employee={{
+                  ...baseEmployee,
+                  employee_id: 12346,
+                  name: "Bob Smith",
+                  business_title: "Product Manager",
+                  grid_position: 9,
+                  original_grid_position: 5,
+                  modified_in_session: true,
+                  last_modified: "2025-12-31T10:30:00Z",
+                }}
+                onSelect={fn()}
+                donutModeActive={false}
+              />
+            </Box>
+
+            {/* Donut Mode Purple Border */}
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ mb: 1, display: "block", color: "text.secondary" }}
+              >
+                Donut Mode (Purple Border)
+              </Typography>
+              <EmployeeTile
+                employee={{
+                  ...baseEmployee,
+                  employee_id: 12347,
+                  name: "Carol White",
+                  business_title: "Data Scientist",
+                  grid_position: 5,
+                  donut_position: 8,
+                  donut_performance: "Medium" as PerformanceLevel,
+                  donut_potential: "High" as PotentialLevel,
+                  donut_modified: true,
+                }}
+                onSelect={fn()}
+                donutModeActive={true}
+              />
+            </Box>
+
+            {/* With Flags */}
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ mb: 1, display: "block", color: "text.secondary" }}
+              >
+                With Flags
+              </Typography>
+              <EmployeeTile
+                employee={{
+                  ...baseEmployee,
+                  employee_id: 12348,
+                  name: "David Lee",
+                  business_title: "Engineering Manager",
+                  flags: ["high_potential", "promotion_ready", "big_mover"],
+                }}
+                onSelect={fn()}
+                donutModeActive={false}
+              />
+            </Box>
+          </Box>
+        </DndContext>
+      </GridZoomProvider>
+    ),
+  ],
+  args: {
+    employee: baseEmployee,
+    onSelect: fn(),
+    donutModeActive: false,
+  },
+};
+
+/**
  * Zoom Levels
  *
  * Interactive story for testing different zoom levels (0-4).

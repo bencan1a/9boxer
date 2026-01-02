@@ -278,8 +278,6 @@ Work level-by-level through your planned sessions:
    - Add note explaining the calibration decision
    - Example: "Calibration 2024-Q4: Moved to Star after comparing to other Senior Engineers - consensus on sustained high performance + demonstrated leadership potential"
 
-![Three-panel sequence showing drag and drop: clicking, dragging, and dropping an employee tile](images/screenshots/workflow/making-changes-drag-sequence-base.png)
-
 ### Keep the Discussion Moving
 
 - **Set time limits** - 2-3 minutes per employee max

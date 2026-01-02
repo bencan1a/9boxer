@@ -363,6 +363,30 @@
       "apply": "変更を適用",
       "applying": "適用中...",
       "errorFallback": "元のファイルを更新できませんでした。新しい場所に保存しますか?"
+    },
+    "about": {
+      "title": "About 9Boxer",
+      "description": "A powerful talent management tool for visualizing and managing employee performance using the 9-box grid methodology.",
+      "tagline": "Elevate your talent management with data-driven insights",
+      "shortDescription": "Talent management through the 9-box grid",
+      "version": "Version",
+      "technology": "Technology",
+      "copyright": "© 2024 9Boxer. All rights reserved.",
+      "userGuide": "User Guide",
+      "reportIssue": "Report Issue",
+      "features": {
+        "grid": {
+          "title": "9-Box Grid",
+          "description": "Intuitive drag-and-drop interface for employee placement and performance visualization"
+        },
+        "collaboration": {
+          "title": "Team Collaboration",
+          "description": "Share insights and calibrate assessments across your organization"
+        },
+        "tech": {
+          "title": "Built With"
+        }
+      }
     }
   },
   "sampleData": {
@@ -465,6 +489,46 @@
     "exitFullScreen": "全画面表示を終了（F11）"
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Calibration Summary",
+      "dataOverview": "Data Overview",
+      "insights": "Meeting Insights",
+      "generating": "Generating...",
+      "generateSummary": "Generate AI Summary",
+      "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "estimatedDuration": "Est. {{duration}}",
+      "suggestedSequence": "Suggested: {{sequence}}",
+      "employees": "employees",
+      "stars": "Stars",
+      "centerBox": "Center Box",
+      "lowerPerformers": "Lower Performers",
+      "insightsSelected": "{{count}} insight selected",
+      "insightsSelected_other": "{{count}} insights selected",
+      "keyRecommendations": "Key Recommendations",
+      "discussionPoints": "Predicted Discussion Points",
+      "poweredBy": "Powered by {{model}}",
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "category": {
+        "location": "Location",
+        "function": "Function",
+        "level": "Level",
+        "tenure": "Tenure",
+        "distribution": "Distribution",
+        "time": "Time"
+      },
+      "insightType": {
+        "anomaly": "Anomaly",
+        "focus_area": "Focus Area",
+        "recommendation": "Recommendation",
+        "time_allocation": "Time Allocation"
+      }
+    },
     "severity": {
       "critical": "Critical",
       "warning": "Warning",

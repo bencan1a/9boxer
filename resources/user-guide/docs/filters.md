@@ -31,12 +31,18 @@ Click the **Filters** button in the top bar to open the filter drawer.
 - **Within a category** (OR): Checking "Engineering" and "Sales" shows employees in either
 - **Across categories** (AND): Checking "Engineering" and "High Performance" shows only high-performing engineers
 
+![Filter drawer with multiple selections in one category demonstrating OR logic](images/screenshots/filters/filters-logic-or-example.png)
+
+![Filter drawer with selections across categories demonstrating AND logic](images/screenshots/filters/filters-logic-and-example.png)
+
 ### Filter Indicators
 
 When filters are active:
 
 - **Orange dot** appears on the Filters button
 - **Employee count** shows "X of Y employees" (X visible, Y total)
+
+![Filters button with orange dot indicator and employee count showing filtered results](images/screenshots/filters/filters-active-indicator.png)
 
 To clear all filters, uncheck all boxes or click **Clear All**.
 

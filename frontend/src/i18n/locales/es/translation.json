@@ -346,6 +346,46 @@
     }
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Resumen de Calibración",
+      "dataOverview": "Resumen de Datos",
+      "insights": "Insights de la Reunión",
+      "generating": "Generando...",
+      "generateSummary": "Generar Resumen con IA",
+      "llmNotAvailable": "El resumen con IA requiere que ANTHROPIC_API_KEY esté configurado",
+      "selectAll": "Seleccionar Todo",
+      "deselectAll": "Deseleccionar Todo",
+      "estimatedDuration": "Est. {{duration}}",
+      "suggestedSequence": "Sugerido: {{sequence}}",
+      "employees": "empleados",
+      "stars": "Estrellas",
+      "centerBox": "Caja Central",
+      "lowerPerformers": "Bajo Rendimiento",
+      "insightsSelected": "{{count}} insight seleccionado",
+      "insightsSelected_other": "{{count}} insights seleccionados",
+      "keyRecommendations": "Recomendaciones Clave",
+      "discussionPoints": "Puntos de Discusión Previstos",
+      "poweredBy": "Impulsado por {{model}}",
+      "priority": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "category": {
+        "location": "Ubicación",
+        "function": "Función",
+        "level": "Nivel",
+        "tenure": "Antigüedad",
+        "distribution": "Distribución",
+        "time": "Tiempo"
+      },
+      "insightType": {
+        "anomaly": "Anomalía",
+        "focus_area": "Área de Enfoque",
+        "recommendation": "Recomendación",
+        "time_allocation": "Asignación de Tiempo"
+      }
+    },
     "severity": {
       "critical": "Crítico",
       "warning": "Advertencia",
@@ -426,6 +466,30 @@
       "apply": "Aplicar Cambios",
       "applying": "Aplicando...",
       "errorFallback": "No se pudo actualizar el archivo original. ¿Guardar en una nueva ubicación?"
+    },
+    "about": {
+      "title": "Acerca de 9Boxer",
+      "description": "Una poderosa herramienta de gestión de talento para visualizar y gestionar el desempeño de empleados utilizando la metodología de cuadrícula 9-box.",
+      "tagline": "Eleve su gestión de talento con insights basados en datos",
+      "shortDescription": "Gestión de talento a través de la cuadrícula 9-box",
+      "version": "Versión",
+      "technology": "Tecnología",
+      "copyright": "© 2024 9Boxer. Todos los derechos reservados.",
+      "userGuide": "Guía del Usuario",
+      "reportIssue": "Reportar Problema",
+      "features": {
+        "grid": {
+          "title": "Cuadrícula 9-Box",
+          "description": "Interfaz intuitiva de arrastrar y soltar para ubicación de empleados y visualización de desempeño"
+        },
+        "collaboration": {
+          "title": "Colaboración en Equipo",
+          "description": "Comparta insights y calibre evaluaciones en toda su organización"
+        },
+        "tech": {
+          "title": "Construido Con"
+        }
+      }
     }
   },
   "sampleData": {

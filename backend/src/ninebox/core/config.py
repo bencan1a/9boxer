@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     # File Upload
     max_upload_size: int = 10 * 1024 * 1024  # 10MB
 
+    # LLM Configuration (optional - for AI-powered calibration summaries)
+    anthropic_api_key: str | None = None
+    llm_model: str = "claude-sonnet-4-5-20250929"
+    llm_max_tokens: int = 2048
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

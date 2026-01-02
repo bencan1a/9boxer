@@ -128,3 +128,93 @@ export interface IntelligenceData {
   level_analysis: DimensionAnalysis;
   tenure_analysis: DimensionAnalysis;
 }
+
+// Calibration Summary types
+export interface DataOverview {
+  total_employees: number;
+  by_level: Record<string, number>;
+  by_function: Record<string, number>;
+  by_location: Record<string, number>;
+  stars_count: number;
+  stars_percentage: number;
+  center_box_count: number;
+  center_box_percentage: number;
+  lower_performers_count: number;
+  lower_performers_percentage: number;
+  high_performers_count: number;
+  high_performers_percentage: number;
+}
+
+export interface LevelTimeBreakdown {
+  level: string;
+  employee_count: number;
+  minutes: number;
+  percentage: number;
+}
+
+export interface TimeAllocation {
+  estimated_duration_minutes: number;
+  breakdown_by_level: LevelTimeBreakdown[];
+  suggested_sequence: string[];
+}
+
+export interface InsightSourceData {
+  z_score?: number;
+  p_value?: number;
+  observed_pct?: number;
+  expected_pct?: number;
+  center_count?: number;
+  center_pct?: number;
+  recommended_max_pct?: number;
+  total_minutes?: number;
+  by_level?: Record<string, number>;
+  category?: string;
+  categories_affected?: string[];
+}
+
+export type InsightType =
+  | "anomaly"
+  | "focus_area"
+  | "recommendation"
+  | "time_allocation";
+export type InsightCategory =
+  | "location"
+  | "function"
+  | "level"
+  | "tenure"
+  | "distribution"
+  | "time";
+export type InsightPriority = "high" | "medium" | "low";
+
+export interface Insight {
+  id: string;
+  type: InsightType;
+  category: InsightCategory;
+  priority: InsightPriority;
+  title: string;
+  description: string;
+  affected_count: number;
+  source_data: InsightSourceData;
+}
+
+export interface CalibrationSummaryData {
+  data_overview: DataOverview;
+  time_allocation: TimeAllocation;
+  insights: Insight[];
+}
+
+export interface LLMAvailability {
+  available: boolean;
+  reason: string | null;
+}
+
+export interface LLMSummaryResult {
+  summary: string;
+  key_recommendations: string[];
+  discussion_points: string[];
+  model_used: string;
+}
+
+export interface GenerateSummaryRequest {
+  selected_insight_ids: string[];
+}

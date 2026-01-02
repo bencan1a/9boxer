@@ -24,6 +24,7 @@ import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
 import { AnomalySection } from "../intelligence/AnomalySection";
 import { DeviationChart } from "../intelligence/DeviationChart";
 import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
+import { CalibrationSummarySection } from "../intelligence/CalibrationSummarySection";
 import { ApiError } from "../../services/api";
 
 export const IntelligenceTab: React.FC = () => {
@@ -159,7 +160,10 @@ export const IntelligenceTab: React.FC = () => {
       }}
       data-testid="intelligence-tab-content"
     >
-      {/* Summary Section */}
+      {/* Calibration Summary Section - Meeting Prep */}
+      <CalibrationSummarySection />
+
+      {/* Intelligence Summary Section */}
       <IntelligenceSummary data={data} />
 
       {/* Location Analysis */}

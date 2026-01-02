@@ -583,3 +583,63 @@ export const LightTheme: Story = {
     },
   },
 };
+
+/**
+ * Multiple selections in one category (OR logic)
+ * Demonstrates that selecting Engineering AND Sales shows employees in EITHER function.
+ * Used for filters-logic-or-example screenshot.
+ */
+export const MultipleSelectionsOr: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "filters-logic-or-example" },
+    docs: {
+      description: {
+        story:
+          "Demonstrates OR logic within a single filter category. " +
+          "When Engineering and Product are both selected in Job Functions, " +
+          "employees in EITHER function are shown (union). " +
+          "This is the default behavior for multiple selections within one category.",
+      },
+    },
+  },
+  decorators: [
+    withStoreState(() => {
+      const store = useFilterStore.getState();
+      // Multiple selections in Job Functions (OR logic)
+      store.toggleJobFunction("Engineering");
+      store.toggleJobFunction("Product");
+    }),
+  ],
+};
+
+/**
+ * Selections across multiple categories (AND logic)
+ * Demonstrates that selecting a Job Function AND a Location shows only employees matching BOTH.
+ * Used for filters-logic-and-example screenshot.
+ */
+export const MultipleCategoriesAnd: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "filters-logic-and-example" },
+    docs: {
+      description: {
+        story:
+          "Demonstrates AND logic across different filter categories. " +
+          "When Engineering is selected in Job Functions AND USA is selected in Locations, " +
+          "only employees matching BOTH criteria are shown (intersection). " +
+          "Different categories are combined with AND logic.",
+      },
+    },
+  },
+  decorators: [
+    withStoreState(() => {
+      const store = useFilterStore.getState();
+      // Selections in different categories (AND logic)
+      store.toggleJobFunction("Engineering");
+      store.toggleLocation("USA");
+      // Add a flag too to show multiple AND conditions
+      store.toggleFlag("promotion_ready");
+    }),
+  ],
+};

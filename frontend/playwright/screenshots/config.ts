@@ -52,8 +52,17 @@ export type CroppingStrategy =
 
 /**
  * Quality rating for screenshot assessment
+ *
+ * - good: Screenshot meets all visual quality standards
+ * - needs-improvement: Screenshot exists but needs fixes (viewport, theme, etc.)
+ * - poor: Screenshot has significant issues (wrong content, broken)
+ * - pending: Screenshot placeholder added, story/workflow not yet created
  */
-export type ScreenshotQuality = "good" | "needs-improvement" | "poor";
+export type ScreenshotQuality =
+  | "good"
+  | "needs-improvement"
+  | "poor"
+  | "pending";
 
 /**
  * Known issues that can affect screenshot quality
@@ -76,8 +85,6 @@ export interface ScreenshotMetadata {
   path: string;
   /** Human-readable description of what this screenshot shows */
   description: string;
-  /** True if requires manual capture/composition (not automated) */
-  manual?: boolean;
   /** Cropping strategy - what portion of the screen to capture */
   cropping?: CroppingStrategy;
   /** For Storybook screenshots: the story ID (e.g., 'grid-employeetile--modified') */
@@ -103,21 +110,7 @@ export interface ScreenshotMetadata {
  * for filtering when running the generator (e.g., npm run screenshots:generate changes-tab).
  */
 export const screenshotConfig: Record<string, ScreenshotMetadata> = {
-  // Changes workflow screenshots (5 screenshots)
-  "changes-drag-sequence": {
-    source: "full-app",
-    workflow: "changes",
-    function: "generateDragSequence",
-    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-drag-sequence-base.png",
-    description:
-      "Base grid for 3-panel drag sequence (requires manual composition)",
-    manual: true,
-    cropping: "grid",
-    caption:
-      "Grid showing drag-and-drop workflow for moving employees between boxes",
-    quality: "good",
-    usedIn: ["getting-started.md", "workflows/making-changes.md"],
-  },
+  // Changes workflow screenshots (4 screenshots)
   "changes-orange-border": {
     source: "storybook",
     workflow: "storybook-components",
@@ -657,6 +650,494 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     usedIn: ["getting-started.md"],
   },
   // REMOVED: filters-overview - duplicate of filters-panel-expanded (same storyId)
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Pending creation (from Core Features documentation audit)
+  // ==========================================================================
+
+  // Grid screenshots (understanding-grid.md)
+  "grid-basic-layout": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridBasicLayout",
+    path: "resources/user-guide/docs/images/screenshots/grid/grid-basic-layout.png",
+    description:
+      "Full 9-box grid with axis labels (Performance: Low/Medium/High, Potential: Low/Medium/High) and all 9 position names visible",
+    storyId: "app-grid-nineboxgrid--populated",
+    cropping: "container",
+    caption:
+      "The 9-box grid showing Performance (horizontal) and Potential (vertical) axes with all 9 positions labeled",
+    quality: "good",
+    usedIn: ["understanding-grid.md"],
+  },
+  "grid-color-coding-boxes": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridColorCoding",
+    path: "resources/user-guide/docs/images/screenshots/grid/grid-color-coding-boxes.png",
+    description:
+      "Grid view emphasizing the background color scheme - green top row, yellow/amber middle row, orange bottom row",
+    storyId: "app-grid-nineboxgrid--populated",
+    cropping: "container",
+    caption:
+      "9-box grid highlighting the color coding: green (high potential), yellow (medium potential), orange (low potential)",
+    quality: "good",
+    usedIn: ["understanding-grid.md"],
+  },
+  "grid-employee-tile-states": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileStates",
+    path: "resources/user-guide/docs/images/screenshots/grid/grid-employee-tile-states.png",
+    description:
+      "Composite showing 4 different employee tile states: default blue, orange border (modified), purple border (donut), and flag chips",
+    storyId: "app-grid-employeetile--all-states-composite",
+    cropping: "element",
+    caption:
+      "Examples of employee tile visual states: default blue, orange border (modified), purple border (donut mode), and flag chips",
+    quality: "good",
+    usedIn: ["understanding-grid.md"],
+  },
+  "grid-box-expanded": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridBoxExpanded",
+    path: "resources/user-guide/docs/images/screenshots/grid/grid-box-expanded.png",
+    description:
+      "Single grid box (Position 5) expanded to show multi-column layout with expand/collapse icon visible",
+    storyId: "app-grid-gridbox--expanded",
+    cropping: "element",
+    caption:
+      "A grid box in expanded state showing employees arranged in multiple columns",
+    quality: "good",
+    usedIn: ["understanding-grid.md"],
+  },
+
+  // Filters screenshots (filters.md)
+  "filters-logic-or-example": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFiltersOrLogic",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-logic-or-example.png",
+    description:
+      "Filter drawer showing Job Functions section with Engineering and Sales both checked to illustrate OR behavior",
+    storyId: "app-dashboard-filterdrawer--multiple-selections-or",
+    cropping: "container",
+    caption:
+      "Filter drawer with multiple selections in one category demonstrating OR logic",
+    quality: "good",
+    usedIn: ["filters.md"],
+  },
+  "filters-logic-and-example": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFiltersAndLogic",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-logic-and-example.png",
+    description:
+      "Filter drawer showing selections in two different categories (Job Function + Performance) to illustrate AND behavior",
+    storyId: "app-dashboard-filterdrawer--multiple-categories-and",
+    cropping: "container",
+    caption:
+      "Filter drawer with selections across categories demonstrating AND logic",
+    quality: "good",
+    usedIn: ["filters.md"],
+  },
+  "filters-active-indicator": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFiltersActiveIndicator",
+    path: "resources/user-guide/docs/images/screenshots/filters/filters-active-indicator.png",
+    description:
+      "AppBar/toolbar area showing Filters button with orange dot badge and employee count showing filtered vs total",
+    storyId: "app-dashboard-appbar--with-active-filters",
+    cropping: "element",
+    caption:
+      "Filters button with orange dot indicator and employee count showing filtered results",
+    quality: "good",
+    usedIn: ["filters.md"],
+  },
+
+  // Donut Mode screenshots (donut-mode.md)
+  "donut-mode-employee-tile-purple": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutModeTilePurple",
+    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-employee-tile-purple.png",
+    description:
+      "Single employee tile showing the purple border and visual indication of original Position 5 placement",
+    storyId: "app-grid-employeetile--donut-mode",
+    cropping: "element",
+    caption:
+      "Employee tile with purple border and original position indicator showing donut placement",
+    quality: "good",
+    usedIn: ["donut-mode.md"],
+  },
+  "donut-mode-changes-tabs-toggle": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateDonutModeTabsToggle",
+    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-changes-tabs-toggle.png",
+    description:
+      "Changes tab interface showing both tab options (Regular Changes and Donut Changes)",
+    storyId: "app-right-panel-changes-changetrackertab--with-donut-mode",
+    cropping: "panel",
+    caption:
+      "Changes panel showing the two tabs: Regular Changes and Donut Changes",
+    quality: "good",
+    usedIn: ["donut-mode.md"],
+  },
+
+  // Statistics screenshots (statistics.md)
+  "statistics-tab-location": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateStatisticsTabLocation",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-tab-location.png",
+    description:
+      "Full right panel view with the Statistics tab highlighted, showing where users click to access statistics",
+    storyId: "app-right-panel-tabs--statistics-selected",
+    cropping: "panel",
+    caption:
+      "Right panel showing the Statistics tab location among the panel tabs",
+    quality: "good",
+    usedIn: ["statistics.md"],
+  },
+  "statistics-grouping-dropdown": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateStatisticsGroupingDropdown",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouping-dropdown.png",
+    description:
+      "Statistics panel with the grouping selector expanded to show all available grouping dimensions (Department, Manager, Location, Job Level)",
+    storyId: "app-right-panel-statistics-distributiontable--grouping-menu-open",
+    cropping: "panel",
+    caption:
+      "Statistics panel with grouping dropdown menu open showing options",
+    quality: "good",
+    usedIn: ["statistics.md"],
+  },
+  "statistics-grouped-distribution": {
+    source: "storybook",
+    workflow: "statistics-storybook",
+    function: "generateStatisticsGroupedDistribution",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouped-distribution.png",
+    description:
+      "Statistics panel showing the distribution table when grouped by Department, with sections showing different group breakdowns",
+    storyId:
+      "app-right-panel-statistics-distributiontable--grouped-by-department",
+    cropping: "panel",
+    caption: "Statistics showing distribution grouped by department",
+    quality: "good",
+    usedIn: ["statistics.md"],
+  },
+  "statistics-with-filters": {
+    source: "full-app",
+    workflow: "statistics-storybook",
+    function: "generateStatisticsWithFilters",
+    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-with-filters.png",
+    description:
+      "Statistics panel with filter context visible, showing how distribution changes when filters are active",
+    cropping: "panel",
+    caption: "Statistics panel showing distribution for a filtered subset",
+    quality: "good",
+    usedIn: ["statistics.md"],
+  },
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Working with Employees (from Core Features audit)
+  // ==========================================================================
+
+  "employee-details-full-panel": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeDetailsFullPanel",
+    path: "resources/user-guide/docs/images/screenshots/details/employee-details-full-panel.png",
+    description:
+      "Complete employee details panel showing all sections: ratings, job info, flags, org chain, and timeline",
+    storyId: "app-right-panel-details-employeedetails--default",
+    cropping: "panel",
+    caption:
+      "Employee details panel showing all employee information including ratings, job info, flags, and timeline",
+    quality: "good",
+    usedIn: ["working-with-employees.md"],
+  },
+  "employee-tile-modified-border": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileModifiedBorder",
+    path: "resources/user-guide/docs/images/screenshots/grid/employee-tile-modified-border.png",
+    description:
+      "Single employee tile showing the orange left border indicating the employee was modified in the current session",
+    storyId: "app-grid-employeetile--modified-normal-mode",
+    cropping: "element",
+    caption:
+      "Employee tile with orange left border indicating it was modified in the current session",
+    quality: "good",
+    usedIn: ["working-with-employees.md"],
+  },
+  "employee-timeline-history": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTimelineHistory",
+    path: "resources/user-guide/docs/images/screenshots/details/employee-timeline-history.png",
+    description:
+      "Timeline section in Details tab showing chronological history of rating changes with dates and positions",
+    storyId: "app-right-panel-details-ratingstimeline--with-history",
+    cropping: "element",
+    caption:
+      "Timeline section in Details tab showing chronological movement history",
+    quality: "good",
+    usedIn: ["working-with-employees.md"],
+  },
+  "employee-flags-section": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeFlagsSection",
+    path: "resources/user-guide/docs/images/screenshots/details/employee-flags-section.png",
+    description:
+      "Flags section in Details tab showing existing flag chips and Add Flag dropdown menu open",
+    storyId: "app-right-panel-details-flagselector--dropdown-open",
+    cropping: "element",
+    caption:
+      "Flags section showing existing flag chips and Add Flag dropdown menu",
+    quality: "good",
+    usedIn: ["working-with-employees.md"],
+  },
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Tracking Changes (from Core Features audit)
+  // ==========================================================================
+
+  "apply-button-with-badge": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateApplyButtonWithBadge",
+    path: "resources/user-guide/docs/images/screenshots/toolbar/apply-button-with-badge.png",
+    description:
+      "Apply button in toolbar showing badge with number of pending changes (e.g., '5' in red badge)",
+    storyId: "app-dashboard-filemenubutton--with-changes-badge",
+    cropping: "element",
+    caption:
+      "Apply button in toolbar showing badge with number of pending changes",
+    quality: "good",
+    usedIn: ["tracking-changes.md"],
+  },
+  "employee-tile-big-mover-flag": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateEmployeeTileBigMoverFlag",
+    path: "resources/user-guide/docs/images/screenshots/grid/employee-tile-big-mover-flag.png",
+    description:
+      "Employee tile showing the Big Mover flag chip (cyan color) indicating significant tier change",
+    storyId: "app-grid-employeetile--with-big-mover-flag",
+    cropping: "element",
+    caption:
+      "Employee tile with Big Mover flag chip indicating significant tier change",
+    quality: "good",
+    usedIn: ["tracking-changes.md"],
+  },
+  "grid-change-indicators": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateGridChangeIndicators",
+    path: "resources/user-guide/docs/images/screenshots/grid/grid-change-indicators.png",
+    description:
+      "Grid view showing multiple visual indicators: orange borders on modified tiles and Big Mover flags",
+    storyId: "app-grid-nineboxgrid--with-changes",
+    cropping: "grid",
+    caption:
+      "Grid showing visual indicators: orange borders on modified tiles and Big Mover flags",
+    quality: "good",
+    usedIn: ["tracking-changes.md"],
+  },
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Intelligence (from Core Features audit)
+  // ==========================================================================
+
+  "intelligence-tab-location": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateIntelligenceTabLocation",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-tab-location.png",
+    description:
+      "Right panel header showing all four tabs with Intelligence tab (fourth) highlighted",
+    storyId: "app-right-panel-tabs--intelligence-selected",
+    cropping: "element",
+    caption:
+      "Right panel showing the Intelligence tab location among the panel tabs",
+    quality: "good",
+    usedIn: ["intelligence.md"],
+  },
+  "intelligence-quality-score": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateIntelligenceQualityScore",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-quality-score.png",
+    description:
+      "Quality score display at top of Intelligence panel showing overall score (0-100) with color indicator",
+    storyId: "app-right-panel-intelligence-qualityscore--needs-attention",
+    cropping: "element",
+    caption:
+      "Quality score display at top of Intelligence panel showing overall data health rating",
+    quality: "good",
+    usedIn: ["intelligence.md"],
+  },
+  "intelligence-anomaly-card-detail": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateIntelligenceAnomalyCardDetail",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-anomaly-card-detail.png",
+    description:
+      "Detailed anomaly card view showing dimension, expected vs actual counts, deviation amount, and affected categories",
+    storyId: "app-right-panel-intelligence-anomalysection--red-status",
+    cropping: "container",
+    caption:
+      "Anomaly card detail view showing expected vs actual counts and deviation metrics",
+    quality: "good",
+    usedIn: ["intelligence.md"],
+  },
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Exporting (from Core Features audit)
+  // ==========================================================================
+
+  "file-menu-apply-button": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateFileMenuApplyButton",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-apply-button.png",
+    description:
+      "File menu dropdown with Apply Changes button visible and highlighted, showing change count",
+    storyId: "app-dashboard-filemenubutton--menu-open-with-changes",
+    cropping: "element",
+    caption: "File menu showing Apply Changes button with pending change count",
+    quality: "good",
+    usedIn: ["exporting.md"],
+  },
+  "apply-changes-save-as-option": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateApplyChangesSaveAsOption",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-save-as-option.png",
+    description:
+      "Apply Changes dialog with 'Save to different file' checkbox checked, showing file path input",
+    storyId: "app-dialogs-applychangesdialog--save-as-mode",
+    cropping: "container",
+    caption: "Apply Changes dialog with Save to different file option selected",
+    quality: "good",
+    usedIn: ["exporting.md"],
+  },
+  "file-menu-recent-files": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateFileMenuRecentFiles",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-recent-files.png",
+    description:
+      "File menu dropdown showing Recent Files submenu with list of previously opened files",
+    storyId: "app-dashboard-filemenubutton--menu-open-with-recent-files",
+    cropping: "element",
+    caption: "Recent Files list in File menu showing previously accessed files",
+    quality: "good",
+    usedIn: ["exporting.md"],
+  },
+  "export-success-message": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateExportSuccessMessage",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/export-success-message.png",
+    description:
+      "Success notification/toast showing export completed with file path and action buttons",
+    storyId: "app-common-notification--export-success",
+    cropping: "element",
+    caption: "Export complete confirmation showing successful save",
+    quality: "good",
+    usedIn: ["exporting.md"],
+  },
+  "exported-excel-columns": {
+    source: "storybook",
+    workflow: "file-operations",
+    function: "generateExportedExcelColumns",
+    path: "resources/user-guide/docs/images/screenshots/file-ops/exported-excel-columns.png",
+    description:
+      "Mock Excel view showing the 4 9Boxer columns added during export",
+    storyId: "app-common-mockexcelview--exported-columns",
+    cropping: "element",
+    caption:
+      "Exported Excel file showing change tracking columns added by 9Boxer",
+    quality: "good",
+    usedIn: ["exporting.md"],
+  },
+
+  // ==========================================================================
+  // NEW SCREENSHOTS - Settings & View Controls (from Core Features audit)
+  // ==========================================================================
+
+  "settings-gear-icon-location": {
+    source: "storybook",
+    workflow: "view-controls",
+    function: "generateSettingsGearIconLocation",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-gear-icon-location.png",
+    description:
+      "AppBar/header area showing the gear icon location in the top-right corner with visual emphasis",
+    storyId: "app-dashboard-appbar--default",
+    cropping: "element",
+    caption: "Gear icon location in the top-right corner of the application",
+    quality: "good",
+    usedIn: ["settings.md"],
+  },
+  "settings-theme-selector": {
+    source: "storybook",
+    workflow: "view-controls",
+    function: "generateSettingsThemeSelector",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-theme-selector.png",
+    description:
+      "Settings dialog focused on the Theme Mode section showing Light/Dark/Auto options",
+    storyId: "app-settings-settingsdialog--open",
+    cropping: "element",
+    caption: "Theme mode selector showing Light, Dark, and Auto options",
+    quality: "good",
+    usedIn: ["settings.md"],
+  },
+  "view-controls-zoom": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsZoom",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-zoom.png",
+    description:
+      "Close-up of zoom controls in ViewControls toolbar showing minus, reset, plus buttons and percentage",
+    storyId: "app-common-viewcontrols--grid-view-active",
+    cropping: "element",
+    caption:
+      "Zoom controls close-up showing minus, reset, and plus buttons with percentage display",
+    quality: "good",
+    usedIn: ["settings.md"],
+  },
+  "view-controls-fullscreen": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsFullscreen",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-fullscreen.png",
+    description: "Close-up of fullscreen toggle button in ViewControls toolbar",
+    storyId: "app-common-viewcontrols--grid-view-active",
+    cropping: "element",
+    caption: "Fullscreen toggle button in the view controls toolbar",
+    quality: "good",
+    usedIn: ["settings.md"],
+  },
+  "view-controls-mode-toggle": {
+    source: "storybook",
+    workflow: "storybook-components",
+    function: "generateViewControlsModeToggle",
+    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-mode-toggle.png",
+    description:
+      "Close-up of view mode toggle showing Grid and Donut mode buttons",
+    storyId: "app-common-viewcontrols--grid-view-active",
+    cropping: "element",
+    caption: "View mode toggle showing Grid and Donut mode buttons",
+    quality: "good",
+    usedIn: ["settings.md"],
+  },
 };
 
 /**
@@ -680,27 +1161,12 @@ export function getScreenshotsByWorkflow(
 }
 
 /**
- * Get automated screenshots (those that can be generated by workflow functions)
+ * Get all screenshots (all screenshots are now automated)
  *
- * @returns Record of automated screenshot configurations
+ * @returns Record of all screenshot configurations
  */
 export function getAutomatedScreenshots(): Record<string, ScreenshotMetadata> {
-  return Object.fromEntries(
-    Object.entries(screenshotConfig).filter(([_, metadata]) => !metadata.manual)
-  );
-}
-
-/**
- * Get manual screenshots (those requiring manual creation/annotation)
- *
- * @returns Record of manual screenshot configurations
- */
-export function getManualScreenshots(): Record<string, ScreenshotMetadata> {
-  return Object.fromEntries(
-    Object.entries(screenshotConfig).filter(
-      ([_, metadata]) => metadata.manual === true
-    )
-  );
+  return { ...screenshotConfig };
 }
 
 /**
@@ -757,6 +1223,7 @@ export function getScreenshotQualitySummary(): {
   good: number;
   needsImprovement: number;
   poor: number;
+  pending: number;
   withLightMode: number;
   withWrongContent: number;
   unused: number;
@@ -768,10 +1235,24 @@ export function getScreenshotQualitySummary(): {
     needsImprovement: entries.filter((m) => m.quality === "needs-improvement")
       .length,
     poor: entries.filter((m) => m.quality === "poor").length,
+    pending: entries.filter((m) => m.quality === "pending").length,
     withLightMode: entries.filter((m) => m.issues?.includes("light-mode"))
       .length,
     withWrongContent: entries.filter((m) => m.issues?.includes("wrong-content"))
       .length,
     unused: entries.filter((m) => !m.usedIn || m.usedIn.length === 0).length,
   };
+}
+
+/**
+ * Get pending screenshots (placeholders without stories yet)
+ *
+ * @returns Record of pending screenshot configurations
+ */
+export function getPendingScreenshots(): Record<string, ScreenshotMetadata> {
+  return Object.fromEntries(
+    Object.entries(screenshotConfig).filter(
+      ([_, metadata]) => metadata.quality === "pending"
+    )
+  );
 }
