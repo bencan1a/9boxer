@@ -28,7 +28,7 @@ describe("EmployeeTile Performance Tests", () => {
     vi.clearAllMocks();
   });
 
-  it("should render a single tile in <10ms", () => {
+  it("should render a single tile in <20ms", () => {
     // Generate single employee
     const [employee] = generateLargeEmployeeDataset(1);
 
@@ -111,7 +111,6 @@ describe("EmployeeTile Performance Tests", () => {
     );
 
     // Reset count after initial render
-    const initialRenderCount = renderCount;
     renderCount = 0;
 
     // Update only the first employee

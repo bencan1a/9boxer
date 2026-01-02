@@ -341,8 +341,14 @@ export const performanceUtils = {
    * Get current memory usage (if available)
    */
   getMemoryUsage: (): number | null => {
-    if (performance.memory) {
-      return (performance.memory as any).usedJSHeapSize;
+    const memory = (
+      performance as Performance & {
+        memory?: { usedJSHeapSize: number };
+      }
+    ).memory;
+
+    if (memory && typeof memory.usedJSHeapSize === "number") {
+      return memory.usedJSHeapSize;
     }
     return null;
   },
@@ -362,8 +368,9 @@ export const performanceUtils = {
     }
 
     // Force garbage collection if available (Chrome DevTools)
-    if ((global as any).gc) {
-      (global as any).gc();
+    const globalWithGc = global as typeof global & { gc?: () => void };
+    if (globalWithGc.gc) {
+      globalWithGc.gc();
     }
 
     const endMemory = performanceUtils.getMemoryUsage();
