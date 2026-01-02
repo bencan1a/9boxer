@@ -108,6 +108,7 @@ export interface AnomalyDeviation {
 export interface ManagerDeviation {
   category: string; // Manager name
   team_size: number;
+  employee_ids: number[]; // All employee IDs under this manager
   high_pct: number;
   medium_pct: number;
   low_pct: number;
