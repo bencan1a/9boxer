@@ -217,7 +217,8 @@ describe("useFilters", () => {
         const { result } = renderHook(() => useFilters());
 
         act(() => {
-          result.current.toggleManager("Alice Smith");
+          // Pass employee IDs for Alice Smith's reports
+          result.current.toggleManager("Alice Smith", [1, 3]);
         });
 
         const filtered = result.current.applyFilters(employees);
@@ -236,7 +237,8 @@ describe("useFilters", () => {
         const { result } = renderHook(() => useFilters());
 
         act(() => {
-          result.current.setReportingChainFilter("alice smith");
+          // Pass employee IDs for employees reporting to alice smith
+          result.current.setReportingChainFilter("alice smith", [1]);
         });
 
         const filtered = result.current.applyFilters(employees);
@@ -262,7 +264,8 @@ describe("useFilters", () => {
         const { result } = renderHook(() => useFilters());
 
         act(() => {
-          result.current.setReportingChainFilter("level 2 manager");
+          // Pass employee IDs for employees under level 2 manager
+          result.current.setReportingChainFilter("level 2 manager", [1]);
         });
 
         const filtered = result.current.applyFilters(employees);
@@ -293,7 +296,11 @@ describe("useFilters", () => {
         const { result } = renderHook(() => useFilters());
 
         act(() => {
-          result.current.setReportingChainFilter("Target Manager");
+          // Pass employee IDs for all employees under Target Manager
+          result.current.setReportingChainFilter(
+            "Target Manager",
+            [1, 2, 3, 4]
+          );
         });
 
         const filtered = result.current.applyFilters(employees);
@@ -309,7 +316,8 @@ describe("useFilters", () => {
         const { result } = renderHook(() => useFilters());
 
         act(() => {
-          result.current.setReportingChainFilter("Alice Smith");
+          // Pass employee IDs for Alice Smith's reports
+          result.current.setReportingChainFilter("Alice Smith", [1]);
         });
 
         let filtered = result.current.applyFilters(employees);
