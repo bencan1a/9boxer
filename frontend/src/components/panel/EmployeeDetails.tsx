@@ -65,7 +65,7 @@ const getBoxColor = (position: number, theme: any): string => {
     return theme.palette.gridBox.solidPerformer;
   }
   // Development: positions 3, 7
-  if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
+  if ([3, 7].includes(position)) {
     return theme.palette.gridBox.development;
   }
   return theme.palette.background.paper;
