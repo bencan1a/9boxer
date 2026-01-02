@@ -90,13 +90,13 @@ def verify_bias_patterns():
     all_perf = Counter(emp.performance for emp in employees)
     total = len(employees)
     print(
-        f"  High:   {all_perf[PerformanceLevel.HIGH]:3d} ({all_perf[PerformanceLevel.HIGH]/total*100:5.1f}%)"
+        f"  High:   {all_perf[PerformanceLevel.HIGH]:3d} ({all_perf[PerformanceLevel.HIGH] / total * 100:5.1f}%)"
     )
     print(
-        f"  Medium: {all_perf[PerformanceLevel.MEDIUM]:3d} ({all_perf[PerformanceLevel.MEDIUM]/total*100:5.1f}%)"
+        f"  Medium: {all_perf[PerformanceLevel.MEDIUM]:3d} ({all_perf[PerformanceLevel.MEDIUM] / total * 100:5.1f}%)"
     )
     print(
-        f"  Low:    {all_perf[PerformanceLevel.LOW]:3d} ({all_perf[PerformanceLevel.LOW]/total*100:5.1f}%)"
+        f"  Low:    {all_perf[PerformanceLevel.LOW]:3d} ({all_perf[PerformanceLevel.LOW] / total * 100:5.1f}%)"
     )
 
 
