@@ -76,6 +76,14 @@ cd frontend && npm test  # Frontend component tests
 cd frontend && npm run test:e2e:pw  # E2E tests
 ```
 
+**REQUIRED: E2E Core Tests Must Pass**
+Before the feature is considered complete, you MUST run and pass the E2E core tests (especially the data loading tests):
+```bash
+cd frontend && npm run test:e2e:pw
+```
+
+These tests catch fundamental "app doesn't load" failures that unit/component tests miss. The `01-data-loading.spec.ts` test is the smoke test - it verifies the app loads, data loads, and the UI renders. If these tests fail, the feature is NOT done. Unit tests can all pass while the app is completely broken - the E2E tests are your safety net.
+
 **Manual validation**:
 - Smoke test with user (does it work as expected?)
 - Edge case testing (what could go wrong?)

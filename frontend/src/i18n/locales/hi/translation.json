@@ -335,6 +335,17 @@
         "wellCalibrated": "रेटिंग वितरण सभी आयामों में अच्छी तरह से अंशांकित प्रतीत होता है।",
         "someAnomalies": "कुछ विसंगतियां पाई गईं। विवरण के लिए नीचे दिए गए खंडों की समीक्षा करें।",
         "significantAnomalies": "महत्वपूर्ण विसंगतियां पाई गईं। तत्काल समीक्षा की सिफारिश की जाती है।"
+      },
+      "managerAnalysis": "Manager Rating Distribution",
+      "managerDistribution": "Manager Distribution (High/Medium/Low)",
+      "manager": {
+        "category": "Manager",
+        "teamSize": "Team Size",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "totalDeviation": "Total Deviation",
+        "baseline": "Baseline"
       }
     },
     "changesSummary": {

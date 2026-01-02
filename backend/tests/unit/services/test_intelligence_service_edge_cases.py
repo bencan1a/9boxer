@@ -106,7 +106,7 @@ class TestEmptyEmployeeList:
         result = calculate_overall_intelligence([])
 
         assert result["quality_score"] == 100  # All green = 100
-        assert result["anomaly_count"]["green"] == 4
+        assert result["anomaly_count"]["green"] == 5  # location, function, level, tenure, manager
         assert result["anomaly_count"]["yellow"] == 0
         assert result["anomaly_count"]["red"] == 0
 

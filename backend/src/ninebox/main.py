@@ -11,6 +11,7 @@ from ninebox.api import (
     calibration_summary,
     employees,
     intelligence,
+    org_hierarchy,
     preferences,
     session,
     statistics,
@@ -54,6 +55,7 @@ app.include_router(statistics.router, prefix="/api")
 app.include_router(intelligence.router, prefix="/api")
 app.include_router(calibration_summary.router, prefix="/api")
 app.include_router(preferences.router, prefix="/api")
+app.include_router(org_hierarchy.router, prefix="/api")
 
 
 @app.get("/")
