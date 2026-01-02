@@ -19,7 +19,6 @@ import {
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useFilterStore } from "../../store/filterStore";
@@ -187,7 +186,7 @@ export const ManagerDistributionChart: React.FC<
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 120, bottom: 20 }}
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -203,7 +202,7 @@ export const ManagerDistributionChart: React.FC<
             <YAxis
               type="category"
               dataKey="manager"
-              width={110}
+              width={140}
               tick={<CustomYAxisTick />}
             />
             <Tooltip content={<CustomTooltip />} />
