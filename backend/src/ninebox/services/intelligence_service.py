@@ -751,6 +751,7 @@ def _calculate_single_manager_distribution(
     return {
         "manager_name": manager_name,
         "team_size": team_size,
+        "employee_ids": [emp.employee_id for emp in valid_reports],  # All report IDs
         "high_count": high_count,
         "medium_count": medium_count,
         "low_count": low_count,
@@ -848,6 +849,7 @@ def _calculate_manager_statistics(
             {
                 "category": cast("str", mgr["manager_name"]),
                 "team_size": team_size,
+                "employee_ids": cast("list[int]", mgr["employee_ids"]),  # All report IDs
                 "high_pct": round(cast("float", mgr["high_pct"]), 1),
                 "medium_pct": round(cast("float", mgr["medium_pct"]), 1),
                 "low_pct": round(cast("float", mgr["low_pct"]), 1),
