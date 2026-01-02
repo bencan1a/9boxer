@@ -321,7 +321,7 @@ jobs:
     name: Frontend Tests
     runs-on: windows-latest
     needs: [check-changes, lint, type-check]  # Don't need security scan for frontend
-    if: always() && needs.type-check.result == 'success' && (needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false')  # Run even if lint fails
+    if: always() && needs.type-check.result == 'success' && needs.check-changes.result == 'success' && (needs.check-changes.outputs.frontend-files-changed == 'true' || needs.check-changes.outputs.should-skip-tests == 'false')  # Run even if lint fails
     steps:
       - uses: actions/checkout@v4
 
