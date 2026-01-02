@@ -44,10 +44,10 @@ export const ManagerAnomalySection: React.FC<ManagerAnomalySectionProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const { setReportingChainFilter } = useFilterStore();
+  const { toggleManager } = useFilterStore();
 
   const handleManagerClick = (managerName: string) => {
-    setReportingChainFilter(managerName);
+    toggleManager(managerName);
   };
 
   // Get status icon and color
