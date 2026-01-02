@@ -84,7 +84,7 @@ export const orgHierarchyService = {
       params.append("min_team_size", minTeamSize.toString());
     }
 
-    const url = `/org-hierarchy/managers${params.toString() ? `?${params.toString()}` : ""}`;
+    const url = `/api/org-hierarchy/managers${params.toString() ? `?${params.toString()}` : ""}`;
     return apiClient.get<ManagerListResponse>(url);
   },
 
@@ -103,7 +103,7 @@ export const orgHierarchyService = {
    */
   async getAllReports(employeeId: number): Promise<AllReportsResponse> {
     return apiClient.get<AllReportsResponse>(
-      `/org-hierarchy/reports/${employeeId}`
+      `/api/org-hierarchy/reports/${employeeId}`
     );
   },
 
@@ -121,7 +121,7 @@ export const orgHierarchyService = {
    */
   async getReportingChain(employeeId: number): Promise<ReportingChainResponse> {
     return apiClient.get<ReportingChainResponse>(
-      `/org-hierarchy/reporting-chain/${employeeId}`
+      `/api/org-hierarchy/reporting-chain/${employeeId}`
     );
   },
 
