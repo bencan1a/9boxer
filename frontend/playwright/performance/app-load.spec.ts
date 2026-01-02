@@ -77,9 +77,9 @@ test.describe("App Load Performance Tests", () => {
         loadComplete: navTiming.loadEventEnd,
         domainLookup: navTiming.domainLookupEnd - navTiming.domainLookupStart,
         tcpHandshake:
-          navTiming.connectEnd -
-          navTiming.connectStart -
-          navTiming.secureConnectionStart,
+          navTiming.secureConnectionStart > 0
+            ? navTiming.connectEnd - navTiming.secureConnectionStart
+            : navTiming.connectEnd - navTiming.connectStart,
         responseTime: navTiming.responseEnd - navTiming.requestStart,
         domProcessing:
           navTiming.domComplete - navTiming.domContentLoadedEventEnd,
