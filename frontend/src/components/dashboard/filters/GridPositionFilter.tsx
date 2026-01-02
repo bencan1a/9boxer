@@ -51,7 +51,7 @@ export const GridPositionFilter: React.FC<GridPositionFilterProps> = ({
       return theme.palette.gridBox.solidPerformer;
     }
     // Development: [L,H], [H,L] = positions 7, 3
-    if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
+    if ([3, 7].includes(position)) {
       return theme.palette.gridBox.development;
     }
     // Fallback (should not happen)

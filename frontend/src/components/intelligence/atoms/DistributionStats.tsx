@@ -108,7 +108,7 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
       return theme.palette.gridBox?.solidPerformer || theme.palette.info.light;
     }
     // Development: [L,H], [H,L] = positions 7, 3
-    if (PERFORMANCE_BUCKETS.Medium.includes(position)) {
+    if ([3, 7].includes(position)) {
       return theme.palette.gridBox?.development || theme.palette.warning.light;
     }
     return theme.palette.action.hover;
