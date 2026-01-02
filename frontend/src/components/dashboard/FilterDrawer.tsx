@@ -33,6 +33,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { useTranslation } from "react-i18next";
 import { useFilters } from "../../hooks/useFilters";
 import { useSession } from "../../hooks/useSession";
+import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 import { ExclusionDialog } from "./ExclusionDialog";
 import { FilterSection, FlagFilters, ReportingChainFilter } from "./filters";
 
@@ -45,6 +46,7 @@ export const FilterDrawer: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { employees } = useSession();
+  const { managers: orgManagers } = useOrgHierarchy(); // Get managers from OrgService
   const {
     selectedLevels,
     selectedJobFunctions,
@@ -87,8 +89,17 @@ export const FilterDrawer: React.FC = () => {
   // Get available filter options from current employee data
   // Memoize to avoid reprocessing on every render (e.g., when drawer opens/closes)
   const filterOptions = useMemo(() => {
-    return getAvailableOptions(employees);
-  }, [employees, getAvailableOptions]);
+    const baseOptions = getAvailableOptions(employees);
+
+    // Override managers with OrgService-sourced list
+    // Use manager names from org hierarchy (sorted by team size, then name)
+    const managerNames = orgManagers.map((m) => m.name);
+
+    return {
+      ...baseOptions,
+      managers: managerNames,
+    };
+  }, [employees, getAvailableOptions, orgManagers]);
 
   return (
     <>
@@ -249,6 +260,7 @@ export const FilterDrawer: React.FC = () => {
                         onChange={() => toggleManager(manager)}
                         size="small"
                         data-testid={`filter-checkbox-managers-${sanitizeTestId(manager)}`}
+                        data-manager-name={manager}
                       />
                     }
                     label={
