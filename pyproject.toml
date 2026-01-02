@@ -151,7 +151,7 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
-module = ["pandas.*", "openpyxl.*", "jose.*", "passlib.*", "scipy.*"]
+module = ["pandas.*", "openpyxl.*", "jose.*", "passlib.*", "scipy.*", "anthropic", "anthropic.*"]
 ignore_missing_imports = true
 
 [tool.ruff]
