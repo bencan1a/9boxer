@@ -49,32 +49,41 @@ Choose your path based on your experience and goals.
 
 | If you are... | Start here |
 |---------------|------------|
-| **New to 9Boxer** | [2-Minute Quickstart](quickstart.md) - See value immediately |
-| **First-time 9-box user** | [Understanding the Grid](understanding-grid.md) - Learn the framework |
-| **Preparing for calibration** | [Best Practices](best-practices.md) - Step-by-step calibration guide |
-| **HR Manager** | [Getting Started Guide](getting-started.md) - Complete workflow |
+| **New to 9Boxer** | [2-Minute Quickstart](quickstart.md) - See the app in action |
+| **New to calibration** | [Calibration Philosophy](new-to-9box.md) - Why calibration matters and how to think about it |
+| **Running your first calibration** | [Quick Workflow](getting-started.md) - Step-by-step guide for your first session |
+| **Experienced, need the complete guide** | [Complete Calibration Guide](best-practices.md) - Comprehensive reference |
+| **Facilitating calibration sessions** | [Psychological Safety](reference/psychological-safety.md) - Create productive discussions |
 | **Looking for specific help** | [Troubleshooting](troubleshooting.md) - Solve common issues |
 
 ---
 
 ## Learn More
 
-**Core Workflows**
+**Calibration Journey**
 
-- [Employee Data](employee-data.md) - Excel file requirements
-- [Making Rating Changes](workflows/making-changes.md) - Move employees and track decisions
-- [Exporting Your Work](exporting.md) - Save results with audit trail
+- [Calibration Philosophy](new-to-9box.md) - Why calibration matters, level-based approach
+- [Quick Workflow](getting-started.md) - Your first calibration session
+- [Complete Guide](best-practices.md) - Comprehensive calibration reference
 
-**Key Features**
+**Calibration Deep Dives**
+
+- [Filter Strategy](reference/filtering-decision-tree.md) - When and how to use each filter
+- [Difficult Scenarios](reference/difficult-scenarios.md) - Handle challenging situations
+- [Post-Calibration Conversations](reference/post-calibration-conversations.md) - Manager-employee follow-up
+
+**Core Features**
 
 - [The 9-Box Grid](understanding-grid.md) - What each position means
 - [Filters](filters.md) - Focus on specific teams or departments
 - [Donut Mode](donut-mode.md) - Validate center box placements
 - [Statistics & Intelligence](statistics.md) - Distribution analysis and anomaly detection
 
-**Best Practices**
+**Data & Export**
 
-- [Best Practices](best-practices.md) - Expert recommendations and calibration workflows
+- [Employee Data](employee-data.md) - Excel file requirements
+- [Making Rating Changes](workflows/making-changes.md) - Move employees and track decisions
+- [Exporting Your Work](exporting.md) - Save results with audit trail
 - [Large Datasets Guide](large-dataset-guide.md) - Handling 100+ employees
 
 ---
