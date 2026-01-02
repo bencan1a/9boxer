@@ -314,7 +314,7 @@ describe("NineBoxGrid Memory Leak Tests", () => {
         donutModeActive: false,
         employees,
         moveEmployeeDonut: vi.fn(),
-        toggleDonutMove: vi.fn(),
+        toggleDonutMode: vi.fn(),
       };
       return selector ? selector(state) : state;
     });
