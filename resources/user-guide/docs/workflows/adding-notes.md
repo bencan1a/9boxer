@@ -587,7 +587,7 @@ Export creates an Excel file with all your changes and notes ready to share.
 See the complete timeline of all movements and modifications in your session.
 
 ### **Preparing for a calibration meeting?**
-→ [Follow the calibration workflow guide](talent-calibration.md)
+→ [Follow the best practices guide](../best-practices.md)
 
 Learn the complete workflow for preparing, running, and documenting calibration sessions.
 

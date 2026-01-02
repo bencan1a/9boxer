@@ -191,7 +191,7 @@ No. Notes are tied to changes - you can only add notes to employees you've moved
 - **Troubleshooting guide**: [Common issues and solutions](troubleshooting.md)
 - **Full documentation**: [Browse all guides](index.md)
 - **Quick start**: [2-minute quickstart](quickstart.md)
-- **Workflows**: [Step-by-step task guides](workflows/talent-calibration.md)
+- **Best practices**: [Expert calibration techniques](best-practices.md)
 
 ### Found a bug or have a feature request?
 

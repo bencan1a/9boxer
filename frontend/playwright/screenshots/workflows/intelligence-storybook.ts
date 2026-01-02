@@ -28,7 +28,7 @@ export async function generateLocationBias(
     storyId:
       "app-right-panel-intelligence-anomalysection--location-bias-detector",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }
@@ -49,7 +49,7 @@ export async function generateFunctionBias(
     storyId:
       "app-right-panel-intelligence-anomalysection--function-bias-detector",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }
@@ -69,7 +69,7 @@ export async function generateLevelBias(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-intelligence-anomalysection--level-bias-detector",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }
@@ -90,7 +90,7 @@ export async function generateTenureBias(
     storyId:
       "app-right-panel-intelligence-anomalysection--tenure-bias-detector",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }

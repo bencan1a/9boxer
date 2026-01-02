@@ -96,7 +96,7 @@ export async function generateUnsavedChangesDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-dialogs-unsavedchangesdialog--multiple-changes",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Dialog has animations
     selector: '[role="dialog"]', // Dialog renders in portal
   });
@@ -125,7 +125,7 @@ export async function generateApplyChangesDialogDefault(
   await captureStorybookScreenshot(page, {
     storyId: "app-dialogs-applychangesdialog--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Dialog has animations
     selector: '[role="dialog"]', // Dialog renders in portal
   });
@@ -159,7 +159,7 @@ export async function generateApplyChangesDialogSaveAs(
   await navigateToStory(
     page,
     "app-dialogs-applychangesdialog--default",
-    "light"
+    "dark"
   );
 
   // Wait for dialog to be visible
@@ -180,7 +180,7 @@ export async function generateApplyChangesDialogSaveAs(
   });
 
   console.log(
-    `  ✓ Captured from Storybook with checkbox: app-dialogs-applychangesdialog--default (light theme)`
+    `  ✓ Captured from Storybook with checkbox: app-dialogs-applychangesdialog--default (dark theme)`
   );
 }
 
@@ -202,8 +202,56 @@ export async function generateFileErrorFallback(
   await captureStorybookScreenshot(page, {
     storyId: "app-dialogs-applychangesdialog--with-error",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Dialog has animations
     selector: '[role="dialog"]', // Dialog renders in portal
   });
+}
+
+/**
+ * Generate File menu with Apply Changes option screenshot
+ *
+ * Shows the File menu dropdown with Apply Changes option visible.
+ * Uses full-app workflow to show authentic menu state.
+ */
+export async function generateFileMenuApplyChanges(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport
+  await page.setViewportSize({ width: 500, height: 700 });
+
+  // Navigate to app and load sample data
+  await page.goto("http://localhost:5173");
+  await waitForUiSettle(page, 1.0);
+
+  // Click Load Sample Data button
+  const loadSampleButton = page.locator(
+    '[data-testid="load-sample-data-button"]'
+  );
+  await loadSampleButton.click();
+  await waitForUiSettle(page, 0.3);
+
+  // Close any dialogs
+  await closeAllDialogsAndOverlays(page);
+
+  // Click the File menu button to open dropdown
+  await page.waitForTimeout(500);
+  const fileMenuButton = page.locator('[data-testid="file-menu-button"]');
+  await fileMenuButton.click();
+
+  // Wait for menu to become visible
+  await page
+    .locator('[role="menu"]')
+    .waitFor({ state: "visible", timeout: 5000 });
+  await waitForUiSettle(page, 0.3);
+
+  // Capture the File menu dropdown
+  const fileMenu = page.locator('[role="menu"]');
+  await fileMenu.screenshot({
+    path: outputPath,
+  });
+
+  // Close the menu after capture
+  await page.keyboard.press("Escape");
 }

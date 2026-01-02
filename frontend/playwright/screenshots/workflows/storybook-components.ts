@@ -41,7 +41,7 @@ export async function generateEmployeeTileModified(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-employeetile--modified-normal-mode",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -68,7 +68,7 @@ export async function generateEmployeeTileNormal(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-employeetile--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -96,7 +96,7 @@ export async function generateEmployeeDetailsPanel(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-employeedetails--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     fullPage: false,
     waitTime: 800, // Panel has animations
   });
@@ -124,7 +124,7 @@ export async function generateEmployeeDetailsPanelWithChanges(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-employeedetails--with-changes",
     outputPath,
-    theme: "light",
+    theme: "dark",
     fullPage: false,
     waitTime: 1200, // Panel has animations + needs time for changes to render
   });
@@ -153,7 +153,7 @@ export async function generateRatingsTimeline(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-ratingstimeline--with-history",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -176,7 +176,7 @@ export async function generateManagementChain(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-managementchain--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -204,7 +204,7 @@ export async function generateChangesTab(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -227,7 +227,7 @@ export async function generateDistributionChart(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-statistics-distributionchart--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Chart animations
   });
 }
@@ -250,7 +250,7 @@ export async function generateGridBox(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-gridbox--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -273,7 +273,7 @@ export async function generateGridBoxExpanded(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-gridbox--expanded",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -297,7 +297,7 @@ export async function generateZoomControls(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-zoomcontrols--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -323,7 +323,7 @@ export async function generateFileUploadDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-fileuploaddialog--open",
     outputPath,
-    theme: "light",
+    theme: "dark",
     fullPage: false,
     waitTime: 1000, // Increased to ensure dialog renders
     selector: '[role="dialog"]', // Dialog renders in portal, not in storybook root
@@ -348,7 +348,7 @@ export async function generateSettingsDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-settings-settingsdialog--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     fullPage: false,
     waitTime: 500,
   });
@@ -371,7 +371,7 @@ export async function generateLoadingSpinner(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-loadingspinner--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Let spinner animate for a moment
   });
 }
@@ -394,7 +394,7 @@ export async function generateLanguageSelector(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-languageselector--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -417,7 +417,7 @@ export async function generateEmployeeChangesSummary(
   await captureStorybookScreenshot(page, {
     storyId: "app-right-panel-details-employeechangessummary--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -444,7 +444,7 @@ export async function generateEmployeeTileFlagged(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-employeetile--with-flags",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -472,7 +472,7 @@ export async function generateFileMenuButtonNoFile(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filemenubutton--no-file",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -496,7 +496,7 @@ export async function generateFileMenuButtonWithChanges(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filemenubutton--with-changes",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -532,7 +532,7 @@ export async function generateFileMenuImport(
   await navigateToStory(
     page,
     "app-dashboard-filemenubutton--menu-open",
-    "light"
+    "dark"
   );
 
   // Wait for menu to be visible
@@ -546,13 +546,21 @@ export async function generateFileMenuImport(
     await page.waitForTimeout(200);
   }
 
-  // Capture screenshot of the entire page (includes button + menu connected)
+  // Capture screenshot of just the menu element (cropped to eliminate whitespace)
   const outputDir = path.dirname(outputPath);
   fs.mkdirSync(outputDir, { recursive: true });
-  await page.screenshot({ path: outputPath, fullPage: true });
+
+  // Find the menu element and capture it directly
+  const menuElement = page.locator('[role="menu"]');
+  if ((await menuElement.count()) > 0) {
+    await menuElement.screenshot({ path: outputPath });
+  } else {
+    // Fallback to full page if menu not found
+    await page.screenshot({ path: outputPath, fullPage: true });
+  }
 
   console.log(
-    `  ✓ Captured from Storybook with hover: app-dashboard-filemenubutton--menu-open (light theme)`
+    `  ✓ Captured from Storybook with hover: app-dashboard-filemenubutton--menu-open (dark theme)`
   );
 }
 
@@ -580,7 +588,7 @@ export async function generateFileMenuApplyChanges(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-filemenubutton--menu-open",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000,
   });
 }
@@ -612,7 +620,7 @@ export async function generateGridPopulated(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-nineboxgrid--populated",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000, // Grid has animations and drag-drop setup
   });
 }
@@ -646,7 +654,7 @@ export async function generateDonutModeActive(
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-nineboxgrid--donut-mode",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 1000, // Grid animations
   });
 }
@@ -677,7 +685,7 @@ export async function generateSimplifiedAppBar(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-appbar--file-loaded",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -706,7 +714,7 @@ export async function generateViewControlsGridView(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-viewcontrols--grid-view-active",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -735,7 +743,7 @@ export async function generateViewControlsDonutView(
   await captureStorybookScreenshot(page, {
     storyId: "app-common-viewcontrols--donut-view-active",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 300,
   });
 }
@@ -761,7 +769,7 @@ export async function generateEmptyStateWithSampleButton(
   await captureStorybookScreenshot(page, {
     storyId: "app-dashboard-emptystate--default",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 500,
   });
 }
@@ -784,7 +792,131 @@ export async function generateLoadSampleDialog(
   await captureStorybookScreenshot(page, {
     storyId: "app-dialogs-loadsampledialog--no-existing-data",
     outputPath,
-    theme: "light",
+    theme: "dark",
     waitTime: 800, // Dialog has animations
+  });
+}
+
+/**
+ * Generate donut mode grid screenshot
+ *
+ * Captures the NineBoxGrid in donut mode, showing:
+ * - Concentric circles representing different positions
+ * - Employee tiles arranged in donut layout
+ * - Ghost tiles showing original positions
+ *
+ * Story: nineboxgrid--donut-mode
+ */
+export async function generateDonutModeGrid(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 1000, height: 800 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-nineboxgrid--donut-mode",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000, // Donut mode has animations
+  });
+}
+
+/**
+ * Generate donut changes tab screenshot
+ *
+ * Captures the ChangeTrackerTab showing donut mode movements
+ * with descriptive calibration notes. This requires clicking the
+ * "Donut Changes" tab since the component defaults to Grid Changes.
+ *
+ * Story: changetrackertab--donut-changes
+ */
+export async function generateDonutChangesTab(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 700, height: 800 });
+
+  // Navigate to the story
+  await navigateToStory(
+    page,
+    "app-right-panel-changes-changetrackertab--donut-changes",
+    "dark"
+  );
+
+  // Wait for the component to render
+  await page.waitForTimeout(500);
+
+  // Click the "Donut Changes" tab (second tab)
+  const donutTab = page.locator('[data-testid="donut-changes-tab"]');
+  if ((await donutTab.count()) > 0) {
+    await donutTab.click();
+    await page.waitForTimeout(500);
+  }
+
+  // Create output directory if needed
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Capture the change tracker view
+  const changeTracker = page.locator('[data-testid="change-tracker-view"]');
+  if ((await changeTracker.count()) > 0) {
+    await changeTracker.screenshot({ path: outputPath });
+  } else {
+    // Fallback to storybook root
+    const storybookRoot = page.locator("#storybook-root > *");
+    await storybookRoot.first().screenshot({ path: outputPath });
+  }
+
+  console.log(
+    `  ✓ Captured from Storybook with tab click: app-right-panel-changes-changetrackertab--donut-changes (dark theme)`
+  );
+}
+
+/**
+ * Generate changes tab with notes screenshot
+ *
+ * Captures the ChangeTrackerTab showing employee movements
+ * with well-documented notes demonstrating best practices.
+ *
+ * Story: changetrackertab--grid-changes-only
+ */
+export async function generateChangesTabWithNotes(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Wider viewport to prevent text clipping and wrapping
+  await page.setViewportSize({ width: 800, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+/**
+ * Generate grid with axes labeled screenshot
+ *
+ * Captures the NineBoxGrid with visible Performance (X) and Potential (Y)
+ * axis labels for educational documentation.
+ *
+ * Story: nineboxgrid--populated
+ */
+export async function generateGridWithAxesLabeled(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 1000, height: 800 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-nineboxgrid--populated",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000,
   });
 }
