@@ -16,6 +16,7 @@ from ninebox.services.intelligence_service import (
     calculate_function_analysis,
     calculate_level_analysis,
     calculate_location_analysis,
+    calculate_manager_analysis,
     calculate_per_level_distribution,
     calculate_tenure_analysis,
 )
@@ -32,6 +33,7 @@ ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
     ("function", calculate_function_analysis),
     ("level", calculate_level_analysis),
     ("tenure", calculate_tenure_analysis),
+    ("manager", calculate_manager_analysis),
     ("per_level_distribution", calculate_per_level_distribution),
 ]
 
