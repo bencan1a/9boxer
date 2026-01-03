@@ -84,9 +84,9 @@ def _calculate_manager_chi_square(
     expected = np.array([team_size * p / 100.0 for p in expected_pct])
 
     # Perform chi-square goodness-of-fit test
-    chi2, p_value = chisquare(f_obs=observed_counts, f_exp=expected)
+    result = chisquare(f_obs=observed_counts, f_exp=expected)
 
-    return float(chi2), float(p_value)
+    return float(result.statistic), float(result.pvalue)
 
 
 def _cramers_v(chi2: float, n: int, rows: int, cols: int) -> float:
@@ -941,7 +941,7 @@ def calculate_manager_analysis(
         return _empty_analysis("No managers to analyze after filtering")
 
     # Step 3: Calculate statistical metrics using chi-square goodness-of-fit
-    deviations, significant_count, max_deviation = _calculate_manager_statistics(
+    deviations, _significant_count, max_deviation = _calculate_manager_statistics(
         top_managers, BASELINE_HIGH, BASELINE_MEDIUM, BASELINE_LOW
     )
 

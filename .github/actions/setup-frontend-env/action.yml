@@ -1,0 +1,69 @@
+name: 'Setup Frontend Environment'
+description: 'Standardized Node.js/frontend environment setup with caching'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '20'
+  working-directory:
+    description: 'Working directory for npm commands'
+    required: false
+    default: 'frontend'
+  skip-npm-install:
+    description: 'Skip npm install (useful when only Node.js setup is needed)'
+    required: false
+    default: 'false'
+  skip-playwright-install:
+    description: 'Skip Playwright browser installation'
+    required: false
+    default: 'true'
+  playwright-browsers:
+    description: 'Playwright browsers to install (chromium, firefox, webkit, or all)'
+    required: false
+    default: 'chromium'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+    - name: Cache node_modules
+      if: inputs.skip-npm-install != 'true'
+      id: node-modules-cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.working-directory }}/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+
+    - name: Install npm dependencies
+      if: inputs.skip-npm-install != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci --legacy-peer-deps
+
+    - name: Cache Playwright browsers
+      if: inputs.skip-playwright-install != 'true'
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/ms-playwright
+          ~/Library/Caches/ms-playwright
+          ~/AppData/Local/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
+
+    - name: Install Playwright browsers
+      if: inputs.skip-playwright-install != 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npx playwright install --with-deps ${{ inputs.playwright-browsers }}

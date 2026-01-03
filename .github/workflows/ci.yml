@@ -336,9 +336,9 @@ jobs:
         working-directory: frontend
         run: npm ci --legacy-peer-deps
 
-      - name: Run Vitest component tests
+      - name: Run Vitest component tests (excluding performance tests)
         working-directory: frontend
-        run: npm run test:run
+        run: npm run test:unit
 
       - name: Upload coverage
         if: always()
@@ -349,12 +349,40 @@ jobs:
           retention-days: 7
 
   # ============================================================================
+  # Stage 2b: Frontend Performance Tests (non-blocking, Linux only)
+  # ============================================================================
+
+  frontend-perf-tests:
+    name: Frontend Performance Tests
+    runs-on: ubuntu-latest  # Linux for consistent performance
+    needs: [check-changes, lint]
+    if: needs.check-changes.outputs.frontend-files-changed == 'true'
+    continue-on-error: true  # Non-blocking - warns but doesn't fail CI
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Performance Tests
+        working-directory: frontend
+        run: npm run test:perf
+
+  # ============================================================================
   # Stage 3: Core E2E Tests (atomic UX validation, ~1 min)
   # ============================================================================
 
   e2e-core-tests:
     name: E2E Core Tests (Atomic UX)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Linux for faster backend startup and consistent timing
     needs: [unit-tests, frontend-tests]  # Wait for both backend and frontend tests
     steps:
       - uses: actions/checkout@v4
@@ -403,7 +431,7 @@ jobs:
         id: playwright-cache
         uses: actions/cache@v4
         with:
-          path: C:\Users\runneradmin\AppData\Local\ms-playwright
+          path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
