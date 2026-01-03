@@ -270,10 +270,12 @@ export function isClusteredInsight(insight: Insight): boolean {
  * Group insights by cluster_id for organized display.
  * Unclustered insights are placed in individual groups.
  */
-export function groupInsightsByCluster(insights: Insight[]): Map<string, Insight[]> {
+export function groupInsightsByCluster(
+  insights: Insight[]
+): Map<string, Insight[]> {
   const groups = new Map<string, Insight[]>();
 
-  insights.forEach(insight => {
+  insights.forEach((insight) => {
     if (isClusteredInsight(insight)) {
       const clusterId = insight.cluster_id!;
       if (!groups.has(clusterId)) {

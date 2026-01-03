@@ -1,0 +1,424 @@
+/**
+ * Unit tests for useCalibrationSummary hook
+ */
+
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import { useCalibrationSummary } from "../useCalibrationSummary";
+import { apiClient } from "../../services/api";
+import { useSessionStore } from "../../store/sessionStore";
+import type { CalibrationSummaryData } from "../../types/api";
+
+// Mock the API client
+vi.mock("../../services/api", () => ({
+  apiClient: {
+    getCalibrationSummary: vi.fn(),
+  },
+}));
+
+// Mock the session store
+vi.mock("../../store/sessionStore", () => ({
+  useSessionStore: vi.fn(),
+}));
+
+describe("useCalibrationSummary", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Default mock for useSessionStore
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      employees: [],
+    });
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it("returns summary from API response", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [],
+      summary: "AI summary text",
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    expect(result.current.isLoading).toBe(true);
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data?.summary).toBe("AI summary text");
+  });
+
+  it("handles null summary gracefully", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data?.summary).toBeNull();
+  });
+
+  it("initializes with loading state", () => {
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockImplementation(() => new Promise(() => {}));
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.data).toBeNull();
+  });
+
+  it("handles API errors correctly", async () => {
+    const errorMessage = "Failed to fetch calibration summary";
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockRejectedValue(
+      new Error(errorMessage)
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.error?.message).toBe(errorMessage);
+    expect(result.current.data).toBeNull();
+  });
+
+  it("initializes all insights as selected", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [
+        {
+          id: "insight-1",
+          type: "anomaly",
+          category: "level",
+          priority: "high",
+          title: "Test Insight 1",
+          description: "Test description 1",
+          affected_count: 10,
+          source_data: {},
+        },
+        {
+          id: "insight-2",
+          type: "focus_area",
+          category: "distribution",
+          priority: "medium",
+          title: "Test Insight 2",
+          description: "Test description 2",
+          affected_count: 20,
+          source_data: {},
+        },
+      ],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.selectedInsights["insight-1"]).toBe(true);
+    expect(result.current.selectedInsights["insight-2"]).toBe(true);
+    expect(result.current.selectedCount).toBe(2);
+  });
+
+  it("toggles insight selection", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [
+        {
+          id: "insight-1",
+          type: "anomaly",
+          category: "level",
+          priority: "high",
+          title: "Test Insight 1",
+          description: "Test description 1",
+          affected_count: 10,
+          source_data: {},
+        },
+      ],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.selectedInsights["insight-1"]).toBe(true);
+
+    // Toggle off
+    result.current.toggleInsight("insight-1");
+    await waitFor(() => {
+      expect(result.current.selectedInsights["insight-1"]).toBe(false);
+    });
+
+    // Toggle on
+    result.current.toggleInsight("insight-1");
+    await waitFor(() => {
+      expect(result.current.selectedInsights["insight-1"]).toBe(true);
+    });
+  });
+
+  it("selects all insights", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [
+        {
+          id: "insight-1",
+          type: "anomaly",
+          category: "level",
+          priority: "high",
+          title: "Test Insight 1",
+          description: "Test description 1",
+          affected_count: 10,
+          source_data: {},
+        },
+        {
+          id: "insight-2",
+          type: "focus_area",
+          category: "distribution",
+          priority: "medium",
+          title: "Test Insight 2",
+          description: "Test description 2",
+          affected_count: 20,
+          source_data: {},
+        },
+      ],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Deselect one
+    result.current.toggleInsight("insight-1");
+    await waitFor(() => {
+      expect(result.current.selectedCount).toBe(1);
+    });
+
+    // Select all
+    result.current.selectAll();
+    await waitFor(() => {
+      expect(result.current.selectedCount).toBe(2);
+      expect(result.current.selectedInsights["insight-1"]).toBe(true);
+      expect(result.current.selectedInsights["insight-2"]).toBe(true);
+    });
+  });
+
+  it("deselects all insights", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [
+        {
+          id: "insight-1",
+          type: "anomaly",
+          category: "level",
+          priority: "high",
+          title: "Test Insight 1",
+          description: "Test description 1",
+          affected_count: 10,
+          source_data: {},
+        },
+        {
+          id: "insight-2",
+          type: "focus_area",
+          category: "distribution",
+          priority: "medium",
+          title: "Test Insight 2",
+          description: "Test description 2",
+          affected_count: 20,
+          source_data: {},
+        },
+      ],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.selectedCount).toBe(2);
+
+    // Deselect all
+    result.current.deselectAll();
+    await waitFor(() => {
+      expect(result.current.selectedCount).toBe(0);
+      expect(result.current.selectedInsights["insight-1"]).toBe(false);
+      expect(result.current.selectedInsights["insight-2"]).toBe(false);
+    });
+  });
+
+  it("returns selected insight IDs", async () => {
+    const mockData: CalibrationSummaryData = {
+      data_overview: {
+        total_employees: 100,
+        stars_count: 20,
+        stars_percentage: 20,
+        center_box_count: 50,
+        center_box_percentage: 50,
+        lower_performers_count: 10,
+        lower_performers_percentage: 10,
+      },
+      time_allocation: {
+        estimated_duration_minutes: 120,
+        suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+      },
+      insights: [
+        {
+          id: "insight-1",
+          type: "anomaly",
+          category: "level",
+          priority: "high",
+          title: "Test Insight 1",
+          description: "Test description 1",
+          affected_count: 10,
+          source_data: {},
+        },
+        {
+          id: "insight-2",
+          type: "focus_area",
+          category: "distribution",
+          priority: "medium",
+          title: "Test Insight 2",
+          description: "Test description 2",
+          affected_count: 20,
+          source_data: {},
+        },
+      ],
+      summary: null,
+    };
+
+    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockData
+    );
+
+    const { result } = renderHook(() => useCalibrationSummary());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Toggle one off
+    result.current.toggleInsight("insight-2");
+    await waitFor(() => {
+      const selectedIds = result.current.getSelectedIds();
+      expect(selectedIds).toEqual(["insight-1"]);
+    });
+  });
+});

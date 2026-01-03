@@ -492,7 +492,6 @@ class CalibrationSummaryService:
             suggested_sequence=suggested_sequence,
         )
 
-
     def _generate_distribution_insights(self, data_overview: DataOverview) -> list[Insight]:
         """Generate insights based on distribution patterns.
 

@@ -285,7 +285,9 @@ async def generate_llm_summary(
         HTTPException: 500 if LLM generation fails
     """
     # Add deprecation header
-    response.headers["X-API-Deprecation"] = "This endpoint is deprecated. Use GET /calibration-summary instead."
+    response.headers[
+        "X-API-Deprecation"
+    ] = "This endpoint is deprecated. Use GET /calibration-summary instead."
     response.headers["Sunset"] = "2026-12-31"  # RFC 8594 deprecation date
 
     # Log deprecation warning

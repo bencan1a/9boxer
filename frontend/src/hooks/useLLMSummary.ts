@@ -89,8 +89,8 @@ export const useLLMSummary = (): UseLLMSummaryResult => {
   // Add deprecation warning
   useEffect(() => {
     console.warn(
-      '[DEPRECATED] useLLMSummary is deprecated. Use useCalibrationSummary with summary field instead. ' +
-      'This hook will be removed in the next major version.'
+      "[DEPRECATED] useLLMSummary is deprecated. Use useCalibrationSummary with summary field instead. " +
+        "This hook will be removed in the next major version."
     );
   }, []);
   const [data, setData] = useState<LLMSummaryResult | null>(null);
