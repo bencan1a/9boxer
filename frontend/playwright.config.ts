@@ -17,8 +17,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Enable parallel test execution
-  // Limit to 4 workers max for stability and to avoid flakiness
-  workers: 4,
+  // Use fewer workers in CI to reduce backend startup contention
+  workers: process.env.CI ? 2 : 4,
 
   // Reporter to use
   reporter: process.env.CI ? [["html"], ["github"]] : "html",
