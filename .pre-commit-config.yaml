@@ -3,6 +3,10 @@
 #
 # This configuration matches the CI checks in .github/workflows/ci.yml
 # All checks here must pass before commits are allowed.
+#
+# IMPORTANT: Python code quality hooks use local wrapper scripts that call
+# `make` targets. This ensures pre-commit uses the same tool versions as CI.
+# See internal-docs/cicd/CI_RELIABILITY.md for more details.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -19,44 +23,37 @@ repos:
       - id: check-case-conflict
       - id: detect-private-key
 
-  # Ruff linting - matches CI: make lint (ruff check .)
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.15
+  # Python code quality checks via local wrapper scripts (use make targets)
+  # These replace pinned external repos to eliminate version drift with CI
+  - repo: local
     hooks:
-      - id: ruff
-        name: ruff lint
-        args: [--exit-non-zero-on-fix]
-        # Note: We don't use --fix here to ensure developers see what would fail in CI
+      - id: lint
+        name: Lint (ruff via make)
+        entry: bash tools/hooks/run-lint.sh
+        language: system
+        types: [python]
+        pass_filenames: false
 
-  # Ruff formatting - matches CI: make format-check (ruff format --check .)
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.15
-    hooks:
-      - id: ruff-format
-        name: ruff format check
+      - id: format-check
+        name: Format Check (ruff via make)
+        entry: bash tools/hooks/run-format-check.sh
+        language: system
+        types: [python]
+        pass_filenames: false
 
-  # Type checking - matches CI: make type-check (mypy backend/src/ .github/scripts/)
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
-    hooks:
-      - id: mypy
-        name: mypy type check
-        files: ^(backend/src/|\.github/scripts/)
-        additional_dependencies: [
-          types-requests,
-          pandas-stubs,
-          types-openpyxl,
-          pydantic>=2.0,
-        ]
+      - id: type-check
+        name: Type Check (mypy via make)
+        entry: bash tools/hooks/run-type-check.sh
+        language: system
+        types: [python]
+        pass_filenames: false
 
-  # Security scanning - matches CI: make security (bandit -r backend/src/ .github/scripts/ -s B404,B603,B607)
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.6
-    hooks:
-      - id: bandit
-        name: bandit security scan
-        args: [-s, B404,B603,B607]
-        files: ^(backend/src/|\.github/scripts/)
+      - id: security
+        name: Security Scan (bandit via make)
+        entry: bash tools/hooks/run-security.sh
+        language: system
+        types: [python]
+        pass_filenames: false
 
   # YAML validation - matches CI: make check-yaml
   - repo: local

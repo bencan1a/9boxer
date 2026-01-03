@@ -6,6 +6,10 @@ inputs:
     description: 'Python version to use'
     required: false
     default: '3.13'
+  install-command:
+    description: 'Custom install command (default: uv pip install --system -e .[dev])'
+    required: false
+    default: "uv pip install --system -e '.[dev]'"
 
 runs:
   using: 'composite'
@@ -31,4 +35,4 @@ runs:
 
     - name: Install Python dependencies
       shell: bash
-      run: uv pip install --system -e '.[dev]'
+      run: ${{ inputs.install-command }}
