@@ -222,12 +222,15 @@ export interface Insight {
   description: string;
   affected_count: number;
   source_data: InsightSourceData;
+  cluster_id?: string;
+  cluster_title?: string;
 }
 
 export interface CalibrationSummaryData {
   data_overview: DataOverview;
   time_allocation: TimeAllocation;
   insights: Insight[];
+  summary?: string | null;
 }
 
 export interface LLMAvailability {
@@ -235,6 +238,11 @@ export interface LLMAvailability {
   reason: string | null;
 }
 
+/**
+ * @deprecated Use CalibrationSummaryData.summary instead.
+ * This type will be removed in the next major version.
+ * The agent-first API now includes the summary directly in CalibrationSummaryData.
+ */
 export interface LLMSummaryResult {
   summary: string;
   key_recommendations: string[];
@@ -244,4 +252,39 @@ export interface LLMSummaryResult {
 
 export interface GenerateSummaryRequest {
   selected_insight_ids: string[];
+}
+
+/**
+ * Type guard to check if an insight has clustering information.
+ */
+export function isClusteredInsight(insight: Insight): boolean {
+  return (
+    insight.cluster_id !== undefined &&
+    insight.cluster_id !== null &&
+    insight.cluster_title !== undefined &&
+    insight.cluster_title !== null
+  );
+}
+
+/**
+ * Group insights by cluster_id for organized display.
+ * Unclustered insights are placed in individual groups.
+ */
+export function groupInsightsByCluster(insights: Insight[]): Map<string, Insight[]> {
+  const groups = new Map<string, Insight[]>();
+
+  insights.forEach(insight => {
+    if (isClusteredInsight(insight)) {
+      const clusterId = insight.cluster_id!;
+      if (!groups.has(clusterId)) {
+        groups.set(clusterId, []);
+      }
+      groups.get(clusterId)!.push(insight);
+    } else {
+      // Unclustered insights get their own group
+      groups.set(`unclustered-${insight.id}`, [insight]);
+    }
+  });
+
+  return groups;
 }

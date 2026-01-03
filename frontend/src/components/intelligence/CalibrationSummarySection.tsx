@@ -18,28 +18,21 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
-import Divider from "@mui/material/Divider";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import Chip from "@mui/material/Chip";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import { useTranslation } from "react-i18next";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import PeopleIcon from "@mui/icons-material/People";
 import StarIcon from "@mui/icons-material/Star";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import { useCalibrationSummary } from "../../hooks/useCalibrationSummary";
-import { useLLMSummary } from "../../hooks/useLLMSummary";
 import { InsightCard } from "./InsightCard";
+import { AISummaryDisplay } from "./AISummaryDisplay";
 
 /**
  * Format duration in minutes to human-readable string.
@@ -69,28 +62,12 @@ export const CalibrationSummarySection: React.FC<
     data,
     isLoading,
     error,
+    summary,
     selectedInsights,
     toggleInsight,
     selectAll,
     deselectAll,
-    getSelectedIds,
-    selectedCount,
   } = useCalibrationSummary();
-
-  const {
-    data: llmData,
-    isLoading: llmLoading,
-    error: llmError,
-    isAvailable: llmAvailable,
-    generate: generateLLMSummary,
-  } = useLLMSummary();
-
-  const handleGenerateSummary = () => {
-    const selectedIds = getSelectedIds();
-    if (selectedIds.length > 0) {
-      generateLLMSummary(selectedIds);
-    }
-  };
 
   // Loading state
   if (isLoading) {
@@ -246,6 +223,16 @@ export const CalibrationSummarySection: React.FC<
 
             {/* Insights Section */}
             <Grid item xs={12} md={8}>
+              {/* AI Summary Section - Display immediately if available */}
+              {summary && <AISummaryDisplay summary={summary} />}
+
+              {/* Show info if summary not available */}
+              {!summary && data && (
+                <Alert severity="info" sx={{ mb: 3 }}>
+                  AI summary not available. Showing insights from legacy analysis.
+                </Alert>
+              )}
+
               <Box
                 sx={{
                   display: "flex",
@@ -282,135 +269,6 @@ export const CalibrationSummarySection: React.FC<
                   />
                 ))}
               </Box>
-
-              {/* LLM Summary Section */}
-              <Divider sx={{ my: 2 }} />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 2,
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={
-                    llmLoading ? (
-                      <CircularProgress size={16} color="inherit" />
-                    ) : (
-                      <AutoAwesomeIcon />
-                    )
-                  }
-                  onClick={handleGenerateSummary}
-                  disabled={!llmAvailable || llmLoading || selectedCount === 0}
-                  data-testid="generate-summary-button"
-                >
-                  {llmLoading
-                    ? t("intelligence.calibrationSummary.generating", {
-                        defaultValue: "Generating...",
-                      })
-                    : t("intelligence.calibrationSummary.generateSummary", {
-                        defaultValue: "Generate AI Summary",
-                      })}
-                </Button>
-
-                <Typography variant="caption" color="text.secondary">
-                  {selectedCount} insight{selectedCount !== 1 ? "s" : ""}{" "}
-                  selected
-                </Typography>
-              </Box>
-
-              {/* LLM Not Available Warning */}
-              {!llmAvailable && (
-                <Alert severity="info" sx={{ mt: 2 }}>
-                  {t("intelligence.calibrationSummary.llmNotAvailable", {
-                    defaultValue:
-                      "AI Summary requires ANTHROPIC_API_KEY to be configured",
-                  })}
-                </Alert>
-              )}
-
-              {/* LLM Error */}
-              {llmError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {llmError.message}
-                </Alert>
-              )}
-
-              {/* LLM Summary Result */}
-              {llmData && (
-                <Box sx={{ mt: 2 }}>
-                  <Alert severity="success" sx={{ mb: 2 }}>
-                    <Typography variant="body2">{llmData.summary}</Typography>
-                  </Alert>
-
-                  {/* Key Recommendations */}
-                  {llmData.key_recommendations.length > 0 && (
-                    <Box sx={{ mb: 2 }}>
-                      <Typography
-                        variant="subtitle2"
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Key Recommendations
-                      </Typography>
-                      <List dense disablePadding>
-                        {llmData.key_recommendations.map((rec, index) => (
-                          <ListItem key={index} disablePadding sx={{ py: 0.5 }}>
-                            <ListItemIcon sx={{ minWidth: 28 }}>
-                              <CheckCircleIcon
-                                fontSize="small"
-                                color="success"
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={rec}
-                              primaryTypographyProps={{ variant: "body2" }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  )}
-
-                  {/* Discussion Points */}
-                  {llmData.discussion_points.length > 0 && (
-                    <Box>
-                      <Typography
-                        variant="subtitle2"
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Predicted Discussion Points
-                      </Typography>
-                      <List dense disablePadding>
-                        {llmData.discussion_points.map((point, index) => (
-                          <ListItem key={index} disablePadding sx={{ py: 0.5 }}>
-                            <ListItemIcon sx={{ minWidth: 28 }}>
-                              <LightbulbIcon fontSize="small" color="warning" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={point}
-                              primaryTypographyProps={{ variant: "body2" }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  )}
-
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ display: "block", mt: 1 }}
-                  >
-                    Powered by {llmData.model_used}
-                  </Typography>
-                </Box>
-              )}
             </Grid>
           </Grid>
         </CardContent>

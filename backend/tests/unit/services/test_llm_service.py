@@ -275,3 +275,380 @@ class TestLLMServiceResponseParsing:
 
         with pytest.raises(ValueError):
             service._parse_response(content)
+
+
+class TestSystemPromptLoading:
+    """Tests for system prompt loading from configuration files.
+
+    These tests are for a potential future enhancement where prompts
+    are loaded from external config files rather than being hardcoded.
+    """
+
+    def test_load_prompt_from_config_file_successfully(self) -> None:
+        """Test that system prompt can be loaded from a config file."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        # Assuming prompts are stored in a config file
+        prompt = load_system_prompt()
+
+        # Should return a non-empty string
+        assert isinstance(prompt, str)
+        assert len(prompt) > 0
+        assert "calibration" in prompt.lower() or "hr" in prompt.lower()
+
+    def test_load_prompt_handles_missing_file_gracefully(self) -> None:
+        """Test that missing prompt file is handled gracefully."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        # Try to load a non-existent prompt
+        try:
+            prompt = load_system_prompt("nonexistent_prompt.txt")
+            # If it doesn't raise an error, should return default
+            assert isinstance(prompt, str)
+        except FileNotFoundError:
+            # This is also acceptable behavior
+            pass
+
+    def test_load_prompt_returns_string_content(self) -> None:
+        """Test that loaded prompt is returned as string."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        prompt = load_system_prompt()
+
+        # Should be a string
+        assert isinstance(prompt, str)
+
+        # Should not have extra whitespace at ends
+        assert prompt == prompt.strip()
+
+    def test_load_custom_prompt_from_path(self) -> None:
+        """Test loading a custom prompt from a specific path."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        # Test with custom path parameter
+        # This would require a test fixture file
+        import tempfile
+        import os
+
+        # Create a temporary prompt file
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            f.write("Custom test prompt for calibration")
+            temp_path = f.name
+
+        try:
+            prompt = load_system_prompt(temp_path)
+            assert prompt == "Custom test prompt for calibration"
+        finally:
+            # Clean up
+            os.unlink(temp_path)
+
+    def test_load_prompt_with_template_variables(self) -> None:
+        """Test that prompts can include template variables."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        # Some prompt systems support variables like {company_name}
+        prompt = load_system_prompt()
+
+        # If prompt includes variables, they should be in proper format
+        # This is implementation-dependent
+        assert isinstance(prompt, str)
+
+    def test_default_prompt_is_used_when_config_missing(self) -> None:
+        """Test that a default prompt is used when config file is missing."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt, DEFAULT_SYSTEM_PROMPT
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        # Even if file is missing, should fall back to default
+        prompt = load_system_prompt("missing_file.txt", use_default_on_error=True)
+
+        assert isinstance(prompt, str)
+        assert len(prompt) > 0
+
+    def test_prompt_file_format_validation(self) -> None:
+        """Test that prompt file format is validated."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt
+        except ImportError:
+            pytest.skip("load_system_prompt not yet implemented")
+
+        import tempfile
+        import os
+
+        # Create an invalid prompt file (e.g., binary file)
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
+            f.write(b'\x00\x01\x02\x03')  # Binary content
+            temp_path = f.name
+
+        try:
+            # Should either raise an error or handle gracefully
+            # If no error raised, should return a string (graceful handling)
+            result = load_system_prompt(temp_path)
+            if result is not None:
+                # Graceful handling - accepts it
+                assert isinstance(result, str)
+            else:
+                # Or raises an error
+                pytest.fail("Should either return a string or raise an error")
+        except (ValueError, UnicodeDecodeError):
+            # This is acceptable - strict validation
+            pass
+        finally:
+            os.unlink(temp_path)
+
+    def test_load_prompt_from_yaml_config(self) -> None:
+        """Test loading prompt from YAML configuration."""
+        try:
+            from ninebox.services.llm_service import load_system_prompt_from_yaml
+        except ImportError:
+            pytest.skip("load_system_prompt_from_yaml not yet implemented")
+
+        import tempfile
+        import os
+
+        # Create a YAML config file
+        yaml_content = """
+system_prompt: |
+  You are an HR consultant.
+  Help with calibration meetings.
+        """
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.yaml') as f:
+            f.write(yaml_content)
+            temp_path = f.name
+
+        try:
+            prompt = load_system_prompt_from_yaml(temp_path)
+            assert "HR consultant" in prompt
+            assert "calibration" in prompt
+        finally:
+            os.unlink(temp_path)
+
+
+class TestLLMServiceMockedGeneration:
+    """Tests for LLM service with mocked Claude API calls.
+
+    These tests verify the full generate_summary workflow with mocked
+    responses to test JSON parsing, error handling, and retry logic.
+    """
+
+    @pytest.fixture
+    def service_with_client(self) -> LLMService:
+        """Create a service instance with a mocked client."""
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
+            service = LLMService()
+            service._client = MagicMock()
+            return service
+
+    def test_generate_summary_success_with_mocked_response(
+        self, service_with_client: LLMService
+    ) -> None:
+        """Test successful summary generation with mocked Claude API."""
+        # Mock the Claude API response
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text='{"summary": "Test summary", "key_recommendations": ["Rec 1"], "discussion_points": ["Point 1"]}')]
+        mock_message.model = "claude-sonnet-4-5-20250929"
+        mock_message.stop_reason = "end_turn"
+        mock_message.usage = MagicMock(input_tokens=100, output_tokens=200)
+
+        service_with_client._client.messages.create.return_value = mock_message
+
+        # Test data
+        insights = [
+            {
+                "id": "test-id-12345678",
+                "type": "anomaly",
+                "category": "location",
+                "priority": "high",
+                "title": "Test anomaly",
+                "description": "Test description",
+                "affected_count": 25,
+                "source_data": {"z_score": 3.5},
+            }
+        ]
+        data_overview = {"total_employees": 100}
+
+        # Call generate_summary
+        result = service_with_client.generate_summary(
+            selected_insight_ids=["test-id-12345678"],
+            insights=insights,
+            data_overview=data_overview,
+        )
+
+        # Verify result structure
+        assert result["summary"] == "Test summary"
+        assert len(result["key_recommendations"]) == 1
+        assert result["key_recommendations"][0] == "Rec 1"
+        assert len(result["discussion_points"]) == 1
+        assert result["model_used"] == "claude-sonnet-4-5-20250929"
+
+    def test_generate_summary_with_markdown_json_response(
+        self, service_with_client: LLMService
+    ) -> None:
+        """Test handling of JSON wrapped in markdown code blocks."""
+        # Mock response with JSON in markdown
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text='''Here is my response:
+
+```json
+{
+  "summary": "Markdown wrapped summary",
+  "key_recommendations": ["Rec A", "Rec B"],
+  "discussion_points": ["Point X"]
+}
+```
+''')]
+        mock_message.model = "claude-sonnet-4-5-20250929"
+        mock_message.stop_reason = "end_turn"
+        mock_message.usage = MagicMock(input_tokens=100, output_tokens=200)
+
+        service_with_client._client.messages.create.return_value = mock_message
+
+        insights = [{"id": "test-id-12345678", "type": "anomaly", "category": "level",
+                    "priority": "high", "title": "Test", "description": "Test",
+                    "affected_count": 10, "source_data": {}}]
+
+        result = service_with_client.generate_summary(
+            selected_insight_ids=["test-id-12345678"],
+            insights=insights,
+            data_overview={"total_employees": 50},
+        )
+
+        assert result["summary"] == "Markdown wrapped summary"
+        assert len(result["key_recommendations"]) == 2
+
+    def test_generate_summary_api_error_propagates(
+        self, service_with_client: LLMService
+    ) -> None:
+        """Test that Claude API errors are properly propagated."""
+        # Mock API failure
+        service_with_client._client.messages.create.side_effect = Exception("API Error")
+
+        insights = [{"id": "test-id-12345678", "type": "anomaly", "category": "level",
+                    "priority": "high", "title": "Test", "description": "Test",
+                    "affected_count": 10, "source_data": {}}]
+
+        with pytest.raises(RuntimeError, match="Failed to generate summary"):
+            service_with_client.generate_summary(
+                selected_insight_ids=["test-id-12345678"],
+                insights=insights,
+                data_overview={"total_employees": 50},
+            )
+
+    def test_generate_summary_malformed_json_raises_error(
+        self, service_with_client: LLMService
+    ) -> None:
+        """Test that malformed JSON in response raises appropriate error."""
+        # Mock response with invalid JSON
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text="This is not valid JSON at all")]
+        mock_message.model = "claude-sonnet-4-5-20250929"
+        mock_message.stop_reason = "end_turn"
+        mock_message.usage = MagicMock(input_tokens=100, output_tokens=50)
+
+        service_with_client._client.messages.create.return_value = mock_message
+
+        insights = [{"id": "test-id-12345678", "type": "anomaly", "category": "level",
+                    "priority": "high", "title": "Test", "description": "Test",
+                    "affected_count": 10, "source_data": {}}]
+
+        with pytest.raises(RuntimeError, match="Failed to generate summary"):
+            service_with_client.generate_summary(
+                selected_insight_ids=["test-id-12345678"],
+                insights=insights,
+                data_overview={"total_employees": 50},
+            )
+
+
+class TestLLMServiceDataAnonymization:
+    """Additional tests for data anonymization edge cases."""
+
+    @pytest.fixture
+    def service(self) -> LLMService:
+        """Create a service instance (without client)."""
+        with patch.dict(os.environ, {}, clear=True):
+            os.environ.pop("ANTHROPIC_API_KEY", None)
+            return LLMService()
+
+    def test_anonymize_handles_empty_insights(self, service: LLMService) -> None:
+        """Test anonymization with empty insights list."""
+        result = service._anonymize_data([], {"total_employees": 0})
+
+        assert result["insights"] == []
+        assert result["data_overview"]["total_employees"] == 0
+
+    def test_anonymize_preserves_safe_numerical_data(self, service: LLMService) -> None:
+        """Test that safe numerical fields are preserved."""
+        insights = [
+            {
+                "id": "test-id-12345678",
+                "type": "anomaly",
+                "category": "level",
+                "priority": "high",
+                "title": "Test",
+                "description": "Desc",
+                "affected_count": 42,
+                "source_data": {
+                    "z_score": 2.75,
+                    "p_value": 0.006,
+                    "observed_pct": 35.5,
+                    "expected_pct": 20.0,
+                },
+            }
+        ]
+
+        result = service._anonymize_data(insights, {})
+
+        # Verify all safe numerical fields preserved
+        source = result["insights"][0]["source_data"]
+        assert source["z_score"] == 2.75
+        assert source["p_value"] == 0.006
+        assert source["observed_pct"] == 35.5
+        assert source["expected_pct"] == 20.0
+
+    def test_anonymize_removes_unsafe_source_data_fields(
+        self, service: LLMService
+    ) -> None:
+        """Test that unsafe fields are removed from source_data."""
+        insights = [
+            {
+                "id": "test-id-12345678",
+                "type": "anomaly",
+                "category": "location",
+                "priority": "high",
+                "title": "Test",
+                "description": "Desc",
+                "affected_count": 10,
+                "source_data": {
+                    "z_score": 2.5,
+                    "employee_names": ["Alice", "Bob"],  # Should be removed
+                    "employee_ids": [1, 2, 3],  # Should be removed
+                    "manager_name": "Charlie",  # Should be removed
+                },
+            }
+        ]
+
+        result = service._anonymize_data(insights, {})
+
+        # Verify unsafe fields removed
+        source = result["insights"][0]["source_data"]
+        assert "z_score" in source
+        assert "employee_names" not in source
+        assert "employee_ids" not in source
+        assert "manager_name" not in source

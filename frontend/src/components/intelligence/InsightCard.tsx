@@ -25,6 +25,7 @@ import type {
   InsightCategory,
   InsightPriority,
 } from "../../types/api";
+import { ClusterBadge } from "./ClusterBadge";
 
 interface InsightCardProps {
   /** The insight to display */
@@ -33,6 +34,8 @@ interface InsightCardProps {
   selected: boolean;
   /** Callback when selection is toggled */
   onToggle: () => void;
+  /** Whether to show cluster badge if available */
+  showClusterBadge?: boolean;
 }
 
 /**
@@ -92,8 +95,10 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   insight,
   selected,
   onToggle,
+  showClusterBadge = true,
 }) => {
   const { t } = useTranslation();
+  const hasCluster = insight.cluster_id && insight.cluster_title;
 
   return (
     <Card
@@ -148,6 +153,12 @@ export const InsightCard: React.FC<InsightCardProps> = ({
                   }}
                   data-testid={`insight-priority-${insight.id}`}
                 />
+                {hasCluster && showClusterBadge && (
+                  <ClusterBadge
+                    clusterId={insight.cluster_id!}
+                    clusterTitle={insight.cluster_title!}
+                  />
+                )}
                 <Box
                   sx={{
                     color: "text.secondary",

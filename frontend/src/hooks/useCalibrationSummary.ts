@@ -16,9 +16,17 @@ import { useSessionStore } from "../store/sessionStore";
 export type InsightSelection = Record<string, boolean>;
 
 /**
+ * Options for useCalibrationSummary hook
+ */
+export interface UseCalibrationSummaryOptions {
+  /** Whether to use AI agent for summary generation (default: true) */
+  useAgent?: boolean;
+}
+
+/**
  * Hook return type
  */
-interface UseCalibrationSummaryResult {
+export interface UseCalibrationSummaryResult {
   /** Calibration summary data from the API */
   data: CalibrationSummaryData | null;
   /** Whether data is currently being fetched */
@@ -27,6 +35,8 @@ interface UseCalibrationSummaryResult {
   error: Error | null;
   /** Refetch the data */
   refetch: () => Promise<void>;
+  /** AI-generated summary text */
+  summary: string | null;
   /** Current selection state for each insight */
   selectedInsights: InsightSelection;
   /** Toggle selection for a single insight */
@@ -47,6 +57,8 @@ interface UseCalibrationSummaryResult {
  * Automatically fetches calibration summary data on mount and when employee data changes.
  * Provides loading and error states, plus insight selection management.
  *
+ * @param options - Configuration options for the hook
+ * @param options.useAgent - Whether to use AI agent for summary generation (default: true)
  * @returns Calibration summary data, loading state, error state, selection controls
  *
  * @example
@@ -55,13 +67,14 @@ interface UseCalibrationSummaryResult {
  *   data,
  *   isLoading,
  *   error,
+ *   summary,
  *   selectedInsights,
  *   toggleInsight,
  *   selectAll,
  *   deselectAll,
  *   getSelectedIds,
  *   selectedCount
- * } = useCalibrationSummary();
+ * } = useCalibrationSummary({ useAgent: true });
  *
  * if (isLoading) return <div>Loading...</div>;
  * if (error) return <div>Error: {error.message}</div>;
@@ -70,6 +83,7 @@ interface UseCalibrationSummaryResult {
  * return (
  *   <div>
  *     <h2>Total Employees: {data.data_overview.total_employees}</h2>
+ *     {summary && <p>{summary}</p>}
  *     {data.insights.map(insight => (
  *       <InsightCard
  *         key={insight.id}
@@ -85,7 +99,10 @@ interface UseCalibrationSummaryResult {
  * );
  * ```
  */
-export const useCalibrationSummary = (): UseCalibrationSummaryResult => {
+export const useCalibrationSummary = (
+  options: UseCalibrationSummaryOptions = {}
+): UseCalibrationSummaryResult => {
+  const { useAgent = true } = options;
   const [data, setData] = useState<CalibrationSummaryData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -101,7 +118,7 @@ export const useCalibrationSummary = (): UseCalibrationSummaryResult => {
     try {
       setIsLoading(true);
       setError(null);
-      const result = await apiClient.getCalibrationSummary();
+      const result = await apiClient.getCalibrationSummary({ useAgent });
       setData(result);
 
       // Initialize all insights as selected when data loads
@@ -115,7 +132,7 @@ export const useCalibrationSummary = (): UseCalibrationSummaryResult => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [useAgent]);
 
   // Fetch on mount and when employees array changes (real-time updates)
   useEffect(() => {
@@ -177,6 +194,7 @@ export const useCalibrationSummary = (): UseCalibrationSummaryResult => {
     isLoading,
     error,
     refetch,
+    summary: data?.summary ?? null,
     selectedInsights,
     toggleInsight,
     selectAll,

@@ -409,11 +409,21 @@ class ApiClient {
 
   // ==================== Calibration Summary Methods ====================
 
-  async getCalibrationSummary(): Promise<CalibrationSummaryData> {
+  async getCalibrationSummary(params?: { useAgent?: boolean }): Promise<CalibrationSummaryData> {
+    const { useAgent = true } = params || {};
+
     return withRetry(async () => {
-      const response = await this.client.get<CalibrationSummaryData>(
-        "/api/calibration-summary"
-      );
+      // Build query string if useAgent is explicitly false
+      const queryParams = new URLSearchParams();
+      if (!useAgent) {
+        queryParams.append('use_agent', 'false');
+      }
+
+      const url = queryParams.toString()
+        ? `/api/calibration-summary?${queryParams.toString()}`
+        : '/api/calibration-summary';
+
+      const response = await this.client.get<CalibrationSummaryData>(url);
       return response.data;
     });
   }
