@@ -247,4 +247,66 @@ describe("InsightCard", () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe("Clustering", () => {
+    it("supports insights with cluster_id and cluster_title fields", () => {
+      const clusteredInsight = createMockInsight({
+        cluster_id: "cluster-1",
+        cluster_title: "MT3 Focus",
+      });
+
+      render(
+        <InsightCard
+          insight={clusteredInsight}
+          selected={false}
+          onToggle={vi.fn()}
+        />
+      );
+
+      // Verify the component accepts and stores cluster fields
+      // The actual display of cluster badges may be implemented in future iterations
+      expect(
+        screen.getByTestId(`insight-card-${clusteredInsight.id}`)
+      ).toBeInTheDocument();
+    });
+
+    it("works correctly without cluster fields", () => {
+      const nonClusteredInsight = createMockInsight({
+        cluster_id: undefined,
+        cluster_title: undefined,
+      });
+
+      render(
+        <InsightCard
+          insight={nonClusteredInsight}
+          selected={false}
+          onToggle={vi.fn()}
+        />
+      );
+
+      expect(
+        screen.getByTestId(`insight-card-${nonClusteredInsight.id}`)
+      ).toBeInTheDocument();
+    });
+
+    it("handles partial cluster information gracefully", () => {
+      // Test case where cluster_id exists but cluster_title doesn't
+      const partialClusterInsight = createMockInsight({
+        cluster_id: "cluster-1",
+        cluster_title: undefined,
+      });
+
+      render(
+        <InsightCard
+          insight={partialClusterInsight}
+          selected={false}
+          onToggle={vi.fn()}
+        />
+      );
+
+      expect(
+        screen.getByTestId(`insight-card-${partialClusterInsight.id}`)
+      ).toBeInTheDocument();
+    });
+  });
 });

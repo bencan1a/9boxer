@@ -37,6 +37,9 @@ interface UseLLMSummaryResult {
  * Checks LLM availability on mount and provides on-demand summary generation.
  * Only anonymized data is sent to the LLM - no employee PII.
  *
+ * @deprecated Use useCalibrationSummary with summary field instead.
+ * This hook will be removed in the next major version.
+ *
  * @returns LLM summary data, availability status, generation function
  *
  * @example
@@ -83,6 +86,13 @@ interface UseLLMSummaryResult {
  * ```
  */
 export const useLLMSummary = (): UseLLMSummaryResult => {
+  // Add deprecation warning
+  useEffect(() => {
+    console.warn(
+      '[DEPRECATED] useLLMSummary is deprecated. Use useCalibrationSummary with summary field instead. ' +
+      'This hook will be removed in the next major version.'
+    );
+  }, []);
   const [data, setData] = useState<LLMSummaryResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

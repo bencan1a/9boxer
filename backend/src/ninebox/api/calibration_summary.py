@@ -9,7 +9,7 @@ import re
 from re import Pattern
 from typing import Any, ClassVar, TypedDict, cast
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, field_validator
 
 from ninebox.core.dependencies import (
@@ -80,12 +80,29 @@ class InsightResponse(TypedDict):
     source_data: dict[str, Any]
 
 
-class CalibrationSummaryResponse(TypedDict):
-    """Complete calibration summary response."""
+class CalibrationSummaryResponseRequired(TypedDict):
+    """Required fields for CalibrationSummaryResponse."""
 
     data_overview: DataOverviewResponse
     time_allocation: TimeAllocationResponse
     insights: list[InsightResponse]
+
+
+class CalibrationSummaryResponse(CalibrationSummaryResponseRequired, total=False):
+    """Complete calibration summary response.
+
+    This TypedDict uses inheritance to make the summary field optional.
+    All fields from CalibrationSummaryResponseRequired are required,
+    while the summary field is optional.
+
+    Attributes:
+        data_overview: Statistical overview of the employee dataset
+        time_allocation: Time allocation recommendations for the meeting
+        insights: List of actionable insights for meeting preparation
+        summary: Optional AI-generated summary of all insights (None if not available)
+    """
+
+    summary: str | None
 
 
 class LLMAvailabilityResponse(TypedDict):
@@ -148,19 +165,30 @@ class GenerateSummaryRequest(BaseModel):
 
 @router.get("", response_model=None)
 async def get_calibration_summary(
+    use_agent: bool = Query(
+        default=True,
+        description="Use AI agent for insights and summary generation. "
+        "If True, uses LLM for insights + summary. If False, uses legacy logic (no summary).",
+    ),
     session_mgr: SessionManager = Depends(get_session_manager),
     summary_service: CalibrationSummaryService = Depends(get_calibration_summary_service),
 ) -> CalibrationSummaryResponse:
-    """Get calibration summary with data overview, time allocation, and insights.
+    """Get calibration summary with optional AI-powered analysis.
 
-    This endpoint provides the static analysis for calibration meeting preparation.
+    This endpoint provides comprehensive calibration meeting preparation data.
     It includes:
     - Data overview (employee counts, distributions)
     - Time allocation recommendations
-    - Discrete, selectable insights derived from intelligence analysis
+    - Actionable insights (AI-generated if use_agent=True, legacy logic if False)
+    - AI summary (only when use_agent=True and LLM succeeds)
+
+    Args:
+        use_agent: If True, use LLM agent for insights + summary.
+                   If False, use legacy insight generation (no summary).
+                   Defaults to True for agent-first architecture.
 
     Returns:
-        CalibrationSummaryResponse with all summary data
+        CalibrationSummaryResponse with all summary data, including optional AI summary
 
     Raises:
         HTTPException: 404 if no active session found
@@ -188,10 +216,10 @@ async def get_calibration_summary(
 
         logger.info(
             f"CalibrationSummary: Processing {len(session.current_employees)} employees "
-            f"for user_id={LOCAL_USER_ID}"
+            f"for user_id={LOCAL_USER_ID} with use_agent={use_agent}"
         )
 
-        summary = summary_service.calculate_summary(session.current_employees)
+        summary = summary_service.calculate_summary(session.current_employees, use_agent=use_agent)
         return CalibrationSummaryResponse(**summary)  # type: ignore[typeddict-item]
 
     except HTTPException:
@@ -221,18 +249,29 @@ async def check_llm_availability(
     return LLMAvailabilityResponse(**availability)
 
 
-@router.post("/generate-summary", response_model=None)
+@router.post("/generate-summary", response_model=None, deprecated=True)
 async def generate_llm_summary(
     request: GenerateSummaryRequest,
+    response: Response,
     session_mgr: SessionManager = Depends(get_session_manager),
     summary_service: CalibrationSummaryService = Depends(get_calibration_summary_service),
     llm_service: LLMService = Depends(get_llm_service),
 ) -> LLMSummaryResponse:
-    """Generate AI-powered meeting summary from selected insights.
+    """DEPRECATED: Generate AI-powered meeting summary from selected insights.
 
-    This endpoint calls Claude to generate a natural language summary,
-    key recommendations, and predicted discussion points based on the
-    selected insights. Only anonymized data is sent to the LLM.
+    **This endpoint is deprecated and will be removed in a future version.**
+
+    The summary is now automatically included in the GET /calibration-summary endpoint
+    when using the agent-first architecture (use_agent=true, which is the default).
+
+    **Migration Guide:**
+    - Old: Call GET /calibration-summary, then POST /generate-summary with selected insights
+    - New: Just call GET /calibration-summary (use_agent=true is default)
+    - The response now includes both insights and summary in one call
+
+    **Why this endpoint still exists:**
+    This endpoint is maintained temporarily for backwards compatibility but returns
+    deprecated warnings. It will be removed in the next major version.
 
     Args:
         request: Request containing list of selected insight IDs
@@ -245,6 +284,16 @@ async def generate_llm_summary(
         HTTPException: 400 if no insights selected or LLM not available
         HTTPException: 500 if LLM generation fails
     """
+    # Add deprecation header
+    response.headers["X-API-Deprecation"] = "This endpoint is deprecated. Use GET /calibration-summary instead."
+    response.headers["Sunset"] = "2026-12-31"  # RFC 8594 deprecation date
+
+    # Log deprecation warning
+    logger.warning(
+        "DEPRECATED ENDPOINT CALLED: POST /generate-summary. "
+        "This endpoint is deprecated. Use GET /calibration-summary with use_agent=true instead."
+    )
+
     # Check LLM availability
     availability = llm_service.is_available()
     if not availability["available"]:

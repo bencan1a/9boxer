@@ -3,6 +3,9 @@
 This module provides analysis functions to help calibration managers prepare for
 calibration meetings. It generates a data overview, time allocation recommendations,
 and actionable insights derived from employee rating distributions.
+
+Phase 2 Update: Now supports agent-first architecture where LLM generates insights
+directly from calibration data, replacing internal logic with AI-powered analysis.
 """
 
 import hashlib
@@ -11,12 +14,6 @@ from collections import Counter
 from typing import Any, TypedDict
 
 from ninebox.models.employee import Employee
-from ninebox.services.intelligence_service import (
-    calculate_function_analysis,
-    calculate_level_analysis,
-    calculate_location_analysis,
-    calculate_tenure_analysis,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +73,8 @@ class InsightSourceData(TypedDict, total=False):
     categories_affected: list[str]
 
 
-class Insight(TypedDict):
-    """A discrete, selectable insight for meeting preparation."""
+class InsightRequired(TypedDict):
+    """Required fields for an Insight."""
 
     id: str
     type: str  # anomaly, focus_area, recommendation, time_allocation
@@ -89,12 +86,53 @@ class Insight(TypedDict):
     source_data: InsightSourceData
 
 
-class CalibrationSummaryResponse(TypedDict):
-    """Complete calibration summary response."""
+class Insight(InsightRequired, total=False):
+    """A discrete, selectable insight for meeting preparation.
+
+    This TypedDict uses inheritance to make clustering fields optional.
+    All fields from InsightRequired are required, while fields defined
+    here (cluster_id, cluster_title) are optional.
+
+    Attributes:
+        id: Unique identifier for the insight
+        type: Type of insight (anomaly, focus_area, recommendation, time_allocation)
+        category: Category of insight (location, function, level, tenure, distribution, time)
+        priority: Priority level (high, medium, low)
+        title: Short, descriptive title
+        description: Detailed description of the insight
+        affected_count: Number of employees affected
+        source_data: Raw data that generated this insight
+        cluster_id: Optional ID of the cluster this insight belongs to
+        cluster_title: Optional title of the cluster this insight belongs to
+    """
+
+    cluster_id: str | None
+    cluster_title: str | None
+
+
+class CalibrationSummaryResponseRequired(TypedDict):
+    """Required fields for CalibrationSummaryResponse."""
 
     data_overview: DataOverview
     time_allocation: TimeAllocation
     insights: list[Insight]
+
+
+class CalibrationSummaryResponse(CalibrationSummaryResponseRequired, total=False):
+    """Complete calibration summary response.
+
+    This TypedDict uses inheritance to make the summary field optional.
+    All fields from CalibrationSummaryResponseRequired are required,
+    while the summary field is optional.
+
+    Attributes:
+        data_overview: Statistical overview of the employee dataset
+        time_allocation: Time allocation recommendations for the meeting
+        insights: List of actionable insights for meeting preparation
+        summary: Optional AI-generated summary of all insights (None if not available)
+    """
+
+    summary: str | None
 
 
 # =============================================================================
@@ -158,48 +196,165 @@ class CalibrationSummaryService:
         hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:8]
         return f"{prefix}-{hash_suffix}"
 
-    def calculate_summary(self, employees: list[Employee]) -> CalibrationSummaryResponse:
+    def calculate_summary(
+        self, employees: list[Employee], use_agent: bool = True
+    ) -> CalibrationSummaryResponse:
         """Calculate complete calibration summary.
 
         Args:
             employees: List of employee records
+            use_agent: If True, use LLM agent for insights. If False, use legacy logic.
 
         Returns:
-            CalibrationSummaryResponse with data overview, time allocation, and insights
+            CalibrationSummaryResponse with data overview, time allocation, insights, and summary
+
+        Notes:
+            - use_agent=True: Calls LLM to generate insights and summary
+            - use_agent=False: Uses legacy internal logic (no summary)
+            - Falls back to legacy if LLM call fails
         """
         if not employees:
-            return CalibrationSummaryResponse(
-                data_overview=self._empty_data_overview(),
-                time_allocation=self._empty_time_allocation(),
-                insights=[],
-            )
+            return {
+                "data_overview": self._empty_data_overview(),
+                "time_allocation": self._empty_time_allocation(),
+                "insights": [],
+                "summary": None,
+            }
 
         # Calculate all components
         data_overview = self.calculate_data_overview(employees)
         time_allocation = self.calculate_time_allocation(employees)
 
-        # Run intelligence analyses to generate insights
-        location_analysis = calculate_location_analysis(employees)
-        function_analysis = calculate_function_analysis(employees)
-        level_analysis = calculate_level_analysis(employees)
-        tenure_analysis = calculate_tenure_analysis(employees)
+        # Run all analyses using new registry
+        from ninebox.services.analysis_registry import run_all_analyses
 
-        # Generate insights from all sources
-        insights = self.generate_insights(
-            employees=employees,
-            data_overview=data_overview,
-            time_allocation=time_allocation,
-            location_analysis=location_analysis,
-            function_analysis=function_analysis,
-            level_analysis=level_analysis,
-            tenure_analysis=tenure_analysis,
-        )
+        analyses = run_all_analyses(employees)
 
-        return CalibrationSummaryResponse(
-            data_overview=data_overview,
-            time_allocation=time_allocation,
-            insights=insights,
-        )
+        # Build org data for LLM context
+        from ninebox.services.org_service import OrgService
+
+        org_service = OrgService(employees, validate=False)
+        org_data = {
+            "total_employees": len(employees),
+            "total_managers": len(org_service.find_managers(min_team_size=1)),
+        }
+
+        # Choose insight generation approach
+        if use_agent:
+            try:
+                # Package data for LLM
+                from ninebox.services.data_packaging_service import package_for_llm
+
+                data_package = package_for_llm(employees, analyses, org_data)
+
+                # Call LLM agent
+                from ninebox.services.llm_service import llm_service
+
+                agent_result = llm_service.generate_calibration_analysis(data_package)
+
+                # Transform agent's issues to Insight objects
+                insights = self._transform_agent_issues_to_insights(agent_result["issues"])
+                summary = agent_result["summary"]
+
+            except Exception as e:
+                logger.error(f"LLM agent failed, falling back to legacy: {e}")
+                insights = self._generate_insights_legacy(data_overview, time_allocation, analyses)
+                summary = None
+        else:
+            # Legacy approach
+            insights = self._generate_insights_legacy(data_overview, time_allocation, analyses)
+            summary = None
+
+        return {
+            "data_overview": data_overview,
+            "time_allocation": time_allocation,
+            "insights": insights,
+            "summary": summary,
+        }
+
+    def _transform_agent_issues_to_insights(
+        self,
+        agent_issues: list[dict],
+    ) -> list[Insight]:
+        """Transform agent's issues into Insight objects with deterministic IDs.
+
+        Args:
+            agent_issues: List of issue dicts from LLM agent
+
+        Returns:
+            List of Insight objects with deterministic IDs
+        """
+        insights = []
+
+        for issue in agent_issues:
+            # Generate deterministic ID from issue content
+            insight_id = self._generate_insight_id(
+                "agent",
+                issue.get("category", "unknown"),
+                issue.get("title", ""),
+                str(issue.get("affected_count", 0)),
+            )
+
+            # Create Insight object
+            insights.append(
+                Insight(
+                    id=insight_id,
+                    type=issue.get("type", "focus_area"),
+                    category=issue.get("category", "organizational"),
+                    priority=issue.get("priority", "medium"),
+                    title=issue.get("title", ""),
+                    description=issue.get("description", ""),
+                    affected_count=issue.get("affected_count", 0),
+                    source_data=issue.get("source_data", {}),
+                    cluster_id=issue.get("cluster_id"),
+                    cluster_title=issue.get("cluster_title"),
+                )
+            )
+
+        return insights
+
+    def _generate_insights_legacy(
+        self,
+        data_overview: DataOverview,
+        time_allocation: TimeAllocation,
+        analyses: dict[str, dict[str, Any]],
+    ) -> list[Insight]:
+        """Generate insights using legacy internal logic.
+
+        **DEPRECATED:** Only used when use_agent=False or when LLM agent fails.
+        This fallback logic will be removed when agent-first becomes mandatory.
+
+        Args:
+            data_overview: Calculated data overview
+            time_allocation: Calculated time allocation
+            analyses: Results from analysis registry
+
+        Returns:
+            List of discrete, prioritized insights
+        """
+        insights: list[Insight] = []
+
+        # 1. Distribution-based insights
+        insights.extend(self._generate_distribution_insights(data_overview))
+
+        # 2. Anomaly-based insights from intelligence analyses
+        if "location" in analyses:
+            insights.extend(self._generate_anomaly_insights("location", analyses["location"]))
+        if "function" in analyses:
+            insights.extend(self._generate_anomaly_insights("function", analyses["function"]))
+        if "level" in analyses:
+            insights.extend(self._generate_anomaly_insights("level", analyses["level"]))
+        if "tenure" in analyses:
+            insights.extend(self._generate_anomaly_insights("tenure", analyses["tenure"]))
+
+        # 3. Time allocation insight
+        insights.append(self._generate_time_insight(time_allocation))
+
+        # Sort by priority (high first, then medium, then low)
+        priority_order = {"high": 0, "medium": 1, "low": 2}
+        insights.sort(key=lambda i: priority_order.get(i["priority"], 99))
+
+        return insights
 
     def calculate_data_overview(self, employees: list[Employee]) -> DataOverview:
         """Calculate data overview statistics.
@@ -337,52 +492,12 @@ class CalibrationSummaryService:
             suggested_sequence=suggested_sequence,
         )
 
-    def generate_insights(
-        self,
-        employees: list[Employee],  # noqa: ARG002
-        data_overview: DataOverview,
-        time_allocation: TimeAllocation,
-        location_analysis: dict[str, Any],
-        function_analysis: dict[str, Any],
-        level_analysis: dict[str, Any],
-        tenure_analysis: dict[str, Any],
-    ) -> list[Insight]:
-        """Generate actionable insights from analysis data.
-
-        Args:
-            employees: List of employee records
-            data_overview: Calculated data overview
-            time_allocation: Calculated time allocation
-            location_analysis: Intelligence location analysis
-            function_analysis: Intelligence function analysis
-            level_analysis: Intelligence level analysis
-            tenure_analysis: Intelligence tenure analysis
-
-        Returns:
-            List of discrete, prioritized insights
-        """
-        insights: list[Insight] = []
-
-        # 1. Distribution-based insights
-        insights.extend(self._generate_distribution_insights(data_overview))
-
-        # 2. Anomaly-based insights from intelligence analyses
-        insights.extend(self._generate_anomaly_insights("location", location_analysis))
-        insights.extend(self._generate_anomaly_insights("function", function_analysis))
-        insights.extend(self._generate_anomaly_insights("level", level_analysis))
-        insights.extend(self._generate_anomaly_insights("tenure", tenure_analysis))
-
-        # 3. Time allocation insight
-        insights.append(self._generate_time_insight(time_allocation))
-
-        # Sort by priority (high first, then medium, then low)
-        priority_order = {"high": 0, "medium": 1, "low": 2}
-        insights.sort(key=lambda i: priority_order.get(i["priority"], 99))
-
-        return insights
 
     def _generate_distribution_insights(self, data_overview: DataOverview) -> list[Insight]:
         """Generate insights based on distribution patterns.
+
+        **DEPRECATED:** Used only when use_agent=False (legacy mode).
+        This method will be removed when legacy insight generation is removed.
 
         Args:
             data_overview: Calculated data overview
@@ -464,6 +579,9 @@ class CalibrationSummaryService:
     def _generate_anomaly_insights(self, category: str, analysis: dict[str, Any]) -> list[Insight]:
         """Generate insights from intelligence analysis anomalies.
 
+        **DEPRECATED:** Used only when use_agent=False (legacy mode).
+        This method will be removed when legacy insight generation is removed.
+
         Args:
             category: Analysis category (location, function, level, tenure)
             analysis: Intelligence analysis result
@@ -542,6 +660,9 @@ class CalibrationSummaryService:
 
     def _generate_time_insight(self, time_allocation: TimeAllocation) -> Insight:
         """Generate time allocation insight.
+
+        **DEPRECATED:** Used only when use_agent=False (legacy mode).
+        This method will be removed when legacy insight generation is removed.
 
         Args:
             time_allocation: Calculated time allocation

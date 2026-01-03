@@ -978,6 +978,260 @@ def calculate_manager_analysis(
     }
 
 
+def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any]:
+    """Analyze performance distribution within each job level.
+
+    This analysis addresses the critical use case: detecting when overall rating
+    distribution looks normal but specific levels are driving anomalies.
+
+    Example: "You have 30% stars overall, but it's because MT3 has 50% stars -
+    focus calibration there"
+
+    For each level, we:
+    1. Calculate % of employees in each performance tier (low/medium/high)
+    2. Compare to baseline distribution (20% high / 70% medium / 10% low)
+    3. Calculate z-scores for statistical significance
+    4. Identify which specific levels are driving overall anomalies
+
+    Performance tiers based on grid positions:
+    - Low performers: positions 1, 2, 4
+    - Medium performers: positions 5, 7
+    - High performers: positions 3, 6, 8, 9
+
+    Args:
+        employees: List of employee records
+
+    Returns:
+        Dictionary containing:
+        - status: Overall status ("green", "yellow", "red")
+        - levels: Dict mapping level name to level analysis
+        - overall_status: Human-readable summary
+        - chi_square: Chi-square statistic for overall test
+        - p_value: Statistical significance level
+        - effect_size: Cramér's V effect size
+        - degrees_of_freedom: Degrees of freedom
+        - sample_size: Total sample size
+        - interpretation: Human-readable interpretation
+    """
+    if not employees:
+        return _empty_analysis("No employees to analyze")
+
+    # Baseline distribution (expected percentages)
+    BASELINE_HIGH = 20.0
+    BASELINE_MEDIUM = 70.0
+    BASELINE_LOW = 10.0
+
+    # Performance tier definitions
+    HIGH_PERFORMER_POSITIONS = [3, 6, 8, 9]
+    MEDIUM_PERFORMER_POSITIONS = [5, 7]
+    LOW_PERFORMER_POSITIONS = [1, 2, 4]
+
+    # Group employees by level
+    levels_data = {}
+    for emp in employees:
+        level = emp.job_level
+        if level not in levels_data:
+            levels_data[level] = []
+        levels_data[level].append(emp)
+
+    if len(levels_data) < 2:
+        return _empty_analysis("Insufficient levels for comparison (need >= 2)")
+
+    # Check sample size
+    n = len(employees)
+    if n < 30:
+        return _empty_analysis(f"Sample size too small (N={n}, need >= 30)")
+
+    # Calculate distribution for each level
+    level_results = {}
+    contingency_table_data = []
+    level_names = sorted(levels_data.keys())
+
+    for level in level_names:
+        level_employees = levels_data[level]
+        total_count = len(level_employees)
+
+        # Count employees in each performance tier
+        high_count = sum(1 for emp in level_employees if emp.grid_position in HIGH_PERFORMER_POSITIONS)
+        medium_count = sum(1 for emp in level_employees if emp.grid_position in MEDIUM_PERFORMER_POSITIONS)
+        low_count = sum(1 for emp in level_employees if emp.grid_position in LOW_PERFORMER_POSITIONS)
+
+        # Calculate percentages
+        high_pct = (high_count / total_count * 100) if total_count > 0 else 0
+        medium_pct = (medium_count / total_count * 100) if total_count > 0 else 0
+        low_pct = (low_count / total_count * 100) if total_count > 0 else 0
+
+        # Calculate expected counts based on baseline
+        expected_high = total_count * BASELINE_HIGH / 100
+        expected_medium = total_count * BASELINE_MEDIUM / 100
+        expected_low = total_count * BASELINE_LOW / 100
+
+        # Calculate z-scores for each performance tier
+        z_high = ((high_count - expected_high) / np.sqrt(expected_high)) if expected_high > 0 else 0.0
+        z_medium = ((medium_count - expected_medium) / np.sqrt(expected_medium)) if expected_medium > 0 else 0.0
+        z_low = ((low_count - expected_low) / np.sqrt(expected_low)) if expected_low > 0 else 0.0
+
+        # Determine level status based on z-scores
+        max_z = max(abs(z_high), abs(z_medium), abs(z_low))
+        if max_z >= 3.0:
+            level_status = "red"
+        elif max_z >= 2.0:
+            level_status = "yellow"
+        else:
+            level_status = "green"
+
+        # Identify specific deviations
+        deviations = []
+        if abs(z_high) >= 2.0:
+            direction = "higher" if z_high > 0 else "lower"
+            deviations.append(
+                f"{level} has {high_pct:.1f}% high performers vs {BASELINE_HIGH}% expected (z={z_high:.1f}, {direction})"
+            )
+        if abs(z_medium) >= 2.0:
+            direction = "higher" if z_medium > 0 else "lower"
+            deviations.append(
+                f"{level} has {medium_pct:.1f}% medium performers vs {BASELINE_MEDIUM}% expected (z={z_medium:.1f}, {direction})"
+            )
+        if abs(z_low) >= 2.0:
+            direction = "higher" if z_low > 0 else "lower"
+            deviations.append(
+                f"{level} has {low_pct:.1f}% low performers vs {BASELINE_LOW}% expected (z={z_low:.1f}, {direction})"
+            )
+
+        level_results[level] = {
+            "total_count": total_count,
+            "high_performers_pct": round(high_pct, 1),
+            "medium_performers_pct": round(medium_pct, 1),
+            "low_performers_pct": round(low_pct, 1),
+            "z_scores": {
+                "high": round(float(z_high), 2),
+                "medium": round(float(z_medium), 2),
+                "low": round(float(z_low), 2),
+            },
+            "status": level_status,
+            "deviations": deviations,
+        }
+
+        # Add to contingency table for overall chi-square test
+        contingency_table_data.append([high_count, medium_count, low_count])
+
+    # Perform overall chi-square test
+    contingency = np.array(contingency_table_data)
+
+    # Check if contingency table has any zero rows or columns
+    row_sums = contingency.sum(axis=1)
+    col_sums = contingency.sum(axis=0)
+    if np.any(row_sums == 0) or np.any(col_sums == 0):
+        # Some levels or performance tiers have zero employees
+        # Still return level-by-level results but mark overall test as invalid
+        overall_status = _determine_overall_status_from_levels(level_results)
+        return {
+            "status": overall_status,
+            "levels": level_results,
+            "overall_status": _generate_per_level_summary(level_results, overall_status),
+            "chi_square": 0.0,
+            "p_value": 1.0,
+            "effect_size": 0.0,
+            "degrees_of_freedom": 0,
+            "sample_size": n,
+            "interpretation": _generate_per_level_summary(level_results, overall_status),
+        }
+
+    # Perform chi-square test
+    try:
+        chi2, p_value, dof, expected = _chi_square_test(contingency)
+    except ValueError as e:
+        overall_status = _determine_overall_status_from_levels(level_results)
+        return {
+            "status": overall_status,
+            "levels": level_results,
+            "overall_status": _generate_per_level_summary(level_results, overall_status),
+            "chi_square": 0.0,
+            "p_value": 1.0,
+            "effect_size": 0.0,
+            "degrees_of_freedom": 0,
+            "sample_size": n,
+            "interpretation": f"Statistical test failed: {e!s}",
+        }
+
+    # Calculate effect size
+    effect_size = _cramers_v(chi2, n, len(level_names), 3)  # 3 performance tiers
+
+    # Determine overall status
+    overall_status = _determine_overall_status_from_levels(level_results)
+
+    return {
+        "status": overall_status,
+        "levels": level_results,
+        "overall_status": _generate_per_level_summary(level_results, overall_status),
+        "chi_square": round(chi2, 3),
+        "p_value": round(p_value, 4),
+        "effect_size": round(effect_size, 3),
+        "degrees_of_freedom": dof,
+        "sample_size": n,
+        "interpretation": _generate_per_level_summary(level_results, overall_status),
+    }
+
+
+def _determine_overall_status_from_levels(level_results: dict[str, dict[str, Any]]) -> str:
+    """Determine overall status based on individual level statuses.
+
+    Args:
+        level_results: Dictionary of level analysis results
+
+    Returns:
+        Overall status ("green", "yellow", "red")
+    """
+    statuses = [level_data["status"] for level_data in level_results.values()]
+
+    # If any level is red, overall is red
+    if "red" in statuses:
+        return "red"
+    # If any level is yellow, overall is yellow
+    if "yellow" in statuses:
+        return "yellow"
+    # All levels are green
+    return "green"
+
+
+def _generate_per_level_summary(level_results: dict[str, dict[str, Any]], overall_status: str) -> str:
+    """Generate human-readable summary of per-level distribution analysis.
+
+    Args:
+        level_results: Dictionary of level analysis results
+        overall_status: Overall status ("green", "yellow", "red")
+
+    Returns:
+        Human-readable summary string
+    """
+    if overall_status == "green":
+        return "All levels have rating distributions aligned with baseline expectations (20/70/10). No calibration issues detected."
+
+    # Find levels with issues
+    problematic_levels = [
+        (level, data)
+        for level, data in level_results.items()
+        if data["status"] in ["yellow", "red"] and data["deviations"]
+    ]
+
+    if not problematic_levels:
+        return "Minor variations detected but no significant calibration issues."
+
+    # Sort by severity (red first, then yellow)
+    problematic_levels.sort(key=lambda x: (x[1]["status"] == "yellow", x[0]))
+
+    # Generate summary
+    if len(problematic_levels) == 1:
+        level, data = problematic_levels[0]
+        deviation_msg = "; ".join(data["deviations"])
+        return f"Analysis shows {level} level driving rating anomalies: {deviation_msg}"
+    else:
+        level_list = ", ".join([level for level, _ in problematic_levels[:3]])
+        if len(problematic_levels) > 3:
+            level_list += f" and {len(problematic_levels) - 3} other levels"
+        return f"Analysis shows multiple levels with rating anomalies: {level_list}. Focus calibration on these levels."
+
+
 def calculate_overall_intelligence(employees: list[Employee]) -> dict[str, Any]:
     """Calculate overall intelligence analysis across all dimensions.
 

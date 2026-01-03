@@ -686,3 +686,333 @@ def test_empty_employee_list() -> None:
         assert result["p_value"] == 1.0
         assert result["status"] == "green"
         assert len(result["deviations"]) == 0
+
+
+# Tests for calculate_per_level_distribution()
+# This is a new analysis function for the agent-first architecture
+
+
+def test_per_level_distribution_calculates_percentages_correctly() -> None:
+    """Test that per-level distribution calculates percentages correctly."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Create test data: MT3 level with 50% high performers (inflation)
+    employees = []
+    # MT3: 10 high, 5 medium, 5 low (50% high - inflated)
+    for i in range(10):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(10, 15):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(15, 20):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.LOW)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # Should have MT3 in results
+    assert "MT3" in result
+    mt3_stats = result["MT3"]
+
+    # Check percentages
+    assert mt3_stats["high_pct"] == pytest.approx(50.0, rel=0.1)
+    assert mt3_stats["medium_pct"] == pytest.approx(25.0, rel=0.1)
+    assert mt3_stats["low_pct"] == pytest.approx(25.0, rel=0.1)
+    assert mt3_stats["total"] == 20
+
+
+def test_per_level_distribution_computes_z_scores_accurately() -> None:
+    """Test that z-scores are computed accurately for per-level distribution."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Create test data with clear anomaly
+    employees = []
+
+    # MT3: 18 high, 1 medium, 1 low (90% high - extreme inflation)
+    for i in range(18):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+    employees.append(
+        create_employee(18, level="MT3", performance=PerformanceLevel.MEDIUM)
+    )
+    employees.append(
+        create_employee(19, level="MT3", performance=PerformanceLevel.LOW)
+    )
+
+    # MT5: Balanced - 7 high, 7 medium, 6 low
+    for i in range(7):
+        employees.append(
+            create_employee(20 + i, level="MT5", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(7):
+        employees.append(
+            create_employee(27 + i, level="MT5", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(6):
+        employees.append(
+            create_employee(34 + i, level="MT5", performance=PerformanceLevel.LOW)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # MT3 should have high z-score (deviation from expected)
+    assert "MT3" in result
+    mt3_stats = result["MT3"]
+    assert "z_score" in mt3_stats
+    # Z-score should be significantly positive (more high performers than expected)
+    assert mt3_stats["z_score"] > 2.0, "MT3 should show significant positive deviation"
+
+
+def test_per_level_distribution_detects_driving_anomaly() -> None:
+    """Test that per-level distribution detects which level is driving the anomaly."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    employees = []
+
+    # MT6: 15 high, 3 medium, 2 low (75% high - clear anomaly)
+    for i in range(15):
+        employees.append(
+            create_employee(i, level="MT6", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(3):
+        employees.append(
+            create_employee(15 + i, level="MT6", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(2):
+        employees.append(
+            create_employee(18 + i, level="MT6", performance=PerformanceLevel.LOW)
+        )
+
+    # MT4: Balanced
+    for i in range(7):
+        employees.append(
+            create_employee(20 + i, level="MT4", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(7):
+        employees.append(
+            create_employee(27 + i, level="MT4", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(6):
+        employees.append(
+            create_employee(34 + i, level="MT4", performance=PerformanceLevel.LOW)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # MT6 should be flagged as driving the anomaly
+    assert "MT6" in result
+    mt6_stats = result["MT6"]
+    assert mt6_stats.get("is_driving_anomaly", False) is True
+
+
+def test_per_level_distribution_returns_correct_status() -> None:
+    """Test that per-level distribution returns correct status (red/yellow/green)."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Create extreme anomaly (should be red)
+    employees = []
+    # MT3: 18 high, 1 medium, 1 low
+    for i in range(18):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+    employees.append(
+        create_employee(18, level="MT3", performance=PerformanceLevel.MEDIUM)
+    )
+    employees.append(
+        create_employee(19, level="MT3", performance=PerformanceLevel.LOW)
+    )
+
+    result = calculate_per_level_distribution(employees)
+
+    # Should return overall status
+    assert "status" in result or "MT3" in result
+    if "status" in result:
+        # If function returns overall status
+        assert result["status"] in ["red", "yellow"]
+    else:
+        # If status is per-level
+        assert result["MT3"]["status"] in ["red", "yellow"]
+
+
+def test_per_level_distribution_handles_level_with_zero_employees() -> None:
+    """Test that per-level distribution handles levels with 0 employees."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Only create MT3 employees, no MT5
+    employees = []
+    for i in range(20):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # Should only have MT3, not MT5
+    assert "MT3" in result
+    # MT5 should either not be present, or have count=0
+    if "MT5" in result:
+        assert result["MT5"]["total"] == 0
+
+
+def test_per_level_distribution_handles_single_employee_per_level() -> None:
+    """Test that per-level distribution handles edge case of single employee."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Single employee at MT3
+    employees = [
+        create_employee(1, level="MT3", performance=PerformanceLevel.HIGH)
+    ]
+
+    result = calculate_per_level_distribution(employees)
+
+    # Should handle gracefully
+    assert "MT3" in result
+    assert result["MT3"]["total"] == 1
+    assert result["MT3"]["high_pct"] == 100.0
+
+
+def test_per_level_distribution_example_mt3_with_50_percent_high() -> None:
+    """Test the specific example: MT3 with 50% high performers → red status, high z-score."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    # Create the exact example from the task
+    employees = []
+
+    # MT3: 50% high performers
+    for i in range(10):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(10, 15):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(15, 20):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.LOW)
+        )
+
+    # Add other levels to establish baseline
+    for i in range(7):
+        employees.append(
+            create_employee(20 + i, level="MT5", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(7):
+        employees.append(
+            create_employee(27 + i, level="MT5", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(6):
+        employees.append(
+            create_employee(34 + i, level="MT5", performance=PerformanceLevel.LOW)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # Verify MT3 results
+    assert "MT3" in result
+    mt3 = result["MT3"]
+
+    # 50% high performers
+    assert mt3["high_pct"] == pytest.approx(50.0, rel=0.1)
+
+    # High z-score (should be > 2.0 for statistical significance)
+    assert mt3["z_score"] > 2.0, "Z-score should indicate significant deviation"
+
+    # Red status (or yellow at minimum)
+    if "status" in mt3:
+        assert mt3["status"] in ["red", "yellow"]
+
+
+def test_per_level_distribution_multiple_levels_with_different_distributions() -> None:
+    """Test per-level distribution with multiple levels showing different patterns."""
+    try:
+        from ninebox.services.intelligence_service import calculate_per_level_distribution
+    except ImportError:
+        pytest.skip("calculate_per_level_distribution not yet implemented")
+
+    employees = []
+
+    # MT3: Inflated (15 high, 3 medium, 2 low)
+    for i in range(15):
+        employees.append(
+            create_employee(i, level="MT3", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(3):
+        employees.append(
+            create_employee(15 + i, level="MT3", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(2):
+        employees.append(
+            create_employee(18 + i, level="MT3", performance=PerformanceLevel.LOW)
+        )
+
+    # MT5: Balanced (7 high, 7 medium, 6 low)
+    for i in range(7):
+        employees.append(
+            create_employee(20 + i, level="MT5", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(7):
+        employees.append(
+            create_employee(27 + i, level="MT5", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(6):
+        employees.append(
+            create_employee(34 + i, level="MT5", performance=PerformanceLevel.LOW)
+        )
+
+    # MT6: Deflated (2 high, 3 medium, 15 low)
+    for i in range(2):
+        employees.append(
+            create_employee(40 + i, level="MT6", performance=PerformanceLevel.HIGH)
+        )
+    for i in range(3):
+        employees.append(
+            create_employee(42 + i, level="MT6", performance=PerformanceLevel.MEDIUM)
+        )
+    for i in range(15):
+        employees.append(
+            create_employee(45 + i, level="MT6", performance=PerformanceLevel.LOW)
+        )
+
+    result = calculate_per_level_distribution(employees)
+
+    # All levels should be present
+    assert "MT3" in result
+    assert "MT5" in result
+    assert "MT6" in result
+
+    # MT3 should show positive deviation (inflated)
+    assert result["MT3"]["z_score"] > 1.0
+
+    # MT6 should show negative deviation (deflated)
+    assert result["MT6"]["z_score"] < -1.0
+
+    # MT5 should be relatively neutral
+    assert abs(result["MT5"]["z_score"]) < 1.5

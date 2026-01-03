@@ -2,12 +2,25 @@
 
 import json
 import logging
-import socket
 
+# Load environment variables from .env file
+# This must happen before any imports that use environment variables
+import os
+import socket
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ninebox.api import (
+env_file = Path(__file__).parent.parent.parent / ".env"
+loaded = load_dotenv(dotenv_path=env_file)
+print(f"[STARTUP] Loading .env from: {env_file.resolve()}")
+print(f"[STARTUP] .env file exists: {env_file.exists()}")
+print(f"[STARTUP] load_dotenv returned: {loaded}")
+print(f"[STARTUP] ANTHROPIC_API_KEY present: {bool(os.getenv('ANTHROPIC_API_KEY'))}")
+
+from ninebox.api import (  # noqa: E402
     calibration_summary,
     employees,
     intelligence,
@@ -16,8 +29,8 @@ from ninebox.api import (
     session,
     statistics,
 )
-from ninebox.core.config import settings
-from ninebox.core.dependencies import get_session_manager
+from ninebox.core.config import settings  # noqa: E402
+from ninebox.core.dependencies import get_session_manager  # noqa: E402
 
 # Configure logging
 logging.basicConfig(
