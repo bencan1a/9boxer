@@ -13,13 +13,13 @@ import type { IntelligenceData } from "@/types/api";
 
 describe("IntelligenceSummary", () => {
   describe("Rendering", () => {
-    it("renders three summary cards when given data", () => {
+    it("renders summary cards when given data", () => {
       render(<IntelligenceSummary data={mockMixedIntelligence} />);
 
       expect(screen.getByTestId("intelligence-summary")).toBeInTheDocument();
       expect(screen.getByTestId("quality-score-card")).toBeInTheDocument();
       expect(screen.getByTestId("anomaly-count-card")).toBeInTheDocument();
-      expect(screen.getByTestId("status-card")).toBeInTheDocument();
+      // Org overview card is conditionally rendered based on calibration data
     });
 
     it("displays quality score value correctly", () => {
@@ -52,80 +52,6 @@ describe("IntelligenceSummary", () => {
     });
   });
 
-  describe("Quality Score Status", () => {
-    it("displays excellent status when score is 80 or above", () => {
-      render(<IntelligenceSummary data={mockExcellentIntelligence} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Excellent");
-
-      const statusMessage = screen.getByTestId("status-message");
-      expect(statusMessage).toHaveTextContent(
-        "Rating distributions appear well-calibrated across all dimensions."
-      );
-    });
-
-    it("displays good status when score is between 50 and 79", () => {
-      render(<IntelligenceSummary data={mockGoodIntelligence} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Good");
-
-      const statusMessage = screen.getByTestId("status-message");
-      expect(statusMessage).toHaveTextContent(
-        "Some anomalies detected. Review sections below for details."
-      );
-    });
-
-    it("displays needs attention status when score is below 50", () => {
-      render(<IntelligenceSummary data={mockNeedsAttentionIntelligence} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Needs Attention");
-
-      const statusMessage = screen.getByTestId("status-message");
-      expect(statusMessage).toHaveTextContent(
-        "Significant anomalies detected. Immediate review recommended."
-      );
-    });
-
-    it("displays excellent status at boundary score of 80", () => {
-      const boundaryData: IntelligenceData = {
-        ...mockMixedIntelligence,
-        quality_score: 80,
-      };
-
-      render(<IntelligenceSummary data={boundaryData} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Excellent");
-    });
-
-    it("displays good status at boundary score of 50", () => {
-      const boundaryData: IntelligenceData = {
-        ...mockMixedIntelligence,
-        quality_score: 50,
-      };
-
-      render(<IntelligenceSummary data={boundaryData} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Good");
-    });
-
-    it("displays needs attention status at boundary score of 49", () => {
-      const boundaryData: IntelligenceData = {
-        ...mockMixedIntelligence,
-        quality_score: 49,
-      };
-
-      render(<IntelligenceSummary data={boundaryData} />);
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Needs Attention");
-    });
-  });
-
   describe("Edge Cases", () => {
     it("handles perfect score of 100 correctly", () => {
       const perfectData: IntelligenceData = {
@@ -137,9 +63,6 @@ describe("IntelligenceSummary", () => {
 
       const scoreValue = screen.getByTestId("quality-score-value");
       expect(scoreValue).toHaveTextContent("100");
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Excellent");
     });
 
     it("handles zero score correctly", () => {
@@ -152,9 +75,6 @@ describe("IntelligenceSummary", () => {
 
       const scoreValue = screen.getByTestId("quality-score-value");
       expect(scoreValue).toHaveTextContent("0");
-
-      const statusHeading = screen.getByTestId("status-heading");
-      expect(statusHeading).toHaveTextContent("Needs Attention");
     });
 
     it("handles zero anomalies correctly", () => {
@@ -258,7 +178,6 @@ describe("IntelligenceSummary", () => {
       expect(screen.getByTestId("intelligence-summary")).toBeInTheDocument();
       expect(screen.getByTestId("quality-score-card")).toBeInTheDocument();
       expect(screen.getByTestId("anomaly-count-card")).toBeInTheDocument();
-      expect(screen.getByTestId("status-card")).toBeInTheDocument();
     });
 
     it("uses Material-UI semantic color tokens for quality indicators", () => {
@@ -278,7 +197,6 @@ describe("IntelligenceSummary", () => {
       // Check that translated text appears (translations should be loaded by test utils)
       expect(screen.getByText("Quality Score")).toBeInTheDocument();
       expect(screen.getByText("Total Anomalies")).toBeInTheDocument();
-      expect(screen.getByText("Overall Health")).toBeInTheDocument();
     });
 
     it("displays quality score description text", () => {
@@ -295,25 +213,18 @@ describe("IntelligenceSummary", () => {
       render(<IntelligenceSummary data={mockExcellentIntelligence} />);
 
       expect(screen.getByTestId("quality-score-value")).toHaveTextContent("92");
-      expect(screen.getByTestId("status-heading")).toHaveTextContent(
-        "Excellent"
-      );
     });
 
     it("renders correctly with good intelligence data", () => {
       render(<IntelligenceSummary data={mockGoodIntelligence} />);
 
       expect(screen.getByTestId("quality-score-value")).toHaveTextContent("73");
-      expect(screen.getByTestId("status-heading")).toHaveTextContent("Good");
     });
 
     it("renders correctly with needs attention intelligence data", () => {
       render(<IntelligenceSummary data={mockNeedsAttentionIntelligence} />);
 
       expect(screen.getByTestId("quality-score-value")).toHaveTextContent("42");
-      expect(screen.getByTestId("status-heading")).toHaveTextContent(
-        "Needs Attention"
-      );
     });
 
     it("renders correctly with high anomaly count data", () => {
@@ -334,7 +245,6 @@ describe("IntelligenceSummary", () => {
       render(<IntelligenceSummary data={mockMixedIntelligence} />);
 
       expect(screen.getByTestId("quality-score-value")).toHaveTextContent("67");
-      expect(screen.getByTestId("status-heading")).toHaveTextContent("Good");
     });
   });
 });
