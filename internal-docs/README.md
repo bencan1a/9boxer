@@ -52,6 +52,12 @@ Quick navigation to all documentation categories:
   - [PLAYWRIGHT_REVIEW_SUMMARY.md](testing/PLAYWRIGHT_REVIEW_SUMMARY.md) - Playwright implementation review
   - [templates/](testing/templates/) - Test templates (backend, component, E2E)
 
+#### CI/CD & Reliability
+
+- **[cicd/](cicd/)** - CI/CD patterns, workflows, troubleshooting
+  - [README.md](cicd/README.md) - CI/CD overview
+  - [CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) - Comprehensive reliability guide (Makefile architecture, adding checks, troubleshooting)
+
 #### Internationalization (i18n)
 
 - **[i18n/](i18n/)** - Translation patterns, glossary, testing (5 files)
@@ -111,7 +117,13 @@ Quick navigation to all documentation categories:
 → Follow [contributing/voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) and [contributing/documentation-writing-guide.md](contributing/documentation-writing-guide.md)
 
 **...understand GitHub Actions workflows**
-→ See [CLAUDE.md](../CLAUDE.md) (GitHub Actions & CI/CD section)
+→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) for architecture and troubleshooting
+
+**...add a new code quality check**
+→ Follow [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Adding New Checks section)
+
+**...troubleshoot CI failures**
+→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Troubleshooting Guide section)
 
 **...understand agent documentation system**
 → Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
@@ -361,6 +373,7 @@ Documentation is organized into category folders, each with:
 
 **Current Categories:**
 - `architecture/` - System design, ADRs, technical patterns
+- `cicd/` - CI/CD reliability, workflows, troubleshooting
 - `design-system/` - UI components, design tokens, accessibility
 - `testing/` - Test strategies, templates, best practices
 - `i18n/` - Internationalization patterns and glossary

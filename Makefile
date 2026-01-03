@@ -33,19 +33,18 @@ lint:  ## Run linting checks
 format:  ## Format code
 	ruff format .
 
-format-check:  ## Auto-fix code formatting (was check-only, now auto-fixes for convenience)
-	@echo "Auto-fixing formatting..."
-	@ruff format .
+format-check:  ## Check formatting without modifying (for CI/hooks)
+	ruff format --check .
 
 type-check:  ## Run type checking
 	mypy backend/src/ .github/scripts/
 
-security:  ## Run security checks
-	bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
+security:  ## Run security checks (config in pyproject.toml)
+	bandit -c pyproject.toml -r backend/src/ .github/scripts/
 
 security-report:  ## Run security checks and generate JSON report
-	bandit -r backend/src/ .github/scripts/ -f json -o bandit-report.json -s B404,B603,B607 || true
-	bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
+	bandit -c pyproject.toml -r backend/src/ .github/scripts/ -f json -o bandit-report.json || true
+	bandit -c pyproject.toml -r backend/src/ .github/scripts/
 	@echo "Security report generated: bandit-report.json"
 
 check-yaml:  ## Check YAML file syntax
@@ -59,7 +58,7 @@ check-all:  ## Run all checks (format, lint, type, security, test)
 	@echo "\nRunning type check..."
 	@mypy backend/src/ .github/scripts/
 	@echo "\nRunning security check..."
-	@bandit -r backend/src/ .github/scripts/ -s B404,B603,B607
+	@bandit -c pyproject.toml -r backend/src/ .github/scripts/
 	@echo "\nRunning tests..."
 	@pytest
 

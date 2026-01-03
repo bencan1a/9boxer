@@ -80,7 +80,7 @@ jobs:
           CI: true
 
       - name: Upload test results
-        if: always()
+        if: always() && (hashFiles('frontend/playwright-report-visual/**') != '' || hashFiles('frontend/test-results/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: visual-test-results
@@ -90,7 +90,7 @@ jobs:
           retention-days: 30
 
       - name: Upload visual diff images
-        if: failure()
+        if: failure() && hashFiles('frontend/test-results/**/*-diff.png') != ''
         uses: actions/upload-artifact@v4
         with:
           name: visual-diffs
@@ -105,26 +105,39 @@ jobs:
             const fs = require('fs');
             const path = require('path');
 
-            // Find all diff images
+            // Find all diff images with defensive error handling
             const testResultsDir = 'frontend/test-results';
             let diffCount = 0;
             let diffList = '';
 
-            if (fs.existsSync(testResultsDir)) {
-              const walk = (dir) => {
-                const files = fs.readdirSync(dir);
-                files.forEach(file => {
-                  const filePath = path.join(dir, file);
-                  const stat = fs.statSync(filePath);
-                  if (stat.isDirectory()) {
-                    walk(filePath);
-                  } else if (file.endsWith('-diff.png')) {
-                    diffCount++;
-                    diffList += `- ${file}\n`;
+            try {
+              if (fs.existsSync(testResultsDir)) {
+                const walk = (dir) => {
+                  try {
+                    const files = fs.readdirSync(dir);
+                    files.forEach(file => {
+                      try {
+                        const filePath = path.join(dir, file);
+                        const stat = fs.statSync(filePath);
+                        if (stat.isDirectory()) {
+                          walk(filePath);
+                        } else if (file.endsWith('-diff.png')) {
+                          diffCount++;
+                          diffList += `- ${file}\n`;
+                        }
+                      } catch (fileErr) {
+                        console.warn(`Warning: Could not process file ${file}:`, fileErr.message);
+                      }
+                    });
+                  } catch (dirErr) {
+                    console.warn(`Warning: Could not read directory ${dir}:`, dirErr.message);
                   }
-                });
-              };
-              walk(testResultsDir);
+                };
+                walk(testResultsDir);
+              }
+            } catch (e) {
+              console.error('Error scanning for diff images:', e.message);
+              diffList = '- Unable to list diff files due to an error\n';
             }
 
             const body = `## Visual Regression Test Failed ⚠️
