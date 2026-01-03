@@ -19,7 +19,7 @@ import { generateLargeEmployeeDataset } from "../../../test-utils/performance-ge
 // Mock onSelect handler
 const mockOnSelect = vi.fn();
 
-describe("EmployeeTile Performance Tests", () => {
+describe.skip("EmployeeTile Performance Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

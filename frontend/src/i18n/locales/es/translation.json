@@ -537,6 +537,10 @@
     "retry": "Reintentar",
     "quit": "Salir",
     "retryConnection": "Reintentar conexión",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "dismiss": "Descartar",
+    "loading": "Cargando...",
     "fileUpload": {
       "dialogTitle": "Importar Archivo de Excel",
       "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",
