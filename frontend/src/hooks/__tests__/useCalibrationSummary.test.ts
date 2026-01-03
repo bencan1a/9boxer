@@ -19,15 +19,35 @@ vi.mock("../../services/api", () => ({
 // Mock the session store
 vi.mock("../../store/sessionStore", () => ({
   useSessionStore: vi.fn(),
+  selectCalibrationSummary: vi.fn((state) => state.calibrationSummary),
+  selectSetCalibrationSummary: vi.fn((state) => state.setCalibrationSummary),
+  selectEmployees: vi.fn((state) => state.employees),
 }));
 
 describe("useCalibrationSummary", () => {
+  let mockStoreState: {
+    calibrationSummary: CalibrationSummaryData | null;
+    setCalibrationSummary: (data: CalibrationSummaryData | null) => void;
+    employees: unknown[];
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
-    // Default mock for useSessionStore
-    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    // Create a stateful mock store
+    mockStoreState = {
+      calibrationSummary: null,
+      setCalibrationSummary: vi.fn((data) => {
+        mockStoreState.calibrationSummary = data;
+      }),
       employees: [],
-    });
+    };
+
+    // Default mock for useSessionStore with selector support
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector) => {
+        return selector ? selector(mockStoreState) : mockStoreState;
+      }
+    );
   });
 
   afterEach(() => {
