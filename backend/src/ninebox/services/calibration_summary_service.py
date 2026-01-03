@@ -15,6 +15,7 @@ from typing import Any, TypedDict
 
 from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
+from ninebox.services.insight_generator import InsightGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -185,6 +186,10 @@ STARS_HIGH_THRESHOLD = 25.0  # Warn if > 25% are stars
 class CalibrationSummaryService:
     """Service for generating calibration meeting preparation data."""
 
+    def __init__(self) -> None:
+        """Initialize service with shared insight generator."""
+        self.insight_generator = InsightGenerator()
+
     @staticmethod
     def _generate_insight_id(prefix: str, *components: Any) -> str:
         """Generate a deterministic insight ID from components.
@@ -342,15 +347,9 @@ class CalibrationSummaryService:
         # 1. Distribution-based insights
         insights.extend(self._generate_distribution_insights(data_overview))
 
-        # 2. Anomaly-based insights from intelligence analyses
-        if "location" in analyses:
-            insights.extend(self._generate_anomaly_insights("location", analyses["location"]))
-        if "function" in analyses:
-            insights.extend(self._generate_anomaly_insights("function", analyses["function"]))
-        if "level" in analyses:
-            insights.extend(self._generate_anomaly_insights("level", analyses["level"]))
-        if "tenure" in analyses:
-            insights.extend(self._generate_anomaly_insights("tenure", analyses["tenure"]))
+        # 2. Anomaly-based insights from intelligence analyses using shared generator
+        anomaly_insights = self.insight_generator.generate_from_analyses(analyses)
+        insights.extend(anomaly_insights)
 
         # 3. Time allocation insight
         insights.append(self._generate_time_insight(time_allocation))
@@ -574,88 +573,6 @@ class CalibrationSummaryService:
                     source_data=InsightSourceData(
                         observed_pct=data_overview["stars_percentage"],
                         expected_pct=15.0,  # Target ~10-15%
-                    ),
-                )
-            )
-
-        return insights
-
-    def _generate_anomaly_insights(self, category: str, analysis: dict[str, Any]) -> list[Insight]:
-        """Generate insights from intelligence analysis anomalies.
-
-        **DEPRECATED:** Used only when use_agent=False (legacy mode).
-        This method will be removed when legacy insight generation is removed.
-
-        Args:
-            category: Analysis category (location, function, level, tenure)
-            analysis: Intelligence analysis result
-
-        Returns:
-            List of anomaly-related insights
-        """
-        insights: list[Insight] = []
-
-        # Only generate insights for yellow or red status
-        status = analysis.get("status", "green")
-        if status == "green":
-            return insights
-
-        # Get significant deviations
-        deviations = analysis.get("deviations", [])
-        significant_devs = [d for d in deviations if d.get("is_significant", False)]
-
-        if not significant_devs:
-            # If flagged but no individual significant deviations,
-            # create a general insight
-            insights.append(
-                Insight(
-                    id=self._generate_insight_id("anomaly-general", category, status),
-                    type="anomaly",
-                    category=category,
-                    priority="medium" if status == "yellow" else "high",
-                    title=f"Rating pattern differences detected across {category}s",
-                    description=analysis.get(
-                        "interpretation",
-                        f"Statistical analysis shows significant differences in ratings across {category}s.",
-                    ),
-                    affected_count=analysis.get("sample_size", 0),
-                    source_data=InsightSourceData(
-                        p_value=analysis.get("p_value", 0),
-                        category=category,
-                    ),
-                )
-            )
-            return insights
-
-        # Create insight for each significant deviation
-        for dev in significant_devs:
-            category_name = dev.get("category", "Unknown")
-            z_score = dev.get("z_score", 0)
-            observed = dev.get("observed_high_pct", 0)
-            expected = dev.get("expected_high_pct", 0)
-            sample_size = dev.get("sample_size", 0)
-
-            # Determine direction and priority
-            direction = "higher" if z_score > 0 else "lower"
-            priority = "high" if abs(z_score) > 3.0 else "medium"
-
-            insights.append(
-                Insight(
-                    id=self._generate_insight_id("anomaly", category, category_name),
-                    type="anomaly",
-                    category=category,
-                    priority=priority,
-                    title=f"{category_name} rates {direction} than average",
-                    description=(
-                        f"{category_name} has {observed:.0f}% high performers "
-                        f"vs {expected:.0f}% expected (z={z_score:.1f})"
-                    ),
-                    affected_count=sample_size,
-                    source_data=InsightSourceData(
-                        z_score=z_score,
-                        p_value=analysis.get("p_value", 0),
-                        observed_pct=observed,
-                        expected_pct=expected,
                     ),
                 )
             )
