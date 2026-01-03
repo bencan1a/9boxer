@@ -1268,12 +1268,18 @@ def calculate_overall_intelligence(employees: list[Employee]) -> dict[str, Any]:
         - tenure_analysis: Tenure analysis results
         - manager_analysis: Manager analysis results
     """
-    # Run all analyses
-    location = calculate_location_analysis(employees)
-    function = calculate_function_analysis(employees)
-    level = calculate_level_analysis(employees)
-    tenure = calculate_tenure_analysis(employees)
-    manager = calculate_manager_analysis(employees)
+    # Import here to avoid circular dependency (analysis_registry imports from this module)
+    from ninebox.services.analysis_registry import run_all_analyses
+
+    # Run all analyses through the registry
+    all_results = run_all_analyses(employees)
+
+    # Extract individual analyses (excluding per_level_distribution which is not used here)
+    location = all_results.get("location", {})
+    function = all_results.get("function", {})
+    level = all_results.get("level", {})
+    tenure = all_results.get("tenure", {})
+    manager = all_results.get("manager", {})
 
     # Count anomalies by severity
     analyses = [location, function, level, tenure, manager]
