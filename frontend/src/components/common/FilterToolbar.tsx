@@ -34,6 +34,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CloseIcon from "@mui/icons-material/Close";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -102,6 +104,16 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  // Collapse state for compact variant (persisted in localStorage)
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    try {
+      const stored = localStorage.getItem("filterToolbarCollapsed");
+      return stored === "true";
+    } catch {
+      return false; // Default to expanded if localStorage unavailable
+    }
+  });
+
   // Hide on small screens (< 600px width)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -148,12 +160,22 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     setAnchorEl(null);
   };
 
+  const handleToggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    try {
+      localStorage.setItem("filterToolbarCollapsed", String(newState));
+    } catch {
+      // Silently fail if localStorage is unavailable
+    }
+  };
+
   // Don't render on small screens
   if (isSmallScreen) {
     return null;
   }
 
-  // Render compact variant (all inline)
+  // Render compact variant (all inline with collapse/expand)
   if (variant === "compact") {
     return (
       <Box
@@ -170,7 +192,10 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
           alignItems: "center",
           gap: 1,
           p: 0.5,
-          maxWidth: "600px",
+          maxWidth: isCollapsed ? "auto" : "600px",
+          transition: theme.transitions.create(["max-width"], {
+            duration: theme.transitions.duration.standard,
+          }),
         }}
       >
         {/* Filter Button with Badge */}
@@ -197,63 +222,108 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
           </span>
         </Tooltip>
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-        {/* Employee Count */}
-        <Typography
-          variant="caption"
-          data-testid="employee-count"
-          sx={{
-            fontWeight: 500,
-            color: theme.palette.text.secondary,
-            whiteSpace: "nowrap",
-          }}
+        {/* Collapsible Content */}
+        <Collapse
+          in={!isCollapsed}
+          orientation="horizontal"
+          timeout={theme.transitions.duration.standard}
         >
-          {employeeCountText}
-        </Typography>
-
-        <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-        {/* Filter Info Display */}
-        {hasActiveFilters && (
-          <Typography
-            variant="caption"
-            data-testid="filter-info"
+          <Box
             sx={{
-              color: theme.palette.text.secondary,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              maxWidth: "200px",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
             }}
           >
-            {filterSummaryText}
-          </Typography>
-        )}
+            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-        {hasActiveFilters && (
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-        )}
+            {/* Employee Count */}
+            <Typography
+              variant="caption"
+              data-testid="employee-count"
+              sx={{
+                fontWeight: 500,
+                color: theme.palette.text.secondary,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {employeeCountText}
+            </Typography>
 
-        {/* Search Box */}
-        <TextField
-          value={searchValue}
-          onChange={handleSearchChange}
-          placeholder={t("filters.searchPlaceholder", "Search employees...")}
-          size="small"
-          disabled={disabled}
-          data-testid="search-input"
-          InputProps={{
-            startAdornment: <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />,
-          }}
-          sx={{
-            width: "180px",
-            "& .MuiOutlinedInput-root": {
-              height: "32px",
-              fontSize: "0.875rem",
-            },
-          }}
-        />
+            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+
+            {/* Filter Info Display */}
+            {hasActiveFilters && (
+              <Typography
+                variant="caption"
+                data-testid="filter-info"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "200px",
+                }}
+              >
+                {filterSummaryText}
+              </Typography>
+            )}
+
+            {hasActiveFilters && (
+              <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+            )}
+
+            {/* Search Box */}
+            <TextField
+              value={searchValue}
+              onChange={handleSearchChange}
+              placeholder={t(
+                "filters.searchPlaceholder",
+                "Search employees..."
+              )}
+              size="small"
+              disabled={disabled}
+              data-testid="search-input"
+              InputProps={{
+                startAdornment: (
+                  <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />
+                ),
+              }}
+              sx={{
+                width: "180px",
+                "& .MuiOutlinedInput-root": {
+                  height: "32px",
+                  fontSize: "0.875rem",
+                },
+              }}
+            />
+          </Box>
+        </Collapse>
+
+        {/* Toggle Collapse/Expand Button */}
+        <Tooltip
+          title={
+            isCollapsed
+              ? t("filters.expandToolbar", "Expand toolbar")
+              : t("filters.collapseToolbar", "Collapse toolbar")
+          }
+          placement="bottom"
+        >
+          <IconButton
+            onClick={handleToggleCollapse}
+            size="small"
+            data-testid="toolbar-toggle-button"
+            sx={{
+              ml: isCollapsed ? 0 : 0.5,
+            }}
+          >
+            {isCollapsed ? (
+              <ChevronRightIcon fontSize="small" />
+            ) : (
+              <ChevronLeftIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
       </Box>
     );
   }

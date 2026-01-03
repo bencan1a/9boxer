@@ -415,3 +415,90 @@ export const HeavilyFiltered: Story = {
     onSearchChange: (value) => console.log("Search:", value),
   },
 };
+
+/**
+ * Collapse/Expand Feature (Compact Variant)
+ */
+export const CompactCollapsed: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "filter-toolbar-compact-collapsed" },
+    docs: {
+      description: {
+        story:
+          "Compact toolbar in collapsed state. Shows only filter button with badge and toggle button. " +
+          "Click the chevron to expand and reveal employee count, filter info, and search box.",
+      },
+    },
+  },
+  decorators: [
+    (Story) => {
+      // Set collapsed state in localStorage before rendering
+      if (typeof window !== "undefined") {
+        localStorage.setItem("filterToolbarCollapsed", "true");
+      }
+      return (
+        <Box
+          sx={{
+            width: "100%",
+            height: "200px",
+            position: "relative",
+            backgroundColor: "#f5f5f5",
+          }}
+        >
+          <Story />
+        </Box>
+      );
+    },
+  ],
+  args: {
+    variant: "compact",
+    activeFilterCount: 3,
+    activeFilters: sampleFilters,
+    filteredCount: 45,
+    totalCount: 200,
+    hasActiveFilters: true,
+    onFilterClick: () => console.log("Filter clicked"),
+    onSearchChange: (value) => console.log("Search:", value),
+  },
+};
+
+export const CompactCollapsedNoFilters: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Compact toolbar collapsed with no active filters. Shows minimal state with just filter button.",
+      },
+    },
+  },
+  decorators: [
+    (Story) => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("filterToolbarCollapsed", "true");
+      }
+      return (
+        <Box
+          sx={{
+            width: "100%",
+            height: "200px",
+            position: "relative",
+            backgroundColor: "#f5f5f5",
+          }}
+        >
+          <Story />
+        </Box>
+      );
+    },
+  ],
+  args: {
+    variant: "compact",
+    activeFilterCount: 0,
+    activeFilters: [],
+    filteredCount: 200,
+    totalCount: 200,
+    hasActiveFilters: false,
+    onFilterClick: () => console.log("Filter clicked"),
+    onSearchChange: (value) => console.log("Search:", value),
+  },
+};
