@@ -191,6 +191,9 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
         >
           {" "}
           {/* Convert 8px to 1 */}
+          {/* Filter button moved to FilterToolbar (left of grid axis) */}
+          {/* Keeping this code commented for now in case we need to restore it */}
+          {/*
           <Tooltip title={filterTooltip} placement="bottom">
             <span>
               <Badge
@@ -216,6 +219,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
               </Badge>
             </span>
           </Tooltip>
+          */}
           <Tooltip title={t("dashboard.appBar.settings")}>
             <IconButton
               color="inherit"
