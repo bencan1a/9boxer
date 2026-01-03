@@ -382,7 +382,7 @@ jobs:
 
   e2e-core-tests:
     name: E2E Core Tests (Atomic UX)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Linux for faster backend startup and consistent timing
     needs: [unit-tests, frontend-tests]  # Wait for both backend and frontend tests
     steps:
       - uses: actions/checkout@v4
@@ -431,7 +431,7 @@ jobs:
         id: playwright-cache
         uses: actions/cache@v4
         with:
-          path: C:\Users\runneradmin\AppData\Local\ms-playwright
+          path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
