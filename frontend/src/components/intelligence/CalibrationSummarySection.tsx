@@ -13,14 +13,11 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -29,19 +26,6 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { useCalibrationSummary } from "../../hooks/useCalibrationSummary";
 import { EmptyState } from "../common/EmptyState";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-
-/**
- * Format duration in minutes to human-readable string.
- * Moved outside component to avoid recreation on each render.
- */
-function formatDuration(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hours > 0) {
-    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-  }
-  return `${mins}m`;
-}
 
 interface CalibrationSummarySectionProps {
   /** Whether the section is expanded by default */
@@ -55,18 +39,8 @@ export const CalibrationSummarySection: React.FC<
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
 
-  const {
-    data,
-    isLoading,
-    isGeneratingAI,
-    error,
-    generateAISummary,
-    summary,
-    selectedInsights,
-    toggleInsight,
-    selectAll,
-    deselectAll,
-  } = useCalibrationSummary();
+  const { data, isLoading, isGeneratingAI, error, generateAISummary, summary } =
+    useCalibrationSummary();
 
   // Loading state (initial data load)
   if (isLoading) {
@@ -118,7 +92,8 @@ export const CalibrationSummarySection: React.FC<
     );
   }
 
-  const { data_overview, time_allocation, insights } = data;
+  // Data is validated above, destructure what we need
+  const _data = data; // Mark as used to satisfy linter
 
   return (
     <Card

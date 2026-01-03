@@ -312,7 +312,7 @@ def _build_org_data(employees: list[Employee], anonymize: bool = True) -> dict[s
         managers.append(manager_record)
 
     # Extract unique levels
-    levels_present = sorted(set(emp.job_level for emp in employees))
+    levels_present = sorted({emp.job_level for emp in employees})
 
     return {
         "managers": managers,

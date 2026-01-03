@@ -5,8 +5,11 @@ This script demonstrates the new generate_calibration_analysis() method
 that replaces the two-step approach.
 """
 
+import contextlib
 import json
 import sys
+import traceback
+import warnings
 from datetime import date
 from pathlib import Path
 
@@ -14,10 +17,10 @@ from pathlib import Path
 backend_src = Path(__file__).parent / "src"
 sys.path.insert(0, str(backend_src))
 
-from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
-from ninebox.services.analysis_registry import run_all_analyses
-from ninebox.services.data_packaging_service import package_for_llm
-from ninebox.services.llm_service import LLMService, load_system_prompt
+from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel  # noqa: E402
+from ninebox.services.analysis_registry import run_all_analyses  # noqa: E402
+from ninebox.services.data_packaging_service import package_for_llm  # noqa: E402
+from ninebox.services.llm_service import LLMService, load_system_prompt  # noqa: E402
 
 
 def test_load_system_prompt():
@@ -188,8 +191,6 @@ def test_generate_calibration_analysis(package):
 
     except Exception as e:
         print(f"[FAIL] Failed to generate analysis: {e}")
-        import traceback
-
         traceback.print_exc()
         print()
         return False
@@ -201,8 +202,6 @@ def test_deprecation_warning():
     print("TEST 4: Deprecation Warning")
     print("=" * 80)
 
-    import warnings
-
     # Initialize service without API key to test warning
     llm_service = LLMService()
 
@@ -211,16 +210,13 @@ def test_deprecation_warning():
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
 
-        try:
-            # This will fail due to no API key, but we should see the deprecation warning
+        # This will fail due to no API key, but we should see the deprecation warning
+        with contextlib.suppress(RuntimeError):
             llm_service.generate_summary(
                 selected_insight_ids=["test-id"],
                 insights=[{"id": "test-id", "title": "Test"}],
                 data_overview={"total_employees": 100},
             )
-        except RuntimeError:
-            # Expected - no API key
-            pass
 
         # Check for deprecation warning
         deprecation_warnings = [
