@@ -2,11 +2,11 @@
  * Export validation helpers for Playwright E2E tests
  *
  * Provides helpers for validating exported Excel files.
- * Uses the xlsx library to read and verify Excel file contents.
+ * Uses the exceljs library to read and verify Excel file contents.
  */
 
 import { expect } from "@playwright/test";
-import * as XLSX from "xlsx";
+import * as ExcelJS from "exceljs";
 
 /**
  * Type definition for Excel row data
@@ -18,7 +18,42 @@ interface EmployeeRow {
   Potential: string;
   "Modified in Session"?: string;
   "9Boxer Change Notes"?: string;
-  [key: string]: any; // Allow other columns
+  [key: string]: unknown; // Allow other columns
+}
+
+/**
+ * Parse an Excel file and return rows as an array of objects
+ *
+ * @param filePath - Absolute path to the Excel file
+ * @returns Array of employee row data
+ */
+async function parseExcelFile(filePath: string): Promise<EmployeeRow[]> {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filePath);
+  const worksheet = workbook.worksheets[0];
+
+  const rows: EmployeeRow[] = [];
+  const headers: string[] = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    const values = row.values as ExcelJS.CellValue[];
+    // ExcelJS row.values is 1-indexed, first element is undefined
+    const cleanValues = values.slice(1);
+
+    if (rowNumber === 1) {
+      // First row is headers
+      headers.push(...cleanValues.map((v) => String(v ?? "")));
+    } else {
+      // Data rows
+      const rowData: Record<string, unknown> = {};
+      cleanValues.forEach((val, i) => {
+        rowData[headers[i]] = val;
+      });
+      rows.push(rowData as EmployeeRow);
+    }
+  });
+
+  return rows;
 }
 
 /**
@@ -101,14 +136,8 @@ export async function verifyExportedEmployeeRating(
   expectedPerformance: string,
   expectedPotential: string
 ): Promise<void> {
-  // Check file exists
-  const fs = await import("fs/promises");
-  await fs.access(filePath);
-
-  // Read Excel file
-  const workbook = XLSX.readFile(filePath);
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const data = XLSX.utils.sheet_to_json<EmployeeRow>(sheet);
+  // Read Excel file using exceljs
+  const data = await parseExcelFile(filePath);
 
   // Find employee by ID (compare as numbers to handle leading zeros)
   const employee = data.find(
@@ -167,14 +196,8 @@ export async function verifyExportedChangeNotes(
   employeeId: number,
   expectedNote: string
 ): Promise<void> {
-  // Check file exists
-  const fs = await import("fs/promises");
-  await fs.access(filePath);
-
-  // Read Excel file
-  const workbook = XLSX.readFile(filePath);
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const data = XLSX.utils.sheet_to_json<EmployeeRow>(sheet);
+  // Read Excel file using exceljs
+  const data = await parseExcelFile(filePath);
 
   // Find employee by ID (compare as numbers to handle leading zeros)
   const employee = data.find(
@@ -264,9 +287,7 @@ export async function verifyExportedEmployees(
 export async function readExportedFile(
   filePath: string
 ): Promise<EmployeeRow[]> {
-  const workbook = XLSX.readFile(filePath);
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  return XLSX.utils.sheet_to_json<EmployeeRow>(sheet);
+  return parseExcelFile(filePath);
 }
 
 /**
@@ -293,9 +314,7 @@ export async function verifyExportedColumns(
   filePath: string,
   expectedColumns: string[]
 ): Promise<void> {
-  const workbook = XLSX.readFile(filePath);
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const data = XLSX.utils.sheet_to_json<EmployeeRow>(sheet);
+  const data = await parseExcelFile(filePath);
 
   if (data.length === 0) {
     throw new Error(`Exported file ${filePath} has no data rows`);
