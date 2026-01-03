@@ -70,7 +70,9 @@ jobs:
           git config user.email "bot@9boxer.com"
           git add .screenshot-coverage-report.json .screenshot-coverage-report.md .screenshot-coverage-badge.json
           git commit -m "docs: update screenshot coverage report [skip ci]"
-          git push
+          # Handle race condition with concurrent workflows
+          git pull --rebase || true
+          git push || echo "Push failed - likely concurrent update, will retry next run"
 
       - name: Generate Summary
         if: always()

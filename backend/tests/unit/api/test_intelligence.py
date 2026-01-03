@@ -77,7 +77,8 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
         assert "interpretation" in analysis
 
         # Type checks
-        assert isinstance(analysis["chi_square"], (int, float))
+        # chi_square can be None for manager_analysis (individual values are in deviations list)
+        assert analysis["chi_square"] is None or isinstance(analysis["chi_square"], (int, float))
         assert isinstance(analysis["p_value"], (int, float))
         assert isinstance(analysis["effect_size"], (int, float))
         assert isinstance(analysis["degrees_of_freedom"], int)

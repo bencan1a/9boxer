@@ -27,12 +27,35 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 /**
+ * Fetch origin to ensure remote refs are available
+ *
+ * @param {string} baseBranch - Base branch to fetch
+ */
+function fetchOrigin(baseBranch) {
+  try {
+    console.log(`📥 Fetching origin/${baseBranch}...`);
+    execSync(`git fetch origin ${baseBranch} --depth=1`, {
+      cwd: PROJECT_ROOT,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    console.log('✅ Fetch successful');
+  } catch (error) {
+    console.warn('⚠️ Warning: Could not fetch origin:', error.message);
+    // Continue anyway - the ref might already exist locally
+  }
+}
+
+/**
  * Get changed files from git diff
  *
  * @param {string} baseBranch - Base branch to compare against
  * @returns {string[]} Array of changed file paths
  */
 function getChangedFiles(baseBranch) {
+  // Ensure we have the latest remote refs
+  fetchOrigin(baseBranch);
+
   try {
     const output = execSync(`git diff --name-only origin/${baseBranch}...HEAD`, {
       cwd: PROJECT_ROOT,
@@ -375,6 +398,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 // Export functions for testing
 export {
+  fetchOrigin,
   getChangedFiles,
   loadComponentScreenshotMap,
   analyzeDocumentationImpact,

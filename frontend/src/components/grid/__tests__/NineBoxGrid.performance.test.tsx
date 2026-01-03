@@ -5,10 +5,8 @@
  * These tests catch performance regressions like missing React.memo,
  * inefficient re-renders, or slow virtualization.
  *
- * Performance Targets (CI-friendly):
- * - 100 employees: <700ms render time (CI can be slower than dev)
- * - 500 employees: <1500ms render time
- * - 1000 employees: <2500ms render time
+ * Performance thresholds are defined in performance-baselines.ts
+ * and use a baseline + tolerance approach for CI stability.
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -19,6 +17,10 @@ import {
   generateEmployeesByPosition,
 } from "../../../test-utils/performance-generators";
 import { useSessionStore } from "../../../store/sessionStore";
+import {
+  PERFORMANCE_BASELINES,
+  getMaxTime,
+} from "../../../test-utils/performance-baselines";
 
 // Module-level state for mocked data
 let mockEmployees: any[] = [];
@@ -94,7 +96,7 @@ describe("NineBoxGrid Performance Tests", () => {
     });
   });
 
-  it("should render 100 employees in <700ms", () => {
+  it("should render 100 employees in reasonable time", () => {
     // Generate test data
     const employees = generateLargeEmployeeDataset(100);
     const employeesByPosition = generateEmployeesByPosition(11); // ~11 per position
@@ -124,15 +126,17 @@ describe("NineBoxGrid Performance Tests", () => {
       container.querySelector('[data-testid="nine-box-grid"]')
     ).toBeInTheDocument();
 
-    // Performance assertion - CI environments are slower
-    expect(renderTime).toBeLessThan(700);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } = PERFORMANCE_BASELINES.nineBoxGrid.render100;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ NineBoxGrid rendered 100 employees in ${renderTime.toFixed(2)}ms (target: <700ms)`
+      `✓ NineBoxGrid rendered 100 employees in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
-  it("should render 500 employees in <1500ms", () => {
+  it("should render 500 employees in reasonable time", () => {
     // Generate test data
     const employees = generateLargeEmployeeDataset(500);
     const employeesByPosition = generateEmployeesByPosition(56); // ~56 per position
@@ -162,15 +166,17 @@ describe("NineBoxGrid Performance Tests", () => {
       container.querySelector('[data-testid="nine-box-grid"]')
     ).toBeInTheDocument();
 
-    // Performance assertion
-    expect(renderTime).toBeLessThan(1500);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } = PERFORMANCE_BASELINES.nineBoxGrid.render500;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ NineBoxGrid rendered 500 employees in ${renderTime.toFixed(2)}ms (target: <1500ms)`
+      `✓ NineBoxGrid rendered 500 employees in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
-  it("should render 1000 employees in <2500ms", () => {
+  it("should render 1000 employees in reasonable time", () => {
     // Generate test data
     const employees = generateLargeEmployeeDataset(1000);
     const employeesByPosition = generateEmployeesByPosition(111); // ~111 per position
@@ -200,11 +206,14 @@ describe("NineBoxGrid Performance Tests", () => {
       container.querySelector('[data-testid="nine-box-grid"]')
     ).toBeInTheDocument();
 
-    // Performance assertion
-    expect(renderTime).toBeLessThan(2500);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.render1000;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ NineBoxGrid rendered 1000 employees in ${renderTime.toFixed(2)}ms (target: <2500ms)`
+      `✓ NineBoxGrid rendered 1000 employees in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
@@ -253,11 +262,13 @@ describe("NineBoxGrid Performance Tests", () => {
     rerender(<NineBoxGrid />);
     const rerenderTime = performance.now() - startTime;
 
-    // Re-render should be reasonably fast (CI can be slow)
-    expect(rerenderTime).toBeLessThan(200);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } = PERFORMANCE_BASELINES.nineBoxGrid.reRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(rerenderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ NineBoxGrid re-rendered with single change in ${rerenderTime.toFixed(2)}ms (target: <200ms)`
+      `✓ NineBoxGrid re-rendered with single change in ${rerenderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
@@ -287,11 +298,14 @@ describe("NineBoxGrid Performance Tests", () => {
       container.querySelector('[data-testid="nine-box-grid"]')
     ).toBeInTheDocument();
 
-    // Empty grid should render reasonably fast
-    expect(renderTime).toBeLessThan(100);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.emptyRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ NineBoxGrid rendered empty grid in ${renderTime.toFixed(2)}ms (target: <100ms)`
+      `✓ NineBoxGrid rendered empty grid in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 });

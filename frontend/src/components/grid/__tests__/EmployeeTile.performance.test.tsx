@@ -5,16 +5,18 @@
  * These tests verify that React.memo optimizations are working
  * and that tiles don't re-render unnecessarily.
  *
- * Performance Targets (adjusted for test environment overhead):
- * - Single tile initial render: <200ms (includes i18n init, theme setup, etc.)
- * - Batch render (100 tiles): <1000ms
- * - Re-render: Most tiles should not re-render when one changes
+ * Performance thresholds are defined in performance-baselines.ts
+ * and use a baseline + tolerance approach for CI stability.
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "../../../test/utils";
 import { EmployeeTile } from "../EmployeeTile";
 import { generateLargeEmployeeDataset } from "../../../test-utils/performance-generators";
+import {
+  PERFORMANCE_BASELINES,
+  getMaxTime,
+} from "../../../test-utils/performance-baselines";
 
 // Mock onSelect handler
 const mockOnSelect = vi.fn();
@@ -24,7 +26,7 @@ describe("EmployeeTile Performance Tests", () => {
     vi.clearAllMocks();
   });
 
-  it("should render a single tile in <200ms", () => {
+  it("should render a single tile in reasonable time", () => {
     // Generate single employee
     const [employee] = generateLargeEmployeeDataset(1);
 
@@ -40,11 +42,14 @@ describe("EmployeeTile Performance Tests", () => {
       container.querySelector('[data-testid^="employee-card-"]')
     ).toBeInTheDocument();
 
-    // Performance assertion - includes test environment overhead (i18n, theme, etc.)
-    expect(renderTime).toBeLessThan(200);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.employeeTile.singleRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ EmployeeTile rendered in ${renderTime.toFixed(2)}ms (target: <200ms)`
+      `✓ EmployeeTile rendered in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
@@ -73,11 +78,14 @@ describe("EmployeeTile Performance Tests", () => {
     const tiles = container.querySelectorAll('[data-testid^="employee-card-"]');
     expect(tiles).toHaveLength(100);
 
-    // Performance assertion - 100 tiles should render in <1000ms (CI-friendly)
-    expect(renderTime).toBeLessThan(1000);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.employeeTile.batchRender100;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ Rendered 100 EmployeeTiles in ${renderTime.toFixed(2)}ms (target: <1000ms)`
+      `✓ Rendered 100 EmployeeTiles in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
     console.log(`  Average: ${(renderTime / 100).toFixed(2)}ms per tile`);
   });
@@ -129,11 +137,13 @@ describe("EmployeeTile Performance Tests", () => {
     expect(renderCount).toBeGreaterThan(0); // At least one re-render happened
     expect(renderCount).toBeLessThanOrEqual(10); // Not more than total tiles
 
-    // Re-render should be fast even if all re-render
-    expect(rerenderTime).toBeLessThan(100);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } = PERFORMANCE_BASELINES.employeeTile.reRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(rerenderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ Re-render after single change took ${rerenderTime.toFixed(2)}ms`
+      `✓ Re-render after single change took ${rerenderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
     console.log(
       `  Re-rendered ${renderCount} of 10 tiles (acceptable in test environment)`
@@ -165,11 +175,14 @@ describe("EmployeeTile Performance Tests", () => {
     const tiles = container.querySelectorAll('[data-testid^="employee-card-"]');
     expect(tiles).toHaveLength(100);
 
-    // Tiles with flags should not significantly impact performance
-    expect(renderTime).toBeLessThan(1000);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.employeeTile.flagsRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ Rendered 100 tiles (with flags) in ${renderTime.toFixed(2)}ms (target: <1000ms)`
+      `✓ Rendered 100 tiles (with flags) in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
@@ -189,11 +202,14 @@ describe("EmployeeTile Performance Tests", () => {
     rerender(<EmployeeTile employee={employee} onSelect={mockOnSelect2} />);
     const toggleTime = performance.now() - startTime;
 
-    // Prop change should be very fast
-    expect(toggleTime).toBeLessThan(20);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.employeeTile.propChange;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(toggleTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ Prop change took ${toggleTime.toFixed(2)}ms (target: <20ms)`
+      `✓ Prop change took ${toggleTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 
@@ -223,11 +239,14 @@ describe("EmployeeTile Performance Tests", () => {
       container.querySelector('[data-testid^="employee-card-"]')
     ).toBeInTheDocument();
 
-    // Complex data should not significantly impact performance
-    expect(renderTime).toBeLessThan(25);
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.employeeTile.complexDataRender;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(renderTime).toBeLessThan(maxTime);
 
     console.log(
-      `✓ Complex EmployeeTile rendered in ${renderTime.toFixed(2)}ms (target: <25ms)`
+      `✓ Complex EmployeeTile rendered in ${renderTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
   });
 });

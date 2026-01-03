@@ -10,7 +10,7 @@ import * as fs from "fs";
 import * as os from "os";
 import axios from "axios";
 
-const MAX_RETRIES = 60; // 60 seconds max wait
+const MAX_RETRIES = 90; // 90 seconds max wait (CI can be slow)
 const RETRY_INTERVAL = 1000; // 1 second between retries
 
 type WorkerFixtures = {
