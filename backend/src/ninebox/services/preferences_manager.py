@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any
 
 from ninebox.models.preferences import RecentFile
-from ninebox.utils.paths import get_user_data_dir
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +113,7 @@ class PreferencesManager:
             name: Display name of the file (typically the filename).
 
         Raises:
-            ValueError: If path is unsafe (path traversal or reserved name).
+            ValueError: If path uses a Windows reserved name.
 
         Example:
             >>> manager = PreferencesManager()

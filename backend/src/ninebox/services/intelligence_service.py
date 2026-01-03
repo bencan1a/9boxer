@@ -1052,9 +1052,15 @@ def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any
         total_count = len(level_employees)
 
         # Count employees in each performance tier
-        high_count = sum(1 for emp in level_employees if emp.grid_position in HIGH_PERFORMER_POSITIONS)
-        medium_count = sum(1 for emp in level_employees if emp.grid_position in MEDIUM_PERFORMER_POSITIONS)
-        low_count = sum(1 for emp in level_employees if emp.grid_position in LOW_PERFORMER_POSITIONS)
+        high_count = sum(
+            1 for emp in level_employees if emp.grid_position in HIGH_PERFORMER_POSITIONS
+        )
+        medium_count = sum(
+            1 for emp in level_employees if emp.grid_position in MEDIUM_PERFORMER_POSITIONS
+        )
+        low_count = sum(
+            1 for emp in level_employees if emp.grid_position in LOW_PERFORMER_POSITIONS
+        )
 
         # Calculate percentages
         high_pct = (high_count / total_count * 100) if total_count > 0 else 0
@@ -1067,8 +1073,14 @@ def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any
         expected_low = total_count * BASELINE_LOW / 100
 
         # Calculate z-scores for each performance tier
-        z_high = ((high_count - expected_high) / np.sqrt(expected_high)) if expected_high > 0 else 0.0
-        z_medium = ((medium_count - expected_medium) / np.sqrt(expected_medium)) if expected_medium > 0 else 0.0
+        z_high = (
+            ((high_count - expected_high) / np.sqrt(expected_high)) if expected_high > 0 else 0.0
+        )
+        z_medium = (
+            ((medium_count - expected_medium) / np.sqrt(expected_medium))
+            if expected_medium > 0
+            else 0.0
+        )
         z_low = ((low_count - expected_low) / np.sqrt(expected_low)) if expected_low > 0 else 0.0
 
         # Determine level status based on z-scores
@@ -1194,7 +1206,9 @@ def _determine_overall_status_from_levels(level_results: dict[str, dict[str, Any
     return "green"
 
 
-def _generate_per_level_summary(level_results: dict[str, dict[str, Any]], overall_status: str) -> str:
+def _generate_per_level_summary(
+    level_results: dict[str, dict[str, Any]], overall_status: str
+) -> str:
     """Generate human-readable summary of per-level distribution analysis.
 
     Args:

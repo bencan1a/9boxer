@@ -229,7 +229,8 @@ export const CalibrationSummarySection: React.FC<
               {/* Show info if summary not available */}
               {!summary && data && (
                 <Alert severity="info" sx={{ mb: 3 }}>
-                  AI summary not available. Showing insights from legacy analysis.
+                  AI summary not available. Showing insights from legacy
+                  analysis.
                 </Alert>
               )}
 
