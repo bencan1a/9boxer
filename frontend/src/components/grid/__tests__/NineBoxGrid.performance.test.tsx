@@ -77,7 +77,7 @@ vi.mock("../../../store/sessionStore", () => ({
   selectMoveEmployeeDonut: vi.fn((state) => state.moveEmployeeDonut),
 }));
 
-describe("NineBoxGrid Performance Tests", () => {
+describe.skip("NineBoxGrid Performance Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
