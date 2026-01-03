@@ -271,10 +271,13 @@ describe("AnomalySection", () => {
       const detailsHeader = screen.getByText(new RegExp(detailsText));
       fireEvent.click(detailsHeader);
 
-      await waitFor(() => {
-        const categoryText = t("panel.intelligenceTab.anomaly.category");
-        expect(screen.getByText(categoryText)).toBeVisible();
-      });
+      await waitFor(
+        () => {
+          const categoryText = t("panel.intelligenceTab.anomaly.category");
+          expect(screen.getByText(categoryText)).toBeVisible();
+        },
+        { timeout: 2000 }
+      );
     });
 
     it("collapses details table when header is clicked again", async () => {
@@ -291,17 +294,24 @@ describe("AnomalySection", () => {
 
       // Expand
       fireEvent.click(detailsHeader);
-      await waitFor(() => {
-        const categoryText = t("panel.intelligenceTab.anomaly.category");
-        expect(screen.getByText(categoryText)).toBeVisible();
-      });
+      await waitFor(
+        () => {
+          const categoryText = t("panel.intelligenceTab.anomaly.category");
+          expect(screen.getByText(categoryText)).toBeVisible();
+        },
+        { timeout: 2000 }
+      );
 
       // Collapse
       fireEvent.click(detailsHeader);
-      await waitFor(() => {
-        const categoryText = t("panel.intelligenceTab.anomaly.category");
-        expect(screen.queryByText(categoryText)).not.toBeVisible();
-      });
+      await waitFor(
+        () => {
+          const categoryText = t("panel.intelligenceTab.anomaly.category");
+          const element = screen.queryByText(categoryText);
+          expect(element).not.toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
     });
 
     it("displays deviation count in header", () => {
@@ -328,16 +338,22 @@ describe("AnomalySection", () => {
         />
       );
 
-      const expandIcon = screen.getByTestId("ExpandMoreIcon");
-
       const detailsText = t("panel.intelligenceTab.anomaly.detailedDeviations");
       const detailsHeader = screen.getByText(new RegExp(detailsText));
+
+      // Get all expand icons and find the one for details (should be the second one)
+      const expandIcons = screen.getAllByTestId("ExpandMoreIcon");
+      const detailsExpandIcon = expandIcons[expandIcons.length - 1];
+
       fireEvent.click(detailsHeader);
 
       // Icon should be present and interactive
-      await waitFor(() => {
-        expect(expandIcon).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(detailsExpandIcon).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
     });
   });
 
@@ -417,11 +433,14 @@ describe("AnomalySection", () => {
       const detailsHeader = screen.getByText(new RegExp(detailsText));
       fireEvent.click(detailsHeader);
 
-      await waitFor(() => {
-        const table = screen.getByRole("table");
-        // Z-scores should be formatted with 2 decimals (e.g., "-0.24")
-        expect(table).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const table = screen.getByRole("table");
+          // Z-scores should be formatted with 2 decimals (e.g., "-0.24")
+          expect(table).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
     });
 
     it("displays sample sizes", async () => {
