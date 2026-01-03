@@ -328,6 +328,7 @@
         "qualityScore": "Score de qualité",
         "qualityScoreDescription": "Échelle de 0 à 100 basée sur les anomalies statistiques détectées",
         "totalAnomalies": "Total des anomalies",
+        "employees": "Employés",
         "green": "Vert",
         "yellow": "Jaune",
         "red": "Rouge",
@@ -503,7 +504,7 @@
     "calibrationSummary": {
       "title": "Calibration Summary",
       "dataOverview": "Data Overview",
-      "insights": "Meeting Insights",
+      "insights": "Calibration Insights",
       "generating": "Generating...",
       "generateSummary": "Generate AI Summary",
       "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
@@ -538,7 +539,9 @@
         "focus_area": "Focus Area",
         "recommendation": "Recommendation",
         "time_allocation": "Time Allocation"
-      }
+      },
+      "affectedEmployees": "{{count}} employé affecté",
+      "affectedEmployees_other": "{{count}} employés affectés"
     },
     "severity": {
       "critical": "Critical",

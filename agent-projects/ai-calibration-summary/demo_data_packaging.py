@@ -5,10 +5,10 @@ a sample of the output format for LLM agent consumption.
 """
 
 import json
-from pathlib import Path
 
 # Add backend to path
 import sys
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 

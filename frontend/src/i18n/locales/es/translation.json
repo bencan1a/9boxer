@@ -335,6 +335,7 @@
         "qualityScore": "Puntuación de Calidad",
         "qualityScoreDescription": "Escala 0-100 basada en anomalías estadísticas detectadas",
         "totalAnomalies": "Total de Anomalías",
+        "employees": "Empleados",
         "green": "Verde",
         "yellow": "Amarillo",
         "red": "Rojo",
@@ -360,7 +361,7 @@
     "calibrationSummary": {
       "title": "Resumen de Calibración",
       "dataOverview": "Resumen de Datos",
-      "insights": "Insights de la Reunión",
+      "insights": "Insights de Calibración",
       "generating": "Generando...",
       "generateSummary": "Generar Resumen con IA",
       "llmNotAvailable": "El resumen con IA requiere que ANTHROPIC_API_KEY esté configurado",
@@ -395,7 +396,9 @@
         "focus_area": "Área de Enfoque",
         "recommendation": "Recomendación",
         "time_allocation": "Asignación de Tiempo"
-      }
+      },
+      "affectedEmployees": "{{count}} empleado afectado",
+      "affectedEmployees_other": "{{count}} empleados afectados"
     },
     "severity": {
       "critical": "Crítico",
@@ -534,9 +537,6 @@
     "retry": "Reintentar",
     "quit": "Salir",
     "retryConnection": "Reintentar conexión",
-    "hide": "Ocultar",
-    "show": "Mostrar",
-    "dismiss": "Descartar",
     "fileUpload": {
       "dialogTitle": "Importar Archivo de Excel",
       "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",

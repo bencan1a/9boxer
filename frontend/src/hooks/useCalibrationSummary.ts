@@ -8,7 +8,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiClient } from "../services/api";
 import type { CalibrationSummaryData, Insight } from "../types/api";
-import { useSessionStore } from "../store/sessionStore";
+import {
+  useSessionStore,
+  selectCalibrationSummary,
+  selectSetCalibrationSummary,
+  selectEmployees,
+} from "../store/sessionStore";
 
 /**
  * Selection state for insights
@@ -29,12 +34,16 @@ export interface UseCalibrationSummaryOptions {
 export interface UseCalibrationSummaryResult {
   /** Calibration summary data from the API */
   data: CalibrationSummaryData | null;
-  /** Whether data is currently being fetched */
+  /** Whether initial data is currently being fetched */
   isLoading: boolean;
+  /** Whether AI summary is currently being generated */
+  isGeneratingAI: boolean;
   /** Error if fetch failed */
   error: Error | null;
   /** Refetch the data */
   refetch: () => Promise<void>;
+  /** Generate AI summary (with LLM) */
+  generateAISummary: () => Promise<void>;
   /** AI-generated summary text */
   summary: string | null;
   /** Current selection state for each insight */
@@ -54,11 +63,12 @@ export interface UseCalibrationSummaryResult {
 /**
  * Custom hook for fetching calibration summary data
  *
- * Automatically fetches calibration summary data on mount and when employee data changes.
- * Provides loading and error states, plus insight selection management.
+ * Automatically fetches data overview and basic insights (no LLM) on mount.
+ * Provides a separate function to generate AI summary (with LLM) on demand.
+ * Data is cached and persists across tab switches.
  *
  * @param options - Configuration options for the hook
- * @param options.useAgent - Whether to use AI agent for summary generation (default: true)
+ * @param options.useAgent - Whether to use AI agent for initial load (default: false for auto-load)
  * @returns Calibration summary data, loading state, error state, selection controls
  *
  * @example
@@ -66,7 +76,10 @@ export interface UseCalibrationSummaryResult {
  * const {
  *   data,
  *   isLoading,
+ *   isGeneratingAI,
  *   error,
+ *   refetch,
+ *   generateAISummary,
  *   summary,
  *   selectedInsights,
  *   toggleInsight,
@@ -74,8 +87,9 @@ export interface UseCalibrationSummaryResult {
  *   deselectAll,
  *   getSelectedIds,
  *   selectedCount
- * } = useCalibrationSummary({ useAgent: true });
+ * } = useCalibrationSummary();
  *
+ * // Data overview loads automatically
  * if (isLoading) return <div>Loading...</div>;
  * if (error) return <div>Error: {error.message}</div>;
  * if (!data) return null;
@@ -84,16 +98,8 @@ export interface UseCalibrationSummaryResult {
  *   <div>
  *     <h2>Total Employees: {data.data_overview.total_employees}</h2>
  *     {summary && <p>{summary}</p>}
- *     {data.insights.map(insight => (
- *       <InsightCard
- *         key={insight.id}
- *         insight={insight}
- *         selected={selectedInsights[insight.id]}
- *         onToggle={() => toggleInsight(insight.id)}
- *       />
- *     ))}
- *     <button onClick={() => generateSummary(getSelectedIds())}>
- *       Generate AI Summary ({selectedCount} selected)
+ *     <button onClick={generateAISummary} disabled={isGeneratingAI}>
+ *       Generate AI Summary
  *     </button>
  *   </div>
  * );
@@ -102,42 +108,87 @@ export interface UseCalibrationSummaryResult {
 export const useCalibrationSummary = (
   options: UseCalibrationSummaryOptions = {}
 ): UseCalibrationSummaryResult => {
-  const { useAgent = true } = options;
-  const [data, setData] = useState<CalibrationSummaryData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { useAgent = false } = options; // Default to false for auto-load without LLM
+
+  // Get data from session store for persistence across tab switches
+  const data = useSessionStore(selectCalibrationSummary);
+  const setData = useSessionStore(selectSetCalibrationSummary);
+  const employees = useSessionStore(selectEmployees);
+
+  // Loading and error state are local (not persisted)
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  // Insight selection state is local UI state (not persisted across tabs)
   const [selectedInsights, setSelectedInsights] = useState<InsightSelection>(
     {}
   );
-  const { employees } = useSessionStore(); // Trigger refetch when employees change
 
   /**
    * Fetches calibration summary data from the API
    */
-  const refetch = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const result = await apiClient.getCalibrationSummary({ useAgent });
-      setData(result);
+  const refetch = useCallback(
+    async (withAgent: boolean = useAgent) => {
+      try {
+        if (withAgent) {
+          setIsGeneratingAI(true);
+        } else {
+          setIsLoading(true);
+        }
+        setError(null);
+        const result = await apiClient.getCalibrationSummary({
+          useAgent: withAgent,
+        });
 
-      // Initialize all insights as selected when data loads
+        // When refreshing base data (without LLM), preserve existing AI summary if we have one
+        // Only override summary if we're explicitly generating AI summary (withAgent=true)
+        if (!withAgent && data?.summary) {
+          result.summary = data.summary;
+        }
+
+        // Store in session store for persistence across tab switches
+        setData(result);
+
+        // Initialize all insights as selected when data loads
+        const initialSelection: InsightSelection = {};
+        result.insights.forEach((insight: Insight) => {
+          initialSelection[insight.id] = true;
+        });
+        setSelectedInsights(initialSelection);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("Unknown error"));
+      } finally {
+        setIsLoading(false);
+        setIsGeneratingAI(false);
+      }
+    },
+    [useAgent, data?.summary, setData]
+  );
+
+  /**
+   * Generate AI summary (calls LLM)
+   */
+  const generateAISummary = useCallback(async () => {
+    await refetch(true); // Fetch with useAgent=true
+  }, [refetch]);
+
+  // Auto-fetch data overview (without LLM) on mount and when employees change
+  // BUT: only if we don't already have data (to preserve cached data on tab switch)
+  useEffect(() => {
+    if (!data) {
+      refetch(false); // Fetch without LLM
+    } else {
+      // We have cached data, just initialize insight selection from it
       const initialSelection: InsightSelection = {};
-      result.insights.forEach((insight: Insight) => {
+      data.insights.forEach((insight: Insight) => {
         initialSelection[insight.id] = true;
       });
       setSelectedInsights(initialSelection);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error("Unknown error"));
-    } finally {
-      setIsLoading(false);
     }
-  }, [useAgent]);
-
-  // Fetch on mount and when employees array changes (real-time updates)
-  useEffect(() => {
-    refetch();
-  }, [employees, refetch]);
+    // Only run on mount or when employees change, not when data changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employees]);
 
   /**
    * Toggle selection for a single insight
@@ -192,8 +243,10 @@ export const useCalibrationSummary = (
   return {
     data,
     isLoading,
+    isGeneratingAI,
     error,
-    refetch,
+    refetch: () => refetch(false),
+    generateAISummary,
     summary: data?.summary ?? null,
     selectedInsights,
     toggleInsight,

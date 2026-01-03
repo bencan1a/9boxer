@@ -328,6 +328,7 @@
         "qualityScore": "गुणवत्ता स्कोर",
         "qualityScoreDescription": "पता लगाई गई सांख्यिकीय विसंगतियों के आधार पर 0-100 स्केल",
         "totalAnomalies": "कुल विसंगतियां",
+        "employees": "कर्मचारी",
         "green": "हरा",
         "yellow": "पीला",
         "red": "लाल",
@@ -503,7 +504,7 @@
     "calibrationSummary": {
       "title": "Calibration Summary",
       "dataOverview": "Data Overview",
-      "insights": "Meeting Insights",
+      "insights": "Calibration Insights",
       "generating": "Generating...",
       "generateSummary": "Generate AI Summary",
       "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
@@ -538,7 +539,9 @@
         "focus_area": "Focus Area",
         "recommendation": "Recommendation",
         "time_allocation": "Time Allocation"
-      }
+      },
+      "affectedEmployees": "{{count}} कर्मचारी प्रभावित",
+      "affectedEmployees_other": "{{count}} कर्मचारी प्रभावित"
     },
     "severity": {
       "critical": "Critical",

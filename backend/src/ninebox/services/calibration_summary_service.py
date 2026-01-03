@@ -14,6 +14,7 @@ from collections import Counter
 from typing import Any, TypedDict
 
 from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 
 logger = logging.getLogger(__name__)
 
@@ -160,8 +161,12 @@ TIME_MULTIPLIERS: dict[int, float] = {
 # Grid position groupings
 STARS_POSITION = 9
 CENTER_BOX_POSITION = 5
-LOWER_PERFORMER_POSITIONS = {1, 2, 4}
-HIGH_PERFORMER_POSITIONS = {3, 6, 9}
+# Use canonical definitions from grid_positions.py
+# High: [9, 8, 6] - Star, Growth, High Impact
+# Medium: [7, 5, 3] - Enigma, Core Talent, Workhorse
+# Low: [4, 2, 1] - Inconsistent, Effective Pro, Underperformer
+LOWER_PERFORMER_POSITIONS = set(PERFORMANCE_BUCKETS["Low"])
+HIGH_PERFORMER_POSITIONS = set(PERFORMANCE_BUCKETS["High"])
 
 # Recommended level sequence for calibration
 LEVEL_SEQUENCE = ["IC", "Manager", "Director", "VP", "Executive"]

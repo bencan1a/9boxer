@@ -11,6 +11,7 @@ import numpy as np
 from scipy.stats import chi2_contingency, chisquare, fisher_exact
 
 from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.org_service import OrgService
 
 
@@ -1021,13 +1022,16 @@ def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any
     BASELINE_MEDIUM = 70.0
     BASELINE_LOW = 10.0
 
-    # Performance tier definitions
-    HIGH_PERFORMER_POSITIONS = [3, 6, 8, 9]
-    MEDIUM_PERFORMER_POSITIONS = [5, 7]
-    LOW_PERFORMER_POSITIONS = [1, 2, 4]
+    # Use canonical performance tier definitions from grid_positions.py
+    # High: [9, 8, 6] - Star, Growth, High Impact (top 20%)
+    # Medium: [7, 5, 3] - Enigma, Core Talent, Workhorse
+    # Low: [4, 2, 1] - Inconsistent, Effective Pro, Underperformer
+    HIGH_PERFORMER_POSITIONS = PERFORMANCE_BUCKETS["High"]
+    MEDIUM_PERFORMER_POSITIONS = PERFORMANCE_BUCKETS["Medium"]
+    LOW_PERFORMER_POSITIONS = PERFORMANCE_BUCKETS["Low"]
 
     # Group employees by level
-    levels_data = {}
+    levels_data: dict[str, list[Employee]] = {}
     for emp in employees:
         level = emp.job_level
         if level not in levels_data:

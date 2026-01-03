@@ -36,6 +36,8 @@ interface InsightCardProps {
   onToggle: () => void;
   /** Whether to show cluster badge if available */
   showClusterBadge?: boolean;
+  /** Compact mode shows only title, click to expand for details */
+  compact?: boolean;
 }
 
 /**
@@ -96,8 +98,10 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   selected,
   onToggle,
   showClusterBadge = true,
+  compact = false,
 }) => {
   const { t } = useTranslation();
+  const [isDetailExpanded, setIsDetailExpanded] = React.useState(!compact);
   const hasCluster = insight.cluster_id && insight.cluster_title;
 
   return (
@@ -107,10 +111,13 @@ export const InsightCard: React.FC<InsightCardProps> = ({
         mb: 1,
         opacity: selected ? 1 : 0.6,
         borderColor: selected ? "primary.main" : "divider",
+        borderWidth: 2,
+        backgroundColor: selected ? "action.hover" : "background.default",
         transition: "all 0.2s ease",
         "&:hover": {
           borderColor: "primary.light",
           opacity: 1,
+          backgroundColor: "action.hover",
         },
       }}
       data-testid={`insight-card-${insight.id}`}
@@ -128,7 +135,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
               onChange={onToggle}
               onClick={(e) => e.stopPropagation()}
               size="small"
-              sx={{ p: 0, mt: 0.5 }}
+              sx={{ p: 0, mt: 0.25 }}
               data-testid={`insight-checkbox-${insight.id}`}
               inputProps={{
                 "aria-label": `Select ${insight.title}`,
@@ -137,19 +144,26 @@ export const InsightCard: React.FC<InsightCardProps> = ({
 
             {/* Content */}
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              {/* Header row: Priority badge + Type icon + Title */}
+              {/* Header row: Priority badge only */}
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.75,
+                  mb: 0.75,
+                }}
               >
                 <Chip
                   label={getPriorityLabel(insight.priority)}
                   color={getPriorityColor(insight.priority)}
+                  variant="outlined"
                   size="small"
                   sx={{
                     height: 20,
                     fontSize: "0.65rem",
-                    fontWeight: "bold",
-                    "& .MuiChip-label": { px: 0.75 },
+                    fontWeight: 600,
+                    borderWidth: 1.5,
+                    "& .MuiChip-label": { px: 0.75, py: 0 },
                   }}
                   data-testid={`insight-priority-${insight.id}`}
                 />
@@ -159,23 +173,33 @@ export const InsightCard: React.FC<InsightCardProps> = ({
                     clusterTitle={insight.cluster_title!}
                   />
                 )}
+              </Box>
+
+              {/* Title row with icon */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 0.75,
+                  mb: 0.75,
+                }}
+              >
                 <Box
                   sx={{
                     color: "text.secondary",
                     display: "flex",
                     alignItems: "center",
+                    mt: 0.25,
                   }}
                 >
                   {getCategoryIcon(insight.category)}
                 </Box>
                 <Typography
                   variant="body2"
-                  fontWeight="medium"
+                  fontWeight={600}
                   sx={{
                     flex: 1,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    lineHeight: 1.4,
                   }}
                   data-testid={`insight-title-${insight.id}`}
                 >
@@ -183,33 +207,95 @@ export const InsightCard: React.FC<InsightCardProps> = ({
                 </Typography>
               </Box>
 
-              {/* Description */}
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  display: "block",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-                data-testid={`insight-description-${insight.id}`}
-              >
-                {insight.description}
-              </Typography>
+              {/* Compact mode: Show expand toggle */}
+              {compact && !isDetailExpanded && (
+                <Typography
+                  component="span"
+                  variant="caption"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDetailExpanded(true);
+                  }}
+                  sx={{
+                    color: "primary.main",
+                    cursor: "pointer",
+                    fontSize: "0.75rem",
+                    fontWeight: 500,
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                    display: "inline-block",
+                  }}
+                  data-testid={`insight-expand-toggle-${insight.id}`}
+                >
+                  Show details
+                </Typography>
+              )}
 
-              {/* Affected count */}
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 0.5 }}
-                data-testid={`insight-affected-${insight.id}`}
-              >
-                {t("intelligence.calibrationSummary.affectedEmployees", {
-                  count: insight.affected_count,
-                  defaultValue: `${insight.affected_count} employees affected`,
-                })}
-              </Typography>
+              {/* Full details - shown in non-compact mode or when expanded */}
+              {isDetailExpanded && (
+                <>
+                  {/* Description */}
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      lineHeight: 1.5,
+                      mb: 0.75,
+                      fontSize: "0.85rem",
+                    }}
+                    data-testid={`insight-description-${insight.id}`}
+                  >
+                    {insight.description}
+                  </Typography>
+
+                  {/* Hide details link for compact mode */}
+                  {compact && (
+                    <Typography
+                      component="span"
+                      variant="caption"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDetailExpanded(false);
+                      }}
+                      sx={{
+                        color: "text.secondary",
+                        cursor: "pointer",
+                        fontSize: "0.75rem",
+                        fontWeight: 500,
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                        mb: 0.75,
+                        display: "inline-block",
+                      }}
+                    >
+                      Hide details
+                    </Typography>
+                  )}
+
+                  {/* Affected count - integrated with border-top */}
+                  <Box
+                    sx={{
+                      pt: 0.75,
+                      borderTop: 1,
+                      borderColor: "divider",
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.75rem" }}
+                      data-testid={`insight-affected-${insight.id}`}
+                    >
+                      {t("intelligence.calibrationSummary.affectedEmployees", {
+                        count: insight.affected_count,
+                        defaultValue: `${insight.affected_count} employees affected`,
+                      })}
+                    </Typography>
+                  </Box>
+                </>
+              )}
             </Box>
           </Box>
         </CardContent>

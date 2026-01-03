@@ -364,7 +364,7 @@ const MockCalibrationSummarySection: React.FC<
                 }}
               >
                 <Typography variant="subtitle2" color="text.secondary">
-                  Meeting Insights
+                  Calibration Insights
                 </Typography>
                 <ButtonGroup size="small" variant="text">
                   <Button onClick={selectAll}>Select All</Button>

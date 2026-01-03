@@ -346,6 +346,7 @@
         "qualityScore": "Quality Score",
         "qualityScoreDescription": "0-100 scale based on statistical anomalies detected",
         "totalAnomalies": "Total Anomalies",
+        "employees": "Employees",
         "green": "Green",
         "yellow": "Yellow",
         "red": "Red",
@@ -360,7 +361,7 @@
     "calibrationSummary": {
       "title": "Calibration Summary",
       "dataOverview": "Data Overview",
-      "insights": "Meeting Insights",
+      "insights": "Calibration Insights",
       "generating": "Generating...",
       "generateSummary": "Generate AI Summary",
       "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
