@@ -26,9 +26,7 @@ logger = logging.getLogger(__name__)
 # Type alias for analysis functions
 AnalysisFunction = Callable[[list[Employee]], dict[str, Any]]
 
-# Central registry of all analyses
-# Format: (analysis_name, analysis_function)
-# Easy to extend - just add a new tuple to register an analysis
+# Central registry of all analyses - list of (name, function) tuples
 ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
     ("location", calculate_location_analysis),
     ("function", calculate_function_analysis),

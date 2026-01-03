@@ -1,5 +1,6 @@
 import React from "react";
-import { Chip, alpha, useTheme } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import { alpha, useTheme } from "@mui/material/styles";
 import LinkIcon from "@mui/icons-material/Link";
 
 interface ClusterBadgeProps {

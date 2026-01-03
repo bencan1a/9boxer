@@ -2,6 +2,7 @@
 
 import json
 from datetime import date
+from pathlib import Path
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.services.data_packaging_service import package_for_llm, package_for_ui
@@ -118,7 +119,7 @@ def main():
     print(f"   Center box: {overview['center_box_count']} ({overview['center_box_percentage']}%)")
 
     print("\nANALYSES INCLUDED:")
-    for analysis_name in llm_package["analyses"].keys():
+    for analysis_name in llm_package["analyses"]:
         print(f"   - {analysis_name}")
 
     print("\n" + "=" * 80)
@@ -126,7 +127,8 @@ def main():
     print("=" * 80)
 
     # Save sample output for inspection
-    with open("test_llm_package_output.json", "w") as f:
+    output_path = Path("test_llm_package_output.json")
+    with output_path.open("w") as f:
         json.dump(llm_package, f, indent=2)
 
     print("\nSample LLM package saved to: backend/test_llm_package_output.json")

@@ -1,13 +1,10 @@
 import React from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  useTheme,
-  alpha,
-  Button,
-  Collapse,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
+import { useTheme, alpha } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";

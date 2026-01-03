@@ -5,16 +5,18 @@ a sample of the output format for LLM agent consumption.
 """
 
 import json
-
-# Add backend to path
 import sys
 from pathlib import Path
 
+# Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from ninebox.services.analysis_registry import run_all_analyses
-from ninebox.services.data_packaging_service import package_for_ui
-from ninebox.services.sample_data_generator import RichDatasetConfig, generate_rich_dataset
+from ninebox.services.analysis_registry import run_all_analyses  # noqa: E402
+from ninebox.services.data_packaging_service import package_for_ui  # noqa: E402
+from ninebox.services.sample_data_generator import (  # noqa: E402
+    RichDatasetConfig,
+    generate_rich_dataset,
+)
 
 
 def main():
@@ -48,8 +50,8 @@ def main():
     # Package for UI display (includes all fields)
     print("3. Packaging data for UI display (includes all employee fields)...")
     package = package_for_ui(employees, analyses)
-    print(f"   Package created with {len(package.keys())} top-level sections:")
-    for key in package.keys():
+    print(f"   Package created with {len(package)} top-level sections:")
+    for key in package:
         print(f"   - {key}")
     print()
 
@@ -100,7 +102,7 @@ def main():
 
     # Save full package to file for inspection
     output_file = Path(__file__).parent / "demo_package_output.json"
-    with open(output_file, "w") as f:
+    with output_file.open("w") as f:
         json.dump(package, f, indent=2, default=str)  # default=str for date serialization
 
     print(f"5. Full package saved to: {output_file}")
