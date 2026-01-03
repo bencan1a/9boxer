@@ -466,9 +466,10 @@
       "message": "Došlo k neočekávané chybě. Prosím, zkuste stránku znovu načíst.",
       "returnHome": "Vrátit se domů"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "Skrýt",
+    "show": "Zobrazit",
+    "dismiss": "Zavřít",
+    "loading": "Načítání..."
   },
   "messages": {
     "success": "Úspěch",

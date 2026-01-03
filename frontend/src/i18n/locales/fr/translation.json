@@ -466,9 +466,10 @@
       "message": "Une erreur inattendue s'est produite. Veuillez essayer de recharger la page.",
       "returnHome": "Retour à l'accueil"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "Masquer",
+    "show": "Afficher",
+    "dismiss": "Fermer",
+    "loading": "Chargement..."
   },
   "messages": {
     "success": "Succès",

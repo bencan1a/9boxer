@@ -466,9 +466,10 @@
       "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden.",
       "returnHome": "Zur Startseite zurückkehren"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "Verbergen",
+    "show": "Anzeigen",
+    "dismiss": "Schließen",
+    "loading": "Laden..."
   },
   "messages": {
     "success": "Erfolg",

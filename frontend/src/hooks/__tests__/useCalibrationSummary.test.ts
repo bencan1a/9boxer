@@ -53,9 +53,9 @@ describe("useCalibrationSummary", () => {
       summary: "AI summary text",
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -87,9 +87,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -113,9 +113,9 @@ describe("useCalibrationSummary", () => {
 
   it("handles API errors correctly", async () => {
     const errorMessage = "Failed to fetch calibration summary";
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockRejectedValue(
-      new Error(errorMessage)
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -168,9 +168,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -213,9 +213,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -278,9 +278,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -343,9 +343,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 
@@ -404,9 +404,9 @@ describe("useCalibrationSummary", () => {
       summary: null,
     };
 
-    (apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockData
-    );
+    (
+      apiClient.getCalibrationSummary as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useCalibrationSummary());
 

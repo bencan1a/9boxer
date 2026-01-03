@@ -466,9 +466,10 @@
       "message": "予期しないエラーが発生しました。ページを再読み込みしてください。",
       "returnHome": "ホームに戻る"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "非表示",
+    "show": "表示",
+    "dismiss": "閉じる",
+    "loading": "読み込み中..."
   },
   "messages": {
     "success": "成功",
