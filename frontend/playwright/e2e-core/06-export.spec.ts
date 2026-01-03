@@ -18,12 +18,12 @@ import {
   clickExport,
   applyChanges,
   verifyExportedChangeNotes,
+  readExportedFile,
 } from "../helpers";
 import { uploadFile } from "../helpers/fileOperations";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs/promises";
-import * as XLSX from "xlsx";
 
 test.describe("Export Tests", () => {
   let exportPath: string;
@@ -124,17 +124,13 @@ test.describe("Export Tests", () => {
     const stats = await fs.stat(exportPath);
     expect(stats.size).toBeGreaterThan(0);
 
-    // Additional verification: Check file opens without errors
-    const workbook = XLSX.readFile(exportPath);
-
-    // Verify all original columns are preserved
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
+    // Additional verification: Check file opens without errors using helper
+    const data = await readExportedFile(exportPath);
 
     expect(data.length).toBeGreaterThan(0);
 
     // Verify the first row has expected columns
-    const firstRow = data[0] as any;
+    const firstRow = data[0];
     expect(firstRow).toHaveProperty("Employee ID");
     expect(firstRow).toHaveProperty("Worker");
     expect(firstRow).toHaveProperty("Performance");
@@ -142,12 +138,12 @@ test.describe("Export Tests", () => {
 
     // Verify employee exists in exported file and was marked as modified
     const employee = data.find(
-      (row: any) =>
+      (row) =>
         parseInt(row["Employee ID"].toString(), 10) ===
         parseInt(employeeId.toString(), 10)
-    ) as any;
+    );
     expect(employee).toBeDefined();
-    expect(employee["Modified in Session"]).toBe("Yes");
+    expect(employee!["Modified in Session"]).toBe("Yes");
   });
 
   test("6.3 - Exported File Contains Change Notes", async ({ page }) => {
@@ -196,9 +192,7 @@ test.describe("Export Tests", () => {
     await verifyExportedChangeNotes(exportPath, employeeId, testNote);
 
     // Additional verification: Check column exists and employees without notes have empty cells
-    const workbook = XLSX.readFile(exportPath);
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet) as any[];
+    const data = await readExportedFile(exportPath);
 
     // Verify "9Boxer Change Notes" column exists
     const firstRow = data[0];
@@ -214,8 +208,8 @@ test.describe("Export Tests", () => {
         parseInt(employeeId.toString(), 10)
     );
     expect(modifiedEmployee).toBeDefined();
-    expect(modifiedEmployee["9Boxer Change Notes"]).toBe(testNote);
-    expect(modifiedEmployee["Modified in Session"]).toBe("Yes");
+    expect(modifiedEmployee!["9Boxer Change Notes"]).toBe(testNote);
+    expect(modifiedEmployee!["Modified in Session"]).toBe("Yes");
 
     // Verify at least one employee without changes has empty/blank notes
     const unchangedEmployee = data.find(
