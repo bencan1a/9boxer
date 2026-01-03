@@ -14,10 +14,10 @@ from pathlib import Path
 backend_src = Path(__file__).parent / "src"
 sys.path.insert(0, str(backend_src))
 
-from ninebox.services.llm_service import LLMService, load_system_prompt
-from ninebox.services.data_packaging_service import package_for_llm
-from ninebox.services.analysis_registry import run_all_analyses
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
+from ninebox.services.analysis_registry import run_all_analyses
+from ninebox.services.data_packaging_service import package_for_llm
+from ninebox.services.llm_service import LLMService, load_system_prompt
 
 
 def test_load_system_prompt():
@@ -28,7 +28,7 @@ def test_load_system_prompt():
 
     try:
         prompt = load_system_prompt()
-        print(f"[OK] System prompt loaded successfully")
+        print("[OK] System prompt loaded successfully")
         print(f"[OK] Prompt length: {len(prompt)} characters")
         print(f"[OK] First 200 chars: {prompt[:200]}...")
         print()
@@ -114,17 +114,17 @@ def test_data_packaging():
     print(f"[OK] Analyses included: {list(package['analyses'].keys())}")
 
     # Verify anonymization
-    first_employee = package['employees'][0]
-    if 'employee_id' not in first_employee:
+    first_employee = package["employees"][0]
+    if "employee_id" not in first_employee:
         print(f"[OK] Employee IDs are anonymized (using '{first_employee['id']}')")
     else:
-        print(f"[FAIL] Employee IDs are NOT anonymized!")
+        print("[FAIL] Employee IDs are NOT anonymized!")
         return False, None
 
-    if 'business_title' not in first_employee:
-        print(f"[OK] Business titles are anonymized")
+    if "business_title" not in first_employee:
+        print("[OK] Business titles are anonymized")
     else:
-        print(f"[FAIL] Business titles are NOT anonymized!")
+        print("[FAIL] Business titles are NOT anonymized!")
         return False, None
 
     print(f"[OK] Package size: {len(json.dumps(package))} bytes")
@@ -149,14 +149,14 @@ def test_generate_calibration_analysis(package):
         print()
         return True
 
-    print(f"[OK] LLM service is available")
+    print("[OK] LLM service is available")
     print(f"[OK] Using model: {llm_service.model}")
 
     try:
         print("[OK] Calling generate_calibration_analysis()...")
         result = llm_service.generate_calibration_analysis(package)
 
-        print(f"[OK] Analysis generated successfully!")
+        print("[OK] Analysis generated successfully!")
         print(f"[OK] Summary length: {len(result['summary'])} characters")
         print(f"[OK] Number of issues: {len(result['issues'])}")
 
@@ -164,21 +164,23 @@ def test_generate_calibration_analysis(package):
         print()
         print("SUMMARY:")
         print("-" * 80)
-        print(result['summary'][:500] + "..." if len(result['summary']) > 500 else result['summary'])
+        print(
+            result["summary"][:500] + "..." if len(result["summary"]) > 500 else result["summary"]
+        )
         print()
 
         # Display issues
         print("ISSUES:")
         print("-" * 80)
-        for i, issue in enumerate(result['issues'][:3], 1):
+        for i, issue in enumerate(result["issues"][:3], 1):
             print(f"{i}. [{issue['priority'].upper()}] {issue['title']}")
             print(f"   Type: {issue['type']}, Category: {issue['category']}")
             print(f"   Affected: {issue['affected_count']} employees")
-            if issue.get('cluster_id'):
+            if issue.get("cluster_id"):
                 print(f"   Cluster: {issue['cluster_title']} ({issue['cluster_id']})")
             print()
 
-        if len(result['issues']) > 3:
+        if len(result["issues"]) > 3:
             print(f"... and {len(result['issues']) - 3} more issues")
             print()
 
@@ -187,6 +189,7 @@ def test_generate_calibration_analysis(package):
     except Exception as e:
         print(f"[FAIL] Failed to generate analysis: {e}")
         import traceback
+
         traceback.print_exc()
         print()
         return False
@@ -220,14 +223,16 @@ def test_deprecation_warning():
             pass
 
         # Check for deprecation warning
-        deprecation_warnings = [warning for warning in w if issubclass(warning.category, DeprecationWarning)]
+        deprecation_warnings = [
+            warning for warning in w if issubclass(warning.category, DeprecationWarning)
+        ]
 
         if deprecation_warnings:
             print(f"[OK] Deprecation warning raised: {deprecation_warnings[0].message}")
             print()
             return True
         else:
-            print(f"[FAIL] No deprecation warning raised!")
+            print("[FAIL] No deprecation warning raised!")
             print()
             return False
 

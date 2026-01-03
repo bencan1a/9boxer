@@ -2,7 +2,7 @@
  * Intelligence data hook - fetches statistical anomaly analysis
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiClient } from "../services/api";
 import type { IntelligenceData } from "../types/api";
 import { useSessionStore } from "../store/sessionStore";
@@ -20,7 +20,8 @@ interface UseIntelligenceResult {
 /**
  * Custom hook for fetching intelligence data
  *
- * Automatically fetches intelligence data on mount and when employee data changes.
+ * Automatically fetches intelligence/anomaly analysis on mount and when employee data changes.
+ * Prevents duplicate requests if already loading. Data is cached between fetches.
  * Provides loading and error states, plus a manual refetch function.
  *
  * @returns Intelligence data, loading state, error state, and refetch function
@@ -33,20 +34,34 @@ interface UseIntelligenceResult {
  * if (error) return <div>Error: {error.message}</div>;
  * if (!data) return null;
  *
- * return <div>Quality Score: {data.quality_score}</div>;
+ * return (
+ *   <div>
+ *     <div>Quality Score: {data.quality_score}</div>
+ *     <button onClick={refetch}>Refresh</button>
+ *   </div>
+ * );
  * ```
  */
 export const useIntelligence = (): UseIntelligenceResult => {
   const [data, setData] = useState<IntelligenceData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { employees } = useSessionStore(); // Trigger refetch when employees change
+  const { employees } = useSessionStore();
+
+  // Track if a fetch is currently in progress to prevent duplicates
+  const fetchInProgressRef = useRef(false);
 
   /**
    * Fetches intelligence data from the API
    */
   const refetch = async () => {
+    // Prevent duplicate requests
+    if (fetchInProgressRef.current) {
+      return;
+    }
+
     try {
+      fetchInProgressRef.current = true;
       setIsLoading(true);
       setError(null);
       const result = await apiClient.getIntelligence();
@@ -55,10 +70,11 @@ export const useIntelligence = (): UseIntelligenceResult => {
       setError(err instanceof Error ? err : new Error("Unknown error"));
     } finally {
       setIsLoading(false);
+      fetchInProgressRef.current = false;
     }
   };
 
-  // Fetch on mount and when employees array changes (real-time updates)
+  // Auto-fetch on mount and when employees change
   useEffect(() => {
     refetch();
   }, [employees]);

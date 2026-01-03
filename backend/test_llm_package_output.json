@@ -1,0 +1,447 @@
+{
+  "level_breakdown": {
+    "levels": [
+      {
+        "level": "MT3",
+        "total_employees": 40,
+        "grid_distribution": {
+          "5": 32,
+          "9": 8
+        },
+        "performance_distribution": {
+          "High": 40
+        },
+        "potential_distribution": {
+          "Medium": 20,
+          "High": 20
+        },
+        "flagged_count": 8,
+        "flags_breakdown": {
+          "succession_candidate": 8,
+          "promotion_ready": 8
+        }
+      },
+      {
+        "level": "MT5",
+        "total_employees": 80,
+        "grid_distribution": {
+          "5": 64,
+          "9": 16
+        },
+        "performance_distribution": {
+          "Medium": 80
+        },
+        "potential_distribution": {
+          "Medium": 40,
+          "High": 40
+        },
+        "flagged_count": 16,
+        "flags_breakdown": {
+          "succession_candidate": 16,
+          "promotion_ready": 16
+        }
+      }
+    ],
+    "total_levels": 2
+  },
+  "flagged_employees": [
+    {
+      "id": "Employee_1",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_2",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_3",
+      "level": "MT3",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_4",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_5",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_6",
+      "level": "MT3",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_7",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_8",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_9",
+      "level": "MT3",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_10",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_11",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_12",
+      "level": "MT3",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_13",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_14",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_15",
+      "level": "MT3",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_16",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_17",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_18",
+      "level": "MT3",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_19",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_20",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_21",
+      "level": "MT3",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_22",
+      "level": "MT5",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_23",
+      "level": "MT5",
+      "function": "Sales",
+      "location": "London",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    },
+    {
+      "id": "Employee_24",
+      "level": "MT3",
+      "function": "Engineering",
+      "location": "USA",
+      "tenure_years": 4.0,
+      "performance_rating": 3,
+      "potential_rating": 3,
+      "grid_position": 9,
+      "flags": [
+        "succession_candidate",
+        "promotion_ready"
+      ]
+    }
+  ],
+  "organization": {
+    "managers": [],
+    "total_employees": 120,
+    "total_managers": 0,
+    "levels_present": [
+      "MT3",
+      "MT5"
+    ]
+  },
+  "analyses": {
+    "location": {
+      "status": "red",
+      "p_value": 0.001,
+      "chi_square": 15.3,
+      "effect_size": 0.35
+    },
+    "function": {
+      "status": "green",
+      "p_value": 0.8
+    },
+    "level": {
+      "status": "yellow",
+      "p_value": 0.04
+    },
+    "tenure": {
+      "status": "green",
+      "p_value": 0.6
+    }
+  },
+  "overview": {
+    "total_employees": 120,
+    "stars_count": 24,
+    "stars_percentage": 20.0,
+    "high_performers_count": 24,
+    "high_performers_percentage": 20.0,
+    "center_box_count": 96,
+    "center_box_percentage": 80.0,
+    "by_level": {
+      "MT5": 80,
+      "MT3": 40
+    },
+    "by_function": {
+      "Sales": 60,
+      "Engineering": 60
+    },
+    "by_location": {
+      "London": 60,
+      "USA": 60
+    },
+    "by_performance": {
+      "Medium": 80,
+      "High": 40
+    },
+    "by_potential": {
+      "Medium": 60,
+      "High": 60
+    },
+    "by_grid_position": {
+      "5": 96,
+      "9": 24
+    }
+  }
+}

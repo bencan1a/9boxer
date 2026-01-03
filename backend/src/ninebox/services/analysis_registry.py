@@ -8,7 +8,8 @@ ensuring consistency between UI display and AI calibration summaries.
 """
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from ninebox.models.employee import Employee
 from ninebox.services.intelligence_service import (
@@ -18,7 +19,6 @@ from ninebox.services.intelligence_service import (
     calculate_per_level_distribution,
     calculate_tenure_analysis,
 )
-
 
 logger = logging.getLogger(__name__)
 

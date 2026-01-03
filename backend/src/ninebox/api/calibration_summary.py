@@ -4,6 +4,7 @@ This module provides endpoints for calibration meeting preparation,
 including data overview, insights, time allocation, and optional LLM summaries.
 """
 
+import asyncio
 import logging
 import re
 from re import Pattern
@@ -219,7 +220,11 @@ async def get_calibration_summary(
             f"for user_id={LOCAL_USER_ID} with use_agent={use_agent}"
         )
 
-        summary = summary_service.calculate_summary(session.current_employees, use_agent=use_agent)
+        # Run the potentially long-running LLM calculation in a background thread
+        # to prevent blocking the event loop and keep the server responsive
+        summary = await asyncio.to_thread(
+            summary_service.calculate_summary, session.current_employees, use_agent=use_agent
+        )
         return CalibrationSummaryResponse(**summary)  # type: ignore[typeddict-item]
 
     except HTTPException:

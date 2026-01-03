@@ -33,7 +33,7 @@ Tests for checking LLM service availability:
 Tests for on-demand summary generation endpoint:
 - ✅ Basic flow with mocked LLM
 - ⚠️ Mocking challenges with LLMService initialization
-- ✅ Empty insight IDs validation  
+- ✅ Empty insight IDs validation
 - ✅ Invalid insight ID format validation
 - ✅ Too many insights validation
 - ✅ Duplicate IDs validation
@@ -63,7 +63,7 @@ Tests for on-demand summary generation endpoint:
 **4 tests** require environment-specific patches:
 1. `test_llm_availability_with_api_key` - Needs LLMService.is_available() mock
 2. `test_llm_availability_without_api_key` - Needs LLMService.is_available() mock
-3. `test_generate_summary_success` - Needs LLMService mocks  
+3. `test_generate_summary_success` - Needs LLMService mocks
 4. `test_generate_summary_without_llm_availability` - Needs LLMService mocks
 
 These tests work correctly but encounter challenges mocking the Anthropic client initialization

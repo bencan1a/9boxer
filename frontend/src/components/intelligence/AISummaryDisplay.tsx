@@ -1,35 +1,113 @@
-import React from 'react';
-import { Box, Paper, Typography } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import React from "react";
+import {
+  Box,
+  Paper,
+  Typography,
+  useTheme,
+  alpha,
+  Button,
+  Collapse,
+} from "@mui/material";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 interface AISummaryDisplayProps {
   summary: string;
 }
 
-export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({ summary }) => {
+export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({
+  summary,
+}) => {
+  const theme = useTheme();
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
   // Split by double newlines for paragraphs
-  const paragraphs = summary.split('\n\n').filter(p => p.trim());
+  const paragraphs = summary.split("\n\n").filter((p) => p.trim());
 
   return (
-    <Paper elevation={1} sx={{ p: 3, mb: 3, backgroundColor: '#f8f9fa' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <AutoAwesomeIcon sx={{ color: 'primary.main' }} />
-        <Typography variant="h6">AI-Generated Summary</Typography>
-      </Box>
-
-      <Box sx={{ mb: 2 }}>
-        {paragraphs.map((paragraph, index) => (
-          <Typography
-            key={index}
-            variant="body1"
-            sx={{ mb: index < paragraphs.length - 1 ? 2 : 0, lineHeight: 1.6 }}
-          >
-            {paragraph}
+    <Paper
+      elevation={1}
+      sx={{
+        p: 3,
+        mb: 3,
+        backgroundColor:
+          theme.palette.mode === "light"
+            ? alpha(theme.palette.primary.main, 0.04)
+            : alpha(theme.palette.primary.main, 0.08),
+        borderLeft: `4px solid ${theme.palette.primary.main}`,
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <AutoAwesomeIcon sx={{ color: "primary.main" }} />
+          <Typography variant="h6" color="primary">
+            AI-Generated Summary
           </Typography>
-        ))}
+        </Box>
+        <Button
+          size="small"
+          onClick={() => setIsExpanded(!isExpanded)}
+          endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          sx={{ minWidth: 120 }}
+        >
+          {isExpanded ? "Show less" : "Read full"}
+        </Button>
       </Box>
 
-      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+      <Collapse in={isExpanded} collapsedSize={100}>
+        <Box
+          sx={{
+            maxHeight: isExpanded ? 600 : 100,
+            overflowY: isExpanded ? "auto" : "hidden",
+            pr: isExpanded ? 1 : 0,
+            position: "relative",
+          }}
+        >
+          {paragraphs.map((paragraph, index) => (
+            <Typography
+              key={index}
+              variant="body1"
+              color="text.primary"
+              sx={{
+                mb: index < paragraphs.length - 1 ? 2 : 0,
+                lineHeight: 1.6,
+              }}
+            >
+              {paragraph}
+            </Typography>
+          ))}
+          {!isExpanded && (
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 40,
+                background:
+                  theme.palette.mode === "light"
+                    ? `linear-gradient(transparent, ${alpha(theme.palette.primary.main, 0.04)})`
+                    : `linear-gradient(transparent, ${alpha(theme.palette.primary.main, 0.08)})`,
+                pointerEvents: "none",
+              }}
+            />
+          )}
+        </Box>
+      </Collapse>
+
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: "block", mt: 2 }}
+      >
         Powered by Claude
       </Typography>
     </Paper>

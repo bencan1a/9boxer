@@ -49,7 +49,8 @@ class LLMAvailability(TypedDict):
 # =============================================================================
 
 DEFAULT_MODEL = "claude-sonnet-4-5-20250929"
-MAX_TOKENS = 8192  # Increased from 2048 to prevent response truncation
+HAIKU_MODEL = "claude-haiku-3-5-20250110"  # Faster alternative (3-5x speed gain)
+MAX_TOKENS = 4096  # Sufficient for typical outputs (1,000-2,500 tokens)
 TEMPERATURE = 0.3  # Low temperature for consistent output
 
 # JSON Schema for structured outputs (guarantees valid JSON)
@@ -208,6 +209,8 @@ class LLMService:
         Args:
             api_key: Optional API key override (from settings or env var)
             model: Optional model override (from settings or env var)
+                   Use HAIKU_MODEL constant for 3-5x faster responses
+                   Set via LLM_MODEL env var (e.g., LLM_MODEL=claude-haiku-3-5-20250110)
         """
         # Try passed parameters first, fall back to environment variables
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")

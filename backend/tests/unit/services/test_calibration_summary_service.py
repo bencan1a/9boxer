@@ -715,17 +715,22 @@ class TestDataOverviewCalculations:
     def test_high_performers_includes_correct_positions(
         self, service: CalibrationSummaryService
     ) -> None:
-        """Test that high performers count includes positions 3, 6, and 9."""
+        """Test that high performers count includes positions 6, 8, and 9 (top 20% tier).
+
+        Note: Position 3 (Workhorse - High Performance, Low Potential) is NOT
+        considered a high performer for succession planning purposes.
+        """
         employees = [
-            create_employee(1, grid_position=3),  # High performer
-            create_employee(2, grid_position=6),  # High performer
-            create_employee(3, grid_position=9),  # High performer (star)
-            create_employee(4, grid_position=5),  # Not high performer
-            create_employee(5, grid_position=1),  # Not high performer
+            create_employee(1, grid_position=6),  # High performer (High Impact)
+            create_employee(2, grid_position=8),  # High performer (Growth)
+            create_employee(3, grid_position=9),  # High performer (Star)
+            create_employee(4, grid_position=3),  # NOT high performer (Workhorse)
+            create_employee(5, grid_position=5),  # Not high performer (Core Talent)
+            create_employee(6, grid_position=1),  # Not high performer (Underperformer)
         ]
 
         result = service.calculate_summary(employees, use_agent=False)
         overview = result["data_overview"]
 
         assert overview["high_performers_count"] == 3
-        assert overview["high_performers_percentage"] == 60.0  # 3/5 = 60%
+        assert overview["high_performers_percentage"] == 50.0  # 3/6 = 50%

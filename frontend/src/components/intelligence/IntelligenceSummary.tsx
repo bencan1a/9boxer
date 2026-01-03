@@ -14,6 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import type { IntelligenceData } from "../../types/api";
+import { useCalibrationSummary } from "../../hooks/useCalibrationSummary";
 
 interface IntelligenceSummaryProps {
   data: IntelligenceData;
@@ -23,6 +24,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
   data,
 }) => {
   const { t } = useTranslation();
+  const { data: calibrationData } = useCalibrationSummary();
 
   // Determine quality score color and status
   const getQualityColor = (score: number): string => {
@@ -39,12 +41,6 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
     return <ErrorIcon sx={{ fontSize: 48, color: "error.main" }} />;
   };
 
-  const getQualityStatus = (score: number): string => {
-    if (score >= 80) return t("panel.intelligenceTab.summary.excellent");
-    if (score >= 50) return t("panel.intelligenceTab.summary.good");
-    return t("panel.intelligenceTab.summary.needsAttention");
-  };
-
   const totalAnomalies =
     data.anomaly_count.green +
     data.anomaly_count.yellow +
@@ -59,7 +55,7 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
           sx={{ height: "100%" }}
           data-testid="quality-score-card"
         >
-          <CardContent>
+          <CardContent sx={{ pb: 2, "&:last-child": { pb: 2 } }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
               {getQualityIcon(data.quality_score)}
               <Box>
@@ -93,18 +89,14 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
           sx={{ height: "100%" }}
           data-testid="anomaly-count-card"
         >
-          <CardContent>
-            <Typography
-              variant="h4"
-              gutterBottom
-              data-testid="total-anomaly-count"
-            >
+          <CardContent sx={{ pb: 2, "&:last-child": { pb: 2 } }}>
+            <Typography variant="h3" data-testid="total-anomaly-count">
               {totalAnomalies}
             </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {t("panel.intelligenceTab.summary.totalAnomalies")}
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mt: 2, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", gap: 1, mt: 1, flexWrap: "wrap" }}>
               <Chip
                 icon={<CheckCircleIcon />}
                 label={`${data.anomaly_count.green} ${t("panel.intelligenceTab.summary.green")}`}
@@ -134,50 +126,59 @@ export const IntelligenceSummary: React.FC<IntelligenceSummaryProps> = ({
         </Card>
       </Grid>
 
-      {/* Status Card */}
-      <Grid item xs={12} md={4}>
-        <Card
-          variant="outlined"
-          sx={{ height: "100%" }}
-          data-testid="status-card"
-        >
-          <CardContent>
-            <Typography variant="h4" gutterBottom data-testid="status-heading">
-              {getQualityStatus(data.quality_score)}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {t("panel.intelligenceTab.summary.overallHealth")}
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              {data.quality_score >= 80 ? (
-                <Typography
-                  variant="body2"
-                  color="success.main"
-                  data-testid="status-message"
-                >
-                  {t("panel.intelligenceTab.summary.wellCalibrated")}
-                </Typography>
-              ) : data.quality_score >= 50 ? (
-                <Typography
-                  variant="body2"
-                  color="warning.main"
-                  data-testid="status-message"
-                >
-                  {t("panel.intelligenceTab.summary.someAnomalies")}
-                </Typography>
-              ) : (
-                <Typography
-                  variant="body2"
-                  color="error.main"
-                  data-testid="status-message"
-                >
-                  {t("panel.intelligenceTab.summary.significantAnomalies")}
-                </Typography>
-              )}
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
+      {/* Org Overview Card */}
+      {calibrationData?.data_overview && (
+        <Grid item xs={12} md={4}>
+          <Card
+            variant="outlined"
+            sx={{ height: "100%" }}
+            data-testid="org-overview-card"
+          >
+            <CardContent sx={{ pb: 2, "&:last-child": { pb: 2 } }}>
+              <Typography variant="h3" data-testid="org-overview-heading">
+                {calibrationData.data_overview.total_employees}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {t("panel.intelligenceTab.summary.employees")}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1, mt: 1, flexWrap: "wrap" }}>
+                <Chip
+                  label={`${calibrationData.data_overview.high_performers_count} High`}
+                  color="success"
+                  size="small"
+                  variant="outlined"
+                  data-testid="org-chip-high"
+                />
+                <Chip
+                  label={`${calibrationData.data_overview.center_box_count} Medium`}
+                  color="default"
+                  size="small"
+                  variant="outlined"
+                  data-testid="org-chip-medium"
+                />
+                <Chip
+                  label={`${calibrationData.data_overview.lower_performers_count} Low`}
+                  color="default"
+                  size="small"
+                  variant="outlined"
+                  data-testid="org-chip-low"
+                />
+              </Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 1 }}
+              >
+                {calibrationData.data_overview.stars_count} flagged •{" "}
+                {Object.keys(calibrationData.data_overview.by_location).length}{" "}
+                locations •{" "}
+                {Object.keys(calibrationData.data_overview.by_level).length}{" "}
+                levels
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      )}
     </Grid>
   );
 };

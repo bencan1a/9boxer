@@ -17,6 +17,7 @@ from datetime import date
 from typing import Any
 
 from ninebox.models.employee import Employee
+from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.org_service import OrgService
 
 
@@ -59,37 +60,48 @@ def package_for_llm(
     analyses: dict[str, dict],
     org_data: dict | None = None,
 ) -> dict:
-    """Package calibration data for LLM analysis (strict anonymization).
+    """Package calibration data for LLM analysis (optimized & anonymized).
 
-    This function excludes all PII:
-    - employee_id → only anonymized "Employee_1", "Employee_2"
+    This function provides an optimized data structure that minimizes token usage
+    while maintaining all necessary information for calibration analysis.
+
+    OPTIMIZATIONS:
+    - Sends level-by-level aggregated distributions instead of all individual records
+    - Only includes individual records for flagged employees (succession, flight risk, etc.)
+    - Removes redundant fields (text labels derivable from numeric values)
+
+    PII EXCLUSIONS:
+    - employee_id → only anonymized "Employee_1", "Employee_2" for flagged employees
     - business_title → excluded
     - job_title → excluded
-    - manager_id → excluded (use anonymized Manager_1 instead)
+    - manager_id → excluded (use anonymized Manager_X instead)
     - Real names → excluded from org hierarchy
 
     **Safe to send to external LLM APIs.**
 
     Args:
         employees: List of employee records to package
-        analyses: Results from analysis registry (location, function, level, tenure)
+        analyses: Results from analysis registry (location, function, level, tenure, manager)
         org_data: Optional pre-built org data. If None, will be computed from employees.
 
     Returns:
-        Dictionary with anonymized calibration data (no PII):
-        - employees: List of employee records WITHOUT PII fields
+        Dictionary with optimized anonymized calibration data:
+        - level_breakdown: Aggregated statistics by job level with distributions
+        - flagged_employees: Individual records for flagged employees only (minimal fields)
         - organization: Hierarchy data with anonymized identifiers
-        - analyses: Full analysis results
+        - analyses: Full statistical analysis results (location, function, level, tenure, manager)
         - overview: Summary statistics and distributions
 
     Example:
         >>> from ninebox.services.analysis_registry import run_all_analyses
         >>> analyses = run_all_analyses(employees)
         >>> package = package_for_llm(employees, analyses)
-        >>> package["employees"][0]["id"]  # Only anonymized ID
-        'Employee_1'
-        >>> "employee_id" in package["employees"][0]  # No real ID
-        False
+        >>> package["level_breakdown"]["levels"][0]["level"]
+        'MT3'
+        >>> package["flagged_employees"][0]["flags"]
+        ['Succession Planning', 'High Performer']
+        >>> "employee_id" not in package["flagged_employees"][0]  # No real ID
+        True
     """
     return _package_internal(employees, analyses, org_data, anonymize=True)
 
@@ -155,23 +167,34 @@ def _package_internal(
     if org_data is None:
         org_data = _build_org_data(employees, anonymize=anonymize)
 
-    # Package employee records
-    employee_records = _package_employees(employees, anonymize=anonymize)
-
     # Build overview statistics
     overview = _build_overview(employees)
 
-    return {
-        "employees": employee_records,
-        "organization": org_data,
-        "analyses": analyses,
-        "overview": overview,
-    }
+    if anonymize:
+        # Optimized structure for LLM: level breakdown + flagged employees only
+        level_breakdown = _build_level_breakdown(employees)
+        flagged_employees = _package_flagged_employees_only(employees)
+
+        return {
+            "level_breakdown": level_breakdown,
+            "flagged_employees": flagged_employees,
+            "organization": org_data,
+            "analyses": analyses,
+            "overview": overview,
+        }
+    else:
+        # Full structure for UI: all employee records
+        employee_records = _package_employees(employees, anonymize=anonymize)
+
+        return {
+            "employees": employee_records,
+            "organization": org_data,
+            "analyses": analyses,
+            "overview": overview,
+        }
 
 
-def _package_employees(
-    employees: list[Employee], anonymize: bool = True
-) -> list[dict[str, Any]]:
+def _package_employees(employees: list[Employee], anonymize: bool = True) -> list[dict[str, Any]]:
     """Convert Employee objects to LLM-friendly dictionaries.
 
     Args:
@@ -237,9 +260,7 @@ def _package_employees(
             record["employee_id"] = emp.employee_id  # Actual ID for internal reference
             record["business_title"] = emp.business_title
             record["job_title"] = emp.job_title
-            record["manager_id"] = (
-                emp.direct_manager if emp.direct_manager != "None" else None
-            )
+            record["manager_id"] = emp.direct_manager if emp.direct_manager != "None" else None
 
         employee_records.append(record)
 
@@ -328,10 +349,12 @@ def _build_overview(employees: list[Employee]) -> dict[str, Any]:
             "by_grid_position": {},
         }
 
-    # Grid position groupings (from calibration_summary_service.py)
+    # Grid position groupings
     STARS_POSITION = 9
     CENTER_BOX_POSITION = 5
-    HIGH_PERFORMER_POSITIONS = {3, 6, 9}
+    # Use canonical definition from grid_positions.py: positions 6, 8, 9 are high performers
+    # (excludes position 3 "Workhorse" which is High Performance but Low Potential)
+    HIGH_PERFORMER_POSITIONS = set(PERFORMANCE_BUCKETS["High"])
 
     # Count by various dimensions
     by_level = Counter(emp.job_level for emp in employees)
@@ -344,9 +367,7 @@ def _build_overview(employees: list[Employee]) -> dict[str, Any]:
     # Grid position counts
     stars_count = sum(1 for emp in employees if emp.grid_position == STARS_POSITION)
     center_count = sum(1 for emp in employees if emp.grid_position == CENTER_BOX_POSITION)
-    high_perf_count = sum(
-        1 for emp in employees if emp.grid_position in HIGH_PERFORMER_POSITIONS
-    )
+    high_perf_count = sum(1 for emp in employees if emp.grid_position in HIGH_PERFORMER_POSITIONS)
 
     return {
         "total_employees": total,
@@ -363,3 +384,157 @@ def _build_overview(employees: list[Employee]) -> dict[str, Any]:
         "by_potential": dict(by_potential),
         "by_grid_position": dict(by_grid_position),
     }
+
+
+def _build_level_breakdown(employees: list[Employee]) -> dict[str, Any]:
+    """Build level-by-level distribution breakdown for LLM analysis.
+
+    This provides aggregated statistics by job level, including total employees,
+    rating distributions, and flagged employee counts per level.
+
+    Args:
+        employees: List of employee records
+
+    Returns:
+        Dictionary with level-by-level breakdown:
+        - levels: List of level objects with distributions and counts
+        - total_levels: Number of distinct levels
+
+    Example:
+        >>> breakdown = _build_level_breakdown(employees)
+        >>> breakdown["levels"][0]
+        {
+            "level": "MT3",
+            "total_employees": 42,
+            "grid_distribution": {5: 20, 6: 10, 9: 12},
+            "performance_distribution": {"High": 15, "Medium": 25, "Low": 2},
+            "potential_distribution": {"High": 18, "Medium": 20, "Low": 4},
+            "flagged_count": 8,
+            "flags_breakdown": {"High Performer": 5, "Succession Planning": 3}
+        }
+    """
+    # Group employees by level
+    employees_by_level: dict[str, list[Employee]] = {}
+    for emp in employees:
+        level = emp.job_level
+        if level not in employees_by_level:
+            employees_by_level[level] = []
+        employees_by_level[level].append(emp)
+
+    # Build breakdown for each level
+    levels = []
+    for level in sorted(employees_by_level.keys()):
+        level_employees = employees_by_level[level]
+        total = len(level_employees)
+
+        # Count distributions
+        grid_dist = Counter(emp.grid_position for emp in level_employees)
+        perf_dist = Counter(emp.performance.value for emp in level_employees)
+        pot_dist = Counter(emp.potential.value for emp in level_employees)
+
+        # Count flagged employees and their flags
+        flagged_count = sum(1 for emp in level_employees if emp.flags)
+        all_flags = []
+        for emp in level_employees:
+            if emp.flags:
+                all_flags.extend(emp.flags)
+        flags_breakdown = Counter(all_flags)
+
+        levels.append(
+            {
+                "level": level,
+                "total_employees": total,
+                "grid_distribution": dict(grid_dist),
+                "performance_distribution": dict(perf_dist),
+                "potential_distribution": dict(pot_dist),
+                "flagged_count": flagged_count,
+                "flags_breakdown": dict(flags_breakdown),
+            }
+        )
+
+    return {
+        "levels": levels,
+        "total_levels": len(levels),
+    }
+
+
+def _package_flagged_employees_only(employees: list[Employee]) -> list[dict[str, Any]]:
+    """Package only employees with flags, with minimal redundant fields.
+
+    This sends individual employee records ONLY for flagged employees
+    (succession planning, flight risk, etc.) to reduce token usage while
+    maintaining visibility into important individuals.
+
+    Redundant fields removed:
+    - performance/potential text labels (keep numeric ratings only)
+    - talent_indicator (derivable from grid_position)
+    - tenure_category (derivable from tenure_years)
+    - is_new_hire (derivable from tenure_years)
+
+    Args:
+        employees: List of all employee records
+
+    Returns:
+        List of flagged employee dictionaries with essential fields only
+
+    Example:
+        >>> flagged = _package_flagged_employees_only(employees)
+        >>> flagged[0]
+        {
+            "id": "Employee_15",
+            "level": "MT3",
+            "function": "Engineering",
+            "location": "USA",
+            "tenure_years": 2.5,
+            "performance_rating": 3,
+            "potential_rating": 3,
+            "grid_position": 9,
+            "flags": ["High Performer", "Succession Planning"]
+        }
+    """
+    flagged_records = []
+    employee_idx = 1  # For anonymized IDs
+
+    for emp in employees:
+        # Skip employees without flags
+        if not emp.flags:
+            continue
+
+        # Calculate tenure in years
+        today = date.today()
+        days_employed = max(0, (today - emp.hire_date).days)
+        tenure_years = round(days_employed / 365.25, 1)
+
+        # Determine performance rating (1-3 scale based on grid position)
+        if emp.grid_position in [1, 2, 4]:
+            performance_rating = 1  # Low
+        elif emp.grid_position in [3, 5, 7]:
+            performance_rating = 2  # Medium
+        else:  # 6, 8, 9
+            performance_rating = 3  # High
+
+        # Determine potential rating (1-3 scale based on grid position)
+        if emp.grid_position in [1, 2, 3]:
+            potential_rating = 1  # Low
+        elif emp.grid_position in [4, 5, 6]:
+            potential_rating = 2  # Medium
+        else:  # 7, 8, 9
+            potential_rating = 3  # High
+
+        # Build minimal record (no redundant fields)
+        record = {
+            "id": f"Employee_{employee_idx}",
+            "level": emp.job_level,
+            "function": emp.job_function,
+            "location": emp.location,
+            "tenure_years": tenure_years,
+            "performance_rating": performance_rating,
+            "potential_rating": potential_rating,
+            "grid_position": emp.grid_position,
+            "flags": emp.flags,
+        }
+
+        flagged_records.append(record)
+        employee_idx += 1
+
+    return flagged_records

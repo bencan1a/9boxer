@@ -328,6 +328,7 @@
         "qualityScore": "Skóre kvality",
         "qualityScoreDescription": "Škála 0-100 založená na detekovaných statistických anomáliích",
         "totalAnomalies": "Celkem anomálií",
+        "employees": "Zaměstnanci",
         "green": "Zelené",
         "yellow": "Žluté",
         "red": "Červené",
@@ -503,7 +504,7 @@
     "calibrationSummary": {
       "title": "Calibration Summary",
       "dataOverview": "Data Overview",
-      "insights": "Meeting Insights",
+      "insights": "Calibration Insights",
       "generating": "Generating...",
       "generateSummary": "Generate AI Summary",
       "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
@@ -538,7 +539,9 @@
         "focus_area": "Focus Area",
         "recommendation": "Recommendation",
         "time_allocation": "Time Allocation"
-      }
+      },
+      "affectedEmployees": "{{count}} zaměstnanec ovlivněn",
+      "affectedEmployees_other": "{{count}} zaměstnanců ovlivněno"
     },
     "severity": {
       "critical": "Critical",
