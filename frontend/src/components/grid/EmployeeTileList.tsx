@@ -29,6 +29,8 @@ export interface EmployeeTileListProps {
   isExpanded: boolean;
   /** Callback fired when an employee tile is clicked */
   onSelectEmployee: (employeeId: number) => void;
+  /** Callback fired when an employee tile is double-clicked */
+  onDoubleClickEmployee?: (employeeId: number) => void;
   /** ID of the currently selected employee */
   selectedEmployeeId?: number | null;
   /** Whether donut mode is active (passed through to tiles) */
@@ -49,6 +51,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   employees,
   isExpanded: _isExpanded,
   onSelectEmployee,
+  onDoubleClickEmployee,
   selectedEmployeeId = null,
   donutModeActive = false,
 }) => {
@@ -71,6 +74,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
           key={employee.employee_id}
           employee={employee}
           onSelect={onSelectEmployee}
+          onDoubleClick={onDoubleClickEmployee}
           isSelected={employee.employee_id === selectedEmployeeId}
           donutModeActive={donutModeActive}
         />

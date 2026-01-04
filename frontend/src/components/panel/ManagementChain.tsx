@@ -32,7 +32,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { toggleManager, selectedManagers } = useFilters();
+  const { selectManager, selectedManagers } = useFilters();
   const { managers, getReportIds } = useOrgHierarchy();
   const [loadingManager, setLoadingManager] = useState<string | null>(null);
 
@@ -109,7 +109,7 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
     const manager = managers.find((m) => m.name === managerName);
     if (!manager) {
       console.warn(`Manager "${managerName}" not found in org hierarchy`);
-      toggleManager(managerName, []);
+      selectManager(managerName, []);
       return;
     }
 
@@ -117,14 +117,14 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
     try {
       // Fetch employee IDs from org service
       const employeeIds = await getReportIds(manager.employee_id);
-      toggleManager(managerName, employeeIds);
+      selectManager(managerName, employeeIds);
     } catch (error) {
       console.error(
         `Failed to fetch employee IDs for manager ${managerName}:`,
         error
       );
       // Fallback to empty array on error
-      toggleManager(managerName, []);
+      selectManager(managerName, []);
     } finally {
       setLoadingManager(null);
     }

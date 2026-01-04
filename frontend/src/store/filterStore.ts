@@ -22,6 +22,7 @@ interface FilterState {
   toggleJobFunction: (jobFunction: string) => void;
   toggleLocation: (location: string) => void;
   toggleManager: (manager: string, employeeIds: number[]) => void;
+  selectManager: (manager: string, employeeIds: number[]) => void;
   toggleFlag: (flag: string) => void;
   setExcludedIds: (ids: number[]) => void;
   clearAllFilters: () => void;
@@ -101,6 +102,13 @@ export const useFilterStore = create<FilterState>((set, get) => ({
         selectedManagers: newSelectedManagers,
         selectedManagerEmployeeIds: newEmployeeIdsRecord,
       };
+    });
+  },
+
+  selectManager: (manager: string, employeeIds: number[]) => {
+    set({
+      selectedManagers: [manager],
+      selectedManagerEmployeeIds: { [manager]: employeeIds },
     });
   },
 

@@ -343,7 +343,7 @@ export const dimensions = {
 
   // AppBar dimensions
   appBar: {
-    height: 64, // Standard AppBar height
+    height: 48, // AppBar height (reduced by 25% from 64px)
     logoSize: 28, // App logo icon size
   },
 
@@ -355,7 +355,7 @@ export const dimensions = {
 
   // Axis dimensions
   axis: {
-    verticalWidth: 64, // Width of vertical axis label
+    verticalWidth: 45, // Width of vertical axis label (reduced by 30% from 64px)
   },
 
   // Box header (fixed sizing, does not scale with zoom)

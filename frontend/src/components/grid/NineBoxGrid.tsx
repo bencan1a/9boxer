@@ -33,6 +33,12 @@ import {
   selectDonutModeActive,
   selectMoveEmployeeDonut,
 } from "../../store/sessionStore";
+import {
+  useUiStore,
+  selectIsRightPanelCollapsed,
+  selectSetRightPanelCollapsed,
+  selectSetActiveTab,
+} from "../../store/uiStore";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { useGridZoom } from "../../contexts/GridZoomContext";
@@ -78,6 +84,11 @@ export const NineBoxGrid: React.FC = () => {
   // Use granular selectors to minimize re-renders
   const donutModeActive = useSessionStore(selectDonutModeActive);
   const moveEmployeeDonut = useSessionStore(selectMoveEmployeeDonut);
+
+  // UI store selectors for panel control
+  const isRightPanelCollapsed = useUiStore(selectIsRightPanelCollapsed);
+  const setRightPanelCollapsed = useUiStore(selectSetRightPanelCollapsed);
+  const setActiveTab = useUiStore(selectSetActiveTab);
 
   const [activeEmployee, setActiveEmployee] = useState<Employee | null>(null);
   const [expandedPosition, setExpandedPosition] = useState<number | null>(
@@ -149,6 +160,21 @@ export const NineBoxGrid: React.FC = () => {
   const handleCollapseBox = () => {
     setExpandedPosition(null);
     localStorage.removeItem(EXPANDED_POSITION_STORAGE_KEY);
+  };
+
+  const handleEmployeeDoubleClick = (employeeId: number) => {
+    logger.debug("Employee double-clicked, opening details panel:", employeeId);
+
+    // Select the employee
+    selectEmployee(employeeId);
+
+    // Open the panel if it's collapsed
+    if (isRightPanelCollapsed) {
+      setRightPanelCollapsed(false, false);
+    }
+
+    // Switch to the Details tab (index 0)
+    setActiveTab(0);
   };
 
   // ESC key listener for collapse
@@ -236,8 +262,11 @@ export const NineBoxGrid: React.FC = () => {
       >
         <Box
           sx={{
-            p: `${theme.tokens.dimensions.gridContainer.padding}px`,
-            minHeight: `calc(100vh - ${theme.tokens.dimensions.appBar.height}px)`,
+            pt: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pr: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pb: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pl: 0,
+            height: "100%",
             width: "100%",
             userSelect: "none",
             display: "flex",
@@ -247,9 +276,16 @@ export const NineBoxGrid: React.FC = () => {
         >
           {/* Header row with Performance label and FilterToolbar */}
           <Box
-            sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              width: "100%",
+              alignItems: "center",
+              height: "40px",
+              mb: 0.5,
+            }}
           >
-            <Box sx={{ width: 64 }} /> {/* Spacer for left label alignment */}
+            <Box sx={{ width: theme.tokens.dimensions.axis.verticalWidth }} />{" "}
+            {/* Spacer for left label alignment */}
             <Box
               sx={{
                 flex: 1,
@@ -261,7 +297,7 @@ export const NineBoxGrid: React.FC = () => {
               }}
             >
               {/* Left: FilterToolbar (positioned absolutely) */}
-              <FilterToolbarContainer variant="compact" />
+              <FilterToolbarContainer />
 
               {/* Center: Performance label */}
               <Axis orientation="horizontal" />
@@ -293,6 +329,7 @@ export const NineBoxGrid: React.FC = () => {
                   employees={employeesByPosition[position] || []}
                   shortLabel={getShortPositionLabel(position)}
                   onSelectEmployee={selectEmployee}
+                  onDoubleClickEmployee={handleEmployeeDoubleClick}
                   selectedEmployeeId={selectedEmployeeId}
                   isExpanded={expandedPosition === position}
                   isCollapsed={
