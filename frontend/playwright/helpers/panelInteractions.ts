@@ -124,10 +124,11 @@ export async function resizePanelToWidth(
   }
 
   const handleX = handleBox.x + handleBox.width / 2;
-  const handleY = handleBox.y + handleBox.height / 2;
+  // Start drag from top 20% to avoid the centered toggle button (at 50% height)
+  const handleY = handleBox.y + handleBox.height * 0.2;
 
   // Perform drag operation with explicit positioning
-  // Move to handle center first, then perform drag
+  // Move to handle position first, then perform drag
   await page.mouse.move(handleX, handleY);
   await page.mouse.down();
   // Move in small steps to ensure drag is detected
