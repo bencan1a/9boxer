@@ -40,6 +40,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { useEmployeeSearch } from "../../hooks/useEmployeeSearch";
+import { useFilterStore } from "../../store/filterStore";
 
 /**
  * Display variant for the filter toolbar
@@ -109,6 +110,17 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   const [searchValue, setSearchValue] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  // Get filter store actions for chip delete handlers
+  const toggleLevel = useFilterStore((state) => state.toggleLevel);
+  const toggleJobFunction = useFilterStore((state) => state.toggleJobFunction);
+  const toggleLocation = useFilterStore((state) => state.toggleLocation);
+  const toggleManager = useFilterStore((state) => state.toggleManager);
+  const toggleFlag = useFilterStore((state) => state.toggleFlag);
+  const clearReportingChainFilter = useFilterStore(
+    (state) => state.clearReportingChainFilter
+  );
+  const setExcludedIds = useFilterStore((state) => state.setExcludedIds);
 
   // Initialize employee search with fuzzy matching
   const { search, isReady, error } = useEmployeeSearch({
@@ -284,6 +296,40 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
       localStorage.setItem("filterToolbarCollapsed", String(newState));
     } catch {
       // Silently fail if localStorage is unavailable
+    }
+  };
+
+  /**
+   * Handle chip deletion by calling the appropriate filter store action
+   * based on the filter type and value
+   */
+  const handleChipDelete = (filterType: string, value: string) => {
+    switch (filterType) {
+      case "level":
+        toggleLevel(value);
+        break;
+      case "function":
+        toggleJobFunction(value);
+        break;
+      case "location":
+        toggleLocation(value);
+        break;
+      case "manager":
+        // For manager, we need to pass empty array since we're removing it
+        toggleManager(value, []);
+        break;
+      case "flags":
+        toggleFlag(value);
+        break;
+      case "reporting":
+        clearReportingChainFilter();
+        break;
+      case "excluded":
+        // Clear all exclusions
+        setExcludedIds([]);
+        break;
+      default:
+        console.warn(`Unknown filter type: ${filterType}`);
     }
   };
 
@@ -691,9 +737,7 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
                   key={`${index}-${valueIndex}`}
                   label={`${filter.label}: ${value}`}
                   size="small"
-                  onDelete={() => {
-                    /* TODO: wire up delete handler */
-                  }}
+                  onDelete={() => handleChipDelete(filter.type, value)}
                   deleteIcon={<CloseIcon />}
                   sx={{
                     fontSize: "0.75rem",
