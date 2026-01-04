@@ -19,13 +19,14 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
 import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 import Chip from "@mui/material/Chip";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
+import Alert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -37,6 +38,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
+import { Employee } from "../../types/employee";
+import { useEmployeeSearch } from "../../hooks/useEmployeeSearch";
 
 /**
  * Display variant for the filter toolbar
@@ -63,8 +66,6 @@ export interface ActiveFilter {
 export interface FilterToolbarProps {
   /** Display variant of the toolbar */
   variant?: FilterToolbarVariant;
-  /** Number of active filters */
-  activeFilterCount?: number;
   /** List of active filters with details */
   activeFilters?: ActiveFilter[];
   /** Number of filtered employees */
@@ -77,6 +78,10 @@ export interface FilterToolbarProps {
   onFilterClick: () => void;
   /** Callback when search value changes */
   onSearchChange?: (value: string) => void;
+  /** Callback when an employee is selected from search */
+  onEmployeeSelect?: (employeeId: number | undefined) => void;
+  /** List of employees to search through (filtered list) */
+  employees?: Employee[];
   /** Whether the toolbar is disabled */
   disabled?: boolean;
 }
@@ -89,13 +94,14 @@ export interface FilterToolbarProps {
  */
 export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   variant = "compact",
-  activeFilterCount = 0,
   activeFilters = [],
   filteredCount,
   totalCount,
   hasActiveFilters = false,
   onFilterClick,
   onSearchChange,
+  onEmployeeSelect,
+  employees = [],
   disabled = false,
 }) => {
   const theme = useTheme();
@@ -103,6 +109,13 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   const [searchValue, setSearchValue] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  // Initialize employee search with fuzzy matching
+  const { search, isReady, error } = useEmployeeSearch({
+    employees,
+    threshold: 0.3,
+    resultLimit: 10,
+  });
 
   // Collapse state for compact variant (persisted in localStorage)
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -139,6 +152,110 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     });
     return parts.join(" • ");
   }, [hasActiveFilters, activeFilters, t]);
+
+  // Memoized employee search autocomplete (used in all variants to eliminate duplication)
+  const employeeSearchAutocomplete = useMemo(() => {
+    // Show error message if search initialization failed
+    if (error) {
+      return (
+        <Alert
+          severity="error"
+          sx={{
+            py: 0,
+            fontSize: "0.75rem",
+            "& .MuiAlert-message": {
+              fontSize: "0.75rem",
+            },
+          }}
+          data-testid="employee-search-error"
+        >
+          {t("filters.searchUnavailable", "Search unavailable")}:{" "}
+          {error.message}
+        </Alert>
+      );
+    }
+
+    return (
+      <Autocomplete<Employee>
+        options={employees}
+        getOptionLabel={(option) => option.name}
+        filterOptions={(_, { inputValue }) => {
+          // Use fuzzy search instead of default filtering
+          if (!inputValue || !isReady) return [];
+          return search(inputValue);
+        }}
+        onChange={(_, value) => {
+          if (onEmployeeSelect) {
+            onEmployeeSelect(value?.employee_id);
+          }
+        }}
+        inputValue={searchValue}
+        onInputChange={(_, newValue) => {
+          setSearchValue(newValue);
+          if (onSearchChange) {
+            onSearchChange(newValue);
+          }
+        }}
+        size="small"
+        disabled={disabled || !isReady}
+        data-testid="employee-search-autocomplete"
+        noOptionsText={t("filters.noEmployeesFound", "No employees found")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder={t("filters.searchPlaceholder", "Search employees...")}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <>
+                  <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />
+                  {params.InputProps.startAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
+        renderOption={(props, employee) => {
+          const { key, ...otherProps } =
+            props as React.HTMLAttributes<HTMLLIElement> & { key: string };
+          return (
+            <li key={key} {...otherProps}>
+              <Box
+                sx={{ display: "flex", flexDirection: "column", width: "100%" }}
+              >
+                <Typography variant="body2">{employee.name}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {employee.job_level} • {employee.manager}
+                </Typography>
+              </Box>
+            </li>
+          );
+        }}
+        sx={{
+          width: "180px",
+          "& .MuiOutlinedInput-root": {
+            height: "32px",
+            fontSize: "0.875rem",
+            paddingTop: "0px",
+            paddingBottom: "0px",
+          },
+          "& .MuiAutocomplete-input": {
+            padding: "0px 4px",
+          },
+        }}
+      />
+    );
+  }, [
+    employees,
+    search,
+    isReady,
+    searchValue,
+    disabled,
+    onEmployeeSelect,
+    onSearchChange,
+    t,
+    error,
+  ]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -182,8 +299,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         data-testid="filter-toolbar"
         sx={{
           position: "absolute",
-          top: 0,
-          left: 24,
+          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+          left: 0,
           zIndex: 10,
           backgroundColor: theme.palette.background.paper,
           borderRadius: 1,
@@ -198,28 +315,34 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
           }),
         }}
       >
-        {/* Filter Button with Badge */}
+        {/* Filter Button with highlight when active */}
         <Tooltip
           title={t("dashboard.appBar.filters", "Filters")}
           placement="bottom"
         >
-          <span>
-            <Badge
-              badgeContent={activeFilterCount}
-              color="warning"
-              invisible={!hasActiveFilters}
-              data-testid="filter-badge"
-            >
-              <IconButton
-                onClick={onFilterClick}
-                disabled={disabled}
-                data-testid="filter-button"
-                size="small"
-              >
-                <FilterListIcon fontSize="small" />
-              </IconButton>
-            </Badge>
-          </span>
+          <IconButton
+            onClick={onFilterClick}
+            disabled={disabled}
+            data-testid="filter-button"
+            size="small"
+            sx={{
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: hasActiveFilters ? "secondary.main" : "divider",
+              backgroundColor: hasActiveFilters
+                ? "secondary.main"
+                : "transparent",
+              color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+              "&:hover": {
+                backgroundColor: hasActiveFilters
+                  ? "secondary.dark"
+                  : "action.hover",
+                borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+              },
+            }}
+          >
+            <FilterListIcon fontSize="small" />
+          </IconButton>
         </Tooltip>
 
         {/* Collapsible Content */}
@@ -254,49 +377,55 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
 
             {/* Filter Info Display */}
             {hasActiveFilters && (
-              <Typography
-                variant="caption"
-                data-testid="filter-info"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  maxWidth: "200px",
-                }}
+              <Tooltip
+                title={
+                  <Box sx={{ py: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: "bold", display: "block", mb: 0.5 }}
+                    >
+                      {t("filters.activeFilters", "Active Filters")}
+                    </Typography>
+                    {activeFilters.map((filter, index) => (
+                      <Box key={index} sx={{ mb: 0.5 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: "bold", display: "block" }}
+                        >
+                          {filter.label}:
+                        </Typography>
+                        <Typography variant="caption" sx={{ pl: 1 }}>
+                          {filter.values.join(", ")}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                }
+                placement="bottom"
               >
-                {filterSummaryText}
-              </Typography>
+                <Typography
+                  variant="caption"
+                  data-testid="filter-info"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: "200px",
+                    cursor: "help",
+                  }}
+                >
+                  {filterSummaryText}
+                </Typography>
+              </Tooltip>
             )}
 
             {hasActiveFilters && (
               <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
             )}
 
-            {/* Search Box */}
-            <TextField
-              value={searchValue}
-              onChange={handleSearchChange}
-              placeholder={t(
-                "filters.searchPlaceholder",
-                "Search employees..."
-              )}
-              size="small"
-              disabled={disabled}
-              data-testid="search-input"
-              InputProps={{
-                startAdornment: (
-                  <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />
-                ),
-              }}
-              sx={{
-                width: "180px",
-                "& .MuiOutlinedInput-root": {
-                  height: "32px",
-                  fontSize: "0.875rem",
-                },
-              }}
-            />
+            {/* Employee Search Autocomplete */}
+            {employeeSearchAutocomplete}
           </Box>
         </Collapse>
 
@@ -315,6 +444,15 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             data-testid="toolbar-toggle-button"
             sx={{
               ml: isCollapsed ? 0 : 0.5,
+              px: 0.25,
+              minWidth: "auto",
+              flexShrink: 0,
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: "divider",
+              "&:hover": {
+                borderColor: "divider",
+              },
             }}
           >
             {isCollapsed ? (
@@ -335,8 +473,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         data-testid="filter-toolbar"
         sx={{
           position: "absolute",
-          top: 0,
-          left: 24,
+          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+          left: 0,
           zIndex: 10,
           backgroundColor: theme.palette.background.paper,
           borderRadius: 1,
@@ -354,28 +492,34 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             p: 0.5,
           }}
         >
-          {/* Filter Button with Badge */}
+          {/* Filter Button with highlight when active */}
           <Tooltip
             title={t("dashboard.appBar.filters", "Filters")}
             placement="bottom"
           >
-            <span>
-              <Badge
-                badgeContent={activeFilterCount}
-                color="warning"
-                invisible={!hasActiveFilters}
-                data-testid="filter-badge"
-              >
-                <IconButton
-                  onClick={onFilterClick}
-                  disabled={disabled}
-                  data-testid="filter-button"
-                  size="small"
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-              </Badge>
-            </span>
+            <IconButton
+              onClick={onFilterClick}
+              disabled={disabled}
+              data-testid="filter-button"
+              size="small"
+              sx={{
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: hasActiveFilters ? "secondary.main" : "divider",
+                backgroundColor: hasActiveFilters
+                  ? "secondary.main"
+                  : "transparent",
+                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+                "&:hover": {
+                  backgroundColor: hasActiveFilters
+                    ? "secondary.dark"
+                    : "action.hover",
+                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+                },
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </IconButton>
           </Tooltip>
 
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -420,25 +564,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             </>
           )}
 
-          {/* Search Box */}
-          <TextField
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder={t("filters.searchPlaceholder", "Search employees...")}
-            size="small"
-            disabled={disabled}
-            data-testid="search-input"
-            InputProps={{
-              startAdornment: <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />,
-            }}
-            sx={{
-              width: "180px",
-              "& .MuiOutlinedInput-root": {
-                height: "32px",
-                fontSize: "0.875rem",
-              },
-            }}
-          />
+          {/* Employee Search Autocomplete */}
+          {employeeSearchAutocomplete}
         </Box>
 
         {/* Expandable Filter Details */}
@@ -476,8 +603,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         data-testid="filter-toolbar"
         sx={{
           position: "absolute",
-          top: 0,
-          left: 24,
+          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+          left: 0,
           zIndex: 10,
           backgroundColor: theme.palette.background.paper,
           borderRadius: 1,
@@ -495,28 +622,34 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             p: 0.5,
           }}
         >
-          {/* Filter Button with Badge */}
+          {/* Filter Button with highlight when active */}
           <Tooltip
             title={t("dashboard.appBar.filters", "Filters")}
             placement="bottom"
           >
-            <span>
-              <Badge
-                badgeContent={activeFilterCount}
-                color="warning"
-                invisible={!hasActiveFilters}
-                data-testid="filter-badge"
-              >
-                <IconButton
-                  onClick={onFilterClick}
-                  disabled={disabled}
-                  data-testid="filter-button"
-                  size="small"
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-              </Badge>
-            </span>
+            <IconButton
+              onClick={onFilterClick}
+              disabled={disabled}
+              data-testid="filter-button"
+              size="small"
+              sx={{
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: hasActiveFilters ? "secondary.main" : "divider",
+                backgroundColor: hasActiveFilters
+                  ? "secondary.main"
+                  : "transparent",
+                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+                "&:hover": {
+                  backgroundColor: hasActiveFilters
+                    ? "secondary.dark"
+                    : "action.hover",
+                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+                },
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </IconButton>
           </Tooltip>
 
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -536,25 +669,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
 
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-          {/* Search Box */}
-          <TextField
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder={t("filters.searchPlaceholder", "Search employees...")}
-            size="small"
-            disabled={disabled}
-            data-testid="search-input"
-            InputProps={{
-              startAdornment: <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />,
-            }}
-            sx={{
-              width: "180px",
-              "& .MuiOutlinedInput-root": {
-                height: "32px",
-                fontSize: "0.875rem",
-              },
-            }}
-          />
+          {/* Employee Search Autocomplete */}
+          {employeeSearchAutocomplete}
         </Box>
 
         {/* Filter Chips */}
@@ -600,8 +716,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
           data-testid="filter-toolbar"
           sx={{
             position: "absolute",
-            top: 0,
-            left: 24,
+            top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+            left: 0,
             zIndex: 10,
             backgroundColor: theme.palette.background.paper,
             borderRadius: 1,
@@ -612,28 +728,34 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             p: 0.5,
           }}
         >
-          {/* Filter Button with Badge */}
+          {/* Filter Button with highlight when active */}
           <Tooltip
             title={t("dashboard.appBar.filters", "Filters")}
             placement="bottom"
           >
-            <span>
-              <Badge
-                badgeContent={activeFilterCount}
-                color="warning"
-                invisible={!hasActiveFilters}
-                data-testid="filter-badge"
-              >
-                <IconButton
-                  onClick={onFilterClick}
-                  disabled={disabled}
-                  data-testid="filter-button"
-                  size="small"
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-              </Badge>
-            </span>
+            <IconButton
+              onClick={onFilterClick}
+              disabled={disabled}
+              data-testid="filter-button"
+              size="small"
+              sx={{
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: hasActiveFilters ? "secondary.main" : "divider",
+                backgroundColor: hasActiveFilters
+                  ? "secondary.main"
+                  : "transparent",
+                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+                "&:hover": {
+                  backgroundColor: hasActiveFilters
+                    ? "secondary.dark"
+                    : "action.hover",
+                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+                },
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </IconButton>
           </Tooltip>
 
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -670,25 +792,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             </>
           )}
 
-          {/* Search Box */}
-          <TextField
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder={t("filters.searchPlaceholder", "Search employees...")}
-            size="small"
-            disabled={disabled}
-            data-testid="search-input"
-            InputProps={{
-              startAdornment: <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />,
-            }}
-            sx={{
-              width: "180px",
-              "& .MuiOutlinedInput-root": {
-                height: "32px",
-                fontSize: "0.875rem",
-              },
-            }}
-          />
+          {/* Employee Search Autocomplete */}
+          {employeeSearchAutocomplete}
         </Box>
 
         {/* Filter Details Menu */}
@@ -722,8 +827,8 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         data-testid="filter-toolbar"
         sx={{
           position: "absolute",
-          top: 0,
-          left: 24,
+          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+          left: 0,
           zIndex: 10,
           display: "flex",
           alignItems: "center",
@@ -742,28 +847,34 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             p: 0.5,
           }}
         >
-          {/* Filter Button with Badge */}
+          {/* Filter Button with highlight when active */}
           <Tooltip
             title={t("dashboard.appBar.filters", "Filters")}
             placement="bottom"
           >
-            <span>
-              <Badge
-                badgeContent={activeFilterCount}
-                color="warning"
-                invisible={!hasActiveFilters}
-                data-testid="filter-badge"
-              >
-                <IconButton
-                  onClick={onFilterClick}
-                  disabled={disabled}
-                  data-testid="filter-button"
-                  size="small"
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-              </Badge>
-            </span>
+            <IconButton
+              onClick={onFilterClick}
+              disabled={disabled}
+              data-testid="filter-button"
+              size="small"
+              sx={{
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: hasActiveFilters ? "secondary.main" : "divider",
+                backgroundColor: hasActiveFilters
+                  ? "secondary.main"
+                  : "transparent",
+                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+                "&:hover": {
+                  backgroundColor: hasActiveFilters
+                    ? "secondary.dark"
+                    : "action.hover",
+                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+                },
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </IconButton>
           </Tooltip>
 
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -785,19 +896,47 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
           {hasActiveFilters && (
             <>
               <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-              <Typography
-                variant="caption"
-                data-testid="filter-info"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  maxWidth: "150px",
-                }}
+              <Tooltip
+                title={
+                  <Box sx={{ py: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: "bold", display: "block", mb: 0.5 }}
+                    >
+                      {t("filters.activeFilters", "Active Filters")}
+                    </Typography>
+                    {activeFilters.map((filter, index) => (
+                      <Box key={index} sx={{ mb: 0.5 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: "bold", display: "block" }}
+                        >
+                          {filter.label}:
+                        </Typography>
+                        <Typography variant="caption" sx={{ pl: 1 }}>
+                          {filter.values.join(", ")}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                }
+                placement="bottom"
               >
-                {filterSummaryText}
-              </Typography>
+                <Typography
+                  variant="caption"
+                  data-testid="filter-info"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: "150px",
+                    cursor: "help",
+                  }}
+                >
+                  {filterSummaryText}
+                </Typography>
+              </Tooltip>
             </>
           )}
         </Box>
@@ -811,24 +950,7 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             p: 0.5,
           }}
         >
-          <TextField
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder={t("filters.searchPlaceholder", "Search employees...")}
-            size="small"
-            disabled={disabled}
-            data-testid="search-input"
-            InputProps={{
-              startAdornment: <SearchIcon fontSize="small" sx={{ mr: 0.5 }} />,
-            }}
-            sx={{
-              width: "180px",
-              "& .MuiOutlinedInput-root": {
-                height: "32px",
-                fontSize: "0.875rem",
-              },
-            }}
-          />
+          {employeeSearchAutocomplete}
         </Box>
       </Box>
     );
