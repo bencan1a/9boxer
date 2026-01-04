@@ -86,32 +86,8 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     // ✅ Click manager name to apply filter
     await firstManagerLink.click();
 
-    // ✅ Wait for filter to be applied
-    await page.waitForTimeout(500); // Allow filter state to update
-
-    // ✅ Verify filter drawer shows active filter
-    // The Managers filter accordion should show the selected manager
-    await openFilterDrawer(page);
-    const managersAccordion = page.locator(
-      '[data-testid="filter-accordion-managers"]'
-    );
-    await expect(managersAccordion).toBeVisible();
-
-    // Expand managers accordion if collapsed
-    const accordionButton = managersAccordion.locator("button[aria-expanded]");
-    const isExpanded = await accordionButton.getAttribute("aria-expanded");
-    if (isExpanded === "false") {
-      await accordionButton.click();
-    }
-
-    // Verify the manager's checkbox is checked
-    const managerCheckbox = page.locator(
-      `input[type="checkbox"][data-manager-name="${managerName}"]`
-    );
-    await expect(managerCheckbox).toBeChecked({ timeout: 5000 });
-
-    // Close filter drawer
-    await page.locator('[data-testid="filter-close-button"]').click();
+    // ✅ Wait for filter to be applied - use state-based wait
+    await page.waitForLoadState("networkidle");
 
     // ✅ Verify employee count decreased (filtered to team)
     const filteredCards = page.locator('[data-testid^="employee-card-"]');
@@ -120,6 +96,13 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     // Filtered count should be less than initial (manager has a subset of employees)
     expect(filteredCount).toBeLessThan(initialCount);
     expect(filteredCount).toBeGreaterThan(0); // But should have at least one employee
+
+    // ✅ Verify filter indicator is active
+    // Note: The reporting chain filter uses a separate mechanism from the checkbox filters
+    // Clicking a manager in Intelligence tab sets reportingChainFilter state
+    // This is different from manually checking manager checkboxes in the filter drawer
+    const filterBadge = page.locator('[data-testid="filter-badge"]');
+    await expect(filterBadge).toBeVisible();
   });
 
   /**
@@ -149,8 +132,8 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     const managerName = await managerLinks.first().textContent();
     await managerLinks.first().click();
 
-    // Wait for filter to apply
-    await page.waitForTimeout(500);
+    // Wait for filter to apply - use state-based wait
+    await page.waitForLoadState("networkidle");
 
     // ✅ Verify filtered employees are from manager's team
     // Click on first employee to see details
@@ -199,7 +182,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
 
     const managerLinks = page.locator('[data-testid^="manager-filter-link-"]');
     await managerLinks.first().click();
-    await page.waitForTimeout(500);
+    await page.waitForLoadState("networkidle");
 
     // Verify filter applied (count decreased)
     const filteredCards = page.locator('[data-testid^="employee-card-"]');
@@ -213,33 +196,24 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     await expect(clearButton).toBeVisible();
     await clearButton.click();
 
-    // Wait for filters to clear
-    await page.waitForTimeout(500);
+    // Wait for filters to clear - use state-based wait
+    await page.waitForLoadState("networkidle");
 
     // ✅ Verify employee count returned to original
     const clearedCards = page.locator('[data-testid^="employee-card-"]');
     const clearedCount = await clearedCards.count();
     expect(clearedCount).toBe(initialCount);
 
-    // ✅ Verify no manager filters are active
-    const managersAccordion = page.locator(
-      '[data-testid="filter-accordion-managers"]'
-    );
-    await expect(managersAccordion).toBeVisible();
-
-    // Expand accordion to check checkboxes
-    const accordionButton = managersAccordion.locator("button[aria-expanded]");
-    const isExpanded = await accordionButton.getAttribute("aria-expanded");
-    if (isExpanded === "false") {
-      await accordionButton.click();
+    // ✅ Verify filter badge is no longer visible or shows 0 filters
+    // The clear button should have removed the reporting chain filter
+    const filterBadge = page.locator('[data-testid="filter-badge"]');
+    // Badge should either be hidden or the MuiBadge-invisible class should be present
+    const badgeVisible = await filterBadge.isVisible().catch(() => false);
+    if (badgeVisible) {
+      await expect(filterBadge.locator(".MuiBadge-badge")).toHaveClass(
+        /MuiBadge-invisible/
+      );
     }
-
-    // Verify no checkboxes are checked in managers section
-    const checkedCheckboxes = managersAccordion.locator(
-      'input[type="checkbox"]:checked'
-    );
-    const checkedCount = await checkedCheckboxes.count();
-    expect(checkedCount).toBe(0);
   });
 
   /**
@@ -276,7 +250,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
       // Click first manager and record team size
       const firstManager = managerLinks.nth(0);
       await firstManager.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState("networkidle");
 
       const firstTeamCards = page.locator('[data-testid^="employee-card-"]');
       const firstTeamSize = await firstTeamCards.count();
@@ -288,7 +262,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
       // Clear filter
       await openFilterDrawer(page);
       await page.locator('[data-testid="clear-filter-button"]').click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState("networkidle");
       await page.locator('[data-testid="filter-close-button"]').click();
 
       // Click second manager
@@ -303,7 +277,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
       );
       const secondManager = freshManagerLinks.nth(1);
       await secondManager.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState("networkidle");
 
       const secondTeamCards = page.locator('[data-testid^="employee-card-"]');
       const secondTeamSize = await secondTeamCards.count();

@@ -298,6 +298,13 @@ export async function closeRightPanel(page: Page): Promise<void> {
  * await page.locator('[data-testid^="manager-filter-link-"]').first().click();
  */
 export async function expandManagerAnomalyDetails(page: Page): Promise<void> {
+  // Ensure all dialogs and modal backdrops are closed before interaction
+  // This prevents clicks from being intercepted by modal overlays
+  await closeAllDialogsAndOverlays(page);
+
+  // Wait for any backdrop animations to complete
+  await page.waitForLoadState("networkidle");
+
   // Find the "Detailed Deviations" text within the manager anomaly section
   const detailsHeader = page
     .locator('[data-testid="manager-anomaly-section"]')
