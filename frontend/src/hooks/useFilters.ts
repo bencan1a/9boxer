@@ -122,11 +122,11 @@ export const useFilters = () => {
         // This uses the same backend org hierarchy logic as the intelligence panel
         if (
           selectedManagers.length > 0 &&
-          selectedManagerEmployeeIds.size > 0
+          Object.keys(selectedManagerEmployeeIds).length > 0
         ) {
           // Check if this employee is in any of the selected managers' org hierarchies
           let isUnderSelectedManager = false;
-          for (const [_, reportIds] of selectedManagerEmployeeIds) {
+          for (const reportIds of Object.values(selectedManagerEmployeeIds)) {
             if (reportIds.includes(emp.employee_id)) {
               isUnderSelectedManager = true;
               break;
