@@ -72,33 +72,6 @@ Each flag shows a count of employees with that status.
 
 ---
 
-## Reporting Chain Filter
-
-The Reporting Chain filter shows all employees who report to a specific manager—both direct and indirect reports. This is useful for reviewing an entire department or management hierarchy.
-
-### How to Activate
-
-1. Click any employee to open the details panel
-2. Click on a **manager's name** in the organizational hierarchy
-3. The filter activates automatically
-
-![Reporting chain filter chip](images/screenshots/filters/reporting-chain-filter.png)
-
-When active, you'll see:
-
-- A chip showing "Reporting to: [Manager Name]"
-- Grid filtered to show only that manager's organization
-
-### How to Clear
-
-Click the **X** on the reporting chain filter chip.
-
-!!! info "Reporting Chain vs Manager Filter"
-    - **Manager filter** (in drawer): Shows only direct reports
-    - **Reporting Chain** (click in details): Shows all direct AND indirect reports
-
----
-
 ## Managing Exclusions
 
 Exclusions let you hide specific individuals from the grid. Use this to remove outliers or focus on a subset.

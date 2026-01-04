@@ -255,6 +255,268 @@ export async function generateActiveChips(
   });
 }
 
+// =============================================================================
+// FILTER TOOLBAR SCREENSHOTS (3 screenshots for new FilterToolbar component)
+// =============================================================================
+
+/**
+ * Generate FilterToolbar expanded screenshot
+ *
+ * Shows the FilterToolbar in expanded state with all features visible:
+ * - Filter button (not highlighted - no active filters)
+ * - Employee count display (e.g., "200 employees")
+ * - Search box
+ * - Positioned at top-left of grid, above vertical axis
+ * - Light theme
+ *
+ * Uses Storybook story: app-common-filtertoolbar--compact-no-filters
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterToolbarExpanded(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport to show toolbar in context (no excess whitespace)
+  await page.setViewportSize({ width: 600, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-filtertoolbar--compact-no-filters",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate FilterToolbar with active filters screenshot
+ *
+ * Shows FilterToolbar with active filters and highlighted button:
+ * - Filter button highlighted in ORANGE/SECONDARY color
+ * - Employee count showing filtered subset (e.g., "75 of 200 employees")
+ * - Active filter summary visible (e.g., "Level: IC5, IC6")
+ * - Light theme
+ *
+ * Uses Storybook story: app-common-filtertoolbar--compact-with-filters
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterToolbarWithActiveFilters(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 600, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-filtertoolbar--compact-with-filters",
+    outputPath,
+    theme: "light",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate FilterToolbar search autocomplete screenshot
+ *
+ * Shows employee search dropdown with highlighted matches:
+ * - Search input field with text entered (e.g., "sarah")
+ * - Autocomplete dropdown visible below
+ * - Multiple search results (up to 10)
+ * - Matched text highlighted with <mark> elements (orange background)
+ * - Search results showing name, job level, and manager
+ * - Light theme
+ *
+ * NOTE: This screenshot requires a special story with search results open,
+ * or manual interaction via Playwright to trigger the search dropdown.
+ * For now, using the compact-with-filters story as a placeholder.
+ * TODO: Create a dedicated story for search autocomplete state.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFilterToolbarSearchAutocomplete(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 600, height: 500 });
+
+  // Navigate to the compact story with filters
+  await navigateToStory(
+    page,
+    "app-common-filtertoolbar--compact-with-filters",
+    "light"
+  );
+
+  // Wait for toolbar to be visible
+  await page.waitForSelector('[data-testid="filter-toolbar"]', {
+    state: "visible",
+    timeout: 5000,
+  });
+
+  // Try to activate search by clicking and typing
+  const searchInput = page.locator('input[placeholder*="Search"]');
+  if ((await searchInput.count()) > 0) {
+    await searchInput.click();
+    await searchInput.fill("sarah");
+    await page.waitForTimeout(800); // Wait for autocomplete to appear
+  }
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Take screenshot of the toolbar area
+  const toolbar = page.locator('[data-testid="filter-toolbar"]');
+  if ((await toolbar.count()) > 0) {
+    await toolbar.screenshot({ path: outputPath });
+  } else {
+    // Fallback to full storybook root
+    const storybookRoot = page.locator("#storybook-root > *");
+    await storybookRoot.first().screenshot({ path: outputPath });
+  }
+
+  console.log(`  ✓ Captured FilterToolbar search autocomplete (light theme)`);
+}
+
+// =============================================================================
+// ORG TREE FILTER SCREENSHOTS (3 screenshots for OrgTreeFilter in FilterDrawer)
+// =============================================================================
+
+/**
+ * Generate OrgTreeFilter expanded screenshot
+ *
+ * Shows the hierarchical organization tree in FilterDrawer:
+ * - FilterDrawer open
+ * - "Managers" section expanded
+ * - Organization tree showing at least 2-3 levels of hierarchy
+ * - Manager names with team size badges (e.g., "Sarah Chen (12)")
+ * - Expand/collapse icons visible
+ * - Checkboxes for manager selection
+ * - Light theme
+ *
+ * Uses Storybook story: app-dashboard-filterdrawer--managers-selected
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateOrgTreeFilterExpanded(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Set viewport to accommodate drawer
+  await page.setViewportSize({ width: 500, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-filterdrawer--managers-selected",
+    outputPath,
+    theme: "light",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]',
+  });
+}
+
+/**
+ * Generate OrgTreeFilter search screenshot
+ *
+ * Shows search functionality within the org tree with highlighted matches:
+ * - FilterDrawer open with Managers section
+ * - Search input field with text entered (e.g., "chen")
+ * - Matching manager names highlighted
+ * - Tree auto-expanded to show matching descendants
+ * - Light theme
+ *
+ * NOTE: This screenshot requires a special story with search active,
+ * or manual interaction via Playwright. Using managers-selected as base.
+ * TODO: Create a dedicated story for org tree search state.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateOrgTreeFilterSearch(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 500, height: 900 });
+
+  // Navigate to the managers selected story
+  await navigateToStory(
+    page,
+    "app-dashboard-filterdrawer--managers-selected",
+    "light"
+  );
+
+  // Wait for drawer to be visible
+  await page.waitForSelector('[data-testid="filter-drawer"]', {
+    state: "visible",
+    timeout: 5000,
+  });
+
+  // Try to find and interact with search input in Managers section
+  const searchInput = page.locator(
+    '[data-testid="org-tree-search"], .org-tree-filter input[type="text"]'
+  );
+  if ((await searchInput.count()) > 0) {
+    await searchInput.click();
+    await searchInput.fill("chen");
+    await page.waitForTimeout(800); // Wait for search results to filter
+  }
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Take screenshot of the drawer
+  const drawer = page.locator('[data-testid="filter-drawer"]');
+  if ((await drawer.count()) > 0) {
+    await drawer.screenshot({ path: outputPath });
+  } else {
+    const storybookRoot = page.locator("#storybook-root > *");
+    await storybookRoot.first().screenshot({ path: outputPath });
+  }
+
+  console.log(`  ✓ Captured OrgTreeFilter search (light theme)`);
+}
+
+/**
+ * Generate OrgTreeFilter multi-select screenshot
+ *
+ * Shows multiple managers selected with checkboxes:
+ * - FilterDrawer open with Managers section
+ * - At least 2-3 managers checked (at different hierarchy levels)
+ * - Active filter summary at top of drawer showing selected managers
+ * - Checked checkboxes clearly visible
+ * - Light theme
+ *
+ * Uses Storybook story: app-dashboard-filterdrawer--managers-selected
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateOrgTreeMultiSelect(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 500, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-filterdrawer--managers-selected",
+    outputPath,
+    theme: "light",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]',
+  });
+}
+
 /**
  * Generate Exclusions Dialog screenshot
  *

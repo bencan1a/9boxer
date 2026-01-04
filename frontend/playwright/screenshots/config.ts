@@ -180,18 +180,18 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     usedIn: ["tracking-changes.md", "workflows/adding-notes.md"],
   },
 
-  // Filters workflow screenshots (3 screenshots)
+  // Filters workflow screenshots - UPDATED for FilterToolbar integration
   // REMOVED: filters-active-chips - unused (no documentation references)
   "filters-panel-expanded": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateFilterDrawerAllExpanded",
+    source: "full-app",
+    workflow: "filter-toolbar-app",
+    function: "generateFilterDrawerExpanded",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
-    description: "Filter panel expanded showing all filter options",
-    storyId: "app-dashboard-filterdrawer--all-sections-expanded",
+    description:
+      "Filter panel expanded showing OrgTreeFilter with hierarchical org tree (UPDATED for FilterToolbar integration)",
     cropping: "container",
     caption:
-      "Filter panel showing Job Levels, Job Functions, and Locations filter sections",
+      "Filter panel showing OrgTreeFilter with manager hierarchy, Job Levels, and other filter sections",
     quality: "good",
     usedIn: [
       "filters.md",
@@ -449,6 +449,92 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     usedIn: ["filters.md"],
   },
 
+  // FilterToolbar screenshots (NEW - for copilot/add-filtering-toolbar branch)
+  "filter-toolbar-expanded": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterToolbarExpanded",
+    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-expanded.png",
+    description:
+      "FilterToolbar in expanded state with filter button, employee count, and search box",
+    storyId: "app-common-filtertoolbar--compact-no-filters",
+    cropping: "element",
+    caption:
+      "Filter toolbar showing filter button, employee count, and search functionality",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
+  "filter-toolbar-with-active-filters": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterToolbarWithActiveFilters",
+    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-with-active-filters.png",
+    description:
+      "FilterToolbar with active filters showing orange highlighted button and filtered employee count",
+    storyId: "app-common-filtertoolbar--compact-with-filters",
+    cropping: "element",
+    caption:
+      "Filter toolbar with active filters showing '45 of 200 employees' and filter summary",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
+  "filter-toolbar-search-autocomplete": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateFilterToolbarSearchAutocomplete",
+    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-search-autocomplete.png",
+    description:
+      "FilterToolbar employee search with autocomplete dropdown showing highlighted matches",
+    storyId: "app-common-filtertoolbar--compact-with-filters",
+    cropping: "element",
+    caption:
+      "Employee search dropdown with matching text highlighted in orange",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
+
+  // OrgTreeFilter screenshots (NEW - replaces ReportingChainFilter)
+  "org-tree-filter-expanded": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateOrgTreeFilterExpanded",
+    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-filter-expanded.png",
+    description:
+      "Hierarchical organization tree in FilterDrawer with manager names, team sizes, and expand/collapse controls",
+    storyId: "app-dashboard-filterdrawer--managers-selected",
+    cropping: "container",
+    caption:
+      "Organization tree showing hierarchical manager structure with team size badges",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
+  "org-tree-filter-search": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateOrgTreeFilterSearch",
+    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-filter-search.png",
+    description:
+      "OrgTreeFilter with search active, showing highlighted manager names and auto-expanded tree",
+    storyId: "app-dashboard-filterdrawer--managers-selected",
+    cropping: "container",
+    caption: "Organization tree search with matching manager names highlighted",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
+  "org-tree-multi-select": {
+    source: "storybook",
+    workflow: "filters-storybook",
+    function: "generateOrgTreeMultiSelect",
+    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-multi-select.png",
+    description:
+      "OrgTreeFilter showing multiple managers selected with checkboxes across different hierarchy levels",
+    storyId: "app-dashboard-filterdrawer--managers-selected",
+    cropping: "container",
+    caption:
+      "Multiple managers selected in organization tree with visible checkboxes",
+    quality: "pending",
+    usedIn: ["filters.md"],
+  },
   // File Operations workflow screenshots
   // REMOVED: file-menu-recent-files - unused (no documentation references)
   "unsaved-changes-dialog": {
@@ -657,16 +743,15 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
 
   // Grid screenshots (understanding-grid.md)
   "grid-basic-layout": {
-    source: "storybook",
-    workflow: "storybook-components",
-    function: "generateGridBasicLayout",
+    source: "full-app",
+    workflow: "filter-toolbar-app",
+    function: "generateGridBasicLayoutWithToolbar",
     path: "resources/user-guide/docs/images/screenshots/grid/grid-basic-layout.png",
     description:
-      "Full 9-box grid with axis labels (Performance: Low/Medium/High, Potential: Low/Medium/High) and all 9 position names visible",
-    storyId: "app-grid-nineboxgrid--populated",
+      "Full 9-box grid with FilterToolbar at top-left, axis labels, and all 9 position names visible (UPDATED for FilterToolbar integration)",
     cropping: "container",
     caption:
-      "The 9-box grid showing Performance (horizontal) and Potential (vertical) axes with all 9 positions labeled",
+      "The 9-box grid with FilterToolbar showing Performance (horizontal) and Potential (vertical) axes with all 9 positions labeled",
     quality: "good",
     usedIn: ["understanding-grid.md"],
   },
@@ -743,18 +828,32 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     usedIn: ["filters.md"],
   },
   "filters-active-indicator": {
-    source: "storybook",
-    workflow: "filters-storybook",
-    function: "generateFiltersActiveIndicator",
+    source: "full-app",
+    workflow: "filter-toolbar-app",
+    function: "generateFilterActiveIndicator",
     path: "resources/user-guide/docs/images/screenshots/filters/filters-active-indicator.png",
     description:
-      "AppBar/toolbar area showing Filters button with orange dot badge and employee count showing filtered vs total",
-    storyId: "app-dashboard-appbar--with-active-filters",
+      "FilterToolbar showing orange highlighted filter button and filtered employee count (UPDATED for FilterToolbar integration)",
     cropping: "element",
     caption:
-      "Filters button with orange dot indicator and employee count showing filtered results",
+      "FilterToolbar with orange dot indicator and employee count showing filtered results",
     quality: "good",
     usedIn: ["filters.md"],
+  },
+
+  // FilterToolbar Integration Screenshots (NEW - copilot/add-filtering-toolbar)
+  "filter-toolbar-and-grid": {
+    source: "full-app",
+    workflow: "filter-toolbar-app",
+    function: "generateFilterToolbarAndGrid",
+    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-and-grid.png",
+    description:
+      "Full grid view with FilterToolbar visible at top-left, showing integration with the application",
+    cropping: "grid",
+    caption:
+      "9-box grid with FilterToolbar positioned at top-left above the vertical axis",
+    quality: "good",
+    usedIn: ["filters.md", "understanding-grid.md"],
   },
 
   // Donut Mode screenshots (donut-mode.md)
