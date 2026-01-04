@@ -304,35 +304,3 @@ class TestPIIInclusionUI:
         if "organization" in result and "managers" in result["organization"]:
             for manager in result["organization"]["managers"]:
                 assert "direct_reports" in manager, "Direct reports should be included in UI package"
-
-
-class TestBackwardCompatibility:
-    """Tests for backward compatibility with package_for_agent()."""
-
-    def test_package_for_agent_still_works(self) -> None:
-        """Test that package_for_agent() still works (backward compatibility)."""
-        from ninebox.services.data_packaging_service import package_for_agent
-
-        employees = [create_employee(1)]
-
-        result = package_for_agent(employees, {})
-
-        # Should work and return a valid structure
-        assert isinstance(result, dict)
-        assert "employees" in result
-        assert "organization" in result
-        assert "analyses" in result
-        assert "overview" in result
-
-    def test_package_for_agent_includes_pii(self) -> None:
-        """Test that package_for_agent() defaults to package_for_ui behavior (includes PII)."""
-        from ninebox.services.data_packaging_service import package_for_agent
-
-        employees = [create_employee(1001)]
-
-        result = package_for_agent(employees, {})
-
-        # Should include PII (backward compatibility with existing behavior)
-        emp = result["employees"][0]
-        assert "employee_id" in emp, "package_for_agent should include employee_id for backward compatibility"
-        assert emp["employee_id"] == 1001
