@@ -98,6 +98,9 @@ async def get_managers(
         # Find managers with minimum team size
         manager_ids = org_service.find_managers(min_team_size=min_team_size)
 
+        # Build org tree once for O(1) lookups
+        org_tree = org_service.build_org_tree()
+
         # Build manager info list
         managers: list[ManagerInfo] = []
         for manager_id in manager_ids:
@@ -108,8 +111,8 @@ async def get_managers(
                 )
                 continue
 
-            # Get team size (all reports)
-            team_size = len(org_service.get_all_reports(manager_id))
+            # Get team size (all reports) using O(1) lookup
+            team_size = len(org_tree.get(manager_id, []))
 
             managers.append(
                 {
@@ -270,12 +273,16 @@ async def get_reporting_chain(
         # Get reporting chain
         chain_ids = org_service.get_reporting_chain(employee_id)
 
+        # Build org tree once for O(1) lookups
+        org_tree = org_service.build_org_tree()
+
         # Build manager info list for chain
         reporting_chain: list[ManagerInfo] = []
         for mgr_id in chain_ids:
             mgr = org_service.get_employee_by_id(mgr_id)
             if mgr:
-                team_size = len(org_service.get_all_reports(mgr_id))
+                # Get team size using O(1) lookup
+                team_size = len(org_tree.get(mgr_id, []))
                 reporting_chain.append(
                     {
                         "employee_id": mgr_id,
