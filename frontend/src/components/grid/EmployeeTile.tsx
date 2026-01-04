@@ -51,6 +51,7 @@ export type OriginalPositionVariant =
 interface EmployeeTileProps {
   employee: Employee;
   onSelect: (employeeId: number) => void;
+  onDoubleClick?: (employeeId: number) => void;
   donutModeActive?: boolean;
   originalPositionVariant?: OriginalPositionVariant;
   isSelected?: boolean;
@@ -67,6 +68,7 @@ const truncate = (str: string, maxLength: number): string => {
 const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
+  onDoubleClick,
   donutModeActive = false,
   originalPositionVariant = "icon-text",
   isSelected = false,
@@ -86,6 +88,17 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       employee.name
     );
     onSelect(employee.employee_id);
+  };
+
+  const handleCardDoubleClick = () => {
+    logger.debug(
+      "Card double-clicked - opening details:",
+      employee.employee_id,
+      employee.name
+    );
+    if (onDoubleClick) {
+      onDoubleClick(employee.employee_id);
+    }
   };
 
   // Get flags
@@ -130,6 +143,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     <Card
       ref={setNodeRef}
       onClick={handleCardClick}
+      onDoubleClick={handleCardDoubleClick}
       sx={{
         minWidth: tokens.tile.minWidth,
         maxWidth: tokens.tile.maxWidth,
@@ -353,7 +367,8 @@ export const EmployeeTile = React.memo(
       prevProps.donutModeActive === nextProps.donutModeActive &&
       prevProps.originalPositionVariant === nextProps.originalPositionVariant &&
       prevProps.isSelected === nextProps.isSelected &&
-      prevProps.onSelect === nextProps.onSelect
+      prevProps.onSelect === nextProps.onSelect &&
+      prevProps.onDoubleClick === nextProps.onDoubleClick
     );
   }
 );

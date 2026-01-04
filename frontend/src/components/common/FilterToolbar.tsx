@@ -8,10 +8,6 @@
  * @component
  * @screenshots
  *   - filter-toolbar-compact: Compact variant with all elements inline
- *   - filter-toolbar-expandable: Expandable variant with collapsible info
- *   - filter-toolbar-chips: Chip-based variant showing active filters as chips
- *   - filter-toolbar-dropdown: Dropdown variant with filter details in menu
- *   - filter-toolbar-split: Split variant separating filter controls from search
  */
 
 import React, { useState, useMemo } from "react";
@@ -21,9 +17,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import Chip from "@mui/material/Chip";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
 import Alert from "@mui/material/Alert";
@@ -31,10 +24,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
@@ -43,19 +32,8 @@ import {
   useEmployeeSearch,
   EmployeeSearchResult,
 } from "../../hooks/useEmployeeSearch";
-import { useFilterStore } from "../../store/filterStore";
 import { SearchHighlight } from "./SearchHighlight";
 import { useDebounced } from "../../hooks/useDebounced";
-
-/**
- * Display variant for the filter toolbar
- */
-export type FilterToolbarVariant =
-  | "compact"
-  | "expandable"
-  | "chips"
-  | "dropdown"
-  | "split";
 
 /**
  * Active filter information
@@ -70,8 +48,6 @@ export interface ActiveFilter {
  * Props for FilterToolbar component
  */
 export interface FilterToolbarProps {
-  /** Display variant of the toolbar */
-  variant?: FilterToolbarVariant;
   /** List of active filters with details */
   activeFilters?: ActiveFilter[];
   /** Number of filtered employees */
@@ -96,10 +72,8 @@ export interface FilterToolbarProps {
  * FilterToolbar Component
  *
  * A toolbar for filtering controls positioned to the left of the grid axis.
- * Supports multiple display variants for different UX approaches.
  */
 export const FilterToolbar: React.FC<FilterToolbarProps> = ({
-  variant = "compact",
   activeFilters = [],
   filteredCount,
   totalCount,
@@ -113,19 +87,9 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   const theme = useTheme();
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // Debounce search input to prevent excessive search operations
   const debouncedSearchValue = useDebounced(searchValue, 300);
-
-  // Get filter store actions for chip delete handlers
-  const toggleLevel = useFilterStore((state) => state.toggleLevel);
-  const toggleJobFunction = useFilterStore((state) => state.toggleJobFunction);
-  const toggleLocation = useFilterStore((state) => state.toggleLocation);
-  const toggleManager = useFilterStore((state) => state.toggleManager);
-  const toggleFlag = useFilterStore((state) => state.toggleFlag);
-  const setExcludedIds = useFilterStore((state) => state.setExcludedIds);
 
   // Initialize employee search with fuzzy matching
   const { search, isReady, error } = useEmployeeSearch({
@@ -156,9 +120,9 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   // Build employee count text
   const employeeCountText = useMemo(() => {
     if (!hasActiveFilters || filteredCount === totalCount) {
-      return `${totalCount} ${t("grid.employeeCount.employee", { count: totalCount })}`;
+      return `${totalCount}`;
     }
-    return `${filteredCount} ${t("grid.employeeCount.of")} ${totalCount} ${t("grid.employeeCount.employee", { count: totalCount })}`;
+    return `${filteredCount} ${t("grid.employeeCount.of")} ${totalCount}`;
   }, [hasActiveFilters, filteredCount, totalCount, t]);
 
   // Build filter summary text
@@ -300,18 +264,6 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     error,
   ]);
 
-  const handleInfoClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (variant === "dropdown") {
-      setAnchorEl(event.currentTarget);
-    } else if (variant === "expandable") {
-      setIsExpanded(!isExpanded);
-    }
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleToggleCollapse = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
@@ -322,272 +274,75 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     }
   };
 
-  /**
-   * Handle chip deletion by calling the appropriate filter store action
-   * based on the filter type and value
-   */
-  const handleChipDelete = (filterType: string, value: string) => {
-    switch (filterType) {
-      case "level":
-        toggleLevel(value);
-        break;
-      case "function":
-        toggleJobFunction(value);
-        break;
-      case "location":
-        toggleLocation(value);
-        break;
-      case "manager":
-        // For manager, we need to pass empty array since we're removing it
-        toggleManager(value, []);
-        break;
-      case "flags":
-        toggleFlag(value);
-        break;
-      case "excluded":
-        // Clear all exclusions
-        setExcludedIds([]);
-        break;
-      default:
-        console.warn(`Unknown filter type: ${filterType}`);
-    }
-  };
-
   // Don't render on small screens
   if (isSmallScreen) {
     return null;
   }
 
-  // Render compact variant (all inline with collapse/expand)
-  if (variant === "compact") {
-    return (
-      <Box
-        data-testid="filter-toolbar"
-        sx={{
-          position: "absolute",
-          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-          left: 0,
-          zIndex: 10,
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: 1,
-          boxShadow: 3,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          p: 0.5,
-          maxWidth: isCollapsed ? "auto" : "600px",
-          transition: theme.transitions.create(["max-width"], {
-            duration: theme.transitions.duration.standard,
-          }),
-        }}
+  return (
+    <Box
+      data-testid="filter-toolbar"
+      sx={{
+        position: "absolute",
+        top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
+        left: 0,
+        zIndex: 10,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 1,
+        boxShadow: 3,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        p: 0.5,
+        maxWidth: isCollapsed ? "auto" : "600px",
+        transition: theme.transitions.create(["max-width"], {
+          duration: theme.transitions.duration.standard,
+        }),
+      }}
+    >
+      {/* Filter Button with highlight when active */}
+      <Tooltip
+        title={t("dashboard.appBar.filters", "Filters")}
+        placement="bottom"
       >
-        {/* Filter Button with highlight when active */}
-        <Tooltip
-          title={t("dashboard.appBar.filters", "Filters")}
-          placement="bottom"
-        >
-          <IconButton
-            onClick={onFilterClick}
-            disabled={disabled}
-            data-testid="filter-button"
-            size="small"
-            sx={{
-              borderRadius: 1,
-              border: "1px solid",
-              borderColor: hasActiveFilters ? "secondary.main" : "divider",
+        <IconButton
+          onClick={onFilterClick}
+          disabled={disabled}
+          data-testid="filter-button"
+          size="small"
+          sx={{
+            borderRadius: 1,
+            border: "1px solid",
+            borderColor: hasActiveFilters ? "secondary.main" : "divider",
+            backgroundColor: hasActiveFilters
+              ? "secondary.main"
+              : "transparent",
+            color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+            "&:hover": {
               backgroundColor: hasActiveFilters
-                ? "secondary.main"
-                : "transparent",
-              color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-              "&:hover": {
-                backgroundColor: hasActiveFilters
-                  ? "secondary.dark"
-                  : "action.hover",
-                borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-              },
-            }}
-          >
-            <FilterListIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Collapsible Content */}
-        <Collapse
-          in={!isCollapsed}
-          orientation="horizontal"
-          timeout={theme.transitions.duration.standard}
+                ? "secondary.dark"
+                : "action.hover",
+              borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+            },
+          }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+          <FilterListIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
 
-            {/* Employee Count */}
-            <Typography
-              variant="caption"
-              data-testid="employee-count"
-              sx={{
-                fontWeight: 500,
-                color: theme.palette.text.secondary,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {employeeCountText}
-            </Typography>
-
-            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-            {/* Filter Info Display */}
-            {hasActiveFilters && (
-              <Tooltip
-                title={
-                  <Box sx={{ py: 0.5 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{ fontWeight: "bold", display: "block", mb: 0.5 }}
-                    >
-                      {t("filters.activeFilters", "Active Filters")}
-                    </Typography>
-                    {activeFilters.map((filter, index) => (
-                      <Box key={index} sx={{ mb: 0.5 }}>
-                        <Typography
-                          variant="caption"
-                          sx={{ fontWeight: "bold", display: "block" }}
-                        >
-                          {filter.label}:
-                        </Typography>
-                        <Typography variant="caption" sx={{ pl: 1 }}>
-                          {filter.values.join(", ")}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                }
-                placement="bottom"
-              >
-                <Typography
-                  variant="caption"
-                  data-testid="filter-info"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    maxWidth: "200px",
-                    cursor: "help",
-                  }}
-                >
-                  {filterSummaryText}
-                </Typography>
-              </Tooltip>
-            )}
-
-            {hasActiveFilters && (
-              <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-            )}
-
-            {/* Employee Search Autocomplete */}
-            {employeeSearchAutocomplete}
-          </Box>
-        </Collapse>
-
-        {/* Toggle Collapse/Expand Button */}
-        <Tooltip
-          title={
-            isCollapsed
-              ? t("filters.expandToolbar", "Expand toolbar")
-              : t("filters.collapseToolbar", "Collapse toolbar")
-          }
-          placement="bottom"
-        >
-          <IconButton
-            onClick={handleToggleCollapse}
-            size="small"
-            data-testid="toolbar-toggle-button"
-            sx={{
-              ml: isCollapsed ? 0 : 0.5,
-              px: 0.25,
-              minWidth: "auto",
-              flexShrink: 0,
-              borderRadius: 1,
-              border: "1px solid",
-              borderColor: "divider",
-              "&:hover": {
-                borderColor: "divider",
-              },
-            }}
-          >
-            {isCollapsed ? (
-              <ChevronRightIcon fontSize="small" />
-            ) : (
-              <ChevronLeftIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Tooltip>
-      </Box>
-    );
-  }
-
-  // Render expandable variant (info expands on click)
-  if (variant === "expandable") {
-    return (
-      <Box
-        data-testid="filter-toolbar"
-        sx={{
-          position: "absolute",
-          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-          left: 0,
-          zIndex: 10,
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: 1,
-          boxShadow: 3,
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "500px",
-        }}
+      {/* Collapsible Content */}
+      <Collapse
+        in={!isCollapsed}
+        orientation="horizontal"
+        timeout={theme.transitions.duration.standard}
       >
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 1,
-            p: 0.5,
           }}
         >
-          {/* Filter Button with highlight when active */}
-          <Tooltip
-            title={t("dashboard.appBar.filters", "Filters")}
-            placement="bottom"
-          >
-            <IconButton
-              onClick={onFilterClick}
-              disabled={disabled}
-              data-testid="filter-button"
-              size="small"
-              sx={{
-                borderRadius: 1,
-                border: "1px solid",
-                borderColor: hasActiveFilters ? "secondary.main" : "divider",
-                backgroundColor: hasActiveFilters
-                  ? "secondary.main"
-                  : "transparent",
-                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-                "&:hover": {
-                  backgroundColor: hasActiveFilters
-                    ? "secondary.dark"
-                    : "action.hover",
-                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-                },
-              }}
-            >
-              <FilterListIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
           {/* Employee Count */}
@@ -603,423 +358,95 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             {employeeCountText}
           </Typography>
 
-          {/* Info Toggle Button */}
+          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+
+          {/* Filter Info Display */}
           {hasActiveFilters && (
-            <>
-              <Tooltip
-                title={
-                  isExpanded
-                    ? t("filters.hideDetails", "Hide details")
-                    : t("filters.showDetails", "Show details")
-                }
-              >
-                <IconButton
-                  onClick={handleInfoClick}
-                  size="small"
-                  data-testid="info-toggle-button"
-                >
-                  {isExpanded ? (
-                    <ExpandLessIcon fontSize="small" />
-                  ) : (
-                    <ExpandMoreIcon fontSize="small" />
-                  )}
-                </IconButton>
-              </Tooltip>
-
-              <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-            </>
-          )}
-
-          {/* Employee Search Autocomplete */}
-          {employeeSearchAutocomplete}
-        </Box>
-
-        {/* Expandable Filter Details */}
-        <Collapse in={isExpanded}>
-          <Box
-            sx={{
-              p: 1,
-              pt: 0,
-              borderTop: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            {activeFilters.map((filter, index) => (
+            <Tooltip
+              title={
+                <Box sx={{ py: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ fontWeight: "bold", display: "block", mb: 0.5 }}
+                  >
+                    {t("filters.activeFilters", "Active Filters")}
+                  </Typography>
+                  {activeFilters.map((filter, index) => (
+                    <Box key={index} sx={{ mb: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: "bold", display: "block" }}
+                      >
+                        {filter.label}:
+                      </Typography>
+                      <Typography variant="caption" sx={{ pl: 1 }}>
+                        {filter.values.join(", ")}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              }
+              placement="bottom"
+            >
               <Typography
-                key={index}
                 variant="caption"
+                data-testid="filter-info"
                 sx={{
-                  display: "block",
                   color: theme.palette.text.secondary,
-                  mb: 0.5,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "200px",
+                  cursor: "help",
                 }}
               >
-                <strong>{filter.label}:</strong> {filter.values.join(", ")}
+                {filterSummaryText}
               </Typography>
-            ))}
-          </Box>
-        </Collapse>
-      </Box>
-    );
-  }
+            </Tooltip>
+          )}
 
-  // Render chips variant (active filters as dismissible chips)
-  if (variant === "chips") {
-    return (
-      <Box
-        data-testid="filter-toolbar"
-        sx={{
-          position: "absolute",
-          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-          left: 0,
-          zIndex: 10,
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: 1,
-          boxShadow: 3,
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "600px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            p: 0.5,
-          }}
-        >
-          {/* Filter Button with highlight when active */}
-          <Tooltip
-            title={t("dashboard.appBar.filters", "Filters")}
-            placement="bottom"
-          >
-            <IconButton
-              onClick={onFilterClick}
-              disabled={disabled}
-              data-testid="filter-button"
-              size="small"
-              sx={{
-                borderRadius: 1,
-                border: "1px solid",
-                borderColor: hasActiveFilters ? "secondary.main" : "divider",
-                backgroundColor: hasActiveFilters
-                  ? "secondary.main"
-                  : "transparent",
-                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-                "&:hover": {
-                  backgroundColor: hasActiveFilters
-                    ? "secondary.dark"
-                    : "action.hover",
-                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-                },
-              }}
-            >
-              <FilterListIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-          {/* Employee Count */}
-          <Typography
-            variant="caption"
-            data-testid="employee-count"
-            sx={{
-              fontWeight: 500,
-              color: theme.palette.text.secondary,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {employeeCountText}
-          </Typography>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-          {/* Employee Search Autocomplete */}
-          {employeeSearchAutocomplete}
-        </Box>
-
-        {/* Filter Chips */}
-        {hasActiveFilters && activeFilters.length > 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 0.5,
-              p: 0.5,
-              pt: 0,
-              borderTop: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            {activeFilters.map((filter, index) =>
-              filter.values.map((value, valueIndex) => (
-                <Chip
-                  key={`${index}-${valueIndex}`}
-                  label={`${filter.label}: ${value}`}
-                  size="small"
-                  onDelete={() => handleChipDelete(filter.type, value)}
-                  deleteIcon={<CloseIcon />}
-                  sx={{
-                    fontSize: "0.75rem",
-                    height: "24px",
-                  }}
-                />
-              ))
-            )}
-          </Box>
-        )}
-      </Box>
-    );
-  }
-
-  // Render dropdown variant (filter details in menu)
-  if (variant === "dropdown") {
-    return (
-      <>
-        <Box
-          data-testid="filter-toolbar"
-          sx={{
-            position: "absolute",
-            top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-            left: 0,
-            zIndex: 10,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 1,
-            boxShadow: 3,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            p: 0.5,
-          }}
-        >
-          {/* Filter Button with highlight when active */}
-          <Tooltip
-            title={t("dashboard.appBar.filters", "Filters")}
-            placement="bottom"
-          >
-            <IconButton
-              onClick={onFilterClick}
-              disabled={disabled}
-              data-testid="filter-button"
-              size="small"
-              sx={{
-                borderRadius: 1,
-                border: "1px solid",
-                borderColor: hasActiveFilters ? "secondary.main" : "divider",
-                backgroundColor: hasActiveFilters
-                  ? "secondary.main"
-                  : "transparent",
-                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-                "&:hover": {
-                  backgroundColor: hasActiveFilters
-                    ? "secondary.dark"
-                    : "action.hover",
-                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-                },
-              }}
-            >
-              <FilterListIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-          {/* Employee Count */}
-          <Typography
-            variant="caption"
-            data-testid="employee-count"
-            sx={{
-              fontWeight: 500,
-              color: theme.palette.text.secondary,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {employeeCountText}
-          </Typography>
-
-          {/* Info Button (opens dropdown) */}
           {hasActiveFilters && (
-            <>
-              <Tooltip
-                title={t("filters.viewActiveFilters", "View active filters")}
-              >
-                <IconButton
-                  onClick={handleInfoClick}
-                  size="small"
-                  data-testid="info-button"
-                >
-                  <InfoOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-
-              <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-            </>
+            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
           )}
 
           {/* Employee Search Autocomplete */}
           {employeeSearchAutocomplete}
         </Box>
+      </Collapse>
 
-        {/* Filter Details Menu */}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          data-testid="filter-menu"
-        >
-          {activeFilters.map((filter, index) => (
-            <MenuItem key={index} disabled>
-              <Box>
-                <Typography variant="caption" fontWeight="bold">
-                  {filter.label}
-                </Typography>
-                <Typography variant="caption" display="block">
-                  {filter.values.join(", ")}
-                </Typography>
-              </Box>
-            </MenuItem>
-          ))}
-        </Menu>
-      </>
-    );
-  }
-
-  // Render split variant (filter button and count separate from search)
-  if (variant === "split") {
-    return (
-      <Box
-        data-testid="filter-toolbar"
-        sx={{
-          position: "absolute",
-          top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-          left: 0,
-          zIndex: 10,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-        }}
+      {/* Toggle Collapse/Expand Button */}
+      <Tooltip
+        title={
+          isCollapsed
+            ? t("filters.expandToolbar", "Expand toolbar")
+            : t("filters.collapseToolbar", "Collapse toolbar")
+        }
+        placement="bottom"
       >
-        {/* Left Group: Filter controls */}
-        <Box
+        <IconButton
+          onClick={handleToggleCollapse}
+          size="small"
+          data-testid="toolbar-toggle-button"
           sx={{
-            backgroundColor: theme.palette.background.paper,
+            ml: isCollapsed ? 0 : 0.5,
+            px: 0.25,
+            minWidth: "auto",
+            flexShrink: 0,
             borderRadius: 1,
-            boxShadow: 3,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            p: 0.5,
+            border: "1px solid",
+            borderColor: "divider",
+            "&:hover": {
+              borderColor: "divider",
+            },
           }}
         >
-          {/* Filter Button with highlight when active */}
-          <Tooltip
-            title={t("dashboard.appBar.filters", "Filters")}
-            placement="bottom"
-          >
-            <IconButton
-              onClick={onFilterClick}
-              disabled={disabled}
-              data-testid="filter-button"
-              size="small"
-              sx={{
-                borderRadius: 1,
-                border: "1px solid",
-                borderColor: hasActiveFilters ? "secondary.main" : "divider",
-                backgroundColor: hasActiveFilters
-                  ? "secondary.main"
-                  : "transparent",
-                color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-                "&:hover": {
-                  backgroundColor: hasActiveFilters
-                    ? "secondary.dark"
-                    : "action.hover",
-                  borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-                },
-              }}
-            >
-              <FilterListIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-          {/* Employee Count */}
-          <Typography
-            variant="caption"
-            data-testid="employee-count"
-            sx={{
-              fontWeight: 500,
-              color: theme.palette.text.secondary,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {employeeCountText}
-          </Typography>
-
-          {/* Filter Info (if active) */}
-          {hasActiveFilters && (
-            <>
-              <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-              <Tooltip
-                title={
-                  <Box sx={{ py: 0.5 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{ fontWeight: "bold", display: "block", mb: 0.5 }}
-                    >
-                      {t("filters.activeFilters", "Active Filters")}
-                    </Typography>
-                    {activeFilters.map((filter, index) => (
-                      <Box key={index} sx={{ mb: 0.5 }}>
-                        <Typography
-                          variant="caption"
-                          sx={{ fontWeight: "bold", display: "block" }}
-                        >
-                          {filter.label}:
-                        </Typography>
-                        <Typography variant="caption" sx={{ pl: 1 }}>
-                          {filter.values.join(", ")}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                }
-                placement="bottom"
-              >
-                <Typography
-                  variant="caption"
-                  data-testid="filter-info"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    maxWidth: "150px",
-                    cursor: "help",
-                  }}
-                >
-                  {filterSummaryText}
-                </Typography>
-              </Tooltip>
-            </>
+          {isCollapsed ? (
+            <ChevronRightIcon fontSize="small" />
+          ) : (
+            <ChevronLeftIcon fontSize="small" />
           )}
-        </Box>
-
-        {/* Right Group: Search */}
-        <Box
-          sx={{
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 1,
-            boxShadow: 3,
-            p: 0.5,
-          }}
-        >
-          {employeeSearchAutocomplete}
-        </Box>
-      </Box>
-    );
-  }
-
-  // Default fallback (shouldn't reach here)
-  return null;
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
 };

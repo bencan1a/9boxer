@@ -2,7 +2,7 @@
  * Right panel container with tab system
  */
 
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -13,6 +13,11 @@ import { DetailsTab } from "./DetailsTab";
 import { ChangeTrackerTab } from "./ChangeTrackerTab";
 import { StatisticsTab } from "./StatisticsTab";
 import { IntelligenceTab } from "./IntelligenceTab";
+import {
+  useUiStore,
+  selectActiveTab,
+  selectSetActiveTab,
+} from "../../store/uiStore";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,7 +45,8 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 export const RightPanel: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(0);
+  const activeTab = useUiStore(selectActiveTab);
+  const setActiveTab = useUiStore(selectSetActiveTab);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);

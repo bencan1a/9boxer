@@ -19,6 +19,7 @@ interface UiState {
   isRightPanelCollapsed: boolean;
   rightPanelSize: number; // Percentage size of the panel
   wasAutoCollapsed: boolean; // Track if panel was auto-collapsed due to window size
+  activeTab: number; // Active tab index in right panel (0=Details, 1=Changes, 2=Statistics, 3=Intelligence)
 
   // Theme state
   themeMode: ThemeMode; // User's preference
@@ -35,6 +36,7 @@ interface UiState {
     isAutoCollapse?: boolean
   ) => void;
   setRightPanelSize: (size: number) => void;
+  setActiveTab: (tabIndex: number) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setSystemTheme: (theme: Theme) => void;
   loadRecentFiles: () => Promise<void>;
@@ -59,6 +61,7 @@ export const useUiStore = create<UiState>()(
       isRightPanelCollapsed: false,
       rightPanelSize: 35, // Default 35%
       wasAutoCollapsed: false,
+      activeTab: 0, // Default to Details tab
 
       // Initial theme state
       themeMode: "auto", // Default to follow system
@@ -85,6 +88,10 @@ export const useUiStore = create<UiState>()(
 
       setRightPanelSize: (size: number) => {
         set({ rightPanelSize: size });
+      },
+
+      setActiveTab: (tabIndex: number) => {
+        set({ activeTab: tabIndex });
       },
 
       setThemeMode: (mode: ThemeMode) => {
@@ -147,6 +154,7 @@ export const useUiStore = create<UiState>()(
         isRightPanelCollapsed: state.isRightPanelCollapsed,
         rightPanelSize: state.rightPanelSize,
         wasAutoCollapsed: state.wasAutoCollapsed,
+        activeTab: state.activeTab,
         themeMode: state.themeMode,
         recentFiles: state.recentFiles,
         // Do NOT persist effectiveTheme or systemTheme - these are runtime values
@@ -165,6 +173,7 @@ export const selectIsRightPanelCollapsed = (state: UiState) =>
 export const selectRightPanelSize = (state: UiState) => state.rightPanelSize;
 export const selectWasAutoCollapsed = (state: UiState) =>
   state.wasAutoCollapsed;
+export const selectActiveTab = (state: UiState) => state.activeTab;
 export const selectThemeMode = (state: UiState) => state.themeMode;
 export const selectEffectiveTheme = (state: UiState) => state.effectiveTheme;
 export const selectSystemTheme = (state: UiState) => state.systemTheme;
@@ -177,6 +186,7 @@ export const selectSetRightPanelCollapsed = (state: UiState) =>
   state.setRightPanelCollapsed;
 export const selectSetRightPanelSize = (state: UiState) =>
   state.setRightPanelSize;
+export const selectSetActiveTab = (state: UiState) => state.setActiveTab;
 export const selectSetThemeMode = (state: UiState) => state.setThemeMode;
 export const selectSetSystemTheme = (state: UiState) => state.setSystemTheme;
 export const selectLoadRecentFiles = (state: UiState) => state.loadRecentFiles;

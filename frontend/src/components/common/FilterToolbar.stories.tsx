@@ -246,7 +246,6 @@ export const ExpandedDefault: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 200,
     totalCount: 200,
@@ -299,7 +298,6 @@ export const WithActiveFilters: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: sampleFilters,
     filteredCount: 75,
     totalCount: 200,
@@ -354,7 +352,6 @@ export const WithSearchResults: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 200,
     totalCount: 200,
@@ -408,7 +405,6 @@ export const CollapsedState: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 200,
     totalCount: 200,
@@ -442,7 +438,6 @@ export const CompactNoFilters: Story = {
     },
   },
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 200,
     totalCount: 200,
@@ -465,222 +460,6 @@ export const CompactWithFilters: Story = {
     },
   },
   args: {
-    variant: "compact",
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-/**
- * Variant 2: Expandable - Info display shows/hides based on filters
- * Filter details can be expanded/collapsed to save space
- */
-export const ExpandableCollapsed: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-expandable-collapsed" },
-    docs: {
-      description: {
-        story:
-          "Expandable variant in collapsed state. Shows expand button when filters are active, allowing users to see details on demand.",
-      },
-    },
-  },
-  args: {
-    variant: "expandable",
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const ExpandableNoFilters: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Expandable variant with no active filters. No expand button is shown.",
-      },
-    },
-  },
-  args: {
-    variant: "expandable",
-    activeFilters: [],
-    filteredCount: 200,
-    totalCount: 200,
-    hasActiveFilters: false,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-/**
- * Variant 3: Chips - Active filters shown as dismissible chips
- * Each filter value displayed as an individual chip below the main toolbar
- */
-export const ChipsNoFilters: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Chip-based variant with no active filters. Toolbar collapses to single row.",
-      },
-    },
-  },
-  args: {
-    variant: "chips",
-    activeFilters: [],
-    filteredCount: 200,
-    totalCount: 200,
-    hasActiveFilters: false,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const ChipsWithFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-chips-filters" },
-    docs: {
-      description: {
-        story:
-          "Chip-based variant with active filters. Each filter value shown as a dismissible chip, providing clear visibility and easy removal.",
-      },
-    },
-  },
-  args: {
-    variant: "chips",
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const ChipsManyFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-chips-many" },
-    docs: {
-      description: {
-        story:
-          "Chip-based variant with many active filters. Shows how chips wrap to multiple rows when many filters are applied.",
-      },
-    },
-  },
-  args: {
-    variant: "chips",
-    activeFilters: manyFilters,
-    filteredCount: 23,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-/**
- * Variant 4: Dropdown - Active filters in a dropdown menu
- * Filter details accessed via info button that opens a menu
- */
-export const DropdownNoFilters: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Dropdown variant with no active filters. Info button is hidden when no filters are active.",
-      },
-    },
-  },
-  args: {
-    variant: "dropdown",
-    activeFilters: [],
-    filteredCount: 200,
-    totalCount: 200,
-    hasActiveFilters: false,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const DropdownWithFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-dropdown-filters" },
-    docs: {
-      description: {
-        story:
-          "Dropdown variant with active filters. Shows info button that opens a menu with filter details. Most space-efficient for many filters.",
-      },
-    },
-  },
-  args: {
-    variant: "dropdown",
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-/**
- * Variant 5: Split - Filter button and count separate from search and info
- * Two separate toolbar groups for better visual organization
- */
-export const SplitNoFilters: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Split variant with no active filters. Filter controls and search are in separate toolbar groups.",
-      },
-    },
-  },
-  args: {
-    variant: "split",
-    activeFilters: [],
-    filteredCount: 200,
-    totalCount: 200,
-    hasActiveFilters: false,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const SplitWithFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-split-filters" },
-    docs: {
-      description: {
-        story:
-          "Split variant with active filters. Left group shows filter button, count, and truncated info. Right group has search box.",
-      },
-    },
-  },
-  args: {
-    variant: "split",
     activeFilters: sampleFilters,
     filteredCount: 45,
     totalCount: 200,
@@ -704,7 +483,6 @@ export const DisabledState: Story = {
     },
   },
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 0,
     totalCount: 0,
@@ -726,7 +504,6 @@ export const SingleEmployee: Story = {
     },
   },
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 1,
     totalCount: 1,
@@ -747,7 +524,6 @@ export const HeavilyFiltered: Story = {
     },
   },
   args: {
-    variant: "compact",
     activeFilters: manyFilters,
     filteredCount: 3,
     totalCount: 500,
@@ -794,7 +570,6 @@ export const CompactCollapsed: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: sampleFilters,
     filteredCount: 45,
     totalCount: 200,
@@ -834,7 +609,6 @@ export const CompactCollapsedNoFilters: Story = {
     },
   ],
   args: {
-    variant: "compact",
     activeFilters: [],
     filteredCount: 200,
     totalCount: 200,

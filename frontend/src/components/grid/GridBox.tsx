@@ -23,6 +23,7 @@ interface GridBoxProps {
   employees: Employee[];
   shortLabel: string;
   onSelectEmployee: (employeeId: number) => void;
+  onDoubleClickEmployee?: (employeeId: number) => void;
   selectedEmployeeId?: number | null;
   isExpanded?: boolean;
   isCollapsed?: boolean;
@@ -36,6 +37,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
   employees,
   shortLabel,
   onSelectEmployee,
+  onDoubleClickEmployee,
   selectedEmployeeId = null,
   isExpanded = false,
   isCollapsed = false,
@@ -182,6 +184,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
           employees={employees}
           isExpanded={isExpanded}
           onSelectEmployee={onSelectEmployee}
+          onDoubleClickEmployee={onDoubleClickEmployee}
           selectedEmployeeId={selectedEmployeeId}
           donutModeActive={donutModeActive}
         />

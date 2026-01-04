@@ -186,6 +186,11 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
             "& .MuiBadge-badge": {
               backgroundColor: "success.main",
               color: "success.contrastText",
+              top: 8, // Shift down to avoid clipping with reduced AppBar height
+              right: 2,
+              minWidth: "16px", // Reduced from default 20px
+              height: "16px", // Reduced from default 20px
+              fontSize: "0.65rem", // Smaller font for reduced badge
             },
           }}
         >

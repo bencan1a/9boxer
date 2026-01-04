@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug OrgTree</title>
+</head>
+<body>
+    <h1>Debugging Org Tree Structure</h1>
+    <pre id="output"></pre>
+
+    <script>
+        // Simulate the buildManagerTree logic
+        const managers = [
+            { name: "Eve Smith", employee_id: 1, team_size: 144 },
+            { name: "Frank Brown", employee_id: 2, team_size: 144 },
+            { name: "David Hernandez", employee_id: 6, team_size: 49 },
+        ];
+
+        const employees = [
+            { employee_id: 1, name: "Eve Smith", manager: "CEO" },
+            { employee_id: 2, name: "Frank Brown", manager: "CEO" },
+            { employee_id: 6, name: "David Hernandez", manager: "Eve Smith" },
+        ];
+
+        const managerMap = new Map(managers.map(m => [m.name, m]));
+        const managerEmployeeMap = new Map();
+        employees.forEach(emp => {
+            if (managerMap.has(emp.name)) {
+                managerEmployeeMap.set(emp.name, emp);
+            }
+        });
+
+        const nodeMap = new Map();
+        managers.forEach(manager => {
+            nodeMap.set(manager.name, {
+                managerInfo: manager,
+                directReports: [],
+                managerData: managerEmployeeMap.get(manager.name)
+            });
+        });
+
+        const rootNodes = [];
+
+        managers.forEach(manager => {
+            const node = nodeMap.get(manager.name);
+            if (!node) return;
+
+            const managerEmployee = managerEmployeeMap.get(manager.name);
+            const reportsTo = managerEmployee?.manager;
+
+            console.log(`${manager.name} reports to: ${reportsTo}`);
+            console.log(`Is ${reportsTo} in nodeMap? ${nodeMap.has(reportsTo)}`);
+
+            if (reportsTo && nodeMap.has(reportsTo)) {
+                const parentNode = nodeMap.get(reportsTo);
+                if (parentNode) {
+                    parentNode.directReports.push(node);
+                    console.log(`  -> Added as child of ${reportsTo}`);
+                }
+            } else {
+                rootNodes.push(node);
+                console.log(`  -> Added as root node`);
+            }
+        });
+
+        const output = document.getElementById('output');
+        output.textContent = JSON.stringify({
+            rootNodes: rootNodes.map(n => ({
+                name: n.managerInfo.name,
+                reportsTo: n.managerData?.manager,
+                childCount: n.directReports.length,
+                children: n.directReports.map(c => c.managerInfo.name)
+            }))
+        }, null, 2);
+    </script>
+</body>
+</html>

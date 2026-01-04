@@ -9,11 +9,7 @@ export { EmptyState } from "./EmptyState";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { FileUploadDialog } from "./FileUploadDialog";
 export { FilterToolbar } from "./FilterToolbar";
-export type {
-  FilterToolbarProps,
-  ActiveFilter,
-  FilterToolbarVariant,
-} from "./FilterToolbar";
+export type { FilterToolbarProps, ActiveFilter } from "./FilterToolbar";
 export { FilterToolbarContainer } from "./FilterToolbarContainer";
 export type { FilterToolbarContainerProps } from "./FilterToolbarContainer";
 export { LanguageSelector } from "./LanguageSelector";

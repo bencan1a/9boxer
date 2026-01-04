@@ -114,6 +114,16 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
           container: () => document.getElementById("modal-root"),
         },
       },
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            minHeight: `${tokens.dimensions.appBar.height}px !important`,
+            "@media (min-width: 600px)": {
+              minHeight: `${tokens.dimensions.appBar.height}px !important`,
+            },
+          },
+        },
+      },
       MuiCssBaseline: {
         styleOverrides: {
           body: {

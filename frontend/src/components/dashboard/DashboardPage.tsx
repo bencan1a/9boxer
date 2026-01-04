@@ -358,7 +358,7 @@ export const DashboardPage: React.FC = () => {
                     sx={{
                       height: "100%",
                       width: "100%",
-                      overflow: "auto",
+                      overflow: "hidden",
                       pr: 1,
                       display: "flex",
                       flexDirection: "column",
@@ -381,14 +381,16 @@ export const DashboardPage: React.FC = () => {
                     data-testid="panel-resize-handle"
                     sx={{
                       position: "relative",
-                      width: theme.tokens.spacing.sm,
+                      width: isRightPanelCollapsed
+                        ? theme.tokens.spacing.md
+                        : theme.tokens.spacing.sm,
                       height: "100%",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "col-resize",
                       backgroundColor: theme.palette.divider,
-                      transition: `background-color ${theme.tokens.duration.fast}`,
+                      transition: `background-color ${theme.tokens.duration.fast}, width ${theme.tokens.duration.normal}`,
                       "&:hover:not(:has(button:hover))": {
                         backgroundColor: theme.palette.primary.main,
                       },
@@ -397,16 +399,7 @@ export const DashboardPage: React.FC = () => {
                       },
                     }}
                   >
-                    <Box
-                      sx={{
-                        width: `${theme.tokens.spacing.xs / 2}px`,
-                        height: `${theme.tokens.spacing.xl + theme.tokens.spacing.sm}px`,
-                        backgroundColor: theme.palette.background.paper,
-                        borderRadius: `${theme.tokens.radius.sm / 4}px`,
-                        pointerEvents: "none",
-                      }}
-                    />
-                    {/* Toggle button integrated into resize handle */}
+                    {/* Toggle button serves as both visual element and interactive control */}
                     <Tooltip
                       title={
                         isRightPanelCollapsed
@@ -422,22 +415,11 @@ export const DashboardPage: React.FC = () => {
                         }}
                         data-testid="panel-toggle-button"
                         sx={{
-                          position: isRightPanelCollapsed
-                            ? "fixed"
-                            : "absolute",
-                          top: isRightPanelCollapsed
-                            ? `calc(50vh + ${theme.tokens.dimensions.appBar.height / 2}px)`
-                            : "50%",
-                          left: isRightPanelCollapsed ? "auto" : "50%",
-                          right: isRightPanelCollapsed ? 16 : "auto",
-                          transform: isRightPanelCollapsed
-                            ? "translateY(-50%)"
-                            : "translate(-50%, -50%)",
-                          zIndex: 10,
-                          pointerEvents: "auto",
-                          isolation: "isolate",
-                          width: theme.tokens.spacing.sm,
+                          width: isRightPanelCollapsed
+                            ? theme.tokens.spacing.md
+                            : theme.tokens.spacing.sm,
                           height: 48,
+                          padding: 0,
                           borderRadius: isRightPanelCollapsed
                             ? `${theme.tokens.radius.md}px`
                             : `${theme.tokens.radius.sm}px`,

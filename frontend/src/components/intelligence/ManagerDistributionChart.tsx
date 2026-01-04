@@ -45,7 +45,7 @@ export const ManagerDistributionChart: React.FC<
 > = ({ data, title }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { toggleManager } = useFilterStore();
+  const { selectManager } = useFilterStore();
   const { managers, getReportIds } = useOrgHierarchy();
 
   const handleManagerClick = async (managerName: string) => {
@@ -53,21 +53,21 @@ export const ManagerDistributionChart: React.FC<
     const manager = managers.find((m) => m.name === managerName);
     if (!manager) {
       console.warn(`Manager "${managerName}" not found in org hierarchy`);
-      toggleManager(managerName, []);
+      selectManager(managerName, []);
       return;
     }
 
     try {
       // Fetch employee IDs from org service using the new duplicate-aware resolution
       const employeeIds = await getReportIds(manager.employee_id);
-      toggleManager(managerName, employeeIds);
+      selectManager(managerName, employeeIds);
     } catch (error) {
       console.error(
         `Failed to fetch employee IDs for manager ${managerName}:`,
         error
       );
       // Fallback to empty array on error
-      toggleManager(managerName, []);
+      selectManager(managerName, []);
     }
   };
 
