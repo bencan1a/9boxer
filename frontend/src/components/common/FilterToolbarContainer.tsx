@@ -7,7 +7,11 @@
  */
 
 import React, { useMemo } from "react";
-import { FilterToolbar, ActiveFilter } from "./FilterToolbar";
+import {
+  FilterToolbar,
+  FilterToolbarVariant,
+  ActiveFilter,
+} from "./FilterToolbar";
 import { useFilters } from "../../hooks/useFilters";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
@@ -19,6 +23,8 @@ import { SimplifiedToolbar } from "./SimplifiedToolbar";
  * Props for FilterToolbarContainer
  */
 export interface FilterToolbarContainerProps {
+  /** Display variant of the toolbar */
+  variant?: FilterToolbarVariant;
   /** Callback when search value changes */
   onSearchChange?: (value: string) => void;
 }
@@ -29,6 +35,7 @@ export interface FilterToolbarContainerProps {
  * Container component that connects FilterToolbar to application state.
  */
 export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
+  variant = "compact",
   onSearchChange,
 }) => {
   const { employees: filteredEmployees } = useEmployees();
@@ -155,6 +162,7 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
   return (
     <ErrorBoundary fallback={<SimplifiedToolbar />}>
       <FilterToolbar
+        variant={variant}
         activeFilterCount={activeFilterCount}
         activeFilters={activeFilters}
         filteredCount={filteredCount}
