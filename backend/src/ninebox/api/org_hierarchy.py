@@ -47,6 +47,22 @@ class AllReportsResponse(TypedDict):
     all_reports: list[dict]
 
 
+class OrgTreeNode(TypedDict):
+    """Hierarchical organization tree node."""
+
+    employee_id: int
+    name: str
+    team_size: int
+    direct_reports: list["OrgTreeNode"]
+
+
+class OrgTreeResponse(TypedDict):
+    """Response for organization tree endpoint."""
+
+    roots: list[OrgTreeNode]
+    total_managers: int
+
+
 @router.get("/managers", response_model=None)
 async def get_managers(
     min_team_size: int = Query(default=1, ge=1, description="Minimum team size to filter managers"),
@@ -239,4 +255,128 @@ async def get_reporting_chain(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve reporting chain: {e!s}",
+        ) from e
+
+
+@router.get("/tree", response_model=None)
+async def get_org_tree(  # noqa: PLR0912
+    min_team_size: int = Query(default=1, ge=1, description="Minimum team size to filter managers"),
+    org_service: OrgService = Depends(get_org_service),
+) -> OrgTreeResponse:
+    """
+    Get hierarchical organization tree structure.
+
+    Returns the org structure as a tree with parent-child relationships,
+    making it easy to display as an expandable tree in the UI.
+
+    Only includes managers with at least min_team_size total reports.
+    The tree shows direct reporting relationships between managers.
+
+    Args:
+        min_team_size: Minimum total team size (default: 1)
+        org_service: OrgService dependency
+
+    Returns:
+        OrgTreeResponse with root managers and their nested direct reports
+
+    Example response:
+        {
+            "roots": [
+                {
+                    "employee_id": 1,
+                    "name": "CEO",
+                    "team_size": 200,
+                    "direct_reports": [
+                        {
+                            "employee_id": 2,
+                            "name": "VP Engineering",
+                            "team_size": 100,
+                            "direct_reports": [...]
+                        }
+                    ]
+                }
+            ],
+            "total_managers": 15
+        }
+    """
+    try:
+        # Get all managers with minimum team size
+        manager_ids = org_service.find_managers(min_team_size=min_team_size)
+
+        # Build org tree once for O(1) lookups
+        org_tree = org_service.build_org_tree()
+
+        # Create set for fast lookup
+        manager_id_set = set(manager_ids)
+
+        # Build manager info map
+        manager_info_map: dict[int, OrgTreeNode] = {}
+        for manager_id in manager_ids:
+            manager = org_service.get_employee_by_id(manager_id)
+            if not manager:
+                continue
+
+            team_size = len(org_tree.get(manager_id, []))
+            manager_info_map[manager_id] = {
+                "employee_id": manager_id,
+                "name": manager.name,
+                "team_size": team_size,
+                "direct_reports": [],
+            }
+
+        # Build parent-child relationships
+        # For each manager, find which other managers are their direct reports
+        for manager_id in manager_ids:
+            direct_reports = org_service.get_direct_reports(manager_id)
+
+            for report in direct_reports:
+                # If this direct report is also a manager in our list, add them as a child
+                if report.employee_id in manager_id_set:
+                    manager_info_map[manager_id]["direct_reports"].append(
+                        manager_info_map[report.employee_id]
+                    )
+
+        # Sort direct reports by team size (desc) then name within each parent
+        for info in manager_info_map.values():
+            info["direct_reports"].sort(key=lambda m: (-m["team_size"], m["name"]))
+
+        # Find root managers (those who don't report to another manager in our list)
+        root_managers = []
+        for manager_id in manager_ids:
+            manager = org_service.get_employee_by_id(manager_id)
+            if not manager:
+                continue
+
+            # Check if this manager's boss is in our manager list
+            manager_employee_data = org_service.get_employee_by_id(manager_id)
+            if not manager_employee_data:
+                continue
+
+            # Get this manager's reporting chain to find their boss
+            manager_chain = org_service.get_reporting_chain(manager_id)
+
+            # If the chain is empty, this is a root (CEO/top-level manager)
+            is_root = True
+
+            if manager_chain:
+                # The first person in the chain is their direct manager
+                # Check if that manager is also in our filtered manager list
+                direct_manager_id = manager_chain[0]
+                if direct_manager_id in manager_id_set:
+                    # They report to another manager in our filtered list, so not a root
+                    is_root = False
+
+            if is_root:
+                root_managers.append(manager_info_map[manager_id])
+
+        # Sort roots by team size (desc) then name
+        root_managers.sort(key=lambda m: (-m["team_size"], m["name"]))
+
+        return {"roots": root_managers, "total_managers": len(manager_ids)}
+
+    except Exception as e:
+        logger.error(f"OrgHierarchy: Failed to build org tree: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to build organization tree: {e!s}",
         ) from e

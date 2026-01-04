@@ -28,6 +28,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { useFilterStore } from "../../store/filterStore";
+import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 import type { ManagerAnalysis } from "../../types/api";
 
 interface ManagerAnomalySectionProps {
@@ -44,18 +45,29 @@ export const ManagerAnomalySection: React.FC<ManagerAnomalySectionProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const { setReportingChainFilter } = useFilterStore();
+  const { toggleManager } = useFilterStore();
+  const { managers, getReportIds } = useOrgHierarchy();
 
-  const handleManagerClick = (managerName: string) => {
-    // Find the employee IDs for this manager from the deviations data
-    const managerData = analysis.deviations.find(
-      (deviation) => deviation.category === managerName
-    );
-    if (managerData) {
-      setReportingChainFilter(managerName, managerData.employee_ids);
-    } else {
-      console.warn(`Manager "${managerName}" not found in deviations`);
-      setReportingChainFilter(managerName, []);
+  const handleManagerClick = async (managerName: string) => {
+    // Find the manager in the org hierarchy to get their employee ID
+    const manager = managers.find((m) => m.name === managerName);
+    if (!manager) {
+      console.warn(`Manager "${managerName}" not found in org hierarchy`);
+      toggleManager(managerName, []);
+      return;
+    }
+
+    try {
+      // Fetch employee IDs from org service using the new duplicate-aware resolution
+      const employeeIds = await getReportIds(manager.employee_id);
+      toggleManager(managerName, employeeIds);
+    } catch (error) {
+      console.error(
+        `Failed to fetch employee IDs for manager ${managerName}:`,
+        error
+      );
+      // Fallback to empty array on error
+      toggleManager(managerName, []);
     }
   };
 

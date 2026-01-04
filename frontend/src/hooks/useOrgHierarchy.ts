@@ -35,18 +35,21 @@ import { useSession } from "./useSession";
 export const useOrgHierarchy = () => {
   const { sessionId, employees } = useSession();
   const [managers, setManagers] = useState<ManagerInfo[]>([]);
+  const [orgTree, setOrgTree] = useState<OrgTreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch managers from OrgService backend
+   * Fetch managers and org tree from OrgService backend
    *
    * Automatically called when session changes (new file uploaded).
    * Uses min_team_size=1 to include all managers.
+   * Fetches both managers list and org tree in parallel for efficiency.
    */
   const fetchManagers = useCallback(async () => {
     if (!sessionId || employees.length === 0) {
       setManagers([]);
+      setOrgTree([]);
       return;
     }
 
@@ -54,13 +57,22 @@ export const useOrgHierarchy = () => {
     setError(null);
 
     try {
-      const response = await orgHierarchyService.getManagers(1);
-      setManagers(response.managers);
+      // Fetch both managers list and org tree in parallel
+      const [managersResponse, treeResponse] = await Promise.all([
+        orgHierarchyService.getManagers(1),
+        orgHierarchyService.getOrgTree(1),
+      ]);
+
+      setManagers(managersResponse.managers);
+      setOrgTree(treeResponse.roots);
     } catch (err) {
       const errorMsg =
         err instanceof Error ? err.message : "Failed to fetch managers";
       setError(errorMsg);
-      console.error("[useOrgHierarchy] Failed to fetch managers:", err);
+      console.error(
+        "[useOrgHierarchy] Failed to fetch managers and org tree:",
+        err
+      );
       // Fallback: extract managers from employee data
       const fallbackManagers = Array.from(
         new Set(employees.map((emp) => emp.manager).filter(Boolean))
@@ -74,6 +86,7 @@ export const useOrgHierarchy = () => {
           (a, b) => b.team_size - a.team_size || a.name.localeCompare(b.name)
         );
       setManagers(fallbackManagers);
+      setOrgTree([]);
     } finally {
       setIsLoading(false);
     }
@@ -138,19 +151,11 @@ export const useOrgHierarchy = () => {
     fetchManagers();
   }, [fetchManagers]);
 
-  /**
-   * Get organizational tree for a manager
-   *
-   * @param employeeId - Employee ID of the manager to get tree for
-   * @returns Promise with org tree data
-   */
-  const getOrgTree = useCallback(async (employeeId: number) => {
-    return orgHierarchyService.getOrgTree(employeeId);
-  }, []);
-
   return {
     /** List of all managers with team sizes (sorted by team size desc, then name) */
     managers,
+    /** Hierarchical org tree structure with root managers and nested reports */
+    orgTree,
     /** Whether managers are currently being fetched */
     isLoading,
     /** Error message if manager fetch failed */
@@ -165,8 +170,6 @@ export const useOrgHierarchy = () => {
     getReportIds,
     /** Refresh manager list */
     refreshManagers,
-    /** Get organizational tree for a manager */
-    getOrgTree,
   };
 };
 

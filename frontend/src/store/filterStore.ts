@@ -13,8 +13,6 @@ interface FilterState {
   selectedManagerEmployeeIds: Record<string, number[]>; // Map of manager name to their employee IDs
   selectedFlags: string[];
   excludedEmployeeIds: number[];
-  reportingChainFilter: string | null; // Manager name for display
-  reportingChainEmployeeIds: number[]; // All employee IDs under the selected manager
 
   // UI state
   isDrawerOpen: boolean;
@@ -26,11 +24,6 @@ interface FilterState {
   toggleManager: (manager: string, employeeIds: number[]) => void;
   toggleFlag: (flag: string) => void;
   setExcludedIds: (ids: number[]) => void;
-  setReportingChainFilter: (
-    managerName: string | null,
-    employeeIds: number[]
-  ) => void;
-  clearReportingChainFilter: () => void;
   clearAllFilters: () => void;
   toggleDrawer: () => void;
 
@@ -47,8 +40,6 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   selectedManagerEmployeeIds: {},
   selectedFlags: [],
   excludedEmployeeIds: [],
-  reportingChainFilter: null,
-  reportingChainEmployeeIds: [],
   isDrawerOpen: false,
 
   // Actions
@@ -128,20 +119,6 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     set({ excludedEmployeeIds: ids });
   },
 
-  setReportingChainFilter: (
-    managerName: string | null,
-    employeeIds: number[]
-  ) => {
-    set({
-      reportingChainFilter: managerName,
-      reportingChainEmployeeIds: employeeIds,
-    });
-  },
-
-  clearReportingChainFilter: () => {
-    set({ reportingChainFilter: null, reportingChainEmployeeIds: [] });
-  },
-
   clearAllFilters: () => {
     set({
       selectedLevels: [],
@@ -151,8 +128,6 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       selectedManagerEmployeeIds: {},
       selectedFlags: [],
       excludedEmployeeIds: [],
-      reportingChainFilter: null,
-      reportingChainEmployeeIds: [],
     });
   },
 
@@ -169,8 +144,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       state.selectedLocations.length > 0 ||
       state.selectedManagers.length > 0 ||
       state.selectedFlags.length > 0 ||
-      state.excludedEmployeeIds.length > 0 ||
-      state.reportingChainFilter !== null
+      state.excludedEmployeeIds.length > 0
     );
   },
 }));

@@ -4,207 +4,132 @@
  * Displays managers in a hierarchical tree structure showing the reporting
  * relationships. Each node shows the manager name and team size, with
  * expand/collapse functionality and checkbox selection.
+ *
+ * Features:
+ * - Searchable tree with text highlighting
+ * - Auto-expand matching nodes during search
+ * - Uses backend org tree API for accurate hierarchy
  */
 
 import React, { useState, useMemo } from "react";
 import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { useTheme } from "@mui/material/styles";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { ManagerInfo } from "../../../services/orgHierarchyService";
-import { Employee } from "../../../types/employee";
-
-interface ManagerTreeNode {
-  managerInfo: ManagerInfo;
-  directReports: ManagerTreeNode[];
-  managerData?: Employee; // Full employee data for this manager
-}
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import { OrgTreeNode } from "../../../services/orgHierarchyService";
+import { SearchableTreeNode } from "./SearchableTreeNode";
+import { useDebounced } from "../../../hooks/useDebounced";
 
 interface OrgTreeFilterProps {
-  managers: ManagerInfo[];
-  employees: Employee[];
+  orgTree: OrgTreeNode[];
   selectedManagers: string[];
   onToggleManager: (manager: string) => void;
 }
 
 /**
- * Build a hierarchical tree structure from flat manager list
+ * Filter tree nodes based on search query
+ * Returns nodes that match the query or have matching descendants
  */
-const buildManagerTree = (
-  managers: ManagerInfo[],
-  employees: Employee[]
-): ManagerTreeNode[] => {
-  // Create a map of manager names to their ManagerInfo
-  const managerMap = new Map(managers.map((m) => [m.name, m]));
+const filterTree = (
+  nodes: OrgTreeNode[],
+  query: string
+): { filteredNodes: OrgTreeNode[]; matchingIds: Set<number> } => {
+  if (!query.trim()) {
+    return { filteredNodes: nodes, matchingIds: new Set() };
+  }
 
-  // Create a map of manager names to their employee data
-  const managerEmployeeMap = new Map<string, Employee>();
-  employees.forEach((emp) => {
-    if (managerMap.has(emp.name)) {
-      managerEmployeeMap.set(emp.name, emp);
-    }
-  });
+  const matchingIds = new Set<number>();
+  const lowerQuery = query.toLowerCase();
 
-  // Create nodes for all managers
-  const nodeMap = new Map<string, ManagerTreeNode>();
-  managers.forEach((manager) => {
-    nodeMap.set(manager.name, {
-      managerInfo: manager,
-      directReports: [],
-      managerData: managerEmployeeMap.get(manager.name),
-    });
-  });
+  const filterNode = (node: OrgTreeNode): OrgTreeNode | null => {
+    const nameMatches = node.name.toLowerCase().includes(lowerQuery);
+    const filteredChildren = node.direct_reports
+      .map(filterNode)
+      .filter((n): n is OrgTreeNode => n !== null);
 
-  // Build the tree structure by linking managers to their direct reports
-  const rootNodes: ManagerTreeNode[] = [];
-
-  managers.forEach((manager) => {
-    const node = nodeMap.get(manager.name);
-    if (!node) return;
-
-    const managerEmployee = managerEmployeeMap.get(manager.name);
-    const reportsTo = managerEmployee?.manager;
-
-    if (reportsTo && nodeMap.has(reportsTo)) {
-      // This manager reports to another manager in our list
-      const parentNode = nodeMap.get(reportsTo);
-      if (parentNode) {
-        parentNode.directReports.push(node);
+    // Include node if it matches or has matching descendants
+    if (nameMatches || filteredChildren.length > 0) {
+      if (nameMatches) {
+        matchingIds.add(node.employee_id);
       }
-    } else {
-      // This is a root node (no manager or manager not in our manager list)
-      rootNodes.push(node);
+      return {
+        ...node,
+        direct_reports: filteredChildren,
+      };
     }
-  });
 
-  // Sort nodes at each level by team size (desc) then name
-  const sortNodes = (nodes: ManagerTreeNode[]) => {
-    nodes.sort((a, b) => {
-      const teamDiff = b.managerInfo.team_size - a.managerInfo.team_size;
-      if (teamDiff !== 0) return teamDiff;
-      return a.managerInfo.name.localeCompare(b.managerInfo.name);
-    });
-    nodes.forEach((node) => sortNodes(node.directReports));
+    return null;
   };
 
-  sortNodes(rootNodes);
+  const filteredNodes = nodes
+    .map(filterNode)
+    .filter((n): n is OrgTreeNode => n !== null);
 
-  return rootNodes;
+  return { filteredNodes, matchingIds };
 };
 
 /**
- * Recursive tree node component
- */
-const TreeNode: React.FC<{
-  node: ManagerTreeNode;
-  selectedManagers: string[];
-  onToggleManager: (manager: string) => void;
-  level: number;
-}> = ({ node, selectedManagers, onToggleManager, level }) => {
-  const theme = useTheme();
-  const [expanded, setExpanded] = useState(level === 0); // Auto-expand top level
-
-  const hasChildren = node.directReports.length > 0;
-  const isSelected = selectedManagers.includes(node.managerInfo.name);
-
-  return (
-    <Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          pl: level * 2,
-          "&:hover": {
-            backgroundColor: theme.palette.action.hover,
-          },
-        }}
-      >
-        {/* Expand/collapse button */}
-        {hasChildren ? (
-          <IconButton
-            size="small"
-            onClick={() => setExpanded(!expanded)}
-            sx={{ p: 0.5 }}
-          >
-            {expanded ? (
-              <ExpandMoreIcon fontSize="small" />
-            ) : (
-              <ChevronRightIcon fontSize="small" />
-            )}
-          </IconButton>
-        ) : (
-          <Box sx={{ width: 28 }} /> // Spacer for alignment
-        )}
-
-        {/* Checkbox and label */}
-        <FormControlLabel
-          sx={{ flex: 1, m: 0 }}
-          control={
-            <Checkbox
-              checked={isSelected}
-              onChange={() => onToggleManager(node.managerInfo.name)}
-              size="small"
-              data-testid={`manager-checkbox-${node.managerInfo.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")}`}
-            />
-          }
-          label={
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                {node.managerInfo.name}
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.75rem",
-                }}
-              >
-                ({node.managerInfo.team_size})
-              </Typography>
-            </Box>
-          }
-        />
-      </Box>
-
-      {/* Child nodes */}
-      {expanded && hasChildren && (
-        <Box>
-          {node.directReports.map((child) => (
-            <TreeNode
-              key={child.managerInfo.employee_id}
-              node={child}
-              selectedManagers={selectedManagers}
-              onToggleManager={onToggleManager}
-              level={level + 1}
-            />
-          ))}
-        </Box>
-      )}
-    </Box>
-  );
-};
-
-/**
- * Main OrgTreeFilter component
+ * Main OrgTreeFilter component with search
  */
 export const OrgTreeFilter: React.FC<OrgTreeFilterProps> = ({
-  managers,
-  employees,
+  orgTree,
   selectedManagers,
   onToggleManager,
 }) => {
-  const tree = useMemo(
-    () => buildManagerTree(managers, employees),
-    [managers, employees]
+  const theme = useTheme();
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedQuery = useDebounced(searchQuery, 300);
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
+
+  // Filter tree and get matching node IDs
+  const { filteredNodes, matchingIds } = useMemo(
+    () => filterTree(orgTree, debouncedQuery),
+    [orgTree, debouncedQuery]
   );
 
-  if (managers.length === 0) {
+  // Auto-expand nodes when searching
+  const effectiveExpandedNodes = useMemo(() => {
+    if (debouncedQuery.trim()) {
+      // When searching, expand all nodes to show matches
+      const allIds = new Set<number>();
+      const collectIds = (nodes: OrgTreeNode[]) => {
+        nodes.forEach((node) => {
+          allIds.add(node.employee_id);
+          collectIds(node.direct_reports);
+        });
+      };
+      collectIds(filteredNodes);
+      return allIds;
+    }
+    // When not searching, use user-controlled expansion
+    // Auto-expand top level by default
+    if (expandedNodes.size === 0 && orgTree.length > 0) {
+      return new Set(orgTree.map((node) => node.employee_id));
+    }
+    return expandedNodes;
+  }, [debouncedQuery, expandedNodes, filteredNodes, orgTree]);
+
+  const handleToggleExpand = (nodeId: number) => {
+    setExpandedNodes((prev) => {
+      const next = new Set(prev);
+      if (next.has(nodeId)) {
+        next.delete(nodeId);
+      } else {
+        next.add(nodeId);
+      }
+      return next;
+    });
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
+  if (orgTree.length === 0) {
     return (
       <Typography variant="body2" color="text.secondary">
         No managers found
@@ -214,15 +139,57 @@ export const OrgTreeFilter: React.FC<OrgTreeFilterProps> = ({
 
   return (
     <Box>
-      {tree.map((node) => (
-        <TreeNode
-          key={node.managerInfo.employee_id}
-          node={node}
-          selectedManagers={selectedManagers}
-          onToggleManager={onToggleManager}
-          level={0}
-        />
-      ))}
+      {/* Search input */}
+      <TextField
+        fullWidth
+        size="small"
+        placeholder="Search managers..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+          endAdornment: searchQuery && (
+            <InputAdornment position="end">
+              <IconButton
+                size="small"
+                onClick={handleClearSearch}
+                aria-label="Clear search"
+                edge="end"
+              >
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          mb: 2,
+          backgroundColor: theme.palette.background.default,
+        }}
+      />
+
+      {/* Tree nodes */}
+      {filteredNodes.length > 0 ? (
+        filteredNodes.map((node) => (
+          <SearchableTreeNode
+            key={node.employee_id}
+            node={node}
+            selectedManagers={selectedManagers}
+            onToggleManager={onToggleManager}
+            level={0}
+            searchQuery={debouncedQuery}
+            expandedNodes={effectiveExpandedNodes}
+            onToggleExpand={handleToggleExpand}
+          />
+        ))
+      ) : (
+        <Typography variant="body2" color="text.secondary">
+          No managers found matching &quot;{debouncedQuery}&quot;
+        </Typography>
+      )}
     </Box>
   );
 };

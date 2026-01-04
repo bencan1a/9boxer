@@ -24,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "../../hooks/useSession";
 import { useFilters } from "../../hooks/useFilters";
 import { useEmployeeSearch } from "../../hooks/useEmployeeSearch";
+import { SearchHighlight } from "../common/SearchHighlight";
+import { useDebounced } from "../../hooks/useDebounced";
 
 interface ExclusionDialogProps {
   open: boolean;
@@ -60,13 +62,16 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
     }
   }, [open, excludedEmployeeIds]);
 
+  // Debounce search input to prevent excessive search operations
+  const debouncedSearchTerm = useDebounced(searchTerm, 300);
+
   // Filter employees by search term using fuzzy search
   const filteredEmployees = useMemo(() => {
-    if (!searchTerm || !isReady) return employees;
+    if (!debouncedSearchTerm || !isReady) return employees;
 
     // Use fuzzy search instead of basic string matching
-    return search(searchTerm);
-  }, [employees, searchTerm, search, isReady]);
+    return search(debouncedSearchTerm);
+  }, [employees, debouncedSearchTerm, search, isReady]);
 
   // Quick filter functions
   const excludeVPs = () => {
@@ -290,9 +295,16 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
                 }
                 label={
                   <Box>
-                    <Typography variant="body2">{emp.name}</Typography>
+                    <Typography variant="body2">
+                      <SearchHighlight text={emp.name} query={searchTerm} />
+                    </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {emp.job_level} • {emp.manager}
+                      <SearchHighlight
+                        text={emp.job_level}
+                        query={searchTerm}
+                      />{" "}
+                      •{" "}
+                      <SearchHighlight text={emp.manager} query={searchTerm} />
                     </Typography>
                   </Box>
                 }

@@ -17,7 +17,7 @@
  *   - details-reporting-chain-filter-active: Active reporting chain filter in FilterDrawer
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -35,12 +35,7 @@ import { useFilters } from "../../hooks/useFilters";
 import { useSession } from "../../hooks/useSession";
 import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 import { ExclusionDialog } from "./ExclusionDialog";
-import {
-  FilterSection,
-  FlagFilters,
-  OrgTreeFilter,
-  ReportingChainFilter,
-} from "./filters";
+import { FilterSection, FlagFilters, OrgTreeFilter } from "./filters";
 
 // Helper function to create valid test IDs from values
 const sanitizeTestId = (value: string): string => {
@@ -51,7 +46,7 @@ export const FilterDrawer: React.FC = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { employees } = useSession();
-  const { managers: orgManagers, getReportIds } = useOrgHierarchy(); // Get managers from OrgService
+  const { managers: orgManagers, orgTree, getReportIds } = useOrgHierarchy(); // Get managers and org tree from OrgService
   const {
     selectedLevels,
     selectedJobFunctions,
@@ -59,14 +54,12 @@ export const FilterDrawer: React.FC = () => {
     selectedManagers,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
     toggleLocation,
     toggleManager,
     toggleFlag,
-    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
     getAvailableOptions,
@@ -102,10 +95,11 @@ export const FilterDrawer: React.FC = () => {
   };
 
   // Track expanded state for each filter section
+  // Default all sections to collapsed - they auto-expand when filters are applied
   const [expandedSections, setExpandedSections] = useState({
-    levels: true,
-    jobFunctions: true,
-    locations: true,
+    levels: false,
+    jobFunctions: false,
+    locations: false,
     managers: false,
     flags: false,
     exclusions: false,
@@ -117,6 +111,26 @@ export const FilterDrawer: React.FC = () => {
       [section]: !prev[section],
     }));
   };
+
+  // Auto-expand sections when filters are applied to them
+  useEffect(() => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      levels: selectedLevels.length > 0 ? true : prev.levels,
+      jobFunctions: selectedJobFunctions.length > 0 ? true : prev.jobFunctions,
+      locations: selectedLocations.length > 0 ? true : prev.locations,
+      managers: selectedManagers.length > 0 ? true : prev.managers,
+      flags: selectedFlags.length > 0 ? true : prev.flags,
+      exclusions: excludedEmployeeIds.length > 0 ? true : prev.exclusions,
+    }));
+  }, [
+    selectedLevels.length,
+    selectedJobFunctions.length,
+    selectedLocations.length,
+    selectedManagers.length,
+    selectedFlags.length,
+    excludedEmployeeIds.length,
+  ]);
 
   // Get available filter options from current employee data
   // Memoize to avoid reprocessing on every render (e.g., when drawer opens/closes)
@@ -274,8 +288,7 @@ export const FilterDrawer: React.FC = () => {
               testId="filter-accordion-managers"
             >
               <OrgTreeFilter
-                managers={orgManagers}
-                employees={employees}
+                orgTree={orgTree}
                 selectedManagers={selectedManagers}
                 onToggleManager={handleToggleManager}
               />
@@ -296,27 +309,6 @@ export const FilterDrawer: React.FC = () => {
             </FilterSection>
             <Divider sx={{ my: theme.tokens.spacing.md / 8 }} />{" "}
             {/* Convert 16px to 2 */}
-            {/* Reporting Chain Filter Section */}
-            {reportingChainFilter && (
-              <Box sx={{ mb: theme.tokens.spacing.md / 8 }}>
-                {" "}
-                {/* Convert 16px to 2 */}
-                <Typography
-                  variant="subtitle2"
-                  fontWeight="bold"
-                  sx={{
-                    color: theme.palette.text.primary,
-                    mb: theme.tokens.spacing.sm / 8, // Convert 8px to 1
-                  }}
-                >
-                  {t("dashboard.filterDrawer.reportingChain")}
-                </Typography>
-                <ReportingChainFilter
-                  managerName={reportingChainFilter}
-                  onClear={clearReportingChainFilter}
-                />
-              </Box>
-            )}
             {/* Exclusions Section */}
             <FilterSection
               title={t("dashboard.filterDrawer.exclusions")}

@@ -16,7 +16,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import { useTheme } from "@mui/material/styles";
+import { useTheme, alpha } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface FilterSectionProps {
@@ -90,6 +90,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   testId = "filter-section",
 }) => {
   const theme = useTheme();
+  const hasActiveFilters = count !== undefined && count > 0;
 
   return (
     <Accordion
@@ -101,6 +102,14 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       sx={{
         backgroundColor: "transparent",
         "&:before": { display: "none" },
+        // Active state styling when filters are selected
+        ...(hasActiveFilters && {
+          borderLeft: `4px solid ${theme.palette.primary.main}`,
+          backgroundColor: alpha(theme.palette.primary.main, 0.04),
+          pl: 1.5,
+          my: 0.5,
+          transition: `all ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
+        }),
       }}
     >
       <AccordionSummary
@@ -108,25 +117,45 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
         aria-controls={`${testId}-content`}
         id={`${testId}-header`}
         data-testid={`${testId}-header`}
+        sx={{
+          minHeight: theme.tokens.dimensions.menuItem.minHeight,
+          "&.Mui-expanded": {
+            minHeight: theme.tokens.dimensions.menuItem.minHeight,
+          },
+          "& .MuiAccordionSummary-content": {
+            my: 1.5,
+          },
+        }}
       >
         <Typography
           variant="subtitle2"
           fontWeight="bold"
-          sx={{ color: theme.palette.text.primary }}
+          sx={{
+            color: hasActiveFilters
+              ? theme.palette.primary.main
+              : theme.palette.text.primary,
+          }}
         >
           {title}
-          {count !== undefined && count > 0 && (
+          {hasActiveFilters && (
             <Chip
               label={count}
               size="small"
+              color="primary"
               data-testid={`${testId}-count-badge`}
-              sx={{ ml: 1 }}
+              sx={{
+                ml: 1,
+                fontWeight: theme.tokens.typography.fontWeight.semiBold,
+              }}
             />
           )}
         </Typography>
       </AccordionSummary>
       <AccordionDetails
-        sx={{ pt: 0 }}
+        sx={{
+          pt: 0,
+          pb: 2,
+        }}
         data-testid={`${testId}-content`}
         id={`${testId}-content`}
         role="region"

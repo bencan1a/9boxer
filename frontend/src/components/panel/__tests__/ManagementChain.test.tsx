@@ -1,20 +1,28 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "../../../test/utils";
 import { ManagementChain } from "../ManagementChain";
 import { createMockEmployee } from "../../../test/mockData";
 import { getTranslatedText } from "../../../test/i18nTestUtils";
 import * as useFiltersHook from "../../../hooks/useFilters";
+import * as useOrgHierarchyHook from "../../../hooks/useOrgHierarchy";
 
 describe("ManagementChain", () => {
-  const mockSetReportingChainFilter = vi.fn();
-  const mockClearReportingChainFilter = vi.fn();
+  const mockToggleManager = vi.fn();
+  const mockGetReportIds = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetReportIds.mockResolvedValue([1, 2, 3]);
+
+    vi.spyOn(useOrgHierarchyHook, "useOrgHierarchy").mockReturnValue({
+      managers: [{ name: "Jane Smith", employee_id: 1, team_size: 5 }],
+      orgTree: [],
+      getReportIds: mockGetReportIds,
+      getReportingChain: vi.fn().mockResolvedValue([1]),
+    });
+
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
-      setReportingChainFilter: mockSetReportingChainFilter,
-      clearReportingChainFilter: mockClearReportingChainFilter,
-      reportingChainFilter: null,
+      toggleManager: mockToggleManager,
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],
@@ -25,12 +33,12 @@ describe("ManagementChain", () => {
       toggleLevel: vi.fn(),
       toggleJobFunction: vi.fn(),
       toggleLocation: vi.fn(),
-      toggleManager: vi.fn(),
       setExcludedIds: vi.fn(),
       clearAllFilters: vi.fn(),
       toggleDrawer: vi.fn(),
       applyFilters: vi.fn(),
       getAvailableOptions: vi.fn(),
+      toggleFlag: vi.fn(),
     });
   });
 
@@ -101,7 +109,7 @@ describe("ManagementChain", () => {
     expect(employeePaper).not.toHaveAttribute("role", "button");
   });
 
-  it("calls setReportingChainFilter when manager is clicked", () => {
+  it("calls toggleManager when manager is clicked", async () => {
     const employee = createMockEmployee({
       name: "John Doe",
       manager: "Jane Smith",
@@ -120,10 +128,13 @@ describe("ManagementChain", () => {
     expect(janeButton).toBeInTheDocument();
     fireEvent.click(janeButton!);
 
-    expect(mockSetReportingChainFilter).toHaveBeenCalledWith("Jane Smith");
+    // Wait for async operation
+    await vi.waitFor(() => {
+      expect(mockToggleManager).toHaveBeenCalled();
+    });
   });
 
-  it("calls setReportingChainFilter when higher-level manager is clicked", () => {
+  it("calls toggleManager when higher-level manager is clicked", async () => {
     const employee = createMockEmployee({
       name: "John Doe",
       manager: "Jane Smith",
@@ -142,30 +153,31 @@ describe("ManagementChain", () => {
     expect(bobButton).toBeInTheDocument();
     fireEvent.click(bobButton!);
 
-    expect(mockSetReportingChainFilter).toHaveBeenCalledWith("Bob Johnson");
+    // Wait for async operation
+    await vi.waitFor(() => {
+      expect(mockToggleManager).toHaveBeenCalled();
+    });
   });
 
   it("highlights active filter manager with success color", () => {
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
-      setReportingChainFilter: mockSetReportingChainFilter,
-      clearReportingChainFilter: mockClearReportingChainFilter,
-      reportingChainFilter: "Jane Smith",
+      toggleManager: mockToggleManager,
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],
-      selectedManagers: [],
+      selectedManagers: ["Jane Smith"],
       excludedEmployeeIds: [],
       isDrawerOpen: false,
       hasActiveFilters: true,
       toggleLevel: vi.fn(),
       toggleJobFunction: vi.fn(),
       toggleLocation: vi.fn(),
-      toggleManager: vi.fn(),
       setExcludedIds: vi.fn(),
       clearAllFilters: vi.fn(),
       toggleDrawer: vi.fn(),
       applyFilters: vi.fn(),
       getAvailableOptions: vi.fn(),
+      toggleFlag: vi.fn(),
     });
 
     const employee = createMockEmployee({
@@ -237,9 +249,6 @@ describe("ManagementChain", () => {
 
   it("handles case-insensitive filter matching", () => {
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
-      setReportingChainFilter: mockSetReportingChainFilter,
-      clearReportingChainFilter: mockClearReportingChainFilter,
-      reportingChainFilter: "jane smith", // lowercase
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],

@@ -71,7 +71,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("John Smith");
       expect(results).toHaveLength(1);
-      expect(results[0].employee_id).toBe(1);
+      expect(results[0].employee.employee_id).toBe(1);
     });
 
     it("returns employees with fuzzy name match", () => {
@@ -87,7 +87,7 @@ describe("useEmployeeSearch", () => {
       // Partial match with typo: "Smit" should match "Smith"
       const results = result.current.search("Smit");
       expect(results.length).toBeGreaterThan(0);
-      expect(results.some((e) => e.name.includes("Smith"))).toBe(true);
+      expect(results.some((r) => r.employee.name.includes("Smith"))).toBe(true);
     });
 
     it("returns partial name matches", () => {
@@ -104,8 +104,8 @@ describe("useEmployeeSearch", () => {
       // "Smith" should match both John Smith and Jane Smith
       const results = result.current.search("Smith");
       expect(results.length).toBeGreaterThanOrEqual(2);
-      expect(results.map((e) => e.name)).toContain("John Smith");
-      expect(results.map((e) => e.name)).toContain("Jane Smith");
+      expect(results.map((r) => r.employee.name)).toContain("John Smith");
+      expect(results.map((r) => r.employee.name)).toContain("Jane Smith");
     });
   });
 
@@ -130,7 +130,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("Engineer");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].business_title).toContain("Engineer");
+      expect(results[0].employee.business_title).toContain("Engineer");
     });
 
     it("searches across job_level field", () => {
@@ -153,7 +153,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("MT6");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].job_level).toBe("MT6");
+      expect(results[0].employee.job_level).toBe("MT6");
     });
 
     it("searches across manager field", () => {
@@ -176,7 +176,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("Sarah");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].manager).toContain("Sarah");
+      expect(results[0].employee.manager).toContain("Sarah");
     });
 
     it("searches across location field", () => {
@@ -199,7 +199,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("USA");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].location).toBe("USA");
+      expect(results[0].employee.location).toBe("USA");
     });
 
     it("searches across job_function field", () => {
@@ -222,7 +222,7 @@ describe("useEmployeeSearch", () => {
 
       const results = result.current.search("Engineering");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].job_function).toBe("Engineering");
+      expect(results[0].employee.job_function).toBe("Engineering");
     });
 
     it("prioritizes name matches over title matches", () => {
@@ -246,7 +246,7 @@ describe("useEmployeeSearch", () => {
       const results = result.current.search("Engineer");
       expect(results.length).toBeGreaterThan(0);
       // Employee with "Engineer" in name should rank higher than one with it in title
-      expect(results[0].employee_id).toBe(1);
+      expect(results[0].employee.employee_id).toBe(1);
     });
   });
 
@@ -306,7 +306,7 @@ describe("useEmployeeSearch", () => {
       expect(() => result.current.search("VP")).not.toThrow();
       const results = result.current.search("VP");
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].business_title).toContain("VP");
+      expect(results[0].employee.business_title).toContain("VP");
     });
 
     it("handles whitespace-only query", () => {
@@ -338,7 +338,7 @@ describe("useEmployeeSearch", () => {
       // Search for "Jose" should match "José"
       const results = result.current.search("Jose");
       expect(results.length).toBeGreaterThan(0);
-      expect(results.some((e) => e.name.includes("José"))).toBe(true);
+      expect(results.some((r) => r.employee.name.includes("José"))).toBe(true);
     });
 
     it("matches names with accents", () => {
@@ -446,14 +446,14 @@ describe("useEmployeeSearch", () => {
 
       const results1 = result.current.search("John");
       expect(results1.length).toBeGreaterThan(0);
-      expect(results1[0].name).toBe("John Smith");
+      expect(results1[0].employee.name).toBe("John Smith");
 
       // Update employees
       rerender({ employees: employees2 });
 
       const results2 = result.current.search("Jane");
       expect(results2.length).toBeGreaterThan(0);
-      expect(results2[0].name).toBe("Jane Doe");
+      expect(results2[0].employee.name).toBe("Jane Doe");
 
       // Old employee should not be found
       const results3 = result.current.search("John");
@@ -536,7 +536,7 @@ describe("useEmployeeSearch", () => {
       expect(results.length).toBeGreaterThan(0);
 
       // Higher weighted match (name) should rank first
-      expect(results[0].employee_id).toBe(1);
+      expect(results[0].employee.employee_id).toBe(1);
     });
   });
 
