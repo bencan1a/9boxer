@@ -114,9 +114,9 @@ class ExcelExporter:
                         # Create movement description
                         old_label = get_position_label(event.old_performance, event.old_potential)
                         new_label = get_position_label(event.new_performance, event.new_potential)
-                        change_description_map[
-                            event.employee_id
-                        ] = f"Moved from {old_label} to {new_label}"
+                        change_description_map[event.employee_id] = (
+                            f"Moved from {old_label} to {new_label}"
+                        )
 
             # Create donut change descriptions lookup by employee ID
             donut_change_description_map = {}
@@ -127,9 +127,9 @@ class ExcelExporter:
                         # Create donut movement description
                         old_label = get_position_label(event.old_performance, event.old_potential)
                         new_label = get_position_label(event.new_performance, event.new_potential)
-                        donut_change_description_map[
-                            event.employee_id
-                        ] = f"Donut: Moved from {old_label} to {new_label}"
+                        donut_change_description_map[event.employee_id] = (
+                            f"Donut: Moved from {old_label} to {new_label}"
+                        )
 
             # Update rows with modified data
             for row_idx in range(2, sheet.max_row + 1):

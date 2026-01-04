@@ -11,9 +11,9 @@ from pathlib import Path
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from ninebox.services.analysis_registry import run_all_analyses  # noqa: E402
-from ninebox.services.data_packaging_service import package_for_ui  # noqa: E402
-from ninebox.services.sample_data_generator import (  # noqa: E402
+from ninebox.services.analysis_registry import run_all_analyses
+from ninebox.services.data_packaging_service import package_for_ui
+from ninebox.services.sample_data_generator import (
     RichDatasetConfig,
     generate_rich_dataset,
 )
