@@ -173,8 +173,14 @@ export const MixedGridChanges: Story = {
 
 /**
  * Change tracker with both grid and donut tabs visible.
+ * Shows the tab toggle interface for switching between Regular Changes and Donut Changes.
+ * Used for donut-mode-changes-tabs-toggle screenshot.
  */
 export const WithDonutMode: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "donut-mode-changes-tabs-toggle" },
+  },
   render: () => {
     useSessionStore.setState({
       events: gridEvents,

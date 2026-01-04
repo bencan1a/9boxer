@@ -2,7 +2,7 @@
 
 **Part of:** [9Boxer Design System](README.md)
 **Related:** [Component Inventory](component-inventory.md) | [Design Principles](design-principles.md) | [Layout Patterns](layout-patterns.md)
-**Last Updated:** 2025-12-24
+**Last Updated:** 2026-01-02
 
 ---
 
@@ -16,6 +16,92 @@ This document provides comprehensive guidelines for creating, composing, and mai
 - **Props-Driven** - Behavior controlled by props, not internal assumptions
 - **Accessibility First** - WCAG AA compliance built-in, not bolted on
 - **Type Safety** - Full TypeScript coverage with explicit interfaces
+
+---
+
+## Before Creating Any UI Component
+
+**MANDATORY steps before writing any UI code:**
+
+1. ✅ **Check existing components** in `frontend/src/components/`
+   - Use `Glob` or `Grep` to search for similar functionality
+   - Review component README files (e.g., `intelligence/README.md`)
+
+2. ✅ **Review design tokens** in [design-tokens.md](design-tokens.md)
+   - Never hardcode colors, spacing, or dimensions
+   - Use tokens for all visual properties
+
+3. ✅ **Determine correct UI zone** (see [Layout Patterns](layout-patterns.md))
+   - Top Toolbar → Global actions, file operations
+   - Grid Area → Employee manipulation, view controls
+   - Right Panel → Employee details, analysis
+   - Settings → User preferences, configuration
+
+4. ✅ **Read design guidelines**
+   - [Design Principles](design-principles.md)
+   - This document (component-guidelines.md)
+   - [Accessibility Standards](accessibility-standards.md)
+
+---
+
+## Component Development Checklist
+
+Use this checklist for **EVERY** new or modified component:
+
+### Required for ALL Components
+
+- [ ] **TypeScript with strict types**
+  - All props defined with TypeScript interface
+  - All function parameters typed
+  - All function returns typed
+  - No `any` types without justification
+
+- [ ] **Accessibility (WCAG 2.1 Level AA)**
+  - ARIA labels for all interactive elements
+  - Keyboard navigation support (Tab, Enter, Esc, Arrow keys)
+  - Focus indicators visible
+  - Screen reader compatible
+  - Minimum contrast ratio: 4.5:1 (text), 3:1 (UI components)
+
+- [ ] **Internationalization (i18n)**
+  - ALL user-visible text uses `useTranslation()` hook
+  - Translation keys follow convention: `section.component.label`
+  - No hardcoded strings in JSX
+
+- [ ] **Theme support**
+  - Works in both light and dark modes
+  - Uses `theme.palette.*` for colors
+  - Uses `theme.tokens.*` for spacing/dimensions/etc.
+  - Test by toggling theme mode
+
+- [ ] **Testing**
+  - data-testid attributes for all testable elements
+  - Unit tests (Vitest + React Testing Library)
+  - Test user behavior, not implementation details
+
+- [ ] **Documentation**
+  - JSDoc comments with usage examples
+  - Props interface documented
+  - Complex logic explained with inline comments
+
+### Styling Checklist
+
+- [ ] **Use MUI `sx` prop** (not inline styles or styled-components)
+- [ ] **Use theme tokens** for all values
+  - Colors: `theme.palette.*`
+  - Spacing: `theme.tokens.spacing.*` or `theme.spacing(n)`
+  - Dimensions: `theme.tokens.dimensions.*`
+  - Durations: `theme.tokens.duration.*`
+  - Shadows: `theme.tokens.shadows.*`
+
+- [ ] **No hardcoded values**
+  - ❌ `padding: '16px'` → ✅ `padding: theme.tokens.spacing.md`
+  - ❌ `color: '#1976d2'` → ✅ `color: theme.palette.primary.main`
+  - ❌ `fontSize: '14px'` → ✅ `fontSize: theme.typography.fontSize.body2`
+
+- [ ] **Responsive (if applicable)**
+  - Use MUI breakpoints: `theme.breakpoints.up('md')`
+  - Test at different viewport sizes
 
 ---
 
@@ -1022,6 +1108,164 @@ export const GridBox: React.FC<{ position: number }> = ({ position }) => {
   );
 };
 ```
+
+---
+
+### 8. Intelligence Panel Patterns
+
+**Location:** Right Panel → Intelligence Tab
+
+**Purpose:** Display AI-powered insights, statistical anomalies, and talent distribution analysis.
+
+#### Severity Color Scheme
+
+Anomalies use consistent severity colors from theme:
+
+```tsx
+const getSeverityColor = (severity: 'critical' | 'warning' | 'info') => {
+  switch (severity) {
+    case 'critical': return theme.palette.error.main;    // Red
+    case 'warning': return theme.palette.warning.main;   // Orange/Yellow
+    case 'info': return theme.palette.info.main;         // Blue
+  }
+};
+
+<Chip
+  label={getSeverityLabel()}
+  size="small"
+  sx={{
+    backgroundColor: getSeverityColor(severity),
+    color: 'white',
+    fontWeight: 'bold',
+  }}
+/>
+```
+
+**Usage:**
+- **Critical** - Requires immediate attention
+- **Warning** - Should be reviewed
+- **Info** - Informational, no action needed
+
+#### Confidence Indicators
+
+Insights display AI confidence using a linear progress bar:
+
+```tsx
+const getConfidenceColor = (confidence: number) => {
+  if (confidence >= 0.8) return theme.palette.success.main;   // Green
+  if (confidence >= 0.5) return theme.palette.warning.main;   // Orange/Yellow
+  return theme.palette.error.main;                            // Red
+};
+
+<LinearProgress
+  variant="determinate"
+  value={confidence * 100}
+  sx={{
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: theme.palette.action.hover,
+    '& .MuiLinearProgress-bar': {
+      backgroundColor: getConfidenceColor(confidence),
+    },
+  }}
+/>
+```
+
+**Confidence Thresholds:**
+- **High (≥0.8)** - Green
+- **Medium (0.5-0.8)** - Orange/Yellow
+- **Low (<0.5)** - Red
+
+#### Summary Badge Pattern
+
+Sections use colored dot + count + label pattern:
+
+```tsx
+<Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+  {criticalCount > 0 && (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Box
+        sx={{
+          width: 12,
+          height: 12,
+          borderRadius: '50%',
+          bgcolor: theme.palette.error.main,
+        }}
+      />
+      <Typography variant="body2">
+        {criticalCount} Critical
+      </Typography>
+    </Box>
+  )}
+</Box>
+```
+
+#### Collapsible Content Pattern
+
+Anomaly suggestions use expand/collapse with ARIA support:
+
+```tsx
+const [expanded, setExpanded] = useState(false);
+
+<Button
+  size="small"
+  onClick={() => setExpanded(!expanded)}
+  aria-expanded={expanded}
+  aria-controls="suggestion-content"
+  endIcon={
+    <ExpandMoreIcon
+      sx={{
+        transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+        transition: theme.transitions.create('transform', {
+          duration: theme.transitions.duration.short,
+        }),
+      }}
+    />
+  }
+>
+  {expanded ? t('common.hide') : t('common.show')} Suggestion
+</Button>
+<Collapse in={expanded}>
+  <Box
+    id="suggestion-content"
+    role="region"
+    sx={{
+      mt: 1,
+      p: 1.5,
+      backgroundColor: theme.palette.action.hover,
+      borderRadius: 1,
+    }}
+  >
+    <Typography variant="body2">{suggestion}</Typography>
+  </Box>
+</Collapse>
+```
+
+#### Component Anatomy
+
+**AnomalyCard:**
+- Severity badge (color-coded chip)
+- Title and description
+- Affected employee count
+- Confidence percentage
+- Optional suggestion (collapsible)
+- Optional dismiss button
+- Clickable for details (role="button", keyboard support)
+
+**InsightCard:**
+- Type icon (recommendation/observation/warning)
+- Type chip (outlined, color-coded)
+- Insight text
+- Confidence indicator (linear progress bar)
+- Optional metadata (employee count, affected boxes)
+- Optional action button
+
+**DistributionStats:**
+- Position-sorted grid (1-9)
+- Percentage for each position
+- Employee count
+- Color coding by position type
+- Deviation warnings (>5% from ideal)
 
 ---
 

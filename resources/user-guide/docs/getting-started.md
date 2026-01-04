@@ -84,9 +84,78 @@ You'll see:
 
 ---
 
-## Step 2: Check Your Distribution (3 minutes)
+## Step 2: Review Your Distribution (5 minutes)
 
-Now let's review your ratings before the calibration meeting.
+Now let's review your ratings before the calibration meeting. You'll use both AI-powered insights and statistical analysis to understand your data.
+
+### Check the Intelligence Tab
+
+The **Intelligence** tab is now your **first stop** for meeting preparation, not a final sweep. It combines AI-powered analysis with statistical tools to guide your focus areas.
+
+#### Generate Your AI Summary (Recommended First Step)
+
+Before diving into filters or individual employees, get the AI's big picture view:
+
+1. Click the **Intelligence** tab in the right panel
+2. Click **Generate AI Summary** at the top of the page
+3. Wait 30-40 seconds while the AI analyzes your data
+4. Review the 2-3 paragraph executive summary
+
+The AI summary identifies root causes and recommends your meeting approach. For example:
+
+- "MT3 level is driving your center box inflation with 64% of employees rated in the middle vs. 35% expected"
+- "New hires (< 1 year tenure) are concentrated in the center box at 80% vs. 41% company average"
+- "Consider allocating 45 minutes to deep-dive MT3 ratings during your calibration meeting"
+
+![Intelligence tab with Generate AI Summary button prominently visible](images/screenshots/intelligence/ai-summary-generate-button.png)
+
+!!! tip "Privacy First"
+    The AI analysis uses only anonymized statistical data. No employee names, IDs, or business titles are sent to external APIs.
+
+#### Review Calibration Insights
+
+Below the AI summary, you'll see **Calibration Insights** - prioritized, actionable items for your meeting:
+
+1. **Filter by priority:** Start with HIGH priority insights (red badges)
+2. **Select relevant insights:** Click checkboxes on insights you want to discuss
+3. **Note the clusters:** Related insights are grouped together under common themes
+
+Selected insights become your meeting discussion topics. This saves time by focusing on what matters most.
+
+**Example insights you might see:**
+
+- **HIGH:** "MT3 driving center box inflation - 64% vs. 35% expected" (45 employees affected)
+- **MEDIUM:** "New hires concentrated in center box at 80%" (18 employees affected)
+- **LOW:** "Allocate 45 minutes for MT3 deep dive" (Time allocation recommendation)
+
+Cluster badges group related insights together. For example, a "MT3 Level Requires Deep Review" cluster might contain all three insights above, helping you see the big picture.
+
+![Calibration Insights section showing multiple insight cards with priority badges and cluster badges](images/screenshots/intelligence/calibration-insights-section.png)
+
+#### Use Statistical Analysis for Deep Dives
+
+The Intelligence tab also provides detailed statistical analysis:
+
+- **Quality Score:** Overall data health (aim for 75+)
+- **Anomaly Detection:** Automatic highlighting of unusual patterns by Location, Function, Level, and Tenure
+- **Color-coded severity:** Red (critical), yellow (moderate), green (informational)
+
+Use these tools to investigate the root causes identified by the AI summary.
+
+![Intelligence summary showing quality score and anomaly count](images/screenshots/workflow/intelligence-summary-anomalies.png)
+
+Red highlights = strong patterns worth discussing.
+Yellow highlights = patterns to explore in the meeting.
+
+!!! tip "AI + Statistics = Complete Picture"
+    The AI summary gives you the "big picture" and meeting strategy. The statistical analyses provide the "deep dive" for detailed investigation. Use both together for best results. For complete details on AI-powered features, see [AI-Powered Meeting Preparation](intelligence.md#ai-powered-meeting-preparation).
+
+!!! note "Make a Note"
+    Write down which AI insights you want to discuss. For example: "MT3 level driving center box inflation - let's deep-dive all MT3 employees and compare standards across managers at this level."
+
+> 💡 **Why This Matters**
+>
+> The Intelligence tab should be your **first stop** for meeting preparation, not a final sweep. Let the AI guide your focus areas, then use level-based filtering as your PRIMARY approach during the meeting (all ICs, then all Managers, etc.). Think of it as: AI-guided focus → level-first bulk calibration → statistical deep dives for details.
 
 ### Review the Statistics Tab
 
@@ -105,29 +174,6 @@ Click the **Statistics** tab in the right panel to see how your talent is distri
 - 10-15% in Stars (top-right corner)
 - 50-60% in middle tier (positions 4-6)
 - Less than 10% in bottom-left (Too New/Under-Performers)
-
-### Check the Intelligence Tab
-
-Click the **Intelligence** tab to identify statistical patterns.
-
-Intelligence runs analysis behind the scenes to find:
-
-- **Location patterns** - Do certain offices rate higher/lower?
-- **Function patterns** - Are some departments' standards different?
-- **Manager patterns** - Which managers show different rating approaches?
-- **Tenure effects** - Are new hires rated differently?
-
-![Intelligence summary showing quality score and anomaly count](images/screenshots/workflow/intelligence-summary-anomalies.png)
-
-Red highlights = strong patterns worth discussing.
-Yellow highlights = patterns to explore in the meeting.
-
-!!! note "Make a Note"
-    Write down which patterns you want to discuss. For example: "Engineering has 30% Stars vs. 10% company-wide - let's compare standards and see if this reflects real talent differences."
-
-> 💡 **Why This Matters**
->
-> During your meeting, you'll use level-based filtering as your PRIMARY approach (all ICs, then all Managers, etc.). Intelligence serves as your FINAL sweep to identify patterns that survived the structured review. Think of it as: level-first for bulk calibration, Intelligence for pattern detection.
 
 ---
 
@@ -169,13 +215,13 @@ What you're looking for:
 Time: 20-30 minutes
 ```
 
-**Session 3: Intelligence Sweep**
+**Session 3: Statistical Deep Dive**
 ```
-Tool: Intelligence tab
+Tool: Intelligence tab (statistical analyses section)
 What you're looking for:
-- Patterns that survived your level-based review
-- Statistical insights worth discussing
-- Final patterns you might have missed
+- Deep dive into root causes identified by AI
+- Statistical validation of patterns
+- Additional patterns in Location/Function/Level/Tenure data
 
 Time: 10 minutes
 ```
@@ -192,7 +238,7 @@ Break it down by function within each level:
 **Week 2: Managers and Leaders**
 - Session 4: All Managers (across functions)
 - Session 5: Directors and above
-- Session 6: Intelligence pattern review
+- Session 6: Statistical deep dive and validation
 
 ![Filters panel showing level-based filtering](images/screenshots/filters/filters-panel-expanded.png)
 
@@ -277,8 +323,6 @@ Work level-by-level through your planned sessions:
    - Click employee → Changes tab
    - Add note explaining the calibration decision
    - Example: "Calibration 2024-Q4: Moved to Star after comparing to other Senior Engineers - consensus on sustained high performance + demonstrated leadership potential"
-
-![Three-panel sequence showing drag and drop: clicking, dragging, and dropping an employee tile](images/screenshots/workflow/making-changes-drag-sequence-base.png)
 
 ### Keep the Discussion Moving
 

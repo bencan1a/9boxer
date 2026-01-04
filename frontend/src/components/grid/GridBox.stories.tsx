@@ -197,6 +197,28 @@ export const Collapsed: Story = {
  * Uses multi-column grid layout for better space utilization with many employees.
  */
 export const Expanded: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "grid-box-expanded" },
+  },
+  decorators: [
+    (Story) => (
+      <GridZoomProvider>
+        <DndContext>
+          <Box
+            sx={{
+              width: 500,
+              p: 2,
+              backgroundColor: "background.default",
+              borderRadius: 1,
+            }}
+          >
+            <Story />
+          </Box>
+        </DndContext>
+      </GridZoomProvider>
+    ),
+  ],
   args: {
     position: 8,
     employees: manyEmployees,

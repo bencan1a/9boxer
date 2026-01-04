@@ -17,7 +17,7 @@ if [ -d "$VENV_PATH" ]; then
     echo "Installing dependencies..."
     pip install uv
     cd ..  # Go to project root
-    uv pip install --system -e .
+    uv pip install -e .
     cd backend  # Back to backend directory
 else
     echo "No virtual environment found - using system Python (CI mode)"
@@ -34,7 +34,11 @@ fi
 
 # Install PyInstaller if needed
 echo "Installing PyInstaller..."
-uv pip install --system pyinstaller
+if [ -d "$VENV_PATH" ]; then
+    uv pip install pyinstaller
+else
+    uv pip install --system pyinstaller
+fi
 
 # Clean previous builds
 echo "Cleaning previous builds..."

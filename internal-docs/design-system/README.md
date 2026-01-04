@@ -6,7 +6,7 @@
 
 **For AI Agents/Developers: Read this FIRST before any UI work!**
 
-1. 📖 **Read** [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) - Complete UI development guidelines
+1. 📖 **Read** [component-guidelines.md](component-guidelines.md) - Complete UI development guidelines
 2. 🎨 **Review** [design-tokens.md](design-tokens.md) - All colors, spacing, dimensions
 3. 🧩 **Check** [component-inventory.md](component-inventory.md) - Catalog of existing components
 4. ✅ **Follow** [linting-rules.md](linting-rules.md) - Automated quality checks
@@ -25,9 +25,9 @@ The 9Boxer Design System ensures:
 
 | Document | Purpose | When to Read |
 |----------|---------|--------------|
-| **[DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)** | Main guidelines | Before creating/modifying ANY UI |
+| **[component-guidelines.md](component-guidelines.md)** | Main guidelines, mandatory pre-work checklist | Before creating/modifying ANY UI |
 | **[design-tokens.md](design-tokens.md)** | Colors, spacing, dimensions | When styling components |
-| **[component-guidelines.md](component-guidelines.md)** | Component patterns | When creating new components |
+| **[layout-patterns.md](layout-patterns.md)** | UI zones and layout structure | When positioning components |
 | **[design-principles.md](design-principles.md)** | Design philosophy | When making design decisions |
 
 ### 🎨 Visual Design

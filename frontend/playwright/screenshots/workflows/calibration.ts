@@ -12,7 +12,6 @@ import {
   waitForUiSettle,
   toggleDonutMode,
   clickTabAndWait,
-  openFileMenu,
   openFilterDrawer,
 } from "../../helpers/ui";
 import { loadSampleData } from "../../helpers/fixtures";

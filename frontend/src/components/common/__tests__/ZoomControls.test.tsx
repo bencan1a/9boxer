@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, within } from "../../../test/utils";
+import { render, screen, fireEvent } from "../../../test/utils";
 import { ZoomControls } from "../ZoomControls";
 
 describe("ZoomControls", () => {

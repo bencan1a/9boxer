@@ -2,6 +2,11 @@
  * Flag constants and utilities for employee tagging
  */
 
+/* eslint-disable no-restricted-syntax */
+// This file defines semantic flag colors that are part of the design system
+// Each flag has a specific meaning (e.g., red for risk, blue for promotion)
+// and these colors should remain consistent across the application
+
 export interface FlagDefinition {
   key: string;
   displayName: string;

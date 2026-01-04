@@ -124,7 +124,7 @@ export class StorybookServerManager {
           .get(
             `http://localhost:${this.storybookPort}`,
             { timeout: 2000 },
-            (res) => {
+            (_res) => {
               resolve();
             }
           )

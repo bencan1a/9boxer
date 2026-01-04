@@ -2,6 +2,10 @@
  * Storybook stories for FileMenuButton component
  */
 
+/* eslint-disable no-restricted-syntax */
+// This file contains demo data for Storybook documentation
+// Hardcoded colors are intentional for visual examples
+
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn, userEvent, within } from "@storybook/test";
 import { FileMenuButton } from "./FileMenuButton";
@@ -92,6 +96,36 @@ export const WithChanges: Story = {
 };
 
 /**
+ * File loaded with changes - for screenshot
+ * Uses dark themed container with proper padding for documentation screenshots.
+ */
+export const WithChangesBadge: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "apply-button-with-badge" },
+  },
+  decorators: [
+    (Story) => (
+      <Box
+        sx={{
+          p: 3,
+          backgroundColor: "#1a1a2e",
+          borderRadius: 1,
+          display: "inline-flex",
+          alignItems: "center",
+        }}
+      >
+        <Story />
+      </Box>
+    ),
+  ],
+  args: {
+    fileName: "employees.xlsx",
+    changeCount: 5,
+  },
+};
+
+/**
  * Many changes
  */
 export const ManyChanges: Story = {
@@ -145,6 +179,44 @@ export const MenuOpen: Story = {
   args: {
     fileName: "employees.xlsx",
     changeCount: 3,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("file-menu-button");
+    await userEvent.click(button);
+  },
+};
+
+/**
+ * Menu open with recent files - shows the Recent Files section
+ */
+export const MenuOpenWithRecentFiles: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "file-menu-recent-files" },
+  },
+  args: {
+    fileName: "employees.xlsx",
+    changeCount: 0,
+    recentFiles: [
+      {
+        path: "/Users/demo/Documents/Q4_Review_2024.xlsx",
+        name: "Q4_Review_2024.xlsx",
+        lastAccessed: Date.now() - 3600000,
+      },
+      {
+        path: "/Users/demo/Documents/Team_Calibration.xlsx",
+        name: "Team_Calibration.xlsx",
+        lastAccessed: Date.now() - 86400000,
+      },
+      {
+        path: "/Users/demo/Documents/Annual_Review_2023.xlsx",
+        name: "Annual_Review_2023.xlsx",
+        lastAccessed: Date.now() - 172800000,
+      },
+    ],
+    onRecentFileClick: fn(),
+    onClearRecentFiles: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

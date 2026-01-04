@@ -26,6 +26,18 @@ No, CSV files are not supported. You must use Excel format (.xlsx or .xls). If y
 
 9Boxer is a standalone desktop application. All data stays on your computer - nothing is uploaded to the cloud or shared with external servers. Your employee data remains completely private and secure.
 
+### Is my employee data sent to external AI services?
+
+When you use the AI-powered Intelligence features, only anonymized statistical data is sent to the external API (Anthropic Claude). No employee names, IDs, business titles, or manager names are ever transmitted. The AI receives anonymized identifiers like "Employee_1", "Manager_1" along with performance ratings and statistical aggregates. Your sensitive data stays secure. See [Privacy & Data Security](intelligence.md#privacy-data-security) for complete details.
+
+### What happens if the AI summary fails to generate?
+
+The Intelligence tab gracefully falls back to statistical-only insights. You can still use the Location, Function, Level, and Tenure anomaly detection tools for manual analysis. Check your internet connection and try regenerating. If problems persist, you have full access to all statistical analysis features.
+
+### How long does AI summary generation take?
+
+Typically 30-40 seconds. The AI analyzes your entire calibration dataset to identify patterns, root causes, and generate prioritized insights. You'll see a loading indicator while the analysis runs.
+
 ### Where can I get the sample file to test the app?
 
 The sample file (`Sample_People_List.xlsx`) is bundled with the application. Check your 9Boxer installation folder in the resources directory, or access it from the Help menu inside the app. See [Employee Data](employee-data.md) for more about the sample file.

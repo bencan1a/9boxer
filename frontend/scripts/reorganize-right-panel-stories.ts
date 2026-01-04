@@ -8,7 +8,6 @@
  */
 
 import * as fs from "fs";
-import * as path from "path";
 import { glob } from "glob";
 
 // Mapping of old title prefixes to new prefixes

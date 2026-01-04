@@ -2,20 +2,52 @@
 
 import json
 import logging
-import socket
 
+# Load environment variables from .env file
+# This must happen before any imports that use environment variables
+import os
+import socket
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ninebox.api import employees, intelligence, org_hierarchy, preferences, session, statistics
-from ninebox.core.config import settings
-from ninebox.core.dependencies import get_session_manager
-
-# Configure logging
+# Configure logging early (before loading env vars)
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+env_file = Path(__file__).parent.parent.parent / ".env"
+loaded = load_dotenv(dotenv_path=env_file)
+logger.info(f"Loading .env from: {env_file.resolve()}")
+logger.info(f".env file exists: {env_file.exists()}")
+logger.info(f"load_dotenv returned: {loaded}")
+
+# Validate API key if present
+api_key = os.getenv("ANTHROPIC_API_KEY")
+if api_key:
+    # Validate API key format (Anthropic keys typically start with "sk-ant-")
+    if api_key.startswith("sk-ant-") and len(api_key) > 20:
+        logger.info("ANTHROPIC_API_KEY present and valid format")
+    else:
+        logger.warning("ANTHROPIC_API_KEY present but invalid format (should start with 'sk-ant-')")
+        logger.warning("LLM-powered features may not work correctly")
+else:
+    logger.warning("ANTHROPIC_API_KEY not found - LLM-powered features will be unavailable")
+
+from ninebox.api import (  # noqa: E402
+    calibration_summary,
+    employees,
+    intelligence,
+    org_hierarchy,
+    preferences,
+    session,
+    statistics,
+)
+from ninebox.core.config import settings  # noqa: E402
+from ninebox.core.dependencies import get_session_manager  # noqa: E402
 
 # Create FastAPI app
 app = FastAPI(
@@ -45,6 +77,7 @@ app.include_router(session.router, prefix="/api")
 app.include_router(employees.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
 app.include_router(intelligence.router, prefix="/api")
+app.include_router(calibration_summary.router, prefix="/api")
 app.include_router(preferences.router, prefix="/api")
 app.include_router(org_hierarchy.router, prefix="/api")
 

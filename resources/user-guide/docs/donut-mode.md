@@ -55,6 +55,8 @@ This forces you to challenge "safe" center placements and reveals:
     - Purple border
     - Shows original position
 
+![Employee tile with purple border and original position indicator showing donut placement](images/screenshots/donut-mode/donut-mode-employee-tile-purple.png)
+
 ![Grid in Donut Mode showing employee tiles](images/screenshots/donut-mode/donut-mode-grid-normal.png)
 
 ### Returning to Position 5
@@ -76,6 +78,8 @@ Donut placements are tracked separately from regular changes.
 2. You'll see two tabs:
     - **Regular Changes** - Actual rating adjustments
     - **Donut Changes** - Exercise placements
+
+![Changes panel showing the two tabs: Regular Changes and Donut Changes](images/screenshots/donut-mode/donut-mode-changes-tabs-toggle.png)
 
 Each donut placement shows:
 

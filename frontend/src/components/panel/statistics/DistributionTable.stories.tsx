@@ -255,3 +255,64 @@ export const ExtremeImbalance: Story = {
     },
   },
 };
+
+/**
+ * Grouped by department.
+ * Shows distribution broken down by department/job function.
+ * Used for documentation screenshot: statistics-grouped-distribution
+ */
+export const GroupedByDepartment: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "statistics-grouped-distribution" },
+  },
+  args: {
+    distribution: createDistribution({
+      9: 10,
+      8: 14,
+      7: 8,
+      6: 12,
+      5: 20,
+      4: 9,
+      3: 11,
+      2: 8,
+      1: 8,
+    }),
+    groupedStats: {
+      highPerformers: { count: 36, percentage: 36.0 },
+      middleTier: { count: 37, percentage: 37.0 },
+      lowPerformers: { count: 27, percentage: 27.0 },
+    },
+  },
+};
+
+/**
+ * Grouping menu open state.
+ * Shows the distribution table with grouping selector dropdown expanded.
+ * Note: This story shows the base table - actual dropdown requires interaction.
+ * Used for documentation screenshot: statistics-grouping-dropdown
+ */
+export const GroupingMenuOpen: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "statistics-grouping-dropdown" },
+  },
+  args: {
+    distribution: createDistribution({
+      9: 12,
+      8: 15,
+      7: 10,
+      6: 14,
+      5: 18,
+      4: 11,
+      3: 13,
+      2: 9,
+      1: 9,
+    }),
+    groupedStats: {
+      highPerformers: { count: 41, percentage: 36.9 },
+      middleTier: { count: 41, percentage: 36.9 },
+      lowPerformers: { count: 29, percentage: 26.1 },
+    },
+  },
+};

@@ -346,6 +346,7 @@
         "qualityScore": "Quality Score",
         "qualityScoreDescription": "0-100 scale based on statistical anomalies detected",
         "totalAnomalies": "Total Anomalies",
+        "employees": "Employees",
         "green": "Green",
         "yellow": "Yellow",
         "red": "Red",
@@ -357,6 +358,57 @@
     }
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Calibration Summary",
+      "dataOverview": "Data Overview",
+      "insights": "Calibration Insights",
+      "generating": "Generating...",
+      "generateSummary": "Generate AI Summary",
+      "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "estimatedDuration": "Est. {{duration}}",
+      "suggestedSequence": "Suggested: {{sequence}}",
+      "employees": "employees",
+      "stars": "Stars",
+      "centerBox": "Center Box",
+      "lowerPerformers": "Lower Performers",
+      "insightsSelected": "{{count}} insight selected",
+      "insightsSelected_other": "{{count}} insights selected",
+      "keyRecommendations": "Key Recommendations",
+      "discussionPoints": "Predicted Discussion Points",
+      "poweredBy": "Powered by {{model}}",
+      "toggleSection": "Toggle calibration summary section",
+      "showLess": "Show less",
+      "showFullSummary": "Show full summary",
+      "poweredByClaude": "Powered by Claude",
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "category": {
+        "location": "Location",
+        "function": "Function",
+        "level": "Level",
+        "tenure": "Tenure",
+        "distribution": "Distribution",
+        "time": "Time"
+      },
+      "insightType": {
+        "anomaly": "Anomaly",
+        "focus_area": "Focus Area",
+        "recommendation": "Recommendation",
+        "time_allocation": "Time Allocation"
+      },
+      "affectedEmployees": "{{count}} employee affected",
+      "affectedEmployees_other": "{{count}} employees affected"
+    },
+    "aiSummary": {
+      "title": "AI-Generated Summary",
+      "showLess": "Show less",
+      "readFull": "Read full"
+    },
     "severity": {
       "critical": "Critical",
       "warning": "Warning",
@@ -497,6 +549,7 @@
     "hide": "Hide",
     "show": "Show",
     "dismiss": "Dismiss",
+    "loading": "Loading...",
     "fileUpload": {
       "dialogTitle": "Import Excel File",
       "description": "Import a 9-Box talent mapping Excel file (.xlsx or .xls)",

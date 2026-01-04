@@ -7,7 +7,6 @@ import { render, screen } from "@/test/utils";
 import { InsightsSection } from "../InsightsSection";
 import {
   mockRecommendationHigh,
-  mockRecommendationMedium,
   mockObservation,
   mockWarning,
   mockManyInsights,

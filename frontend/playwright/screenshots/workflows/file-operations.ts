@@ -255,3 +255,212 @@ export async function generateFileMenuApplyChanges(
   // Close the menu after capture
   await page.keyboard.press("Escape");
 }
+
+// =============================================================================
+// EXPORTING SCREENSHOTS (4 screenshots, 1 manual skip)
+// =============================================================================
+
+/**
+ * Generate File menu Apply button screenshot
+ *
+ * Shows the File menu dropdown with Apply Changes button visible.
+ * Captures just the menu element, not the full storybook container.
+ *
+ * Uses the MenuOpen story and clicks to open, then captures the menu dropdown.
+ */
+export async function generateFileMenuApplyButton(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 500, height: 700 });
+
+  // Navigate to MenuOpen story (which uses play function to open menu)
+  await navigateToStory(
+    page,
+    "app-dashboard-filemenubutton--menu-open",
+    "dark"
+  );
+
+  // Wait for menu to be visible
+  await page.waitForSelector('[role="menu"]', {
+    state: "visible",
+    timeout: 5000,
+  });
+  await page.waitForTimeout(500);
+
+  // Capture just the menu element
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const menuElement = page.locator('[role="menu"]');
+  if ((await menuElement.count()) > 0) {
+    await menuElement.screenshot({ path: outputPath });
+  } else {
+    await page.screenshot({ path: outputPath, fullPage: true });
+  }
+
+  console.log(
+    `  ✓ Captured from Storybook: app-dashboard-filemenubutton--menu-open (dark theme)`
+  );
+}
+
+/**
+ * Generate Apply Changes dialog with Save As option screenshot
+ *
+ * Shows the Apply Changes dialog with 'Save to different file' checkbox checked,
+ * showing the file path input.
+ *
+ * Story: app-dialogs-applychangesdialog--save-as-mode (or default with checkbox clicked)
+ */
+export async function generateApplyChangesSaveAsOption(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  // Set viewport to match container size (no excess whitespace)
+  await page.setViewportSize({ width: 500, height: 700 });
+
+  // Navigate to Storybook Default story
+  await navigateToStory(
+    page,
+    "app-dialogs-applychangesdialog--default",
+    "dark"
+  );
+
+  // Wait for dialog to be visible
+  await page.waitForSelector('[role="dialog"]', { state: "visible" });
+  await page.waitForTimeout(800);
+
+  // Click the checkbox to show save-as mode
+  const checkbox = page.locator('[data-testid="save-as-new-checkbox"]');
+  if ((await checkbox.count()) > 0) {
+    await checkbox.click();
+    await page.waitForTimeout(500);
+  }
+
+  // Capture the dialog
+  const dialog = page.locator('[role="dialog"]');
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+  await dialog.screenshot({
+    path: outputPath,
+  });
+
+  console.log(
+    `  ✓ Captured from Storybook with checkbox: apply-changes-save-as-option (dark theme)`
+  );
+}
+
+/**
+ * Generate File menu recent files screenshot
+ *
+ * Shows the File menu dropdown with the Recent Files section showing
+ * a list of previously opened files.
+ *
+ * Story: app-dashboard-filemenubutton--menu-open-with-recent-files
+ */
+export async function generateFileMenuRecentFiles(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 500, height: 700 });
+
+  // Navigate to MenuOpenWithRecentFiles story (which uses play function to open menu)
+  await navigateToStory(
+    page,
+    "app-dashboard-filemenubutton--menu-open-with-recent-files",
+    "dark"
+  );
+
+  // Wait for menu to be visible
+  await page.waitForSelector('[role="menu"]', {
+    state: "visible",
+    timeout: 5000,
+  });
+  await page.waitForTimeout(500);
+
+  // Capture just the menu element
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const menuElement = page.locator('[role="menu"]');
+  if ((await menuElement.count()) > 0) {
+    await menuElement.screenshot({ path: outputPath });
+  } else {
+    await page.screenshot({ path: outputPath, fullPage: true });
+  }
+
+  console.log(
+    `  ✓ Captured from Storybook: app-dashboard-filemenubutton--menu-open-with-recent-files (dark theme)`
+  );
+}
+
+/**
+ * Generate export success message screenshot
+ *
+ * Shows the success notification/toast showing export completed
+ * with file path and action buttons.
+ *
+ * Note: This requires a notification component story which may not exist.
+ * Uses a placeholder that captures a similar success state.
+ *
+ * Story: app-common-notification--export-success (if exists)
+ */
+export async function generateExportSuccessMessage(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // This is a placeholder - actual implementation depends on notification component
+  // For now, we'll capture the apply changes dialog success state
+  await page.setViewportSize({ width: 500, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dialogs-applychangesdialog--default",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+    selector: '[role="dialog"]',
+  });
+
+  console.log(
+    `  ⚠ NOTE: export-success-message requires a notification component story`
+  );
+}
+
+/**
+ * Generate exported Excel columns screenshot
+ *
+ * Shows a mock Excel view with the 4 9Boxer columns that get added during export:
+ * - 9B_Position: Current grid position
+ * - 9B_Modified: Whether employee was modified
+ * - 9B_OriginalPos: Original position before changes
+ * - 9B_Notes: Any notes added during the session
+ *
+ * Uses a mock Excel view component rather than actual Excel screenshot.
+ *
+ * Story: app-common-mockexcelview--exported-columns
+ */
+export async function generateExportedExcelColumns(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 1200, height: 400 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-mockexcelview--exported-columns",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
