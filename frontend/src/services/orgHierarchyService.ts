@@ -57,6 +57,26 @@ export interface ReportingChainResponse {
 }
 
 /**
+ * Organization tree node with hierarchical structure
+ */
+export interface OrgTreeNode {
+  employee_id: number;
+  name: string;
+  job_title: string;
+  team_size: number;
+  direct_reports: OrgTreeNode[];
+}
+
+/**
+ * Response from /api/org-hierarchy/org-tree/{employee_id} endpoint
+ */
+export interface OrgTreeResponse {
+  root_employee_id: number;
+  root_name: string;
+  tree: OrgTreeNode;
+}
+
+/**
  * Organization Hierarchy Service
  *
  * Provides methods for querying organizational structures using OrgService backend.
@@ -171,5 +191,27 @@ export const orgHierarchyService = {
   async getReportIds(employeeId: number): Promise<number[]> {
     const response = await this.getAllReports(employeeId);
     return response.all_reports.map((emp) => emp.employee_id);
+  },
+
+  /**
+   * Get the organizational tree starting from a specific employee
+   *
+   * Returns a hierarchical tree structure showing the employee and all their
+   * direct and indirect reports in a nested format.
+   *
+   * @param employeeId - Employee ID to use as the root of the tree
+   * @returns Promise<OrgTreeResponse> - Hierarchical org tree
+   *
+   * @example
+   * ```typescript
+   * const orgTree = await orgHierarchyService.getOrgTree(123);
+   * console.log(`Root: ${orgTree.root_name}`);
+   * console.log(`Direct reports: ${orgTree.tree.direct_reports.length}`);
+   * ```
+   */
+  async getOrgTree(employeeId: number): Promise<OrgTreeResponse> {
+    return apiClient.get<OrgTreeResponse>(
+      `/api/org-hierarchy/org-tree/${employeeId}`
+    );
   },
 };
