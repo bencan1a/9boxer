@@ -260,7 +260,7 @@ export const NineBoxGrid: React.FC = () => {
               }}
             >
               {/* Left: FilterToolbar (positioned absolutely) */}
-              <FilterToolbarContainer />
+              <FilterToolbarContainer variant="compact" />
 
               {/* Center: Performance label */}
               <Axis orientation="horizontal" />
