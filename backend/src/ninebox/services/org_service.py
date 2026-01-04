@@ -81,8 +81,14 @@ class OrgService:
             emp.employee_id: emp for emp in self._employees
         }
 
-        # Build name-to-ID mapping (for converting manager names to IDs)
-        # Note: If duplicate names exist, this will map to one arbitrary employee
+        # Build name-to-IDs mapping (tracks ALL employees with each name)
+        self._name_to_ids: dict[str, list[int]] = {}
+        for emp in self._employees:
+            if emp.name not in self._name_to_ids:
+                self._name_to_ids[emp.name] = []
+            self._name_to_ids[emp.name].append(emp.employee_id)
+
+        # Keep old single-ID mapping for backward compatibility
         self._name_to_id: dict[str, int] = {emp.name: emp.employee_id for emp in self._employees}
 
         # Lazy-loaded caches
@@ -97,6 +103,136 @@ class OrgService:
                     f"Invalid org structure: {len(result.errors)} errors found. "
                     f"First error: {result.errors[0] if result.errors else 'Unknown'}"
                 )
+
+    def _get_job_level_rank(self, job_level: str) -> int:
+        """Extract numeric rank from job level for tiebreaking.
+
+        Higher numbers = higher seniority (VP > Director > Manager > IC)
+
+        Args:
+            job_level: Job level string (e.g., "MT6", "VP Engineering", "Director")
+
+        Returns:
+            Numeric rank (60=VP, 50=Director, 40=Manager, 30=Senior, 25=Lead, 0=unknown)
+
+        Examples:
+            >>> _get_job_level_rank("MT6")
+            60
+            >>> _get_job_level_rank("VP Engineering")
+            60
+            >>> _get_job_level_rank("Director Sales")
+            50
+        """
+        import re
+
+        job_level_upper = job_level.upper()
+
+        # Check for keywords first (most reliable)
+        if "VP" in job_level_upper or "VICE PRESIDENT" in job_level_upper:
+            return 60
+        if "DIRECTOR" in job_level_upper:
+            return 50
+        if "MANAGER" in job_level_upper:
+            return 40
+        if "SENIOR" in job_level_upper:
+            return 30
+        if "LEAD" in job_level_upper:
+            return 25
+
+        # Try to extract MT number (MT6 = 60, MT5 = 50, etc.)
+        match = re.search(r"MT(\d+)", job_level_upper)
+        if match:
+            level_num = int(match.group(1))
+            return level_num * 10
+
+        # Try to extract any number
+        match = re.search(r"\d+", job_level)
+        if match:
+            return int(match.group()) * 10
+
+        return 0  # Unknown level
+
+    def _resolve_manager_id(self, manager_name: str, employee: Employee) -> int | None:
+        """Resolve manager name to employee ID with duplicate name handling.
+
+        When multiple employees share the same name, uses tiebreaking logic:
+        1. Job level priority (VPs > Directors > Managers > ICs)
+        2. Manager status (employees who have direct reports)
+        3. First match if all else equal
+
+        Args:
+            manager_name: Name of the manager to resolve
+            employee: The employee whose manager we're resolving
+
+        Returns:
+            Employee ID of the manager, or None if not found
+
+        Examples:
+            # Single match - returns immediately
+            >>> _resolve_manager_id("Unique Name", employee)
+            123
+
+            # Multiple "Leo Brown" employees - picks VP over IC
+            >>> _resolve_manager_id("Leo Brown", employee)
+            5  # Returns VP (ID 5), not IC (ID 133)
+        """
+        # Check if manager name exists
+        if manager_name not in self._name_to_ids:
+            return None
+
+        candidate_ids = self._name_to_ids[manager_name]
+
+        # Fast path: single match
+        if len(candidate_ids) == 1:
+            candidate_id = candidate_ids[0]
+            # Prevent self-management
+            if candidate_id == employee.employee_id:
+                return None
+            return candidate_id
+
+        # Multiple matches - apply tiebreakers
+        best_id = None
+        best_rank = -1
+        best_has_reports = False
+
+        for candidate_id in candidate_ids:
+            # Skip self-management
+            if candidate_id == employee.employee_id:
+                continue
+
+            candidate = self._employee_by_id.get(candidate_id)
+            if not candidate:
+                continue
+
+            # Tiebreaker 1: Job level rank
+            rank = self._get_job_level_rank(candidate.job_level)
+
+            # Tiebreaker 2: Manager status (has direct reports)
+            # Check if this candidate has any direct reports
+            has_reports = False
+            for emp in self._employees:
+                if emp.direct_manager == candidate.name and emp.employee_id != candidate_id:
+                    # Found at least one report
+                    has_reports = True
+                    break
+
+            # Determine if this candidate is better than current best
+            is_better = False
+            if best_id is None:
+                is_better = True
+            elif rank > best_rank:
+                # Higher job level wins
+                is_better = True
+            elif rank == best_rank and has_reports and not best_has_reports:
+                # Same job level, but this one has reports
+                is_better = True
+
+            if is_better:
+                best_id = candidate_id
+                best_rank = rank
+                best_has_reports = has_reports
+
+        return best_id
 
     def build_org_tree(self) -> dict[int, list[Employee]]:
         """Build complete organizational tree with all reports (direct + indirect).
@@ -195,8 +331,8 @@ class OrgService:
             manager_id: int | None = None
 
             # Try to resolve as a name first (sample data uses names)
-            if manager_identifier in self._name_to_id:
-                manager_id = self._name_to_id[manager_identifier]
+            if manager_identifier in self._name_to_ids:
+                manager_id = self._resolve_manager_id(manager_identifier, emp)
             # If it's already an ID stored as string, convert it
             elif manager_identifier.isdigit():
                 manager_id = int(manager_identifier)
@@ -280,28 +416,38 @@ class OrgService:
 
         # Build chain by following manager references
         chain = []
-        visited = set()
-        current_manager = emp.direct_manager
+        visited_ids = set()  # Prevent circular references
+        visited_names = set()  # Track manager names to detect cycles
+        current_employee: Employee | None = emp
 
-        while current_manager and current_manager != "None":
+        while (
+            current_employee
+            and current_employee.direct_manager
+            and current_employee.direct_manager != "None"
+        ):
             # Prevent circular references
-            if current_manager in visited:
+            if current_employee.direct_manager in visited_names:
                 break
-            visited.add(current_manager)
+            visited_names.add(current_employee.direct_manager)
 
-            # Resolve manager name to ID
-            if current_manager in self._name_to_id:
-                manager_id = self._name_to_id[current_manager]
-                chain.append(manager_id)
+            # Resolve manager name to ID using context-aware logic
+            manager_id = self._resolve_manager_id(current_employee.direct_manager, current_employee)
 
-                # Get the manager's Employee object to continue chain
-                if manager_id in self._employee_by_id:
-                    manager_emp = self._employee_by_id[manager_id]
-                    current_manager = manager_emp.direct_manager
-                else:
-                    break  # Invalid manager reference
-            else:
-                break  # Manager not found
+            if manager_id is None:
+                # Manager not found or couldn't be resolved
+                break
+
+            # Prevent circular references by ID
+            if manager_id in visited_ids:
+                break
+            visited_ids.add(manager_id)
+
+            chain.append(manager_id)
+
+            # Move up the chain
+            current_employee = self._employee_by_id.get(manager_id)
+            if not current_employee:
+                break
 
         return chain
 
@@ -353,20 +499,19 @@ class OrgService:
                 continue  # CEO or no manager is valid
 
             # Resolve manager name to ID
-            if manager in self._name_to_id:
-                manager_id = self._name_to_id[manager]
+            if manager in self._name_to_ids:
+                manager_id = self._resolve_manager_id(manager, emp)
+                if manager_id is None:
+                    # Could not resolve (e.g., self-management case)
+                    errors.append(f"Employee {emp.name} (ID: {emp.employee_id}) is self-managed")
+                    circular_refs.append(emp.employee_id)
+                    continue
             else:
                 # Manager doesn't exist in dataset
                 errors.append(
                     f"Employee {emp.name} (ID: {emp.employee_id}) has invalid manager reference: {manager}"
                 )
                 orphaned.append(emp.employee_id)
-                continue
-
-            # Check for self-management
-            if manager_id == emp.employee_id:
-                errors.append(f"Employee {emp.name} (ID: {emp.employee_id}) is self-managed")
-                circular_refs.append(emp.employee_id)
                 continue
 
             # Check for circular references by following the chain
@@ -423,7 +568,8 @@ class OrgService:
             >>> emp.employee_id
             123
         """
-        employee_id = self._name_to_id.get(name)
-        if employee_id is not None:
+        employee_ids = self._name_to_ids.get(name)
+        if employee_ids:
+            employee_id = employee_ids[0]
             return self._employee_by_id.get(employee_id)
         return None

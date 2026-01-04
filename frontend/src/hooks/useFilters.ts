@@ -76,8 +76,6 @@ export const useFilters = () => {
     selectedManagerEmployeeIds,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
-    reportingChainEmployeeIds,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
@@ -85,8 +83,6 @@ export const useFilters = () => {
     toggleManager,
     toggleFlag,
     setExcludedIds,
-    setReportingChainFilter,
-    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
     hasActiveFilters,
@@ -135,12 +131,6 @@ export const useFilters = () => {
           if (!isUnderSelectedManager) return false;
         }
 
-        // Filter by reporting chain (using employee IDs from org service)
-        if (reportingChainFilter && reportingChainEmployeeIds.length > 0) {
-          if (!reportingChainEmployeeIds.includes(emp.employee_id))
-            return false;
-        }
-
         // Filter by flags (employee must have ALL selected flags)
         if (selectedFlags.length > 0) {
           const employeeFlags = emp.flags || [];
@@ -164,8 +154,6 @@ export const useFilters = () => {
       selectedManagerEmployeeIds,
       selectedFlags,
       excludedEmployeeIds,
-      reportingChainFilter,
-      reportingChainEmployeeIds,
     ]
   );
 
@@ -260,8 +248,6 @@ export const useFilters = () => {
     selectedManagers,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
-    reportingChainEmployeeIds,
     isDrawerOpen,
     hasActiveFilters: hasActiveFilters(),
 
@@ -272,8 +258,6 @@ export const useFilters = () => {
     toggleManager,
     toggleFlag,
     setExcludedIds,
-    setReportingChainFilter,
-    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
 

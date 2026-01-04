@@ -62,18 +62,16 @@ export interface ReportingChainResponse {
 export interface OrgTreeNode {
   employee_id: number;
   name: string;
-  job_title: string;
   team_size: number;
   direct_reports: OrgTreeNode[];
 }
 
 /**
- * Response from /api/org-hierarchy/org-tree/{employee_id} endpoint
+ * Response from /api/org-hierarchy/tree endpoint
  */
 export interface OrgTreeResponse {
-  root_employee_id: number;
-  root_name: string;
-  tree: OrgTreeNode;
+  roots: OrgTreeNode[];
+  total_managers: number;
 }
 
 /**
@@ -194,24 +192,33 @@ export const orgHierarchyService = {
   },
 
   /**
-   * Get the organizational tree starting from a specific employee
+   * Get hierarchical organization tree structure
    *
-   * Returns a hierarchical tree structure showing the employee and all their
-   * direct and indirect reports in a nested format.
+   * Returns the org structure as a tree with parent-child relationships.
+   * Only includes managers with at least min_team_size total reports.
    *
-   * @param employeeId - Employee ID to use as the root of the tree
-   * @returns Promise<OrgTreeResponse> - Hierarchical org tree
+   * @param minTeamSize - Minimum total team size (default: 1)
+   * @returns Promise<OrgTreeResponse> - Tree with root managers and nested reports
    *
    * @example
    * ```typescript
-   * const orgTree = await orgHierarchyService.getOrgTree(123);
-   * console.log(`Root: ${orgTree.root_name}`);
-   * console.log(`Direct reports: ${orgTree.tree.direct_reports.length}`);
+   * const tree = await orgHierarchyService.getOrgTree();
+   * // Display as expandable tree in UI
+   * tree.roots.forEach(root => {
+   *   console.log(`${root.name} (${root.team_size} reports)`);
+   *   root.direct_reports.forEach(child => {
+   *     console.log(`  - ${child.name}`);
+   *   });
+   * });
    * ```
    */
-  async getOrgTree(employeeId: number): Promise<OrgTreeResponse> {
-    return apiClient.get<OrgTreeResponse>(
-      `/api/org-hierarchy/org-tree/${employeeId}`
-    );
+  async getOrgTree(minTeamSize: number = 1): Promise<OrgTreeResponse> {
+    const params = new URLSearchParams();
+    if (minTeamSize > 1) {
+      params.append("min_team_size", minTeamSize.toString());
+    }
+
+    const url = `/api/org-hierarchy/tree${params.toString() ? `?${params.toString()}` : ""}`;
+    return apiClient.get<OrgTreeResponse>(url);
   },
 };

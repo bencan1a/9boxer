@@ -457,7 +457,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-expanded.png",
     description:
       "FilterToolbar in expanded state with filter button, employee count, and search box",
-    storyId: "app-common-filtertoolbar--compact-no-filters",
+    storyId: "app-common-filtertoolbar--expanded-default",
     cropping: "element",
     caption:
       "Filter toolbar showing filter button, employee count, and search functionality",
@@ -471,7 +471,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-with-active-filters.png",
     description:
       "FilterToolbar with active filters showing orange highlighted button and filtered employee count",
-    storyId: "app-common-filtertoolbar--compact-with-filters",
+    storyId: "app-common-filtertoolbar--with-active-filters",
     cropping: "element",
     caption:
       "Filter toolbar with active filters showing '45 of 200 employees' and filter summary",

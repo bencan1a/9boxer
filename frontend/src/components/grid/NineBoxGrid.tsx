@@ -72,6 +72,7 @@ export const NineBoxGrid: React.FC = () => {
     positionToLevels,
     moveEmployee,
     selectEmployee,
+    selectedEmployeeId,
   } = useEmployees();
 
   // Use granular selectors to minimize re-renders
@@ -292,6 +293,7 @@ export const NineBoxGrid: React.FC = () => {
                   employees={employeesByPosition[position] || []}
                   shortLabel={getShortPositionLabel(position)}
                   onSelectEmployee={selectEmployee}
+                  selectedEmployeeId={selectedEmployeeId}
                   isExpanded={expandedPosition === position}
                   isCollapsed={
                     expandedPosition !== null && expandedPosition !== position
@@ -311,6 +313,7 @@ export const NineBoxGrid: React.FC = () => {
             <DraggedEmployeeTile
               employee={activeEmployee}
               donutModeActive={donutModeActive}
+              isSelected={activeEmployee.employee_id === selectedEmployeeId}
             />
           )}
         </DragOverlay>

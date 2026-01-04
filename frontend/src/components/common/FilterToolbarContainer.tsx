@@ -38,7 +38,7 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
   variant = "compact",
   onSearchChange,
 }) => {
-  const { employees: filteredEmployees } = useEmployees();
+  const { employees: filteredEmployees, selectEmployee } = useEmployees();
   const { hasActiveFilters, toggleDrawer } = useFilters();
 
   // Get all employees from session store
@@ -54,9 +54,6 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
   const selectedFlags = useFilterStore((state) => state.selectedFlags);
   const excludedEmployeeIds = useFilterStore(
     (state) => state.excludedEmployeeIds
-  );
-  const reportingChainFilter = useFilterStore(
-    (state) => state.reportingChainFilter
   );
 
   // Calculate counts
@@ -115,14 +112,6 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
       });
     }
 
-    if (reportingChainFilter) {
-      filters.push({
-        type: "reporting",
-        label: "Reporting Chain",
-        values: [reportingChainFilter],
-      });
-    }
-
     return filters;
   }, [
     selectedLevels,
@@ -131,7 +120,6 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
     selectedManagers,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
   ]);
 
   // Calculate active filter count
@@ -143,7 +131,6 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
     count += selectedManagers.length;
     count += selectedFlags.length;
     if (excludedEmployeeIds.length > 0) count += 1;
-    if (reportingChainFilter) count += 1;
     return count;
   }, [
     selectedLevels,
@@ -152,24 +139,30 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
     selectedManagers,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
   ]);
 
   const handleFilterClick = () => {
     toggleDrawer();
   };
 
+  const handleEmployeeSelect = (employeeId: number | undefined) => {
+    if (employeeId !== undefined) {
+      selectEmployee(employeeId);
+    }
+  };
+
   return (
     <ErrorBoundary fallback={<SimplifiedToolbar />}>
       <FilterToolbar
         variant={variant}
-        activeFilterCount={activeFilterCount}
         activeFilters={activeFilters}
         filteredCount={filteredCount}
         totalCount={totalCount}
         hasActiveFilters={hasActiveFilters}
         onFilterClick={handleFilterClick}
         onSearchChange={onSearchChange}
+        onEmployeeSelect={handleEmployeeSelect}
+        employees={filteredEmployees}
         disabled={totalCount === 0}
       />
     </ErrorBoundary>

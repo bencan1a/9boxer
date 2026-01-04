@@ -39,8 +39,13 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
-import { useEmployeeSearch } from "../../hooks/useEmployeeSearch";
+import {
+  useEmployeeSearch,
+  EmployeeSearchResult,
+} from "../../hooks/useEmployeeSearch";
 import { useFilterStore } from "../../store/filterStore";
+import { SearchHighlight } from "./SearchHighlight";
+import { useDebounced } from "../../hooks/useDebounced";
 
 /**
  * Display variant for the filter toolbar
@@ -111,15 +116,15 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  // Debounce search input to prevent excessive search operations
+  const debouncedSearchValue = useDebounced(searchValue, 300);
+
   // Get filter store actions for chip delete handlers
   const toggleLevel = useFilterStore((state) => state.toggleLevel);
   const toggleJobFunction = useFilterStore((state) => state.toggleJobFunction);
   const toggleLocation = useFilterStore((state) => state.toggleLocation);
   const toggleManager = useFilterStore((state) => state.toggleManager);
   const toggleFlag = useFilterStore((state) => state.toggleFlag);
-  const clearReportingChainFilter = useFilterStore(
-    (state) => state.clearReportingChainFilter
-  );
   const setExcludedIds = useFilterStore((state) => state.setExcludedIds);
 
   // Initialize employee search with fuzzy matching
@@ -128,6 +133,12 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     threshold: 0.3,
     resultLimit: 10,
   });
+
+  // Perform search and memoize results with match data
+  const searchResults = useMemo(() => {
+    if (!debouncedSearchValue || !isReady) return [];
+    return search(debouncedSearchValue);
+  }, [debouncedSearchValue, isReady, search]);
 
   // Collapse state for compact variant (persisted in localStorage)
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -188,17 +199,13 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     }
 
     return (
-      <Autocomplete<Employee>
-        options={employees}
-        getOptionLabel={(option) => option.name}
-        filterOptions={(_, { inputValue }) => {
-          // Use fuzzy search instead of default filtering
-          if (!inputValue || !isReady) return [];
-          return search(inputValue);
-        }}
+      <Autocomplete<EmployeeSearchResult>
+        options={searchResults}
+        getOptionLabel={(option) => option.employee.name}
+        filterOptions={(options) => options} // No additional filtering - already filtered by fuzzy search
         onChange={(_, value) => {
           if (onEmployeeSelect) {
-            onEmployeeSelect(value?.employee_id);
+            onEmployeeSelect(value?.employee.employee_id);
           }
         }}
         inputValue={searchValue}
@@ -227,17 +234,42 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
             }}
           />
         )}
-        renderOption={(props, employee) => {
+        renderOption={(props, result) => {
           const { key, ...otherProps } =
             props as React.HTMLAttributes<HTMLLIElement> & { key: string };
+
+          // Extract match indices for each field
+          const nameMatches = result.matches?.find(
+            (m) => m.key === "name"
+          )?.indices;
+          const levelMatches = result.matches?.find(
+            (m) => m.key === "job_level"
+          )?.indices;
+          const managerMatches = result.matches?.find(
+            (m) => m.key === "manager"
+          )?.indices;
+
           return (
             <li key={key} {...otherProps}>
               <Box
                 sx={{ display: "flex", flexDirection: "column", width: "100%" }}
               >
-                <Typography variant="body2">{employee.name}</Typography>
+                <Typography variant="body2">
+                  <SearchHighlight
+                    text={result.employee.name}
+                    matches={nameMatches}
+                  />
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {employee.job_level} • {employee.manager}
+                  <SearchHighlight
+                    text={result.employee.job_level}
+                    matches={levelMatches}
+                  />{" "}
+                  •{" "}
+                  <SearchHighlight
+                    text={result.employee.manager}
+                    matches={managerMatches}
+                  />
                 </Typography>
               </Box>
             </li>
@@ -258,24 +290,15 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
       />
     );
   }, [
-    employees,
-    search,
-    isReady,
+    searchResults,
     searchValue,
     disabled,
+    isReady,
     onEmployeeSelect,
     onSearchChange,
     t,
     error,
   ]);
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchValue(value);
-    if (onSearchChange) {
-      onSearchChange(value);
-    }
-  };
 
   const handleInfoClick = (event: React.MouseEvent<HTMLElement>) => {
     if (variant === "dropdown") {
@@ -320,9 +343,6 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         break;
       case "flags":
         toggleFlag(value);
-        break;
-      case "reporting":
-        clearReportingChainFilter();
         break;
       case "excluded":
         // Clear all exclusions

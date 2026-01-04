@@ -22,6 +22,7 @@ import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useFilterStore } from "../../store/filterStore";
+import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 import type { ManagerDeviation } from "../../types/api";
 
 interface ManagerDistributionChartProps {
@@ -44,16 +45,29 @@ export const ManagerDistributionChart: React.FC<
 > = ({ data, title }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { setReportingChainFilter } = useFilterStore();
+  const { toggleManager } = useFilterStore();
+  const { managers, getReportIds } = useOrgHierarchy();
 
-  const handleManagerClick = (managerName: string) => {
-    // Find the employee IDs for this manager from the data
-    const managerData = data.find((item) => item.category === managerName);
-    if (managerData) {
-      setReportingChainFilter(managerName, managerData.employee_ids);
-    } else {
-      console.warn(`Manager "${managerName}" not found in data`);
-      setReportingChainFilter(managerName, []);
+  const handleManagerClick = async (managerName: string) => {
+    // Find the manager in the org hierarchy to get their employee ID
+    const manager = managers.find((m) => m.name === managerName);
+    if (!manager) {
+      console.warn(`Manager "${managerName}" not found in org hierarchy`);
+      toggleManager(managerName, []);
+      return;
+    }
+
+    try {
+      // Fetch employee IDs from org service using the new duplicate-aware resolution
+      const employeeIds = await getReportIds(manager.employee_id);
+      toggleManager(managerName, employeeIds);
+    } catch (error) {
+      console.error(
+        `Failed to fetch employee IDs for manager ${managerName}:`,
+        error
+      );
+      // Fallback to empty array on error
+      toggleManager(managerName, []);
     }
   };
 

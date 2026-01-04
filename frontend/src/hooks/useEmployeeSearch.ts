@@ -18,12 +18,12 @@
  *   // Handle error - show message to user
  * }
  *
- * const results = search('john'); // Returns Employee[] ranked by relevance
+ * const results = search('john'); // Returns EmployeeSearchResult[] with match data
  * ```
  */
 
 import { useMemo, useCallback } from "react";
-import Fuse from "fuse.js";
+import Fuse, { FuseResultMatch } from "fuse.js";
 import { Employee } from "../types/employee";
 
 /**
@@ -48,15 +48,29 @@ export interface UseEmployeeSearchOptions {
 }
 
 /**
+ * Search result with employee and match highlighting data
+ */
+export interface EmployeeSearchResult {
+  /** The matched employee */
+  employee: Employee;
+
+  /** Match data from Fuse.js for highlighting */
+  matches?: readonly FuseResultMatch[];
+
+  /** Relevance score (0.0 = perfect match, 1.0 = poor match) */
+  score?: number;
+}
+
+/**
  * Return type for useEmployeeSearch hook
  */
 export interface UseEmployeeSearchResult {
   /**
-   * Search function that returns ranked employee results
+   * Search function that returns ranked employee results with match data
    * @param query - Search string
-   * @returns Array of employees sorted by relevance (highest first)
+   * @returns Array of search results with employees and match indices (highest relevance first)
    */
-  search: (query: string) => Employee[];
+  search: (query: string) => EmployeeSearchResult[];
 
   /**
    * Indicates if the search engine is ready
@@ -131,6 +145,9 @@ export function useEmployeeSearch(
         // Include relevance score in results for ranking
         includeScore: true,
 
+        // Include match indices for highlighting
+        includeMatches: true,
+
         // Use extended search for better matching
         useExtendedSearch: false,
 
@@ -150,11 +167,11 @@ export function useEmployeeSearch(
   }, [employees, threshold]);
 
   /**
-   * Search function that returns ranked results
+   * Search function that returns ranked results with match highlighting data
    * Memoized with useCallback to maintain referential stability
    */
   const search = useCallback(
-    (query: string): Employee[] => {
+    (query: string): EmployeeSearchResult[] => {
       // Handle edge cases
       if (!query || query.trim().length === 0) {
         return [];
@@ -164,12 +181,16 @@ export function useEmployeeSearch(
         return [];
       }
 
-      // Perform fuzzy search and extract employee objects
+      // Perform fuzzy search and extract employee objects with matches
       const results = fuse.search(query.trim(), { limit: resultLimit });
 
-      // Extract employee objects from Fuse results
+      // Transform Fuse results into EmployeeSearchResult format
       // Results are already sorted by relevance score (best match first)
-      return results.map((result) => result.item);
+      return results.map((result) => ({
+        employee: result.item,
+        matches: result.matches,
+        score: result.score,
+      }));
     },
     [fuse, resultLimit]
   );
