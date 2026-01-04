@@ -5,15 +5,11 @@ from typing import TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 
-from ninebox.core.dependencies import get_session_manager
+from ninebox.core.dependencies import get_org_service
 from ninebox.models.employee import Employee
 from ninebox.services.org_service import OrgService
-from ninebox.services.session_manager import SessionManager
 
 router = APIRouter(prefix="/org-hierarchy", tags=["org-hierarchy"])
-
-# Constant user ID for local-only app (no authentication)
-LOCAL_USER_ID = "local-user"
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +50,7 @@ class AllReportsResponse(TypedDict):
 @router.get("/managers", response_model=None)
 async def get_managers(
     min_team_size: int = Query(default=1, ge=1, description="Minimum team size to filter managers"),
-    session_mgr: SessionManager = Depends(get_session_manager),
+    org_service: OrgService = Depends(get_org_service),
 ) -> ManagerListResponse:
     """
     Get list of all managers with their team sizes.
@@ -64,7 +60,7 @@ async def get_managers(
 
     Args:
         min_team_size: Minimum total team size (default: 1)
-        session_mgr: Session manager dependency
+        org_service: OrgService dependency
 
     Returns:
         ManagerListResponse with list of managers and their team sizes
@@ -73,28 +69,7 @@ async def get_managers(
         HTTPException: 404 if no active session found
         HTTPException: 500 if org service initialization fails
     """
-    # Get session
-    session = session_mgr.get_session(LOCAL_USER_ID)
-
-    if not session:
-        logger.error(f"OrgHierarchy: No session found for user_id={LOCAL_USER_ID}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session found. Please upload an Excel file first.",
-        )
-
-    if not session.current_employees:
-        logger.error("OrgHierarchy: Session exists but current_employees is EMPTY")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Session exists but contains no employee data. Please reload your Excel file.",
-        )
-
     try:
-        # Initialize OrgService with current employees
-        # Disable validation to handle test data with incomplete org structures
-        org_service = OrgService(session.current_employees, validate=False)
-
         # Find managers with minimum team size
         manager_ids = org_service.find_managers(min_team_size=min_team_size)
 
@@ -138,7 +113,7 @@ async def get_managers(
 @router.get("/reports/{employee_id}", response_model=None)
 async def get_all_reports(
     employee_id: int = Path(..., description="Employee ID of the manager"),
-    session_mgr: SessionManager = Depends(get_session_manager),
+    org_service: OrgService = Depends(get_org_service),
 ) -> AllReportsResponse:
     """
     Get all reports (direct + indirect) for a specific manager.
@@ -148,7 +123,7 @@ async def get_all_reports(
 
     Args:
         employee_id: Employee ID of the manager
-        session_mgr: Session manager dependency
+        org_service: OrgService dependency
 
     Returns:
         AllReportsResponse with manager info and list of all reports
@@ -157,27 +132,7 @@ async def get_all_reports(
         HTTPException: 404 if no active session found or employee not found
         HTTPException: 500 if org service operation fails
     """
-    # Get session
-    session = session_mgr.get_session(LOCAL_USER_ID)
-
-    if not session:
-        logger.error(f"OrgHierarchy: No session found for user_id={LOCAL_USER_ID}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session found. Please upload an Excel file first.",
-        )
-
-    if not session.current_employees:
-        logger.error("OrgHierarchy: Session exists but current_employees is EMPTY")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Session exists but contains no employee data. Please reload your Excel file.",
-        )
-
     try:
-        # Initialize OrgService with current employees
-        org_service = OrgService(session.current_employees, validate=False)
-
         # Get manager employee
         manager = org_service.get_employee_by_id(employee_id)
         if not manager:
@@ -222,7 +177,7 @@ async def get_all_reports(
 @router.get("/reporting-chain/{employee_id}", response_model=None)
 async def get_reporting_chain(
     employee_id: int = Path(..., description="Employee ID to get reporting chain for"),
-    session_mgr: SessionManager = Depends(get_session_manager),
+    org_service: OrgService = Depends(get_org_service),
 ) -> ReportingChainResponse:
     """
     Get the upward reporting chain from an employee to the CEO.
@@ -232,7 +187,7 @@ async def get_reporting_chain(
 
     Args:
         employee_id: Employee ID to get chain for
-        session_mgr: Session manager dependency
+        org_service: OrgService dependency
 
     Returns:
         ReportingChainResponse with employee info and reporting chain
@@ -241,27 +196,7 @@ async def get_reporting_chain(
         HTTPException: 404 if no active session found or employee not found
         HTTPException: 500 if org service operation fails
     """
-    # Get session
-    session = session_mgr.get_session(LOCAL_USER_ID)
-
-    if not session:
-        logger.error(f"OrgHierarchy: No session found for user_id={LOCAL_USER_ID}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No active session found. Please upload an Excel file first.",
-        )
-
-    if not session.current_employees:
-        logger.error("OrgHierarchy: Session exists but current_employees is EMPTY")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Session exists but contains no employee data. Please reload your Excel file.",
-        )
-
     try:
-        # Initialize OrgService with current employees
-        org_service = OrgService(session.current_employees, validate=False)
-
         # Get employee
         employee = org_service.get_employee_by_id(employee_id)
         if not employee:
