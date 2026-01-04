@@ -106,46 +106,6 @@ def package_for_llm(
     return _package_internal(employees, analyses, org_data, anonymize=True)
 
 
-def package_for_agent(
-    employees: list[Employee],
-    analyses: dict[str, dict],
-    org_data: dict | None = None,
-) -> dict:
-    """Package all calibration data for LLM agent analysis.
-
-    **DEPRECATED:** Use package_for_llm() or package_for_ui() instead.
-    This function is maintained for backward compatibility but defaults
-    to package_for_ui() behavior (includes PII).
-
-    This function creates a comprehensive, LLM-friendly JSON structure containing
-    all relevant calibration data. The structure is designed to be self-explanatory
-    with descriptive field names and complete data (not just anomalies).
-
-    Args:
-        employees: List of employee records to package
-        analyses: Results from analysis registry (location, function, level, tenure)
-        org_data: Optional pre-built org data. If None, will be computed from employees.
-
-    Returns:
-        Dictionary with complete calibration data optimized for LLM comprehension:
-        - employees: List of employee records with all attributes
-        - organization: Hierarchy data (managers, levels, counts)
-        - analyses: Full analysis results (not filtered)
-        - overview: Summary statistics and distributions
-
-    Example:
-        >>> from ninebox.services.analysis_registry import run_all_analyses
-        >>> analyses = run_all_analyses(employees)
-        >>> package = package_for_agent(employees, analyses)
-        >>> package["overview"]["total_employees"]
-        47
-        >>> package["employees"][0]["grid_position"]
-        9
-    """
-    # Default to UI packaging (includes PII) for backward compatibility
-    return package_for_ui(employees, analyses, org_data)
-
-
 def _package_internal(
     employees: list[Employee],
     analyses: dict[str, dict],
