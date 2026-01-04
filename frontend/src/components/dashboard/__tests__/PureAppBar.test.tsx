@@ -22,6 +22,7 @@ describe("PureAppBar", () => {
     isFilterDisabled: false,
     changeCount: 0,
     onImportClick: vi.fn(),
+    onLoadSampleClick: vi.fn(),
     onExportClick: vi.fn(),
     onFilterClick: vi.fn(),
     onSettingsClick: vi.fn(),
@@ -47,16 +48,6 @@ describe("PureAppBar", () => {
     );
 
     expect(screen.getByTestId("file-menu-button")).toBeInTheDocument();
-  });
-
-  it("renders filter button", () => {
-    render(
-      <TestWrapper>
-        <PureAppBar {...defaultProps} />
-      </TestWrapper>
-    );
-
-    expect(screen.getByTestId("filter-button")).toBeInTheDocument();
   });
 
   it("renders settings button", () => {
@@ -109,54 +100,8 @@ describe("PureAppBar", () => {
     expect(screen.getByText("5")).toBeInTheDocument();
   });
 
-  it("shows filter badge when filters are active", () => {
-    render(
-      <TestWrapper>
-        <PureAppBar {...defaultProps} hasActiveFilters={true} />
-      </TestWrapper>
-    );
-
-    const badge = screen.getByTestId("filter-badge");
-    expect(badge).toBeInTheDocument();
-  });
-
-  it("disables filter button when isFilterDisabled is true", () => {
-    render(
-      <TestWrapper>
-        <PureAppBar {...defaultProps} isFilterDisabled={true} />
-      </TestWrapper>
-    );
-
-    const filterButton = screen.getByTestId("filter-button");
-    expect(filterButton).toBeDisabled();
-  });
-
-  it("enables filter button when isFilterDisabled is false", () => {
-    render(
-      <TestWrapper>
-        <PureAppBar {...defaultProps} isFilterDisabled={false} />
-      </TestWrapper>
-    );
-
-    const filterButton = screen.getByTestId("filter-button");
-    expect(filterButton).not.toBeDisabled();
-  });
-
-  it("calls onFilterClick when filter button is clicked", async () => {
-    const user = userEvent.setup();
-    const onFilterClick = vi.fn();
-
-    render(
-      <TestWrapper>
-        <PureAppBar {...defaultProps} onFilterClick={onFilterClick} />
-      </TestWrapper>
-    );
-
-    const filterButton = screen.getByTestId("filter-button");
-    await user.click(filterButton);
-
-    expect(onFilterClick).toHaveBeenCalledOnce();
-  });
+  // Filter button tests removed - filter button moved to FilterToolbar component
+  // See FilterToolbar.test.tsx for filter button functionality tests
 
   it("calls onSettingsClick when settings button is clicked", async () => {
     const user = userEvent.setup();
