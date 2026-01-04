@@ -1,0 +1,583 @@
+
+> 9boxer-electron@1.0.0 lint
+> eslint . --ext ts,tsx --report-unused-disable-directives
+
+
+C:\Git_Repos\9boxer\frontend\electron\main\index.ts
+   233:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   283:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  1055:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  1075:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\e2e-core\06-export.spec.ts
+  111:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  182:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\backend.ts
+  96:9  warning  'context' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\dragAndDrop.ts
+  34:5   warning  'waitForModifiedIndicator' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  82:40  warning  Unexpected any. Specify a different type                                                             @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\fileOperations.ts
+    9:10  warning  'dragEmployeeToPosition' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  121:18  warning  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+  122:23  warning  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\translations.ts
+   11:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   21:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\ui.ts
+   17:3  warning  'duration' is assigned a value but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  162:3  warning  'waitDuration' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\visualValidation.ts
+   81:29  warning  Avoid hardcoded RGB colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  391:29  warning  Avoid hardcoded RGB colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\playwright\performance\app-load.spec.ts
+  125:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  148:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  152:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  161:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  194:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\performance\drag-performance.spec.ts
+  198:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  218:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  248:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\performance\grid-performance.spec.ts
+  131:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  196:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  207:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  226:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\generate.ts
+   29:3  warning  'screenshotConfig' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  402:9  warning  'appReady' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  462:3  warning  'name' is defined but never used. Allowed unused args must match /^_/u               @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\screenshots.spec.ts
+  31:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\storybook-screenshot.ts
+   53:29  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  127:14  warning  'res' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\workflows\calibration.ts
+  15:3  warning  'openFileMenu' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\workflows\details-panel-enhancements.ts
+  102:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  200:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\screenshots\workflows\view-controls.ts
+   81:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\visual\loading-spinner.spec.ts
+  5:10  warning  'snapshotStory' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\scripts\analyze-stories.ts
+  69:11  warning  'hasParameters' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\scripts\generate-docs-tokens.ts
+  33:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\scripts\generate_logo_icons.ts
+  13:10  warning  'writeFileSync' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  24:25  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  25:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  26:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  29:23  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  61:28  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  61:57  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\scripts\reorganize-right-panel-final.ts
+  14:13  warning  'path' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\scripts\reorganize-right-panel-stories.ts
+  11:13  warning  'path' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\scripts\validate-screenshot-tags.ts
+  128:15  warning  'screenshotId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\App.tsx
+  5:37  warning  'useState' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\branding\Logo.tsx
+   59:9   warning  'primaryDark' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   62:9   warning  'text' is assigned a value but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+   65:25  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+   66:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+   67:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+  145:21  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  146:21  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  171:20  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  264:30  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  264:53  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  337:17  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  338:17  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  373:26  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+  373:38  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+  386:32  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead        no-restricted-syntax
+  386:44  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  423:22  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  432:46  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  466:23  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  479:25  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  525:21  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+  526:21  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead                     no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\common\ConfirmDialog.stories.tsx
+  39:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\ConfirmDialog.tsx
+  121:11  warning  The autoFocus prop should not be used, as it can reduce usability and accessibility for users  jsx-a11y/no-autofocus
+
+C:\Git_Repos\9boxer\frontend\src\components\common\FileUploadDialog.tsx
+  164:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\MockExcelView.stories.tsx
+  16:22  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  16:34  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  17:17  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  18:20  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  18:32  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  19:24  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  19:36  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  20:22  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  20:34  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  21:30  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  21:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  22:25  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  22:37  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\common\__tests__\FileUploadDialog.test.tsx
+  31:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\__tests__\ViewControls.test.tsx
+  18:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\__tests__\ZoomControls.test.tsx
+  2:37  warning  'within' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\FileMenuButton.stories.tsx
+  108:28  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\PureAppBar.stories.tsx
+  8:8  warning  'Box' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\__tests__\ApplyChangesWorkflow.test.tsx
+   17:6   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  509:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  516:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\__tests__\RecentFileLoadingWorkflow.test.tsx
+   98:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  139:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  163:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  216:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  226:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  243:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  288:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  295:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  312:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  363:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  380:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  383:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  445:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  448:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  488:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  505:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  544:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  551:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  568:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\__tests__\UnsavedChangesWorkflow.test.tsx
+  518:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  600:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  618:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\dashboard\filters\ExclusionList.stories.tsx
+  194:28  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\EmployeeTileList.tsx
+  48:3  warning  'isExpanded' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\GridBox.tsx
+  137:6  warning  React Hook useMemo has an unnecessary dependency: 'theme.palette.primary.light'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\NineBoxGrid.stories.tsx
+   907:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   924:54  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   938:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   944:38  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   950:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   961:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   969:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   980:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   988:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   999:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1009:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1015:38  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1021:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1032:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1040:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1051:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1059:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1070:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1080:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1086:38  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1092:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1103:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1111:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1122:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1130:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1141:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1151:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1157:38  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1163:42  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1174:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  1193:41  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\NineBoxGrid.tsx
+  68:23  warning  'tokens' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\EmployeeCount.test.tsx
+   23:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   26:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   34:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   51:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   73:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   76:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   84:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  147:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  176:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  184:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  208:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  211:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  239:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  247:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  263:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  266:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  274:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  287:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  290:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  298:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\EmployeeTile.performance.test.tsx
+  91:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\NineBoxGrid.memory.test.tsx
+   25:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   26:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   54:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   54:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   89:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  154:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  195:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  233:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  245:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  280:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  311:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\NineBoxGrid.performance.test.tsx
+   24:20  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   25:30  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   46:24  warning  'position' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+   56:41  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   56:60  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   85:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  106:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  144:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  182:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  220:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  240:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  269:63  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\NineBoxGrid.test.tsx
+    7:3   warning  'createMockEmployee' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   84:63  warning  Unexpected any. Specify a different type                                              @typescript-eslint/no-explicit-any
+  146:63  warning  Unexpected any. Specify a different type                                              @typescript-eslint/no-explicit-any
+  166:63  warning  Unexpected any. Specify a different type                                              @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\ViewModeToggle.test.tsx
+   25:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   89:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  171:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  198:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  244:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  264:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  283:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  302:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\LevelDistributionChart.tsx
+  96:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\ManagerDistributionChart.tsx
+   89:47  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  109:47  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  253:55  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  253:67  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  261:55  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  261:67  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\DeviationChart.test.tsx
+  77:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\InsightCard.test.tsx
+  6:26  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\LevelDistributionChart.test.tsx
+  101:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\ManagerAnomalySection.test.tsx
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\ManagerDistributionChart.test.tsx
+   70:13  warning  'emptyText' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  175:15  warning  'nameElement' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\AnomalyCard.test.tsx
+  11:3  warning  'mockDistributionAnomaly' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\DistributionStats.test.tsx
+  213:13  warning  'position3' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\SectionHeader.test.tsx
+  212:15  warning  'container' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\sections\__tests__\AnomaliesSection.test.tsx
+  12:3  warning  'mockOutlierAnomaly' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\sections\__tests__\DistributionSection.test.tsx
+  300:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\sections\__tests__\InsightsSection.test.tsx
+  10:3  warning  'mockRecommendationMedium' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\DistributionChart.stories.tsx
+  3:15  warning  'PositionDistribution' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\EmployeeDetails.tsx
+   27:10  warning  'useSessionStore' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+   54:47  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  102:9   warning  'boxColor' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  196:26  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  216:67  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\EmployeeFlags.tsx
+  85:26  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\StatisticsTab.old.tsx
+  234:31  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\ChangeTrackerTab.test.tsx
+  10:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\EmployeeDetails.test.tsx
+  116:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\EmployeeFlags.test.tsx
+  141:63  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  142:59  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\ManagementChain.test.tsx
+  182:13  warning  'container' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\settings\SettingsDialog.tsx
+  305:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\settings\__tests__\SettingsDialog.test.tsx
+  23:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\config.ts
+  23:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\constants\flags.ts
+  18:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  23:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  28:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  33:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  38:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  43:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  48:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  53:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  58:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  87:31  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\contexts\GridZoomContext.tsx
+  22:3  warning  'useEffect' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\contexts\SnackbarContext.tsx
+  28:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Git_Repos\9boxer\frontend\src\contexts\__tests__\GridZoomContext.test.tsx
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\hooks\__tests__\useConnectionStatus.test.ts
+   29:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  113:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  168:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  188:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  206:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  235:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  284:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  287:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  289:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  311:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\hooks\__tests__\useFilters.edge-cases.test.ts
+   99:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  137:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  183:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  332:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  337:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\hooks\useConnectionStatus.ts
+  56:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\hooks\useFilters.ts
+  5:23  warning  'useMemo' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\i18n\config.ts
+  68:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  68:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\main.tsx
+  13:7   warning  Fast refresh only works when a file has exports. Move your component(s) to a separate file  react-refresh/only-export-components
+  22:24  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead            no-restricted-syntax
+  23:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead            no-restricted-syntax
+  35:26  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead            no-restricted-syntax
+  36:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead            no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\mocks\mockIntelligence.ts
+  10:3  warning  'ManagerDeviation' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\services\__tests__\zoomService.test.ts
+  1:44  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\store\__tests__\StoreIntegration.test.tsx
+  17:6  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\test\edgeCaseFactory.ts
+   98:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\test\i18nTestUtils.tsx
+  50:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  58:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  65:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  92:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  94:28  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\test\utils.tsx
+  18:7  warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+  42:1  warning  This rule can't verify that `export *` only exports components                                          react-refresh/only-export-components
+
+C:\Git_Repos\9boxer\frontend\src\theme\tokens.ts
+   23:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   24:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   25:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   28:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   29:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   30:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   37:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   38:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   39:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   42:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   43:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   44:13  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   51:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   52:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   55:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   56:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   63:16  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   64:18  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   65:17  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   68:16  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   69:18  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   70:17  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+   77:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   78:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   79:12  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   80:11  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   81:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   87:22  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   88:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   89:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   90:20  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   93:22  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   94:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   95:23  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+   96:20  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  103:19  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  104:18  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  105:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  108:19  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  109:18  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  110:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  117:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  118:19  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  119:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  122:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  123:19  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  124:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  445:12  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  446:11  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  449:12  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  450:11  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  453:12  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+  454:11  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead               no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\utils\__tests__\sortEmployees.test.ts
+  381:56  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  382:61  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 395 problems (0 errors, 395 warnings)

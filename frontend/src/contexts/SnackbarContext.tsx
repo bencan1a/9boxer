@@ -2,6 +2,10 @@
  * Global snackbar context for notifications
  */
 
+/* eslint-disable react-refresh/only-export-components */
+// This file exports both the provider component and the useSnackbar hook
+// This pattern is standard for React context providers
+
 import React, { createContext, useContext, useState, useCallback } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";

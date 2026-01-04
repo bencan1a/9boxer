@@ -370,8 +370,6 @@ Once you've found your employee, moving them is drag-and-drop:
    - The employee appears in their new box immediately
    - **Smart sorting:** The employee will appear at the top of the box (recently moved employees are sorted first, making them easy to find)
 
-![Three-panel sequence showing: 1) clicking on an employee tile, 2) dragging it across the grid, 3) dropping it in the new position](../images/screenshots/workflow/making-changes-drag-sequence-base.png)
-
 !!! tip "Can't drag?"
     Make sure you're clicking directly on the employee tile or the drag handle area.
     If filters are active, ensure the employee is visible (not filtered out).

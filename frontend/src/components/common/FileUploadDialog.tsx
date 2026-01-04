@@ -161,9 +161,10 @@ export const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
         setSelectedFilePath(null);
         setSuccess(false);
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorMessage =
-        err.response?.data?.detail || t("common.fileUpload.importFailed");
+        (err as { response?: { data?: { detail?: string } } })?.response?.data
+          ?.detail || t("common.fileUpload.importFailed");
       setError(errorMessage);
       showError(errorMessage);
     }

@@ -107,7 +107,7 @@ Intelligence automatically detects bias patterns:
 - "Sales function shows rating inflation"
 - "Manager X rates significantly higher than peers"
 
-![Intelligence panel showing detected patterns](images/screenshots/intelligence/intelligence-anomaly-red.png)
+![Intelligence panel showing detected patterns](images/screenshots/workflow/intelligence-anomaly-red.png)
 
 These insights help you ask the right questions in calibration meetings.
 

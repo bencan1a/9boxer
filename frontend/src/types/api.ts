@@ -155,3 +155,138 @@ export interface IntelligenceData {
   tenure_analysis: DimensionAnalysis;
   manager_analysis: ManagerAnalysis;
 }
+
+// Calibration Summary types
+export interface DataOverview {
+  total_employees: number;
+  by_level: Record<string, number>;
+  by_function: Record<string, number>;
+  by_location: Record<string, number>;
+  stars_count: number;
+  stars_percentage: number;
+  center_box_count: number;
+  center_box_percentage: number;
+  lower_performers_count: number;
+  lower_performers_percentage: number;
+  high_performers_count: number;
+  high_performers_percentage: number;
+}
+
+export interface LevelTimeBreakdown {
+  level: string;
+  employee_count: number;
+  minutes: number;
+  percentage: number;
+}
+
+export interface TimeAllocation {
+  estimated_duration_minutes: number;
+  breakdown_by_level: LevelTimeBreakdown[];
+  suggested_sequence: string[];
+}
+
+export interface InsightSourceData {
+  z_score?: number;
+  p_value?: number;
+  observed_pct?: number;
+  expected_pct?: number;
+  center_count?: number;
+  center_pct?: number;
+  recommended_max_pct?: number;
+  total_minutes?: number;
+  by_level?: Record<string, number>;
+  category?: string;
+  categories_affected?: string[];
+}
+
+export type InsightType =
+  | "anomaly"
+  | "focus_area"
+  | "recommendation"
+  | "time_allocation";
+export type InsightCategory =
+  | "location"
+  | "function"
+  | "level"
+  | "tenure"
+  | "distribution"
+  | "time";
+export type InsightPriority = "high" | "medium" | "low";
+
+export interface Insight {
+  id: string;
+  type: InsightType;
+  category: InsightCategory;
+  priority: InsightPriority;
+  title: string;
+  description: string;
+  affected_count: number;
+  source_data: InsightSourceData;
+  cluster_id?: string;
+  cluster_title?: string;
+}
+
+export interface CalibrationSummaryData {
+  data_overview: DataOverview;
+  time_allocation: TimeAllocation;
+  insights: Insight[];
+  summary?: string | null;
+}
+
+export interface LLMAvailability {
+  available: boolean;
+  reason: string | null;
+}
+
+/**
+ * @deprecated Use CalibrationSummaryData.summary instead.
+ * This type will be removed in the next major version.
+ * The agent-first API now includes the summary directly in CalibrationSummaryData.
+ */
+export interface LLMSummaryResult {
+  summary: string;
+  key_recommendations: string[];
+  discussion_points: string[];
+  model_used: string;
+}
+
+export interface GenerateSummaryRequest {
+  selected_insight_ids: string[];
+}
+
+/**
+ * Type guard to check if an insight has clustering information.
+ */
+export function isClusteredInsight(insight: Insight): boolean {
+  return (
+    insight.cluster_id !== undefined &&
+    insight.cluster_id !== null &&
+    insight.cluster_title !== undefined &&
+    insight.cluster_title !== null
+  );
+}
+
+/**
+ * Group insights by cluster_id for organized display.
+ * Unclustered insights are placed in individual groups.
+ */
+export function groupInsightsByCluster(
+  insights: Insight[]
+): Map<string, Insight[]> {
+  const groups = new Map<string, Insight[]>();
+
+  insights.forEach((insight) => {
+    if (isClusteredInsight(insight)) {
+      const clusterId = insight.cluster_id!;
+      if (!groups.has(clusterId)) {
+        groups.set(clusterId, []);
+      }
+      groups.get(clusterId)!.push(insight);
+    } else {
+      // Unclustered insights get their own group
+      groups.set(`unclustered-${insight.id}`, [insight]);
+    }
+  });
+
+  return groups;
+}

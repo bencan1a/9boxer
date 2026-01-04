@@ -1,3 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
+// This is a test utility file that intentionally exports both components and helper functions
+
 import React, { ReactElement } from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

@@ -82,9 +82,11 @@ export const EmployeeFlags: React.FC<EmployeeFlagsProps> = ({ employee }) => {
                 color: "white",
                 fontWeight: "medium",
                 "& .MuiChip-deleteIcon": {
-                  color: "rgba(255, 255, 255, 0.7)",
+                  color: "common.white",
+                  opacity: 0.7,
                   "&:hover": {
                     color: "white",
+                    opacity: 1,
                   },
                 },
               }}

@@ -187,3 +187,102 @@ export async function generateDistributionTable(
     waitTime: 800,
   });
 }
+
+/**
+ * Generate Statistics tab location screenshot
+ *
+ * Shows the right panel header with Statistics tab highlighted.
+ * Note: Requires a story that shows the full panel tabs with Statistics selected.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateStatisticsTabLocation(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 600, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-tabs--statistics-selected",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+/**
+ * Generate Statistics grouping dropdown screenshot
+ *
+ * Shows the Statistics panel with the grouping selector expanded,
+ * displaying available grouping dimensions (Department, Manager, Location, Job Level).
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateStatisticsGroupingDropdown(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 600, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-statistics-distributiontable--grouping-menu-open",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+/**
+ * Generate Statistics grouped distribution screenshot
+ *
+ * Shows the Statistics panel with the distribution table grouped by department,
+ * demonstrating the grouping feature with section breakdowns.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateStatisticsGroupedDistribution(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 600, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId:
+      "app-right-panel-statistics-distributiontable--grouped-by-department",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+/**
+ * Generate Statistics with filters screenshot
+ *
+ * Shows the Statistics panel with filter context visible, demonstrating
+ * how distribution changes when filters are active.
+ * Note: This is a full-app workflow as it requires filter state.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateStatisticsWithFilters(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // This requires full-app workflow - placeholder for now
+  // Will need to load app, apply filters, then capture statistics panel
+  await page.setViewportSize({ width: 600, height: 900 });
+
+  // Using the balanced distribution story as a fallback
+  // In production, this would be a full-app workflow
+  await captureStorybookScreenshot(page, {
+    storyId:
+      "app-right-panel-statistics-distributiontable--balanced-distribution",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}

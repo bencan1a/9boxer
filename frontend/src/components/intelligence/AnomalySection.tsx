@@ -40,6 +40,10 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  // Expand by default if there's an anomaly (yellow or red status)
+  const [expanded, setExpanded] = useState(
+    analysis.status === "yellow" || analysis.status === "red"
+  );
   const [detailsExpanded, setDetailsExpanded] = useState(false);
 
   // Get status icon and color
@@ -94,17 +98,25 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
   };
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        {/* Header with title and status indicator */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
+    <Card variant="outlined" sx={{ mb: 2 }}>
+      {/* Clickable Header */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          p: 2,
+          cursor: "pointer",
+          bgcolor: "background.default",
+          borderBottom: expanded ? 1 : 0,
+          borderColor: "divider",
+          "&:hover": {
+            bgcolor: "action.hover",
+          },
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           <Typography variant="h6" color="primary">
             {title}
           </Typography>
@@ -115,189 +127,211 @@ export const AnomalySection: React.FC<AnomalySectionProps> = ({
             size="small"
           />
         </Box>
+        <IconButton
+          size="small"
+          sx={{
+            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.2s",
+          }}
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+      </Box>
 
-        {/* Statistical Summary */}
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            {t("panel.intelligenceTab.anomaly.statisticalSummary")}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                {t("panel.intelligenceTab.anomaly.pValue")}
-                <Tooltip
-                  title={t("panel.intelligenceTab.anomaly.pValueTooltip")}
-                >
-                  <InfoIcon
-                    sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
-                  />
-                </Tooltip>
-              </Typography>
-              <Typography variant="body2" fontWeight="medium">
-                {formatPValue(analysis.p_value)}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                {t("panel.intelligenceTab.anomaly.effectSize")}
-                <Tooltip
-                  title={t("panel.intelligenceTab.anomaly.effectSizeTooltip")}
-                >
-                  <InfoIcon
-                    sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
-                  />
-                </Tooltip>
-              </Typography>
-              <Typography variant="body2" fontWeight="medium">
-                {formatEffectSize(analysis.effect_size)}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                {t("panel.intelligenceTab.anomaly.sampleSize")}
-              </Typography>
-              <Typography variant="body2" fontWeight="medium">
-                {analysis.sample_size}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                {t("panel.intelligenceTab.anomaly.degreesOfFreedom")}
-              </Typography>
-              <Typography variant="body2" fontWeight="medium">
-                {analysis.degrees_of_freedom}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Interpretation */}
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            {t("panel.intelligenceTab.anomaly.interpretation")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {analysis.interpretation}
-          </Typography>
-        </Box>
-
-        {/* Chart Component */}
-        <Box sx={{ mb: 2 }}>{chartComponent}</Box>
-
-        {/* Collapsible Details Table */}
-        <Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              "&:hover": {
-                backgroundColor: alpha(theme.palette.text.primary, 0.04),
-              },
-              borderRadius: 1,
-              p: 1,
-              mt: 1,
-            }}
-            onClick={() => setDetailsExpanded(!detailsExpanded)}
-          >
-            <Typography variant="subtitle2" sx={{ flex: 1 }}>
-              {t("panel.intelligenceTab.anomaly.detailedDeviations")} (
-              {analysis.deviations.length})
+      {/* Collapsible Content */}
+      <Collapse in={expanded}>
+        <CardContent>
+          {/* Statistical Summary */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              {t("panel.intelligenceTab.anomaly.statisticalSummary")}
             </Typography>
-            <IconButton
-              size="small"
-              sx={{
-                transform: detailsExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                transition: `transform ${theme.tokens.duration.normal}`,
-              }}
-            >
-              <ExpandMoreIcon />
-            </IconButton>
+            <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("panel.intelligenceTab.anomaly.pValue")}
+                  <Tooltip
+                    title={t("panel.intelligenceTab.anomaly.pValueTooltip")}
+                  >
+                    <InfoIcon
+                      sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
+                    />
+                  </Tooltip>
+                </Typography>
+                <Typography variant="body2" fontWeight="medium">
+                  {formatPValue(analysis.p_value)}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("panel.intelligenceTab.anomaly.effectSize")}
+                  <Tooltip
+                    title={t("panel.intelligenceTab.anomaly.effectSizeTooltip")}
+                  >
+                    <InfoIcon
+                      sx={{ fontSize: 14, ml: 0.5, verticalAlign: "middle" }}
+                    />
+                  </Tooltip>
+                </Typography>
+                <Typography variant="body2" fontWeight="medium">
+                  {formatEffectSize(analysis.effect_size)}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("panel.intelligenceTab.anomaly.sampleSize")}
+                </Typography>
+                <Typography variant="body2" fontWeight="medium">
+                  {analysis.sample_size}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("panel.intelligenceTab.anomaly.degreesOfFreedom")}
+                </Typography>
+                <Typography variant="body2" fontWeight="medium">
+                  {analysis.degrees_of_freedom}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
-          <Collapse in={detailsExpanded}>
-            <TableContainer component={Paper} variant="outlined" sx={{ mt: 1 }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      {t("panel.intelligenceTab.anomaly.category")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {t("panel.intelligenceTab.anomaly.observedPercent")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {t("panel.intelligenceTab.anomaly.expectedPercent")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {t("panel.intelligenceTab.anomaly.zScore")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {t("panel.intelligenceTab.anomaly.sampleSize")}
-                    </TableCell>
-                    <TableCell align="center">
-                      {t("panel.intelligenceTab.anomaly.significant")}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {analysis.deviations.map((deviation, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        backgroundColor: deviation.is_significant
-                          ? alpha(theme.palette.warning.main, 0.08)
-                          : "transparent",
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {deviation.category}
+
+          {/* Interpretation */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              {t("panel.intelligenceTab.anomaly.interpretation")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {analysis.interpretation}
+            </Typography>
+          </Box>
+
+          {/* Chart Component */}
+          <Box sx={{ mb: 2 }}>{chartComponent}</Box>
+
+          {/* Collapsible Details Table */}
+          <Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.text.primary, 0.04),
+                },
+                borderRadius: 1,
+                p: 1,
+                mt: 1,
+              }}
+              onClick={() => setDetailsExpanded(!detailsExpanded)}
+            >
+              <Typography variant="subtitle2" sx={{ flex: 1 }}>
+                {t("panel.intelligenceTab.anomaly.detailedDeviations")} (
+                {analysis.deviations.length})
+              </Typography>
+              <IconButton
+                size="small"
+                sx={{
+                  transform: detailsExpanded
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+                  transition: `transform ${theme.tokens.duration.normal}`,
+                }}
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </Box>
+            <Collapse in={detailsExpanded}>
+              <TableContainer
+                component={Paper}
+                variant="outlined"
+                sx={{ mt: 1 }}
+              >
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        {t("panel.intelligenceTab.anomaly.category")}
                       </TableCell>
                       <TableCell align="right">
-                        {deviation.observed_high_pct.toFixed(1)}%
+                        {t("panel.intelligenceTab.anomaly.observedPercent")}
                       </TableCell>
                       <TableCell align="right">
-                        {deviation.expected_high_pct.toFixed(1)}%
-                      </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{
-                          fontWeight:
-                            Math.abs(deviation.z_score) > 2 ? "bold" : "normal",
-                          color:
-                            Math.abs(deviation.z_score) > 3
-                              ? "error.main"
-                              : "inherit",
-                        }}
-                      >
-                        {deviation.z_score.toFixed(2)}
+                        {t("panel.intelligenceTab.anomaly.expectedPercent")}
                       </TableCell>
                       <TableCell align="right">
-                        {deviation.sample_size}
+                        {t("panel.intelligenceTab.anomaly.zScore")}
+                      </TableCell>
+                      <TableCell align="right">
+                        {t("panel.intelligenceTab.anomaly.sampleSize")}
                       </TableCell>
                       <TableCell align="center">
-                        {deviation.is_significant ? (
-                          <Chip
-                            label={t("panel.intelligenceTab.anomaly.yes")}
-                            color="warning"
-                            size="small"
-                          />
-                        ) : (
-                          <Chip
-                            label={t("panel.intelligenceTab.anomaly.no")}
-                            color="success"
-                            size="small"
-                            variant="outlined"
-                          />
-                        )}
+                        {t("panel.intelligenceTab.anomaly.significant")}
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Collapse>
-        </Box>
-      </CardContent>
+                  </TableHead>
+                  <TableBody>
+                    {analysis.deviations.map((deviation, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          backgroundColor: deviation.is_significant
+                            ? alpha(theme.palette.warning.main, 0.08)
+                            : "transparent",
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {deviation.category}
+                        </TableCell>
+                        <TableCell align="right">
+                          {deviation.observed_high_pct.toFixed(1)}%
+                        </TableCell>
+                        <TableCell align="right">
+                          {deviation.expected_high_pct.toFixed(1)}%
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{
+                            fontWeight:
+                              Math.abs(deviation.z_score) > 2
+                                ? "bold"
+                                : "normal",
+                            color:
+                              Math.abs(deviation.z_score) > 3
+                                ? "error.main"
+                                : "inherit",
+                          }}
+                        >
+                          {deviation.z_score.toFixed(2)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {deviation.sample_size}
+                        </TableCell>
+                        <TableCell align="center">
+                          {deviation.is_significant ? (
+                            <Chip
+                              label={t("panel.intelligenceTab.anomaly.yes")}
+                              color="warning"
+                              size="small"
+                            />
+                          ) : (
+                            <Chip
+                              label={t("panel.intelligenceTab.anomaly.no")}
+                              color="success"
+                              size="small"
+                              variant="outlined"
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Collapse>
+          </Box>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 };

@@ -2,6 +2,9 @@
  * Test utilities for components using i18n
  */
 
+/* eslint-disable react-refresh/only-export-components */
+// This is a test utility file that intentionally exports both components and helper functions
+
 import React, { ReactElement } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "i18next";

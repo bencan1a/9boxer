@@ -138,7 +138,9 @@ describe("EmployeeFlags", () => {
     const flightRiskChip = screen.getByTestId("flag-chip-flight_risk");
 
     // Check that chips have background colors applied
+    // eslint-disable-next-line no-restricted-syntax
     expect(promotionReadyChip).toHaveStyle({ backgroundColor: "#1976d2" }); // Blue
+    // eslint-disable-next-line no-restricted-syntax
     expect(flightRiskChip).toHaveStyle({ backgroundColor: "#f44336" }); // Red
   });
 

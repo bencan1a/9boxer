@@ -1,5 +1,6 @@
 """Intelligence API endpoints."""
 
+import asyncio
 import logging
 from typing import TypedDict
 
@@ -100,7 +101,10 @@ async def get_intelligence(
             )
 
         # Calculate intelligence using full dataset (current_employees)
-        intelligence = calculate_overall_intelligence(session.current_employees)
+        # Run in background thread to prevent blocking the event loop
+        intelligence = await asyncio.to_thread(
+            calculate_overall_intelligence, session.current_employees
+        )
         return IntelligenceResponse(**intelligence)  # type: ignore[typeddict-item, no-any-return]
     except HTTPException:
         # Re-raise HTTP exceptions

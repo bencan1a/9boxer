@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "../../../test/utils";
 import { NineBoxGrid } from "../NineBoxGrid";
-import {
-  mockEmployeesByPosition,
-  mockEmployees,
-  createMockEmployee,
-} from "../../../test/mockData";
+import { mockEmployeesByPosition, mockEmployees } from "../../../test/mockData";
 import { useSessionStore } from "../../../store/sessionStore";
 
 const mockMoveEmployee = vi.fn();

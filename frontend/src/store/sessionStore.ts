@@ -8,6 +8,7 @@ import { Employee } from "../types/employee";
 import { TrackableEvent } from "../types/events";
 import { extractErrorMessage } from "../types/errors";
 import { logger } from "../utils/logger";
+import type { CalibrationSummaryData } from "../types/api";
 
 /**
  * Process employees to add "big_mover" to flags array when is_big_mover is true.
@@ -45,6 +46,9 @@ interface SessionState {
   // Sample data tracking
   hasSampleData: boolean;
 
+  // Calibration summary data
+  calibrationSummary: CalibrationSummaryData | null;
+
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
   clearSession: () => Promise<void>;
@@ -64,6 +68,10 @@ interface SessionState {
   selectEmployee: (employeeId: number | null) => void;
   clearError: () => void;
   restoreSession: () => Promise<boolean>;
+
+  // Calibration summary actions
+  setCalibrationSummary: (data: CalibrationSummaryData | null) => void;
+  clearCalibrationSummary: () => void;
 
   // Donut Mode actions
   toggleDonutMode: (enabled: boolean) => Promise<void>;
@@ -93,6 +101,9 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   // Sample data tracking
   hasSampleData: false,
+
+  // Calibration summary data
+  calibrationSummary: null,
 
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
@@ -132,6 +143,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutEvents: [],
         selectedEmployeeId,
         hasSampleData: false,
+        calibrationSummary: null,
         isLoading: false,
         error: null,
       });
@@ -164,6 +176,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         filename: null,
         filePath: null,
         hasSampleData: false,
+        calibrationSummary: null,
         isLoading: false,
         error: null,
         selectedEmployeeId: null,
@@ -196,6 +209,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         donutModeActive: false,
         donutEvents: [],
         hasSampleData: false,
+        calibrationSummary: null,
         isLoading: false,
         error: null,
       });
@@ -507,6 +521,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         events: [],
         donutEvents: [],
         hasSampleData: false,
+        calibrationSummary: null,
         isLoading: false,
         isRestoringSession: false,
         error: null,
@@ -521,12 +536,23 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         events: [],
         donutEvents: [],
         hasSampleData: false,
+        calibrationSummary: null,
         isLoading: false,
         isRestoringSession: false,
         error: null,
       });
       return false;
     }
+  },
+
+  // ==================== Calibration Summary Actions ====================
+
+  setCalibrationSummary: (data: CalibrationSummaryData | null) => {
+    set({ calibrationSummary: data });
+  },
+
+  clearCalibrationSummary: () => {
+    set({ calibrationSummary: null });
   },
 
   // ==================== Donut Mode Actions ====================
@@ -659,3 +685,11 @@ export const selectToggleDonutMode = (state: SessionState) =>
   state.toggleDonutMode;
 export const selectMoveEmployeeDonut = (state: SessionState) =>
   state.moveEmployeeDonut;
+
+// Calibration summary selectors
+export const selectCalibrationSummary = (state: SessionState) =>
+  state.calibrationSummary;
+export const selectSetCalibrationSummary = (state: SessionState) =>
+  state.setCalibrationSummary;
+export const selectClearCalibrationSummary = (state: SessionState) =>
+  state.clearCalibrationSummary;

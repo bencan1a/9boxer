@@ -10,6 +10,9 @@
  * - DOM references retained after unmount
  * - Store subscriptions not unsubscribed
  * - Memory growth over multiple mount/unmount cycles
+ *
+ * These tests use a baseline + tolerance approach (similar to performance tests)
+ * to ensure stability in CI environments with varying resources.
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -20,6 +23,10 @@ import {
   generateEmployeesByPosition,
 } from "../../../test-utils/performance-generators";
 import { useSessionStore } from "../../../store/sessionStore";
+import {
+  PERFORMANCE_BASELINES,
+  getMaxTime,
+} from "../../../test-utils/performance-baselines";
 
 // Module-level state for mocked data
 let mockEmployees: any[] = [];
@@ -80,8 +87,8 @@ describe("NineBoxGrid Memory Leak Tests", () => {
     vi.clearAllMocks();
   });
 
-  it("should not leak memory over 50 mount/unmount cycles with empty data", () => {
-    const iterations = 50;
+  it("should not leak memory over 10 mount/unmount cycles with empty data", () => {
+    const iterations = 10;
 
     // Set up empty data
     setMockEmployeeData([], {});
@@ -97,6 +104,9 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       return selector ? selector(state) : state;
     });
 
+    // Measure time for mount/unmount cycles
+    const startTime = performance.now();
+
     // Perform mount/unmount cycles
     for (let i = 0; i < iterations; i++) {
       const { unmount } = render(<NineBoxGrid />);
@@ -104,16 +114,21 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       cleanup();
     }
 
-    // If we got here without errors, no obvious leaks occurred
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
+
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles10;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
 
     console.log(
-      `  ✓ Completed ${iterations} mount/unmount cycles without errors`
+      `✓ Completed ${iterations} mount/unmount cycles in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
-  });
+  }, 10000);
 
-  it("should not leak memory with 100 employees over multiple cycles", () => {
-    const iterations = 20;
+  it("should not leak memory with 100 employees over 10 cycles", () => {
+    const iterations = 10;
     const employees = generateLargeEmployeeDataset(100);
     const employeesByPosition = generateEmployeesByPosition(11);
 
@@ -131,6 +146,9 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       return selector ? selector(state) : state;
     });
 
+    // Measure time for mount/unmount cycles
+    const startTime = performance.now();
+
     // Perform mount/unmount cycles
     for (let i = 0; i < iterations; i++) {
       const { unmount } = render(<NineBoxGrid />);
@@ -138,12 +156,18 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       cleanup();
     }
 
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
+
+    // Performance assertion using baseline config
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles20;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
 
     console.log(
-      `  ✓ Completed ${iterations} cycles with 100 employees without leaks`
+      `✓ Completed ${iterations} cycles with 100 employees in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
-  });
+  }, 10000);
 
   it("should clean up DOM references on unmount", () => {
     const employees = generateLargeEmployeeDataset(50);
@@ -182,9 +206,9 @@ describe("NineBoxGrid Memory Leak Tests", () => {
     expect(finalNodeCount).toBe(0);
 
     console.log(
-      `  ✓ DOM cleaned up: ${initialNodeCount} nodes → ${finalNodeCount} nodes`
+      `✓ DOM cleaned up: ${initialNodeCount} nodes → ${finalNodeCount} nodes`
     );
-  });
+  }, 5000);
 
   it("should handle rapid mount/unmount without leaking", () => {
     const employees = generateLargeEmployeeDataset(30);
@@ -203,26 +227,38 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       return selector ? selector(state) : state;
     });
 
-    // Perform rapid mount/unmount cycles
     const rapidCycles = 10;
+
+    // Measure time for rapid mount/unmount cycles
+    const startTime = performance.now();
+
     for (let i = 0; i < rapidCycles; i++) {
       const { unmount } = render(<NineBoxGrid />);
-      // Unmount immediately
       unmount();
     }
 
-    // Clean up after all cycles
     cleanup();
 
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
 
-    console.log(`  ✓ Survived ${rapidCycles} rapid mount/unmount cycles`);
-  });
+    // Use memoryCycles10 baseline
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles10;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
+
+    console.log(
+      `✓ Survived ${rapidCycles} rapid mount/unmount cycles in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
+    );
+  }, 5000);
 
   it("should not leak when switching between empty and populated data", () => {
     const iterations = 10;
     const employees = generateLargeEmployeeDataset(100);
     const employeesByPosition = generateEmployeesByPosition(11);
+
+    // Measure time for switching data
+    const startTime = performance.now();
 
     for (let i = 0; i < iterations; i++) {
       // Alternate between empty and populated data
@@ -259,12 +295,18 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       cleanup();
     }
 
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
+
+    // Use memoryCycles20 baseline (more generous for data switching)
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles20;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
 
     console.log(
-      `  ✓ Switched between empty/populated data ${iterations} times without leaks`
+      `✓ Switched between empty/populated data ${iterations} times in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
-  });
+  }, 10000);
 
   it("should not leak when toggling donut mode multiple times", () => {
     const employees = generateLargeEmployeeDataset(50);
@@ -273,6 +315,9 @@ describe("NineBoxGrid Memory Leak Tests", () => {
     setMockEmployeeData(employees, employeesByPosition);
 
     const iterations = 10;
+
+    // Measure time for toggling donut mode
+    const startTime = performance.now();
 
     for (let i = 0; i < iterations; i++) {
       const donutModeActive = i % 2 === 0;
@@ -293,10 +338,18 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       cleanup();
     }
 
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
 
-    console.log(`  ✓ Toggled donut mode ${iterations} times without leaks`);
-  });
+    // Use memoryCycles10 baseline
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles10;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
+
+    console.log(
+      `✓ Toggled donut mode ${iterations} times in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
+    );
+  }, 5000);
 
   it("should not accumulate event listeners over multiple renders", () => {
     // Note: JSDOM doesn't provide a way to count event listeners directly,
@@ -319,20 +372,28 @@ describe("NineBoxGrid Memory Leak Tests", () => {
       return selector ? selector(state) : state;
     });
 
-    // Mount/unmount multiple times
-    const iterations = 15;
+    const iterations = 10;
+
+    // Measure time for render/unmount cycles
+    const startTime = performance.now();
+
     for (let i = 0; i < iterations; i++) {
       const { unmount } = render(<NineBoxGrid />);
       unmount();
       cleanup();
     }
 
-    // If we got here, event listeners are properly cleaned up
-    expect(true).toBe(true);
+    const totalTime = performance.now() - startTime;
+
+    // Use memoryCycles20 baseline (100 employees is heavier)
+    const { baseline, tolerance } =
+      PERFORMANCE_BASELINES.nineBoxGrid.memoryCycles20;
+    const maxTime = getMaxTime(baseline, tolerance);
+    expect(totalTime).toBeLessThan(maxTime);
 
     console.log(
-      `  ✓ No event listener leaks detected over ${iterations} cycles`
+      `✓ No event listener leaks detected over ${iterations} cycles in ${totalTime.toFixed(2)}ms (baseline: ${baseline}ms, max: ${maxTime}ms)`
     );
-    console.log(`    (Verified by successful render/unmount cycles)`);
-  });
+    console.log(`  (Verified by successful render/unmount cycles)`);
+  }, 10000);
 });

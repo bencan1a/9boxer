@@ -24,6 +24,7 @@ export {
   openFilterDrawer,
   closeAllDialogsAndOverlays,
   resetToEmptyState,
+  expandManagerAnomalyDetails,
 } from "./ui";
 export {
   getBadgeCount,

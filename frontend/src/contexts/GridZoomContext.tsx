@@ -19,7 +19,6 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useEffect,
 } from "react";
 import { tokens } from "../theme/tokens";
 

@@ -59,7 +59,6 @@
         "hero-grid-sample",
         "donut-mode-active-layout",
         "calibration-donut-mode-grid",
-        "changes-drag-sequence",
         "filters-active-chips",
         "filters-before-after"
       ]
@@ -197,9 +196,6 @@
       "components/grid/NineBoxGrid.tsx"
     ],
     "calibration-donut-mode-grid": [
-      "components/grid/NineBoxGrid.tsx"
-    ],
-    "changes-drag-sequence": [
       "components/grid/NineBoxGrid.tsx"
     ],
     "filters-active-chips": [

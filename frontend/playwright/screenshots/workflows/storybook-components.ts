@@ -259,7 +259,7 @@ export async function generateGridBox(
  * Generate grid box expanded screenshot
  *
  * Captures the GridBox component in expanded state, showing the
- * full list of employees and collapse button.
+ * full list of employees and collapse button with proper padding.
  *
  * Story: grid-gridbox--expanded
  *
@@ -270,6 +270,9 @@ export async function generateGridBoxExpanded(
   page: Page,
   outputPath: string
 ): Promise<void> {
+  // Set viewport to match story container with padding
+  await page.setViewportSize({ width: 600, height: 600 });
+
   await captureStorybookScreenshot(page, {
     storyId: "app-grid-gridbox--expanded",
     outputPath,
@@ -918,5 +921,393 @@ export async function generateGridWithAxesLabeled(
     outputPath,
     theme: "dark",
     waitTime: 1000,
+  });
+}
+
+// =============================================================================
+// GRID SCREENSHOTS (4 screenshots for understanding-grid.md)
+// =============================================================================
+
+/**
+ * Generate grid basic layout screenshot
+ *
+ * Captures the full 9-box grid with axis labels (Performance: Low/Medium/High,
+ * Potential: Low/Medium/High) and all 9 position names visible.
+ *
+ * Story: app-grid-nineboxgrid--populated
+ */
+export async function generateGridBasicLayout(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Large viewport to show full grid with all labels
+  await page.setViewportSize({ width: 1200, height: 1200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-nineboxgrid--populated",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000,
+  });
+}
+
+/**
+ * Generate grid color coding boxes screenshot
+ *
+ * Captures the grid view emphasizing the background color scheme:
+ * green top row (high potential), yellow/amber middle row, orange bottom row.
+ *
+ * Story: app-grid-nineboxgrid--populated
+ */
+export async function generateGridColorCoding(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Similar viewport as basic layout to show color coding
+  await page.setViewportSize({ width: 1200, height: 1200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-nineboxgrid--populated",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000,
+  });
+}
+
+/**
+ * Generate employee tile states composite screenshot
+ *
+ * This screenshot requires manual composition as it shows 4 different tile states
+ * side by side: default blue, orange border (modified), purple border (donut),
+ * and flag chips.
+ *
+ * NOTE: This is marked as manual in config.ts because it requires compositing
+ * multiple screenshots together. The workflow function captures a placeholder.
+ */
+export async function generateEmployeeTileStates(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Use the composite story that shows all 4 tile states
+  await page.setViewportSize({ width: 800, height: 500 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-employeetile--all-states-composite",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+// =============================================================================
+// DONUT MODE SCREENSHOTS (2 screenshots for donut-mode.md)
+// =============================================================================
+
+/**
+ * Generate donut mode employee tile with purple border screenshot
+ *
+ * Captures a single employee tile showing the purple border and visual
+ * indication of original Position 5 placement.
+ *
+ * Story: app-grid-employeetile--donut-mode
+ */
+export async function generateDonutModeTilePurple(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 800, height: 600 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-employeetile--donut-mode",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate donut mode changes tabs toggle screenshot
+ *
+ * Captures the Changes panel showing both tab options:
+ * Regular Changes and Donut Changes.
+ *
+ * Story: app-right-panel-changes-changetrackertab--with-donut-mode
+ */
+export async function generateDonutModeTabsToggle(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 700, height: 800 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-changes-changetrackertab--with-donut-mode",
+    outputPath,
+    theme: "dark",
+    waitTime: 800,
+  });
+}
+
+// =============================================================================
+// WORKING WITH EMPLOYEES SCREENSHOTS (4 screenshots)
+// =============================================================================
+
+/**
+ * Generate complete employee details panel screenshot
+ *
+ * Shows the full employee details panel with all sections:
+ * - Ratings and job info
+ * - Flags section
+ * - Org chain
+ * - Timeline
+ *
+ * Story: app-right-panel-details-employeedetails--default
+ */
+export async function generateEmployeeDetailsFullPanel(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Taller viewport to show full panel content
+  await page.setViewportSize({ width: 500, height: 900 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-details-employeedetails--default",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000,
+  });
+}
+
+/**
+ * Generate employee tile with modified border screenshot
+ *
+ * Shows a single employee tile with orange left border indicating
+ * the employee was modified in the current session.
+ *
+ * Story: app-grid-employeetile--modified-normal-mode
+ */
+export async function generateEmployeeTileModifiedBorder(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-employeetile--modified-normal-mode",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate employee timeline history screenshot
+ *
+ * Shows the timeline section in Details tab with chronological
+ * history of rating changes with dates and positions.
+ *
+ * Story: app-right-panel-details-ratingstimeline--with-history
+ */
+export async function generateEmployeeTimelineHistory(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 500, height: 600 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-right-panel-details-ratingstimeline--with-history",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate employee flags section screenshot
+ *
+ * Shows the flags section in Details tab with existing flag chips
+ * and the Add Flag dropdown menu open.
+ *
+ * Story: app-right-panel-details-employeeflags--with-multiple-flags
+ */
+export async function generateEmployeeFlagsSection(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  const { navigateToStory } = await import("../storybook-screenshot");
+  const fs = await import("fs");
+  const path = await import("path");
+
+  await page.setViewportSize({ width: 500, height: 500 });
+
+  // Navigate to the flags story with multiple flags
+  await navigateToStory(
+    page,
+    "app-right-panel-details-employeeflags--with-multiple-flags",
+    "dark"
+  );
+
+  await page.waitForTimeout(500);
+
+  // Try to click the Add Flag button to open the dropdown
+  const addFlagButton = page.locator('[data-testid="add-flag-button"]');
+  if ((await addFlagButton.count()) > 0) {
+    await addFlagButton.click();
+    await page.waitForTimeout(300);
+  }
+
+  // Create output directory if needed
+  const outputDir = path.dirname(outputPath);
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  // Capture the screenshot
+  const flagsSection = page.locator('[data-testid="employee-flags-section"]');
+  if ((await flagsSection.count()) > 0) {
+    await flagsSection.screenshot({ path: outputPath });
+  } else {
+    const storybookRoot = page.locator("#storybook-root > *");
+    await storybookRoot.first().screenshot({ path: outputPath });
+  }
+
+  console.log(
+    `  ✓ Captured from Storybook: employee flags section with dropdown (dark theme)`
+  );
+}
+
+// =============================================================================
+// TRACKING CHANGES SCREENSHOTS (3 screenshots)
+// =============================================================================
+
+/**
+ * Generate Apply button with badge screenshot
+ *
+ * Shows the FileMenu button with a badge indicating the number
+ * of pending changes. Uses a dark themed container with proper padding.
+ *
+ * Story: app-dashboard-filemenubutton--with-changes-badge
+ */
+export async function generateApplyButtonWithBadge(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Larger viewport for proper button rendering with padding
+  await page.setViewportSize({ width: 500, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-filemenubutton--with-changes-badge",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate employee tile with Big Mover flag screenshot
+ *
+ * Shows a single employee tile with the Big Mover flag chip (cyan color)
+ * indicating a significant tier change.
+ *
+ * Story: app-grid-employeetile--with-flags
+ */
+export async function generateEmployeeTileBigMoverFlag(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 300 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-employeetile--with-flags",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate grid change indicators screenshot
+ *
+ * Shows the grid view with multiple visual indicators:
+ * orange borders on modified tiles and Big Mover flags.
+ *
+ * Story: app-grid-nineboxgrid--populated
+ */
+export async function generateGridChangeIndicators(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 1200, height: 1000 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-grid-nineboxgrid--populated",
+    outputPath,
+    theme: "dark",
+    waitTime: 1000,
+  });
+}
+
+// =============================================================================
+// VIEW CONTROLS SCREENSHOTS (3 close-up screenshots)
+// =============================================================================
+
+/**
+ * Generate zoom controls close-up screenshot
+ *
+ * Shows just the zoom controls portion of the ViewControls toolbar:
+ * minus, reset, plus buttons and percentage display.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsZoom(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate fullscreen toggle close-up screenshot
+ *
+ * Shows the fullscreen toggle button in the ViewControls toolbar.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsFullscreen(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate view mode toggle close-up screenshot
+ *
+ * Shows the Grid/Donut mode toggle buttons in the ViewControls toolbar.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsModeToggle(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
   });
 }
