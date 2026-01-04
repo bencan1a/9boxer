@@ -10,7 +10,7 @@ interface FilterState {
   selectedJobFunctions: string[];
   selectedLocations: string[];
   selectedManagers: string[];
-  selectedManagerEmployeeIds: Map<string, number[]>; // Map of manager name to their employee IDs
+  selectedManagerEmployeeIds: Record<string, number[]>; // Map of manager name to their employee IDs
   selectedFlags: string[];
   excludedEmployeeIds: number[];
   reportingChainFilter: string | null; // Manager name for display
@@ -44,7 +44,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   selectedJobFunctions: [],
   selectedLocations: [],
   selectedManagers: [],
-  selectedManagerEmployeeIds: new Map(),
+  selectedManagerEmployeeIds: {},
   selectedFlags: [],
   excludedEmployeeIds: [],
   reportingChainFilter: null,
@@ -92,19 +92,23 @@ export const useFilterStore = create<FilterState>((set, get) => ({
         ? state.selectedManagers.filter((m) => m !== manager)
         : [...state.selectedManagers, manager];
 
-      // Update employee IDs map
-      const newEmployeeIdsMap = new Map(state.selectedManagerEmployeeIds);
+      // Update employee IDs record
+      let newEmployeeIdsRecord: Record<string, number[]>;
       if (isSelected) {
-        // Remove manager from map
-        newEmployeeIdsMap.delete(manager);
+        // Remove manager from record
+        const { [manager]: _, ...rest } = state.selectedManagerEmployeeIds;
+        newEmployeeIdsRecord = rest;
       } else {
-        // Add manager and their employee IDs to map
-        newEmployeeIdsMap.set(manager, employeeIds);
+        // Add manager and their employee IDs to record
+        newEmployeeIdsRecord = {
+          ...state.selectedManagerEmployeeIds,
+          [manager]: employeeIds,
+        };
       }
 
       return {
         selectedManagers: newSelectedManagers,
-        selectedManagerEmployeeIds: newEmployeeIdsMap,
+        selectedManagerEmployeeIds: newEmployeeIdsRecord,
       };
     });
   },
@@ -144,7 +148,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
-      selectedManagerEmployeeIds: new Map(),
+      selectedManagerEmployeeIds: {},
       selectedFlags: [],
       excludedEmployeeIds: [],
       reportingChainFilter: null,
