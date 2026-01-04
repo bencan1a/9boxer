@@ -16,6 +16,8 @@ import { useFilters } from "../../hooks/useFilters";
 import { useEmployees } from "../../hooks/useEmployees";
 import { useSessionStore } from "../../store/sessionStore";
 import { useFilterStore } from "../../store/filterStore";
+import { ErrorBoundary } from "./ErrorBoundary";
+import { SimplifiedToolbar } from "./SimplifiedToolbar";
 
 /**
  * Props for FilterToolbarContainer
@@ -158,16 +160,18 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
   };
 
   return (
-    <FilterToolbar
-      variant={variant}
-      activeFilterCount={activeFilterCount}
-      activeFilters={activeFilters}
-      filteredCount={filteredCount}
-      totalCount={totalCount}
-      hasActiveFilters={hasActiveFilters}
-      onFilterClick={handleFilterClick}
-      onSearchChange={onSearchChange}
-      disabled={totalCount === 0}
-    />
+    <ErrorBoundary fallback={<SimplifiedToolbar />}>
+      <FilterToolbar
+        variant={variant}
+        activeFilterCount={activeFilterCount}
+        activeFilters={activeFilters}
+        filteredCount={filteredCount}
+        totalCount={totalCount}
+        hasActiveFilters={hasActiveFilters}
+        onFilterClick={handleFilterClick}
+        onSearchChange={onSearchChange}
+        disabled={totalCount === 0}
+      />
+    </ErrorBoundary>
   );
 };

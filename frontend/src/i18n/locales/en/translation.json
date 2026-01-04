@@ -93,7 +93,9 @@
     "collapseToolbar": "Collapse toolbar",
     "searchManagers": "Search managers...",
     "noManagersFound": "No managers found",
-    "searchUnavailable": "Search unavailable"
+    "searchUnavailable": "Search unavailable",
+    "unavailable": "Filters Unavailable",
+    "unavailableMessage": "The filtering toolbar is temporarily unavailable. You can still view all employees on the grid."
   },
   "grid": {
     "axes": {

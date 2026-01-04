@@ -16,6 +16,7 @@ interface Props {
   children: ReactNode;
   t?: (key: string) => string;
   theme?: Theme;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -58,6 +59,12 @@ class ErrorBoundaryClass extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      // If a custom fallback is provided, render it
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
+      // Otherwise, render the default error UI
       const t = this.props.t || ((key: string) => key);
       const theme = this.props.theme;
 
@@ -141,11 +148,17 @@ class ErrorBoundaryClass extends Component<Props, State> {
 }
 
 // Wrapper component that provides the translation function and theme to the class component
-export function ErrorBoundary({ children }: { children: ReactNode }) {
+export function ErrorBoundary({
+  children,
+  fallback,
+}: {
+  children: ReactNode;
+  fallback?: ReactNode;
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
-    <ErrorBoundaryClass t={t} theme={theme}>
+    <ErrorBoundaryClass t={t} theme={theme} fallback={fallback}>
       {children}
     </ErrorBoundaryClass>
   );

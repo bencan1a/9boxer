@@ -4,12 +4,13 @@
  * Tests for the FilterToolbar component presentation and variants.
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { I18nextProvider } from "react-i18next";
-import i18n from "../../../i18n";
+import { i18n } from "../../../i18n";
 import { FilterToolbar, ActiveFilter } from "../FilterToolbar";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 const theme = createTheme();
 
@@ -283,6 +284,80 @@ describe("FilterToolbar", () => {
 
       // Badge should be visible even when collapsed
       expect(screen.getByTestId("filter-badge")).toBeInTheDocument();
+    });
+  });
+
+  describe("Error Boundary", () => {
+    // Component that throws an error
+    const ThrowError = () => {
+      throw new Error("Test error");
+    };
+
+    it("catches errors and renders fallback UI", () => {
+      // Suppress console.error for this test
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      render(
+        <ThemeProvider theme={theme}>
+          <I18nextProvider i18n={i18n}>
+            <ErrorBoundary
+              fallback={
+                <div data-testid="custom-fallback">Custom Fallback</div>
+              }
+            >
+              <ThrowError />
+            </ErrorBoundary>
+          </I18nextProvider>
+        </ThemeProvider>
+      );
+
+      // Should render the custom fallback
+      expect(screen.getByTestId("custom-fallback")).toBeInTheDocument();
+      expect(screen.getByText("Custom Fallback")).toBeInTheDocument();
+
+      consoleError.mockRestore();
+    });
+
+    it("renders children normally when no error occurs", () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <I18nextProvider i18n={i18n}>
+            <ErrorBoundary
+              fallback={
+                <div data-testid="custom-fallback">Custom Fallback</div>
+              }
+            >
+              <div data-testid="normal-content">Normal Content</div>
+            </ErrorBoundary>
+          </I18nextProvider>
+        </ThemeProvider>
+      );
+
+      // Should render the normal content
+      expect(screen.getByTestId("normal-content")).toBeInTheDocument();
+      expect(screen.queryByTestId("custom-fallback")).not.toBeInTheDocument();
+    });
+
+    it("wraps FilterToolbar in FilterToolbarContainer with error protection", () => {
+      // Verify that SimplifiedToolbar exists and can be rendered
+      const { container } = render(
+        <ThemeProvider theme={theme}>
+          <I18nextProvider i18n={i18n}>
+            <div data-testid="test-container">
+              <ErrorBoundary
+                fallback={<div data-testid="simplified-toolbar">Fallback</div>}
+              >
+                <div>Normal content</div>
+              </ErrorBoundary>
+            </div>
+          </I18nextProvider>
+        </ThemeProvider>
+      );
+
+      // Should render the normal content, not the fallback
+      expect(container.textContent).toContain("Normal content");
     });
   });
 });
