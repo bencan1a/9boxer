@@ -503,107 +503,116 @@
   },
   "intelligence": {
     "calibrationSummary": {
-      "title": "Calibration Summary",
-      "dataOverview": "Data Overview",
-      "insights": "Calibration Insights",
-      "generating": "Generating...",
-      "generateSummary": "Generate AI Summary",
-      "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
-      "selectAll": "Select All",
-      "deselectAll": "Deselect All",
-      "estimatedDuration": "Est. {{duration}}",
-      "suggestedSequence": "Suggested: {{sequence}}",
-      "employees": "employees",
-      "stars": "Stars",
-      "centerBox": "Center Box",
-      "lowerPerformers": "Lower Performers",
-      "insightsSelected": "{{count}} insight selected",
-      "insightsSelected_other": "{{count}} insights selected",
-      "keyRecommendations": "Key Recommendations",
-      "discussionPoints": "Predicted Discussion Points",
-      "poweredBy": "Powered by {{model}}",
+      "title": "キャリブレーション概要",
+      "dataOverview": "データ概要",
+      "insights": "キャリブレーションインサイト",
+      "generating": "生成中...",
+      "generateSummary": "AI概要を生成",
+      "llmNotAvailable": "AI概要にはANTHROPIC_API_KEYの設定が必要です",
+      "selectAll": "すべて選択",
+      "deselectAll": "すべて選択解除",
+      "estimatedDuration": "推定 {{duration}}",
+      "suggestedSequence": "推奨順序: {{sequence}}",
+      "employees": "名",
+      "stars": "スター",
+      "centerBox": "中央ボックス",
+      "lowerPerformers": "低パフォーマンス",
+      "insightsSelected": "{{count}}件のインサイトを選択",
+      "insightsSelected_other": "{{count}}件のインサイトを選択",
+      "keyRecommendations": "主要な推奨事項",
+      "discussionPoints": "予測される議論ポイント",
+      "poweredBy": "{{model}}を搭載",
+      "toggleSection": "キャリブレーション概要セクションを切り替え",
+      "showLess": "表示を減らす",
+      "showFullSummary": "完全な概要を表示",
+      "poweredByClaude": "Claude を搭載",
       "priority": {
-        "high": "High",
-        "medium": "Medium",
-        "low": "Low"
+        "high": "高",
+        "medium": "中",
+        "low": "低"
       },
       "category": {
-        "location": "Location",
-        "function": "Function",
-        "level": "Level",
-        "tenure": "Tenure",
-        "distribution": "Distribution",
-        "time": "Time"
+        "location": "勤務地",
+        "function": "職種",
+        "level": "職位",
+        "tenure": "勤続年数",
+        "distribution": "分布",
+        "time": "時間"
       },
       "insightType": {
-        "anomaly": "Anomaly",
-        "focus_area": "Focus Area",
-        "recommendation": "Recommendation",
-        "time_allocation": "Time Allocation"
+        "anomaly": "異常値",
+        "focus_area": "重点領域",
+        "recommendation": "推奨事項",
+        "time_allocation": "時間配分"
       },
       "affectedEmployees": "{{count}}人の従業員が影響を受けています",
       "affectedEmployees_other": "{{count}}人の従業員が影響を受けています"
     },
+    "aiSummary": {
+      "title": "AI生成の概要",
+      "showLess": "表示を減らす",
+      "readFull": "全文を読む"
+    },
     "severity": {
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
+      "critical": "重大",
+      "warning": "警告",
+      "info": "情報"
     },
     "insightType": {
-      "recommendation": "Recommendation",
-      "observation": "Observation",
-      "warning": "Warning"
+      "recommendation": "推奨事項",
+      "observation": "観察事項",
+      "warning": "警告"
     },
     "confidence": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
+      "high": "高",
+      "medium": "中",
+      "low": "低"
     },
     "insight": {
-      "confidence": "Confidence",
-      "confidenceLabel": "{{level}} Confidence",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "boxCount": "{{count}} box",
-      "boxCount_other": "{{count}} boxes",
+      "confidence": "信頼度",
+      "confidenceLabel": "信頼度{{level}}",
+      "employeeCount": "{{count}}名",
+      "employeeCount_other": "{{count}}名",
+      "boxCount": "{{count}}個のボックス",
+      "boxCount_other": "{{count}}個のボックス",
       "actionAria": "{{action}} - {{type}}",
       "actionButtonAria": "{{action}}"
     },
     "anomaly": {
-      "viewDetailsAria": "View details for {{title}}",
-      "affectedEmployees": "Affected",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "suggestion": "Suggestion"
+      "viewDetailsAria": "{{title}}の詳細を表示",
+      "affectedEmployees": "影響を受けた従業員",
+      "employeeCount": "{{count}}名",
+      "employeeCount_other": "{{count}}名",
+      "suggestion": "提案"
     },
     "anomalies": {
-      "title": "Anomalies Detected",
-      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
-      "empty": "No anomalies detected",
-      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
-      "criticalCount": "{{count}} Critical",
-      "warningCount": "{{count}} Warning",
-      "infoCount": "{{count}} Info"
+      "title": "検出された異常値",
+      "tooltip": "タレントデータで検出された統計的異常値と異常パターン",
+      "empty": "異常値は検出されませんでした",
+      "emptyDescription": "タレント分布は適切にキャリブレーションされており、重大な異常値はありません",
+      "criticalCount": "{{count}}件の重大",
+      "warningCount": "{{count}}件の警告",
+      "infoCount": "{{count}}件の情報"
     },
     "insights": {
-      "title": "AI Insights",
-      "tooltip": "AI-generated insights and recommendations based on your talent data",
-      "empty": "No insights available",
-      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
-      "recommendationCount": "{{count}} Recommendation",
-      "recommendationCount_other": "{{count}} Recommendations",
-      "observationCount": "{{count}} Observation",
-      "observationCount_other": "{{count}} Observations",
-      "warningCount": "{{count}} Warning",
-      "warningCount_other": "{{count}} Warnings"
+      "title": "AIインサイト",
+      "tooltip": "タレントデータに基づいてAIが生成したインサイトと推奨事項",
+      "empty": "インサイトはありません",
+      "emptyDescription": "システムがタレントデータを分析すると、ここにインサイトが表示されます",
+      "recommendationCount": "{{count}}件の推奨事項",
+      "recommendationCount_other": "{{count}}件の推奨事項",
+      "observationCount": "{{count}}件の観察事項",
+      "observationCount_other": "{{count}}件の観察事項",
+      "warningCount": "{{count}}件の警告",
+      "warningCount_other": "{{count}}件の警告"
     },
     "distribution": {
-      "title": "Talent Distribution",
-      "tooltip": "Overview of how employees are distributed across the 9-box grid",
-      "totalEmployees": "Total: {{count}} employees"
+      "title": "タレント分布",
+      "tooltip": "9ボックスグリッド上での従業員の分布状況の概要",
+      "totalEmployees": "合計: {{count}}名の従業員"
     },
     "section": {
-      "infoAria": "More information about this section"
+      "infoAria": "このセクションの詳細情報"
     }
   }
 }

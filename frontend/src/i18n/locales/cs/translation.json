@@ -503,107 +503,116 @@
   },
   "intelligence": {
     "calibrationSummary": {
-      "title": "Calibration Summary",
-      "dataOverview": "Data Overview",
-      "insights": "Calibration Insights",
-      "generating": "Generating...",
-      "generateSummary": "Generate AI Summary",
-      "llmNotAvailable": "AI Summary requires ANTHROPIC_API_KEY to be configured",
-      "selectAll": "Select All",
-      "deselectAll": "Deselect All",
-      "estimatedDuration": "Est. {{duration}}",
-      "suggestedSequence": "Suggested: {{sequence}}",
-      "employees": "employees",
-      "stars": "Stars",
-      "centerBox": "Center Box",
-      "lowerPerformers": "Lower Performers",
-      "insightsSelected": "{{count}} insight selected",
-      "insightsSelected_other": "{{count}} insights selected",
-      "keyRecommendations": "Key Recommendations",
-      "discussionPoints": "Predicted Discussion Points",
-      "poweredBy": "Powered by {{model}}",
+      "title": "Souhrn kalibrace",
+      "dataOverview": "Přehled dat",
+      "insights": "Poznatky z kalibrace",
+      "generating": "Generuji...",
+      "generateSummary": "Generovat souhrn s AI",
+      "llmNotAvailable": "Souhrn s AI vyžaduje konfiguraci ANTHROPIC_API_KEY",
+      "selectAll": "Vybrat vše",
+      "deselectAll": "Zrušit výběr všech",
+      "estimatedDuration": "Odh. {{duration}}",
+      "suggestedSequence": "Doporučeno: {{sequence}}",
+      "employees": "zaměstnanci",
+      "stars": "Hvězdy",
+      "centerBox": "Střední pole",
+      "lowerPerformers": "Nižší výkon",
+      "insightsSelected": "{{count}} poznatek vybrán",
+      "insightsSelected_other": "{{count}} poznatků vybráno",
+      "keyRecommendations": "Klíčová doporučení",
+      "discussionPoints": "Předpokládané body diskuse",
+      "poweredBy": "Poháněno {{model}}",
+      "toggleSection": "Přepnout sekci souhrnu kalibrace",
+      "showLess": "Zobrazit méně",
+      "showFullSummary": "Zobrazit celý souhrn",
+      "poweredByClaude": "Vytvořeno pomocí Claude",
       "priority": {
-        "high": "High",
-        "medium": "Medium",
-        "low": "Low"
+        "high": "Vysoká",
+        "medium": "Střední",
+        "low": "Nízká"
       },
       "category": {
-        "location": "Location",
-        "function": "Function",
-        "level": "Level",
-        "tenure": "Tenure",
-        "distribution": "Distribution",
-        "time": "Time"
+        "location": "Lokace",
+        "function": "Funkce",
+        "level": "Úroveň",
+        "tenure": "Délka zaměstnání",
+        "distribution": "Distribuce",
+        "time": "Čas"
       },
       "insightType": {
-        "anomaly": "Anomaly",
-        "focus_area": "Focus Area",
-        "recommendation": "Recommendation",
-        "time_allocation": "Time Allocation"
+        "anomaly": "Anomálie",
+        "focus_area": "Oblast zaměření",
+        "recommendation": "Doporučení",
+        "time_allocation": "Časová alokace"
       },
       "affectedEmployees": "{{count}} zaměstnanec ovlivněn",
       "affectedEmployees_other": "{{count}} zaměstnanců ovlivněno"
     },
+    "aiSummary": {
+      "title": "Souhrn generovaný AI",
+      "showLess": "Zobrazit méně",
+      "readFull": "Přečíst celé"
+    },
     "severity": {
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
+      "critical": "Kritické",
+      "warning": "Varování",
+      "info": "Informace"
     },
     "insightType": {
-      "recommendation": "Recommendation",
-      "observation": "Observation",
-      "warning": "Warning"
+      "recommendation": "Doporučení",
+      "observation": "Pozorování",
+      "warning": "Varování"
     },
     "confidence": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
+      "high": "Vysoká",
+      "medium": "Střední",
+      "low": "Nízká"
     },
     "insight": {
-      "confidence": "Confidence",
-      "confidenceLabel": "{{level}} Confidence",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "boxCount": "{{count}} box",
-      "boxCount_other": "{{count}} boxes",
+      "confidence": "Spolehlivost",
+      "confidenceLabel": "Spolehlivost {{level}}",
+      "employeeCount": "{{count}} zaměstnanec",
+      "employeeCount_other": "{{count}} zaměstnanců",
+      "boxCount": "{{count}} pole",
+      "boxCount_other": "{{count}} polí",
       "actionAria": "{{action}} - {{type}}",
       "actionButtonAria": "{{action}}"
     },
     "anomaly": {
-      "viewDetailsAria": "View details for {{title}}",
-      "affectedEmployees": "Affected",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "suggestion": "Suggestion"
+      "viewDetailsAria": "Zobrazit podrobnosti pro {{title}}",
+      "affectedEmployees": "Ovlivněno",
+      "employeeCount": "{{count}} zaměstnanec",
+      "employeeCount_other": "{{count}} zaměstnanců",
+      "suggestion": "Návrh"
     },
     "anomalies": {
-      "title": "Anomalies Detected",
-      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
-      "empty": "No anomalies detected",
-      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
-      "criticalCount": "{{count}} Critical",
-      "warningCount": "{{count}} Warning",
-      "infoCount": "{{count}} Info"
+      "title": "Detekované anomálie",
+      "tooltip": "Statistické anomálie a neobvyklé vzory detekované ve vašich datech o talentech",
+      "empty": "Nebyly detekovány žádné anomálie",
+      "emptyDescription": "Distribuce vašich talentů se zdá být dobře kalibrovaná bez významných anomálií",
+      "criticalCount": "{{count}} Kritických",
+      "warningCount": "{{count}} Varování",
+      "infoCount": "{{count}} Informací"
     },
     "insights": {
-      "title": "AI Insights",
-      "tooltip": "AI-generated insights and recommendations based on your talent data",
-      "empty": "No insights available",
-      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
-      "recommendationCount": "{{count}} Recommendation",
-      "recommendationCount_other": "{{count}} Recommendations",
-      "observationCount": "{{count}} Observation",
-      "observationCount_other": "{{count}} Observations",
-      "warningCount": "{{count}} Warning",
-      "warningCount_other": "{{count}} Warnings"
+      "title": "Poznatky AI",
+      "tooltip": "AI generované poznatky a doporučení založené na vašich datech o talentech",
+      "empty": "Nejsou k dispozici žádné poznatky",
+      "emptyDescription": "Poznatky se zde zobrazí, jakmile systém analyzuje vaše data o talentech",
+      "recommendationCount": "{{count}} Doporučení",
+      "recommendationCount_other": "{{count}} Doporučení",
+      "observationCount": "{{count}} Pozorování",
+      "observationCount_other": "{{count}} Pozorování",
+      "warningCount": "{{count}} Varování",
+      "warningCount_other": "{{count}} Varování"
     },
     "distribution": {
-      "title": "Talent Distribution",
-      "tooltip": "Overview of how employees are distributed across the 9-box grid",
-      "totalEmployees": "Total: {{count}} employees"
+      "title": "Distribuce talentů",
+      "tooltip": "Přehled toho, jak jsou zaměstnanci distribuováni napříč 9-box mřížkou",
+      "totalEmployees": "Celkem: {{count}} zaměstnanců"
     },
     "section": {
-      "infoAria": "More information about this section"
+      "infoAria": "Více informací o této sekci"
     }
   }
 }
