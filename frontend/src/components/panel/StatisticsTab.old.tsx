@@ -231,7 +231,7 @@ export const StatisticsTab: React.FC = () => {
                         row.count > 0
                           ? "transparent"
                           : theme.palette.mode === "dark"
-                            ? "rgba(255, 255, 255, 0.05)"
+                            ? "action.hover"
                             : "grey.50",
                     }}
                   >

@@ -237,7 +237,7 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
         const request = route.request();
         const url = request.url();
 
-        // Replace default backend port (38000) with worker's port
+        // Replace the default backend port (38000) with worker's port
         const newUrl = url.replace(
           /http:\/\/localhost:38000/,
           workerBackendUrl

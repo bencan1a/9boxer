@@ -21,15 +21,12 @@ import CardContent from "@mui/material/CardContent";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { Employee, PotentialLevel } from "../../types/employee";
-import { useSessionStore } from "../../store/sessionStore";
 import {
   getPositionName,
   getShortPositionLabel,
 } from "../../constants/positionLabels";
-import { PERFORMANCE_BUCKETS } from "../../constants/performanceBuckets";
 import { EmployeeFlags } from "./EmployeeFlags";
 import { EmployeeChangesSummary } from "./EmployeeChangesSummary";
 
@@ -48,27 +45,6 @@ const getPotentialColor = (level: PotentialLevel): string => {
     default:
       return "default";
   }
-};
-
-// Get background color for performance/potential chips based on grid position
-const getBoxColor = (position: number, theme: any): string => {
-  // High Performers: positions 6, 8, 9
-  if (PERFORMANCE_BUCKETS.High.includes(position)) {
-    return theme.palette.gridBox.highPerformer;
-  }
-  // Needs Attention: positions 1, 2, 4
-  if (PERFORMANCE_BUCKETS.Low.includes(position)) {
-    return theme.palette.gridBox.needsAttention;
-  }
-  // Solid Performer: position 5
-  if (position === 5) {
-    return theme.palette.gridBox.solidPerformer;
-  }
-  // Development: positions 3, 7
-  if ([3, 7].includes(position)) {
-    return theme.palette.gridBox.development;
-  }
-  return theme.palette.background.paper;
 };
 
 interface InfoRowProps {
@@ -97,9 +73,6 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
   employee,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme();
-
-  const boxColor = getBoxColor(employee.grid_position, theme);
 
   return (
     <Card variant="outlined">
@@ -193,7 +166,7 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
                   color={
                     getPotentialColor(
                       employee.performance as PotentialLevel
-                    ) as any
+                    ) as "success" | "warning" | "error" | "default"
                   }
                   sx={{
                     fontWeight: "medium",
@@ -213,7 +186,13 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
                 <Chip
                   label={employee.potential}
                   size="small"
-                  color={getPotentialColor(employee.potential) as any}
+                  color={
+                    getPotentialColor(employee.potential) as
+                      | "success"
+                      | "warning"
+                      | "error"
+                      | "default"
+                  }
                   sx={{
                     fontWeight: "medium",
                     width: "100%",

@@ -18,6 +18,10 @@ import {
   IntelligenceData,
   DonutModeToggleResponse,
   MoveDonutRequest,
+  CalibrationSummaryData,
+  LLMAvailability,
+  LLMSummaryResult,
+  GenerateSummaryRequest,
 } from "../types/api";
 import { Employee } from "../types/employee";
 import { TrackableEvent } from "../types/events";
@@ -401,6 +405,46 @@ class ApiClient {
         await this.client.get<IntelligenceData>("/api/intelligence");
       return response.data;
     });
+  }
+
+  // ==================== Calibration Summary Methods ====================
+
+  async getCalibrationSummary(params?: {
+    useAgent?: boolean;
+  }): Promise<CalibrationSummaryData> {
+    const { useAgent = true } = params || {};
+
+    return withRetry(async () => {
+      // Build query string if useAgent is explicitly false
+      const queryParams = new URLSearchParams();
+      if (!useAgent) {
+        queryParams.append("use_agent", "false");
+      }
+
+      const url = queryParams.toString()
+        ? `/api/calibration-summary?${queryParams.toString()}`
+        : "/api/calibration-summary";
+
+      const response = await this.client.get<CalibrationSummaryData>(url);
+      return response.data;
+    });
+  }
+
+  async checkLLMAvailability(): Promise<LLMAvailability> {
+    const response = await this.client.get<LLMAvailability>(
+      "/api/calibration-summary/llm-availability"
+    );
+    return response.data;
+  }
+
+  async generateLLMSummary(
+    selectedInsightIds: string[]
+  ): Promise<LLMSummaryResult> {
+    const response = await this.client.post<LLMSummaryResult>(
+      "/api/calibration-summary/generate-summary",
+      { selected_insight_ids: selectedInsightIds } as GenerateSummaryRequest
+    );
+    return response.data;
   }
 
   // ==================== Preferences Methods ====================

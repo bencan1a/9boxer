@@ -70,39 +70,30 @@ class ExcelExporter:
             promotion_readiness_col = self._find_column(sheet, "Promotion Readiness")
 
             # Add "Modified" columns if they don't exist
-            max_col = sheet.max_column or 1
+            # Each column is checked individually to support files that may have
+            # some but not all of the change tracking columns (e.g., from older exports)
             modified_col = self._find_column(sheet, "Modified in Session", create=True)
             assert modified_col is not None, "modified_col should not be None when create=True"  # nosec B101  # Type narrowing
-            if modified_col > max_col:
-                sheet.cell(1, modified_col, "Modified in Session")
-                sheet.cell(1, modified_col + 1, "Modification Date")
-                sheet.cell(1, modified_col + 2, "9Boxer Change Description")
-                sheet.cell(1, modified_col + 3, "9Boxer Change Notes")
-                sheet.cell(1, modified_col + 4, "Donut Exercise Position")
-                sheet.cell(1, modified_col + 5, "Donut Exercise Label")
-                sheet.cell(1, modified_col + 6, "Donut Exercise Change Description")
-                sheet.cell(1, modified_col + 7, "Donut Exercise Notes")
-                sheet.cell(1, modified_col + 8, "Flags")
-                sheet.cell(1, modified_col + 9, "Original Performance")
-                sheet.cell(1, modified_col + 10, "Original Potential")
 
-            # Ensure "Original Performance" and "Original Potential" columns exist even for
-            # workbooks exported with older versions that only had "Modified in Session".
-            original_perf_col = self._find_column(sheet, "Original Performance")
-            if original_perf_col is None:
-                original_perf_col = self._find_column(sheet, "Original Performance", create=True)
-                assert original_perf_col is not None, (
-                    "original_perf_col should not be None when create=True"
-                )  # nosec B101
-                sheet.cell(1, original_perf_col, "Original Performance")
+            # Define all change tracking columns in order
+            change_columns = [
+                ("Modified in Session", modified_col),
+                ("Modification Date", modified_col + 1),
+                ("9Boxer Change Description", modified_col + 2),
+                ("9Boxer Change Notes", modified_col + 3),
+                ("Donut Exercise Position", modified_col + 4),
+                ("Donut Exercise Label", modified_col + 5),
+                ("Donut Exercise Change Description", modified_col + 6),
+                ("Donut Exercise Notes", modified_col + 7),
+                ("Flags", modified_col + 8),
+                ("Original Performance", modified_col + 9),
+                ("Original Potential", modified_col + 10),
+            ]
 
-            original_pot_col = self._find_column(sheet, "Original Potential")
-            if original_pot_col is None:
-                original_pot_col = self._find_column(sheet, "Original Potential", create=True)
-                assert original_pot_col is not None, (
-                    "original_pot_col should not be None when create=True"
-                )  # nosec B101
-                sheet.cell(1, original_pot_col, "Original Potential")
+            # Create each column if it doesn't exist
+            for col_name, col_idx in change_columns:
+                if self._find_column(sheet, col_name) is None:
+                    sheet.cell(1, col_idx, col_name)
             # Create employee lookup by ID
             employee_map = {e.employee_id: e for e in employees}
 

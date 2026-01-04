@@ -14,7 +14,7 @@ import { Page, expect } from "@playwright/test";
  */
 export async function waitForUiSettle(
   page: Page,
-  duration: number = 0.5
+  _duration: number = 0.5
 ): Promise<void> {
   // Note: duration parameter ignored but kept for backward compatibility with existing tests
   await page.waitForLoadState("networkidle");
@@ -159,7 +159,7 @@ export async function toggleDonutMode(
 export async function clickTabAndWait(
   page: Page,
   tabTestId: string,
-  waitDuration: number = 0.5
+  _waitDuration: number = 0.5
 ): Promise<void> {
   // Note: waitDuration parameter ignored but kept for backward compatibility
   await page.locator(`[data-testid="${tabTestId}"]`).click();
@@ -278,4 +278,45 @@ export async function expectTabActive(
 export async function closeRightPanel(page: Page): Promise<void> {
   await page.keyboard.press("Escape");
   await expect(page.locator('[data-testid="details-panel"]')).not.toBeVisible();
+}
+
+/**
+ * Expand manager anomaly details section
+ *
+ * Expands the "Detailed Deviations" collapsible section in the manager anomaly
+ * component if it is not already expanded. The manager filter links are only
+ * visible when this section is expanded.
+ *
+ * This function finds the "Detailed Deviations" text and clicks on it to expand
+ * the section, then waits for the first manager filter link to become visible.
+ *
+ * @param page - Playwright Page object
+ * @example
+ * await switchPanelTab(page, 'intelligence');
+ * await expandManagerAnomalyDetails(page);
+ * // Manager filter links are now visible and clickable
+ * await page.locator('[data-testid^="manager-filter-link-"]').first().click();
+ */
+export async function expandManagerAnomalyDetails(page: Page): Promise<void> {
+  // Ensure all dialogs and modal backdrops are closed before interaction
+  // This prevents clicks from being intercepted by modal overlays
+  await closeAllDialogsAndOverlays(page);
+
+  // Wait for any backdrop animations to complete
+  await page.waitForLoadState("networkidle");
+
+  // Find the "Detailed Deviations" text within the manager anomaly section
+  const detailsHeader = page
+    .locator('[data-testid="manager-anomaly-section"]')
+    .getByText(/Detailed Deviations|Desviaciones Detalladas/);
+
+  // Click to expand if present (might already be expanded)
+  if (await detailsHeader.isVisible()) {
+    await detailsHeader.click();
+  }
+
+  // Wait for manager links to become visible
+  await expect(
+    page.locator('[data-testid^="manager-filter-link-"]').first()
+  ).toBeVisible({ timeout: 5000 });
 }

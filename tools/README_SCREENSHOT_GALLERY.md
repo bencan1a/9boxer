@@ -119,11 +119,6 @@ Agents can use exported review data to make corrections:
     "status": "approved",
     "notes": "Looks good!",
     "reviewed_at": "2025-12-28T18:57:00.000Z"
-  },
-  "changes-drag-sequence": {
-    "status": "needs-work",
-    "notes": "Need to show all 3 panels in the sequence",
-    "reviewed_at": "2025-12-28T18:58:00.000Z"
   }
 }
 ```

@@ -25,12 +25,7 @@ import * as http from "http";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import {
-  screenshotConfig,
-  ScreenshotMetadata,
-  getAutomatedScreenshots,
-  getManualScreenshots,
-} from "./config";
+import { ScreenshotMetadata, getAutomatedScreenshots } from "./config";
 
 interface GenerateOptions {
   screenshots?: string[]; // Filter specific screenshots
@@ -43,7 +38,6 @@ interface GenerationResults {
   successful: string[];
   failed: Array<{ name: string; error: string }>;
   skipped: string[];
-  manual: string[];
 }
 
 /**
@@ -253,7 +247,6 @@ export async function generateScreenshots(
     successful: [],
     failed: [],
     skipped: [],
-    manual: [],
   };
 
   let browser: Browser | null = null;
@@ -288,7 +281,6 @@ export async function generateScreenshots(
 
     // Determine which screenshots to generate
     const automatedScreenshots = getAutomatedScreenshots();
-    const manualScreenshots = getManualScreenshots();
 
     // Filter screenshots if specific ones requested
     let screenshotsToGenerate: Record<string, ScreenshotMetadata> =
@@ -301,13 +293,7 @@ export async function generateScreenshots(
       );
     }
 
-    // Report manual screenshots
-    for (const [name, metadata] of Object.entries(manualScreenshots)) {
-      results.manual.push(name);
-      console.log(`⚠ [Manual] ${name} - ${metadata.description}`);
-    }
-
-    // Generate each automated screenshot
+    // Generate each screenshot
     let screenshotIndex = 0;
     const totalScreenshots = Object.keys(screenshotsToGenerate).length;
 
@@ -409,7 +395,7 @@ async function resetApplicationState(page: Page): Promise<void> {
 
   // Wait for app to be ready (verify clean state - Phase 3: Task 9)
   // The app should show the welcome/upload state with no data loaded
-  const appReady = page.locator('[data-testid="nine-box-grid"]');
+  const _appReady = page.locator('[data-testid="nine-box-grid"]');
 
   // Wait a moment for React to initialize
   await page.waitForTimeout(500);
@@ -469,7 +455,7 @@ async function generateScreenshot(
  */
 async function validateScreenshot(
   outputPath: string,
-  name: string
+  _name: string
 ): Promise<void> {
   // Check file exists
   if (!fs.existsSync(outputPath)) {
@@ -506,20 +492,11 @@ function printSummary(results: GenerationResults): void {
   console.log(`✓ Successful: ${results.successful.length}`);
   console.log(`✗ Failed:     ${results.failed.length}`);
   console.log(`⊘ Skipped:    ${results.skipped.length}`);
-  console.log(`⚠ Manual:     ${results.manual.length}`);
 
   if (results.failed.length > 0) {
     console.log("\nFailed screenshots:");
     for (const { name, error } of results.failed) {
       console.log(`  - ${name}: ${error}`);
-    }
-  }
-
-  if (results.manual.length > 0) {
-    console.log("\nManual screenshots (require manual creation):");
-    for (const name of results.manual) {
-      const metadata = screenshotConfig[name];
-      console.log(`  - ${name}: ${metadata.description}`);
     }
   }
 
@@ -582,7 +559,6 @@ async function generateHtmlReport(results: GenerationResults): Promise<void> {
     .stat-card.success { border-left-color: #10b981; background: #ecfdf5; }
     .stat-card.failure { border-left-color: #ef4444; background: #fef2f2; }
     .stat-card.skipped { border-left-color: #f59e0b; background: #fffbeb; }
-    .stat-card.manual { border-left-color: #8b5cf6; background: #f5f3ff; }
     .stat-card .label { font-size: 14px; color: #666; margin-bottom: 5px; }
     .stat-card .value { font-size: 32px; font-weight: bold; color: #333; }
     .stat-card .percentage { font-size: 14px; color: #666; margin-top: 5px; }
@@ -681,10 +657,6 @@ async function generateHtmlReport(results: GenerationResults): Promise<void> {
         <div class="label">⊘ Skipped</div>
         <div class="value">${results.skipped.length}</div>
       </div>
-      <div class="stat-card manual">
-        <div class="label">⚠ Manual</div>
-        <div class="value">${results.manual.length}</div>
-      </div>
     </div>
 
     <div class="results">
@@ -732,31 +704,6 @@ async function generateHtmlReport(results: GenerationResults): Promise<void> {
           </li>
         `
           )
-          .join("")}
-      </ul>
-      `
-          : ""
-      }
-
-      ${
-        results.manual.length > 0
-          ? `
-      <h2 class="section-title">Manual Screenshots (${results.manual.length})</h2>
-      <p style="margin-bottom: 15px; color: #666;">These screenshots require manual creation and cannot be automated.</p>
-      <ul class="test-list">
-        ${results.manual
-          .map((name) => {
-            const metadata = screenshotConfig[name];
-            return `
-          <li class="test-item">
-            <span class="icon">⚠</span>
-            <div class="content">
-              <div class="name">${name}</div>
-              <div style="font-size: 13px; color: #666; margin-top: 5px;">${metadata.description}</div>
-            </div>
-          </li>
-        `;
-          })
           .join("")}
       </ul>
       `

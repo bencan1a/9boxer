@@ -2,7 +2,7 @@
  * Visual regression tests for LoadingSpinner component
  */
 import { test } from "@playwright/test";
-import { snapshotStory, snapshotStoryBothThemes } from "./storybook-helpers";
+import { snapshotStoryBothThemes } from "./storybook-helpers";
 
 test.describe("LoadingSpinner Visual Tests", () => {
   test.beforeEach(async ({ page }) => {

@@ -85,7 +85,7 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
         headless: true, // Explicitly force headless mode
         actionTimeout: 15000,
-        trace: "on",
+        trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "off",
         deviceScaleFactor: 1,

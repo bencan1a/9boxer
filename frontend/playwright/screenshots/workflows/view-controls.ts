@@ -281,3 +281,116 @@ export async function generateFullscreenMode(
     fullPage: false,
   });
 }
+
+// =============================================================================
+// SETTINGS & VIEW CONTROLS SCREENSHOTS (5 screenshots)
+// =============================================================================
+
+/**
+ * Generate Settings gear icon location screenshot
+ *
+ * Shows the AppBar with the settings gear icon location highlighted.
+ * Captures the right portion of the AppBar to show gear icon in context.
+ *
+ * Story: app-dashboard-appbar--file-loaded
+ */
+export async function generateSettingsGearIconLocation(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 1200, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-appbar--file-loaded",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}
+
+/**
+ * Generate Settings theme selector screenshot
+ *
+ * Shows the Settings dialog with the theme section visible,
+ * including Light, Dark, and Auto radio buttons.
+ *
+ * Story: app-settings-settingsdialog--open
+ */
+export async function generateSettingsThemeSelector(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 500, height: 600 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-settings-settingsdialog--open",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+    selector: '[role="dialog"]',
+  });
+}
+
+/**
+ * Generate zoom controls close-up screenshot
+ *
+ * Shows the zoom controls portion of the ViewControls toolbar:
+ * minus, reset, plus buttons and percentage display.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsZoomCloseup(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate fullscreen toggle close-up screenshot
+ *
+ * Shows the fullscreen toggle button in the ViewControls toolbar.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsFullscreenCloseup(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
+  });
+}
+
+/**
+ * Generate mode toggle close-up screenshot
+ *
+ * Shows the Grid/Donut mode toggle buttons in the ViewControls toolbar.
+ *
+ * Story: app-common-viewcontrols--grid-view-active
+ */
+export async function generateViewControlsModeToggleCloseup(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await page.setViewportSize({ width: 400, height: 200 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-common-viewcontrols--grid-view-active",
+    outputPath,
+    theme: "dark",
+    waitTime: 300,
+  });
+}

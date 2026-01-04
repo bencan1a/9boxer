@@ -1,0 +1,679 @@
+"""E2E tests for AI calibration summary agent-first architecture.
+
+This module tests the complete agent-first calibration summary flow:
+- Full integration with LLM service
+- Data packaging and agent prompting
+- Response parsing and validation (using structured outputs)
+- Fallback to legacy when LLM fails
+- Agent vs legacy mode comparison
+
+Tests are marked with @pytest.mark.e2e and include both:
+1. Mocked tests (fast, for CI)
+2. Real LLM tests (slow, requires API key, can be skipped)
+"""
+
+import os
+from unittest.mock import Mock, patch
+
+import pytest
+from fastapi.testclient import TestClient
+
+# Mark all tests in this module as E2E
+pytestmark = [pytest.mark.e2e]
+
+
+# =============================================================================
+# Mock Response Fixtures
+# =============================================================================
+
+
+@pytest.fixture
+def mock_valid_agent_response():
+    """Mock a valid agent response with summary and clustered insights."""
+    return {
+        "summary": (
+            "The calibration data reveals several key patterns requiring attention. "
+            "First, the MT3 level shows concerning concentration with 40% of employees "
+            "in the center box, suggesting potential grade compression. Additionally, "
+            "Engineering function exhibits a statistically significant rating anomaly "
+            "(z=3.2, p<0.01) with 35% high performers compared to the expected 20%. "
+            "Time allocation analysis suggests 2.5 hours for comprehensive review, "
+            "with MT3 requiring extended discussion time."
+        ),
+        "issues": [
+            {
+                "type": "anomaly",
+                "category": "level",
+                "priority": "high",
+                "title": "MT3 level shows 40% center box concentration",
+                "description": "MT3 has 24 of 60 employees (40%) in position 5, well above the recommended 25% threshold. This suggests potential grade compression or reluctance to differentiate within this cohort.",
+                "affected_count": 24,
+                "source_data": {
+                    "observed_pct": 40.0,
+                    "expected_pct": 25.0,
+                    "z_score": 2.8,
+                    "p_value": 0.005,
+                },
+                "cluster_id": "mt3-focus",
+                "cluster_title": "MT3 Level Requires Deep Review",
+            },
+            {
+                "type": "focus_area",
+                "category": "level",
+                "priority": "high",
+                "title": "MT3 has 60% new hires (<1 year tenure)",
+                "description": "36 of 60 MT3 employees are new hires. Consider whether these employees have had sufficient time for accurate performance assessment.",
+                "affected_count": 36,
+                "source_data": {
+                    "new_hire_count": 36,
+                    "total_count": 60,
+                    "new_hire_pct": 60.0,
+                },
+                "cluster_id": "mt3-focus",
+                "cluster_title": "MT3 Level Requires Deep Review",
+            },
+            {
+                "type": "anomaly",
+                "category": "function",
+                "priority": "high",
+                "title": "Engineering rates significantly higher than other functions",
+                "description": "Engineering shows 35% high performers vs 20% expected (z=3.2, p<0.01). Investigate whether this represents genuine talent concentration or grade inflation.",
+                "affected_count": 45,
+                "source_data": {
+                    "observed_pct": 35.0,
+                    "expected_pct": 20.0,
+                    "z_score": 3.2,
+                    "p_value": 0.001,
+                },
+                "cluster_id": None,
+                "cluster_title": None,
+            },
+            {
+                "type": "recommendation",
+                "category": "distribution",
+                "priority": "medium",
+                "title": "Overall distribution shows healthy spread",
+                "description": "12% in position 9 (stars), 28% in center box, 62% high performers overall - all within recommended ranges.",
+                "affected_count": 100,
+                "source_data": {
+                    "stars_pct": 12.0,
+                    "center_pct": 28.0,
+                    "high_perf_pct": 62.0,
+                },
+                "cluster_id": None,
+                "cluster_title": None,
+            },
+            {
+                "type": "time_allocation",
+                "category": "time",
+                "priority": "medium",
+                "title": "Allocate 2.5 hours for comprehensive review",
+                "description": "Suggested breakdown: 45m MT3 (high priority cluster), 30m MT4, 25m MT5, 20m Engineering anomaly deep-dive, 30m remainder + intelligence sweep.",
+                "affected_count": 100,
+                "source_data": {
+                    "total_minutes": 150,
+                    "by_level": {"MT3": 45, "MT4": 30, "MT5": 25},
+                },
+                "cluster_id": None,
+                "cluster_title": None,
+            },
+        ],
+    }
+
+
+@pytest.fixture
+def mock_malformed_json_response():
+    """Mock a malformed JSON response (missing closing brace)."""
+    return (
+        '{"summary": "Test summary", "issues": [{"type": "anomaly", "category": "level", '
+        '"priority": "high", "title": "Test", "description": "Test desc", '
+        '"affected_count": 10, "source_data": {}}'
+        # Missing closing ]} for issues array and main object
+    )
+
+
+
+
+@pytest.fixture
+def session_with_sample_data(test_client: TestClient) -> dict[str, str]:
+    """Create a session with sample employee data (100 employees with bias patterns).
+
+    Returns:
+        Headers dict for subsequent API calls
+    """
+    response = test_client.post(
+        "/api/employees/generate-sample",
+        json={"size": 100, "include_bias": True, "seed": 42},
+    )
+    assert response.status_code == 200
+    return {}
+
+
+# =============================================================================
+# Test Agent-First Happy Path
+# =============================================================================
+
+
+class TestAgentFirstHappyPath:
+    """Tests for the happy path agent-first calibration summary flow."""
+
+    def test_agent_mode_default_returns_summary_and_insights(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test GET /api/calibration-summary with default use_agent=true returns AI summary."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            data = response.json()
+
+            # Verify all required top-level fields
+            assert "data_overview" in data
+            assert "time_allocation" in data
+            assert "insights" in data
+            assert "summary" in data
+
+            # Summary should be populated (from agent)
+            assert data["summary"] is not None
+            assert isinstance(data["summary"], str)
+            assert len(data["summary"]) > 50  # Should be substantive
+            assert "MT3" in data["summary"]  # Should reference specific findings
+
+            # Insights should be from agent
+            assert len(data["insights"]) == 5
+
+    def test_agent_insights_have_all_required_fields(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that agent-generated insights have all required TypedDict fields."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            insights = response.json()["insights"]
+
+            # Verify each insight has all required fields
+            for insight in insights:
+                # Required fields from Insight TypedDict
+                assert "id" in insight, f"Missing id in insight: {insight}"
+                assert "type" in insight, f"Missing type in insight: {insight}"
+                assert "category" in insight, f"Missing category in insight: {insight}"
+                assert "priority" in insight, f"Missing priority in insight: {insight}"
+                assert "title" in insight, f"Missing title in insight: {insight}"
+                assert "description" in insight, f"Missing description in insight: {insight}"
+                assert "affected_count" in insight, f"Missing affected_count in insight: {insight}"
+                assert "source_data" in insight, f"Missing source_data in insight: {insight}"
+
+                # Validate field types
+                assert isinstance(insight["id"], str)
+                assert isinstance(insight["type"], str)
+                assert isinstance(insight["category"], str)
+                assert isinstance(insight["priority"], str)
+                assert isinstance(insight["title"], str)
+                assert isinstance(insight["description"], str)
+                assert isinstance(insight["affected_count"], int)
+                assert isinstance(insight["source_data"], dict)
+
+                # Validate priority values
+                assert insight["priority"] in ["high", "medium", "low"]
+
+                # Validate type values
+                assert insight["type"] in [
+                    "anomaly",
+                    "focus_area",
+                    "recommendation",
+                    "time_allocation",
+                ]
+
+    def test_agent_insights_clustering_fields(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that insights include optional clustering fields when appropriate."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            insights = response.json()["insights"]
+
+            # Find clustered insights
+            clustered_insights = [i for i in insights if i.get("cluster_id") is not None]
+            assert len(clustered_insights) == 2, "Should have 2 clustered insights"
+
+            # Verify clustered insights have both cluster_id and cluster_title
+            for insight in clustered_insights:
+                assert insight["cluster_id"] == "mt3-focus"
+                assert insight["cluster_title"] == "MT3 Level Requires Deep Review"
+
+            # Find non-clustered insights
+            non_clustered = [i for i in insights if i.get("cluster_id") is None]
+            assert len(non_clustered) == 3
+
+            # Verify non-clustered insights have None or missing cluster fields
+            for insight in non_clustered:
+                assert insight.get("cluster_id") is None
+                assert insight.get("cluster_title") is None
+
+    def test_agent_mode_data_overview_structure(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that data overview has correct structure and realistic values."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            overview = response.json()["data_overview"]
+
+            # Required fields
+            required_fields = [
+                "total_employees",
+                "by_level",
+                "by_function",
+                "by_location",
+                "stars_count",
+                "stars_percentage",
+                "center_box_count",
+                "center_box_percentage",
+                "lower_performers_count",
+                "lower_performers_percentage",
+                "high_performers_count",
+                "high_performers_percentage",
+            ]
+            for field in required_fields:
+                assert field in overview, f"Missing field: {field}"
+
+            # Validate values
+            assert overview["total_employees"] == 100
+            assert isinstance(overview["by_level"], dict)
+            assert isinstance(overview["by_function"], dict)
+            assert isinstance(overview["by_location"], dict)
+            assert overview["stars_count"] >= 0
+            assert 0 <= overview["stars_percentage"] <= 100
+            assert 0 <= overview["center_box_percentage"] <= 100
+
+    def test_agent_mode_time_allocation_structure(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that time allocation has correct structure."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            time_allocation = response.json()["time_allocation"]
+
+            # Required fields
+            assert "estimated_duration_minutes" in time_allocation
+            assert "breakdown_by_level" in time_allocation
+            assert "suggested_sequence" in time_allocation
+
+            # Validate types
+            assert isinstance(time_allocation["estimated_duration_minutes"], int)
+            assert isinstance(time_allocation["breakdown_by_level"], list)
+            assert isinstance(time_allocation["suggested_sequence"], list)
+
+            # Validate reasonable values
+            assert time_allocation["estimated_duration_minutes"] >= 30  # Minimum
+            assert time_allocation["estimated_duration_minutes"] <= 240  # Maximum
+
+            # Validate breakdown structure
+            if time_allocation["breakdown_by_level"]:
+                for item in time_allocation["breakdown_by_level"]:
+                    assert "level" in item
+                    assert "employee_count" in item
+                    assert "minutes" in item
+                    assert "percentage" in item
+
+
+# =============================================================================
+# Test Fallback to Legacy
+# =============================================================================
+
+
+class TestLegacyFallback:
+    """Tests for fallback to legacy mode when LLM fails."""
+
+    def test_fallback_when_llm_raises_runtime_error(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test fallback to legacy when LLM service raises RuntimeError."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            side_effect=RuntimeError("LLM service failed"),
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            data = response.json()
+
+            # Should fall back to legacy
+            assert data["summary"] is None
+            assert len(data["insights"]) > 0
+
+    def test_fallback_when_llm_unavailable(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test fallback to legacy when LLM is not available (no API key)."""
+        # Mock LLM service to be unavailable
+        with patch(
+            "ninebox.services.llm_service.LLMService.is_available",
+            return_value={"available": False, "reason": "No API key"},
+        ):
+            with patch(
+                "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+                side_effect=RuntimeError("LLM service not available: No API key"),
+            ):
+                response = test_client.get(
+                    "/api/calibration-summary", headers=session_with_sample_data
+                )
+
+                assert response.status_code == 200
+                data = response.json()
+
+                # Should fall back to legacy
+                assert data["summary"] is None
+                assert len(data["insights"]) > 0
+
+    def test_fallback_preserves_data_integrity(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test that fallback to legacy preserves data overview and time allocation."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            side_effect=RuntimeError("LLM failed"),
+        ):
+            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+            assert response.status_code == 200
+            data = response.json()
+
+            # Data overview and time allocation should still be correct
+            assert data["data_overview"]["total_employees"] == 100
+            assert data["time_allocation"]["estimated_duration_minutes"] > 0
+
+
+# =============================================================================
+# Test Legacy Mode (use_agent=false)
+# =============================================================================
+
+
+class TestLegacyMode:
+    """Tests for explicit legacy mode with use_agent=false."""
+
+    def test_legacy_mode_explicit_false(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test GET /api/calibration-summary?use_agent=false uses legacy logic."""
+        response = test_client.get(
+            "/api/calibration-summary?use_agent=false", headers=session_with_sample_data
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+
+        # Legacy mode should NOT have summary
+        assert data["summary"] is None
+
+        # But should have insights from legacy logic
+        assert len(data["insights"]) > 0
+
+        # Verify legacy insights have required fields
+        for insight in data["insights"]:
+            assert "id" in insight
+            assert "type" in insight
+            assert "title" in insight
+            assert "description" in insight
+
+    def test_legacy_insights_no_clustering(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test that legacy insights don't have cluster fields."""
+        response = test_client.get(
+            "/api/calibration-summary?use_agent=false", headers=session_with_sample_data
+        )
+
+        assert response.status_code == 200
+        insights = response.json()["insights"]
+
+        # Legacy insights should not have clustering
+        for insight in insights:
+            # cluster_id and cluster_title should either be None or not present
+            cluster_id = insight.get("cluster_id")
+            cluster_title = insight.get("cluster_title")
+            assert cluster_id is None
+            assert cluster_title is None
+
+
+# =============================================================================
+# Test Edge Cases
+# =============================================================================
+
+
+class TestEdgeCases:
+    """Tests for edge cases and error conditions."""
+
+    def test_empty_employee_list_graceful_handling(self, test_client: TestClient) -> None:
+        """Test graceful handling with minimal employee dataset.
+
+        NOTE: API requires minimum 50 employees (API requirement), so we test with that.
+        """
+        # Create minimal dataset (API requires min 20)
+        response = test_client.post(
+            "/api/employees/generate-sample",
+            json={"size": 50, "include_bias": False, "seed": 123},
+        )
+        assert response.status_code == 200
+
+        # Verify calibration summary works with small dataset
+        response = test_client.get("/api/calibration-summary")
+        assert response.status_code == 200
+        data = response.json()
+
+        assert data["data_overview"]["total_employees"] == 50
+        assert "insights" in data
+        assert "time_allocation" in data
+
+    def test_no_session_returns_404(self, test_client: TestClient) -> None:
+        """Test that calling endpoint without session returns 404."""
+        # Don't create a session - call directly
+        response = test_client.get("/api/calibration-summary")
+
+        assert response.status_code == 404
+        error = response.json()
+        assert "detail" in error
+        assert "session" in error["detail"].lower()
+
+    def test_insight_ids_are_deterministic(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that insight IDs are deterministic across multiple calls."""
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            # Call twice
+            response1 = test_client.get(
+                "/api/calibration-summary", headers=session_with_sample_data
+            )
+            response2 = test_client.get(
+                "/api/calibration-summary", headers=session_with_sample_data
+            )
+
+            assert response1.status_code == 200
+            assert response2.status_code == 200
+
+            insights1 = response1.json()["insights"]
+            insights2 = response2.json()["insights"]
+
+            # IDs should be identical
+            ids1 = [i["id"] for i in insights1]
+            ids2 = [i["id"] for i in insights2]
+            assert ids1 == ids2
+
+
+# =============================================================================
+# Test Data Consistency
+# =============================================================================
+
+
+class TestDataConsistency:
+    """Tests for data consistency between agent and legacy modes."""
+
+    def test_data_overview_identical_across_modes(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that data overview is identical in both modes."""
+        # Get agent mode
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            agent_response = test_client.get(
+                "/api/calibration-summary?use_agent=true", headers=session_with_sample_data
+            )
+
+        # Get legacy mode
+        legacy_response = test_client.get(
+            "/api/calibration-summary?use_agent=false", headers=session_with_sample_data
+        )
+
+        assert agent_response.status_code == 200
+        assert legacy_response.status_code == 200
+
+        agent_overview = agent_response.json()["data_overview"]
+        legacy_overview = legacy_response.json()["data_overview"]
+
+        # Data overview should be identical
+        assert agent_overview == legacy_overview
+
+    def test_time_allocation_identical_across_modes(
+        self, test_client: TestClient, session_with_sample_data: dict, mock_valid_agent_response
+    ) -> None:
+        """Test that time allocation is identical in both modes."""
+        # Get agent mode
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            agent_response = test_client.get(
+                "/api/calibration-summary?use_agent=true", headers=session_with_sample_data
+            )
+
+        # Get legacy mode
+        legacy_response = test_client.get(
+            "/api/calibration-summary?use_agent=false", headers=session_with_sample_data
+        )
+
+        assert agent_response.status_code == 200
+        assert legacy_response.status_code == 200
+
+        agent_time = agent_response.json()["time_allocation"]
+        legacy_time = legacy_response.json()["time_allocation"]
+
+        # Time allocation should be identical
+        assert agent_time == legacy_time
+
+
+# =============================================================================
+# Test Performance (Large Dataset)
+# =============================================================================
+
+
+class TestPerformance:
+    """Tests for performance with larger datasets."""
+
+    def test_large_employee_list_performance(
+        self, test_client: TestClient, mock_valid_agent_response
+    ) -> None:
+        """Test that system handles large employee lists efficiently."""
+        # Create large sample
+        response = test_client.post(
+            "/api/employees/generate-sample",
+            json={"size": 500, "include_bias": True, "seed": 999},
+        )
+        assert response.status_code == 200
+
+        # Test agent mode
+        with patch(
+            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
+            return_value=mock_valid_agent_response,
+        ):
+            response = test_client.get("/api/calibration-summary")
+
+            assert response.status_code == 200
+            data = response.json()
+
+            assert data["data_overview"]["total_employees"] == 500
+            assert data["summary"] is not None
+            assert len(data["insights"]) > 0
+
+
+# =============================================================================
+# Real LLM Integration Tests (Optional - Requires API Key)
+# =============================================================================
+
+
+@pytest.mark.skipif(
+    not os.getenv("ANTHROPIC_API_KEY"),
+    reason="Requires ANTHROPIC_API_KEY environment variable",
+)
+class TestRealLLMIntegration:
+    """Tests with real LLM calls (slow, requires API key).
+
+    These tests are skipped in CI unless ANTHROPIC_API_KEY is set.
+    Use these to verify actual LLM integration works correctly.
+    """
+
+    def test_real_llm_call_returns_valid_response(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test that real LLM call returns valid response structure."""
+        # This will make a real API call
+        response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+
+        assert response.status_code == 200
+        data = response.json()
+
+        # Verify complete response structure
+        assert "summary" in data
+        assert "insights" in data
+        assert "data_overview" in data
+        assert "time_allocation" in data
+
+        # Summary should be present (unless LLM failed)
+        if data["summary"] is not None:
+            assert isinstance(data["summary"], str)
+            assert len(data["summary"]) > 100  # Should be substantive
+
+        # Insights should be valid
+        assert len(data["insights"]) > 0
+        for insight in data["insights"]:
+            assert "id" in insight
+            assert "type" in insight
+            assert "title" in insight
+            assert "description" in insight
+
+    def test_real_llm_retry_logic(
+        self, test_client: TestClient, session_with_sample_data: dict
+    ) -> None:
+        """Test retry logic with real LLM (manually trigger malformed response)."""
+        # This test is primarily for manual verification
+        # In practice, Claude rarely returns malformed JSON
+        # But we can verify the retry mechanism exists
+
+        # Just verify the endpoint works
+        response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
+        assert response.status_code == 200

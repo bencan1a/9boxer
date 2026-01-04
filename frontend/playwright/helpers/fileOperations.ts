@@ -6,7 +6,6 @@
 
 import { Page, expect } from "@playwright/test";
 import * as path from "path";
-import { dragEmployeeToPosition } from "./dragAndDrop";
 import { createChange, getFirstEmployeeId } from "./testData";
 import { openFileMenu } from "./ui";
 

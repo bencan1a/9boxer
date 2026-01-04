@@ -7,7 +7,6 @@ import type {
   DimensionAnalysis,
   AnomalyDeviation,
   ManagerAnalysis,
-  ManagerDeviation,
 } from "../types/api";
 import { createManagerDeviation } from "./mockChartData";
 

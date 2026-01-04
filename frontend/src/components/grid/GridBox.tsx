@@ -142,7 +142,6 @@ export const GridBox: React.FC<GridBoxProps> = ({
     isResizing,
     tokens.spacing.boxPadding,
     theme.palette.primary.main,
-    theme.palette.primary.light,
     theme.tokens.duration.normal,
     theme.tokens.easing.easeInOut,
     theme.tokens.opacity.gridCollapsedDragOver,

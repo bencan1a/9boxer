@@ -328,6 +328,7 @@
         "qualityScore": "Qualitätsbewertung",
         "qualityScoreDescription": "Skala 0-100 basierend auf erkannten statistischen Anomalien",
         "totalAnomalies": "Anomalien gesamt",
+        "employees": "Mitarbeiter",
         "green": "Grün",
         "yellow": "Gelb",
         "red": "Rot",
@@ -465,9 +466,10 @@
       "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden.",
       "returnHome": "Zur Startseite zurückkehren"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "Verbergen",
+    "show": "Anzeigen",
+    "dismiss": "Schließen",
+    "loading": "Laden..."
   },
   "messages": {
     "success": "Erfolg",
@@ -500,66 +502,117 @@
     "exitFullScreen": "Vollbildmodus verlassen (F11)"
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Kalibrierungszusammenfassung",
+      "dataOverview": "Datenübersicht",
+      "insights": "Kalibrierungserkenntnisse",
+      "generating": "Generiert...",
+      "generateSummary": "KI-Zusammenfassung generieren",
+      "llmNotAvailable": "KI-Zusammenfassung erfordert die Konfiguration von ANTHROPIC_API_KEY",
+      "selectAll": "Alle auswählen",
+      "deselectAll": "Alle abwählen",
+      "estimatedDuration": "Ca. {{duration}}",
+      "suggestedSequence": "Vorgeschlagen: {{sequence}}",
+      "employees": "Mitarbeiter",
+      "stars": "Spitzentalente",
+      "centerBox": "Mittleres Feld",
+      "lowerPerformers": "Leistungsschwächere",
+      "insightsSelected": "{{count}} Erkenntnis ausgewählt",
+      "insightsSelected_other": "{{count}} Erkenntnisse ausgewählt",
+      "keyRecommendations": "Hauptempfehlungen",
+      "discussionPoints": "Vorhergesagte Diskussionspunkte",
+      "poweredBy": "Bereitgestellt von {{model}}",
+      "toggleSection": "Kalibrierungsübersicht umschalten",
+      "showLess": "Weniger anzeigen",
+      "showFullSummary": "Vollständige Zusammenfassung anzeigen",
+      "poweredByClaude": "Bereitgestellt von Claude",
+      "priority": {
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig"
+      },
+      "category": {
+        "location": "Standort",
+        "function": "Funktion",
+        "level": "Ebene",
+        "tenure": "Betriebszugehörigkeit",
+        "distribution": "Verteilung",
+        "time": "Zeit"
+      },
+      "insightType": {
+        "anomaly": "Anomalie",
+        "focus_area": "Fokusbereich",
+        "recommendation": "Empfehlung",
+        "time_allocation": "Zeitzuweisung"
+      },
+      "affectedEmployees": "{{count}} Mitarbeiter betroffen",
+      "affectedEmployees_other": "{{count}} Mitarbeiter betroffen"
+    },
+    "aiSummary": {
+      "title": "KI-generierte Zusammenfassung",
+      "showLess": "Weniger anzeigen",
+      "readFull": "Vollständig lesen"
+    },
     "severity": {
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
+      "critical": "Kritisch",
+      "warning": "Warnung",
+      "info": "Information"
     },
     "insightType": {
-      "recommendation": "Recommendation",
-      "observation": "Observation",
-      "warning": "Warning"
+      "recommendation": "Empfehlung",
+      "observation": "Beobachtung",
+      "warning": "Warnung"
     },
     "confidence": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
+      "high": "Hoch",
+      "medium": "Mittel",
+      "low": "Niedrig"
     },
     "insight": {
-      "confidence": "Confidence",
-      "confidenceLabel": "{{level}} Confidence",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "boxCount": "{{count}} box",
-      "boxCount_other": "{{count}} boxes",
+      "confidence": "Konfidenz",
+      "confidenceLabel": "Konfidenz {{level}}",
+      "employeeCount": "{{count}} Mitarbeiter",
+      "employeeCount_other": "{{count}} Mitarbeiter",
+      "boxCount": "{{count}} Feld",
+      "boxCount_other": "{{count}} Felder",
       "actionAria": "{{action}} - {{type}}",
       "actionButtonAria": "{{action}}"
     },
     "anomaly": {
-      "viewDetailsAria": "View details for {{title}}",
-      "affectedEmployees": "Affected",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "suggestion": "Suggestion"
+      "viewDetailsAria": "Details für {{title}} anzeigen",
+      "affectedEmployees": "Betroffen",
+      "employeeCount": "{{count}} Mitarbeiter",
+      "employeeCount_other": "{{count}} Mitarbeiter",
+      "suggestion": "Vorschlag"
     },
     "anomalies": {
-      "title": "Anomalies Detected",
-      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
-      "empty": "No anomalies detected",
-      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
-      "criticalCount": "{{count}} Critical",
-      "warningCount": "{{count}} Warning",
-      "infoCount": "{{count}} Info"
+      "title": "Anomalien erkannt",
+      "tooltip": "Statistische Anomalien und ungewöhnliche Muster in Ihren Talentdaten erkannt",
+      "empty": "Keine Anomalien erkannt",
+      "emptyDescription": "Ihre Talentverteilung erscheint gut kalibriert ohne signifikante Anomalien",
+      "criticalCount": "{{count}} Kritisch",
+      "warningCount": "{{count}} Warnung",
+      "infoCount": "{{count}} Information"
     },
     "insights": {
-      "title": "AI Insights",
-      "tooltip": "AI-generated insights and recommendations based on your talent data",
-      "empty": "No insights available",
-      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
-      "recommendationCount": "{{count}} Recommendation",
-      "recommendationCount_other": "{{count}} Recommendations",
-      "observationCount": "{{count}} Observation",
-      "observationCount_other": "{{count}} Observations",
-      "warningCount": "{{count}} Warning",
-      "warningCount_other": "{{count}} Warnings"
+      "title": "KI-Erkenntnisse",
+      "tooltip": "KI-generierte Erkenntnisse und Empfehlungen basierend auf Ihren Talentdaten",
+      "empty": "Keine Erkenntnisse verfügbar",
+      "emptyDescription": "Erkenntnisse werden hier angezeigt, während das System Ihre Talentdaten analysiert",
+      "recommendationCount": "{{count}} Empfehlung",
+      "recommendationCount_other": "{{count}} Empfehlungen",
+      "observationCount": "{{count}} Beobachtung",
+      "observationCount_other": "{{count}} Beobachtungen",
+      "warningCount": "{{count}} Warnung",
+      "warningCount_other": "{{count}} Warnungen"
     },
     "distribution": {
-      "title": "Talent Distribution",
-      "tooltip": "Overview of how employees are distributed across the 9-box grid",
-      "totalEmployees": "Total: {{count}} employees"
+      "title": "Talentverteilung",
+      "tooltip": "Übersicht über die Verteilung der Mitarbeiter über das 9-Box-Raster",
+      "totalEmployees": "Gesamt: {{count}} Mitarbeiter"
     },
     "section": {
-      "infoAria": "More information about this section"
+      "infoAria": "Mehr Informationen zu diesem Abschnitt"
     }
   }
 }

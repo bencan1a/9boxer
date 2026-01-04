@@ -251,6 +251,12 @@ export const DashboardPage: React.FC = () => {
       // Reload employees to sync frontend state with the new session
       await loadEmployees();
 
+      // Set filename and hasSampleData flag in session store
+      useSessionStore.setState({
+        filename: response.filename,
+        hasSampleData: true,
+      });
+
       // Close dialog and show success message
       setLoadSampleDialogOpen(false);
       showSuccess(

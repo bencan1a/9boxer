@@ -128,6 +128,28 @@ export async function loadSampleData(
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
 
+  // Wait for sessionId to be set (filter button becomes enabled)
+  // This ensures the full application state is ready before proceeding
+  const filterButton = page.locator('[data-testid="filter-button"]');
+  await expect(filterButton).toBeEnabled({ timeout: 5000 });
+
+  // CRITICAL: Verify that we have the expected number of employee cards
+  // This ensures the frontend has fully loaded all employees from the backend
+  // Wait up to 5 seconds for at least 90% of expected employees to be present
+  const expectedCount = size;
+  const minAcceptableCount = Math.floor(expectedCount * 0.9);
+
+  await expect(async () => {
+    const cardCount = await page
+      .locator('[data-testid^="employee-card-"]')
+      .count();
+    if (cardCount < minAcceptableCount) {
+      throw new Error(
+        `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
+      );
+    }
+  }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
+
   // Mark as cached for this page context
   sampleDataCache.set(page, true);
 }
@@ -193,6 +215,11 @@ export async function loadSampleDataFromEmptyState(page: Page): Promise<void> {
   // Verify at least one employee card is fully interactive (not loading)
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
+
+  // Wait for sessionId to be set (filter button becomes enabled)
+  // This ensures the full application state is ready before proceeding
+  const filterButton = page.locator('[data-testid="filter-button"]');
+  await expect(filterButton).toBeEnabled({ timeout: 5000 });
 
   // Mark as cached for this page context
   sampleDataCache.set(page, true);

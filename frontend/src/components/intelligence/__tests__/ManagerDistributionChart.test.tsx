@@ -67,8 +67,7 @@ describe("ManagerDistributionChart", () => {
       );
 
       // Check for empty state text (may vary based on i18n)
-      const emptyText =
-        screen.queryByText(/no.*manager.*data/i) ||
+      screen.queryByText(/no.*manager.*data/i) ||
         screen.queryByText(/no data/i);
       // If specific text not found, at least verify component renders
       const { container } = render(
@@ -172,7 +171,7 @@ describe("ManagerDistributionChart", () => {
       // Check that manager names are rendered (using partial match for truncated names)
       mockManagerDeviationLongNames.forEach((manager) => {
         // Use a partial match or check if the element exists
-        const nameElement = screen.queryByText(manager.category);
+        screen.queryByText(manager.category);
         // Just verify component rendered without crashing
         expect(
           container.querySelector(".recharts-responsive-container")
