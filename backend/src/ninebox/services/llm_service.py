@@ -278,17 +278,17 @@ class LLMService:
         self,
         data_package: dict,
         model: str | None = None,
-        max_retries: int = 2,
     ) -> dict:
         """Generate agent-driven calibration analysis (summary + issues).
 
         This is the new agent-first approach where Claude analyzes all data
         holistically and returns both summary and structured issues in one call.
 
+        Uses structured outputs (beta API) to guarantee valid JSON responses.
+
         Args:
             data_package: Full calibration data from package_for_llm()
             model: Optional model override (defaults to LLM_MODEL or claude-sonnet-4-5)
-            max_retries: Number of retry attempts for malformed JSON (default: 2)
 
         Returns:
             {
@@ -396,24 +396,22 @@ Analyze this data holistically and return your findings in the required JSON for
                 status="success",
             )
 
-            # Extract text content
+            # Extract text content - structured outputs guarantee valid JSON
             content = message.content[0].text
 
-            # Parse JSON response with retry logic
+            # Parse JSON directly (structured outputs ensure valid JSON)
             try:
-                result = self._parse_response(content)
-                return result
-            except (ValueError, json.JSONDecodeError) as parse_error:
-                # Attempt retry with correction
-                logger.warning(f"Initial JSON parsing failed: {parse_error}")
-                # model_to_use is guaranteed to be str here (from line 284)
-                return self._retry_with_correction(
-                    malformed_response=content,
-                    error_message=str(parse_error),
-                    model=model_to_use,  # type: ignore[arg-type]
-                    attempt=1,
-                    max_retries=max_retries,
+                result = json.loads(content)
+                return cast("dict[str, Any]", result)
+            except json.JSONDecodeError as parse_error:
+                # This should never happen with structured outputs
+                logger.error(
+                    f"Unexpected JSON parsing error with structured outputs: {parse_error}"
                 )
+                logger.error(f"Response content: {content[:500]}...")
+                raise RuntimeError(
+                    f"Failed to parse structured output (this should not happen): {parse_error}"
+                ) from parse_error
 
         except Exception as e:
             # Log error metrics if we have partial information
@@ -439,160 +437,6 @@ Analyze this data holistically and return your findings in the required JSON for
 
             logger.error(f"Failed to generate calibration analysis: {e}")
             raise RuntimeError(f"Failed to generate calibration analysis: {e}") from e
-
-    def _retry_with_correction(
-        self,
-        malformed_response: str,
-        error_message: str,
-        model: str,
-        attempt: int,
-        max_retries: int,
-    ) -> dict:
-        """Retry LLM call with error correction prompt.
-
-        If the LLM returns malformed JSON, send it back with instructions to fix.
-
-        Args:
-            malformed_response: The invalid JSON string
-            error_message: The parsing error message
-            model: Model to use
-            attempt: Current attempt number
-            max_retries: Maximum attempts
-
-        Returns:
-            Parsed JSON dict if successful
-
-        Raises:
-            Exception: If max retries exceeded or parsing still fails
-        """
-        if attempt >= max_retries:
-            logger.error(f"Failed to parse JSON after {max_retries} retries")
-            raise Exception(
-                f"Failed to parse JSON after {max_retries} retries. Last error: {error_message}"
-            )
-
-        logger.info(f"Retry attempt {attempt + 1}/{max_retries} for JSON correction")
-
-        correction_prompt = f"""
-The previous response had invalid JSON. Please fix it.
-
-ERROR: {error_message}
-
-INVALID JSON:
-{malformed_response}
-
-Please return ONLY valid JSON with this exact structure:
-{{
-  "summary": "...",
-  "issues": [...]
-}}
-
-Do not include markdown code blocks or any text outside the JSON. Just raw, valid JSON.
-"""
-
-        try:
-            if self._client is None:
-                raise RuntimeError("Anthropic client not initialized")
-
-            # Track call duration for retry metrics
-            start_time = time.time()
-
-            message = self._client.messages.create(
-                model=model,
-                max_tokens=MAX_TOKENS,
-                temperature=TEMPERATURE,
-                system="You are a helpful assistant that fixes malformed JSON responses.",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": correction_prompt,
-                    }
-                ],
-            )
-
-            # Calculate duration for retry call
-            duration_ms = (time.time() - start_time) * 1000
-
-            # Log metrics for retry attempt
-            self._log_llm_metrics(
-                duration_ms=duration_ms,
-                model=message.model,
-                input_tokens=message.usage.input_tokens,
-                output_tokens=message.usage.output_tokens,
-                status="success",
-            )
-
-            content = message.content[0].text
-
-            # Try to parse the corrected response
-            try:
-                result = self._parse_response(content)
-                logger.info(f"Successfully parsed JSON after retry attempt {attempt + 1}")
-                return result
-            except (ValueError, json.JSONDecodeError) as parse_error:
-                # Recursive retry
-                return self._retry_with_correction(
-                    malformed_response=content,
-                    error_message=str(parse_error),
-                    model=model,
-                    attempt=attempt + 1,
-                    max_retries=max_retries,
-                )
-
-        except Exception as e:
-            # Log error metrics for retry attempt
-            error_type = type(e).__name__
-
-            # Try to extract duration if start_time was set
-            try:
-                duration_ms = (time.time() - start_time) * 1000
-            except NameError:
-                duration_ms = 0.0
-
-            self._log_llm_metrics(
-                duration_ms=duration_ms,
-                model=model,
-                input_tokens=0,
-                output_tokens=0,
-                status="error",
-                error_type=error_type,
-            )
-
-            logger.error(f"Retry attempt {attempt + 1} failed: {e}")
-            raise RuntimeError(f"Retry attempt {attempt + 1} failed: {e}") from e
-
-    def _parse_response(self, content: str) -> dict[str, Any]:
-        """Parse Claude's response, handling markdown code blocks.
-
-        Args:
-            content: Raw response text from Claude
-
-        Returns:
-            Parsed JSON dictionary
-
-        Raises:
-            ValueError: If JSON cannot be extracted or parsed
-        """
-        import re
-
-        # Try to extract JSON from markdown code blocks
-        json_match = re.search(r"```json\s*([\s\S]*?)\s*```", content)
-        if json_match:
-            json_text = json_match.group(1)
-        else:
-            # Try to find raw JSON
-            json_match = re.search(r"(\{[\s\S]*\})", content)
-            if json_match:
-                json_text = json_match.group(1)
-            else:
-                raise ValueError("Could not find JSON in response")
-
-        try:
-            return cast("dict[str, Any]", json.loads(json_text))
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse JSON response: {e}")
-            logger.error(f"Response content: {content[:500]}...")
-            raise ValueError(f"Failed to parse response JSON: {e}") from e
 
 
 # Module-level instance for use in endpoints

@@ -11,6 +11,8 @@ import hashlib
 import logging
 from typing import Any
 
+from ninebox.types.insights import Insight, InsightSourceData
+
 logger = logging.getLogger(__name__)
 
 
@@ -98,7 +100,7 @@ class InsightGenerator:
 
         return insights
 
-    def _create_general_insight(self, dimension: str, analysis: dict[str, Any]) -> dict[str, Any]:
+    def _create_general_insight(self, dimension: str, analysis: dict[str, Any]) -> Insight:
         """Create a general insight when no specific deviations are identified.
 
         Args:
@@ -108,15 +110,9 @@ class InsightGenerator:
         Returns:
             General anomaly insight
         """
-        # Import here to avoid circular dependency
-        from ninebox.services.calibration_summary_service import (  # type: ignore[attr-defined]
-            Insight,
-            InsightSourceData,
-        )
-
         status = analysis.get("status", "yellow")
 
-        return Insight(  # type: ignore[return-value]
+        return Insight(
             id=self._generate_insight_id("anomaly-general", dimension, status),
             type="anomaly",
             category=dimension,
@@ -135,7 +131,7 @@ class InsightGenerator:
 
     def _create_deviation_insight(
         self, dimension: str, deviation: dict[str, Any], analysis: dict[str, Any]
-    ) -> dict[str, Any]:
+    ) -> Insight:
         """Create an insight for a specific significant deviation.
 
         Args:
@@ -146,12 +142,6 @@ class InsightGenerator:
         Returns:
             Specific deviation insight
         """
-        # Import here to avoid circular dependency
-        from ninebox.services.calibration_summary_service import (  # type: ignore[attr-defined]
-            Insight,
-            InsightSourceData,
-        )
-
         category_name = deviation.get("category", "Unknown")
         z_score = deviation.get("z_score", 0)
         observed = deviation.get("observed_high_pct", 0)
@@ -177,7 +167,7 @@ class InsightGenerator:
                 f"vs {expected:.0f}% expected (z={z_score:.1f})"
             )
 
-        return Insight(  # type: ignore[return-value]
+        return Insight(
             id=self._generate_insight_id("anomaly", dimension, category_name),
             type="anomaly",
             category=dimension,

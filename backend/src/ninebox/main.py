@@ -13,12 +13,29 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Configure logging early (before loading env vars)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 env_file = Path(__file__).parent.parent.parent / ".env"
 loaded = load_dotenv(dotenv_path=env_file)
-print(f"[STARTUP] Loading .env from: {env_file.resolve()}")
-print(f"[STARTUP] .env file exists: {env_file.exists()}")
-print(f"[STARTUP] load_dotenv returned: {loaded}")
-print(f"[STARTUP] ANTHROPIC_API_KEY present: {bool(os.getenv('ANTHROPIC_API_KEY'))}")
+logger.info(f"Loading .env from: {env_file.resolve()}")
+logger.info(f".env file exists: {env_file.exists()}")
+logger.info(f"load_dotenv returned: {loaded}")
+
+# Validate API key if present
+api_key = os.getenv("ANTHROPIC_API_KEY")
+if api_key:
+    # Validate API key format (Anthropic keys typically start with "sk-ant-")
+    if api_key.startswith("sk-ant-") and len(api_key) > 20:
+        logger.info("ANTHROPIC_API_KEY present and valid format")
+    else:
+        logger.warning("ANTHROPIC_API_KEY present but invalid format (should start with 'sk-ant-')")
+        logger.warning("LLM-powered features may not work correctly")
+else:
+    logger.warning("ANTHROPIC_API_KEY not found - LLM-powered features will be unavailable")
 
 from ninebox.api import (  # noqa: E402
     calibration_summary,
@@ -31,12 +48,6 @@ from ninebox.api import (  # noqa: E402
 )
 from ninebox.core.config import settings  # noqa: E402
 from ninebox.core.dependencies import get_session_manager  # noqa: E402
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(

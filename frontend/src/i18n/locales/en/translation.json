@@ -378,6 +378,10 @@
       "keyRecommendations": "Key Recommendations",
       "discussionPoints": "Predicted Discussion Points",
       "poweredBy": "Powered by {{model}}",
+      "toggleSection": "Toggle calibration summary section",
+      "showLess": "Show less",
+      "showFullSummary": "Show full summary",
+      "poweredByClaude": "Powered by Claude",
       "priority": {
         "high": "High",
         "medium": "Medium",
@@ -399,6 +403,11 @@
       },
       "affectedEmployees": "{{count}} employee affected",
       "affectedEmployees_other": "{{count}} employees affected"
+    },
+    "aiSummary": {
+      "title": "AI-Generated Summary",
+      "showLess": "Show less",
+      "readFull": "Read full"
     },
     "severity": {
       "critical": "Critical",
