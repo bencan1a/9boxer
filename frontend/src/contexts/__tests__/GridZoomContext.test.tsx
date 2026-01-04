@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, renderHook, act } from "../../test/utils";
 import { GridZoomProvider, useGridZoom } from "../GridZoomContext";
 import { tokens } from "../../theme/tokens";

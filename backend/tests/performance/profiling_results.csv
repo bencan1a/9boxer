@@ -1,0 +1,6 @@
+Employee Count,Metric,P50 (seconds),P95 (seconds),Mean (seconds),Min (seconds),Max (seconds)
+100,dataset_generation,0.009,0.009,0.009,0.009,0.009
+100,analysis_registry,0.830,0.830,0.830,0.830,0.830
+100,data_packaging,0.001,0.001,0.001,0.001,0.001
+100,llm_call,8.000,8.000,8.000,8.000,8.000
+100,total_end_to_end,8.831,8.831,8.831,8.831,8.831

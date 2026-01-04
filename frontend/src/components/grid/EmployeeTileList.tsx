@@ -45,7 +45,7 @@ export interface EmployeeTileListProps {
  */
 export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   employees,
-  isExpanded,
+  isExpanded: _isExpanded,
   onSelectEmployee,
   donutModeActive = false,
 }) => {

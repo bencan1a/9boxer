@@ -1,6 +1,7 @@
 """Tests for calibration summary service."""
 
 from datetime import date
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -254,8 +255,8 @@ class TestCalibrationSummaryService:
         result = service.calculate_summary(employees, use_agent=False)
         insights = result["insights"]
 
-        # Expected format: type-description-hexid
-        pattern = re.compile(r"^[a-z]+-[a-z0-9-]+-[a-f0-9]{8}$")
+        # Expected format: type-description-hexid (16 hex chars for 64-bit collision resistance)
+        pattern = re.compile(r"^[a-z]+-[a-z0-9-]+-[a-f0-9]{16}$")
 
         for insight in insights:
             assert pattern.match(insight["id"]), f"Invalid insight ID format: {insight['id']}"
@@ -496,9 +497,9 @@ class TestInsightIDDeterminism:
         employees = [create_employee(i, grid_position=i % 9 + 1) for i in range(50)]
         result = service.calculate_summary(employees, use_agent=False)
 
-        # Pattern: prefix (can have dashes) followed by 8 hex chars
-        # Examples: "focus-a1b2c3d4", "rec-time-allocation-73c1ab20"
-        pattern = re.compile(r"^[a-z]+(?:-[a-z0-9]+)*-[a-f0-9]{8}$")
+        # Pattern: prefix (can have dashes) followed by 16 hex chars (64-bit collision resistance)
+        # Examples: "focus-a1b2c3d4e5f6g7h8", "rec-time-allocation-73c1ab20a1b2c3d4"
+        pattern = re.compile(r"^[a-z]+(?:-[a-z0-9]+)*-[a-f0-9]{16}$")
 
         for insight in result["insights"]:
             assert pattern.match(
@@ -734,3 +735,546 @@ class TestDataOverviewCalculations:
 
         assert overview["high_performers_count"] == 3
         assert overview["high_performers_percentage"] == 50.0  # 3/6 = 50%
+
+
+# =============================================================================
+# AGENT MODE TESTS (Issue #202)
+# Tests for use_agent=True path - LLM-powered insight generation
+# =============================================================================
+
+
+class TestAgentModeHappyPath:
+    """Tests for agent mode happy path (use_agent=True)."""
+
+    @pytest.fixture
+    def service(self) -> CalibrationSummaryService:
+        """Create a calibration summary service instance."""
+        return CalibrationSummaryService()
+
+    @pytest.fixture
+    def mock_llm_response(self) -> dict:
+        """Create a realistic LLM response fixture."""
+        return {
+            "summary": "The calibration data shows 3 key findings: "
+            "high concentration in center box, low star percentage, "
+            "and significant location-based rating variance.",
+            "issues": [
+                {
+                    "type": "anomaly",
+                    "category": "location",
+                    "priority": "high",
+                    "title": "Seattle office shows significantly higher ratings",
+                    "description": "Seattle has 78% high performers vs 62% org average (z=2.8)",
+                    "affected_count": 25,
+                    "source_data": {
+                        "z_score": 2.8,
+                        "percentage": 78.0,
+                        "expected": 62.0,
+                        "segment": "Seattle",
+                    },
+                    "cluster_id": "geo-patterns",
+                    "cluster_title": "Geographic Rating Patterns",
+                },
+                {
+                    "type": "recommendation",
+                    "category": "distribution",
+                    "priority": "medium",
+                    "title": "Consider Donut Mode for center box differentiation",
+                    "description": "52% in center box may indicate avoidance of differentiation",
+                    "affected_count": 130,
+                    "source_data": {
+                        "percentage": 52.0,
+                        "count": 130,
+                    },
+                    "cluster_id": None,
+                    "cluster_title": None,
+                },
+            ],
+        }
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_calculate_summary_with_agent_mode_success(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+        mock_llm_response: dict,
+    ) -> None:
+        """Test that agent mode successfully calls LLM and returns results."""
+        # Setup
+        employees = [create_employee(i, grid_position=i % 9 + 1) for i in range(50)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify LLM was called
+        mock_llm.generate_calibration_analysis.assert_called_once()
+
+        # Verify response structure
+        assert "data_overview" in result
+        assert "time_allocation" in result
+        assert "insights" in result
+        assert "summary" in result
+
+        # Verify agent-generated content is present
+        assert result["summary"] is not None
+        assert len(result["insights"]) > 0
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_mode_returns_agent_insights(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+        mock_llm_response: dict,
+    ) -> None:
+        """Test that agent mode returns insights from the LLM agent."""
+        # Setup
+        employees = [create_employee(i) for i in range(20)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify insights were transformed correctly
+        insights = result["insights"]
+        assert len(insights) == 2  # From mock_llm_response
+
+        # Verify first insight (anomaly)
+        assert insights[0]["type"] == "anomaly"
+        assert insights[0]["category"] == "location"
+        assert insights[0]["priority"] == "high"
+        assert insights[0]["affected_count"] == 25
+        assert "id" in insights[0]
+        assert insights[0]["id"].startswith("agent-")
+
+        # Verify second insight (recommendation)
+        assert insights[1]["type"] == "recommendation"
+        assert insights[1]["category"] == "distribution"
+        assert insights[1]["priority"] == "medium"
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_mode_includes_summary_text(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+        mock_llm_response: dict,
+    ) -> None:
+        """Test that agent mode includes AI-generated summary text."""
+        # Setup
+        employees = [create_employee(i) for i in range(30)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify summary is present and matches LLM response
+        assert result["summary"] == mock_llm_response["summary"]
+        assert "high concentration in center box" in result["summary"]
+        assert isinstance(result["summary"], str)
+        assert len(result["summary"]) > 0
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.analysis_registry.run_all_analyses")
+    def test_agent_mode_calls_llm_service_with_correct_data(
+        self,
+        mock_analyses: MagicMock,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+        mock_llm_response: dict,
+    ) -> None:
+        """Test that agent mode calls LLM service with properly packaged data."""
+        # Setup
+        employees = [create_employee(i) for i in range(25)]
+
+        mock_analyses.return_value = {"location": {"test": "data"}}
+        mock_package_result = {
+            "employees": [{"id": 1}],
+            "analyses": {"location": {"test": "data"}},
+            "org_data": {"total_employees": 25},
+        }
+        mock_package.return_value = mock_package_result
+        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify package_for_llm was called with correct arguments
+        mock_package.assert_called_once()
+        call_args = mock_package.call_args
+        assert len(call_args[0]) == 3  # employees, analyses, org_data
+        assert len(call_args[0][0]) == 25  # Employee count
+
+        # Verify LLM was called with the packaged data
+        mock_llm.generate_calibration_analysis.assert_called_once_with(mock_package_result)
+
+        # Verify result includes insights
+        assert len(result["insights"]) > 0
+
+
+class TestAgentModeFallbackBehavior:
+    """Tests for agent mode fallback to legacy when LLM fails."""
+
+    @pytest.fixture
+    def service(self) -> CalibrationSummaryService:
+        """Create a calibration summary service instance."""
+        return CalibrationSummaryService()
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_mode_fallback_to_legacy_on_llm_error(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that agent mode falls back to legacy when LLM raises an error."""
+        # Setup
+        employees = [create_employee(i, grid_position=5) for i in range(60)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.side_effect = RuntimeError("LLM service unavailable")
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify fallback occurred - should still return results
+        assert "insights" in result
+        assert len(result["insights"]) > 0  # Legacy insights generated
+
+        # Verify summary is None (legacy doesn't provide summary)
+        assert result["summary"] is None
+
+        # Verify we got legacy insights (e.g., center box warning)
+        insight_titles = [i["title"] for i in result["insights"]]
+        center_box_insights = [title for title in insight_titles if "center box" in title.lower()]
+        assert len(center_box_insights) > 0
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_mode_fallback_on_malformed_response(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test fallback when LLM returns malformed response."""
+        # Setup
+        employees = [create_employee(i) for i in range(30)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        # Simulate malformed response (missing required fields)
+        mock_llm.generate_calibration_analysis.side_effect = KeyError("issues")
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify fallback to legacy
+        assert result["summary"] is None
+        assert len(result["insights"]) > 0
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_mode_fallback_on_package_error(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test fallback when data packaging fails."""
+        # Setup
+        employees = [create_employee(i) for i in range(20)]
+
+        # Simulate packaging error
+        mock_package.side_effect = Exception("Packaging failed")
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify fallback to legacy
+        assert result["summary"] is None
+        assert len(result["insights"]) > 0
+
+        # Verify LLM was never called
+        mock_llm.generate_calibration_analysis.assert_not_called()
+
+    @patch("ninebox.services.calibration_summary_service.logger")
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_fallback_logs_error_message(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        mock_logger: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that fallback logs appropriate error messages."""
+        # Setup
+        employees = [create_employee(i) for i in range(15)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        error_msg = "API rate limit exceeded"
+        mock_llm.generate_calibration_analysis.side_effect = RuntimeError(error_msg)
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify error was logged
+        mock_logger.error.assert_called_once()
+        log_call = mock_logger.error.call_args[0][0]
+        assert "LLM agent failed" in log_call
+        assert "falling back to legacy" in log_call
+
+        # Verify result is still valid
+        assert result["summary"] is None
+        assert len(result["insights"]) > 0
+
+
+class TestAgentModeDataPackaging:
+    """Tests for data packaging integration in agent mode."""
+
+    @pytest.fixture
+    def service(self) -> CalibrationSummaryService:
+        """Create a calibration summary service instance."""
+        return CalibrationSummaryService()
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.analysis_registry.run_all_analyses")
+    def test_agent_mode_calls_package_for_llm(
+        self,
+        mock_analyses: MagicMock,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that agent mode calls package_for_llm to prepare data."""
+        # Setup
+        employees = [create_employee(i) for i in range(20)]
+
+        mock_analyses.return_value = {"location": {}}
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = {
+            "summary": "Test summary",
+            "issues": [],
+        }
+
+        # Execute
+        service.calculate_summary(employees, use_agent=True)
+
+        # Verify package_for_llm was called
+        mock_package.assert_called_once()
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.analysis_registry.run_all_analyses")
+    def test_agent_mode_passes_employees_to_packager(
+        self,
+        mock_analyses: MagicMock,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that employee data is passed to the packager."""
+        # Setup
+        employees = [
+            create_employee(1, location="Seattle"),
+            create_employee(2, location="NYC"),
+            create_employee(3, location="Seattle"),
+        ]
+
+        mock_analyses.return_value = {}
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = {
+            "summary": "Test",
+            "issues": [],
+        }
+
+        # Execute
+        service.calculate_summary(employees, use_agent=True)
+
+        # Verify package_for_llm received the employees
+        call_args = mock_package.call_args[0]
+        passed_employees = call_args[0]
+        assert len(passed_employees) == 3
+        assert passed_employees[0].location == "Seattle"
+        assert passed_employees[1].location == "NYC"
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.analysis_registry.run_all_analyses")
+    def test_agent_mode_includes_analyses_in_package(
+        self,
+        mock_analyses: MagicMock,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that analysis results are included in the package."""
+        # Setup
+        employees = [create_employee(i) for i in range(25)]
+
+        analysis_results = {
+            "location": {"anomalies": []},
+            "function": {"anomalies": []},
+            "level": {"anomalies": []},
+        }
+        mock_analyses.return_value = analysis_results
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = {
+            "summary": "Test",
+            "issues": [],
+        }
+
+        # Execute
+        service.calculate_summary(employees, use_agent=True)
+
+        # Verify analyses were passed to packager
+        call_args = mock_package.call_args[0]
+        passed_analyses = call_args[1]
+        assert "location" in passed_analyses
+        assert "function" in passed_analyses
+        assert "level" in passed_analyses
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.analysis_registry.run_all_analyses")
+    def test_agent_mode_includes_org_data_in_package(
+        self,
+        mock_analyses: MagicMock,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that org-level data is included in the package."""
+        # Setup
+        employees = [create_employee(i) for i in range(30)]
+
+        mock_analyses.return_value = {}
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = {
+            "summary": "Test",
+            "issues": [],
+        }
+
+        # Execute
+        service.calculate_summary(employees, use_agent=True)
+
+        # Verify org_data was passed to packager
+        call_args = mock_package.call_args[0]
+        org_data = call_args[2]
+        assert "total_employees" in org_data
+        assert org_data["total_employees"] == 30
+        assert "total_managers" in org_data
+
+
+class TestAgentModeInsightTransformation:
+    """Tests for insight transformation in agent mode."""
+
+    @pytest.fixture
+    def service(self) -> CalibrationSummaryService:
+        """Create a calibration summary service instance."""
+        return CalibrationSummaryService()
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_insights_have_deterministic_ids(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that agent-generated insights get deterministic IDs."""
+        # Setup
+        employees = [create_employee(i) for i in range(20)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        llm_response = {
+            "summary": "Test summary",
+            "issues": [
+                {
+                    "type": "anomaly",
+                    "category": "location",
+                    "priority": "high",
+                    "title": "Test anomaly",
+                    "description": "Test description",
+                    "affected_count": 10,
+                }
+            ],
+        }
+        mock_llm.generate_calibration_analysis.return_value = llm_response
+
+        # Execute twice with same input
+        result1 = service.calculate_summary(employees, use_agent=True)
+
+        # Reset mocks
+        mock_package.reset_mock()
+        mock_llm.reset_mock()
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = llm_response
+
+        result2 = service.calculate_summary(employees, use_agent=True)
+
+        # Verify IDs are deterministic
+        assert result1["insights"][0]["id"] == result2["insights"][0]["id"]
+
+    @patch("ninebox.services.llm_service.llm_service")
+    @patch("ninebox.services.data_packaging_service.package_for_llm")
+    def test_agent_insights_preserve_cluster_information(
+        self,
+        mock_package: MagicMock,
+        mock_llm: MagicMock,
+        service: CalibrationSummaryService,
+    ) -> None:
+        """Test that cluster_id and cluster_title are preserved from LLM response."""
+        # Setup
+        employees = [create_employee(i) for i in range(15)]
+
+        mock_package.return_value = {"employees": [], "analyses": {}}
+        mock_llm.generate_calibration_analysis.return_value = {
+            "summary": "Test",
+            "issues": [
+                {
+                    "type": "anomaly",
+                    "category": "location",
+                    "priority": "high",
+                    "title": "Issue 1",
+                    "description": "Description 1",
+                    "affected_count": 10,
+                    "cluster_id": "cluster-geo-001",
+                    "cluster_title": "Geographic Patterns",
+                },
+                {
+                    "type": "recommendation",
+                    "category": "distribution",
+                    "priority": "medium",
+                    "title": "Issue 2",
+                    "description": "Description 2",
+                    "affected_count": 20,
+                    "cluster_id": None,
+                    "cluster_title": None,
+                },
+            ],
+        }
+
+        # Execute
+        result = service.calculate_summary(employees, use_agent=True)
+
+        # Verify cluster information is preserved
+        assert result["insights"][0]["cluster_id"] == "cluster-geo-001"
+        assert result["insights"][0]["cluster_title"] == "Geographic Patterns"
+        assert result["insights"][1]["cluster_id"] is None
+        assert result["insights"][1]["cluster_title"] is None

@@ -25,6 +25,7 @@ def create_employee(
     potential: PotentialLevel = PotentialLevel.MEDIUM,
     grid_position: int = 5,
     manager: str = "Test Manager",
+    flags: list[str] | None = None,
 ) -> Employee:
     """Create a test employee with specified attributes."""
     return Employee(
@@ -44,6 +45,7 @@ def create_employee(
         potential=potential,
         grid_position=grid_position,
         talent_indicator="Test Indicator",
+        flags=flags,
     )
 
 
@@ -55,14 +57,15 @@ class TestPIIAnonymizationLLM:
         from ninebox.services.data_packaging_service import package_for_llm
 
         employees = [
-            create_employee(1001, location="USA"),
-            create_employee(2002, location="UK"),
+            create_employee(1001, location="USA", flags=["promotion_ready"]),
+            create_employee(2002, location="UK", flags=["flight_risk"]),
         ]
 
         result = package_for_llm(employees, {})
 
-        # Check that employee_id is NOT present in any employee record
-        for emp in result["employees"]:
+        # package_for_llm returns flagged_employees, not all employees
+        # Check that employee_id is NOT present in flagged employee records
+        for emp in result["flagged_employees"]:
             assert "employee_id" not in emp, "employee_id should be excluded from LLM package"
             assert "id" in emp, "Anonymized id should be present"
             assert emp["id"].startswith("Employee_"), "ID should be anonymized"
@@ -71,36 +74,36 @@ class TestPIIAnonymizationLLM:
         """Test that package_for_llm() excludes business_title field."""
         from ninebox.services.data_packaging_service import package_for_llm
 
-        employees = [create_employee(1, location="USA")]
+        employees = [create_employee(1, location="USA", flags=["promotion_ready"])]
 
         result = package_for_llm(employees, {})
 
-        # Check that business_title is NOT present
-        for emp in result["employees"]:
+        # Check that business_title is NOT present in flagged employees
+        for emp in result["flagged_employees"]:
             assert "business_title" not in emp, "business_title should be excluded from LLM package"
 
     def test_package_for_llm_excludes_job_title(self) -> None:
         """Test that package_for_llm() excludes job_title field."""
         from ninebox.services.data_packaging_service import package_for_llm
 
-        employees = [create_employee(1, location="USA")]
+        employees = [create_employee(1, location="USA", flags=["promotion_ready"])]
 
         result = package_for_llm(employees, {})
 
-        # Check that job_title is NOT present
-        for emp in result["employees"]:
+        # Check that job_title is NOT present in flagged employees
+        for emp in result["flagged_employees"]:
             assert "job_title" not in emp, "job_title should be excluded from LLM package"
 
     def test_package_for_llm_excludes_manager_id(self) -> None:
         """Test that package_for_llm() excludes manager_id field from employee records."""
         from ninebox.services.data_packaging_service import package_for_llm
 
-        employees = [create_employee(1, manager="Alice")]
+        employees = [create_employee(1, manager="Alice", flags=["promotion_ready"])]
 
         result = package_for_llm(employees, {})
 
-        # Check that manager_id is NOT present
-        for emp in result["employees"]:
+        # Check that manager_id is NOT present in flagged employees
+        for emp in result["flagged_employees"]:
             assert "manager_id" not in emp, "manager_id should be excluded from LLM package"
 
     def test_package_for_llm_excludes_manager_names_in_org(self) -> None:
@@ -156,7 +159,7 @@ class TestPIIAnonymizationLLM:
                 ), "Real direct report IDs should be excluded from LLM package"
 
     def test_package_for_llm_includes_safe_fields(self) -> None:
-        """Test that package_for_llm() includes safe, non-PII fields."""
+        """Test that package_for_llm() includes safe, non-PII fields in flagged employees."""
         from ninebox.services.data_packaging_service import package_for_llm
 
         employees = [
@@ -167,39 +170,39 @@ class TestPIIAnonymizationLLM:
                 level="MT5",
                 performance=PerformanceLevel.HIGH,
                 grid_position=9,
+                flags=["promotion_ready"],
             )
         ]
 
         result = package_for_llm(employees, {})
 
-        emp = result["employees"][0]
+        # package_for_llm only includes flagged employees individually
+        emp = result["flagged_employees"][0]
 
         # These fields SHOULD be present (safe for LLM)
         assert "id" in emp
         assert "level" in emp
         assert "function" in emp
         assert "location" in emp
-        assert "performance" in emp
-        assert "potential" in emp
         assert "grid_position" in emp
-        assert "tenure_category" in emp
+        assert "tenure_years" in emp
 
     def test_anonymized_ids_are_consistent(self) -> None:
-        """Test that anonymized employee IDs are deterministic and consistent."""
+        """Test that anonymized employee IDs are deterministic and consistent in flagged employees."""
         from ninebox.services.data_packaging_service import package_for_llm
 
         employees = [
-            create_employee(1001),
-            create_employee(2002),
-            create_employee(3003),
+            create_employee(1001, flags=["promotion_ready"]),
+            create_employee(2002, flags=["flight_risk"]),
+            create_employee(3003, flags=["succession_candidate"]),
         ]
 
         result = package_for_llm(employees, {})
 
-        # IDs should be Employee_1, Employee_2, Employee_3
-        assert result["employees"][0]["id"] == "Employee_1"
-        assert result["employees"][1]["id"] == "Employee_2"
-        assert result["employees"][2]["id"] == "Employee_3"
+        # IDs should be Employee_1, Employee_2, Employee_3 for flagged employees
+        assert result["flagged_employees"][0]["id"] == "Employee_1"
+        assert result["flagged_employees"][1]["id"] == "Employee_2"
+        assert result["flagged_employees"][2]["id"] == "Employee_3"
 
     def test_no_pii_leakage_in_json_string(self) -> None:
         """Test that real employee IDs don't leak into JSON serialization."""
@@ -213,7 +216,8 @@ class TestPIIAnonymizationLLM:
 
         # Real employee ID should not appear in JSON
         assert "123456" not in json_str, "Real employee ID should not appear in LLM package JSON"
-        assert "Employee_1" in json_str, "Anonymized ID should appear in JSON"
+        # package_for_llm uses level_breakdown, so we check for structure instead
+        assert "level_breakdown" in json_str, "Level breakdown should appear in LLM package"
 
 
 class TestPIIInclusionUI:

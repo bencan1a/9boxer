@@ -125,7 +125,7 @@ function validateScreenshotTags(): ValidationResult[] {
     ([_, metadata]) => metadata.storyId
   );
 
-  for (const [screenshotId, metadata] of screenshotEntries) {
+  for (const [_screenshotId, metadata] of screenshotEntries) {
     const storyId = metadata.storyId!;
     const storyFile = storyIdToFilePath(storyId);
 

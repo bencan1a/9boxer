@@ -16,6 +16,7 @@ from typing import Any, TypedDict
 from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.insight_generator import InsightGenerator
+from ninebox.services.insight_transformer import InsightTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -194,16 +195,20 @@ class CalibrationSummaryService:
     def _generate_insight_id(prefix: str, *components: Any) -> str:
         """Generate a deterministic insight ID from components.
 
+        Uses 16 hex characters (64 bits) from SHA256 for strong collision resistance:
+        - Birthday paradox collision probability: ~50% at ~4.3 billion insights
+        - Previous 8 chars had ~50% collision probability at ~65,000 insights
+
         Args:
             prefix: ID prefix (e.g., "focus", "anomaly", "rec")
             *components: Variable components to hash for uniqueness
 
         Returns:
-            Deterministic insight ID
+            Deterministic insight ID in format "{prefix}-{hash}" where hash is 16 hex chars
         """
         # Create a stable hash from all components
         content = "-".join(str(c) for c in components)
-        hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:8]
+        hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:16]
         return f"{prefix}-{hash_suffix}"
 
     def calculate_summary(
@@ -262,8 +267,9 @@ class CalibrationSummaryService:
 
                 agent_result = llm_service.generate_calibration_analysis(data_package)
 
-                # Transform agent's issues to Insight objects
-                insights = self._transform_agent_issues_to_insights(agent_result["issues"])
+                # Transform agent's issues to Insight objects using InsightTransformer
+                transformer = InsightTransformer()
+                insights = transformer.transform_agent_issues(agent_result["issues"])
                 summary = agent_result["summary"]
 
             except Exception as e:
@@ -281,47 +287,6 @@ class CalibrationSummaryService:
             "insights": insights,
             "summary": summary,
         }
-
-    def _transform_agent_issues_to_insights(
-        self,
-        agent_issues: list[dict],
-    ) -> list[Insight]:
-        """Transform agent's issues into Insight objects with deterministic IDs.
-
-        Args:
-            agent_issues: List of issue dicts from LLM agent
-
-        Returns:
-            List of Insight objects with deterministic IDs
-        """
-        insights = []
-
-        for issue in agent_issues:
-            # Generate deterministic ID from issue content
-            insight_id = self._generate_insight_id(
-                "agent",
-                issue.get("category", "unknown"),
-                issue.get("title", ""),
-                str(issue.get("affected_count", 0)),
-            )
-
-            # Create Insight object
-            insights.append(
-                Insight(
-                    id=insight_id,
-                    type=issue.get("type", "focus_area"),
-                    category=issue.get("category", "organizational"),
-                    priority=issue.get("priority", "medium"),
-                    title=issue.get("title", ""),
-                    description=issue.get("description", ""),
-                    affected_count=issue.get("affected_count", 0),
-                    source_data=issue.get("source_data", {}),
-                    cluster_id=issue.get("cluster_id"),
-                    cluster_title=issue.get("cluster_title"),
-                )
-            )
-
-        return insights
 
     def _generate_insights_legacy(
         self,

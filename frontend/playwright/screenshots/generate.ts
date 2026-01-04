@@ -25,11 +25,7 @@ import * as http from "http";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import {
-  screenshotConfig,
-  ScreenshotMetadata,
-  getAutomatedScreenshots,
-} from "./config";
+import { ScreenshotMetadata, getAutomatedScreenshots } from "./config";
 
 interface GenerateOptions {
   screenshots?: string[]; // Filter specific screenshots
@@ -399,7 +395,7 @@ async function resetApplicationState(page: Page): Promise<void> {
 
   // Wait for app to be ready (verify clean state - Phase 3: Task 9)
   // The app should show the welcome/upload state with no data loaded
-  const appReady = page.locator('[data-testid="nine-box-grid"]');
+  const _appReady = page.locator('[data-testid="nine-box-grid"]');
 
   // Wait a moment for React to initialize
   await page.waitForTimeout(500);
@@ -459,7 +455,7 @@ async function generateScreenshot(
  */
 async function validateScreenshot(
   outputPath: string,
-  name: string
+  _name: string
 ): Promise<void> {
   // Check file exists
   if (!fs.existsSync(outputPath)) {

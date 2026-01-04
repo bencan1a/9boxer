@@ -121,7 +121,14 @@ export async function createMultipleChanges(
  * just that a change exists.
  */
 export async function getFirstEmployeeId(page: Page): Promise<number> {
+  // Wait for employee cards to be fully loaded and stable
+  await page.waitForLoadState("networkidle");
+
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
+
+  // Ensure the card is visible and stable before extracting the ID
+  await firstCard.waitFor({ state: "visible", timeout: 5000 });
+
   const testId = await firstCard.getAttribute("data-testid");
 
   if (!testId) {

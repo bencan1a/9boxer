@@ -36,7 +36,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper component to handle open/close state
-const DialogWrapper = (args: any) => {
+const DialogWrapper = (args: React.ComponentProps<typeof ConfirmDialog>) => {
   const [open, setOpen] = useState(false);
 
   return (

@@ -21,6 +21,7 @@ import * as fileOperations from "./workflows/file-operations";
 import * as filtersStorybook from "./workflows/filters-storybook";
 import * as statisticsStorybook from "./workflows/statistics-storybook";
 import * as intelligence from "./workflows/intelligence";
+import * as intelligenceStorybook from "./workflows/intelligence-storybook";
 import * as calibration from "./workflows/calibration";
 import * as changes from "./workflows/changes";
 import * as detailsPanelEnhancements from "./workflows/details-panel-enhancements";
@@ -33,6 +34,7 @@ const workflowModules: Record<string, any> = {
   "filters-storybook": filtersStorybook,
   "statistics-storybook": statisticsStorybook,
   intelligence,
+  "intelligence-storybook": intelligenceStorybook,
   calibration,
   changes,
   "details-panel-enhancements": detailsPanelEnhancements,

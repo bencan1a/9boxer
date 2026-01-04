@@ -131,13 +131,18 @@ export async function resizePanelToWidth(
   await page.mouse.move(handleX, handleY);
   await page.mouse.down();
   // Move in small steps to ensure drag is detected
+  // Add small delay between steps to allow UI to process resize events
   const targetX = handleX - dragDistance;
   const steps = 5;
   for (let i = 1; i <= steps; i++) {
     const x = handleX + ((targetX - handleX) * i) / steps;
     await page.mouse.move(x, handleY);
+    // Wait for UI to process resize event (avoid overwhelming the renderer)
+    await page.waitForTimeout(50);
   }
   await page.mouse.up();
+  // Wait for final resize event to complete
+  await page.waitForTimeout(100);
 
   // Wait for resize to complete (state-based wait) - skip if requested
   if (!skipVerification) {
@@ -175,11 +180,15 @@ export async function switchPanelTab(
   const tabTestId = `${tabName}-tab`;
 
   const tab = page.locator(`[data-testid="${tabTestId}"]`);
+
+  // Wait for tab to be stable and visible before clicking
+  await expect(tab).toBeVisible({ timeout: 3000 });
+
   // Use force:true to bypass zoom controls that may overlay the tab
   await tab.click({ force: true });
 
   // Verify tab became active
-  await expect(tab).toHaveAttribute("aria-selected", "true", { timeout: 2000 });
+  await expect(tab).toHaveAttribute("aria-selected", "true", { timeout: 3000 });
 }
 
 /**

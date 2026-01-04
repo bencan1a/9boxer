@@ -1,6 +1,16 @@
 # Intelligence
 
-The Intelligence tab automatically detects rating anomalies and potential bias in your talent data. It analyzes patterns across locations, job functions, job levels, and tenure to flag inconsistencies.
+The Intelligence tab combines AI-powered analysis with statistical anomaly detection to help you prepare for calibration meetings and ensure fair, consistent talent decisions.
+
+**AI-Powered Meeting Preparation** (recommended starting point):
+- Executive summary identifying root causes
+- Prioritized, selectable insights for your meeting agenda
+- Time allocation recommendations
+
+**Statistical Analysis Tools** (for detailed investigation):
+- Location, Function, Level, and Tenure anomaly detection
+- Quality scoring and data health metrics
+- Deep dive into specific patterns
 
 ---
 
@@ -15,7 +25,101 @@ The Intelligence tab automatically detects rating anomalies and potential bias i
 
 ---
 
-## Quality Score
+## AI-Powered Meeting Preparation
+
+The Intelligence tab now features AI-powered analysis to help you prepare for calibration meetings more effectively. Using Claude (by Anthropic), 9Boxer analyzes your calibration data and generates actionable insights tailored to your organization.
+
+### Generating Your AI Summary
+
+1. Open the Intelligence tab
+2. Click the **Generate AI Summary** button at the top
+3. Wait 30-40 seconds while the AI analyzes your data
+4. Review the 2-3 paragraph executive summary
+
+The AI summary identifies:
+- Root causes of distribution patterns (e.g., "MT3 level is driving your center box inflation")
+- Specific percentages and affected employee counts
+- Recommended meeting approach and focus areas
+
+You can click **Show More** to expand the full summary, or **Refresh** to regenerate with updated data.
+
+![AI-generated executive summary expanded showing full analysis](images/screenshots/intelligence/ai-summary-expanded.png)
+
+!!! tip "Privacy First"
+    The AI analysis uses only anonymized statistical data. No employee names, IDs, or business titles are sent to the external API.
+
+### Understanding Calibration Insights
+
+Below the AI summary, you'll find a list of **Calibration Insights** - specific, actionable items for your meeting preparation.
+
+Each insight card shows:
+- **Priority badge:** HIGH (red), MEDIUM (yellow), or LOW (green)
+- **Category icon:** Location, Function, Level, Tenure, Distribution, or Time
+- **Title:** Brief, actionable description
+- **Description:** 2-3 sentences explaining the finding, why it matters, and what to do
+- **Affected count:** Number of employees impacted
+- **Cluster badge:** Groups related insights together (if applicable)
+
+![Insight card showing priority badge, category icon, cluster badge, and impact details](images/screenshots/intelligence/insight-card-detail.png)
+
+**Insight Types:**
+- **Anomaly** - Statistical deviations from expected patterns
+- **Focus Area** - Distribution patterns needing attention (e.g., crowded center box)
+- **Recommendation** - Process suggestions (e.g., "Run Donut Mode exercise")
+- **Time Allocation** - Meeting time recommendations by level
+
+### Using Insight Clusters
+
+Related insights are grouped under **cluster badges** with a common theme. For example, a "MT3 Level Requires Deep Review" cluster might contain:
+- "MT3 driving center box inflation" (HIGH priority)
+- "New hires driving MT3 center box pattern" (MEDIUM priority)
+- "Allocate 45 minutes for MT3 deep dive" (LOW priority - Time)
+
+Clusters help you see the big picture and address root causes holistically rather than treating symptoms individually.
+
+![Multiple related insights grouped under the same cluster badge](images/screenshots/intelligence/insight-cluster-example.png)
+
+### Selecting Insights for Your Meeting
+
+Use insights to build your meeting agenda:
+
+1. **Filter by priority:** Click All, High, Medium, or Low buttons
+2. **Select relevant insights:** Click the checkbox on insight cards
+3. **Bulk actions:** Use "Select All" or "Deselect All" for quick changes
+4. **Review your selections:** Selected insights become your discussion topics
+
+![Calibration insights section with priority filters and selectable insight cards](images/screenshots/intelligence/calibration-insights-section.png)
+
+!!! tip "Start with High Priority"
+    Filter to HIGH priority insights first. These are critical issues requiring immediate attention, such as significant statistical anomalies or major fairness concerns.
+
+### Data Overview Cards
+
+At the top of the Intelligence tab, three summary cards provide quick context:
+
+- **Quality Score:** Overall data health (0-100) with rating (Excellent/Good/Fair/Poor)
+- **Anomaly Count:** Total anomalies with breakdown by severity (green/yellow/red chips)
+- **Org Overview:** Total employees, performance distribution, flagged employees, locations, levels
+
+![Data overview cards showing quality score, anomaly count, and organization stats](images/screenshots/intelligence/data-overview-cards.png)
+
+These cards give you instant situational awareness before diving into details.
+
+### Meeting Preparation Workflow
+
+Follow this workflow for efficient meeting prep:
+
+1. **Generate AI Summary** - Get the executive overview and root cause analysis
+2. **Filter by Priority** - Start with HIGH priority insights
+3. **Select Discussion Topics** - Choose insights relevant to your meeting
+4. **Review Time Allocation** - Check AI recommendations for meeting duration by level
+5. **Drill into Details** - Use statistical analyses (below) for deep dives
+
+The AI provides the "big picture," while the statistical analyses (Location, Function, Level, Tenure) provide the "deep dive" tools for detailed investigation.
+
+---
+
+## Understanding the Quality Score
 
 At the top, you'll see an overall quality score (0-100) summarizing your data health.
 
@@ -186,8 +290,46 @@ For technical details on the statistical methods used, see [Detection Methodolog
 
 ---
 
+## Privacy & Data Security
+
+### What Data is Sent to the AI?
+
+When you generate an AI summary, 9Boxer sends **only anonymized statistical data** to the external API (Anthropic Claude):
+
+**Sent:**
+- Anonymized employee IDs (e.g., "Employee_1", "Employee_2")
+- Anonymized manager IDs (e.g., "Manager_1", "Manager_2")
+- Performance ratings (e.g., "Star", "High Performer")
+- Demographic categories (e.g., "Engineering", "MT3", "Remote")
+- Statistical aggregates (percentages, counts, z-scores)
+
+**NOT Sent:**
+- Employee names
+- Employee IDs from your system
+- Business titles
+- Manager names
+- Any personally identifiable information (PII)
+
+This anonymization ensures the AI analysis is safe for external API use while still providing valuable insights.
+
+### Troubleshooting
+
+**AI Summary button not appearing?**
+- Check that your organization has enabled LLM features
+- Verify calibration session has sufficient data for analysis
+
+**AI Summary fails to generate?**
+- Check your internet connection
+- Try refreshing the page and generating again
+- If problem persists, you can still use the statistical analysis tools below
+
+The Intelligence tab gracefully degrades to statistical-only insights if AI is unavailable.
+
+---
+
 ## Next Steps
 
+- [Your First Calibration](getting-started.md) - Complete workflow from upload to export
 - [Statistics](statistics.md) - View distribution data
 - [Filtering](filters.md) - Focus on specific groups to investigate
 - [Tracking Changes](tracking-changes.md) - Document recalibration decisions

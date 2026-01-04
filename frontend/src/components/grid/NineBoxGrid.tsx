@@ -65,7 +65,7 @@ const onRenderCallback = (
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
-  const { isResizing, tokens } = useGridZoom();
+  const { isResizing } = useGridZoom();
   const {
     employeesByPosition,
     getShortPositionLabel,

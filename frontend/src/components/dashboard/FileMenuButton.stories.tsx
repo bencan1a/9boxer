@@ -2,6 +2,10 @@
  * Storybook stories for FileMenuButton component
  */
 
+/* eslint-disable no-restricted-syntax */
+// This file contains demo data for Storybook documentation
+// Hardcoded colors are intentional for visual examples
+
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn, userEvent, within } from "@storybook/test";
 import { FileMenuButton } from "./FileMenuButton";

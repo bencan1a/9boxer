@@ -12,6 +12,10 @@
  * For other values, import tokens directly.
  */
 
+/* eslint-disable no-restricted-syntax */
+// This is the design system source of truth - hardcoded colors are required here
+// All other files should reference theme.palette.* or theme.tokens.colors.*
+
 /**
  * Color values for light and dark modes
  * These are referenced by the theme configuration
