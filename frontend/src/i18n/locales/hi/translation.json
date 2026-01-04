@@ -328,6 +328,7 @@
         "qualityScore": "गुणवत्ता स्कोर",
         "qualityScoreDescription": "पता लगाई गई सांख्यिकीय विसंगतियों के आधार पर 0-100 स्केल",
         "totalAnomalies": "कुल विसंगतियां",
+        "employees": "कर्मचारी",
         "green": "हरा",
         "yellow": "पीला",
         "red": "लाल",
@@ -465,9 +466,10 @@
       "message": "एक अप्रत्याशित त्रुटि हुई। कृपया पृष्ठ को पुनः लोड करने का प्रयास करें।",
       "returnHome": "होम पर लौटें"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "छुपाएं",
+    "show": "दिखाएं",
+    "dismiss": "खारिज करें",
+    "loading": "लोड हो रहा है..."
   },
   "messages": {
     "success": "सफलता",
@@ -500,66 +502,117 @@
     "exitFullScreen": "पूर्ण-स्क्रीन से बाहर निकलें (F11)"
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "कैलिब्रेशन सारांश",
+      "dataOverview": "डेटा अवलोकन",
+      "insights": "कैलिब्रेशन अंतर्दृष्टि",
+      "generating": "उत्पन्न किया जा रहा है...",
+      "generateSummary": "AI सारांश उत्पन्न करें",
+      "llmNotAvailable": "AI सारांश के लिए ANTHROPIC_API_KEY कॉन्फ़िगर होना आवश्यक है",
+      "selectAll": "सभी चुनें",
+      "deselectAll": "सभी अचयनित करें",
+      "estimatedDuration": "अनु. {{duration}}",
+      "suggestedSequence": "सुझाया गया: {{sequence}}",
+      "employees": "कर्मचारी",
+      "stars": "सितारे",
+      "centerBox": "मध्य बॉक्स",
+      "lowerPerformers": "निम्न प्रदर्शक",
+      "insightsSelected": "{{count}} अंतर्दृष्टि चयनित",
+      "insightsSelected_other": "{{count}} अंतर्दृष्टि चयनित",
+      "keyRecommendations": "मुख्य सिफारिशें",
+      "discussionPoints": "पूर्वानुमानित चर्चा बिंदु",
+      "poweredBy": "{{model}} द्वारा संचालित",
+      "toggleSection": "कैलिब्रेशन सारांश अनुभाग टॉगल करें",
+      "showLess": "कम दिखाएं",
+      "showFullSummary": "पूर्ण सारांश दिखाएं",
+      "poweredByClaude": "Claude द्वारा संचालित",
+      "priority": {
+        "high": "उच्च",
+        "medium": "मध्यम",
+        "low": "निम्न"
+      },
+      "category": {
+        "location": "स्थान",
+        "function": "विभाग",
+        "level": "स्तर",
+        "tenure": "कार्यकाल",
+        "distribution": "वितरण",
+        "time": "समय"
+      },
+      "insightType": {
+        "anomaly": "विसंगति",
+        "focus_area": "फोकस क्षेत्र",
+        "recommendation": "सिफारिश",
+        "time_allocation": "समय आवंटन"
+      },
+      "affectedEmployees": "{{count}} कर्मचारी प्रभावित",
+      "affectedEmployees_other": "{{count}} कर्मचारी प्रभावित"
+    },
+    "aiSummary": {
+      "title": "AI-जनित सारांश",
+      "showLess": "कम दिखाएं",
+      "readFull": "पूर्ण पढ़ें"
+    },
     "severity": {
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
+      "critical": "गंभीर",
+      "warning": "चेतावनी",
+      "info": "जानकारी"
     },
     "insightType": {
-      "recommendation": "Recommendation",
-      "observation": "Observation",
-      "warning": "Warning"
+      "recommendation": "सिफारिश",
+      "observation": "अवलोकन",
+      "warning": "चेतावनी"
     },
     "confidence": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
+      "high": "उच्च",
+      "medium": "मध्यम",
+      "low": "निम्न"
     },
     "insight": {
-      "confidence": "Confidence",
-      "confidenceLabel": "{{level}} Confidence",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "boxCount": "{{count}} box",
-      "boxCount_other": "{{count}} boxes",
+      "confidence": "विश्वास",
+      "confidenceLabel": "{{level}} विश्वास",
+      "employeeCount": "{{count}} कर्मचारी",
+      "employeeCount_other": "{{count}} कर्मचारी",
+      "boxCount": "{{count}} बॉक्स",
+      "boxCount_other": "{{count}} बॉक्स",
       "actionAria": "{{action}} - {{type}}",
       "actionButtonAria": "{{action}}"
     },
     "anomaly": {
-      "viewDetailsAria": "View details for {{title}}",
-      "affectedEmployees": "Affected",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "suggestion": "Suggestion"
+      "viewDetailsAria": "{{title}} के लिए विवरण देखें",
+      "affectedEmployees": "प्रभावित",
+      "employeeCount": "{{count}} कर्मचारी",
+      "employeeCount_other": "{{count}} कर्मचारी",
+      "suggestion": "सुझाव"
     },
     "anomalies": {
-      "title": "Anomalies Detected",
-      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
-      "empty": "No anomalies detected",
-      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
-      "criticalCount": "{{count}} Critical",
-      "warningCount": "{{count}} Warning",
-      "infoCount": "{{count}} Info"
+      "title": "विसंगतियां पाई गईं",
+      "tooltip": "आपके प्रतिभा डेटा में सांख्यिकीय विसंगतियां और असामान्य पैटर्न पाए गए",
+      "empty": "कोई विसंगति नहीं पाई गई",
+      "emptyDescription": "आपका प्रतिभा वितरण अच्छी तरह से कैलिब्रेटेड दिखता है और कोई महत्वपूर्ण विसंगतियां नहीं हैं",
+      "criticalCount": "{{count}} गंभीर",
+      "warningCount": "{{count}} चेतावनी",
+      "infoCount": "{{count}} जानकारी"
     },
     "insights": {
-      "title": "AI Insights",
-      "tooltip": "AI-generated insights and recommendations based on your talent data",
-      "empty": "No insights available",
-      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
-      "recommendationCount": "{{count}} Recommendation",
-      "recommendationCount_other": "{{count}} Recommendations",
-      "observationCount": "{{count}} Observation",
-      "observationCount_other": "{{count}} Observations",
-      "warningCount": "{{count}} Warning",
-      "warningCount_other": "{{count}} Warnings"
+      "title": "AI अंतर्दृष्टि",
+      "tooltip": "आपके प्रतिभा डेटा के आधार पर AI-जनित अंतर्दृष्टि और सिफारिशें",
+      "empty": "कोई अंतर्दृष्टि उपलब्ध नहीं",
+      "emptyDescription": "जैसे ही सिस्टम आपके प्रतिभा डेटा का विश्लेषण करेगा, अंतर्दृष्टि यहां दिखाई देंगी",
+      "recommendationCount": "{{count}} सिफारिश",
+      "recommendationCount_other": "{{count}} सिफारिशें",
+      "observationCount": "{{count}} अवलोकन",
+      "observationCount_other": "{{count}} अवलोकन",
+      "warningCount": "{{count}} चेतावनी",
+      "warningCount_other": "{{count}} चेतावनियां"
     },
     "distribution": {
-      "title": "Talent Distribution",
-      "tooltip": "Overview of how employees are distributed across the 9-box grid",
-      "totalEmployees": "Total: {{count}} employees"
+      "title": "प्रतिभा वितरण",
+      "tooltip": "9-बॉक्स ग्रिड में कर्मचारियों के वितरण का अवलोकन",
+      "totalEmployees": "कुल: {{count}} कर्मचारी"
     },
     "section": {
-      "infoAria": "More information about this section"
+      "infoAria": "इस अनुभाग के बारे में अधिक जानकारी"
     }
   }
 }

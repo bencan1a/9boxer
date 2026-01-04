@@ -10,7 +10,6 @@
  *   - quickstart-grid-populated: Populated grid after successful file upload
  *   - hero-grid-sample: Hero image showing full grid with sample data
  *   - donut-mode-active-layout: Active donut mode layout showing purple-bordered tiles in outer boxes
- *   - changes-drag-sequence: Base grid for 3-panel drag sequence
  *   - filters-active-chips: Grid view with active filter chips and orange dot indicator
  *   - filters-before-after: Before/after filtering comparison
  */
@@ -66,7 +65,7 @@ const onRenderCallback = (
 
 export const NineBoxGrid: React.FC = () => {
   const theme = useTheme();
-  const { isResizing, tokens } = useGridZoom();
+  const { isResizing } = useGridZoom();
   const {
     employeesByPosition,
     getShortPositionLabel,

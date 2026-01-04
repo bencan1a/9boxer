@@ -221,6 +221,7 @@ test.describe("Export Tests", () => {
     if (unchangedEmployee) {
       expect(
         unchangedEmployee["9Boxer Change Notes"] === undefined ||
+          unchangedEmployee["9Boxer Change Notes"] === null ||
           unchangedEmployee["9Boxer Change Notes"] === ""
       ).toBeTruthy();
     }

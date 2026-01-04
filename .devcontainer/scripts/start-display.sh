@@ -15,6 +15,14 @@ echo "Starting Xvfb on display :${DISPLAY_NUM} (${DISPLAY_WIDTH}x${DISPLAY_HEIGH
 # Kill any existing Xvfb on this display
 pkill -f "Xvfb :${DISPLAY_NUM}" 2>/dev/null || true
 
+# Start D-Bus session bus if not already running (needed by Electron/Chromium)
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    echo "Starting D-Bus session bus..."
+    eval $(dbus-launch --sh-syntax) 2>/dev/null || true
+    export DBUS_SESSION_BUS_ADDRESS
+    echo "  DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+fi
+
 # Start Xvfb
 Xvfb :${DISPLAY_NUM} -screen 0 ${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}x${DISPLAY_DEPTH} -ac -nolisten tcp -dpi 96 +extension RANDR &
 

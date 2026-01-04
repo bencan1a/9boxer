@@ -9,6 +9,9 @@ Export your modified employee data to Excel to save your work and share updated 
 1. **Make changes** - Drag employees to new positions on the grid
 2. **Open File menu** (top-left)
 3. **Click "Apply X Changes"** (X = number of pending changes)
+
+![File menu showing Apply Changes button with pending change count](images/screenshots/file-ops/file-menu-apply-button.png)
+
 4. **Choose an option**:
     - **Update original file** - Saves back to your original Excel file
     - **Save to different file** - Creates a new file (preserves original)
@@ -27,6 +30,8 @@ Export your modified employee data to Excel to save your work and share updated 
 |--------|-------------|----------|
 | **Update original file** | Overwrites your original file | Quick saves, iterative work |
 | **Save to different file** | Creates new file, original untouched | Backups, versioning, milestones |
+
+![Apply Changes dialog with Save to different file option selected](images/screenshots/file-ops/apply-changes-save-as-option.png)
 
 !!! tip "Best Practice"
     Before major calibration sessions, use "Save to different file" to create a backup first.
@@ -61,6 +66,8 @@ If you used [Donut Mode](donut-mode.md), four additional columns appear:
 | `Donut Exercise Change Description` | Donut movement description |
 | `Donut Exercise Notes` | Your donut exercise notes |
 
+![Exported Excel file showing change tracking columns added by 9Boxer](images/screenshots/file-ops/exported-excel-columns.png)
+
 !!! note "Donut vs Regular"
     Donut columns are separate from regular changes. Actual Performance/Potential ratings are NOT changed by donut placements.
 
@@ -71,6 +78,8 @@ All employees are included in the export, even those you excluded from the grid 
 ---
 
 ## After Exporting
+
+![Export complete confirmation showing successful save](images/screenshots/file-ops/export-success-message.png)
 
 - **Continue working** - Make more changes and export again
 - **Use as input** - Upload the exported file to start a new session with updated ratings
@@ -89,6 +98,8 @@ You haven't moved any employees yet. Drag at least one employee to a new box.
 - **Update original**: Check the same location as your original file
 - **Save to different**: Check the location you selected in the save dialog
 - Check the **Recent Files** list in File menu
+
+![Recent Files list in File menu showing previously accessed files](images/screenshots/file-ops/file-menu-recent-files.png)
 
 ### File is read-only
 

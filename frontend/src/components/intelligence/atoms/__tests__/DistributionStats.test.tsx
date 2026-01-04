@@ -210,7 +210,7 @@ describe("DistributionStats", () => {
       expect(position1).toHaveTextContent("vs ideal");
 
       // Position 3 should not (no ideal defined)
-      const position3 = screen.getByTestId("dist-stat-3");
+      screen.getByTestId("dist-stat-3");
       // Should not have vs ideal text if ideal not defined
     });
   });

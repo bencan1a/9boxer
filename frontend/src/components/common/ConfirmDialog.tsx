@@ -118,7 +118,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           variant="contained"
           color={confirmColor}
           disabled={loading}
-          autoFocus
+          autoFocus // eslint-disable-line jsx-a11y/no-autofocus -- Intentional for keyboard navigation in confirm dialogs
           data-testid="confirm-dialog-confirm-button"
         >
           {confirmText}

@@ -3,6 +3,10 @@
  * Provides multiple design variants for the 9-box grid logo
  */
 
+/* eslint-disable no-restricted-syntax */
+// This file defines logo design variants with specific brand colors
+// Logo colors are intentionally fixed and not theme-dependent
+
 import React from "react";
 import { useTheme } from "@mui/material/styles";
 
@@ -56,10 +60,8 @@ export const Logo: React.FC<LogoProps> = ({
   // Color palette from theme
   const primary = theme.palette.primary.main;
   const primaryLight = theme.palette.primary.light;
-  const primaryDark = theme.palette.primary.dark;
   const secondary = theme.palette.secondary.main;
   const background = theme.palette.background.paper;
-  const text = theme.palette.text.primary;
 
   // Gradient colors from splash screen
   const gradientStart = "#1e3c72";

@@ -10,28 +10,39 @@
  *   - distribution-chart-ideal: Distribution chart showing ideal vs actual employee distribution
  */
 
-import React from "react";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import AlertTitle from "@mui/material/AlertTitle";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useIntelligence } from "../../hooks/useIntelligence";
-import { EmptyState } from "../common/EmptyState";
-import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
-import { AnomalySection } from "../intelligence/AnomalySection";
-import { ManagerAnomalySection } from "../intelligence/ManagerAnomalySection";
-import { DeviationChart } from "../intelligence/DeviationChart";
-import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
-import { ManagerDistributionChart } from "../intelligence/ManagerDistributionChart";
+import { useCalibrationSummary } from "../../hooks/useCalibrationSummary";
 import { ApiError } from "../../services/api";
+import { EmptyState } from "../common/EmptyState";
+import { AnomalySection } from "../intelligence/AnomalySection";
+import { CalibrationSummarySection } from "../intelligence/CalibrationSummarySection";
+import { MeetingInsightsSection } from "../intelligence/MeetingInsightsSection";
+import { DeviationChart } from "../intelligence/DeviationChart";
+import { IntelligenceSummary } from "../intelligence/IntelligenceSummary";
+import { LevelDistributionChart } from "../intelligence/LevelDistributionChart";
+import { ManagerAnomalySection } from "../intelligence/ManagerAnomalySection";
+import { ManagerDistributionChart } from "../intelligence/ManagerDistributionChart";
 
 export const IntelligenceTab: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { data, isLoading, error, refetch } = useIntelligence();
+  const {
+    data: calibrationData,
+    summary,
+    selectedInsights,
+    toggleInsight,
+    selectAll,
+    deselectAll,
+  } = useCalibrationSummary();
 
   // Loading state
   if (isLoading) {
@@ -91,7 +102,7 @@ export const IntelligenceTab: React.FC = () => {
     );
   }
 
-  // No data state
+  // No data state - will auto-load, but show empty state if no session
   if (!data) {
     return (
       <EmptyState
@@ -161,8 +172,23 @@ export const IntelligenceTab: React.FC = () => {
       }}
       data-testid="intelligence-tab-content"
     >
-      {/* Summary Section */}
+      {/* Intelligence Summary Section */}
       <IntelligenceSummary data={data} />
+
+      {/* Calibration Summary Section - Shows 3-line summary preview by default */}
+      <CalibrationSummarySection defaultExpanded={true} />
+
+      {/* Calibration Insights - Separate section below AI summary (only show after AI summary generated) */}
+      {summary && calibrationData?.insights && (
+        <MeetingInsightsSection
+          insights={calibrationData.insights}
+          selectedInsights={selectedInsights}
+          onToggleInsight={toggleInsight}
+          onSelectAll={selectAll}
+          onDeselectAll={deselectAll}
+          defaultExpanded={true}
+        />
+      )}
 
       {/* Location Analysis */}
       <Box data-testid="location-analysis-section">

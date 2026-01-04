@@ -328,6 +328,7 @@
         "qualityScore": "Score de qualité",
         "qualityScoreDescription": "Échelle de 0 à 100 basée sur les anomalies statistiques détectées",
         "totalAnomalies": "Total des anomalies",
+        "employees": "Employés",
         "green": "Vert",
         "yellow": "Jaune",
         "red": "Rouge",
@@ -465,9 +466,10 @@
       "message": "Une erreur inattendue s'est produite. Veuillez essayer de recharger la page.",
       "returnHome": "Retour à l'accueil"
     },
-    "hide": "Hide",
-    "show": "Show",
-    "dismiss": "Dismiss"
+    "hide": "Masquer",
+    "show": "Afficher",
+    "dismiss": "Fermer",
+    "loading": "Chargement..."
   },
   "messages": {
     "success": "Succès",
@@ -500,66 +502,117 @@
     "exitFullScreen": "Quitter le plein écran (F11)"
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Résumé de calibration",
+      "dataOverview": "Aperçu des données",
+      "insights": "Analyses de calibration",
+      "generating": "Génération en cours...",
+      "generateSummary": "Générer le résumé IA",
+      "llmNotAvailable": "Le résumé IA nécessite la configuration de ANTHROPIC_API_KEY",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "estimatedDuration": "Est. {{duration}}",
+      "suggestedSequence": "Suggéré : {{sequence}}",
+      "employees": "collaborateurs",
+      "stars": "Étoiles",
+      "centerBox": "Case centrale",
+      "lowerPerformers": "Performeurs faibles",
+      "insightsSelected": "{{count}} analyse sélectionnée",
+      "insightsSelected_other": "{{count}} analyses sélectionnées",
+      "keyRecommendations": "Recommandations clés",
+      "discussionPoints": "Points de discussion prévus",
+      "poweredBy": "Propulsé par {{model}}",
+      "toggleSection": "Basculer la section résumé de calibration",
+      "showLess": "Afficher moins",
+      "showFullSummary": "Afficher le résumé complet",
+      "poweredByClaude": "Propulsé par Claude",
+      "priority": {
+        "high": "Haute",
+        "medium": "Moyenne",
+        "low": "Basse"
+      },
+      "category": {
+        "location": "Localisation",
+        "function": "Fonction",
+        "level": "Niveau",
+        "tenure": "Ancienneté",
+        "distribution": "Distribution",
+        "time": "Temps"
+      },
+      "insightType": {
+        "anomaly": "Anomalie",
+        "focus_area": "Zone de focus",
+        "recommendation": "Recommandation",
+        "time_allocation": "Allocation de temps"
+      },
+      "affectedEmployees": "{{count}} employé affecté",
+      "affectedEmployees_other": "{{count}} employés affectés"
+    },
+    "aiSummary": {
+      "title": "Résumé généré par IA",
+      "showLess": "Afficher moins",
+      "readFull": "Lire l'intégralité"
+    },
     "severity": {
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
+      "critical": "Critique",
+      "warning": "Avertissement",
+      "info": "Information"
     },
     "insightType": {
-      "recommendation": "Recommendation",
+      "recommendation": "Recommandation",
       "observation": "Observation",
-      "warning": "Warning"
+      "warning": "Avertissement"
     },
     "confidence": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
+      "high": "Haute",
+      "medium": "Moyenne",
+      "low": "Basse"
     },
     "insight": {
-      "confidence": "Confidence",
-      "confidenceLabel": "{{level}} Confidence",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
-      "boxCount": "{{count}} box",
-      "boxCount_other": "{{count}} boxes",
+      "confidence": "Confiance",
+      "confidenceLabel": "Confiance {{level}}",
+      "employeeCount": "{{count}} employé",
+      "employeeCount_other": "{{count}} employés",
+      "boxCount": "{{count}} case",
+      "boxCount_other": "{{count}} cases",
       "actionAria": "{{action}} - {{type}}",
       "actionButtonAria": "{{action}}"
     },
     "anomaly": {
-      "viewDetailsAria": "View details for {{title}}",
-      "affectedEmployees": "Affected",
-      "employeeCount": "{{count}} employee",
-      "employeeCount_other": "{{count}} employees",
+      "viewDetailsAria": "Voir les détails pour {{title}}",
+      "affectedEmployees": "Affectés",
+      "employeeCount": "{{count}} employé",
+      "employeeCount_other": "{{count}} employés",
       "suggestion": "Suggestion"
     },
     "anomalies": {
-      "title": "Anomalies Detected",
-      "tooltip": "Statistical anomalies and unusual patterns detected in your talent data",
-      "empty": "No anomalies detected",
-      "emptyDescription": "Your talent distribution appears well-calibrated with no significant anomalies",
-      "criticalCount": "{{count}} Critical",
-      "warningCount": "{{count}} Warning",
-      "infoCount": "{{count}} Info"
+      "title": "Anomalies détectées",
+      "tooltip": "Anomalies statistiques et modèles inhabituels détectés dans vos données de talents",
+      "empty": "Aucune anomalie détectée",
+      "emptyDescription": "Votre distribution de talents semble bien calibrée sans anomalies significatives",
+      "criticalCount": "{{count}} Critique",
+      "warningCount": "{{count}} Avertissement",
+      "infoCount": "{{count}} Information"
     },
     "insights": {
-      "title": "AI Insights",
-      "tooltip": "AI-generated insights and recommendations based on your talent data",
-      "empty": "No insights available",
-      "emptyDescription": "Insights will appear here as the system analyzes your talent data",
-      "recommendationCount": "{{count}} Recommendation",
-      "recommendationCount_other": "{{count}} Recommendations",
+      "title": "Analyses IA",
+      "tooltip": "Analyses et recommandations générées par IA basées sur vos données de talents",
+      "empty": "Aucune analyse disponible",
+      "emptyDescription": "Les analyses apparaîtront ici au fur et à mesure que le système analyse vos données de talents",
+      "recommendationCount": "{{count}} Recommandation",
+      "recommendationCount_other": "{{count}} Recommandations",
       "observationCount": "{{count}} Observation",
       "observationCount_other": "{{count}} Observations",
-      "warningCount": "{{count}} Warning",
-      "warningCount_other": "{{count}} Warnings"
+      "warningCount": "{{count}} Avertissement",
+      "warningCount_other": "{{count}} Avertissements"
     },
     "distribution": {
-      "title": "Talent Distribution",
-      "tooltip": "Overview of how employees are distributed across the 9-box grid",
-      "totalEmployees": "Total: {{count}} employees"
+      "title": "Distribution des talents",
+      "tooltip": "Aperçu de la répartition des collaborateurs sur la grille 9-box",
+      "totalEmployees": "Total : {{count}} collaborateurs"
     },
     "section": {
-      "infoAria": "More information about this section"
+      "infoAria": "Plus d'informations sur cette section"
     }
   }
 }

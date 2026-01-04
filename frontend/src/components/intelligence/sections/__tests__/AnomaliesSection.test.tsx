@@ -9,7 +9,6 @@ import {
   mockFunctionAnomaly,
   mockLocationAnomaly,
   mockDistributionAnomaly,
-  mockOutlierAnomaly,
   mockManyAnomalies,
   createMockAnomaly,
 } from "@/mocks/mockAnomalies";

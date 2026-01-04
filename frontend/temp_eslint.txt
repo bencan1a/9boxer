@@ -1,0 +1,128 @@
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\dragAndDrop.ts
+  82:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\fileOperations.ts
+  120:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\translations.ts
+   11:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   21:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\playwright\helpers\visualValidation.ts
+   81:29  warning  Avoid hardcoded RGB colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  391:29  warning  Avoid hardcoded RGB colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\common\ConfirmDialog.stories.tsx
+  39:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\FileUploadDialog.tsx
+  164:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\common\__tests__\ZoomControls.test.tsx
+  2:37  warning  'within' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\NineBoxGrid.performance.test.tsx
+  46:24  warning  'position' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\grid\__tests__\NineBoxGrid.test.tsx
+  7:3  warning  'createMockEmployee' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\LevelDistributionChart.tsx
+  96:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\ManagerDistributionChart.tsx
+   89:47  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  109:47  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  253:55  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  253:67  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  261:55  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  261:67  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\InsightCard.test.tsx
+  6:26  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\ManagerAnomalySection.test.tsx
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\__tests__\ManagerDistributionChart.test.tsx
+   70:13  warning  'emptyText' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  175:15  warning  'nameElement' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\AnomalyCard.test.tsx
+  11:3  warning  'mockDistributionAnomaly' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\DistributionStats.test.tsx
+  213:13  warning  'position3' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\atoms\__tests__\SectionHeader.test.tsx
+  212:15  warning  'container' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\sections\__tests__\AnomaliesSection.test.tsx
+  12:3  warning  'mockOutlierAnomaly' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\intelligence\sections\__tests__\InsightsSection.test.tsx
+  10:3  warning  'mockRecommendationMedium' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\EmployeeDetails.tsx
+   24:10  warning  'useTheme' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+   53:7   warning  'getBoxColor' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   53:47  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  192:26  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  212:67  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\EmployeeFlags.tsx
+  85:26  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\StatisticsTab.old.tsx
+  234:31  warning  Avoid hardcoded RGBA colors. Use theme.palette.* with alpha instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\EmployeeFlags.test.tsx
+  141:63  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  142:59  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\components\panel\__tests__\ManagementChain.test.tsx
+  182:13  warning  'container' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\components\settings\SettingsDialog.tsx
+  305:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\config.ts
+  23:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\contexts\__tests__\GridZoomContext.test.tsx
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\hooks\useConnectionStatus.ts
+  56:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\i18n\config.ts
+  68:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  68:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\main.tsx
+  25:24  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  26:14  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  38:26  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+  39:16  warning  Avoid hardcoded hex colors. Use theme.palette.* or theme.tokens.colors.* instead  no-restricted-syntax
+
+C:\Git_Repos\9boxer\frontend\src\services\__tests__\zoomService.test.ts
+  1:44  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Git_Repos\9boxer\frontend\src\test\edgeCaseFactory.ts
+   98:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Git_Repos\9boxer\frontend\src\test\i18nTestUtils.tsx
+  97:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 60 problems (0 errors, 60 warnings)

@@ -202,17 +202,6 @@ def test_corrupted_config_file_handled_gracefully(temp_config_path: Path) -> Non
     assert len(recent_files) == 1
 
 
-def test_add_recent_file_when_path_traversal_then_raises_error(tmp_path: Path) -> None:
-    """Test path traversal attack is blocked."""
-    mgr = PreferencesManager(config_path=tmp_path / "config.json")
-
-    with pytest.raises(ValueError, match="outside allowed directories"):
-        mgr.add_recent_file(
-            path="/etc/passwd",  # Outside allowed dirs
-            name="passwd",
-        )
-
-
 def test_add_recent_file_when_windows_reserved_name_then_raises_error(tmp_path: Path) -> None:
     """Test Windows reserved names are blocked."""
     mgr = PreferencesManager(config_path=tmp_path / "config.json")

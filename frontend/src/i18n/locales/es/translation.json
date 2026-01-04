@@ -335,6 +335,7 @@
         "qualityScore": "Puntuación de Calidad",
         "qualityScoreDescription": "Escala 0-100 basada en anomalías estadísticas detectadas",
         "totalAnomalies": "Total de Anomalías",
+        "employees": "Empleados",
         "green": "Verde",
         "yellow": "Amarillo",
         "red": "Rojo",
@@ -357,6 +358,57 @@
     }
   },
   "intelligence": {
+    "calibrationSummary": {
+      "title": "Resumen de Calibración",
+      "dataOverview": "Resumen de Datos",
+      "insights": "Insights de Calibración",
+      "generating": "Generando...",
+      "generateSummary": "Generar Resumen con IA",
+      "llmNotAvailable": "El resumen con IA requiere que ANTHROPIC_API_KEY esté configurado",
+      "selectAll": "Seleccionar Todo",
+      "deselectAll": "Deseleccionar Todo",
+      "estimatedDuration": "Est. {{duration}}",
+      "suggestedSequence": "Sugerido: {{sequence}}",
+      "employees": "empleados",
+      "stars": "Estrellas",
+      "centerBox": "Caja Central",
+      "lowerPerformers": "Bajo Rendimiento",
+      "insightsSelected": "{{count}} insight seleccionado",
+      "insightsSelected_other": "{{count}} insights seleccionados",
+      "keyRecommendations": "Recomendaciones Clave",
+      "discussionPoints": "Puntos de Discusión Previstos",
+      "poweredBy": "Impulsado por {{model}}",
+      "toggleSection": "Alternar sección de resumen de calibración",
+      "showLess": "Mostrar menos",
+      "showFullSummary": "Mostrar resumen completo",
+      "poweredByClaude": "Desarrollado por Claude",
+      "priority": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      },
+      "category": {
+        "location": "Ubicación",
+        "function": "Función",
+        "level": "Nivel",
+        "tenure": "Antigüedad",
+        "distribution": "Distribución",
+        "time": "Tiempo"
+      },
+      "insightType": {
+        "anomaly": "Anomalía",
+        "focus_area": "Área de Enfoque",
+        "recommendation": "Recomendación",
+        "time_allocation": "Asignación de Tiempo"
+      },
+      "affectedEmployees": "{{count}} empleado afectado",
+      "affectedEmployees_other": "{{count}} empleados afectados"
+    },
+    "aiSummary": {
+      "title": "Resumen Generado por IA",
+      "showLess": "Mostrar menos",
+      "readFull": "Leer completo"
+    },
     "severity": {
       "critical": "Crítico",
       "warning": "Advertencia",
@@ -439,26 +491,26 @@
       "errorFallback": "No se pudo actualizar el archivo original. ¿Guardar en una nueva ubicación?"
     },
     "about": {
-      "title": "About 9Boxer",
-      "description": "A powerful talent management tool for visualizing and managing employee performance using the 9-box grid methodology.",
-      "tagline": "Elevate your talent management with data-driven insights",
-      "shortDescription": "Talent management through the 9-box grid",
-      "version": "Version",
-      "technology": "Technology",
-      "copyright": "© 2024 9Boxer. All rights reserved.",
-      "userGuide": "User Guide",
-      "reportIssue": "Report Issue",
+      "title": "Acerca de 9Boxer",
+      "description": "Una poderosa herramienta de gestión de talento para visualizar y gestionar el desempeño de empleados utilizando la metodología de cuadrícula 9-box.",
+      "tagline": "Eleve su gestión de talento con insights basados en datos",
+      "shortDescription": "Gestión de talento a través de la cuadrícula 9-box",
+      "version": "Versión",
+      "technology": "Tecnología",
+      "copyright": "© 2024 9Boxer. Todos los derechos reservados.",
+      "userGuide": "Guía del Usuario",
+      "reportIssue": "Reportar Problema",
       "features": {
         "grid": {
-          "title": "9-Box Grid",
-          "description": "Intuitive drag-and-drop interface for employee placement and performance visualization"
+          "title": "Cuadrícula 9-Box",
+          "description": "Interfaz intuitiva de arrastrar y soltar para ubicación de empleados y visualización de desempeño"
         },
         "collaboration": {
-          "title": "Team Collaboration",
-          "description": "Share insights and calibrate assessments across your organization"
+          "title": "Colaboración en Equipo",
+          "description": "Comparta insights y calibre evaluaciones en toda su organización"
         },
         "tech": {
-          "title": "Built With"
+          "title": "Construido Con"
         }
       }
     }
@@ -497,6 +549,7 @@
     "hide": "Ocultar",
     "show": "Mostrar",
     "dismiss": "Descartar",
+    "loading": "Cargando...",
     "fileUpload": {
       "dialogTitle": "Importar Archivo de Excel",
       "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",

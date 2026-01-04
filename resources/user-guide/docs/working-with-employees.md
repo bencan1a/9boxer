@@ -18,6 +18,8 @@ Shows complete employee information:
 - Flags (special status indicators)
 - Timeline of all historical moves
 
+![Employee details panel showing all employee information including ratings, job info, flags, and timeline](images/screenshots/details/employee-details-full-panel.png)
+
 ### Changes Tab
 
 Track modifications to this employee:
@@ -52,6 +54,8 @@ When you move an employee:
 - The **Apply button badge** shows your change count
 - The move is recorded in the timeline
 
+![Employee tile with orange left border indicating it was modified in the current session](images/screenshots/grid/employee-tile-modified-border.png)
+
 !!! warning "Changes Require Export"
     Changes aren't saved until you click **Apply** and export. Always export before closing.
 
@@ -84,6 +88,8 @@ The timeline shows:
 - When each move happened
 - Previous and new positions
 - Chronological order (most recent first)
+
+![Timeline section in Details tab showing chronological movement history](images/screenshots/details/employee-timeline-history.png)
 
 ---
 
@@ -124,6 +130,8 @@ Flags are visual markers highlighting employees with special statuses.
 2. Go to **Details tab** → **Flags section**
 3. Click **Add Flag** dropdown
 4. Select the flag
+
+![Flags section showing existing flag chips and Add Flag dropdown menu](images/screenshots/details/employee-flags-section.png)
 
 **To remove a flag:**
 

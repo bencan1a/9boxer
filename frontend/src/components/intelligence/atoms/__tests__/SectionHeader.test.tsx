@@ -209,7 +209,7 @@ describe("SectionHeader", () => {
     });
 
     it("displays actions on the right side", () => {
-      const { container } = render(
+      render(
         <SectionHeader
           title="Test Section"
           actions={<Button data-testid="action-button">Action</Button>}

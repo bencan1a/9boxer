@@ -86,9 +86,17 @@ export const ManagerDistributionChart: React.FC<
   }));
 
   // Custom Y-axis tick component to make manager names clickable
-  const CustomYAxisTick = ({ x, y, payload }: any) => {
+  const CustomYAxisTick = ({
+    x,
+    y,
+    payload,
+  }: {
+    x?: number;
+    y?: number;
+    payload?: { value: string };
+  }) => {
     return (
-      <g transform={`translate(${x},${y})`}>
+      <g transform={`translate(${x || 0},${y || 0})`}>
         <text
           x={-5}
           y={0}
@@ -97,18 +105,24 @@ export const ManagerDistributionChart: React.FC<
           fill={theme.palette.primary.main}
           fontSize={theme.tokens.typography.fontSize.caption}
           style={{ cursor: "pointer", textDecoration: "underline" }}
-          onClick={() => handleManagerClick(payload.value)}
+          onClick={() => handleManagerClick(payload?.value || "")}
         >
-          {payload.value}
+          {payload?.value || ""}
         </text>
       </g>
     );
   };
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: {
+    active?: boolean;
+    payload?: Array<{ payload: ChartDataPoint }>;
+  }) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload as ChartDataPoint;
+      const data = payload[0].payload;
       const highDiff = data.high - 20;
       const mediumDiff = data.medium - 70;
       const lowDiff = data.low - 10;
@@ -250,7 +264,7 @@ export const ManagerDistributionChart: React.FC<
             {/* Low/Medium boundary at 10% */}
             <ReferenceLine
               x={10}
-              stroke={theme.palette.mode === "dark" ? "#ffffff" : "#000000"}
+              stroke={theme.palette.text.primary}
               strokeWidth={2}
               strokeOpacity={1.0}
               strokeDasharray="5 5"
@@ -258,7 +272,7 @@ export const ManagerDistributionChart: React.FC<
             {/* Medium/High boundary at 80% (10% low + 70% medium) */}
             <ReferenceLine
               x={80}
-              stroke={theme.palette.mode === "dark" ? "#ffffff" : "#000000"}
+              stroke={theme.palette.text.primary}
               strokeWidth={2}
               strokeOpacity={1.0}
               strokeDasharray="5 5"

@@ -12,7 +12,8 @@
  * Note: CI environments have additional rendering overhead and resource constraints.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/worker-backend";
+import { loadSampleData } from "../helpers";
 
 // Helper to get CI-adjusted thresholds
 const getThreshold = (localValue: number, ciMultiplier = 1.5): number => {
@@ -21,13 +22,9 @@ const getThreshold = (localValue: number, ciMultiplier = 1.5): number => {
 
 test.describe("Filter Performance Tests", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the app
+    // Navigate to the app and load sample data
     await page.goto("/");
-
-    // Wait for app to be loaded
-    await page.waitForSelector('[data-testid="nine-box-grid"]', {
-      timeout: 10000,
-    });
+    await loadSampleData(page);
   });
 
   test("should apply filter quickly", async ({ page }) => {

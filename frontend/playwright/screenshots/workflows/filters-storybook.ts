@@ -284,3 +284,85 @@ export async function generateExclusionsDialog(
     selector: '[data-testid="exclusion-dialog"]',
   });
 }
+
+// =============================================================================
+// FILTER LOGIC SCREENSHOTS (3 screenshots for filters.md)
+// =============================================================================
+
+/**
+ * Generate filters OR logic example screenshot
+ *
+ * Shows the FilterDrawer with multiple selections in the Job Functions
+ * category (Engineering and Product) to demonstrate OR behavior:
+ * employees in EITHER function are shown.
+ *
+ * Uses Storybook story: app-dashboard-filterdrawer--multiple-selections-or
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFiltersOrLogic(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-filterdrawer--multiple-selections-or",
+    outputPath,
+    theme: "dark",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]',
+  });
+}
+
+/**
+ * Generate filters AND logic example screenshot
+ *
+ * Shows the FilterDrawer with selections across multiple categories
+ * (Job Function + Location + Flag) to demonstrate AND behavior:
+ * only employees matching ALL criteria are shown.
+ *
+ * Uses Storybook story: app-dashboard-filterdrawer--multiple-categories-and
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFiltersAndLogic(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-filterdrawer--multiple-categories-and",
+    outputPath,
+    theme: "dark",
+    waitTime: 1500,
+    selector: '[data-testid="filter-drawer"]',
+  });
+}
+
+/**
+ * Generate filters active indicator screenshot
+ *
+ * Shows the AppBar/toolbar area with the Filters button displaying
+ * an orange dot badge and the employee count showing filtered vs total.
+ *
+ * NOTE: This screenshot is source: "full-app" in config.ts because it
+ * needs to capture the AppBar in context with the employee count.
+ * The WithActiveFilters story in PureAppBar.stories.tsx provides the base.
+ *
+ * @param page - Playwright Page object
+ * @param outputPath - Absolute path where screenshot should be saved
+ */
+export async function generateFiltersActiveIndicator(
+  page: Page,
+  outputPath: string
+): Promise<void> {
+  // Use the AppBar story with active filters
+  await page.setViewportSize({ width: 800, height: 400 });
+
+  await captureStorybookScreenshot(page, {
+    storyId: "app-dashboard-appbar--with-active-filters",
+    outputPath,
+    theme: "dark",
+    waitTime: 500,
+  });
+}

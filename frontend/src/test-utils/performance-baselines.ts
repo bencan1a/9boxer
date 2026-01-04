@@ -22,6 +22,8 @@ export const PERFORMANCE_BASELINES = {
     render1000: { baseline: 1500, tolerance: 2.0 }, // 1500ms * 2 = 3000ms max
     reRender: { baseline: 80, tolerance: 3.0 }, // 80ms * 3 = 240ms max
     emptyRender: { baseline: 30, tolerance: 4.0 }, // 30ms * 4 = 120ms max
+    memoryCycles10: { baseline: 800, tolerance: 3.0 }, // 800ms * 3 = 2400ms max for 10 cycles
+    memoryCycles20: { baseline: 1500, tolerance: 3.0 }, // 1500ms * 3 = 4500ms max for 20 cycles
   },
 } as const;
 

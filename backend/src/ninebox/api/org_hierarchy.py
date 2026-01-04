@@ -68,18 +68,27 @@ async def get_managers(
 
     Returns:
         ManagerListResponse with list of managers and their team sizes
-        Returns empty list if no session exists (graceful degradation)
 
     Raises:
+        HTTPException: 404 if no active session found
         HTTPException: 500 if org service initialization fails
     """
     # Get session
     session = session_mgr.get_session(LOCAL_USER_ID)
 
-    if not session or not session.current_employees:
-        # Return empty list when no session exists (graceful degradation)
-        # Frontend will fall back to extracting managers from employee data
-        return {"managers": [], "total_count": 0}
+    if not session:
+        logger.error(f"OrgHierarchy: No session found for user_id={LOCAL_USER_ID}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No active session found. Please upload an Excel file first.",
+        )
+
+    if not session.current_employees:
+        logger.error("OrgHierarchy: Session exists but current_employees is EMPTY")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Session exists but contains no employee data. Please reload your Excel file.",
+        )
 
     try:
         # Initialize OrgService with current employees

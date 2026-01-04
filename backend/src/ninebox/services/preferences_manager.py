@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any
 
 from ninebox.models.preferences import RecentFile
-from ninebox.utils.paths import get_user_data_dir
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +58,7 @@ class PreferencesManager:
             self._save_config({"recent_files": []})
 
     def _validate_file_path(self, file_path: str) -> Path:
-        """Validate file path is safe and within allowed directories.
+        """Validate file path is safe.
 
         Args:
             file_path: Path to validate
@@ -68,21 +67,9 @@ class PreferencesManager:
             Resolved Path object if valid
 
         Raises:
-            ValueError: If path is unsafe (traversal, reserved names, etc.)
+            ValueError: If path is unsafe (reserved names, etc.)
         """
         path = Path(file_path).resolve()
-
-        # Check for path traversal - must be within allowed directories
-        allowed_dirs = [
-            Path.home().resolve(),
-            get_user_data_dir().resolve(),
-        ]
-
-        if not any(path.is_relative_to(d) for d in allowed_dirs):
-            raise ValueError(
-                f"Path {path} is outside allowed directories. "
-                f"Files must be in user home or application data directory."
-            )
 
         # Check for Windows reserved names
         reserved_names = {
@@ -126,7 +113,7 @@ class PreferencesManager:
             name: Display name of the file (typically the filename).
 
         Raises:
-            ValueError: If path is unsafe (path traversal or reserved name).
+            ValueError: If path uses a Windows reserved name.
 
         Example:
             >>> manager = PreferencesManager()

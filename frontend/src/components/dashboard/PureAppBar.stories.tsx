@@ -5,7 +5,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { PureAppBar } from "./PureAppBar";
-import Box from "@mui/material/Box";
 
 const meta = {
   title: "App/Dashboard/AppBar",
