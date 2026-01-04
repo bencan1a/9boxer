@@ -1,5 +1,5 @@
 {
-  "totalComponents": 74,
+  "totalComponents": 75,
   "componentsWithStories": 58,
   "componentsWithScreenshots": 18,
   "totalScreenshots": 35,
@@ -224,6 +224,13 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/GridPositionFilter.tsx",
       "name": "GridPositionFilter",
       "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/OrgTreeFilter.tsx",
+      "name": "OrgTreeFilter",
+      "hasStory": false,
       "screenshotCount": 0,
       "screenshots": []
     },
