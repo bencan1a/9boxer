@@ -43,60 +43,6 @@ class TestLLMServiceAvailability:
                 assert availability["available"] is False
 
 
-class TestLLMServiceResponseParsing:
-    """Tests for Claude response parsing."""
-
-    @pytest.fixture
-    def service(self) -> LLMService:
-        """Create a service instance (without client)."""
-        with patch.dict(os.environ, {}, clear=True):
-            os.environ.pop("ANTHROPIC_API_KEY", None)
-            return LLMService()
-
-    def test_parse_json_from_code_block(self, service: LLMService) -> None:
-        """Test parsing JSON from markdown code block."""
-        content = '''Here is my analysis:
-
-```json
-{
-  "summary": "Test summary",
-  "key_recommendations": ["Rec 1", "Rec 2"],
-  "discussion_points": ["Point 1"]
-}
-```
-'''
-        result = service._parse_response(content)
-
-        assert result["summary"] == "Test summary"
-        assert len(result["key_recommendations"]) == 2
-        assert len(result["discussion_points"]) == 1
-
-    def test_parse_raw_json(self, service: LLMService) -> None:
-        """Test parsing raw JSON without code block."""
-        content = '''{
-  "summary": "Direct JSON",
-  "key_recommendations": ["Rec"],
-  "discussion_points": []
-}'''
-        result = service._parse_response(content)
-
-        assert result["summary"] == "Direct JSON"
-
-    def test_parse_raises_for_invalid_json(self, service: LLMService) -> None:
-        """Test that invalid JSON raises ValueError."""
-        content = "This is not JSON at all"
-
-        with pytest.raises(ValueError, match="Could not find JSON"):
-            service._parse_response(content)
-
-    def test_parse_handles_malformed_json(self, service: LLMService) -> None:
-        """Test handling of malformed JSON."""
-        content = '{"summary": "incomplete'
-
-        with pytest.raises(ValueError):
-            service._parse_response(content)
-
-
 class TestSystemPromptLoading:
     """Tests for system prompt loading from configuration files.
 

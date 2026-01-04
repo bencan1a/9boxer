@@ -12,6 +12,8 @@ import hashlib
 import logging
 from typing import Any
 
+from ninebox.types.insights import Insight
+
 logger = logging.getLogger(__name__)
 
 
@@ -86,9 +88,6 @@ class InsightTransformer:
             >>> insights[0]["id"]
             'agent-a1b2c3d4'
         """
-        # Import here to avoid circular dependency
-        from ninebox.services.calibration_summary_service import Insight
-
         insights: list[Any] = []
 
         for issue in agent_issues:

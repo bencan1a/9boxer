@@ -378,6 +378,10 @@
       "keyRecommendations": "Recomendaciones Clave",
       "discussionPoints": "Puntos de Discusión Previstos",
       "poweredBy": "Impulsado por {{model}}",
+      "toggleSection": "Alternar sección de resumen de calibración",
+      "showLess": "Mostrar menos",
+      "showFullSummary": "Mostrar resumen completo",
+      "poweredByClaude": "Desarrollado por Claude",
       "priority": {
         "high": "Alta",
         "medium": "Media",
@@ -399,6 +403,11 @@
       },
       "affectedEmployees": "{{count}} empleado afectado",
       "affectedEmployees_other": "{{count}} empleados afectados"
+    },
+    "aiSummary": {
+      "title": "Resumen Generado por IA",
+      "showLess": "Mostrar menos",
+      "readFull": "Leer completo"
     },
     "severity": {
       "critical": "Crítico",

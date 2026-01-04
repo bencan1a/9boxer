@@ -17,6 +17,7 @@ from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.insight_generator import InsightGenerator
 from ninebox.services.insight_transformer import InsightTransformer
+from ninebox.types.insights import Insight, InsightSourceData
 
 logger = logging.getLogger(__name__)
 
@@ -60,57 +61,8 @@ class TimeAllocation(TypedDict):
     suggested_sequence: list[str]
 
 
-class InsightSourceData(TypedDict, total=False):
-    """Source data for an insight, used for LLM context."""
-
-    z_score: float
-    p_value: float
-    observed_pct: float
-    expected_pct: float
-    center_count: int
-    center_pct: float
-    recommended_max_pct: float
-    total_minutes: int
-    by_level: dict[str, int]
-    category: str
-    categories_affected: list[str]
-
-
-class InsightRequired(TypedDict):
-    """Required fields for an Insight."""
-
-    id: str
-    type: str  # anomaly, focus_area, recommendation, time_allocation
-    category: str  # location, function, level, tenure, distribution, time
-    priority: str  # high, medium, low
-    title: str
-    description: str
-    affected_count: int
-    source_data: InsightSourceData
-
-
-class Insight(InsightRequired, total=False):
-    """A discrete, selectable insight for meeting preparation.
-
-    This TypedDict uses inheritance to make clustering fields optional.
-    All fields from InsightRequired are required, while fields defined
-    here (cluster_id, cluster_title) are optional.
-
-    Attributes:
-        id: Unique identifier for the insight
-        type: Type of insight (anomaly, focus_area, recommendation, time_allocation)
-        category: Category of insight (location, function, level, tenure, distribution, time)
-        priority: Priority level (high, medium, low)
-        title: Short, descriptive title
-        description: Detailed description of the insight
-        affected_count: Number of employees affected
-        source_data: Raw data that generated this insight
-        cluster_id: Optional ID of the cluster this insight belongs to
-        cluster_title: Optional title of the cluster this insight belongs to
-    """
-
-    cluster_id: str | None
-    cluster_title: str | None
+# Note: Insight and InsightSourceData are now imported from ninebox.types.insights
+# to avoid circular import dependencies with insight_generator.py and insight_transformer.py
 
 
 class CalibrationSummaryResponseRequired(TypedDict):

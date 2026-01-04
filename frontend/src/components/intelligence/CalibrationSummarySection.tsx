@@ -123,6 +123,18 @@ export const CalibrationSummarySection: React.FC<
             cursor: "pointer",
           }}
           onClick={() => setExpanded(!expanded)}
+          role="button"
+          aria-expanded={expanded}
+          aria-label={t("intelligence.calibrationSummary.toggleSection", {
+            defaultValue: "Toggle calibration summary section",
+          })}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setExpanded(!expanded);
+            }
+          }}
         >
           <LightbulbIcon color="primary" />
           <Typography variant="subtitle1" fontWeight="medium">
@@ -181,7 +193,11 @@ export const CalibrationSummarySection: React.FC<
               })}
             </Button>
           )}
-          <IconButton size="small" onClick={() => setExpanded(!expanded)}>
+          <IconButton
+            size="small"
+            onClick={() => setExpanded(!expanded)}
+            aria-hidden="true"
+          >
             {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </Box>
@@ -235,14 +251,22 @@ export const CalibrationSummarySection: React.FC<
                   display: "inline-block",
                 }}
               >
-                {summaryExpanded ? "Show less" : "Show full summary"}
+                {summaryExpanded
+                  ? t("intelligence.calibrationSummary.showLess", {
+                      defaultValue: "Show less",
+                    })
+                  : t("intelligence.calibrationSummary.showFullSummary", {
+                      defaultValue: "Show full summary",
+                    })}
               </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, fontStyle: "italic" }}
               >
-                Powered by Claude
+                {t("intelligence.calibrationSummary.poweredByClaude", {
+                  defaultValue: "Powered by Claude",
+                })}
               </Typography>
             </Box>
           )}

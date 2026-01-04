@@ -3,8 +3,7 @@
 This module tests the complete agent-first calibration summary flow:
 - Full integration with LLM service
 - Data packaging and agent prompting
-- Response parsing and validation
-- Retry logic for malformed JSON
+- Response parsing and validation (using structured outputs)
 - Fallback to legacy when LLM fails
 - Agent vs legacy mode comparison
 
@@ -13,7 +12,6 @@ Tests are marked with @pytest.mark.e2e and include both:
 2. Real LLM tests (slow, requires API key, can be skipped)
 """
 
-import json
 import os
 from unittest.mock import Mock, patch
 
@@ -134,34 +132,6 @@ def mock_malformed_json_response():
     )
 
 
-@pytest.fixture
-def mock_llm_service_with_retry():
-    """Mock LLM service that simulates retry behavior then succeeds.
-
-    NOTE: This tests the END RESULT of retry logic, not the internal mechanics.
-    The actual retry happens inside llm_service.generate_calibration_analysis().
-    This mock simulates a successful retry by returning valid data immediately.
-    """
-    valid_response = {
-        "summary": "Retry successful - this simulates a successful retry",
-        "issues": [
-            {
-                "type": "focus_area",
-                "category": "distribution",
-                "priority": "medium",
-                "title": "Test after retry",
-                "description": "This worked (simulating successful retry)",
-                "affected_count": 10,
-                "source_data": {},
-            }
-        ],
-    }
-
-    with patch(
-        "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
-        return_value=valid_response,
-    ):
-        yield
 
 
 @pytest.fixture
@@ -366,55 +336,6 @@ class TestAgentFirstHappyPath:
                     assert "employee_count" in item
                     assert "minutes" in item
                     assert "percentage" in item
-
-
-# =============================================================================
-# Test Retry Logic
-# =============================================================================
-
-
-class TestRetryLogic:
-    """Tests for LLM retry logic when malformed JSON is returned."""
-
-    def test_retry_on_malformed_json_then_success(
-        self, test_client: TestClient, session_with_sample_data: dict, mock_llm_service_with_retry
-    ) -> None:
-        """Test retry logic verified by successful response (E2E simulation)."""
-        response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
-
-        assert response.status_code == 200
-        data = response.json()
-
-        # Should have succeeded after retry
-        # Should have summary (indicating LLM succeeded after retry simulation)
-        assert data["summary"] is not None
-        assert "Retry successful" in data["summary"]
-        assert len(data["insights"]) == 1
-        assert data["insights"][0]["title"] == "Test after retry"
-
-    def test_max_retries_exhausted_falls_back_to_legacy(
-        self, test_client: TestClient, session_with_sample_data: dict
-    ) -> None:
-        """Test that after max retries, system falls back to legacy mode."""
-
-        # Mock LLM to always fail with JSON error
-        def always_fail_json(data_package):
-            raise json.JSONDecodeError("Invalid JSON", '{"broken"', 0)
-
-        with patch(
-            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
-            side_effect=always_fail_json,
-        ):
-            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
-
-            assert response.status_code == 200
-            data = response.json()
-
-            # Should have fallen back to legacy (no summary)
-            assert data["summary"] is None
-
-            # But should still have insights from legacy logic
-            assert len(data["insights"]) > 0
 
 
 # =============================================================================

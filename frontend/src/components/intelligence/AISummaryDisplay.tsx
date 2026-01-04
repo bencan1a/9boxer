@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
 import { useTheme, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -16,6 +17,7 @@ interface AISummaryDisplayProps {
 export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({
   summary,
 }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -46,7 +48,9 @@ export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <AutoAwesomeIcon sx={{ color: "primary.main" }} />
           <Typography variant="h6" color="primary">
-            AI-Generated Summary
+            {t("intelligence.aiSummary.title", {
+              defaultValue: "AI-Generated Summary",
+            })}
           </Typography>
         </Box>
         <Button
@@ -55,7 +59,13 @@ export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({
           endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           sx={{ minWidth: 120 }}
         >
-          {isExpanded ? "Show less" : "Read full"}
+          {isExpanded
+            ? t("intelligence.aiSummary.showLess", {
+                defaultValue: "Show less",
+              })
+            : t("intelligence.aiSummary.readFull", {
+                defaultValue: "Read full",
+              })}
         </Button>
       </Box>
 
@@ -105,7 +115,9 @@ export const AISummaryDisplay: React.FC<AISummaryDisplayProps> = ({
         color="text.secondary"
         sx={{ display: "block", mt: 2 }}
       >
-        Powered by Claude
+        {t("intelligence.calibrationSummary.poweredByClaude", {
+          defaultValue: "Powered by Claude",
+        })}
       </Typography>
     </Paper>
   );
