@@ -187,7 +187,7 @@ Here's what most people get wrong: They review manager-by-manager or try to look
 
 **The right approach:** Review by level across all managers. This reveals rating patterns and ensures fairness.
 
-Click the **Filters** button to open the left panel.
+Click the **Filters** button in the FilterToolbar (located above the vertical axis at the top-left of the grid) to open the filter drawer. The FilterToolbar also shows your employee count and active filter summary.
 
 ### Small Organizations (<100 employees)
 
@@ -444,7 +444,7 @@ Bookmark these common actions:
 | Move an employee | Drag tile to new box |
 | View employee details | Click the employee tile |
 | Add a calibration note | Click employee → Changes tab → Type in Notes field |
-| Filter the grid | Click Filters button → Select criteria |
+| Filter the grid | Click Filters button in FilterToolbar (top-left of grid) → Select criteria |
 | Export my work | File menu → Apply X Changes to Excel |
 | Check distribution | Click Statistics tab in right panel |
 | Identify patterns | Click Intelligence tab in right panel |

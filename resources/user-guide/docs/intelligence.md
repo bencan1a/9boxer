@@ -88,6 +88,8 @@ Use insights to build your meeting agenda:
 3. **Bulk actions:** Use "Select All" or "Deselect All" for quick changes
 4. **Review your selections:** Selected insights become your discussion topics
 
+**Clicking on managers to investigate:** When you spot a manager anomaly (e.g., "Manager X rates 40% higher than peers"), you can click the manager's name directly in the insight card. This opens the Filters panel with the manager filter applied, letting you see their team on the grid.
+
 ![Calibration insights section with priority filters and selectable insight cards](images/screenshots/intelligence/calibration-insights-section.png)
 
 !!! tip "Start with High Priority"

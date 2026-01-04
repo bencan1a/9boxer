@@ -279,13 +279,14 @@ export async function generateFilterToolbarExpanded(
   outputPath: string
 ): Promise<void> {
   // Set viewport to show toolbar in context (no excess whitespace)
-  await page.setViewportSize({ width: 600, height: 300 });
+  await page.setViewportSize({ width: 500, height: 200 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "app-common-filtertoolbar--compact-no-filters",
+    storyId: "app-common-filtertoolbar--expanded-default",
     outputPath,
     theme: "light",
     waitTime: 500,
+    selector: '.filter-toolbar, [class*="FilterToolbar"]', // Crop to just the toolbar component
   });
 }
 
@@ -307,13 +308,15 @@ export async function generateFilterToolbarWithActiveFilters(
   page: Page,
   outputPath: string
 ): Promise<void> {
-  await page.setViewportSize({ width: 600, height: 300 });
+  await page.setViewportSize({ width: 500, height: 200 });
 
   await captureStorybookScreenshot(page, {
-    storyId: "app-common-filtertoolbar--compact-with-filters",
+    storyId: "app-common-filtertoolbar--with-active-filters",
     outputPath,
     theme: "light",
     waitTime: 500,
+    selector:
+      '[data-testid="filter-toolbar"], .filter-toolbar, [class*="FilterToolbar"]', // Crop to just the toolbar component
   });
 }
 
