@@ -8,7 +8,6 @@ import { AnomalyCard } from "../AnomalyCard";
 import {
   mockFunctionAnomaly,
   mockLocationAnomaly,
-  mockDistributionAnomaly,
   mockOutlierAnomaly,
   createCustomAnomaly,
 } from "@/mocks/mockAnomalies";

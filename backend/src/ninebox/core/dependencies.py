@@ -23,6 +23,7 @@ Usage:
 
 from functools import lru_cache
 
+from ninebox.core.config import settings
 from ninebox.services.calibration_summary_service import CalibrationSummaryService
 from ninebox.services.database import DatabaseManager
 from ninebox.services.employee_service import EmployeeService
@@ -158,6 +159,4 @@ def get_llm_service() -> LLMService:
         ...     if service.is_available()["available"]:
         ...         summary = service.generate_summary(...)
     """
-    from ninebox.core.config import settings
-
     return LLMService(api_key=settings.anthropic_api_key, model=settings.llm_model)

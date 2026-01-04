@@ -539,8 +539,22 @@ type Story = StoryObj<typeof MockCalibrationSummarySection>;
  * Default view with all features visible.
  * Shows the complete calibration summary with data overview,
  * insights, and AI summary button.
+ * This is the primary screenshot showing the "Generate AI Summary" button.
  */
 export const Default: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: {
+      enabled: true,
+      id: "ai-summary-generate-button",
+    },
+    docs: {
+      description: {
+        story:
+          "Calibration Summary section with 'Generate AI Summary' button prominently visible, data overview cards at top, and selectable insights below. Shows the state before AI summary is generated.",
+      },
+    },
+  },
   args: {
     data: mockCalibrationData,
     llmAvailable: true,

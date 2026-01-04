@@ -8,6 +8,7 @@ All data sent to the LLM is anonymized - no PII is ever transmitted.
 import json
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Any, TypedDict, cast
 
@@ -34,6 +35,11 @@ DEFAULT_MODEL = "claude-sonnet-4-5-20250929"
 HAIKU_MODEL = "claude-haiku-3-5-20250110"  # Faster alternative (3-5x speed gain)
 MAX_TOKENS = 4096  # Sufficient for typical outputs (1,000-2,500 tokens)
 TEMPERATURE = 0.3  # Low temperature for consistent output
+
+# Anthropic pricing (as of January 2025)
+# Source: https://www.anthropic.com/pricing
+PRICE_PER_MILLION_INPUT_TOKENS = 3.0  # $3 per million input tokens (Sonnet 4.5)
+PRICE_PER_MILLION_OUTPUT_TOKENS = 15.0  # $15 per million output tokens (Sonnet 4.5)
 
 # JSON Schema for structured outputs (guarantees valid JSON)
 CALIBRATION_ANALYSIS_SCHEMA = {
@@ -205,6 +211,69 @@ class LLMService:
 
         return LLMAvailability(available=True, reason=None)
 
+    def _log_llm_metrics(
+        self,
+        duration_ms: float,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        status: str,
+        error_type: str | None = None,
+    ) -> None:
+        """Log LLM usage metrics for operational visibility and cost tracking.
+
+        This method provides structured logging for internal desktop app observability.
+        Logs are designed to be easily parsed for budget tracking and usage analysis.
+
+        Args:
+            duration_ms: Call duration in milliseconds
+            model: Model identifier used for the call
+            input_tokens: Number of input tokens consumed
+            output_tokens: Number of output tokens generated
+            status: Call status - "success" or "error"
+            error_type: Optional error type (e.g., "JSONDecodeError", "RuntimeError")
+        """
+        # Calculate estimated cost based on Anthropic pricing
+        input_cost = (input_tokens / 1_000_000) * PRICE_PER_MILLION_INPUT_TOKENS
+        output_cost = (output_tokens / 1_000_000) * PRICE_PER_MILLION_OUTPUT_TOKENS
+        total_cost = input_cost + output_cost
+
+        # Create structured log entry for easy parsing
+        log_data = {
+            "event": "llm_call",
+            "status": status,
+            "model": model,
+            "duration_ms": round(duration_ms, 2),
+            "tokens": {
+                "input": input_tokens,
+                "output": output_tokens,
+                "total": input_tokens + output_tokens,
+            },
+            "cost_usd": {
+                "input": round(input_cost, 6),
+                "output": round(output_cost, 6),
+                "total": round(total_cost, 6),
+            },
+        }
+
+        if error_type:
+            log_data["error_type"] = error_type
+
+        # Log with structured data for easy filtering/parsing
+        if status == "success":
+            logger.info(
+                f"LLM call completed: {model}, {duration_ms:.0f}ms, "
+                f"{input_tokens + output_tokens} tokens, ${total_cost:.6f}",
+                extra=log_data,
+            )
+        else:
+            logger.error(
+                f"LLM call failed: {model}, {duration_ms:.0f}ms, "
+                f"{input_tokens + output_tokens} tokens, ${total_cost:.6f}, "
+                f"error={error_type}",
+                extra=log_data,
+            )
+
     def generate_calibration_analysis(
         self,
         data_package: dict,
@@ -284,6 +353,9 @@ Analyze this data holistically and return your findings in the required JSON for
             if self._client is None:
                 raise RuntimeError("Anthropic client not initialized")
 
+            # Track call duration for metrics
+            start_time = time.time()
+
             # Use beta API for structured outputs (guarantees valid JSON)
             message = self._client.beta.messages.create(
                 model=model_to_use,
@@ -303,6 +375,9 @@ Analyze this data holistically and return your findings in the required JSON for
                 },
             )
 
+            # Calculate duration
+            duration_ms = (time.time() - start_time) * 1000
+
             # Log response metadata
             logger.info(
                 f"Claude API response received: "
@@ -310,6 +385,15 @@ Analyze this data holistically and return your findings in the required JSON for
                 f"stop_reason={message.stop_reason}, "
                 f"tokens_in={message.usage.input_tokens}, "
                 f"tokens_out={message.usage.output_tokens}"
+            )
+
+            # Log metrics for observability
+            self._log_llm_metrics(
+                duration_ms=duration_ms,
+                model=message.model,
+                input_tokens=message.usage.input_tokens,
+                output_tokens=message.usage.output_tokens,
+                status="success",
             )
 
             # Extract text content
@@ -332,6 +416,27 @@ Analyze this data holistically and return your findings in the required JSON for
                 )
 
         except Exception as e:
+            # Log error metrics if we have partial information
+            # For errors before API call, we won't have token counts
+            error_type = type(e).__name__
+
+            # Try to extract duration if start_time was set
+            try:
+                duration_ms = (time.time() - start_time) * 1000
+            except NameError:
+                # start_time not defined - error occurred before API call
+                duration_ms = 0.0
+
+            # Log error with zero tokens (can't determine actual usage on error)
+            self._log_llm_metrics(
+                duration_ms=duration_ms,
+                model=model_to_use or DEFAULT_MODEL,
+                input_tokens=0,
+                output_tokens=0,
+                status="error",
+                error_type=error_type,
+            )
+
             logger.error(f"Failed to generate calibration analysis: {e}")
             raise RuntimeError(f"Failed to generate calibration analysis: {e}") from e
 
@@ -389,6 +494,9 @@ Do not include markdown code blocks or any text outside the JSON. Just raw, vali
             if self._client is None:
                 raise RuntimeError("Anthropic client not initialized")
 
+            # Track call duration for retry metrics
+            start_time = time.time()
+
             message = self._client.messages.create(
                 model=model,
                 max_tokens=MAX_TOKENS,
@@ -400,6 +508,18 @@ Do not include markdown code blocks or any text outside the JSON. Just raw, vali
                         "content": correction_prompt,
                     }
                 ],
+            )
+
+            # Calculate duration for retry call
+            duration_ms = (time.time() - start_time) * 1000
+
+            # Log metrics for retry attempt
+            self._log_llm_metrics(
+                duration_ms=duration_ms,
+                model=message.model,
+                input_tokens=message.usage.input_tokens,
+                output_tokens=message.usage.output_tokens,
+                status="success",
             )
 
             content = message.content[0].text
@@ -420,6 +540,24 @@ Do not include markdown code blocks or any text outside the JSON. Just raw, vali
                 )
 
         except Exception as e:
+            # Log error metrics for retry attempt
+            error_type = type(e).__name__
+
+            # Try to extract duration if start_time was set
+            try:
+                duration_ms = (time.time() - start_time) * 1000
+            except NameError:
+                duration_ms = 0.0
+
+            self._log_llm_metrics(
+                duration_ms=duration_ms,
+                model=model,
+                input_tokens=0,
+                output_tokens=0,
+                status="error",
+                error_type=error_type,
+            )
+
             logger.error(f"Retry attempt {attempt + 1} failed: {e}")
             raise RuntimeError(f"Retry attempt {attempt + 1} failed: {e}") from e
 

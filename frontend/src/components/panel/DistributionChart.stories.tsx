@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DistributionChart } from "./DistributionChart";
-import type { PositionDistribution } from "@/types/api";
 
 /**
  * DistributionChart displays a bar chart showing employee distribution across the 9-box grid positions.

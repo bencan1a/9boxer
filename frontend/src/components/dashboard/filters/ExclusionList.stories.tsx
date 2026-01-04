@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-syntax */
+// This file contains demo data for Storybook documentation
+// Hardcoded colors are intentional for visual examples
+
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ExclusionList } from "./ExclusionList";
 import Box from "@mui/material/Box";

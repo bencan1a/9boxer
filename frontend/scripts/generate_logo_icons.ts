@@ -9,6 +9,9 @@
  * After running this, use frontend/scripts/create_icon.py to generate .ico file
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// SVG generation requires literal color values and has unused imports for type checking
+
 import { chromium } from "@playwright/test";
 import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";

@@ -93,7 +93,7 @@ export async function checkBackendHealth(page: Page): Promise<void> {
  * await expect(page.getByText('Alice Smith')).toBeVisible();
  */
 export async function restartBackend(page: Page): Promise<void> {
-  const context = page.context();
+  const _context = page.context();
 
   // NOTE: In a real scenario, we would kill and restart the backend process.
   // However, in Playwright E2E tests, the backend is managed by the test runner

@@ -999,6 +999,114 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
   },
 
   // ==========================================================================
+  // AI CALIBRATION INTELLIGENCE SCREENSHOTS (New Feature - Agent-First Architecture)
+  // ==========================================================================
+
+  "ai-summary-generate-button": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateAISummaryButton",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-generate-button.png",
+    description:
+      "Calibration Summary section showing 'Generate AI Summary' button before AI summary is generated",
+    storyId:
+      "intelligence-calibrationsummary-calibrationsummarysection--default",
+    cropping: "container",
+    caption:
+      "Intelligence tab with Generate AI Summary button prominently visible",
+    quality: "pending",
+    usedIn: ["intelligence.md", "getting-started.md"],
+  },
+  "ai-summary-expanded": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateAISummaryExpanded",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-expanded.png",
+    description:
+      "AI-generated executive summary fully expanded showing 2-3 paragraph analysis with 'Powered by Claude' badge",
+    storyId:
+      "intelligence-calibrationsummary-aisummarydisplay--expanded-summary",
+    cropping: "container",
+    caption:
+      "Full AI summary with root cause analysis and meeting recommendations",
+    quality: "pending",
+    usedIn: ["intelligence.md"],
+  },
+  "ai-summary-preview": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateAISummaryPreview",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-preview.png",
+    description:
+      "AI summary collapsed to 3-line preview with 'Read full' button and gradient fade effect",
+    storyId:
+      "intelligence-calibrationsummary-aisummarydisplay--collapsed-preview",
+    cropping: "container",
+    caption:
+      "Collapsed AI summary preview showing first 3 lines with expand option",
+    quality: "pending",
+    usedIn: ["intelligence.md"],
+  },
+  "calibration-insights-section": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateCalibrationInsightsSection",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/calibration-insights-section.png",
+    description:
+      "Meeting Insights section with priority filters (All/High/Medium/Low), multiple selectable insight cards, and cluster badges",
+    storyId:
+      "intelligence-calibrationsummary-meetinginsightssection--with-multiple-priorities",
+    cropping: "container",
+    caption:
+      "Calibration insights with priority filtering and selectable discussion topics",
+    quality: "pending",
+    usedIn: ["intelligence.md", "getting-started.md"],
+  },
+  "insight-card-detail": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateInsightCardDetail",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/insight-card-detail.png",
+    description:
+      "Single insight card showing HIGH priority badge (red), level category icon, cluster badge, title, description, and affected employee count",
+    storyId: "intelligence-calibrationsummary-insightcard--with-cluster-badge",
+    cropping: "element",
+    caption:
+      "Insight card showing priority, category, cluster membership, and impact details",
+    quality: "pending",
+    usedIn: ["intelligence.md"],
+  },
+  "insight-cluster-example": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateInsightClusterExample",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/insight-cluster-example.png",
+    description:
+      "Multiple insight cards (2-3) with same cluster badge demonstrating how related insights are grouped together",
+    storyId:
+      "intelligence-calibrationsummary-meetinginsightssection--cluster-grouping-example",
+    cropping: "container",
+    caption:
+      "Cluster grouping showing multiple related insights under common theme",
+    quality: "pending",
+    usedIn: ["intelligence.md"],
+  },
+  "data-overview-cards": {
+    source: "storybook",
+    workflow: "intelligence-storybook",
+    function: "generateDataOverviewCards",
+    path: "resources/user-guide/docs/images/screenshots/intelligence/data-overview-cards.png",
+    description:
+      "Three summary cards showing Quality Score (Good), Anomaly Count (2 red, 5 yellow, 3 green chips), and Org Overview stats",
+    storyId: "app-right-panel-intelligence-intelligencesummary--good-quality",
+    cropping: "container",
+    caption:
+      "Data overview cards providing calibration session context at a glance",
+    quality: "pending",
+    usedIn: ["intelligence.md"],
+  },
+
+  // ==========================================================================
   // NEW SCREENSHOTS - Exporting (from Core Features audit)
   // ==========================================================================
 

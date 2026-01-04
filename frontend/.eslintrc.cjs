@@ -7,7 +7,15 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules'],
+  ignorePatterns: [
+    'dist',
+    '.eslintrc.cjs',
+    'node_modules',
+    'storybook-static',
+    'playwright-report*',
+    'coverage',
+    'build',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'jsx-a11y'],
   overrides: [
@@ -16,6 +24,34 @@ module.exports = {
       files: ['electron/**/*.ts', 'electron/**/*.js'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+    {
+      // Allow 'any' type in test files where mocking often requires flexibility
+      files: ['**/__tests__/**', '**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+    {
+      // Allow 'any' type in Playwright screenshot generation scripts
+      files: ['playwright/screenshots/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-restricted-syntax': 'off', // Demo data may use hardcoded colors
+      },
+    },
+    {
+      // Exclude test infrastructure directories - utilities and helpers
+      files: [
+        'playwright/helpers/**/*.ts',
+        'src/test/**/*.ts',
+        'src/test/**/*.tsx',
+        'scripts/**/*.ts',
+      ],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-restricted-syntax': 'off',
       },
     },
   ],

@@ -54,9 +54,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
     setThemeMode(newMode);
   };
 
-  const handleLanguageChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
+  const handleLanguageChange = (event: { target: { value: unknown } }) => {
     const newLanguage = event.target.value as SupportedLanguage;
     i18n.changeLanguage(newLanguage);
   };
@@ -302,7 +300,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
               id="language-select"
               value={currentLanguage}
               label={t("settings.selectLanguage", "Select Language")}
-              onChange={handleLanguageChange as any}
+              onChange={handleLanguageChange}
               data-testid="language-select"
               startAdornment={
                 <LanguageIcon sx={{ mr: 1, color: "text.secondary" }} />

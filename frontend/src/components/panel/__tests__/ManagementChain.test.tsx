@@ -179,7 +179,7 @@ describe("ManagementChain", () => {
       management_chain_06: null,
     });
 
-    const { container } = render(<ManagementChain employee={employee} />);
+    render(<ManagementChain employee={employee} />);
 
     // Jane Smith should be highlighted as the active filter
     const janeButton = screen.getByText("Jane Smith").closest("button");

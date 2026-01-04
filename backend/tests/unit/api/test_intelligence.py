@@ -77,10 +77,18 @@ def test_get_intelligence_when_called_then_dimension_analyses_have_required_fiel
         assert "interpretation" in analysis
 
         # Type checks
-        assert isinstance(analysis["chi_square"], (int, float))
-        assert isinstance(analysis["p_value"], (int, float))
+        # Note: manager_analysis can have None for chi_square, p_value, and degrees_of_freedom
+        # because it uses a heuristic approach instead of chi-square test
+        if dimension == "manager_analysis":
+            assert analysis["chi_square"] is None or isinstance(analysis["chi_square"], (int, float))
+            assert analysis["p_value"] is None or isinstance(analysis["p_value"], (int, float))
+            assert analysis["degrees_of_freedom"] is None or isinstance(analysis["degrees_of_freedom"], int)
+        else:
+            assert isinstance(analysis["chi_square"], (int, float))
+            assert isinstance(analysis["p_value"], (int, float))
+            assert isinstance(analysis["degrees_of_freedom"], int)
+
         assert isinstance(analysis["effect_size"], (int, float))
-        assert isinstance(analysis["degrees_of_freedom"], int)
         assert isinstance(analysis["sample_size"], int)
         assert analysis["status"] in ["green", "yellow", "red"]
         assert isinstance(analysis["deviations"], list)

@@ -15,7 +15,12 @@
  */
 
 import { test, expect } from "../fixtures";
-import { loadSampleData, switchPanelTab, openFilterDrawer } from "../helpers";
+import {
+  loadSampleData,
+  switchPanelTab,
+  openFilterDrawer,
+  expandManagerAnomalyDetails,
+} from "../helpers";
 
 test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -64,12 +69,12 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     );
     await expect(managerSection).toBeVisible({ timeout: 10000 });
 
+    // Expand the detailed deviations section to access manager links
+    await expandManagerAnomalyDetails(page);
+
     // Find a clickable manager name in the anomaly section
     // Manager names should be clickable elements that trigger the filter
     const managerLinks = page.locator('[data-testid^="manager-filter-link-"]');
-
-    // Verify at least one manager is displayed
-    await expect(managerLinks.first()).toBeVisible({ timeout: 5000 });
     const managerCount = await managerLinks.count();
     expect(managerCount).toBeGreaterThan(0);
 
@@ -106,7 +111,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     await expect(managerCheckbox).toBeChecked({ timeout: 5000 });
 
     // Close filter drawer
-    await page.locator('[data-testid="filter-drawer-close"]').click();
+    await page.locator('[data-testid="filter-close-button"]').click();
 
     // ✅ Verify employee count decreased (filtered to team)
     const filteredCards = page.locator('[data-testid^="employee-card-"]');
@@ -130,13 +135,16 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     await switchPanelTab(page, "intelligence");
 
     // Wait for manager anomaly section
-    await expect(
-      page.locator('[data-testid="manager-anomaly-section"]')
-    ).toBeVisible({ timeout: 10000 });
+    const managerSection = page.locator(
+      '[data-testid="manager-anomaly-section"]'
+    );
+    await expect(managerSection).toBeVisible({ timeout: 10000 });
+
+    // Expand the detailed deviations section to access manager links
+    await expandManagerAnomalyDetails(page);
 
     // Click first manager link
     const managerLinks = page.locator('[data-testid^="manager-filter-link-"]');
-    await expect(managerLinks.first()).toBeVisible({ timeout: 5000 });
 
     const managerName = await managerLinks.first().textContent();
     await managerLinks.first().click();
@@ -181,12 +189,15 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
 
     // Apply manager filter via Intelligence tab
     await switchPanelTab(page, "intelligence");
-    await expect(
-      page.locator('[data-testid="manager-anomaly-section"]')
-    ).toBeVisible({ timeout: 10000 });
+    const managerSection = page.locator(
+      '[data-testid="manager-anomaly-section"]'
+    );
+    await expect(managerSection).toBeVisible({ timeout: 10000 });
+
+    // Expand the detailed deviations section to access manager links
+    await expandManagerAnomalyDetails(page);
 
     const managerLinks = page.locator('[data-testid^="manager-filter-link-"]');
-    await expect(managerLinks.first()).toBeVisible({ timeout: 5000 });
     await managerLinks.first().click();
     await page.waitForTimeout(500);
 
@@ -198,9 +209,7 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     // ✅ Open filter drawer and clear all filters
     await openFilterDrawer(page);
 
-    const clearButton = page.locator(
-      '[data-testid="clear-all-filters-button"]'
-    );
+    const clearButton = page.locator('[data-testid="clear-filter-button"]');
     await expect(clearButton).toBeVisible();
     await clearButton.click();
 
@@ -250,13 +259,16 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
 
     // Switch to Intelligence tab
     await switchPanelTab(page, "intelligence");
-    await expect(
-      page.locator('[data-testid="manager-anomaly-section"]')
-    ).toBeVisible({ timeout: 10000 });
+    const managerSection = page.locator(
+      '[data-testid="manager-anomaly-section"]'
+    );
+    await expect(managerSection).toBeVisible({ timeout: 10000 });
+
+    // Expand the detailed deviations section to access manager links
+    await expandManagerAnomalyDetails(page);
 
     // Get all manager links
     const managerLinks = page.locator('[data-testid^="manager-filter-link-"]');
-    await expect(managerLinks.first()).toBeVisible({ timeout: 5000 });
     const managerCount = await managerLinks.count();
 
     // If we have multiple managers, compare their team sizes
@@ -275,13 +287,21 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
 
       // Clear filter
       await openFilterDrawer(page);
-      await page.locator('[data-testid="clear-all-filters-button"]').click();
+      await page.locator('[data-testid="clear-filter-button"]').click();
       await page.waitForTimeout(500);
-      await page.locator('[data-testid="filter-drawer-close"]').click();
+      await page.locator('[data-testid="filter-close-button"]').click();
 
       // Click second manager
       await switchPanelTab(page, "intelligence");
-      const secondManager = managerLinks.nth(1);
+
+      // Need to expand the details section again after switching tabs
+      await expandManagerAnomalyDetails(page);
+
+      // Get fresh locator for manager links after re-expanding
+      const freshManagerLinks = page.locator(
+        '[data-testid^="manager-filter-link-"]'
+      );
+      const secondManager = freshManagerLinks.nth(1);
       await secondManager.click();
       await page.waitForTimeout(500);
 

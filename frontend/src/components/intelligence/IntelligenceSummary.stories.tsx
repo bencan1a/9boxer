@@ -86,8 +86,22 @@ export const ExcellentQuality: Story = {
  * Good quality scenario (score 65-84).
  * Some yellow anomalies detected but overall healthy.
  * Shows typical production scenario with minor adjustments needed.
+ * This is the primary screenshot for data overview cards documentation.
  */
 export const GoodQuality: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: {
+      enabled: true,
+      id: "data-overview-cards",
+    },
+    docs: {
+      description: {
+        story:
+          "Data overview cards showing Quality Score (Good), Anomaly Count breakdown (2 red, 5 yellow, 3 green chips), and Org Overview stats. This is the primary screenshot for documentation.",
+      },
+    },
+  },
   args: {
     data: mockGoodIntelligence,
   },

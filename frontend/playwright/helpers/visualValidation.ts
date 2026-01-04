@@ -78,6 +78,7 @@ export async function verifyModifiedIndicator(
   );
 
   // MUI orange[500] = rgb(255, 152, 0)
+
   const expectedOrangeRgb = "rgb(255, 152, 0)";
   if (!borderLeftColor.includes("255") || !borderLeftColor.includes("152")) {
     throw new Error(

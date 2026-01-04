@@ -43,7 +43,7 @@ vi.mock("../../../hooks/useEmployees", () => ({
       };
       return labels[position] || "";
     },
-    positionToLevels: (position: number) => ({
+    positionToLevels: (_position: number) => ({
       performance: "Medium",
       potential: "Medium",
     }),

@@ -31,7 +31,7 @@ export async function dragEmployeeToPosition(
 ): Promise<void> {
   const {
     maxRetries = 2,
-    waitForModifiedIndicator = true,
+    waitForModifiedIndicator: _waitForModifiedIndicator = true,
     isDonutMode = false,
     skipApiWait = false,
   } = options;

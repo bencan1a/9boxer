@@ -141,6 +141,26 @@ const mockTenureInsight: Insight = {
   },
 };
 
+const mockHighPriorityWithCluster: Insight = {
+  id: "anomaly-level-cluster-xyz",
+  type: "anomaly",
+  category: "level",
+  priority: "high",
+  title: "MT3 driving center box inflation",
+  description:
+    "MT3 level has 64% in center box vs. 35% expected (p<0.001, z-score 3.2). This represents 45 employees and is statistically significant. Consider deep-dive discussion on MT3 rating patterns to identify whether this reflects genuine performance clustering or rating conservatism.",
+  affected_count: 45,
+  cluster: "MT3 Level Requires Deep Review",
+  cluster_id: "cluster-mt3",
+  cluster_title: "MT3 Level Requires Deep Review",
+  source_data: {
+    z_score: 3.2,
+    p_value: 0.001,
+    observed_pct: 64.0,
+    expected_pct: 35.0,
+  },
+};
+
 // Stories
 export const HighPrioritySelected: Story = {
   args: {
@@ -193,6 +213,31 @@ export const DistributionCategory: Story = {
 export const TenureCategory: Story = {
   args: {
     insight: mockTenureInsight,
+    selected: true,
+    onToggle: fn(),
+  },
+};
+
+/**
+ * High priority insight with cluster badge - for screenshot documentation.
+ * Demonstrates complete insight card with all elements visible.
+ */
+export const WithClusterBadge: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: {
+      enabled: true,
+      id: "insight-card-detail",
+    },
+    docs: {
+      description: {
+        story:
+          "Insight card showing all elements: HIGH priority badge (red), level category icon (groups), cluster badge, title, description, and affected employee count. This is the primary screenshot for documentation.",
+      },
+    },
+  },
+  args: {
+    insight: mockHighPriorityWithCluster,
     selected: true,
     onToggle: fn(),
   },

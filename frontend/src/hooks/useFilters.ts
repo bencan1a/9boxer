@@ -2,7 +2,7 @@
  * Custom hook for filter operations
  */
 
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { Employee } from "../types/employee";
 import { useFilterStore } from "../store/filterStore";
 import { getAllFlags } from "../constants/flags";

@@ -66,7 +66,6 @@ function extractStories(
     // Check for incomplete indicators
     const hasArgs = storyContent.includes("args:");
     const hasDecorators = storyContent.includes("decorators:");
-    const hasParameters = storyContent.includes("parameters:");
     const hasPlay = storyContent.includes("play:");
 
     // Minimal story detection
