@@ -13,6 +13,13 @@
 const fs = require('fs');
 const path = require('path');
 
+// Skip backend check in CI environments (backend is only needed for Electron builds)
+if (process.env.CI) {
+  console.log('⏭️  Skipping backend check in CI environment');
+  console.log('   (Backend executable is only required for Electron desktop builds)');
+  process.exit(0);
+}
+
 // Get platform-specific backend executable name
 const platform = process.platform;
 const backendName = platform === 'win32' ? 'ninebox.exe' : 'ninebox';

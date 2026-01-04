@@ -36,21 +36,18 @@ async function parseExcelFile(filePath: string): Promise<EmployeeRow[]> {
   const headers: string[] = [];
 
   worksheet.eachRow((row, rowNumber) => {
+    const values = row.values as ExcelJS.CellValue[];
+    // ExcelJS row.values is 1-indexed, first element is undefined
+    const cleanValues = values.slice(1);
+
     if (rowNumber === 1) {
       // First row is headers
-      // Iterate through all cells in the header row to get all column names
-      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-        if (colNumber > 0) {
-          headers[colNumber - 1] = String(cell.value ?? "");
-        }
-      });
+      headers.push(...cleanValues.map((v) => String(v ?? "")));
     } else {
-      // Data rows - iterate through all columns defined by headers
+      // Data rows
       const rowData: Record<string, unknown> = {};
-      headers.forEach((header, i) => {
-        // Get cell value at column index (i + 1 because ExcelJS is 1-indexed)
-        const cell = row.getCell(i + 1);
-        rowData[header] = cell.value;
+      cleanValues.forEach((val, i) => {
+        rowData[headers[i]] = val;
       });
       rows.push(rowData as EmployeeRow);
     }

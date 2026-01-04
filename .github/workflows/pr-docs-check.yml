@@ -37,8 +37,25 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const features = JSON.parse('${{ steps.detect.outputs.features }}');
-            const featureCount = '${{ steps.detect.outputs.feature_count }}';
+            const fs = require('fs');
+
+            // Defensive JSON reading with file existence check
+            let data;
+            try {
+              const filePath = '.new-features.json';
+              if (!fs.existsSync(filePath)) {
+                console.log('File not found, using defaults');
+                data = { features: [] };
+              } else {
+                data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+              }
+            } catch (e) {
+              console.error('Failed to parse JSON:', e.message);
+              data = { features: [] };
+            }
+
+            const features = data.features || [];
+            const featureCount = features.length.toString();
 
             // Group features by category
             const byCategory = features.reduce((acc, feature) => {
@@ -147,7 +164,7 @@ jobs:
             }
 
       - name: Upload Detection Results
-        if: always()
+        if: always() && hashFiles('.new-features.json') != ''
         uses: actions/upload-artifact@v4
         with:
           name: new-features-detection

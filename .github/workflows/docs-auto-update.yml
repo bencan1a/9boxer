@@ -59,7 +59,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Upload Analysis Results
-        if: steps.analyze.outputs.screenshots_affected == 'true'
+        if: steps.analyze.outputs.screenshots_affected == 'true' && hashFiles('.affected-screenshots.json') != ''
         uses: actions/upload-artifact@v4
         with:
           name: affected-screenshots
@@ -202,17 +202,33 @@ jobs:
           BACKEND_PID=$!
           echo "BACKEND_PID=$BACKEND_PID" >> $GITHUB_ENV
 
-          # Wait for backend with better error handling
+          # Wait for backend with exponential backoff (max 60s)
           echo "Waiting for backend to start..."
-          if ! timeout 30 bash -c 'until curl -sf http://127.0.0.1:38000/health >/dev/null 2>&1; do echo "...waiting"; sleep 2; done'; then
-            echo "❌ Backend failed to start within 30 seconds"
-            if [ -f backend.log ]; then
-              echo "=== Backend Logs ==="
-              cat backend.log
+          MAX_ATTEMPTS=10
+          ATTEMPT=1
+          DELAY=1
+
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            if curl -sf http://127.0.0.1:38000/health >/dev/null 2>&1; then
+              echo "✅ Backend started successfully after $ATTEMPT attempt(s)"
+              exit 0
             fi
-            exit 1
+            echo "...attempt $ATTEMPT failed, waiting ${DELAY}s"
+            sleep $DELAY
+            # Exponential backoff: 1, 2, 4, 8, 8, 8... (capped at 8s)
+            DELAY=$((DELAY * 2))
+            if [ $DELAY -gt 8 ]; then
+              DELAY=8
+            fi
+            ATTEMPT=$((ATTEMPT + 1))
+          done
+
+          echo "❌ Backend failed to start within 60 seconds"
+          if [ -f backend.log ]; then
+            echo "=== Backend Logs ==="
+            cat backend.log
           fi
-          echo "✅ Backend started successfully"
+          exit 1
 
       - name: Regenerate Affected Screenshots
         id: regenerate
@@ -229,24 +245,34 @@ jobs:
           # First run will create baselines, subsequent runs will compare
           npm run test:docs-visual -- --reporter=json --output-file=visual-regression-results.json || true
 
-          # Check if there are visual differences
+          # Check if there are visual differences with defensive parsing
           if [ -f visual-regression-results.json ]; then
-            # Extract test results
-            TESTS_PASSED=$(jq '.stats.expected' visual-regression-results.json 2>/dev/null || echo "0")
-            TESTS_FAILED=$(jq '.stats.unexpected' visual-regression-results.json 2>/dev/null || echo "0")
+            # Validate JSON before parsing
+            if jq empty visual-regression-results.json 2>/dev/null; then
+              # Extract test results with defensive defaults
+              TESTS_PASSED=$(jq '.stats.expected // 0' visual-regression-results.json 2>/dev/null || echo "0")
+              TESTS_FAILED=$(jq '.stats.unexpected // 0' visual-regression-results.json 2>/dev/null || echo "0")
 
-            echo "visual_tests_passed=$TESTS_PASSED" >> $GITHUB_OUTPUT
-            echo "visual_tests_failed=$TESTS_FAILED" >> $GITHUB_OUTPUT
+              echo "visual_tests_passed=$TESTS_PASSED" >> $GITHUB_OUTPUT
+              echo "visual_tests_failed=$TESTS_FAILED" >> $GITHUB_OUTPUT
 
-            if [ "$TESTS_FAILED" -gt 0 ]; then
-              echo "⚠️ Visual regression tests detected differences"
-              echo "visual_regressions_detected=true" >> $GITHUB_OUTPUT
+              if [ "$TESTS_FAILED" -gt 0 ]; then
+                echo "⚠️ Visual regression tests detected differences"
+                echo "visual_regressions_detected=true" >> $GITHUB_OUTPUT
+              else
+                echo "✅ Visual regression tests passed"
+                echo "visual_regressions_detected=false" >> $GITHUB_OUTPUT
+              fi
             else
-              echo "✅ Visual regression tests passed"
-              echo "visual_regressions_detected=false" >> $GITHUB_OUTPUT
+              echo "⚠️ Visual regression results file is not valid JSON"
+              echo "visual_tests_passed=0" >> $GITHUB_OUTPUT
+              echo "visual_tests_failed=0" >> $GITHUB_OUTPUT
+              echo "visual_regressions_detected=unknown" >> $GITHUB_OUTPUT
             fi
           else
             echo "⚠️ Visual regression results not found"
+            echo "visual_tests_passed=0" >> $GITHUB_OUTPUT
+            echo "visual_tests_failed=0" >> $GITHUB_OUTPUT
             echo "visual_regressions_detected=unknown" >> $GITHUB_OUTPUT
           fi
 
@@ -266,7 +292,7 @@ jobs:
           fi
 
       - name: Upload Visual Regression Report
-        if: always()
+        if: always() && (hashFiles('frontend/playwright-report/**') != '' || hashFiles('frontend/test-results/**') != '' || hashFiles('frontend/visual-regression-results.json') != '')
         uses: actions/upload-artifact@v4
         with:
           name: visual-regression-report
@@ -347,7 +373,7 @@ jobs:
           assignees: ${{ github.event.pull_request.user.login }}
 
       - name: Upload Screenshot Artifacts
-        if: always()
+        if: always() && hashFiles('resources/user-guide/docs/images/screenshots/**') != ''
         uses: actions/upload-artifact@v4
         with:
           name: regenerated-screenshots

@@ -16,6 +16,10 @@ on:
       - 'frontend/package-lock.json'
       - 'frontend/vite.config.ts'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   frontend-performance:
     runs-on: ubuntu-latest

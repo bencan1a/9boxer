@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2025-12-30T00:33:21.674318+00:00
-**Source SHA**: c30a80b2bff1855abd9db9d0177d909d7d5b57e3
+**Generated**: 2026-01-03T02:18:40.026475+00:00
+**Source SHA**: ff418c5860153dfa69b5555c80a8a81b5fe36ac2
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -279,13 +279,110 @@ This file provides comprehensive context about the project for AI agents and dev
       "understanding_decisions": "Read ADRs to understand past architectural choices"
     }
   },
+  "context_loading_strategy": {
+    "entry_point": "CLAUDE_INDEX.md",
+    "max_size_kb": 15,
+    "loading_pattern": "just-in-time (layered loading)",
+    "navigation_style": "task-based",
+    "philosophy": "Start with navigation index, load detailed docs only when needed"
+  },
+  "critical_warnings": [
+    {
+      "id": "environment_check",
+      "priority": 1,
+      "warning": "Check environment before running commands",
+      "why": "Prevents dependency errors, venv issues, platform conflicts",
+      "command": "python -c \"import sys; print('VENV' if sys.prefix != sys.base_prefix else 'SYSTEM')\"",
+      "impact": "90% of issues stem from wrong environment",
+      "details": "internal-docs/ENVIRONMENT_SETUP.md"
+    },
+    {
+      "id": "build_order",
+      "priority": 2,
+      "warning": "Build backend before frontend",
+      "why": "Electron packaging includes backend executable",
+      "command": "cd backend && ./scripts/build_executable.sh",
+      "impact": "App won't start if backend missing",
+      "details": "BUILD.md"
+    },
+    {
+      "id": "use_tools_not_bash",
+      "priority": 3,
+      "warning": "Use Read/Write/Edit tools for file operations, not bash commands",
+      "why": "Windows + Git Bash has path mangling issues",
+      "impact": "Phantom files, wrong locations, path corruption",
+      "details": "internal-docs/PLATFORM_CONSTRAINTS.md#file-operations"
+    },
+    {
+      "id": "relative_paths_only",
+      "priority": 4,
+      "warning": "Use relative paths only in Bash (no C:\\ absolute Windows paths)",
+      "why": "Git Bash on Windows mangles absolute paths",
+      "impact": "Files created in wrong location with mangled names",
+      "details": "internal-docs/PLATFORM_CONSTRAINTS.md#windows-path-handling"
+    },
+    {
+      "id": "trust_hierarchy",
+      "priority": 5,
+      "warning": "Trust facts.json as highest authority when docs conflict",
+      "why": "Single source of truth for core project facts",
+      "impact": "Prevents following outdated or conflicting guidance",
+      "details": "internal-docs/facts.json"
+    }
+  ],
+  "task_navigation": {
+    "implementing_api_endpoint": "internal-docs/architecture/ERROR_HANDLING.md#api-endpoint",
+    "adding_ipc_handler": "internal-docs/architecture/SECURITY_MODEL.md#ipc",
+    "database_migration": "internal-docs/architecture/MIGRATIONS.md",
+    "performance_optimization": "internal-docs/architecture/PERFORMANCE.md",
+    "creating_ui_component": "DESIGN_SYSTEM.md",
+    "generating_sample_data": "internal-docs/architecture/SAMPLE_DATA_GENERATION.md",
+    "handling_file_operations": "internal-docs/architecture/FILE_HANDLING.md",
+    "adding_logging": "internal-docs/architecture/OBSERVABILITY.md",
+    "writing_backend_tests": "internal-docs/testing/test-principles.md",
+    "running_backend_tests": "internal-docs/testing/quick-reference.md",
+    "writing_component_tests": "internal-docs/testing/README.md#component-tests",
+    "writing_e2e_tests": "internal-docs/testing/README.md#e2e-tests",
+    "debugging_backend": "internal-docs/architecture/OBSERVABILITY.md#common-scenarios",
+    "debugging_performance": "internal-docs/architecture/PERFORMANCE.md#scale-constraints",
+    "debugging_security": "internal-docs/architecture/SECURITY_MODEL.md#threat-model",
+    "platform_issue": "internal-docs/PLATFORM_CONSTRAINTS.md",
+    "environment_issue": "internal-docs/ENVIRONMENT_SETUP.md",
+    "understanding_architecture": "internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md",
+    "understanding_past_decisions": "internal-docs/architecture/decisions/README.md"
+  },
+  "environment_detection": {
+    "check_venv": "python -c \"import sys; sys.exit(0 if sys.prefix != sys.base_prefix else 1)\"",
+    "check_venv_display": "python -c \"import sys; print('VENV' if sys.prefix != sys.base_prefix else 'SYSTEM')\"",
+    "check_platform": "uname -s 2>/dev/null || echo Windows",
+    "check_dependencies": "python -c \"import fastapi, pytest, ruff\" 2>/dev/null",
+    "platforms": {
+      "windows": {
+        "ostype_values": ["msys", "win32"],
+        "venv_activation": ".venv/Scripts/activate",
+        "constraints": "internal-docs/PLATFORM_CONSTRAINTS.md"
+      },
+      "linux": {
+        "ostype_values": ["linux-gnu"],
+        "venv_activation": ". .venv/bin/activate",
+        "constraints": "Standard Unix/Linux behavior"
+      },
+      "macos": {
+        "ostype_values": ["darwin"],
+        "venv_activation": ". .venv/bin/activate",
+        "constraints": "Similar to Linux with case-insensitive filesystem"
+      }
+    }
+  },
   "agent_onboarding": {
     "primary_guides": {
       "github_agent": "GITHUB_AGENT.md (streamlined onboarding for GitHub Agent/Copilot)",
-      "claude_code": "CLAUDE.md (detailed technical guidance with platform constraints)",
+      "claude_code": "CLAUDE_INDEX.md (lightweight entry point with task-based navigation)",
       "general_agents": "AGENTS.md (development workflow and best practices)",
       "copilot_workspace": ".github/copilot-instructions.md (GitHub Copilot Workspace config)",
-      "architecture_reference": "internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md (agent-optimized architecture docs index)"
+      "architecture_reference": "internal-docs/architecture/ARCHITECTURE_QUICK_REFERENCE.md (agent-optimized architecture docs index)",
+      "environment_setup": "internal-docs/ENVIRONMENT_SETUP.md (environment detection and adaptive setup)",
+      "platform_constraints": "internal-docs/PLATFORM_CONSTRAINTS.md (platform-specific rules and best practices)"
     },
     "critical_first_steps": [
       "Activate Python virtual environment: . .venv/bin/activate",
@@ -340,7 +437,15 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 3 active plan(s):
+There are 4 active plan(s):
+
+### smart-employee-sorting
+- Owner: bencan1a
+- Created: 2025-12-30
+- Summary:
+  - Implement three-tier sorting within grid boxes to surface employees needing discussion
+  - Modified employees first, flagged employees second, others third
+  - Frontend-only change with performance optimization for drag-drop UX
 
 ### rich-sample-data-generator
 - Owner: claude
