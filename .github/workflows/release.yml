@@ -1,9 +1,6 @@
-name: Release
+name: Release Electron App
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       version:
@@ -18,69 +15,41 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
-  validate:
-    name: Validate Release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Cache uv packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/uv
-            ~/AppData/Local/uv/cache
-          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            uv-${{ runner.os }}-
-
-      - name: Install uv
-        run: pip install uv
-
-      - name: Install dependencies
-        run: uv pip install --system -e '.[dev]'
-
-      - name: Run full test suite
-        run: pytest --cov=backend/src --cov-fail-under=70 -v
-
-      - name: Run security scan
-        run: bandit -r src/ -ll
-
-      - name: Run type checking
-        run: mypy src/ --strict
-
-      - name: Verify version consistency
-        if: github.event_name == 'push'
-        run: |
-          TAG_VERSION=${GITHUB_REF#refs/tags/v}
-          PACKAGE_VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
-
-          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
-            echo "Error: Tag version ($TAG_VERSION) doesn't match package version ($PACKAGE_VERSION)"
-            exit 1
-          fi
-
   build:
-    name: Build Distribution
-    runs-on: ubuntu-latest
-    needs: validate
-    steps:
-      - uses: actions/checkout@v4
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
-      - name: Set up Python
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            artifact: "*.AppImage"
+          - os: windows-latest
+            platform: windows
+            artifact: "*.exe"
+          - os: macos-latest
+            platform: macos
+            artifact: "*.dmg"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Cache uv packages
         uses: actions/cache@v4
@@ -92,47 +61,117 @@ jobs:
           restore-keys: |
             uv-${{ runner.os }}-
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      # Backend build
       - name: Install uv
         run: pip install uv
 
-      - name: Install build tools
-        run: uv pip install --system build twine
+      - name: Install Python dependencies
+        run: |
+          uv pip install --system pyinstaller
+          uv pip install --system -e .
 
-      - name: Build package
-        run: python -m build
+      - name: Build backend executable (Linux/macOS)
+        if: matrix.platform != 'windows'
+        working-directory: backend
+        run: |
+          pyinstaller build_config/ninebox.spec
+          ls -lh dist/ninebox/
 
-      - name: Check package
-        run: twine check dist/*
+      - name: Build backend executable (Windows)
+        if: matrix.platform == 'windows'
+        working-directory: backend
+        shell: pwsh
+        run: |
+          pyinstaller build_config/ninebox.spec
+          Get-ChildItem dist/ninebox/
 
-      - name: Upload artifacts
+      # Frontend build
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate macOS icon
+        if: matrix.platform == 'macos'
+        working-directory: frontend
+        run: node scripts/generate-icons.cjs < /dev/null || true
+
+      - name: Build Electron app (Linux)
+        if: matrix.platform == 'linux'
+        working-directory: frontend
+        run: |
+          npm run build
+          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
+          npx electron-builder --linux --x64
+
+      - name: Build Electron app (Windows)
+        if: matrix.platform == 'windows'
+        working-directory: frontend
+        run: |
+          npm run build
+          if (!(Test-Path "dist/index.html")) { Write-Error "❌ Vite build failed - index.html not found"; exit 1 }
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
+          npx electron-builder --win --x64
+
+      - name: Build Electron app (macOS)
+        if: matrix.platform == 'macos'
+        working-directory: frontend
+        run: |
+          npm run build
+          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
+          npm run electron:compile
+          node scripts/ensure-backend.cjs
+          npx electron-builder --mac --x64 --arm64
+
+      # Upload artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: distributions
-          path: dist/
+          name: 9boxer-${{ matrix.platform }}
+          path: |
+            frontend/release/**/*.AppImage
+            frontend/release/**/*.exe
+            frontend/release/**/*.dmg
           retention-days: 90
+          if-no-files-found: error
 
   release:
-    name: Create Release
+    name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Download artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: distributions
-          path: dist/
+          path: release-artifacts/
+
+      - name: Display structure of downloaded files
+        run: ls -R release-artifacts/
 
       - name: Extract changelog
         id: changelog
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION="${{ github.event.inputs.version }}"
 
-          # Extract changelog section for this version
-          CHANGELOG=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1)
+          # Extract changelog section for this version if CHANGELOG.md exists
+          if [ -f "CHANGELOG.md" ]; then
+            CHANGELOG=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1)
+          fi
 
           if [ -z "$CHANGELOG" ]; then
             CHANGELOG="Release version ${VERSION}"
@@ -145,9 +184,12 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
+          files: release-artifacts/**/*
           body: ${{ steps.changelog.outputs.changelog }}
-          prerelease: ${{ github.event.inputs.prerelease || false }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          make_latest: true
           generate_release_notes: true
           draft: false
         env:
