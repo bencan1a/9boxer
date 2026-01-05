@@ -21,51 +21,11 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: true,
     // Performance budgets - warn if chunks exceed these sizes
-    chunkSizeWarningLimit: 500, // 500 KB warning threshold
+    chunkSizeWarningLimit: 1000, // 1 MB warning threshold
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // React core libraries
-          if (
-            id.includes("node_modules/react") ||
-            id.includes("node_modules/react-dom")
-          ) {
-            return "vendor-react";
-          }
-
-          // MUI components - split into separate chunk
-          if (id.includes("node_modules/@mui")) {
-            return "vendor-mui";
-          }
-
-          // Recharts library - split into separate chunk
-          if (id.includes("node_modules/recharts")) {
-            return "vendor-recharts";
-          }
-
-          // i18n libraries
-          if (
-            id.includes("node_modules/i18next") ||
-            id.includes("node_modules/react-i18next")
-          ) {
-            return "vendor-i18n";
-          }
-
-          // DnD Kit libraries
-          if (id.includes("node_modules/@dnd-kit")) {
-            return "vendor-dnd";
-          }
-
-          // Emotion styling
-          if (id.includes("node_modules/@emotion")) {
-            return "vendor-emotion";
-          }
-
-          // Other vendor dependencies
-          if (id.includes("node_modules")) {
-            return "vendor-other";
-          }
-        },
+        // Let Vite handle chunking automatically to avoid circular dependencies
+        // Manual chunking was causing module initialization order issues in production
         // Naming pattern for chunks with content hash for cache busting
         chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",

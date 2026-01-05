@@ -24,8 +24,8 @@ const getIsDev = () => !app.isPackaged;
 // Default to port 38000 to avoid conflicts with common services on 38000
 let BACKEND_PORT = parseInt(process.env.BACKEND_PORT || "38000", 10);
 let BACKEND_URL = `http://localhost:${BACKEND_PORT}`;
-const BACKEND_STARTUP_TIMEOUT = 30; // seconds
-const PORT_DISCOVERY_TIMEOUT = 5; // seconds
+const BACKEND_STARTUP_TIMEOUT = 60; // seconds - increased for first launch on Windows (antivirus scans, PyInstaller init)
+const PORT_DISCOVERY_TIMEOUT = 15; // seconds - increased for first launch on Windows
 const HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
 const HEALTH_CHECK_TIMEOUT = 5000; // 5 seconds
 
@@ -821,7 +821,7 @@ function createWindow(): void {
               "style-src 'self' 'unsafe-inline'", // Material-UI uses CSS-in-JS (inline styles)
               "img-src 'self' data: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' localhost:* ws://localhost:*", // Backend API (dynamic port) + Vite HMR
+              "connect-src 'self' http://localhost:* https://localhost:* ws://localhost:*", // Backend API (dynamic port) + Vite HMR
               "base-uri 'self'",
               "form-action 'self'",
             ].join("; "),
@@ -844,8 +844,11 @@ function createWindow(): void {
     mainWindow.loadFile(url);
   }
 
-  // Open DevTools in development mode only
-  if (getIsDev()) {
+  // Open DevTools in development mode or debug builds
+  // Debug builds have debugBuild flag in package.json metadata
+  const isDebugBuild =
+    app.isPackaged && require("../../package.json").debugBuild === true;
+  if (getIsDev() || isDebugBuild) {
     mainWindow.webContents.openDevTools();
   }
 
