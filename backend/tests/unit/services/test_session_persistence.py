@@ -60,11 +60,8 @@ def isolated_session_manager(temp_db: Path) -> SessionManager:
     get_session_manager.cache_clear()
     get_db_manager.cache_clear()
 
-    # Patch both get_user_data_dir and db_manager to use temp db
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    # Patch get_user_data_dir to use temp db
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         # Create a real DatabaseManager with temp path
@@ -72,12 +69,8 @@ def isolated_session_manager(temp_db: Path) -> SessionManager:
         db_mgr.db_path = temp_db
         db_mgr._ensure_schema()
 
-        # Configure the mock to use our temp db manager
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
-        # Create SessionManager (which will call _restore_sessions)
-        manager = SessionManager()
+        # Create SessionManager with injected DatabaseManager
+        manager = SessionManager(db=db_mgr)
 
         yield manager
 
@@ -127,20 +120,14 @@ def test_restore_sessions_when_startup_then_loads_from_database(
 ) -> None:
     """Test that sessions are restored from database on startup."""
     # First, create a session with one manager
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         db_mgr = DatabaseManager()
         db_mgr.db_path = temp_db
         db_mgr._ensure_schema()
 
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
-        manager1 = SessionManager()
+        manager1 = SessionManager(db=db_mgr)
         session_id = manager1.create_session(
             user_id="user1",
             employees=sample_employees,
@@ -151,19 +138,13 @@ def test_restore_sessions_when_startup_then_loads_from_database(
         )
 
     # Now create a NEW manager instance (simulating restart)
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         db_mgr = DatabaseManager()
         db_mgr.db_path = temp_db
 
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
-        manager2 = SessionManager()
+        manager2 = SessionManager(db=db_mgr)
 
         # Verify session was restored
         restored_session = manager2.get_session("user1")
@@ -301,20 +282,14 @@ def test_multiple_sessions_when_restored_then_all_loaded(
 ) -> None:
     """Test that multiple sessions are all restored from database."""
     # Create multiple sessions with one manager
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         db_mgr = DatabaseManager()
         db_mgr.db_path = temp_db
         db_mgr._ensure_schema()
 
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
-        manager1 = SessionManager()
+        manager1 = SessionManager(db=db_mgr)
 
         # Create 3 sessions
         session_id1 = manager1.create_session(
@@ -345,19 +320,13 @@ def test_multiple_sessions_when_restored_then_all_loaded(
         )
 
     # Create new manager (simulating restart)
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         db_mgr = DatabaseManager()
         db_mgr.db_path = temp_db
 
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
-        manager2 = SessionManager()
+        manager2 = SessionManager(db=db_mgr)
 
         # Trigger lazy loading by accessing a session
         session1 = manager2.get_session("user1")
@@ -427,20 +396,14 @@ def test_restore_sessions_when_corrupted_session_then_skips_and_continues(
     conn.close()
 
     # Create manager - should skip corrupted session and not crash
-    with (
-        patch("ninebox.services.database.get_user_data_dir") as mock_get_dir,
-        patch("ninebox.services.session_manager.db_manager") as mock_db_mgr,
-    ):
+    with patch("ninebox.services.database.get_user_data_dir") as mock_get_dir:
         mock_get_dir.return_value = temp_db.parent
 
         db_mgr = DatabaseManager()
         db_mgr.db_path = temp_db
 
-        mock_db_mgr.get_connection = db_mgr.get_connection
-        mock_db_mgr.db_path = temp_db
-
         # Should not raise an exception
-        manager = SessionManager()
+        manager = SessionManager(db=db_mgr)
 
         # Corrupted session should not be loaded
         assert manager.get_session("corrupt_user") is None

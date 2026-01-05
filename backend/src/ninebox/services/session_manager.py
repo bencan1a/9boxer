@@ -17,7 +17,7 @@ from ninebox.models.events import (
 )
 from ninebox.models.grid_positions import calculate_grid_position
 from ninebox.models.session import SessionState
-from ninebox.services.database import db_manager
+from ninebox.services.database import DatabaseManager
 from ninebox.services.event_manager import EventManager
 from ninebox.services.excel_parser import JobFunctionConfig
 from ninebox.services.session_serializer import SessionSerializer
@@ -34,12 +34,17 @@ class SessionManager:
     - Sessions restored from database on startup
     """
 
-    def __init__(self) -> None:
+    def __init__(self, db: DatabaseManager | None = None) -> None:
         """Initialize session manager with lazy loading.
 
         Sessions are not restored from database until first access,
         improving startup time by ~0.85s.
+
+        Args:
+            db: DatabaseManager instance for persistence. If None, creates a new instance.
+                This allows dependency injection for testing while maintaining backward compatibility.
         """
+        self._db = db if db is not None else DatabaseManager()
         self._sessions: dict[str, SessionState] = {}
         self._sessions_loaded: bool = False
         self.event_manager = EventManager(self)
@@ -598,7 +603,7 @@ class SessionManager:
             # Logs: "Restored 3 sessions from database"
         """
         try:
-            with db_manager.get_connection() as conn:
+            with self._db.get_connection() as conn:
                 cursor = conn.execute("SELECT * FROM sessions")
                 rows = cursor.fetchall()
 
@@ -648,7 +653,7 @@ class SessionManager:
         try:
             data = SessionSerializer.serialize(session)
 
-            with db_manager.get_connection() as conn:
+            with self._db.get_connection() as conn:
                 # Check what columns exist to handle migration period
                 cursor = conn.execute("PRAGMA table_info(sessions)")
                 columns = {row[1] for row in cursor.fetchall()}
@@ -725,7 +730,7 @@ class SessionManager:
             # Session removed from database
         """
         try:
-            with db_manager.get_connection() as conn:
+            with self._db.get_connection() as conn:
                 conn.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
 
             logger.debug(f"Deleted session from database for user {user_id}")
