@@ -1,21 +1,48 @@
-# How We Build 9Boxer: An Entirely Agent-Driven Development Story
+# How We Build 9Boxer: Field Notes from an AI-Driven Development Experiment
 
-**271 commits in 7 days. 232,700 lines of code changed. Zero human-written code. This is what software development looks like when AI agents run the show.**
+**I spent my Christmas break seeing if AI agents could build a real desktop application with professional UX. Turns out they can. Here's what happened.**
 
 ---
 
-## TL;DR - The Key Takeaways
+## Context: What This Experiment Was
 
-If you read nothing else, here's what we learned:
+**The Setup:**
+- One person (me) over Christmas break
+- $200/mo Claude Max subscription + $200/mo GitHub Copilot Pro = **$400/mo total cost**
+- Building an internal talent management desktop application (Electron-based)
+- Goal: Can I build real end-user experiences with professional design, docs, and all the polish?
 
-1. **9Boxer is built 100% by AI agents** - No human has written a line of production code (Claude Code + GitHub Copilot collaboration)
-2. **Infrastructure dominates the work** - 32% of commits are docs and infrastructure vs. 29% features
-3. **Testing is valuable but costly** - 75K lines of test code, but test maintenance is a substantial ongoing investment
-4. **Documentation auto-updates** - Component changes automatically trigger screenshot regeneration through explicit mapping
-5. **Pattern catalogs work better than prose** - Agents parse structured patterns more reliably than narrative documentation
-6. **Ephemeral project folders** - 21-day auto-archival prevents bloat while providing working memory for active development
+**My Role:**
+- **Product manager**: "Here's what I want to build"
+- **Technical advisor**: "Try this approach instead"
+- **Manual tester**: "This doesn't work, fix it"
+- **What I did NOT do**: Write any code, agent definitions, architecture docs, or user documentation
 
-**The bottom line:** Agent-driven development works at production scale, but requires substantial infrastructure investment and honest assessment of trade-offs.
+**What "Zero Human Code" Actually Means:**
+- I prompted: "I need an agent that does X, how would you write it?"
+- Agents wrote: All code, agent definitions, architecture guides, user documentation—everything
+- I decided: What to build, when it was done, whether to keep it
+- **Human = strategy and judgment; Agents = all implementation**
+
+**Important Caveat:**
+This is an internal desktop application (not SaaS), so I went lighter on multi-tenancy, cloud infrastructure, and some enterprise deployment concerns. But I still needed real UX, professional design, complete documentation, and reliable functionality. This proves agents can build real software, but doesn't prove they can handle every deployment scenario.
+
+---
+
+## What I Learned (TL;DR)
+
+If you're short on time, here are the key findings:
+
+1. **It actually works** - 271 commits in 7 days, 100% agent-written code, real features shipped
+2. **Cost: $400/month** - Claude Max ($200) + GitHub Copilot Pro ($200), no other significant costs
+3. **Tests are the pain point** - Spend SO MUCH time maintaining tests and fixing pre-commit issues. This slows everything.
+4. **Speed is shocking** - The velocity from idea to working feature is hard to describe
+5. **Multi-project coordination is MY bottleneck** - Keeping track of 5-10 concurrent agent projects, not agent capability
+6. **Everything completed** - Lots of iteration and fixes, but zero abandoned projects (which surprised me)
+
+**The Trade:** You stop writing code and start managing agents. Tests still break constantly. Pre-commit hooks still fail. But the velocity is genuinely mind-blowing.
+
+**Who might find this useful:** Developers/PMs curious about what's actually possible with current AI today, not what might be possible someday.
 
 ---
 
@@ -60,15 +87,35 @@ Commit breakdown by category (after recategorizing commits without conventional 
 
 **Key Insight:** Feature development (29%) and bug fixes (24%) dominate, but infrastructure and documentation (32% combined) represent substantial ongoing investment. Without automated documentation systems and architectural reviews, this percentage would likely be even higher.
 
+### What These Numbers Don't Show
+
+**The Messy Reality Behind the Stats:**
+- **Test failures**: Hundreds? Thousands? I honestly lost count. Tests break on almost every feature change.
+- **Iterations per feature**: Usually 2-5 attempts before it works correctly
+- **Pre-commit hook failures**: Constant. Linting, type checking, translation validation—all fail regularly
+- **Time spent coordinating**: Significant effort managing 5-10 concurrent agent projects
+- **The one disaster**: Agents reverted a bunch of changes and I spent hours recovering using chat history
+
+**What "Success" Actually Means:**
+- ✅ Feature eventually works
+- ✅ Tests eventually pass
+- ✅ Documentation eventually written
+- ❌ The path to get there is messy and iterative
+
+**Honest Comparison:**
+I'm a decent developer, but I couldn't sustain 38.7 commits/day writing code myself. Even if I could code this fast, I couldn't also write docs, tests, AND maintain infrastructure. The real comparison is: **one person with agents vs. a small team without agents**.
+
 ---
 
-## The Five Pillars of Agent-Driven Development
+## Five Things I Had to Figure Out
 
-### 1. Coherence Through Automated Governance
+After lots of trial and error, here's what actually made this work:
 
-**The Challenge:** Multiple agents working concurrently create architectural drift, code duplication, and conflicting patterns.
+### 1. Keeping Multiple Agents From Creating a Mess
 
-**The Solution:** Systematic architectural reviews automated through CI/CD.
+**The Problem:** When you have multiple agents working at the same time, they create architectural drift, duplicate code, and conflicting patterns. It gets messy fast.
+
+**What I Built:** Automated architectural reviews through CI/CD that catch problems early.
 
 #### Weekly AI Architectural Review
 
@@ -86,13 +133,13 @@ When issues are detected, the system automatically creates GitHub issues with:
 - Recommended fixes
 - Priority level
 
-**Impact:** Prevents technical debt accumulation before it becomes costly to fix.
+**Why This Helps:** Catches technical debt before it snowballs into something expensive to fix.
 
-#### The Constitutional Document: `facts.json`
+#### The `facts.json` File: Single Source of Truth
 
-At the heart of our coherence system sits a 425-line JSON file serving as the highest authority source of truth. When documentation conflicts arise, `facts.json` wins.
+I maintain a 425-line JSON file that acts as the final arbiter when documentation conflicts. When agents disagree about how to do something, `facts.json` wins.
 
-It contains:
+What's in it:
 
 - Critical architectural decisions
 - Deployment workflows
@@ -100,11 +147,11 @@ It contains:
 - Trust hierarchy definitions
 - Mandatory patterns
 
-Think of it as the "constitution" that all agents must respect.
+Basically, it's the "constitution" that all agents have to respect.
 
-**Trust Hierarchy:**
+**Trust hierarchy (from most to least authoritative):**
 
-1. `facts.json` - HIGHEST AUTHORITY
+1. `facts.json` - If it says it here, this is correct
 2. Permanent docs in `internal-docs/`
 3. Active plans in `agent-projects/`
 4. Everything else
@@ -120,15 +167,15 @@ Major architectural decisions get documented in ADRs, providing:
 
 This prevents agents from re-litigating resolved issues.
 
-**Key Insight:** Coherence doesn't happen automatically. It requires explicit governance through automated reviews, clear authority hierarchies, and preserved decision history.
+**Bottom line:** Coherence doesn't happen automatically. You need automated reviews, clear authority hierarchies, and decision history. Otherwise it's chaos.
 
 ---
 
-### 2. The Self-Documenting System
+### 2. Making Documentation Update Itself
 
-**The Problem:** Documentation goes stale the moment it's written. Agents forget to update screenshots. Users get confused by outdated visuals.
+**The Problem:** Documentation goes stale instantly. Agents forget to update screenshots. Users get confused by outdated visuals.
 
-**The Solution:** A fully automated documentation regeneration pipeline.
+**What I Built:** Fully automated documentation regeneration that runs on every commit.
 
 #### How It Works
 
@@ -177,13 +224,13 @@ We track documentation health with metrics:
 - **Goal:** 50% component story coverage
 - Weekly coverage reports committed to repo
 
-**Key Insight:** The codebase "knows" when its documentation is stale. This is only possible with explicit component-to-doc mapping and automated workflows.
+**The cool part:** The codebase actually "knows" when its documentation is stale. Only works because of the explicit component-to-doc mapping and automated workflows.
 
 ---
 
-### 3. Testing: The Reality of Agent-Written Tests
+### 3. Testing: Still Haven't Figured This Out Completely
 
-**The Situation:** We have extensive test coverage (75,680 lines of test code, 92% backend coverage, 232 test files). Tests exist and provide value, but the reality is more nuanced than "testing solved."
+**The Situation:** We have extensive test coverage (75,680 lines of test code, 92% backend coverage, 232 test files). Tests exist and provide value, but I haven't "solved" testing by any means.
 
 #### The Maintenance Cost
 
@@ -264,11 +311,11 @@ await expect(page.getByTestId('save-button')).toBeVisible()
 
 ---
 
-### 4. Agent Memory Systems: Ephemeral Project Folders
+### 4. Ephemeral Project Folders (Agent "Working Memory")
 
-**The Problem:** Permanent project folders create documentation bloat, stale information, confusion about what's current, and context overload.
+**The Problem:** Permanent project folders create bloat, stale information, confusion about what's current, and context overload for agents.
 
-**The Solution:** Time-bounded project folders with automatic archival.
+**What I Built:** Time-bounded project folders that auto-archive after 21 days.
 
 #### How It Works
 
@@ -312,9 +359,22 @@ await expect(page.getByTestId('save-button')).toBeVisible()
 
 The `backend-robustness` project demonstrates how agents hand off work:
 
+**How It Starts (The Human's Role):**
+
+I type `/new-feature` and provide a paragraph or two of requirements:
+> "I need to improve backend performance for org hierarchy queries. Currently taking 200ms+ per request. Goal is <100ms."
+
+The agent (via the `/new-feature` command) asks exploratory questions:
+- What's the current bottleneck?
+- How frequently is this called?
+- Can we cache results?
+- What's acceptable staleness?
+
+After ~5 minutes of Q&A, the agent produces the detailed architectural plan and implementation phases below. **I didn't write any of this - the agent created all the planning docs.**
+
 **Phase 1: Architecture Planning (45 min)**
 
-- Architect agent analyzes requirements
+- Agent analyzes requirements (based on our Q&A)
 - Creates detailed implementation plan
 - Identifies integration points
 - Documents hand-off requirements
@@ -335,15 +395,15 @@ The `backend-robustness` project demonstrates how agents hand off work:
 
 **Result:** 2.5 hours across 6 phases with clean hand-offs between specialized agents.
 
-**Key Insight:** Ephemeral project folders create "working memory" for agents - detailed enough for active work, automatically archived to prevent bloat. This mirrors human memory: detailed short-term, summarized long-term.
+**What I learned:** Ephemeral project folders work like "working memory" for agents - detailed enough for active work, automatically archived to prevent bloat. Kind of like human memory: detailed short-term, summarized long-term.
 
 ---
 
-### 5. Documentation That Agents Actually Use
+### 5. Writing Docs That Agents Can Actually Use
 
-**The Problem:** Traditional narrative documentation is hard for agents to parse, buried in prose, difficult to search, and ambiguous.
+**The Problem:** Traditional narrative documentation is hard for agents to parse - it's buried in prose, difficult to search, and ambiguous.
 
-**The Innovation:** Agent-optimized documentation format.
+**What I Built:** Agent-optimized documentation format using pattern catalogs.
 
 #### Pattern Catalog Format
 
@@ -418,6 +478,324 @@ def get_items(
 
 ---
 
+## The Technical Implementation
+
+### Tech Stack: What 9Boxer Is Built On
+
+**Backend:**
+- **FastAPI** (Python) - Modern async web framework
+- **SQLite** - Embedded database (no server required)
+- **PyInstaller** - Bundles Python app into ~225MB standalone executable
+- **Pydantic** - Data validation and serialization
+- **pytest** - Testing framework (73 test files, 30,400 lines)
+
+**Frontend:**
+- **React 18** + **TypeScript** - UI framework with strict typing
+- **Material-UI (MUI)** - Component library for consistent design
+- **Zustand** - Lightweight state management
+- **Vite** - Build tool (fast dev server and production builds)
+- **Electron** - Desktop wrapper (cross-platform distribution)
+- **React Router** - Client-side routing
+
+**Testing:**
+- **Backend**: pytest (unit, integration, E2E, performance tests)
+- **Frontend**: Vitest + React Testing Library (component tests)
+- **E2E**: Playwright (33 test files, 19,281 lines)
+- **Visual Regression**: Playwright screenshot comparison
+
+**Documentation:**
+- **MkDocs Material** - Static site generator (this site!)
+- **Storybook** - Component documentation and development
+- **Markdown** - Documentation format
+
+**Infrastructure:**
+- **GitHub Actions** - CI/CD (17 workflows)
+- **Pre-commit hooks** - Quality gates (ruff, mypy, pyright, ESLint, Prettier)
+- **GitHub Copilot** - AI agent for automation workflows
+
+**Architecture:**
+- **Desktop-first**: Electron app with embedded backend
+- **Offline-capable**: Runs entirely locally, no cloud dependencies
+- **Single executable**: Backend bundles into ~225MB Windows/Mac/Linux executable
+- **File-based sessions**: Import Excel → Calibrate → Export Excel
+
+---
+
+**Important Context: This is a Desktop Application, Not SaaS**
+
+Because this is a desktop app (Electron) that handles sensitive HR data locally, I went lighter on some cloud/SaaS concerns:
+
+**What I Simplified:**
+- **Cloud infrastructure**: No servers, hosting, or deployment pipelines
+- **Multi-tenancy**: Runs locally with file-based data storage
+- **User authentication**: Desktop app runs on user's own machine
+- **Scalability planning**: No concurrent users (single-user desktop app)
+- **API design**: No REST APIs or backend services needed
+
+**What I Still Built:**
+- **Real user experience**: People actually use this daily
+- **Professional design system**: Can't look janky even internally
+- **Complete documentation**: Users need to learn the tool
+- **Reliable functionality**: Can't be buggy or lose data
+- **Cross-platform packaging**: Windows/Mac builds with PyInstaller + Electron
+
+**Why This Matters:**
+- Proves agents can build real end-user experiences with polish
+- Desktop apps simplify some concerns (no cloud, no auth) but add others (packaging, cross-platform)
+- Your mileage may vary if you need SaaS deployment, cloud infrastructure, or enterprise auth
+
+---
+
+### UX Design: Storybook-Driven Component Development
+
+**The Challenge:** How do you build a consistent, high-quality UI when agents are writing the code?
+
+**The Solution:** Component-driven development with Storybook as the design workbench.
+
+#### How Storybook Enables Iterative Design
+
+**1. Component Isolation**
+
+Each React component gets its own Storybook story showing all states:
+
+```typescript
+// FilterToolbar.stories.tsx
+export const Default: Story = {
+  args: {
+    activeFilters: 0,
+    onFiltersClick: fn()
+  }
+}
+
+export const WithActiveFilters: Story = {
+  args: {
+    activeFilters: 5,
+    onFiltersClick: fn()
+  }
+}
+
+export const Expanded: Story = {
+  args: {
+    expanded: true,
+    searchTerm: "Engineering"
+  }
+}
+```
+
+**Benefits:**
+- Agents can see all component states visually
+- Design iterations happen in isolation (no app context needed)
+- Visual regression tests use these stories as baselines
+
+**2. Design System and Tokens**
+
+**The Problem:** Hardcoded colors and spacing lead to visual drift and inconsistency.
+
+**The Solution:** Centralized design tokens in `frontend/src/theme/tokens.ts`
+
+```typescript
+export const tokens = {
+  colors: {
+    primary: '#3f51b5',      // Material-UI indigo
+    secondary: '#ff9800',    // Orange accents
+    background: '#121212',   // Dark mode default
+    // ... 40+ color definitions
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px'
+  },
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      md: '1rem',
+      lg: '1.25rem',
+      xl: '1.5rem'
+    }
+  },
+  borderRadius: {
+    sm: '4px',
+    md: '8px',
+    lg: '12px'
+  }
+}
+```
+
+**Design Token Auto-Generation:**
+
+The system automatically generates CSS from tokens:
+
+```bash
+npm run generate:docs-tokens  # Generates design-tokens.css
+```
+
+This CSS is used in **both** the app and the documentation site (the one you're reading right now), ensuring perfect visual consistency.
+
+**Benefits:**
+- **No hardcoded values**: Agents reference tokens, not magic numbers
+- **Consistent theming**: Dark/light mode switching works automatically
+- **Documentation matches app**: Design tokens ensure visual parity
+- **Easy refactoring**: Change one token, update entire app
+
+**3. Component Coverage Tracking**
+
+We track which components have Storybook stories:
+
+- **Current coverage**: 40% of components have stories
+- **Goal**: 50% component story coverage
+- **Tracked weekly**: `screenshot-coverage.yml` workflow
+
+**Missing stories flagged automatically** - agents know which components need documentation.
+
+#### The Storybook Workflow
+
+1. **Agent builds component** → React component in `src/components/`
+2. **Agent creates story** → `.stories.tsx` file showing all states
+3. **Visual review** → Screenshots generated automatically
+4. **Integration** → Component used in app
+5. **Regression testing** → Story becomes visual test baseline
+
+**Result:** High-quality, consistent UI despite zero human designers.
+
+### User Documentation: The System That Documents Itself
+
+**Meta-moment:** The documentation you're reading right now was generated by the same automated system we're describing. This is documentation documenting itself.
+
+#### The Documentation Stack
+
+**MkDocs Material Configuration:**
+- **Source**: `resources/user-guide/docs/` (Markdown files)
+- **Build**: `mkdocs build` → Static HTML site
+- **Theme**: Material for MkDocs (matches app design tokens)
+- **Deployment**: Bundled with Electron app for offline access
+- **Navigation**: 40+ pages organized in `mkdocs.yml`
+
+**Key Features:**
+- **Offline-first**: No internet required (bundled with app)
+- **Search**: Lunr.js offline search
+- **Code highlighting**: Pygments syntax highlighting
+- **Dark mode**: Matches app theme (default dark)
+- **Responsive**: Works on all screen sizes
+
+#### Screenshot Automation Pipeline
+
+**The Problem:** When components change, screenshots go stale. Agents forget to update them.
+
+**The Solution:** Automated screenshot regeneration triggered by code changes.
+
+**Step-by-Step Flow:**
+
+1. **Component Change Detected**
+   ```yaml
+   # docs-auto-update.yml workflow
+   on:
+     push:
+       paths:
+         - 'frontend/src/components/**/*.tsx'
+   ```
+
+2. **Impact Analysis**
+   ```javascript
+   // detect-doc-impact.js
+   const changedFiles = getGitDiff()
+   const affectedScreenshots = componentScreenshotMap.get(changedFiles)
+   // Returns: ["filter-toolbar-expanded.png", "filter-toolbar-search.png"]
+   ```
+
+3. **Selective Regeneration**
+   ```typescript
+   // Playwright screenshot generation
+   await page.goto('http://localhost:6006/?path=/story/filtertoolbar--expanded')
+   await page.screenshot({
+     path: 'resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-expanded.png'
+   })
+   ```
+
+4. **Visual Regression Test**
+   ```typescript
+   // Compare new vs baseline
+   const diff = await compareImages(newScreenshot, baseline)
+   if (diff > 0.05) { // 5% tolerance
+     await generateDiffReport(newScreenshot, baseline, diff)
+   }
+   ```
+
+5. **Documentation PR Created**
+   - Branch: `docs/auto-update-YYYY-MM-DD`
+   - Files: Updated screenshots
+   - Description: "Auto-update screenshots for FilterToolbar changes"
+   - Visual diff report attached
+
+#### Storybook as Screenshot Source
+
+**Why Storybook for screenshots (not the full app)?**
+
+1. **Isolation**: Component shown in clean state (no app chrome, menus, etc.)
+2. **Consistency**: Same viewport, same data, every time
+3. **States**: Can screenshot all component states (loading, error, empty, etc.)
+4. **Fast**: No app startup time, direct to component
+5. **Reproducible**: Same story = same screenshot
+
+**Example Screenshot Workflow:**
+
+```typescript
+// 1. Component in Storybook
+export const FilterToolbarExpanded: Story = {
+  args: {
+    expanded: true,
+    activeFilters: 3,
+    searchTerm: "Engineering"
+  }
+}
+
+// 2. Mapped in component-screenshot-map.json
+{
+  "FilterToolbar.tsx": [
+    "filter-toolbar-expanded.png",
+    "filter-toolbar-collapsed.png",
+    "filter-toolbar-search-autocomplete.png"
+  ]
+}
+
+// 3. Screenshot generated via Playwright
+await page.goto('http://localhost:6006/?path=/story/toolbar--expanded')
+await page.screenshot({ path: '...filter-toolbar-expanded.png' })
+
+// 4. Used in documentation
+![Filter toolbar expanded](../images/screenshots/toolbar/filter-toolbar-expanded.png)
+```
+
+#### Documentation Coverage Metrics
+
+We track documentation health automatically:
+
+**Weekly Reports** (`screenshot-coverage.yml`):
+- **Screenshot inventory**: 80+ screenshots tracked
+- **Component coverage**: 40% of components documented
+- **Stale screenshots**: Flagged if >30 days old without code changes
+- **Missing screenshots**: Components without stories identified
+
+**Coverage Goals:**
+- 40% Storybook coverage (components with stories)
+- 50% component story coverage (stories per component)
+- 90% screenshots updated within 7 days of code changes
+
+**The Self-Documenting Loop:**
+
+```
+Code change → Detect impact → Regenerate screenshots →
+Visual regression test → Create PR → Merge → Docs updated
+```
+
+**Result:** Documentation that stays current automatically. The system you're reading about maintains itself.
+
+---
+
 ## The Infrastructure Paradox
 
 **Observation:** Nearly 50% of agent work goes to infrastructure, documentation, and testing - not features.
@@ -439,10 +817,10 @@ Is this waste? Absolutely not. It's **investment**.
 
 - Screenshots auto-regenerate
 - Documentation stays current
-- Tests remain reliable (0% flakiness)
-- Architecture stays coherent
+- Tests use state-based waits (reduced brittleness)
+- Architecture stays coherent through reviews
 - Debugging is systematic
-- Velocity remains constant or increases
+- Velocity remains more consistent
 
 ### Infrastructure as Code Volume
 
@@ -769,107 +1147,153 @@ Each phase documents what the next phase needs. The final summary shows the comp
 
 ---
 
-## Lessons Learned: What Worked & What Didn't
+## Real Frustrations & Surprises
 
-### What Worked
+### The Biggest Frustrations
 
-#### 1. Infrastructure-First Mindset
+#### 1. Test Suite Maintenance Hell
 
-**Decision:** Invest 50% of effort in infrastructure, not features.
+**The Pain:** This is my #1 frustration. We spend SO MUCH time maintaining tests and dealing with pre-commit/push issues.
 
-**Result:** Sustained velocity, high quality, low tech debt.
+**What This Looks Like:**
+- Tests break on almost every feature change (sometimes 10-20 tests at once)
+- Pre-commit hooks fail constantly: linting, type checking, translation validation
+- Fixing the tests often takes longer than implementing the feature
+- The tests themselves are brittle and need constant updating
 
-**Learning:** Infrastructure is investment, not waste. It pays dividends in the medium to long term.
+**Rate of Change Makes It Worse:**
+Here's the real kicker: when I'm spinning up 10+ agent projects simultaneously (which is entirely possible with this workflow), keeping all the tests aligned becomes exponentially harder. One change breaks tests in 3 other areas. Fixing those breaks tests elsewhere. It cascades.
+
+**Is It Worth It?**
+Probably. The tests do catch bugs and document behavior. But the maintenance cost is real and substantial. This absolutely slows velocity.
+
+**Current Status:** Ongoing pain point. Not solved, still learning how to do this better.
+
+#### 2. Managing Multiple Concurrent Agent Projects
+
+**The Surprise:** My biggest bottleneck isn't agent capability—it's ME keeping track of what's happening.
+
+**What This Looks Like:**
+- 5-10 agent projects active at once
+- Each in different stages: planning, implementation, testing, documentation
+- Agents can stomp on each other's changes if I'm not careful
+- I spend significant mental energy on coordination: "Wait for Project A to finish before starting Project B"
+
+**Why It's Hard:**
+- Agents don't know about each other unless I tell them
+- Each agent project lives in its own context (chat session or GitHub workflow)
+- I'm the only one who sees the whole picture
+
+**What Helps:**
+- Explicit dependency graphs in project plans
+- Phase-based work (finish phase 1 completely before phase 2)
+- Integration guides (Agent A documents what it built for Agent B)
+- 21-day auto-archival forces me to finish or abandon
+
+**Honest Assessment:** This is still hard. I make mistakes. Agents occasionally conflict. It's getting better with practice but remains a challenge.
+
+#### 3. The One Time Everything Broke
+
+**What Happened:**
+Agents somehow got confused and reverted a ton of changes they had made earlier. I'm still not entirely sure how it happened—maybe context confusion, maybe I gave conflicting instructions.
+
+**The Recovery:**
+- Spent several hours manually cleaning up the mess
+- Chat history saved me: I could go back to previous sessions and say "reapply this change intelligently"
+- Claude would read the old chat, understand what was intended, and reimplement it correctly
+
+**The Insight:**
+Chat history is kind of an amazing new form of source control. It's not just code history—it's *intent* history. I could recover not just what was changed, but why and how it was supposed to work.
+
+**Frequency:** This happened once in ~6 weeks. Not common, but when it happens, it's painful.
+
+### What Actually Worked
+
+#### 1. Infrastructure-First Investment
+
+**The Pattern:** ~50% of commits go to infrastructure, docs, and testing (not features).
+
+**Why It Works:**
+- Automated docs stay current instead of going stale
+- Weekly arch reviews catch drift before it compounds
+- Pattern catalogs eliminate ambiguity for agents
+
+**The Payoff:** Sustained velocity over time. Without this infrastructure, I'd be drowning in technical debt by now.
 
 #### 2. Pattern Catalogs Over Prose
 
-**Decision:** Replace narrative docs with structured pattern catalogs.
+**What Changed:** Replaced narrative documentation with structured ALWAYS/NEVER patterns.
 
-**Result:** Agents parse patterns far more reliably than prose.
+**Example:**
+```markdown
+❌ DON'T: Write "typically we validate user input before processing"
+✅ DO: Write "ALWAYS validate user input. NEVER process unvalidated data."
+```
 
-**Learning:** Structure beats narrative for machine parsing. Quick rules eliminate ambiguity.
+**Result:** Agents make far fewer interpretation mistakes. When they do mess up, it's usually because the pattern catalog didn't cover the case.
 
-#### 3. Ephemeral Project Folders
+#### 3. Ephemeral Project Folders (21-Day Auto-Archive)
 
-**Decision:** Auto-archive projects after 21 days.
+**The System:** Projects older than 21 days automatically get archived.
 
-**Result:** Clean workspace, no stale information, forced knowledge consolidation.
+**Why It Works:**
+- Forces knowledge consolidation into permanent docs
+- Prevents agents from reading stale planning documents
+- Keeps workspace clean and context clear
 
-**Learning:** Ephemeral memory prevents bloat while providing working context.
+**Unexpected Benefit:** Forces me to finish or abandon projects. No lingering half-done work.
 
-#### 4. Automated Coherence Checks
+#### 4. Two AI Systems Collaborating
 
-**Decision:** Weekly AI architectural reviews and docs audits.
+**What's Happening:**
+- ~70% of commits from Claude Code (VSCode agent)
+- ~30% from GitHub Copilot (GitHub Actions agent)
+- They don't directly communicate, but they work on the same codebase
 
-**Result:** Technical debt caught early, patterns remain consistent.
+**Why It's Interesting:**
+This is two different AI systems, from different companies, running on different platforms, collaborating through shared code and documentation. Neither knows the other exists.
 
-**Learning:** Coherence requires systematic governance, not just good intentions.
+**The Insight:** The infrastructure (facts.json, pattern catalogs, integration guides) is what enables collaboration. It's not agent-to-agent communication—it's agent-to-infrastructure-to-agent.
 
-#### 5. State-Based Testing Patterns
+### Surprises That Made Me Update My Mental Model
 
-**Decision:** Ban `waitForTimeout()`, use state-based waits and i18n-aware selectors.
+#### 1. Speed is Mind-Blowing (Even After Accounting for Problems)
 
-**Result:** Reduced (but not eliminated) test brittleness and timing issues.
+**The Experience:** Idea → working feature happens faster than I can describe.
 
-**Learning:** State-based waits help, but test maintenance remains a substantial cost. Testing is an ongoing area of improvement, not a solved problem.
+**Example:** "I want users to search employees by name with autocomplete" became a working feature with tests and docs in about 2 hours, including all the test maintenance and pre-commit fixing.
 
-### What Didn't Work (Initially)
+**Comparison:** Solo, this would have taken me a day or two of focused work. The agent did it while I was coordinating other projects.
 
-#### 1. Narrative Documentation
+#### 2. Everything Actually Completed
 
-**Problem:** Agents buried key patterns in prose, made ambiguous interpretations.
+**The Surprise:** I genuinely can't think of a project that didn't complete.
 
-**Fix:** Switched to pattern catalogs with ALWAYS/NEVER rules.
+**The Caveat:** Lots of iterations, lots of test fixes, lots of "try again differently." But nothing abandoned.
 
-**Impact:** Pattern adoption improved dramatically.
+**Why This Surprised Me:** I expected more failures. Maybe I'm good at scoping? Maybe agents are more capable than expected? Maybe my success criteria are too loose? Not sure.
 
-#### 2. Permanent Project Folders
+#### 3. Tests are Extensive but Maintenance-Heavy
 
-**Problem:** Documentation bloat, agents confused about current vs. historical info.
+**The Numbers:** 75,680 lines of test code. 232 test files. 92% backend coverage.
 
-**Fix:** 21-day auto-archival system.
+**The Reality:** Tests break constantly. Maintenance is a significant time sink.
 
-**Impact:** Clean workspace, clearer context hierarchy.
+**The Question I'm Still Pondering:** Is this a solvable problem, or is test maintenance just the new cost of doing business with agents?
 
-#### 3. Manual Screenshot Updates
+### What I Still Don't Know
 
-**Problem:** Screenshots went stale quickly, agents forgot updates, documentation became misleading.
+**Open Questions:**
+- How does this scale beyond one person coordinating?
+- Does test maintenance get better or worse as the codebase grows?
+- What's the long-term maintenance burden (6 months? 1 year from now)?
+- Would this work for highly regulated industries (healthcare, finance)?
+- Can agents handle complex algorithmic work, or just CRUD + UI?
 
-**Fix:** Automated screenshot pipeline with component mapping.
-
-**Impact:** Screenshots stay synchronized with code automatically.
-
-#### 4. Implicit Component-Doc Relationships
-
-**Problem:** No way to know which docs affected by code changes.
-
-**Fix:** `component-screenshot-map.json` explicit mapping.
-
-**Impact:** Documentation debt becomes visible and actionable.
-
-### Unexpected Discoveries
-
-#### 1. Two AI Systems Collaborating
-
-**Discovery:** 100% of commits are agent-driven code, created by two different AI systems:
-- **~70% Claude Code** (running in VSCode)
-- **~30% GitHub Copilot** (running in GitHub Actions)
-
-The human only clicked commit buttons—every line of code was written by AI agents.
-
-**Insight:** This isn't "AI-assisted development"—it's AI agents collaborating across different platforms. No human could sustain 38.7 commits/day of actual code writing.
-
-#### 2. Test Code Volume
-
-**Discovery:** 75,680 lines of test code.
-
-**Insight:** Quality requires investment. Anti-fragile patterns matter more than coverage percentage.
-
-#### 3. Documentation Infrastructure Scale
-
-**Discovery:** 38K lines of internal docs, comparable to application code.
-
-**Insight:** Documentation infrastructure is first-class infrastructure, not an afterthought.
+**Areas for Future Exploration:**
+- Better multi-agent coordination mechanisms
+- Reducing test brittleness systematically
+- Understanding which types of work agents excel at vs. struggle with
 
 ---
 
@@ -924,12 +1348,12 @@ The system becomes more automated and efficient over time.
 - 13 agent profiles (3,480 lines)
 - 38,159 lines internal docs
 
-### Testing Excellence
+### Testing Investment
 
 - 232 test files (75,680 lines)
 - 92% backend coverage
-- 0% E2E flakiness
-- 23 E2E tests in 30.5s
+- State-based waits and i18n-aware patterns
+- Ongoing test maintenance required
 
 ### Codebase Scale
 
@@ -940,44 +1364,37 @@ The system becomes more automated and efficient over time.
 
 ---
 
-## The Bottom Line
+## Closing Thoughts
 
-**Agent-driven development works at production scale.**
+**What I Proved to Myself:**
 
-But it requires:
+- Agents can build real software with real UX, not just MVPs
+- $400/mo is surprisingly affordable for this capability
+- Test maintenance is still a major pain point that needs solving
+- Speed from idea to working feature is genuinely shocking
 
-1. **Massive infrastructure investment** - 50% of work goes to infrastructure, docs, and testing
-2. **Systematic governance** - Automated reviews, clear hierarchies, explicit patterns
-3. **Purpose-built documentation** - Pattern catalogs, not narrative prose
-4. **Anti-fragile testing** - State-based waits, no arbitrary timeouts
-5. **Automated maintenance** - Self-documenting systems, auto-archival, smart workflows
+**What I Still Don't Know:**
 
-The result: **Sustained velocity with high quality and low technical debt.**
+- How this scales beyond one person coordinating everything
+- Whether test maintenance gets better or worse over time
+- If this works for enterprise-scale concerns (security, multi-tenancy, compliance)
+- What the long-term maintenance burden looks like (6 months? 1 year?)
+- Whether the infrastructure investment stays at 50% or changes
 
-9Boxer isn't just a talent management application. It's a proof of concept demonstrating what's possible when agents have the right infrastructure to build, maintain, and evolve production software.
+**What I'm Happy to Share:**
 
----
+- Agent definitions and prompting strategies that worked
+- Architecture patterns and infrastructure setups
+- Mistakes I made and how I recovered from them
+- Project planning templates and coordination approaches
+- The test maintenance challenges I haven't solved yet
 
-## Want to Learn More?
+**Reach Out:**
 
-**Try 9Boxer:**
+If you're experimenting with agent-driven development, I'd love to compare notes. What worked for you? What didn't? What am I missing? What have you figured out that I haven't?
 
-- [2-Minute Quickstart](../quickstart.md) - See the application in action
-- [Download 9Boxer](#) - Try it with your own data
-
-**Explore the Development Process:**
-
-- [GitHub Repository](#) - See the code and infrastructure
-- [Internal Documentation](#) - Read the agent guides and pattern catalogs
-- [Architecture Decision Records](#) - Understand key design decisions
-
-**Join the Discussion:**
-
-- [GitHub Discussions](#) - Share your thoughts and questions
-- [Issues](#) - Report bugs or suggest features
+**This isn't "the future of software development"** - it's field notes from one person's Christmas break experiment. Take what's useful, skip what's not, and let me know what you learn.
 
 ---
-
-**This is the future of software development.** It's collaborative, automated, and infrastructure-intensive. And it works.
 
 *Last updated: January 4, 2026*

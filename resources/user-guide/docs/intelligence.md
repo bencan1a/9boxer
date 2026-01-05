@@ -288,7 +288,10 @@ Generally no action needed—these are within normal variance.
 
 Each detector uses statistical analysis to compare your actual distribution against expected patterns. When the deviation is too large to be random chance, it's flagged as an anomaly.
 
-For technical details on the statistical methods used, see [Detection Methodology](detection-methodology.md).
+The system uses chi-square tests, Z-scores, and effect size measures (Cramér's V) to identify statistically significant patterns. A multi-factor severity algorithm prevents both false positives (flagging trivial anomalies) and false negatives (missing real patterns).
+
+!!! info "Want the Gory Details?"
+    For a comprehensive technical deep dive on the statistical methodology—including formulas, worked examples, severity determination logic, and the complete data structure sent to the LLM—see the **[Detection Methodology](detection-methodology.md)** reference guide.
 
 ---
 
