@@ -357,27 +357,31 @@ describe("useEmployeeSearch", () => {
   });
 
   describe("Performance", () => {
-    it("returns results in <50ms for 200 employees", () => {
-      // Create 200 employees
-      const employees = Array.from({ length: 200 }, (_, i) =>
-        createEmployee({
-          employee_id: i + 1,
-          name: `Employee ${i + 1}`,
-          business_title: `Title ${i % 10}`,
-        })
-      );
+    // Skip performance tests in CI due to variable runner performance
+    it.skipIf(!!process.env.CI)(
+      "returns results in <50ms for 200 employees",
+      () => {
+        // Create 200 employees
+        const employees = Array.from({ length: 200 }, (_, i) =>
+          createEmployee({
+            employee_id: i + 1,
+            name: `Employee ${i + 1}`,
+            business_title: `Title ${i % 10}`,
+          })
+        );
 
-      const { result } = renderHook(() =>
-        useEmployeeSearch({ employees, threshold: 0.3 })
-      );
+        const { result } = renderHook(() =>
+          useEmployeeSearch({ employees, threshold: 0.3 })
+        );
 
-      const startTime = performance.now();
-      result.current.search("Employee");
-      const endTime = performance.now();
+        const startTime = performance.now();
+        result.current.search("Employee");
+        const endTime = performance.now();
 
-      const duration = endTime - startTime;
-      expect(duration).toBeLessThan(50);
-    });
+        const duration = endTime - startTime;
+        expect(duration).toBeLessThan(50);
+      }
+    );
 
     it("limits results to specified resultLimit", () => {
       const employees = Array.from({ length: 50 }, (_, i) =>
