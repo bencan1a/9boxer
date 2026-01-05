@@ -6,16 +6,16 @@
 
 ## TL;DR - The Key Takeaways
 
-If you read nothing else, remember this:
+If you read nothing else, here's what we learned:
 
-1. **9Boxer is built 100% by AI agents** - No human has written a line of production code
-2. **Infrastructure is 50% of the work** - Not waste, but essential investment for sustained velocity
-3. **Zero flakiness is achievable** - Our E2E test suite runs with 0% flakiness through anti-fragile patterns
-4. **Documentation auto-updates** - Component changes automatically trigger screenshot regeneration
-5. **Pattern catalogs beat prose** - Agents parse structured patterns far better than narrative docs
-6. **Ephemeral memory works** - 21-day project lifecycles prevent bloat while providing working memory
+1. **9Boxer is built 100% by AI agents** - No human has written a line of production code (Claude Code + GitHub Copilot collaboration)
+2. **Infrastructure dominates the work** - 32% of commits are docs and infrastructure vs. 29% features
+3. **Testing is valuable but costly** - 75K lines of test code, but test maintenance is a substantial ongoing investment
+4. **Documentation auto-updates** - Component changes automatically trigger screenshot regeneration through explicit mapping
+5. **Pattern catalogs work better than prose** - Agents parse structured patterns more reliably than narrative documentation
+6. **Ephemeral project folders** - 21-day auto-archival prevents bloat while providing working memory for active development
 
-**The bottom line:** Agent-driven development works at production scale, but requires massive infrastructure investment that humans rarely prioritize.
+**The bottom line:** Agent-driven development works at production scale, but requires substantial infrastructure investment and honest assessment of trade-offs.
 
 ---
 
@@ -36,18 +36,29 @@ Here's what the last 7 days looked like (Dec 28, 2025 - Jan 4, 2026):
 
 ### Where The Work Goes
 
-Commit breakdown by category:
+Commit breakdown by category (after recategorizing commits without conventional prefixes):
 
-- **Bug fixes:** 53 commits (19.6%)
+- **Features:** 78 commits (28.8%)
+  - Explicit `feat:` prefix: 37 commits
+  - "Add X", "Implement X" commits: 41 commits
+- **Bug fixes:** 65 commits (24.0%)
+  - Explicit `fix:` prefix: 53 commits
+  - "Fix X" without colon: 12 commits
+- **Documentation:** 45 commits (16.6%)
+  - Explicit `docs:` prefix: 31 commits
+  - "Initial plan" commits: 10 commits
+  - Doc updates: 4 commits
 - **Infrastructure:** 42 commits (15.5%)
-- **Features:** 37 commits (13.7%)
-- **Documentation:** 31 commits (11.4%)
+  - Refactor, chore, CI changes
+- **Merge commits:** 35 commits (12.9%)
+  - GitHub PR merges (excluded from work type analysis)
 - **Testing:** 2 commits (0.7%)
-- **Other:** 106 commits (39.1%)
+- **Other:** 4 commits (1.5%)
+  - Reverts, WIP commits
 
-**Notice anything surprising?** Pure feature development represents only 13.7% of commits. Infrastructure, docs, and testing combined make up 37.6% - nearly triple the feature work.
+**The Pattern:** When we recategorize commits that lack conventional prefixes (like "Add FilterToolbar tests" → feature), the "other" category drops from 39% to ~2%.
 
-This isn't inefficiency. This is what makes sustained velocity possible.
+**Key Insight:** Feature development (29%) and bug fixes (24%) dominate, but infrastructure and documentation (32% combined) represent substantial ongoing investment. Without automated documentation systems and architectural reviews, this percentage would likely be even higher.
 
 ---
 
@@ -170,21 +181,34 @@ We track documentation health with metrics:
 
 ---
 
-### 3. Zero-Flakiness Testing: The Anti-Fragile Achievement
+### 3. Testing: The Reality of Agent-Written Tests
 
-**The Achievement:** 0% flakiness in 23 Playwright E2E tests running continuously in CI.
+**The Situation:** We have extensive test coverage (75,680 lines of test code, 92% backend coverage, 232 test files). Tests exist and provide value, but the reality is more nuanced than "testing solved."
 
-This is extraordinarily rare. Most E2E suites struggle with 10-30% flakiness. How did we achieve zero?
+#### The Maintenance Cost
 
-#### Anti-Fragile Testing Principles
+In our experience, a significant portion of pre-PR engineering time goes to fixing tests broken by code changes. The pattern:
 
-**1. State-Based Waits (NO Arbitrary Timeouts)**
+1. Agent makes feature change
+2. Tests break (often due to implementation details, not actual bugs)
+3. Agent spends time updating tests to match new behavior
+4. Tests pass, PR merges
+
+**The question we're still exploring:** What percentage of test failures represent real regressions vs. brittle tests that need updating? In our observation, the rate of tests catching actual bugs is lower than we'd like.
+
+This doesn't mean tests are without value—they document behavior and catch some regressions. But the cost-benefit ratio is still something we're working to optimize.
+
+#### What We Learned About Writing Better Tests
+
+While we haven't solved testing completely, we've identified patterns that help:
+
+**1. State-Based Waits (Not Arbitrary Timeouts)**
 
 ```typescript
-// ❌ DON'T: Arbitrary waits (fragile, slow, still flaky)
+// ❌ Brittle: Arbitrary waits (guessing how long things take)
 await page.waitForTimeout(1000)
 
-// ✅ DO: State-based waits (reliable, fast, deterministic)
+// ✅ Better: State-based waits (wait for actual conditions)
 await page.waitForSelector('[data-testid="grid-loaded"]')
 await expect(employeeTiles).toHaveCount(50)
 ```
@@ -192,10 +216,10 @@ await expect(employeeTiles).toHaveCount(50)
 **2. I18n-Aware Testing**
 
 ```typescript
-// ❌ DON'T: Hardcoded strings (breaks when translations change)
+// ❌ Brittle: Hardcoded strings (breaks when translations change)
 await expect(page.getByText('Save')).toBeVisible()
 
-// ✅ DO: Translation-independent selectors
+// ✅ Better: Translation-independent selectors
 await expect(page.getByTestId('save-button')).toBeVisible()
 ```
 
@@ -203,15 +227,8 @@ await expect(page.getByTestId('save-button')).toBeVisible()
 
 - 5% pixel tolerance for minor rendering variations
 - Baseline comparison system
-- Automated diff generation
-- PR comment integration
-
-**4. Smart Test Selection**
-
-- Analyzes git diffs to determine affected tests
-- Runs only relevant test suites
-- Faster CI feedback
-- Lower infrastructure costs
+- Helps catch unintended visual changes
+- Still requires manual review of diffs
 
 #### Testing Infrastructure Scale
 
@@ -223,17 +240,27 @@ await expect(page.getByTestId('save-button')).toBeVisible()
 | **E2E tests** | 33 files (19,281 lines) |
 | **Total test code** | 75,680 lines |
 | **Backend coverage** | 92% |
-| **E2E flakiness** | 0% |
-| **E2E runtime** | 30.5 seconds |
 
-**Test Architecture Principles:**
+**Test Architecture Principles We Follow:**
 
 1. **Simple** - No conditional logic in tests
-2. **Isolated** - Each test is independent
-3. **Reliable** - Deterministic, no race conditions
-4. **Integration-Focused** - Prefer integration over unit tests
+2. **Isolated** - Each test independent
+3. **Integration-Focused** - Prefer integration over unit tests when practical
 
-**Key Insight:** Flaky tests are not inevitable. Systematic anti-fragile patterns achieve 0% flakiness even with AI-generated tests.
+#### The Honest Assessment
+
+**What works:**
+- State-based waits reduce timing issues
+- I18n-aware selectors prevent translation breakage
+- High coverage documents expected behavior
+
+**What's still challenging:**
+- Test maintenance burden is substantial
+- Tests break frequently on implementation changes
+- Distinguishing real bugs from brittle tests is hard
+- Cost-benefit optimization ongoing
+
+**Status:** Good progress, not done. Testing remains an area of active learning.
 
 ---
 
@@ -468,84 +495,277 @@ That's **127K lines** of infrastructure code - comparable in size to the applica
 
 ---
 
-## Multi-Agent Coordination: How The Team Works Together
+## Inside an Agent Project: How Work Actually Gets Done
 
-**The Challenge:** Multiple specialized agents need to collaborate on complex features without stepping on each other's toes.
+**The Reality:** Our 49 completed projects follow remarkably consistent patterns. Understanding how agents break down work, coordinate across phases, and produce documentation artifacts reveals what makes agent-driven development work in practice.
 
-### Coordination Mechanisms
+### Project Lifecycle Overview
 
-#### 1. Phase-Based Planning
+**Typical Structure:**
+- **Duration:** 2 hours to 2 weeks depending on complexity
+- **Phases:** 3-7 phases per project
+- **Documentation produced:** 8-22 markdown files per project
+- **Total across 49 projects:** 200 planning documents
 
-Projects break into numbered phases with clear deliverables:
+### Example 1: AI Calibration Summary (Complex Feature)
+
+**Duration:** 3 days | **Phases:** 5 | **Artifacts:** 22 files
+
+This project added AI-powered calibration report generation with LLM integration—a complex feature touching backend, frontend, testing, and documentation.
+
+#### Artifacts Produced
+
+**Planning & Architecture (3 files):**
+- `plan.md` (1,056 lines) - Comprehensive 5-phase architecture
+- System architecture diagrams (ASCII art)
+- Security & privacy design (no PII to LLM)
+
+**Implementation Guides (4 files):**
+- `DEVELOPER_GUIDE.md` - How to work with the codebase
+- `DEPLOYMENT.md` - Production deployment process
+- `MIGRATION.md` - Migration from old system
+- `DATA_PACKAGING_SERVICE_SUMMARY.md` - Service layer docs
+
+**Phase Summaries (2 files):**
+- `PHASE_4_5_COMPLETION_SUMMARY.md` - Mid-project hand-off
+- `FINAL_COMPLETION_SUMMARY.md` (388 lines) - Complete deliverables:
+  - ✅ 7 screenshots generated
+  - ✅ 3 documentation files updated
+  - ✅ 6 Storybook story files created
+  - ✅ Build validation passed
+
+**Testing Documentation (4 files):**
+- `TEST_SUMMARY.md` - Coverage and results
+- `INTEGRATION_TEST_SUMMARY.md` - Integration test details
+- `README_TESTS.md` - How to run tests
+- Test examples: `test_llm_agent_architecture.py`, `test_structured_outputs.py`
+
+**Quality Artifacts (4 files):**
+- `ARCHITECTURAL_REVIEW.md` - Post-implementation review
+- `SCREENSHOT_REQUIREMENTS.md` - Screenshot specifications
+- `SCREENSHOT_STORY_MAPPING.md` - Story-to-screenshot mapping
+- `user-guide-integration.md` - User docs integration plan
+
+**Demo Materials (2 files):**
+- `demo_data_packaging.py` - Runnable example
+- `demo_package_output.json` - Sample output
+
+#### Phase Structure
+
+1. **Phase 1: Backend Services** - CalibrationSummaryService implementation
+2. **Phase 2: LLM Integration** - Privacy-first Claude API integration
+3. **Phase 3: Frontend Components** - React hooks and UI
+4. **Phase 4: Storybook Stories** - Component documentation
+5. **Phase 5: Documentation** - User guide integration
+
+#### Architect Guidance Example
+
+From the upfront `plan.md`:
 
 ```markdown
-## Phase 1: Architecture Planning
-**Owner:** Architecture Agent
-**Duration:** 45 minutes
-**Deliverables:**
-- System design document
-- Integration points identified
-- Hand-off guide for implementation
+## Privacy & Security Considerations
 
-## Phase 2: Implementation
-**Owner:** Backend Agent
-**Duration:** 60 minutes
-**Prerequisites:** Phase 1 complete
-**Deliverables:**
-- Core logic implemented
-- API endpoints created
-- Integration guide updated
+### 1. No PII Sent to LLM
+**What is NEVER sent to Claude:**
+- Employee names
+- Employee IDs
+- Manager names
+
+**What IS sent:**
+- Anonymized role labels ("Employee A", "Employee B")
+- Performance levels (aggregated)
+- Distribution statistics
+
+### 2. Prompt Injection Prevention
+**Defense Mechanism:**
+[Specific code implementation provided]
 ```
 
-#### 2. Integration Guides
+This architectural guidance was defined **before any implementation began**, ensuring all downstream work respected security constraints.
 
-Agents document how their work integrates:
+---
 
+### Example 2: Backend Robustness (Multi-Agent Infrastructure)
+
+**Duration:** 5 days | **Agents:** 5 (with dependencies) | **Artifacts:** 6 files
+
+This project added dynamic port selection and IPC robustness—requiring careful coordination across multiple agents with explicit dependencies.
+
+#### Agent Dependency Graph
+
+```
+Agent 1: Backend Port Selection (sequential)
+   ↓
+Agent 2: Electron Port Discovery (depends on Agent 1)
+   ↓
+Agent 3: Dynamic API Client (depends on Agent 2)
+   ↓
+Agents 4 & 5: Monitoring + UX (parallel after Agent 3)
+```
+
+#### The 542-Line Integration Guide
+
+The key coordination artifact was `agent-2-integration-guide.md` (542 lines), which documented:
+
+**For Agent 3: Dynamic API Client**
 ```markdown
-## Phase 2 Hand-Off to Test Expert
+### Your Objectives
+1. Initialize API client with dynamic backend URL
+2. Call IPC handlers during app startup
+3. Handle connection failures gracefully
 
-**What Was Built:**
-- New OrgService with hierarchy caching
-- API endpoints for manager filtering
+### Implementation Pattern
+[Complete TypeScript code example provided]
 
-**Integration Points:**
-- `/api/org/managers` endpoint (test this)
-- `OrgService.get_hierarchy()` method
+### Global Variables Available
+- `window.electron.getBackendPort()` → Promise<number>
+- `window.electron.onPortChange(callback)` → void
 
-**Test Requirements:**
-- Unit tests for OrgService caching
-- Integration tests for API endpoints
-- Performance benchmarks (<100ms)
+### Success Criteria
+✅ API client initializes without hardcoded ports
+✅ Tests pass in both Electron and web modes
+✅ Graceful degradation if backend unreachable
 ```
 
-#### 3. Completion Summaries
+**For Agents 4 & 5 (Parallel Work):**
+- Agent 4: Connection monitoring UI
+- Agent 5: Error recovery UX
+- Both receive integration guide after Agent 3 completes
+- No dependencies between them (can run simultaneously)
 
-Final report with:
+**The Result:** Agent 3 could start immediately after Agent 2 without context-switching or coordination overhead. Agents 4 and 5 worked in parallel, maximizing efficiency.
 
-- Timeline and metrics
-- All changes and locations
-- Follow-up work identified
-- Technical debt noted
+---
 
-### Agent Specialization
+### Example 3: Self-Managing Docs System (Meta-Infrastructure)
 
-Each agent has a specific role:
+**Duration:** Ongoing (phased rollout) | **Phases:** 5 (3 complete, 2 optional) | **Artifacts:** 12 files
 
-| Agent | Primary Role | Key Strengths |
-|-------|--------------|---------------|
-| Architecture | System design | Pattern identification, coherence |
-| Feature Development | Implementation | Feature completion, integration |
-| Test Architect | Testing strategy | Test design, coverage planning |
-| Backend Expert | Backend development | API design, database optimization |
-| Frontend Expert | Frontend development | React patterns, UX implementation |
-| E2E Expert | End-to-end testing | User workflow validation |
-| Principal Engineer | Code review | Tech debt management, quality |
-| Documentation | Technical writing | API docs, architecture docs |
-| User Docs Expert | User guides | Tutorial writing, screenshots |
-| Debug | Debugging | Root cause analysis, fixes |
-| Performance | Optimization | Profiling, performance tuning |
+This project created the documentation automation system described earlier in this article—a meta-infrastructure project that helps all future projects.
 
-**Key Insight:** Agent coordination requires explicit communication protocols. Phase-based planning and integration guides enable multiple agents to collaborate like a well-functioning team.
+#### Artifacts Produced
+
+**Executive Planning (3 files):**
+- `plan.md` (167 lines) - Project overview and timeline
+- `EXECUTIVE_SUMMARY.md` - ROI analysis and business case
+- `IMPLEMENTATION_ORDER.md` - Phased rollout sequence
+
+**Strategy Documents (4 files):**
+- `componentization-strategy.md` - Detailed refactoring roadmap
+- `self-managing-docs-system.md` - Automation system design
+- `screenshot-storybook-migration-plan.md` - Migration approach
+- `screenshot-storybook-migration-analysis.md` - Current state analysis
+
+**Implementation Artifacts (3 files):**
+- `screenshot-inventory-summary.md` - Complete screenshot inventory
+- `PHASE_2_2_IMPLEMENTATION.md` - Phase 2.2 deliverables
+- `PHASE_3_1_IMPLEMENTATION.md` - Phase 3.1 deliverables
+
+#### Iterative Phased Approach
+
+- **Phase 1:** Componentization (optional, deferred)
+- **Phase 2:** Self-managing foundation ✅ **Complete**
+  - Component-screenshot metadata system
+  - Change detection GitHub Action
+  - Selective screenshot regeneration
+- **Phase 3:** Visual regression ✅ **Complete**
+  - 80 visual regression tests
+  - HTML diff reports
+  - CI integration
+- **Phase 4:** AI audit system (optional, deferred)
+  - Weekly Claude API audits
+  - Automated issue creation
+- **Phase 5:** Coverage & enforcement ✅ **Complete**
+  - Coverage dashboard (19% → 40% target)
+  - PR documentation reminders
+
+**Key Pattern:** System deployed incrementally. Core functionality operational before optional enhancements attempted.
+
+---
+
+### The Role of Architect Agents
+
+In multi-phase projects, architect agents provide guidance at critical junctures:
+
+**1. Upfront Planning**
+- System architecture before coding begins
+- API contracts defined in advance
+- Component responsibilities documented
+- Risk assessment with mitigations
+
+**2. Phase Boundaries**
+- Reviews previous phase completion
+- Validates integration points work as designed
+- Provides guidance for next phase
+- Ensures coherence across agent work
+
+**3. Integration Checkpoints**
+
+Example from Backend Robustness:
+```markdown
+## Integration Checkpoint: Before Agent 3 Starts
+
+**Prerequisites:**
+✅ Agent 1: Backend port selection merged
+✅ Agent 2: IPC handlers implemented
+✅ Integration tests passing
+✅ Type definitions exported
+
+**Validation:**
+Run: npm test -- ipc-port-discovery
+Expected: All tests green
+
+**If tests fail:** Do not proceed. Alert architecture agent.
+```
+
+This prevents downstream agents from building on broken foundations.
+
+---
+
+### Common Patterns Across All Projects
+
+**Every Project Produces:**
+
+1. **Planning Documents (1-3 files)**
+   - Metadata block (status, owner, dates)
+   - Phase breakdown with time estimates
+   - Success criteria and metrics
+
+2. **Phase Summaries (3-7 files)**
+   - What was accomplished
+   - Integration points for next phase
+   - Testing validation performed
+   - Completion checklist
+
+3. **Integration Guides (1-3 files for multi-agent)**
+   - Code examples for downstream agents
+   - TypeScript type definitions
+   - Success criteria per agent
+   - Testing recommendations
+
+4. **Testing Documentation (2-4 files)**
+   - Test plans and coverage
+   - Integration test results
+   - Manual testing checklists
+   - Performance benchmarks
+
+5. **Completion Reports (1-2 files)**
+   - Files created/modified summary
+   - Lines of code metrics
+   - Time invested
+   - Artifact inventory
+
+### The Self-Documenting Pattern
+
+Projects document themselves as they progress:
+
+```
+Planning docs → Implementation guides → Phase summaries → Completion reports
+```
+
+Each phase documents what the next phase needs. The final summary shows the complete artifact inventory. This creates an audit trail of how the project evolved.
+
+**The Pattern:** Documentation is a byproduct of the work, not an afterthought. Agents document for other agents, creating a coordination mechanism that scales.
 
 ---
 
@@ -585,13 +805,13 @@ Each agent has a specific role:
 
 **Learning:** Coherence requires systematic governance, not just good intentions.
 
-#### 5. Anti-Fragile Testing
+#### 5. State-Based Testing Patterns
 
-**Decision:** Ban `waitForTimeout()`, use state-based waits exclusively.
+**Decision:** Ban `waitForTimeout()`, use state-based waits and i18n-aware selectors.
 
-**Result:** 0% E2E flakiness across 23 tests.
+**Result:** Reduced (but not eliminated) test brittleness and timing issues.
 
-**Learning:** Flaky tests aren't inevitable - systematic patterns achieve reliability.
+**Learning:** State-based waits help, but test maintenance remains a substantial cost. Testing is an ongoing area of improvement, not a solved problem.
 
 ### What Didn't Work (Initially)
 
@@ -653,59 +873,6 @@ The human only clicked commit buttons—every line of code was written by AI age
 
 ---
 
-## The Future of Agent-Driven Development
-
-### Near-Term Evolution (2026)
-
-#### 1. Predictive Documentation Updates
-
-- Detect when user guide sections will become stale
-- Proactively create documentation tasks
-- AI-generated content drafts for human review
-
-#### 2. Performance Regression Detection
-
-- Automated performance benchmarks in CI
-- Flag commits degrading performance
-- Automatic optimization suggestions
-
-#### 3. Cross-Agent Learning
-
-- Agents share successful patterns
-- Update pattern catalogs based on usage
-- Continuous improvement of internal docs
-
-### Long-Term Vision (2027+)
-
-#### 1. Fully Autonomous Feature Development
-
-- From user request to PR in minutes
-- Agents handle design, implementation, testing, docs
-- Human review focuses on product direction
-
-#### 2. Self-Healing Codebase
-
-- Detects and fixes bugs automatically
-- Refactors to prevent technical debt
-- Optimizes performance proactively
-
-#### 3. Collaborative Human-Agent Teams
-
-- Agents handle routine tasks
-- Humans focus on creative problem-solving
-- Seamless hand-offs between human and agent work
-
-### Open Questions
-
-We're still exploring:
-
-- **Quality Evaluation:** How do we objectively measure agent code quality?
-- **Automation Balance:** What's the right mix of automation vs. human oversight?
-- **Architectural Capability:** Can agents architect new systems from scratch, or only maintain existing ones?
-- **Debt Prevention:** How do we prevent agent-generated technical debt accumulation?
-- **Coordination Scale:** How many agents can collaborate effectively?
-
----
 
 ## The Automation Flywheel
 
