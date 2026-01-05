@@ -146,6 +146,9 @@ export const NineBoxGrid: React.FC = () => {
       } else {
         await moveEmployee(employee.employee_id, performance, potential);
       }
+
+      // Select the employee after successful move to show details in right panel
+      selectEmployee(employee.employee_id);
     } catch (error) {
       logger.error("Failed to move employee", error);
     }
