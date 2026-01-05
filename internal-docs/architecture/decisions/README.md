@@ -2,6 +2,18 @@
 
 Agent-optimized ADRs documenting key architectural decisions for the 9Boxer desktop application.
 
+## 🚀 Backend Refactoring Plan
+
+A comprehensive **[Backend Refactoring Plan](../BACKEND_REFACTORING_PLAN.md)** documents how to safely implement ADR-006 through ADR-010. This plan:
+
+- **Sequences work** to minimize risk and ensure each phase builds on previous foundations
+- **Provides timelines** with 4-phase approach spanning 12-16 weeks
+- **Includes safety measures** with feature flags, parallel run validation, and rollback procedures
+- **Tracks dependencies** showing which issues must be completed before others can start
+
+📖 **See:** [BACKEND_REFACTORING_PLAN.md](../BACKEND_REFACTORING_PLAN.md)
+📊 **GitHub Milestone:** [backend-arch-review](https://github.com/bencan1a/9boxer/milestone/16)
+
 ## Quick Reference
 
 | ADR | Decision | Status | When to Reference |
@@ -11,6 +23,11 @@ Agent-optimized ADRs documenting key architectural decisions for the 9Boxer desk
 | [003](003-http-ipc-communication.md) | Use HTTP for backend-frontend communication | ✅ Accepted | Before adding IPC channels, changing communication protocol |
 | [004](004-zustand-state-management.md) | Use Zustand for frontend state | ✅ Accepted | Before adding state management library, refactoring state |
 | [005](005-sqlite-embedded-database.md) | Use SQLite for local persistence | ✅ Accepted | Before changing database, adding persistence layer |
+| [006](006-dependency-injection-pattern.md) | Use Dependency Injection for database access | ✅ Accepted | Before creating services, refactoring data access, writing tests |
+| [007](007-repository-pattern.md) | Implement Repository Pattern for data access | ✅ Accepted | Before adding queries, refactoring services, accessing database |
+| [008](008-single-responsibility-principle.md) | Enforce Single Responsibility for services | ✅ Accepted | Before creating services, refactoring large classes |
+| [009](009-configuration-management.md) | Centralize business rules in configuration | ✅ Accepted | Before adding thresholds, limits, or business rules |
+| [010](010-error-handling-standards.md) | Standardize error handling with exceptions | ✅ Accepted | Before implementing endpoints, handling errors |
 
 ## When to Create a New ADR
 
@@ -124,6 +141,26 @@ START: Agent assigned task
     YES → Read ADR-005 (SQLite Embedded Database)
     NO ↓
 
+  Task involves DEPENDENCY INJECTION or SERVICE ARCHITECTURE?
+    YES → Read ADR-006 (Dependency Injection)
+    NO ↓
+
+  Task involves DATA ACCESS or SQL QUERIES?
+    YES → Read ADR-007 (Repository Pattern)
+    NO ↓
+
+  Task involves CREATING or REFACTORING SERVICES?
+    YES → Read ADR-008 (Single Responsibility Principle)
+    NO ↓
+
+  Task involves BUSINESS RULES, THRESHOLDS, or CONFIGURATION?
+    YES → Read ADR-009 (Configuration Management)
+    NO ↓
+
+  Task involves ERROR HANDLING or API RESPONSES?
+    YES → Read ADR-010 (Error Handling Standards)
+    NO ↓
+
   READ: GUIDELINES.md for general architecture patterns
 ```
 
@@ -133,14 +170,21 @@ Use these tags to find relevant ADRs:
 
 - `#deployment` → ADR-001, ADR-002
 - `#electron` → ADR-001, ADR-003
-- `#backend` → ADR-002, ADR-003, ADR-005
+- `#backend` → ADR-002, ADR-003, ADR-005, ADR-006, ADR-007, ADR-008, ADR-009, ADR-010
 - `#frontend` → ADR-001, ADR-004
 - `#state-management` → ADR-004
 - `#persistence` → ADR-005
 - `#communication` → ADR-003
 - `#bundling` → ADR-002
 - `#desktop` → ADR-001
-- `#database` → ADR-005
+- `#database` → ADR-005, ADR-007
+- `#architecture` → ADR-006, ADR-007, ADR-008, ADR-010
+- `#patterns` → ADR-006, ADR-007, ADR-008
+- `#testing` → ADR-006, ADR-007, ADR-008
+- `#configuration` → ADR-009
+- `#error-handling` → ADR-010
+- `#maintainability` → ADR-008, ADR-009
+- `#solid` → ADR-008
 
 ## ADR Status Definitions
 

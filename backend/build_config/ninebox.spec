@@ -24,8 +24,11 @@ scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
 # Collect ninebox data files (schema.sql and any other data files)
-# Use collect_data_files to automatically find and include data files
-ninebox_datas = collect_data_files('ninebox', includes=['**/*.sql'])
+# Manually specify data files since ninebox is installed in editable mode
+# In frozen mode, these will be available at ninebox/models/schema.sql relative to _MEIPASS
+ninebox_datas = [
+    (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'ninebox/models'),
+]
 
 # Note: setuptools and pkg_resources are build-time dependencies only,
 # not needed at runtime. Excluding them avoids the jaraco.text Lorem ipsum.txt error.

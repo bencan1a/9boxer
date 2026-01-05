@@ -9,6 +9,9 @@
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
+  "overrides": {
+    "react-is": "^18.2.0"
+  },
   "scripts": {
     "preinstall": "node -e \"const v=process.version.slice(1).split('.')[0];if(v<20){console.error('\\x1b[31mError: Node.js 20+ required. Current:',process.version,'\\x1b[0m');process.exit(1)}\"",
     "dev": "vite",
@@ -30,6 +33,10 @@
     "electron:build:win": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --win",
     "electron:build:mac": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --mac",
     "electron:build:linux": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --linux",
+    "electron:build:debug": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --config.extraMetadata.debugBuild=true",
+    "electron:build:win:debug": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --win --config.extraMetadata.debugBuild=true",
+    "electron:build:mac:debug": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --mac --config.extraMetadata.debugBuild=true",
+    "electron:build:linux:debug": "npm run generate:guide && npm run build && npm run electron:compile && electron-builder --linux --config.extraMetadata.debugBuild=true",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
