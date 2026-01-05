@@ -90,6 +90,11 @@ jobs:
         working-directory: frontend
         run: node scripts/generate-icons.cjs < /dev/null || true
 
+      - name: Generate user guide documentation
+        run: |
+          uv pip install --system mkdocs-material
+          python tools/build_user_guide.py
+
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'
         working-directory: frontend
