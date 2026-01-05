@@ -63,20 +63,23 @@ def get_db_manager() -> DatabaseManager:
 
 @lru_cache
 def get_session_manager() -> SessionManager:
-    """Get or create SessionManager singleton.
+    """Get or create SessionManager singleton with injected database manager.
 
     Uses @lru_cache to ensure only one instance is created per application lifecycle.
     Can be overridden in tests using app.dependency_overrides.
 
+    Injects DatabaseManager instance for proper dependency management.
+
     Returns:
-        SessionManager: Singleton session manager instance
+        SessionManager: Singleton session manager instance with database dependency
 
     Example:
         >>> from fastapi import Depends
         >>> def my_endpoint(mgr: SessionManager = Depends(get_session_manager)):
         ...     session = mgr.get_session("user-123")
     """
-    return SessionManager()
+    db = get_db_manager()
+    return SessionManager(db=db)
 
 
 @lru_cache
