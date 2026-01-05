@@ -101,7 +101,9 @@ jobs:
       - name: Generate macOS icon
         if: matrix.platform == 'macos'
         working-directory: frontend
-        run: node scripts/generate-icons.cjs < /dev/null || true
+        run: |
+          npm run generate:icons
+          npm run generate:icns
 
       # Install MkDocs dependencies for user guide generation
       # Note: npm run generate:guide expects mkdocs-material to be available
@@ -186,7 +188,11 @@ jobs:
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: Release v${{ github.event.inputs.version }}
-          files: release-artifacts/**/*
+          files: |
+            release-artifacts/**/*.AppImage
+            release-artifacts/**/*-Windows-*.exe
+            release-artifacts/**/*-macOS-*.zip
+            release-artifacts/**/*-Linux-*.AppImage
           body: ${{ steps.changelog.outputs.changelog }}
           prerelease: ${{ github.event.inputs.prerelease }}
           make_latest: true

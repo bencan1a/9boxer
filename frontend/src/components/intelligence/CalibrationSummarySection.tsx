@@ -53,8 +53,9 @@ export const CalibrationSummarySection: React.FC<
     );
   }
 
-  // Error state
-  if (error) {
+  // Error state - only show if we don't have data (initial load failed)
+  // If we have data but error occurred during AI generation, show error inline below
+  if (error && !data) {
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -202,6 +203,16 @@ export const CalibrationSummarySection: React.FC<
 
       <Collapse in={expanded}>
         <CardContent>
+          {/* Show error if AI generation failed but we have data */}
+          {error && data && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {t("intelligence.calibrationSummary.generationError", {
+                defaultValue: "Failed to generate AI summary: {{error}}",
+                error: error.message,
+              })}
+            </Alert>
+          )}
+
           {/* Show generating indicator if AI summary is being generated */}
           {isGeneratingAI && !summary && (
             <Alert
@@ -229,6 +240,7 @@ export const CalibrationSummarySection: React.FC<
                   overflow: "hidden",
                   lineHeight: 1.6,
                   mb: 1,
+                  whiteSpace: "pre-line",
                 }}
               >
                 {summary}

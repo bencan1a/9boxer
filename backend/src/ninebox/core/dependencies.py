@@ -151,7 +151,9 @@ def get_calibration_summary_service() -> CalibrationSummaryService:
         >>> def my_endpoint(service: CalibrationSummaryService = Depends(get_calibration_summary_service)):
         ...     summary = service.calculate_summary(employees)
     """
-    return CalibrationSummaryService()
+    # Get the properly configured LLM service with API key from settings
+    llm_service = get_llm_service()
+    return CalibrationSummaryService(llm_service=llm_service)
 
 
 @lru_cache

@@ -437,7 +437,3 @@ Analyze this data holistically and return your findings in the required JSON for
 
             logger.error(f"Failed to generate calibration analysis: {e}")
             raise RuntimeError(f"Failed to generate calibration analysis: {e}") from e
-
-
-# Module-level instance for use in endpoints
-llm_service = LLMService()

@@ -747,9 +747,14 @@ class TestAgentModeHappyPath:
     """Tests for agent mode happy path (use_agent=True)."""
 
     @pytest.fixture
-    def service(self) -> CalibrationSummaryService:
-        """Create a calibration summary service instance."""
-        return CalibrationSummaryService()
+    def mock_llm_service(self) -> MagicMock:
+        """Create a mock LLM service."""
+        return MagicMock()
+
+    @pytest.fixture
+    def service(self, mock_llm_service: MagicMock) -> CalibrationSummaryService:
+        """Create a calibration summary service instance with mock LLM."""
+        return CalibrationSummaryService(llm_service=mock_llm_service)
 
     @pytest.fixture
     def mock_llm_response(self) -> dict:
@@ -792,12 +797,11 @@ class TestAgentModeHappyPath:
             ],
         }
 
-    @patch("ninebox.services.llm_service.llm_service")
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_calculate_summary_with_agent_mode_success(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
         mock_llm_response: dict,
     ) -> None:
@@ -806,13 +810,13 @@ class TestAgentModeHappyPath:
         employees = [create_employee(i, grid_position=i % 9 + 1) for i in range(50)]
 
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = mock_llm_response
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
 
         # Verify LLM was called
-        mock_llm.generate_calibration_analysis.assert_called_once()
+        mock_llm_service.generate_calibration_analysis.assert_called_once()
 
         # Verify response structure
         assert "data_overview" in result
@@ -824,12 +828,12 @@ class TestAgentModeHappyPath:
         assert result["summary"] is not None
         assert len(result["insights"]) > 0
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_mode_returns_agent_insights(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
         mock_llm_response: dict,
     ) -> None:
@@ -838,7 +842,7 @@ class TestAgentModeHappyPath:
         employees = [create_employee(i) for i in range(20)]
 
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = mock_llm_response
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -860,12 +864,12 @@ class TestAgentModeHappyPath:
         assert insights[1]["category"] == "distribution"
         assert insights[1]["priority"] == "medium"
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_mode_includes_summary_text(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
         mock_llm_response: dict,
     ) -> None:
@@ -874,7 +878,7 @@ class TestAgentModeHappyPath:
         employees = [create_employee(i) for i in range(30)]
 
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = mock_llm_response
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -885,14 +889,14 @@ class TestAgentModeHappyPath:
         assert isinstance(result["summary"], str)
         assert len(result["summary"]) > 0
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     @patch("ninebox.services.analysis_registry.run_all_analyses")
     def test_agent_mode_calls_llm_service_with_correct_data(
         self,
         mock_analyses: MagicMock,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
         mock_llm_response: dict,
     ) -> None:
@@ -907,7 +911,7 @@ class TestAgentModeHappyPath:
             "org_data": {"total_employees": 25},
         }
         mock_package.return_value = mock_package_result
-        mock_llm.generate_calibration_analysis.return_value = mock_llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = mock_llm_response
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -919,7 +923,7 @@ class TestAgentModeHappyPath:
         assert len(call_args[0][0]) == 25  # Employee count
 
         # Verify LLM was called with the packaged data
-        mock_llm.generate_calibration_analysis.assert_called_once_with(mock_package_result)
+        mock_llm_service.generate_calibration_analysis.assert_called_once_with(mock_package_result)
 
         # Verify result includes insights
         assert len(result["insights"]) > 0
@@ -929,16 +933,21 @@ class TestAgentModeFallbackBehavior:
     """Tests for agent mode fallback to legacy when LLM fails."""
 
     @pytest.fixture
-    def service(self) -> CalibrationSummaryService:
-        """Create a calibration summary service instance."""
-        return CalibrationSummaryService()
+    def mock_llm_service(self) -> MagicMock:
+        """Create a mock LLM service."""
+        return MagicMock()
 
-    @patch("ninebox.services.llm_service.llm_service")
+    @pytest.fixture
+    def service(self, mock_llm_service: MagicMock) -> CalibrationSummaryService:
+        """Create a calibration summary service instance with mock LLM."""
+        return CalibrationSummaryService(llm_service=mock_llm_service)
+
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_mode_fallback_to_legacy_on_llm_error(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that agent mode falls back to legacy when LLM raises an error."""
@@ -946,7 +955,7 @@ class TestAgentModeFallbackBehavior:
         employees = [create_employee(i, grid_position=5) for i in range(60)]
 
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.side_effect = RuntimeError("LLM service unavailable")
+        mock_llm_service.generate_calibration_analysis.side_effect = RuntimeError("LLM service unavailable")
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -963,12 +972,12 @@ class TestAgentModeFallbackBehavior:
         center_box_insights = [title for title in insight_titles if "center box" in title.lower()]
         assert len(center_box_insights) > 0
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_mode_fallback_on_malformed_response(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test fallback when LLM returns malformed response."""
@@ -977,7 +986,7 @@ class TestAgentModeFallbackBehavior:
 
         mock_package.return_value = {"employees": [], "analyses": {}}
         # Simulate malformed response (missing required fields)
-        mock_llm.generate_calibration_analysis.side_effect = KeyError("issues")
+        mock_llm_service.generate_calibration_analysis.side_effect = KeyError("issues")
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -986,12 +995,12 @@ class TestAgentModeFallbackBehavior:
         assert result["summary"] is None
         assert len(result["insights"]) > 0
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_mode_fallback_on_package_error(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test fallback when data packaging fails."""
@@ -1009,16 +1018,15 @@ class TestAgentModeFallbackBehavior:
         assert len(result["insights"]) > 0
 
         # Verify LLM was never called
-        mock_llm.generate_calibration_analysis.assert_not_called()
+        mock_llm_service.generate_calibration_analysis.assert_not_called()
 
-    @patch("ninebox.services.calibration_summary_service.logger")
-    @patch("ninebox.services.llm_service.llm_service")
     @patch("ninebox.services.data_packaging_service.package_for_llm")
+    @patch("ninebox.services.calibration_summary_service.logger")
     def test_fallback_logs_error_message(
         self,
-        mock_package: MagicMock,
-        mock_llm: MagicMock,
         mock_logger: MagicMock,
+        mock_package: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that fallback logs appropriate error messages."""
@@ -1027,7 +1035,7 @@ class TestAgentModeFallbackBehavior:
 
         mock_package.return_value = {"employees": [], "analyses": {}}
         error_msg = "API rate limit exceeded"
-        mock_llm.generate_calibration_analysis.side_effect = RuntimeError(error_msg)
+        mock_llm_service.generate_calibration_analysis.side_effect = RuntimeError(error_msg)
 
         # Execute
         result = service.calculate_summary(employees, use_agent=True)
@@ -1047,18 +1055,23 @@ class TestAgentModeDataPackaging:
     """Tests for data packaging integration in agent mode."""
 
     @pytest.fixture
-    def service(self) -> CalibrationSummaryService:
-        """Create a calibration summary service instance."""
-        return CalibrationSummaryService()
+    def mock_llm_service(self) -> MagicMock:
+        """Create a mock LLM service."""
+        return MagicMock()
 
-    @patch("ninebox.services.llm_service.llm_service")
+    @pytest.fixture
+    def service(self, mock_llm_service: MagicMock) -> CalibrationSummaryService:
+        """Create a calibration summary service instance with mock LLM."""
+        return CalibrationSummaryService(llm_service=mock_llm_service)
+
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     @patch("ninebox.services.analysis_registry.run_all_analyses")
     def test_agent_mode_calls_package_for_llm(
         self,
         mock_analyses: MagicMock,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that agent mode calls package_for_llm to prepare data."""
@@ -1067,7 +1080,7 @@ class TestAgentModeDataPackaging:
 
         mock_analyses.return_value = {"location": {}}
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = {
+        mock_llm_service.generate_calibration_analysis.return_value = {
             "summary": "Test summary",
             "issues": [],
         }
@@ -1078,14 +1091,14 @@ class TestAgentModeDataPackaging:
         # Verify package_for_llm was called
         mock_package.assert_called_once()
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     @patch("ninebox.services.analysis_registry.run_all_analyses")
     def test_agent_mode_passes_employees_to_packager(
         self,
         mock_analyses: MagicMock,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that employee data is passed to the packager."""
@@ -1098,7 +1111,7 @@ class TestAgentModeDataPackaging:
 
         mock_analyses.return_value = {}
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = {
+        mock_llm_service.generate_calibration_analysis.return_value = {
             "summary": "Test",
             "issues": [],
         }
@@ -1113,14 +1126,14 @@ class TestAgentModeDataPackaging:
         assert passed_employees[0].location == "Seattle"
         assert passed_employees[1].location == "NYC"
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     @patch("ninebox.services.analysis_registry.run_all_analyses")
     def test_agent_mode_includes_analyses_in_package(
         self,
         mock_analyses: MagicMock,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that analysis results are included in the package."""
@@ -1134,7 +1147,7 @@ class TestAgentModeDataPackaging:
         }
         mock_analyses.return_value = analysis_results
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = {
+        mock_llm_service.generate_calibration_analysis.return_value = {
             "summary": "Test",
             "issues": [],
         }
@@ -1149,14 +1162,14 @@ class TestAgentModeDataPackaging:
         assert "function" in passed_analyses
         assert "level" in passed_analyses
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     @patch("ninebox.services.analysis_registry.run_all_analyses")
     def test_agent_mode_includes_org_data_in_package(
         self,
         mock_analyses: MagicMock,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that org-level data is included in the package."""
@@ -1165,7 +1178,7 @@ class TestAgentModeDataPackaging:
 
         mock_analyses.return_value = {}
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = {
+        mock_llm_service.generate_calibration_analysis.return_value = {
             "summary": "Test",
             "issues": [],
         }
@@ -1185,16 +1198,21 @@ class TestAgentModeInsightTransformation:
     """Tests for insight transformation in agent mode."""
 
     @pytest.fixture
-    def service(self) -> CalibrationSummaryService:
-        """Create a calibration summary service instance."""
-        return CalibrationSummaryService()
+    def mock_llm_service(self) -> MagicMock:
+        """Create a mock LLM service."""
+        return MagicMock()
 
-    @patch("ninebox.services.llm_service.llm_service")
+    @pytest.fixture
+    def service(self, mock_llm_service: MagicMock) -> CalibrationSummaryService:
+        """Create a calibration summary service instance with mock LLM."""
+        return CalibrationSummaryService(llm_service=mock_llm_service)
+
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_insights_have_deterministic_ids(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that agent-generated insights get deterministic IDs."""
@@ -1215,28 +1233,28 @@ class TestAgentModeInsightTransformation:
                 }
             ],
         }
-        mock_llm.generate_calibration_analysis.return_value = llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = llm_response
 
         # Execute twice with same input
         result1 = service.calculate_summary(employees, use_agent=True)
 
         # Reset mocks
         mock_package.reset_mock()
-        mock_llm.reset_mock()
+        mock_llm_service.reset_mock()
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = llm_response
+        mock_llm_service.generate_calibration_analysis.return_value = llm_response
 
         result2 = service.calculate_summary(employees, use_agent=True)
 
         # Verify IDs are deterministic
         assert result1["insights"][0]["id"] == result2["insights"][0]["id"]
 
-    @patch("ninebox.services.llm_service.llm_service")
+    # Removed patch - using mock_llm_service fixture instead
     @patch("ninebox.services.data_packaging_service.package_for_llm")
     def test_agent_insights_preserve_cluster_information(
         self,
         mock_package: MagicMock,
-        mock_llm: MagicMock,
+        mock_llm_service: MagicMock,
         service: CalibrationSummaryService,
     ) -> None:
         """Test that cluster_id and cluster_title are preserved from LLM response."""
@@ -1244,7 +1262,7 @@ class TestAgentModeInsightTransformation:
         employees = [create_employee(i) for i in range(15)]
 
         mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm.generate_calibration_analysis.return_value = {
+        mock_llm_service.generate_calibration_analysis.return_value = {
             "summary": "Test",
             "issues": [
                 {

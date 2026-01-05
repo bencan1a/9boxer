@@ -303,16 +303,18 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
         )}
 
         {/* Group 3: Recent Files (conditional) */}
-        {recentFiles && recentFiles.length > 0 && (
-          <>
-            {/* Only show divider if there are file management items above */}
-            {(hasChanges || hasSampleData || fileName) && <Divider />}
+        {recentFiles &&
+          recentFiles.length > 0 && [
+            /* Only show divider if there are file management items above */
+            (hasChanges || hasSampleData || fileName) && (
+              <Divider key="recent-divider" />
+            ),
 
-            <ListSubheader sx={{ lineHeight: "32px" }}>
+            <ListSubheader key="recent-header" sx={{ lineHeight: "32px" }}>
               {t("dashboard.fileMenu.recentFiles", "Recent Files")}
-            </ListSubheader>
+            </ListSubheader>,
 
-            {recentFiles.slice(0, 5).map((file) => (
+            ...recentFiles.slice(0, 5).map((file) => (
               <MenuItem
                 key={file.path}
                 onClick={() => handleRecentFileClick(file.path)}
@@ -327,25 +329,20 @@ export const FileMenuButton: React.FC<FileMenuButtonProps> = ({
                   primaryTypographyProps={{ noWrap: true }}
                 />
               </MenuItem>
-            ))}
+            )),
 
-            {onClearRecentFiles && (
-              <>
-                <Divider />
-                <MenuItem
-                  onClick={handleClearRecentFilesClick}
-                  data-testid="clear-recent-files-menu-item"
-                >
-                  <DeleteSweepIcon sx={{ mr: 1 }} fontSize="small" />
-                  {t(
-                    "dashboard.fileMenu.clearRecentFiles",
-                    "Clear Recent Files"
-                  )}
-                </MenuItem>
-              </>
-            )}
-          </>
-        )}
+            onClearRecentFiles && <Divider key="clear-divider" />,
+            onClearRecentFiles && (
+              <MenuItem
+                key="clear-recent"
+                onClick={handleClearRecentFilesClick}
+                data-testid="clear-recent-files-menu-item"
+              >
+                <DeleteSweepIcon sx={{ mr: 1 }} fontSize="small" />
+                {t("dashboard.fileMenu.clearRecentFiles", "Clear Recent Files")}
+              </MenuItem>
+            ),
+          ]}
       </Menu>
     </>
   );

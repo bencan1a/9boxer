@@ -139,9 +139,15 @@ STARS_HIGH_THRESHOLD = 25.0  # Warn if > 25% are stars
 class CalibrationSummaryService:
     """Service for generating calibration meeting preparation data."""
 
-    def __init__(self) -> None:
-        """Initialize service with shared insight generator."""
+    def __init__(self, llm_service: Any = None) -> None:
+        """Initialize service with shared insight generator.
+
+        Args:
+            llm_service: Optional LLM service instance for AI-powered analysis.
+                         If not provided, AI features will be unavailable.
+        """
         self.insight_generator = InsightGenerator()
+        self._llm_service = llm_service
 
     @staticmethod
     def _generate_insight_id(prefix: str, *components: Any) -> str:
@@ -209,15 +215,17 @@ class CalibrationSummaryService:
         # Choose insight generation approach
         if use_agent:
             try:
+                # Check if LLM service is available
+                if self._llm_service is None:
+                    raise RuntimeError("LLM service not configured")
+
                 # Package data for LLM
                 from ninebox.services.data_packaging_service import package_for_llm
 
                 data_package = package_for_llm(employees, analyses, org_data)
 
                 # Call LLM agent
-                from ninebox.services.llm_service import llm_service
-
-                agent_result = llm_service.generate_calibration_analysis(data_package)
+                agent_result = self._llm_service.generate_calibration_analysis(data_package)
 
                 # Transform agent's issues to Insight objects using InsightTransformer
                 transformer = InsightTransformer()

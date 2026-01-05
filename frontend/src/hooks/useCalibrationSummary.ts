@@ -130,13 +130,15 @@ export const useCalibrationSummary = (
    */
   const refetch = useCallback(
     async (withAgent: boolean = useAgent) => {
+      // Clear any previous errors when starting a new request
+      setError(null);
+
       try {
         if (withAgent) {
           setIsGeneratingAI(true);
         } else {
           setIsLoading(true);
         }
-        setError(null);
         const result = await apiClient.getCalibrationSummary({
           useAgent: withAgent,
         });
