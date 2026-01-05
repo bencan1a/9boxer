@@ -23,7 +23,7 @@ class TestMalformedJSON:
         """Test malformed JSON returns 422 error."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data="{invalid json}",  # Malformed JSON
+            content=b"{invalid json}",  # Malformed JSON
             headers={"Content-Type": "application/json"},
         )
 
@@ -35,7 +35,7 @@ class TestMalformedJSON:
         """Test incomplete JSON returns 422."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data='{"performance": "High"',  # Missing closing brace
+            content=b'{"performance": "High"',  # Missing closing brace
             headers={"Content-Type": "application/json"},
         )
 
@@ -47,7 +47,7 @@ class TestMalformedJSON:
         """Test JSON with trailing comma returns 422."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data='{"performance": "High",}',  # Extra comma
+            content=b'{"performance": "High",}',  # Extra comma
             headers={"Content-Type": "application/json"},
         )
 
@@ -208,7 +208,7 @@ class TestArrayVsObject:
         """Test sending primitive instead of object."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data='"just a string"',
+            content=b'"just a string"',
             headers={"Content-Type": "application/json"},
         )
 
@@ -329,7 +329,7 @@ class TestContentType:
         """Test request without Content-Type header."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data='{"performance": "Medium", "potential": "Medium"}',
+            content=b'{"performance": "Medium", "potential": "Medium"}',
             # No Content-Type header - TestClient may add it automatically
         )
 
@@ -342,7 +342,7 @@ class TestContentType:
         """Test request with incorrect Content-Type."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data='{"performance": "Medium", "potential": "Medium"}',
+            content=b'{"performance": "Medium", "potential": "Medium"}',
             headers={"Content-Type": "text/plain"},  # Wrong content type
         )
 
@@ -359,7 +359,7 @@ class TestEmptyBody:
         """Test empty request body returns 422."""
         response = test_client.patch(
             "/api/employees/1/move",
-            data="",
+            content=b"",
             headers={"Content-Type": "application/json"},
         )
 

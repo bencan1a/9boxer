@@ -101,8 +101,9 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     // Note: The reporting chain filter uses a separate mechanism from the checkbox filters
     // Clicking a manager in Intelligence tab sets reportingChainFilter state
     // This is different from manually checking manager checkboxes in the filter drawer
-    const filterBadge = page.locator('[data-testid="filter-badge"]');
-    await expect(filterBadge).toBeVisible();
+    // Check for filter-info display (replaces the old badge UI)
+    const filterInfo = page.locator('[data-testid="filter-info"]');
+    await expect(filterInfo).toBeVisible();
   });
 
   /**
@@ -184,6 +185,10 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     await managerLinks.first().click();
     await page.waitForLoadState("networkidle");
 
+    // ✅ Wait for filter indicator to confirm filter was applied
+    const filterInfo = page.locator('[data-testid="filter-info"]');
+    await expect(filterInfo).toBeVisible({ timeout: 5000 });
+
     // Verify filter applied (count decreased)
     const filteredCards = page.locator('[data-testid^="employee-card-"]');
     const filteredCount = await filteredCards.count();
@@ -251,6 +256,10 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     const firstManager = managerLinks.first();
     await firstManager.click();
     await page.waitForLoadState("networkidle");
+
+    // Wait for filter to be applied (filter-info should appear)
+    const filterInfo = page.locator('[data-testid="filter-info"]');
+    await expect(filterInfo).toBeVisible({ timeout: 5000 });
 
     const teamCards = page.locator('[data-testid^="employee-card-"]');
     const teamSize = await teamCards.count();

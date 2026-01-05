@@ -40,17 +40,19 @@ describe("FilterSection", () => {
   it("does not show count badge when count is undefined", () => {
     render(<FilterSection {...defaultProps} />);
 
-    expect(
-      screen.queryByTestId("filter-section-count-badge")
-    ).not.toBeInTheDocument();
+    const badge = screen.getByTestId("filter-section-count-badge");
+    // Badge is in DOM but hidden to prevent jitter
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ visibility: "hidden" });
   });
 
   it("does not show count badge when count is 0", () => {
     render(<FilterSection {...defaultProps} count={0} />);
 
-    expect(
-      screen.queryByTestId("filter-section-count-badge")
-    ).not.toBeInTheDocument();
+    const badge = screen.getByTestId("filter-section-count-badge");
+    // Badge is in DOM but hidden to prevent jitter
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ visibility: "hidden" });
   });
 
   it("shows count badge when count is greater than 0", () => {
@@ -173,11 +175,11 @@ describe("FilterSection", () => {
     badge = screen.getByTestId("filter-section-count-badge");
     expect(badge).toHaveTextContent("5");
 
-    // Count back to 0 should hide badge
+    // Count back to 0 should hide badge (but keep in DOM to prevent jitter)
     rerender(<FilterSection {...defaultProps} count={0} />);
-    expect(
-      screen.queryByTestId("filter-section-count-badge")
-    ).not.toBeInTheDocument();
+    badge = screen.getByTestId("filter-section-count-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ visibility: "hidden" });
   });
 
   it("maintains expand icon in header", () => {

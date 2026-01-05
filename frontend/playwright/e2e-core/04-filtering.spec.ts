@@ -16,6 +16,7 @@ import { test, expect } from "../fixtures";
 import {
   loadSampleData,
   openFilterDrawer,
+  expandFilterSection,
   getVisibleEmployeeCount,
 } from "../helpers";
 
@@ -104,6 +105,9 @@ test.describe("Section 4: Filtering Tests", () => {
     // Open filter drawer
     await openFilterDrawer(page);
 
+    // Expand Location section (accordion is collapsed by default)
+    await expandFilterSection(page, "locations");
+
     // Under "Location" section, select "USA"
     // The checkbox test ID follows pattern: filter-checkbox-locations-usa
     const usaCheckbox = page.locator(
@@ -150,14 +154,13 @@ test.describe("Section 4: Filtering Tests", () => {
    * - ✅ Indicator disappears when all filters are cleared
    */
   test("4.3 - Filters Button Shows Active State", async ({ page }) => {
-    // Verify button is initially inactive (no badge dot visible)
-    const badge = page.locator('[data-testid="filter-badge"]');
-    const badgeDot = badge.locator(".MuiBadge-badge");
-    // Badge dot should have the invisible class when no filters are active
-    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+    // Verify filter-info is initially not visible (no filters active)
+    const filterInfo = page.locator('[data-testid="filter-info"]');
+    await expect(filterInfo).not.toBeVisible();
 
     // Apply a filter (Location: USA)
     await openFilterDrawer(page);
+    await expandFilterSection(page, "locations");
     const usaCheckbox = page.locator(
       '[data-testid="filter-checkbox-locations-usa"]'
     );
@@ -170,24 +173,24 @@ test.describe("Section 4: Filtering Tests", () => {
       page.locator('[data-testid="filter-drawer"]')
     ).not.toBeVisible();
 
-    // ✅ Filters button displays orange dot or indicator
+    // ✅ Filters button displays filter indicator
     // ✅ Indicator is clearly visible and distinct from inactive state
-    // Badge dot should NOT have the invisible class when filters are active
-    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+    // filter-info should be visible when filters are active
+    await expect(filterInfo).toBeVisible();
 
     // ✅ Indicator persists while filters remain active
-    // Open and close drawer again - badge should still be there
+    // Open and close drawer again - filter-info should still be visible
     await openFilterDrawer(page);
     await page.locator('[data-testid="filter-close-button"]').click();
-    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+    await expect(filterInfo).toBeVisible();
 
     // ✅ Indicator disappears when all filters are cleared
     await openFilterDrawer(page);
     await page.locator('[data-testid="clear-filter-button"]').click();
     await page.locator('[data-testid="filter-close-button"]').click();
 
-    // Badge dot should now have the invisible class again
-    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+    // filter-info should not be visible again after clearing
+    await expect(filterInfo).not.toBeVisible();
   });
 
   /**
@@ -204,13 +207,13 @@ test.describe("Section 4: Filtering Tests", () => {
     const initialCount = await getVisibleEmployeeCount(page);
     expect(initialCount).toBeGreaterThanOrEqual(190); // ~200 employees
 
-    // Verify initial count shows total (just the number, no "of")
-    await expect(
-      page.getByText(new RegExp(`${initialCount}\\s+employees`))
-    ).toBeVisible();
+    // Verify initial count shows total (just the number)
+    const employeeCount = page.locator('[data-testid="employee-count"]');
+    await expect(employeeCount).toHaveText(String(initialCount));
 
     // Apply a filter (Location: USA)
     await openFilterDrawer(page);
+    await expandFilterSection(page, "locations");
     const usaCheckbox = page.locator(
       '[data-testid="filter-checkbox-locations-usa"]'
     );
@@ -223,11 +226,10 @@ test.describe("Section 4: Filtering Tests", () => {
     // ✅ Count updates immediately when filter is applied
     const filteredCount = await getVisibleEmployeeCount(page);
 
-    // ✅ Count shows filtered employees vs. total (e.g., "45 of 200 employees")
-    const filteredCountPattern = new RegExp(
-      `${filteredCount}\\s+of\\s+${initialCount}\\s+employees`
+    // ✅ Count shows filtered employees vs. total (e.g., "45 of 200")
+    await expect(employeeCount).toHaveText(
+      `${filteredCount} of ${initialCount}`
     );
-    await expect(page.getByText(filteredCountPattern)).toBeVisible();
 
     // ✅ Count is accurate (matches visible employees)
     const visibleCards = await page
@@ -248,9 +250,7 @@ test.describe("Section 4: Filtering Tests", () => {
     expect(finalCount).toBe(initialCount);
 
     // Count display should show just total (no "of")
-    await expect(
-      page.getByText(new RegExp(`${finalCount}\\s+employees`))
-    ).toBeVisible();
+    await expect(employeeCount).toHaveText(String(finalCount));
   });
 
   /**
@@ -269,14 +269,16 @@ test.describe("Section 4: Filtering Tests", () => {
     // Apply multiple filters
     await openFilterDrawer(page);
 
-    // Select USA location
+    // Expand Location section and select USA
+    await expandFilterSection(page, "locations");
     const usaCheckbox = page.locator(
       '[data-testid="filter-checkbox-locations-usa"]'
     );
     await usaCheckbox.check();
     await expect(usaCheckbox).toBeChecked();
 
-    // Select a job level (first available)
+    // Expand Job Levels section and select a job level (first available)
+    await expandFilterSection(page, "job-levels");
     const firstLevelCheckbox = page
       .locator('[data-testid^="filter-checkbox-job-levels-"]')
       .first();
@@ -293,10 +295,9 @@ test.describe("Section 4: Filtering Tests", () => {
     const filteredCount = await getVisibleEmployeeCount(page);
     expect(filteredCount).toBeLessThan(initialCount);
 
-    // Verify filter badge is visible (not invisible)
-    const filterBadge = page.locator('[data-testid="filter-badge"]');
-    const badgeDot = filterBadge.locator(".MuiBadge-badge");
-    await expect(badgeDot).not.toHaveClass(/MuiBadge-invisible/);
+    // Verify filter indicator is visible
+    const filterInfo = page.locator('[data-testid="filter-info"]');
+    await expect(filterInfo).toBeVisible();
 
     // Open filters panel and click "Clear All"
     await openFilterDrawer(page);
@@ -318,11 +319,10 @@ test.describe("Section 4: Filtering Tests", () => {
     expect(finalCount).toBe(initialCount);
 
     // ✅ Employee count returns to total
-    await expect(
-      page.getByText(new RegExp(`${finalCount}\\s+employees`))
-    ).toBeVisible();
+    const employeeCount = page.locator('[data-testid="employee-count"]');
+    await expect(employeeCount).toHaveText(String(finalCount));
 
     // ✅ Filters button active indicator disappears
-    await expect(badgeDot).toHaveClass(/MuiBadge-invisible/);
+    await expect(filterInfo).not.toBeVisible();
   });
 });

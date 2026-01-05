@@ -5,6 +5,7 @@
   },
   "dashboard": {
     "appBar": {
+      "filters": "Filtros",
       "filterEmployees": "Filtrar empleados",
       "activeFilters": "Filtros activos:",
       "levels": "Niveles",
@@ -82,6 +83,19 @@
       "showPanel": "Mostrar panel",
       "hidePanel": "Ocultar panel"
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar empleados...",
+    "noEmployeesFound": "No se encontraron empleados",
+    "noActiveFilters": "No hay filtros activos",
+    "activeFilters": "Filtros Activos",
+    "expandToolbar": "Expandir barra de herramientas",
+    "collapseToolbar": "Contraer barra de herramientas",
+    "searchManagers": "Buscar gerentes...",
+    "noManagersFound": "No se encontraron gerentes",
+    "searchUnavailable": "Búsqueda no disponible",
+    "unavailable": "Filtros No Disponibles",
+    "unavailableMessage": "La barra de herramientas de filtrado está temporalmente no disponible. Aún puede ver todos los empleados en la cuadrícula."
   },
   "grid": {
     "axes": {
@@ -550,6 +564,9 @@
     "show": "Mostrar",
     "dismiss": "Descartar",
     "loading": "Cargando...",
+    "clearSearch": "Limpiar búsqueda",
+    "expand": "Expandir",
+    "collapse": "Contraer",
     "fileUpload": {
       "dialogTitle": "Importar Archivo de Excel",
       "description": "Importe un archivo de Excel de mapeo de talento 9-Box (.xlsx o .xls)",

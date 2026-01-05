@@ -67,7 +67,8 @@ export async function dragEmployeeToPosition(
 
       // Calculate positions
       const startX = cardBox.x + cardBox.width / 2;
-      const startY = cardBox.y + cardBox.height / 2;
+      // Use 25% from top instead of middle (50%) to avoid triggering panel toggle
+      const startY = cardBox.y + cardBox.height * 0.25;
 
       // For positions 1, 4, 7 (leftmost column), aim more to the left to avoid ambiguous hit detection
       // This is needed because dnd-kit's collision detection can favor later DOM elements in edge cases

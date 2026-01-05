@@ -328,29 +328,31 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
         title={t("dashboard.appBar.filters", "Filters")}
         placement="bottom"
       >
-        <IconButton
-          onClick={onFilterClick}
-          disabled={disabled}
-          data-testid="filter-button"
-          size="small"
-          sx={{
-            borderRadius: 1,
-            border: "1px solid",
-            borderColor: hasActiveFilters ? "secondary.main" : "divider",
-            backgroundColor: hasActiveFilters
-              ? "secondary.main"
-              : "transparent",
-            color: hasActiveFilters ? "secondary.contrastText" : "inherit",
-            "&:hover": {
+        <span>
+          <IconButton
+            onClick={onFilterClick}
+            disabled={disabled}
+            data-testid="filter-button"
+            size="small"
+            sx={{
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: hasActiveFilters ? "secondary.main" : "divider",
               backgroundColor: hasActiveFilters
-                ? "secondary.dark"
-                : "action.hover",
-              borderColor: hasActiveFilters ? "secondary.dark" : "divider",
-            },
-          }}
-        >
-          <FilterListIcon fontSize="small" />
-        </IconButton>
+                ? "secondary.main"
+                : "transparent",
+              color: hasActiveFilters ? "secondary.contrastText" : "inherit",
+              "&:hover": {
+                backgroundColor: hasActiveFilters
+                  ? "secondary.dark"
+                  : "action.hover",
+                borderColor: hasActiveFilters ? "secondary.dark" : "divider",
+              },
+            }}
+          >
+            <FilterListIcon fontSize="small" />
+          </IconButton>
+        </span>
       </Tooltip>
 
       {/* Collapsible Content */}
