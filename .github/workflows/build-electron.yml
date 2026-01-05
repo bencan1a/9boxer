@@ -20,7 +20,7 @@ jobs:
             artifact: "*.exe"
           - os: macos-latest
             platform: macos
-            artifact: "*.dmg"
+            artifact: "*.zip"
 
     steps:
       - name: Checkout code
@@ -128,7 +128,7 @@ jobs:
           path: |
             frontend/release/**/*.AppImage
             frontend/release/**/*.exe
-            frontend/release/**/*.dmg
+            frontend/release/**/*.zip
           retention-days: 90
           if-no-files-found: error
 
@@ -137,4 +137,4 @@ jobs:
         shell: bash
         run: |
           echo "Build outputs:"
-          find . -type f \( -name "*.AppImage" -o -name "*.exe" -o -name "*.dmg" \) -ls
+          find . -type f \( -name "*.AppImage" -o -name "*.exe" -o -name "*.zip" \) -ls
