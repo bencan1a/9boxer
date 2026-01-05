@@ -83,11 +83,11 @@ repos:
         files: ^(CLAUDE_INDEX\.md|AGENTS\.md|GITHUB_AGENT\.md)$
         pass_filenames: true
 
-  # Prettier formatting for frontend files (local hook for ARM64 compatibility)
+  # Prettier format checking for frontend files (local hook for ARM64 compatibility)
   - repo: local
     hooks:
       - id: prettier-frontend
-        name: format frontend files with prettier
+        name: check frontend file formatting with prettier
         entry: bash tools/run-prettier.sh
         language: system
         files: ^frontend/.*\.(ts|tsx|js|jsx|json)$
@@ -102,6 +102,16 @@ repos:
         types_or: [ts, tsx, javascript, jsx]
         files: ^frontend/
         exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage)/
+        pass_filenames: false
+
+      # TypeScript type checking for frontend
+      - id: typescript-check
+        name: TypeScript type check (Frontend)
+        entry: bash tools/run-typescript-check.sh
+        language: system
+        types_or: [ts, tsx]
+        files: ^frontend/
+        exclude: ^frontend/(node_modules|dist|dist-electron|build|release|coverage|.*__tests__|.*\.test\.|.*\.spec\.)/
         pass_filenames: false
 
       # Auto-generate documentation design tokens when design system changes

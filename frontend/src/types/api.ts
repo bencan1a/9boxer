@@ -86,6 +86,7 @@ export interface PositionDistribution {
   grid_position: number;
   count: number;
   percentage: number;
+  position_label?: string; // Optional label for the position (provided by backend)
 }
 
 export interface StatisticsResponse {

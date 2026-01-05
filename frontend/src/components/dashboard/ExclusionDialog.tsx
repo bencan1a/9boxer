@@ -70,7 +70,8 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
     if (!debouncedSearchTerm || !isReady) return employees;
 
     // Use fuzzy search instead of basic string matching
-    return search(debouncedSearchTerm);
+    // Extract employee from search results to normalize type
+    return search(debouncedSearchTerm).map((result) => result.employee);
   }, [employees, debouncedSearchTerm, search, isReady]);
 
   // Quick filter functions

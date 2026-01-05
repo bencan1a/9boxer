@@ -100,16 +100,16 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       elevation={0}
       data-testid={testId}
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: hasActiveFilters
+          ? alpha(theme.palette.primary.main, 0.04)
+          : "transparent",
         "&:before": { display: "none" },
-        // Active state styling when filters are selected
-        ...(hasActiveFilters && {
-          borderLeft: `4px solid ${theme.palette.primary.main}`,
-          backgroundColor: alpha(theme.palette.primary.main, 0.04),
-          pl: 1.5,
-          my: 0.5,
-          transition: `all ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
-        }),
+        // Always have the border to prevent jitter - just change its color
+        borderLeft: `4px solid ${hasActiveFilters ? theme.palette.primary.main : "transparent"}`,
+        borderRadius: 0, // Force square corners
+        pl: 1.5,
+        my: 0.5,
+        transition: `all ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
       }}
     >
       <AccordionSummary
@@ -119,11 +119,13 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
         data-testid={`${testId}-header`}
         sx={{
           minHeight: theme.tokens.dimensions.menuItem.minHeight,
+          borderRadius: 0, // Force square corners on summary
           "&.Mui-expanded": {
             minHeight: theme.tokens.dimensions.menuItem.minHeight,
           },
           "& .MuiAccordionSummary-content": {
             my: 1.5,
+            alignItems: "center", // Vertically center content to prevent height changes
           },
         }}
       >
@@ -134,21 +136,32 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
             color: hasActiveFilters
               ? theme.palette.primary.main
               : theme.palette.text.primary,
+            display: "flex",
+            alignItems: "center",
           }}
         >
           {title}
-          {hasActiveFilters && (
-            <Chip
-              label={count}
-              size="small"
-              color="primary"
-              data-testid={`${testId}-count-badge`}
-              sx={{
-                ml: 1,
-                fontWeight: theme.tokens.typography.fontWeight.semiBold,
-              }}
-            />
-          )}
+          {/* Always render chip to prevent vertical jitter, but hide when count is 0 */}
+          <Chip
+            label={count || 0}
+            size="small"
+            color="primary"
+            data-testid={`${testId}-count-badge`}
+            sx={{
+              ml: 1,
+              height: "20px", // Compact height to match text
+              "& .MuiChip-label": {
+                px: 0.75,
+                py: 0,
+                fontSize: "0.75rem",
+                lineHeight: "20px",
+              },
+              fontWeight: theme.tokens.typography.fontWeight.semiBold,
+              visibility: hasActiveFilters ? "visible" : "hidden",
+              opacity: hasActiveFilters ? 1 : 0,
+              transition: `opacity ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
+            }}
+          />
         </Typography>
       </AccordionSummary>
       <AccordionDetails

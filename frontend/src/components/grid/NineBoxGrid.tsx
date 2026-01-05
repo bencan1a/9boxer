@@ -27,6 +27,7 @@ import { GridBox } from "./GridBox";
 import { Axis } from "./Axis";
 import { DraggedEmployeeTile } from "./DraggedEmployeeTile";
 import { FilterToolbarContainer } from "../common/FilterToolbarContainer";
+import { ViewControls } from "../common/ViewControls";
 import { useEmployees } from "../../hooks/useEmployees";
 import {
   useSessionStore,
@@ -80,6 +81,10 @@ export const NineBoxGrid: React.FC = () => {
     selectEmployee,
     selectedEmployeeId,
   } = useEmployees();
+
+  // Track grid area width for auto-collapse logic
+  const gridAreaRef = React.useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
 
   // Use granular selectors to minimize re-renders
   const donutModeActive = useSessionStore(selectDonutModeActive);
@@ -191,6 +196,22 @@ export const NineBoxGrid: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [expandedPosition]);
 
+  // Watch grid area width and pass to FilterToolbar for auto-collapse detection
+  useEffect(() => {
+    const gridArea = gridAreaRef.current;
+    if (!gridArea) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        setContainerWidth(width);
+      }
+    });
+
+    resizeObserver.observe(gridArea);
+    return () => resizeObserver.disconnect();
+  }, []);
+
   // Grid layout: 3x3
   // Row 1 (top): positions 7, 8, 9 (High Potential)
   // Row 2 (middle): positions 4, 5, 6 (Medium Potential)
@@ -274,33 +295,50 @@ export const NineBoxGrid: React.FC = () => {
           }}
           data-testid="nine-box-grid"
         >
-          {/* Header row with Performance label and FilterToolbar */}
+          {/* Header row with FilterToolbar, Performance label, and ViewControls */}
           <Box
             sx={{
               display: "flex",
               width: "100%",
               alignItems: "center",
-              height: "40px",
+              py: 1,
               mb: 0.5,
             }}
           >
-            <Box sx={{ width: theme.tokens.dimensions.axis.verticalWidth }} />{" "}
-            {/* Spacer for left label alignment */}
+            {/* Spacer for vertical axis alignment */}
+            <Box sx={{ width: theme.tokens.dimensions.axis.verticalWidth }} />
+
+            {/* Grid area header - contains FilterToolbar, Axis, ViewControls */}
             <Box
+              ref={gridAreaRef}
               sx={{
                 flex: 1,
                 display: "flex",
-                justifyContent: "center",
                 alignItems: "center",
-                gap: 2,
                 position: "relative",
               }}
             >
-              {/* Left: FilterToolbar (positioned absolutely) */}
-              <FilterToolbarContainer />
+              {/* Left: FilterToolbar (with z-index to appear above axis) */}
+              <Box sx={{ position: "relative", zIndex: 2 }}>
+                <FilterToolbarContainer containerWidth={containerWidth} />
+              </Box>
 
-              {/* Center: Performance label */}
-              <Axis orientation="horizontal" />
+              {/* Center: Performance label (absolutely centered) */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 1,
+                }}
+              >
+                <Axis orientation="horizontal" />
+              </Box>
+
+              {/* Right: ViewControls (pushed to end with ml: auto, with z-index) */}
+              <Box sx={{ ml: "auto", position: "relative", zIndex: 2 }}>
+                <ViewControls />
+              </Box>
             </Box>
           </Box>
 

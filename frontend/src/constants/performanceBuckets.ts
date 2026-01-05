@@ -69,5 +69,9 @@ export function isInPerformanceBucket(
   gridPosition: number,
   category: keyof typeof PERFORMANCE_BUCKETS
 ): boolean {
-  return PERFORMANCE_BUCKETS[category].includes(gridPosition);
+  // Type assertion needed because TypeScript's readonly tuple type requires exact literal matches
+  // This is safe because gridPosition is validated at runtime by includes()
+  return (PERFORMANCE_BUCKETS[category] as readonly number[]).includes(
+    gridPosition
+  );
 }

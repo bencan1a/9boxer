@@ -34,7 +34,8 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { DistributionRow } from "./DistributionRow";
 import { GroupingIndicator } from "./GroupingIndicator";
-import type { PositionDistribution } from "@/types/api";
+import type { PositionDistribution } from "../../../types/api";
+import { getPositionName } from "../../../constants/positionLabels";
 
 export interface DistributionTableProps {
   /** Array of position distribution data */
@@ -169,7 +170,9 @@ export const DistributionTable: React.FC<DistributionTableProps> = ({
               <DistributionRow
                 key={row.grid_position}
                 position={row.grid_position}
-                positionLabel={row.position_label}
+                positionLabel={
+                  row.position_label || getPositionName(row.grid_position)
+                }
                 count={row.count}
                 percentage={row.percentage}
                 isEmpty={row.count === 0}

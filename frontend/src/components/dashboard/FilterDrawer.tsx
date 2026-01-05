@@ -194,6 +194,18 @@ export const FilterDrawer: React.FC = () => {
           </Box>
           <Divider sx={{ mb: theme.tokens.spacing.md / 8 }} />{" "}
           {/* Convert 16px to 2 */}
+          {/* Clear All Button */}
+          <Box sx={{ mb: theme.tokens.spacing.md / 8 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              onClick={clearAllFilters}
+              data-testid="clear-filter-button"
+            >
+              {t("dashboard.filterDrawer.clearAllFilters")}
+            </Button>
+          </Box>
           {/* Scrollable content */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
             {/* Job Levels Section */}
@@ -329,26 +341,6 @@ export const FilterDrawer: React.FC = () => {
                 </Button>
               </Box>
             </FilterSection>
-          </Box>
-          {/* Footer - Clear All Button */}
-          <Box
-            sx={{
-              pt: theme.tokens.spacing.md / 8,
-              borderTop: 1,
-              borderColor: "divider",
-            }}
-          >
-            {" "}
-            {/* Convert 16px to 2 */}
-            <Button
-              variant="outlined"
-              color="secondary"
-              fullWidth
-              onClick={clearAllFilters}
-              data-testid="clear-filter-button"
-            >
-              {t("dashboard.filterDrawer.clearAllFilters")}
-            </Button>
           </Box>
         </Box>
       </Drawer>

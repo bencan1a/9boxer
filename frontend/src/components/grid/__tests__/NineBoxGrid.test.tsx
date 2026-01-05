@@ -67,8 +67,10 @@ vi.mock("../../../hooks/useFilters", () => ({
 // Mock the sessionStore
 vi.mock("../../../store/sessionStore", () => ({
   useSessionStore: vi.fn(),
-  selectDonutModeActive: vi.fn((state) => state.donutModeActive),
-  selectMoveEmployeeDonut: vi.fn((state) => state.moveEmployeeDonut),
+  selectSessionId: (state: any) => state.sessionId,
+  selectDonutModeActive: (state: any) => state.donutModeActive,
+  selectMoveEmployeeDonut: (state: any) => state.moveEmployeeDonut,
+  selectToggleDonutMode: (state: any) => state.toggleDonutMode,
 }));
 
 describe("NineBoxGrid", () => {

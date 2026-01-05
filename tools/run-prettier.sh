@@ -1,6 +1,7 @@
 #!/bin/bash
-# Wrapper script to run prettier from frontend directory
+# Wrapper script to run prettier --check from frontend directory
 # This is needed for ARM64 compatibility - avoids nodeenv issues
+# Note: Uses --check mode to verify formatting without modifying files
 
 # Navigate to project root directory (parent of tools/)
 cd "$(dirname "$0")/.." || exit 1
@@ -16,5 +17,5 @@ for file in "$@"; do
     files+=("$rel_path")
 done
 
-# Run prettier with the relative paths
-npx prettier --write "${files[@]}"
+# Run prettier with the relative paths in check mode
+npx prettier --check "${files[@]}"
