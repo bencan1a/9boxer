@@ -90,40 +90,27 @@ jobs:
         working-directory: frontend
         run: node scripts/generate-icons.cjs < /dev/null || true
 
-      - name: Generate user guide documentation
-        run: |
-          uv pip install --system mkdocs-material
-          python tools/build_user_guide.py
+      # Install MkDocs dependencies for user guide generation
+      # Note: npm run generate:guide expects mkdocs-material to be available
+      - name: Install MkDocs for user guide
+        run: uv pip install --system mkdocs-material
 
+      # Use the same build script as local development for consistency
+      # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'
         working-directory: frontend
-        run: |
-          npm run build
-          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
-          npm run electron:compile
-          node scripts/ensure-backend.cjs
-          npx electron-builder --linux --x64
+        run: npm run electron:build:linux -- --x64
 
       - name: Build Electron app (Windows)
         if: matrix.platform == 'windows'
         working-directory: frontend
-        run: |
-          npm run build
-          if (!(Test-Path "dist/index.html")) { Write-Error "❌ Vite build failed - index.html not found"; exit 1 }
-          npm run electron:compile
-          node scripts/ensure-backend.cjs
-          npx electron-builder --win --x64
+        run: npm run electron:build:win -- --x64
 
       - name: Build Electron app (macOS)
         if: matrix.platform == 'macos'
         working-directory: frontend
-        run: |
-          npm run build
-          test -f dist/index.html || (echo "❌ Vite build failed - index.html not found" && exit 1)
-          npm run electron:compile
-          node scripts/ensure-backend.cjs
-          npx electron-builder --mac --x64 --arm64
+        run: npm run electron:build:mac -- --x64 --arm64
 
       # Upload artifacts
       - name: Upload build artifacts
