@@ -199,6 +199,34 @@ test.describe("Employee Selection & Right Panel Navigation", () => {
     // ✅ Intelligence tab becomes active
     await expect(intelligenceTab).toHaveAttribute("aria-selected", "true");
 
+    // Wait for Intelligence tab loading state to clear
+    // The Intelligence tab makes TWO API calls (intelligence + calibration summary)
+    // We need to ensure both complete before checking content
+    await expect(async () => {
+      const loadingSpinner = await page
+        .locator('[data-testid="intelligence-tab-loading"]')
+        .isVisible()
+        .catch(() => false);
+      const hasError = await page
+        .locator('[data-testid="intelligence-tab-error"]')
+        .isVisible()
+        .catch(() => false);
+      const hasContent = await page
+        .locator('[data-testid="intelligence-tab-content"]')
+        .isVisible()
+        .catch(() => false);
+
+      if (loadingSpinner) {
+        throw new Error("Still loading intelligence data");
+      }
+      if (hasError) {
+        throw new Error("Intelligence tab encountered an error");
+      }
+      if (!hasContent) {
+        throw new Error("Intelligence content not yet visible");
+      }
+    }).toPass({ timeout: 15000, intervals: [500, 1000] });
+
     // ✅ Summary section appears at top
     const intelligencePanel = page.locator('[data-testid="tab-panel-3"]');
     await expect(intelligencePanel).toBeVisible();

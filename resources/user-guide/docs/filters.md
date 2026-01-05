@@ -47,11 +47,13 @@ The employee search uses **fuzzy matching**, which means it's forgiving:
 - Type "sarah eng" and it finds "Sarah Chen" in "Engineering"
 - Misspellings and typos usually still work
 
-Search looks across multiple fields:
+Search looks across multiple fields (weighted by relevance):
 
-- **Employee name**
+- **Employee name** (highest priority)
+- **Job title/role** (e.g., "Senior Engineer")
 - **Job level** (like "MT3" or "IC")
 - **Manager name**
+- **Location** and **Job function** (lower priority)
 
 !!! info "Searching Within Filters"
     The search only searches employees currently visible on the grid. If you've applied filters (like "Engineering only"), the search results only include engineers. This makes it easy to find someone within a specific team or department.
@@ -60,7 +62,7 @@ Search looks across multiple fields:
 
 As you type, you'll see a dropdown with matching employees:
 
-1. **Employee name** is shown in bold with matching text highlighted
+1. **Employee name** is shown with matching text highlighted
 2. **Job level and manager** appear below in smaller text
 3. **Matching text is highlighted** across all fields
 
@@ -208,15 +210,15 @@ Selecting multiple managers is great for cross-team analysis:
 | **Prepare for calibration** | Check all managers in the calibration group |
 | **View entire division** | Check the VP/executive at the top |
 
-### Smart Filter Labels
+### Filter Summary Display
 
-When you select a manager, the toolbar shows a smart summary:
+When you select managers, the toolbar shows an active filter summary:
 
-- **One manager**: "Reporting to: Sarah Chen (12)"
-- **Multiple managers**: "Reporting to: Sarah Chen (12), Marcus Lee (8)"
-- **Many managers**: "Reporting to: Sarah Chen + 3 others"
+- **One manager**: "Manager: Sarah Chen"
+- **Multiple managers**: "Manager: Sarah Chen, Marcus Lee"
+- **Many managers**: "Manager: Sarah Chen, Marcus Lee +3"
 
-Hover over the summary for the full list of selected managers.
+Hover over the summary to see the complete list of all selected managers.
 
 ---
 

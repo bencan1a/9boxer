@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material/styles";
 import { I18nextProvider } from "react-i18next";
 import { i18n } from "../../../i18n";
@@ -301,7 +301,9 @@ describe("FilterToolbar", () => {
       expect(collapseContainer).toHaveClass("MuiCollapse-entered");
 
       // Click to collapse
-      toggleButton.click();
+      act(() => {
+        toggleButton.click();
+      });
 
       // After collapse, Collapse component should have different class
       // (Note: Testing animation state is tricky, so we just verify toggle works)
@@ -313,7 +315,9 @@ describe("FilterToolbar", () => {
       const toggleButton = screen.getByTestId("toolbar-toggle-button");
 
       // Click to collapse
-      toggleButton.click();
+      act(() => {
+        toggleButton.click();
+      });
 
       // Check localStorage was updated to collapsed
       expect(localStorage.getItem("filterToolbarCollapsed")).toBe("true");
@@ -335,7 +339,9 @@ describe("FilterToolbar", () => {
       const newToggleButton = screen.getByTestId("toolbar-toggle-button");
 
       // Click to expand
-      newToggleButton.click();
+      act(() => {
+        newToggleButton.click();
+      });
 
       // Check localStorage was updated to expanded
       expect(localStorage.getItem("filterToolbarCollapsed")).toBe("false");

@@ -200,6 +200,59 @@ export async function openFileMenu(page: Page): Promise<void> {
 export async function openFilterDrawer(page: Page): Promise<void> {
   await page.locator('[data-testid="filter-button"]').click();
   await expect(page.locator('[data-testid="filter-drawer"]')).toBeVisible();
+
+  // Wait for drawer animation to complete by ensuring first filter section is stable
+  // This prevents "element is not stable" errors when interacting with checkboxes
+  const firstFilterSection = page
+    .locator('[data-testid^="filter-accordion-"]')
+    .first();
+  await expect(firstFilterSection).toBeVisible();
+}
+
+/**
+ * Expand a filter section in the filter drawer
+ *
+ * Ensures a specific filter accordion section is expanded so its checkboxes
+ * are visible and interactive. If already expanded, does nothing.
+ * This is necessary because filter sections are collapsed by default.
+ *
+ * @param page - Playwright Page object
+ * @param sectionName - Name of the section to expand (e.g., 'locations', 'job-levels')
+ * @example
+ * await openFilterDrawer(page);
+ * await expandFilterSection(page, 'locations');
+ * await page.locator('[data-testid="filter-checkbox-locations-usa"]').check();
+ */
+export async function expandFilterSection(
+  page: Page,
+  sectionName:
+    | "job-levels"
+    | "job-functions"
+    | "locations"
+    | "managers"
+    | "flags"
+    | "exclusions"
+): Promise<void> {
+  const section = page.locator(
+    `[data-testid="filter-accordion-${sectionName}"]`
+  );
+
+  // The aria-expanded attribute is on the AccordionSummary button, not the root Accordion div
+  const header = section.locator(
+    `[data-testid="filter-accordion-${sectionName}-header"]`
+  );
+
+  // Check if already expanded by looking at the header's aria-expanded attribute
+  const isExpanded = await header.getAttribute("aria-expanded");
+  if (isExpanded === "true") {
+    return; // Already expanded, nothing to do
+  }
+
+  // Click header to expand
+  await header.click();
+
+  // Wait for accordion to be expanded (ensures animation completes)
+  await expect(header).toHaveAttribute("aria-expanded", "true");
 }
 
 /**

@@ -8,6 +8,7 @@ import * as useOrgHierarchyHook from "../../../hooks/useOrgHierarchy";
 
 describe("ManagementChain", () => {
   const mockToggleManager = vi.fn();
+  const mockSelectManager = vi.fn();
   const mockGetReportIds = vi.fn();
 
   beforeEach(() => {
@@ -23,10 +24,13 @@ describe("ManagementChain", () => {
 
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
       toggleManager: mockToggleManager,
+      selectManager: mockSelectManager,
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
+      selectedManagerEmployeeIds: {},
+      selectedFlags: [],
       excludedEmployeeIds: [],
       isDrawerOpen: false,
       hasActiveFilters: false,
@@ -109,7 +113,7 @@ describe("ManagementChain", () => {
     expect(employeePaper).not.toHaveAttribute("role", "button");
   });
 
-  it("calls toggleManager when manager is clicked", async () => {
+  it("calls selectManager when manager is clicked", async () => {
     const employee = createMockEmployee({
       name: "John Doe",
       manager: "Jane Smith",
@@ -130,11 +134,11 @@ describe("ManagementChain", () => {
 
     // Wait for async operation
     await vi.waitFor(() => {
-      expect(mockToggleManager).toHaveBeenCalled();
+      expect(mockSelectManager).toHaveBeenCalled();
     });
   });
 
-  it("calls toggleManager when higher-level manager is clicked", async () => {
+  it("calls selectManager when higher-level manager is clicked", async () => {
     const employee = createMockEmployee({
       name: "John Doe",
       manager: "Jane Smith",
@@ -155,7 +159,7 @@ describe("ManagementChain", () => {
 
     // Wait for async operation
     await vi.waitFor(() => {
-      expect(mockToggleManager).toHaveBeenCalled();
+      expect(mockSelectManager).toHaveBeenCalled();
     });
   });
 
