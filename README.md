@@ -33,7 +33,7 @@ A standalone desktop application for visualizing and managing employee performan
 **Download the latest release for your platform:**
 
 - **Windows**: Download and run `9Boxer-Setup-1.0.0.exe`
-- **macOS**: Download and open `9Boxer-1.0.0.dmg`, drag to Applications
+- **macOS**: Download `9Boxer-1.0.0.zip`, extract, and drag to Applications. **Note**: On first launch, you may need to right-click the app and select "Open" to bypass macOS Gatekeeper (unsigned app for internal use). See [INSTALL_MACOS.md](INSTALL_MACOS.md) for detailed instructions.
 - **Linux**: Download `9Boxer-1.0.0.AppImage`, make executable, and run
 
 No Python or Node.js installation required! Everything is bundled in the installer.
@@ -113,7 +113,7 @@ npm run electron:build
 
 # Output in frontend/release/:
 # - Windows: 9Boxer-Setup-1.0.0.exe (~300MB)
-# - macOS: 9Boxer-1.0.0.dmg (~300MB)
+# - macOS: 9Boxer-1.0.0.zip (~300MB)
 # - Linux: 9Boxer-1.0.0.AppImage (~300MB)
 ```
 
@@ -319,7 +319,7 @@ The primary deployment model is **standalone desktop installers**. See [BUILD.md
 
 **User Installation:**
 - Windows: Run .exe installer, follow wizard
-- macOS: Open .dmg, drag to Applications
+- macOS: Extract .zip, drag to Applications, right-click and "Open" on first launch
 - Linux: Make .AppImage executable, run
 
 **Legacy Docker Deployment:**
