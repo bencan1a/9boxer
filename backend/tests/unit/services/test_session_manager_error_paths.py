@@ -402,20 +402,6 @@ class TestDatabaseErrorHandling:
             sheet_index=1,
         )
 
-    def test_delete_session_from_db_when_database_error_then_logs_but_continues(
-        self, session_manager: SessionManager, sample_employees: list[Employee]
-    ) -> None:
-        """Test that database errors during deletion are logged but don't crash."""
-        # Create session
-        session_manager.create_session(
-            user_id="user1",
-            employees=sample_employees,
-            filename="test.xlsx",
-            file_path="/tmp/test.xlsx",
-            sheet_name="Employee Data",
-            sheet_index=1,
-        )
-
         # Mock the _db instance attribute to raise error during deletion
         mock_conn = MagicMock()
         mock_conn.__enter__ = MagicMock(return_value=mock_conn)
