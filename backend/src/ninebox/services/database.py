@@ -177,8 +177,3 @@ class DatabaseManager:
                 conn.execute("ALTER TABLE sessions DROP COLUMN donut_changes")
             except sqlite3.OperationalError as e:
                 logger.warning(f"Could not drop 'donut_changes' column (old SQLite version?): {e}")
-
-
-# Global database manager instance
-# Initialized once when module is imported
-db_manager = DatabaseManager()
