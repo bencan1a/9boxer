@@ -306,35 +306,39 @@ class TestDatabaseErrorHandling:
         session = session_manager.get_session("user1")
         assert session is not None
 
-        # Mock database manager to raise error
-        with patch("ninebox.services.session_manager.db_manager") as mock_db:
-            mock_conn = MagicMock()
-            mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-            mock_conn.__exit__ = MagicMock(return_value=False)
-            mock_conn.execute.side_effect = sqlite3.Error("Database is locked")
-            mock_db.get_connection.return_value = mock_conn
+        # Mock the _db instance attribute to raise error
+        mock_conn = MagicMock()
+        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+        mock_conn.__exit__ = MagicMock(return_value=False)
+        mock_conn.execute.side_effect = sqlite3.Error("Database is locked")
 
-            # Attempt to persist - should raise sqlite3.Error
-            with pytest.raises(sqlite3.Error, match="Database is locked"):
-                session_manager._persist_session(session)
+        mock_db = MagicMock()
+        mock_db.get_connection.return_value = mock_conn
+        session_manager._db = mock_db
+
+        # Attempt to persist - should raise sqlite3.Error
+        with pytest.raises(sqlite3.Error, match="Database is locked"):
+            session_manager._persist_session(session)
 
     def test_restore_sessions_when_database_error_then_logs_and_continues(
         self, session_manager: SessionManager
     ) -> None:
         """Test that database errors during restoration are logged but don't crash."""
-        # Mock database manager to raise error
-        with patch("ninebox.services.session_manager.db_manager") as mock_db:
-            mock_conn = MagicMock()
-            mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-            mock_conn.__exit__ = MagicMock(return_value=False)
-            mock_conn.execute.side_effect = sqlite3.Error("Database connection failed")
-            mock_db.get_connection.return_value = mock_conn
+        # Mock the _db instance attribute to raise error
+        mock_conn = MagicMock()
+        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+        mock_conn.__exit__ = MagicMock(return_value=False)
+        mock_conn.execute.side_effect = sqlite3.Error("Database connection failed")
 
-            # Restoration should not raise - errors are logged
-            session_manager._restore_sessions()
+        mock_db = MagicMock()
+        mock_db.get_connection.return_value = mock_conn
+        session_manager._db = mock_db
 
-            # Session manager should be empty but functional
-            assert len(session_manager._sessions) == 0
+        # Restoration should not raise - errors are logged
+        session_manager._restore_sessions()
+
+        # Session manager should be empty but functional
+        assert len(session_manager._sessions) == 0
 
     def test_restore_sessions_when_corrupt_session_then_skips_and_continues(
         self, session_manager: SessionManager, sample_employees: list[Employee]
@@ -350,35 +354,39 @@ class TestDatabaseErrorHandling:
             sheet_index=1,
         )
 
-        # Mock database to return corrupt data for one session
-        with patch("ninebox.services.session_manager.db_manager") as mock_db:
-            mock_conn = MagicMock()
-            mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-            mock_conn.__exit__ = MagicMock(return_value=False)
+        # Create a fresh session manager with mocked database
+        fresh_manager = SessionManager()
 
-            # Create mock cursor with one corrupt row
-            mock_cursor = MagicMock()
-            # Return corrupt JSON that will fail to deserialize
-            mock_cursor.fetchall.return_value = [
-                {
-                    "user_id": "user_corrupt",
-                    "session_id": "session123",
-                    "created_at": "invalid_date",  # This will cause deserialization error
-                    "original_employees": "invalid_json",
-                    "current_employees": "invalid_json",
-                    "events": "[]",
-                }
-            ]
-            mock_conn.execute.return_value = mock_cursor
-            mock_db.get_connection.return_value = mock_conn
+        # Mock the _db instance to return corrupt data
+        mock_conn = MagicMock()
+        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+        mock_conn.__exit__ = MagicMock(return_value=False)
 
-            # Create a fresh session manager and restore
-            fresh_manager = SessionManager()
-            fresh_manager._restore_sessions()
+        # Create mock cursor with one corrupt row
+        mock_cursor = MagicMock()
+        # Return corrupt JSON that will fail to deserialize
+        mock_cursor.fetchall.return_value = [
+            {
+                "user_id": "user_corrupt",
+                "session_id": "session123",
+                "created_at": "invalid_date",  # This will cause deserialization error
+                "original_employees": "invalid_json",
+                "current_employees": "invalid_json",
+                "events": "[]",
+            }
+        ]
+        mock_conn.execute.return_value = mock_cursor
 
-            # Corrupt session should be skipped, manager should still be functional
-            # (no sessions restored due to corrupt data)
-            assert len(fresh_manager._sessions) == 0
+        mock_db = MagicMock()
+        mock_db.get_connection.return_value = mock_conn
+        fresh_manager._db = mock_db
+
+        # Restore sessions
+        fresh_manager._restore_sessions()
+
+        # Corrupt session should be skipped, manager should still be functional
+        # (no sessions restored due to corrupt data)
+        assert len(fresh_manager._sessions) == 0
 
     def test_delete_session_from_db_when_database_error_then_logs_but_continues(
         self, session_manager: SessionManager, sample_employees: list[Employee]
@@ -394,19 +402,35 @@ class TestDatabaseErrorHandling:
             sheet_index=1,
         )
 
-        # Mock database manager to raise error during deletion
-        with patch("ninebox.services.session_manager.db_manager") as mock_db:
-            mock_conn = MagicMock()
-            mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-            mock_conn.__exit__ = MagicMock(return_value=False)
-            mock_conn.execute.side_effect = sqlite3.Error("Delete failed")
-            mock_db.get_connection.return_value = mock_conn
+    def test_delete_session_from_db_when_database_error_then_logs_but_continues(
+        self, session_manager: SessionManager, sample_employees: list[Employee]
+    ) -> None:
+        """Test that database errors during deletion are logged but don't crash."""
+        # Create session
+        session_manager.create_session(
+            user_id="user1",
+            employees=sample_employees,
+            filename="test.xlsx",
+            file_path="/tmp/test.xlsx",
+            sheet_name="Employee Data",
+            sheet_index=1,
+        )
 
-            # Delete should not raise - error is logged
-            session_manager._delete_session_from_db("user1")
+        # Mock the _db instance attribute to raise error during deletion
+        mock_conn = MagicMock()
+        mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+        mock_conn.__exit__ = MagicMock(return_value=False)
+        mock_conn.execute.side_effect = sqlite3.Error("Delete failed")
 
-            # Session is already removed from memory (this is just DB cleanup)
-            # So the method completes without raising
+        mock_db = MagicMock()
+        mock_db.get_connection.return_value = mock_conn
+        session_manager._db = mock_db
+
+        # Delete should not raise - error is logged
+        session_manager._delete_session_from_db("user1")
+
+        # Session is already removed from memory (this is just DB cleanup)
+        # So the method completes without raising
 
 
 class TestEdgeCaseErrorCombinations:
