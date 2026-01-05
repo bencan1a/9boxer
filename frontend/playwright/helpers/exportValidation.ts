@@ -30,7 +30,20 @@ interface EmployeeRow {
 async function parseExcelFile(filePath: string): Promise<EmployeeRow[]> {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(filePath);
-  const worksheet = workbook.worksheets[0];
+
+  // Determine which sheet to read from
+  // For uploaded files: typically has only 1 sheet at index 0
+  // For generated sample data: has Summary (0) and Employee Data (1)
+  const worksheet =
+    workbook.worksheets.length > 1
+      ? workbook.worksheets[1] // Multi-sheet: use Employee Data sheet
+      : workbook.worksheets[0]; // Single-sheet: use first sheet
+
+  if (!worksheet) {
+    throw new Error(
+      `No worksheet found in exported file. Workbook has ${workbook.worksheets.length} sheets.`
+    );
+  }
 
   const rows: EmployeeRow[] = [];
   const headers: string[] = [];
@@ -41,8 +54,19 @@ async function parseExcelFile(filePath: string): Promise<EmployeeRow[]> {
     const cleanValues = values.slice(1);
 
     if (rowNumber === 1) {
-      // First row is headers
-      headers.push(...cleanValues.map((v) => String(v ?? "")));
+      // First row is headers - map full column names to short ones for test compatibility
+      headers.push(
+        ...cleanValues.map((v) => {
+          const fullName = String(v ?? "");
+          // Map backend's descriptive column names to short test-friendly names
+          const columnMapping: Record<string, string> = {
+            "Aug 2025 Talent Assessment Performance": "Performance",
+            "Aug 2025  Talent Assessment Potential": "Potential",
+            "Aug 2025 Talent Assessment 9-Box Label": "9-Box Label",
+          };
+          return columnMapping[fullName] || fullName;
+        })
+      );
     } else {
       // Data rows
       const rowData: Record<string, unknown> = {};

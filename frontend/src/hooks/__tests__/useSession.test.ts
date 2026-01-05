@@ -42,7 +42,6 @@ describe("useSession", () => {
         sessionId: "test-session-123",
         employees: [],
         originalEmployees: [],
-        changes: [],
         filename: null,
         isLoading: false,
         error: null,
@@ -70,7 +69,6 @@ describe("useSession", () => {
         sessionId: null,
         employees: mockEmployees,
         originalEmployees: [],
-        changes: [],
         filename: null,
         isLoading: false,
         error: null,
@@ -97,7 +95,6 @@ describe("useSession", () => {
         sessionId: null,
         employees: [],
         originalEmployees: mockOriginalEmployees,
-        changes: [],
         filename: null,
         isLoading: false,
         error: null,
@@ -115,39 +112,11 @@ describe("useSession", () => {
       expect(result.current.originalEmployees).toEqual(mockOriginalEmployees);
     });
 
-    it("returns changes from store", () => {
-      const mockChanges = [
-        { employee_id: 1, from_position: 5, to_position: 9 },
-      ];
-
-      (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        sessionId: null,
-        employees: [],
-        originalEmployees: [],
-        changes: mockChanges,
-        filename: null,
-        isLoading: false,
-        error: null,
-        uploadFile: mockUploadFile,
-        clearSession: mockClearSession,
-        loadEmployees: mockLoadEmployees,
-        moveEmployee: mockMoveEmployee,
-        updateChangeNotes: mockUpdateChangeNotes,
-        selectedEmployeeId: null,
-        selectEmployee: mockSelectEmployee,
-      });
-
-      const { result } = renderHook(() => useSession());
-
-      expect(result.current.changes).toEqual(mockChanges);
-    });
-
     it("returns filename from store", () => {
       (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
         sessionId: null,
         employees: [],
         originalEmployees: [],
-        changes: [],
         filename: "test-file.xlsx",
         isLoading: false,
         error: null,
@@ -170,7 +139,6 @@ describe("useSession", () => {
         sessionId: null,
         employees: [],
         originalEmployees: [],
-        changes: [],
         filename: null,
         isLoading: true,
         error: null,
@@ -195,7 +163,6 @@ describe("useSession", () => {
         sessionId: null,
         employees: [],
         originalEmployees: [],
-        changes: [],
         filename: null,
         isLoading: false,
         error: mockError,
@@ -218,7 +185,6 @@ describe("useSession", () => {
         sessionId: null,
         employees: [],
         originalEmployees: [],
-        changes: [],
         filename: null,
         isLoading: false,
         error: null,
@@ -316,7 +282,6 @@ describe("useSession", () => {
       expect(result.current).toHaveProperty("sessionId");
       expect(result.current).toHaveProperty("employees");
       expect(result.current).toHaveProperty("originalEmployees");
-      expect(result.current).toHaveProperty("changes");
       expect(result.current).toHaveProperty("filename");
       expect(result.current).toHaveProperty("isLoading");
       expect(result.current).toHaveProperty("error");

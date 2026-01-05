@@ -17,9 +17,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Badge from "@mui/material/Badge";
 import { useTheme } from "@mui/material/styles";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { FileMenuButton, RecentFile } from "./FileMenuButton";
 import { HelpButton } from "./HelpButton";
@@ -107,9 +105,6 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   hasSampleData = false,
   isFileMenuOpen,
   isHelpMenuOpen,
-  hasActiveFilters,
-  filterTooltip,
-  isFilterDisabled,
   isExporting = false,
   recentFiles,
   onFileMenuToggle,
@@ -119,7 +114,6 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
   onCloseFile,
   onRecentFileClick,
   onClearRecentFiles,
-  onFilterClick,
   onSettingsClick,
   onHelpMenuToggle,
   onUserGuideClick,
@@ -191,6 +185,9 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
         >
           {" "}
           {/* Convert 8px to 1 */}
+          {/* Filter button moved to FilterToolbar (left of grid axis) */}
+          {/* Keeping this code commented for now in case we need to restore it */}
+          {/*
           <Tooltip title={filterTooltip} placement="bottom">
             <span>
               <Badge
@@ -216,6 +213,7 @@ export const PureAppBar: React.FC<PureAppBarProps> = ({
               </Badge>
             </span>
           </Tooltip>
+          */}
           <Tooltip title={t("dashboard.appBar.settings")}>
             <IconButton
               color="inherit"

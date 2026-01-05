@@ -5,6 +5,7 @@
   },
   "dashboard": {
     "appBar": {
+      "filters": "Filters",
       "filterEmployees": "Filter employees",
       "activeFilters": "Active filters:",
       "levels": "Levels",
@@ -82,6 +83,19 @@
       "showPanel": "Show panel",
       "hidePanel": "Hide panel"
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Search employees...",
+    "noEmployeesFound": "No employees found",
+    "noActiveFilters": "No filters active",
+    "activeFilters": "Active Filters",
+    "expandToolbar": "Expand toolbar",
+    "collapseToolbar": "Collapse toolbar",
+    "searchManagers": "Search managers...",
+    "noManagersFound": "No managers found",
+    "searchUnavailable": "Search unavailable",
+    "unavailable": "Filters Unavailable",
+    "unavailableMessage": "The filtering toolbar is temporarily unavailable. You can still view all employees on the grid."
   },
   "grid": {
     "axes": {
@@ -550,6 +564,9 @@
     "show": "Show",
     "dismiss": "Dismiss",
     "loading": "Loading...",
+    "clearSearch": "Clear search",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "fileUpload": {
       "dialogTitle": "Import Excel File",
       "description": "Import a 9-Box talent mapping Excel file (.xlsx or .xls)",

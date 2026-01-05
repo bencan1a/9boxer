@@ -104,4 +104,12 @@ By plotting everyone on a 3x3 grid, you can quickly identify top talent, spot de
 
 ---
 
+## Reference & Technical Documentation
+
+For technical users who want to understand the underlying methodology:
+
+- **[Detection Methodology](detection-methodology.md)** - Statistical methods used for anomaly detection (chi-square tests, Z-scores, effect sizes, severity determination, LLM data structure)
+
+---
+
 **Ready?** [Start the 2-minute quickstart](quickstart.md) and see your first talent grid.

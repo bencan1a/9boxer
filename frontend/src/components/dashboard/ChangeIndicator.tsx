@@ -4,8 +4,7 @@
  */
 
 import React from "react";
-import Badge from "@mui/material/Badge";
-import BadgeProps from "@mui/material/BadgeProps";
+import Badge, { BadgeProps } from "@mui/material/Badge";
 
 /**
  * Props for the ChangeIndicator component

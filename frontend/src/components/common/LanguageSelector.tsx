@@ -4,8 +4,7 @@
 
 import React from "react";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import SelectChangeEvent from "@mui/material/SelectChangeEvent";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";

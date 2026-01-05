@@ -22,7 +22,11 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
-import { Employee, PotentialLevel } from "../../types/employee";
+import {
+  Employee,
+  PotentialLevel,
+  PerformanceLevel,
+} from "../../types/employee";
 import {
   getPositionName,
   getShortPositionLabel,
@@ -41,6 +45,19 @@ const getPotentialColor = (level: PotentialLevel): string => {
     case PotentialLevel.MEDIUM:
       return "warning";
     case PotentialLevel.LOW:
+      return "error";
+    default:
+      return "default";
+  }
+};
+
+const getPerformanceColor = (level: PerformanceLevel): string => {
+  switch (level) {
+    case PerformanceLevel.HIGH:
+      return "success";
+    case PerformanceLevel.MEDIUM:
+      return "warning";
+    case PerformanceLevel.LOW:
       return "error";
     default:
       return "default";
@@ -164,9 +181,11 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
                   label={employee.performance}
                   size="small"
                   color={
-                    getPotentialColor(
-                      employee.performance as PotentialLevel
-                    ) as "success" | "warning" | "error" | "default"
+                    getPerformanceColor(employee.performance) as
+                      | "success"
+                      | "warning"
+                      | "error"
+                      | "default"
                   }
                   sx={{
                     fontWeight: "medium",

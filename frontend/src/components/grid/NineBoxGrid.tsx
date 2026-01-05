@@ -24,15 +24,22 @@ import {
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import { GridBox } from "./GridBox";
-import { EmployeeCount } from "./EmployeeCount";
 import { Axis } from "./Axis";
 import { DraggedEmployeeTile } from "./DraggedEmployeeTile";
+import { FilterToolbarContainer } from "../common/FilterToolbarContainer";
+import { ViewControls } from "../common/ViewControls";
 import { useEmployees } from "../../hooks/useEmployees";
 import {
   useSessionStore,
   selectDonutModeActive,
   selectMoveEmployeeDonut,
 } from "../../store/sessionStore";
+import {
+  useUiStore,
+  selectIsRightPanelCollapsed,
+  selectSetRightPanelCollapsed,
+  selectSetActiveTab,
+} from "../../store/uiStore";
 import { Employee } from "../../types/employee";
 import { logger } from "../../utils/logger";
 import { useGridZoom } from "../../contexts/GridZoomContext";
@@ -72,11 +79,21 @@ export const NineBoxGrid: React.FC = () => {
     positionToLevels,
     moveEmployee,
     selectEmployee,
+    selectedEmployeeId,
   } = useEmployees();
+
+  // Track grid area width for auto-collapse logic
+  const gridAreaRef = React.useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
 
   // Use granular selectors to minimize re-renders
   const donutModeActive = useSessionStore(selectDonutModeActive);
   const moveEmployeeDonut = useSessionStore(selectMoveEmployeeDonut);
+
+  // UI store selectors for panel control
+  const isRightPanelCollapsed = useUiStore(selectIsRightPanelCollapsed);
+  const setRightPanelCollapsed = useUiStore(selectSetRightPanelCollapsed);
+  const setActiveTab = useUiStore(selectSetActiveTab);
 
   const [activeEmployee, setActiveEmployee] = useState<Employee | null>(null);
   const [expandedPosition, setExpandedPosition] = useState<number | null>(
@@ -129,6 +146,9 @@ export const NineBoxGrid: React.FC = () => {
       } else {
         await moveEmployee(employee.employee_id, performance, potential);
       }
+
+      // Select the employee after successful move to show details in right panel
+      selectEmployee(employee.employee_id);
     } catch (error) {
       logger.error("Failed to move employee", error);
     }
@@ -150,6 +170,21 @@ export const NineBoxGrid: React.FC = () => {
     localStorage.removeItem(EXPANDED_POSITION_STORAGE_KEY);
   };
 
+  const handleEmployeeDoubleClick = (employeeId: number) => {
+    logger.debug("Employee double-clicked, opening details panel:", employeeId);
+
+    // Select the employee
+    selectEmployee(employeeId);
+
+    // Open the panel if it's collapsed
+    if (isRightPanelCollapsed) {
+      setRightPanelCollapsed(false, false);
+    }
+
+    // Switch to the Details tab (index 0)
+    setActiveTab(0);
+  };
+
   // ESC key listener for collapse
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -163,6 +198,22 @@ export const NineBoxGrid: React.FC = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [expandedPosition]);
+
+  // Watch grid area width and pass to FilterToolbar for auto-collapse detection
+  useEffect(() => {
+    const gridArea = gridAreaRef.current;
+    if (!gridArea) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        setContainerWidth(width);
+      }
+    });
+
+    resizeObserver.observe(gridArea);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // Grid layout: 3x3
   // Row 1 (top): positions 7, 8, 9 (High Potential)
@@ -235,8 +286,11 @@ export const NineBoxGrid: React.FC = () => {
       >
         <Box
           sx={{
-            p: `${theme.tokens.dimensions.gridContainer.padding}px`,
-            minHeight: `calc(100vh - ${theme.tokens.dimensions.appBar.height}px)`,
+            pt: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pr: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pb: `${theme.tokens.dimensions.gridContainer.padding}px`,
+            pl: 0,
+            height: "100%",
             width: "100%",
             userSelect: "none",
             display: "flex",
@@ -244,38 +298,50 @@ export const NineBoxGrid: React.FC = () => {
           }}
           data-testid="nine-box-grid"
         >
-          {/* Header row with Performance label, employee count, and view mode toggle */}
+          {/* Header row with FilterToolbar, Performance label, and ViewControls */}
           <Box
-            sx={{ display: "flex", mb: 1, width: "100%", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              width: "100%",
+              alignItems: "center",
+              py: 1,
+              mb: 0.5,
+            }}
           >
-            <Box sx={{ width: 64 }} /> {/* Spacer for left label alignment */}
+            {/* Spacer for vertical axis alignment */}
+            <Box sx={{ width: theme.tokens.dimensions.axis.verticalWidth }} />
+
+            {/* Grid area header - contains FilterToolbar, Axis, ViewControls */}
             <Box
+              ref={gridAreaRef}
               sx={{
                 flex: 1,
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
-                gap: 2,
+                position: "relative",
               }}
             >
-              {/* Left: Empty for balance */}
-              <Box sx={{ width: 120 }} />
+              {/* Left: FilterToolbar (with z-index to appear above axis) */}
+              <Box sx={{ position: "relative", zIndex: 2 }}>
+                <FilterToolbarContainer containerWidth={containerWidth} />
+              </Box>
 
-              {/* Center: Performance label + Employee count */}
+              {/* Center: Performance label (absolutely centered) */}
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  flexDirection: { xs: "column", sm: "row" },
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 1,
                 }}
               >
                 <Axis orientation="horizontal" />
-                <EmployeeCount />
               </Box>
 
-              {/* Right: Empty for balance (view controls moved to floating position) */}
-              <Box sx={{ width: 120 }} />
+              {/* Right: ViewControls (pushed to end with ml: auto, with z-index) */}
+              <Box sx={{ ml: "auto", position: "relative", zIndex: 2 }}>
+                <ViewControls />
+              </Box>
             </Box>
           </Box>
 
@@ -304,6 +370,8 @@ export const NineBoxGrid: React.FC = () => {
                   employees={employeesByPosition[position] || []}
                   shortLabel={getShortPositionLabel(position)}
                   onSelectEmployee={selectEmployee}
+                  onDoubleClickEmployee={handleEmployeeDoubleClick}
+                  selectedEmployeeId={selectedEmployeeId}
                   isExpanded={expandedPosition === position}
                   isCollapsed={
                     expandedPosition !== null && expandedPosition !== position
@@ -323,6 +391,7 @@ export const NineBoxGrid: React.FC = () => {
             <DraggedEmployeeTile
               employee={activeEmployee}
               donutModeActive={donutModeActive}
+              isSelected={activeEmployee.employee_id === selectedEmployeeId}
             />
           )}
         </DragOverlay>

@@ -76,17 +76,14 @@ export const useFilters = () => {
     selectedManagerEmployeeIds,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
-    reportingChainEmployeeIds,
     isDrawerOpen,
     toggleLevel,
     toggleJobFunction,
     toggleLocation,
     toggleManager,
+    selectManager,
     toggleFlag,
     setExcludedIds,
-    setReportingChainFilter,
-    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
     hasActiveFilters,
@@ -122,23 +119,17 @@ export const useFilters = () => {
         // This uses the same backend org hierarchy logic as the intelligence panel
         if (
           selectedManagers.length > 0 &&
-          selectedManagerEmployeeIds.size > 0
+          Object.keys(selectedManagerEmployeeIds).length > 0
         ) {
           // Check if this employee is in any of the selected managers' org hierarchies
           let isUnderSelectedManager = false;
-          for (const [_, reportIds] of selectedManagerEmployeeIds) {
+          for (const reportIds of Object.values(selectedManagerEmployeeIds)) {
             if (reportIds.includes(emp.employee_id)) {
               isUnderSelectedManager = true;
               break;
             }
           }
           if (!isUnderSelectedManager) return false;
-        }
-
-        // Filter by reporting chain (using employee IDs from org service)
-        if (reportingChainFilter && reportingChainEmployeeIds.length > 0) {
-          if (!reportingChainEmployeeIds.includes(emp.employee_id))
-            return false;
         }
 
         // Filter by flags (employee must have ALL selected flags)
@@ -164,8 +155,6 @@ export const useFilters = () => {
       selectedManagerEmployeeIds,
       selectedFlags,
       excludedEmployeeIds,
-      reportingChainFilter,
-      reportingChainEmployeeIds,
     ]
   );
 
@@ -260,8 +249,6 @@ export const useFilters = () => {
     selectedManagers,
     selectedFlags,
     excludedEmployeeIds,
-    reportingChainFilter,
-    reportingChainEmployeeIds,
     isDrawerOpen,
     hasActiveFilters: hasActiveFilters(),
 
@@ -270,10 +257,9 @@ export const useFilters = () => {
     toggleJobFunction,
     toggleLocation,
     toggleManager,
+    selectManager,
     toggleFlag,
     setExcludedIds,
-    setReportingChainFilter,
-    clearReportingChainFilter,
     clearAllFilters,
     toggleDrawer,
 

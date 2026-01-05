@@ -10,16 +10,18 @@
  *   - details-reporting-chain-clickable: Reporting Chain section with clickable manager names
  */
 
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import ButtonBase from "@mui/material/ButtonBase";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTheme, alpha } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { useTranslation } from "react-i18next";
 import { Employee } from "../../types/employee";
 import { useFilters } from "../../hooks/useFilters";
+import { useOrgHierarchy } from "../../hooks/useOrgHierarchy";
 
 interface ManagementChainProps {
   employee: Employee;
@@ -30,7 +32,9 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { setReportingChainFilter, reportingChainFilter } = useFilters();
+  const { selectManager, selectedManagers } = useFilters();
+  const { managers, getReportIds } = useOrgHierarchy();
+  const [loadingManager, setLoadingManager] = useState<string | null>(null);
 
   // Build the management chain from bottom to top
   const chain: Array<{ name: string; level: string }> = [];
@@ -100,8 +104,30 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
     );
   }
 
-  const handleManagerClick = (managerName: string) => {
-    setReportingChainFilter(managerName);
+  const handleManagerClick = async (managerName: string) => {
+    // Find the manager in the org managers list to get their employee ID
+    const manager = managers.find((m) => m.name === managerName);
+    if (!manager) {
+      console.warn(`Manager "${managerName}" not found in org hierarchy`);
+      selectManager(managerName, []);
+      return;
+    }
+
+    setLoadingManager(managerName);
+    try {
+      // Fetch employee IDs from org service
+      const employeeIds = await getReportIds(manager.employee_id);
+      selectManager(managerName, employeeIds);
+    } catch (error) {
+      console.error(
+        `Failed to fetch employee IDs for manager ${managerName}:`,
+        error
+      );
+      // Fallback to empty array on error
+      selectManager(managerName, []);
+    } finally {
+      setLoadingManager(null);
+    }
   };
 
   return (
@@ -115,8 +141,8 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
       {chain.map((person, index) => {
         const isEmployee = index === 0;
         const isClickable = !isEmployee;
-        const isActiveFilter =
-          reportingChainFilter?.toLowerCase() === person.name.toLowerCase();
+        const isActiveFilter = selectedManagers.includes(person.name);
+        const isLoading = loadingManager === person.name;
 
         return (
           <React.Fragment key={index}>
@@ -174,28 +200,46 @@ export const ManagementChain: React.FC<ManagementChainProps> = ({
                     },
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    fontSize="0.813rem"
-                    fontWeight="medium"
+                  <Box
                     sx={{
-                      color: isActiveFilter ? "success.main" : "text.primary",
-                      lineHeight: 1.3,
-                      textDecoration: isActiveFilter ? "underline" : "none",
-                      "&:hover": {
-                        textDecoration: "underline",
-                      },
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
                     }}
                   >
-                    {person.name}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    fontSize="0.688rem"
-                    color="text.secondary"
-                  >
-                    {person.level}
-                  </Typography>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="body2"
+                        fontSize="0.813rem"
+                        fontWeight="medium"
+                        sx={{
+                          color: isActiveFilter
+                            ? "success.main"
+                            : "text.primary",
+                          lineHeight: 1.3,
+                          textDecoration: isActiveFilter ? "underline" : "none",
+                          "&:hover": {
+                            textDecoration: "underline",
+                          },
+                        }}
+                      >
+                        {person.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        fontSize="0.688rem"
+                        color="text.secondary"
+                      >
+                        {person.level}
+                      </Typography>
+                    </Box>
+                    {isLoading && (
+                      <CircularProgress
+                        size={16}
+                        sx={{ color: "primary.main" }}
+                      />
+                    )}
+                  </Box>
                 </Paper>
               </ButtonBase>
             ) : (

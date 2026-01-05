@@ -21,6 +21,9 @@ import { tokens } from "../../theme/tokens";
  * - Consistent full border for movement highlighting:
  *   - Session Modified: Full orange border (2px)
  *   - Donut Mode: Full purple border (2px)
+ * - Selection highlighting:
+ *   - Selected: Blue outer glow (3px box-shadow)
+ *   - Can combine with movement borders
  * - Individual flag badges (Treatment 2 - Badge Strip):
  *   - 16px colored circular badges at top-right
  *   - Each flag shows its semantic color
@@ -30,6 +33,7 @@ import { tokens } from "../../theme/tokens";
  *
  * **Data Attributes:**
  * - `data-testid="employee-card-{employee_id}"` - Main card container
+ * - `data-selected="true|false"` - Selection state
  * - `data-testid="donut-indicator"` - Donut mode chip
  * - `data-testid="flag-badge-{index}"` - Individual flag badges
  */
@@ -58,6 +62,11 @@ const meta: Meta<typeof EmployeeTile> = {
     onSelect: {
       description: "Callback fired when employee tile is clicked",
       action: "selected",
+    },
+    isSelected: {
+      control: "boolean",
+      description:
+        "Whether this employee is currently selected (shows blue glow)",
     },
     donutModeActive: {
       control: "boolean",
@@ -120,6 +129,52 @@ export const Default: Story = {
   args: {
     employee: baseEmployee,
     onSelect: fn(),
+    donutModeActive: false,
+  },
+};
+
+/**
+ * Selected Employee
+ *
+ * Employee tile in selected state.
+ * Displays blue outer glow (3px box-shadow) to indicate selection.
+ * Selection state is independent of modification state.
+ */
+export const Selected: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "employee-tile-selected" },
+  },
+  args: {
+    employee: baseEmployee,
+    onSelect: fn(),
+    isSelected: true,
+    donutModeActive: false,
+  },
+};
+
+/**
+ * Selected and Modified
+ *
+ * Employee tile that is both selected and modified.
+ * Combines orange border (modification) with blue glow (selection).
+ * Demonstrates that both states can coexist visually.
+ */
+export const SelectedAndModified: Story = {
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: { enabled: true, id: "employee-tile-selected-modified" },
+  },
+  args: {
+    employee: {
+      ...baseEmployee,
+      grid_position: 9,
+      original_grid_position: 5,
+      modified_in_session: true,
+      last_modified: "2025-12-31T10:30:00Z",
+    },
+    onSelect: fn(),
+    isSelected: true,
     donutModeActive: false,
   },
 };

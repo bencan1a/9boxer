@@ -106,11 +106,11 @@ export async function loadSampleData(
   await page.locator('[data-testid="confirm-button"]').click();
 
   // Wait for loading to complete (dialog closes)
-  // Increased timeout as sample data generation can take time
+  // Backend startup (25-30s) + sample data generation (30-40s) = 60-70s total
   await expect(
     page.locator('[data-testid="load-sample-dialog"]')
   ).not.toBeVisible({
-    timeout: 30000, // Increased from 15s to 30s for slower CI environments
+    timeout: 90000, // 90s to account for backend startup + data generation in CI
   });
 
   // Verify grid displays employees
@@ -127,6 +127,23 @@ export async function loadSampleData(
   // Verify at least one employee card is fully interactive (not loading)
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
+
+  // Verify ~200 employees have loaded (prevents race conditions)
+  {
+    const expectedCount = 200;
+    const minAcceptableCount = Math.floor(expectedCount * 0.9); // 180 minimum
+
+    await expect(async () => {
+      const cardCount = await page
+        .locator('[data-testid^="employee-card-"]')
+        .count();
+      if (cardCount < minAcceptableCount) {
+        throw new Error(
+          `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
+        );
+      }
+    }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
+  }
 
   // Wait for sessionId to be set (filter button becomes enabled)
   // This ensures the full application state is ready before proceeding
@@ -195,10 +212,11 @@ export async function loadSampleDataFromEmptyState(page: Page): Promise<void> {
   await page.locator('[data-testid="confirm-button"]').click();
 
   // Wait for loading to complete (dialog closes)
+  // Backend startup (25-30s) + sample data generation (30-40s) = 60-70s total
   await expect(
     page.locator('[data-testid="load-sample-dialog"]')
   ).not.toBeVisible({
-    timeout: 10000,
+    timeout: 90000, // Match loadSampleData() timeout
   });
 
   // Verify grid displays employees
@@ -215,6 +233,23 @@ export async function loadSampleDataFromEmptyState(page: Page): Promise<void> {
   // Verify at least one employee card is fully interactive (not loading)
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
+
+  // Verify ~200 employees have loaded (prevents race conditions)
+  {
+    const expectedCount = 200;
+    const minAcceptableCount = Math.floor(expectedCount * 0.9); // 180 minimum
+
+    await expect(async () => {
+      const cardCount = await page
+        .locator('[data-testid^="employee-card-"]')
+        .count();
+      if (cardCount < minAcceptableCount) {
+        throw new Error(
+          `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
+        );
+      }
+    }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
+  }
 
   // Wait for sessionId to be set (filter button becomes enabled)
   // This ensures the full application state is ready before proceeding

@@ -57,6 +57,9 @@ Working with 100+ employees presents unique challenges:
 
 ## Strategies for Managing 200+ Employees
 
+!!! tip "Use the FilterToolbar"
+    The FilterToolbar is prominently positioned on the left side of the grid. Use the employee search feature to quickly navigate large datasets—it's your fastest tool for finding specific individuals.
+
 ### Strategy 1: Segmentation-First Approach
 
 Never try to review all 200+ employees at once. Break them into manageable segments.
@@ -212,6 +215,27 @@ Start broad, then narrow focus through multiple review passes.
 ## Advanced Filtering Techniques for Large Datasets
 
 Effective filtering is essential when managing 100+ employees. Here are power-user strategies:
+
+### Employee Search: Your First Tool
+
+Before diving into complex filters, use the **employee search** in the FilterToolbar to quickly locate specific individuals.
+
+**How it works:**
+- **Fuzzy matching** - Finds employees even with typos ("Sarh" finds "Sarah")
+- **Multi-field search** - Searches across name, job level, and manager name
+- **Live highlighting** - Matching text is highlighted in the results
+
+**When to use:**
+- Finding a specific employee by name in a 200-person dataset
+- Looking for all "Directors" (searches job level)
+- Finding everyone reporting to "Sarah Chen" (searches manager name)
+
+**Example workflow:**
+1. Type "MT3" in the search box to find all Senior ICs
+2. Type a manager's name to see their team instantly
+3. Type "eng" to find employees in Engineering roles
+
+This saves massive time compared to scrolling through the entire grid.
 
 ### Multi-Dimensional Filtering
 
@@ -479,7 +503,7 @@ When working with 200+ employees, optimize 9Boxer performance:
 **Use case:** 200 employees reporting to 15 different managers.
 
 **Segmentation approach:**
-1. **Filter by manager name** or use Reporting Chain filter
+1. **Filter by manager** - Open the Filters panel and use the org tree filter to select a manager. This shows their entire organization (direct and indirect reports). You can also quickly access this by clicking manager names in employee details panels or Intelligence cards.
 2. **Review each manager's team** (10-20 employees per manager)
 3. **Compare manager distributions** using Statistics
 4. **Identify manager bias** using Intelligence
@@ -654,6 +678,7 @@ When working with 200+ employees, optimize 9Boxer performance:
 
 ### Do's
 
+- **Do use employee search first** - The FilterToolbar search is your fastest navigation tool for large datasets
 - **Do segment your review** - Never try to review 200+ employees at once
 - **Do use filters aggressively** - Keep visible employee count under 100
 - **Do run Intelligence** - Detect anomalies impossible to spot manually
@@ -698,7 +723,19 @@ Realistic time estimates for common tasks with 200-employee datasets:
 
 ## Power User Tips for Scale
 
-### Tip 1: Use Browser Bookmarks for Common Filter States
+### Tip 1: Master the Employee Search
+
+The employee search in the FilterToolbar is your fastest navigation tool for large datasets.
+
+**Advanced search techniques:**
+- **Partial name matching**: Type "sar ch" to find "Sarah Chen"
+- **Job level shortcuts**: Type "MT" to see all managers and leads
+- **Manager-based search**: Type a manager's name to find their reports
+- **Quick jumps**: Use search to jump to specific employees instead of scrolling through 200+ tiles
+
+**Power move:** Combine search with filters. Filter to Engineering, then search for "Director" to instantly find Engineering Directors.
+
+### Tip 2: Use Browser Bookmarks for Common Filter States
 
 **How:**
 1. Apply your most common filter combination
@@ -707,13 +744,13 @@ Realistic time estimates for common tasks with 200-employee datasets:
 4. Return to this view instantly by clicking bookmark
 
 **Use cases:**
-- Your direct reports (Reporting Chain filter)
+- Your direct reports (manager filter)
 - Flight Risk + High Retention (critical retention)
 - Stars only (succession planning)
 
 ---
 
-### Tip 2: Create a Review Schedule and Stick to It
+### Tip 3: Create a Review Schedule and Stick to It
 
 **How:**
 1. Block calendar time for each segment review
@@ -727,7 +764,7 @@ Realistic time estimates for common tasks with 200-employee datasets:
 
 ---
 
-### Tip 3: Use Two Monitors
+### Tip 4: Use Two Monitors
 
 **How:**
 1. **Monitor 1:** 9Boxer interface
@@ -742,7 +779,7 @@ Realistic time estimates for common tasks with 200-employee datasets:
 
 ---
 
-### Tip 4: Delegate Initial Review to Managers
+### Tip 5: Delegate Initial Review to Managers
 
 **How:**
 1. Have each manager rate their 10-30 direct reports

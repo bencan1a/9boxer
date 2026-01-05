@@ -57,6 +57,24 @@ export interface ReportingChainResponse {
 }
 
 /**
+ * Organization tree node with hierarchical structure
+ */
+export interface OrgTreeNode {
+  employee_id: number;
+  name: string;
+  team_size: number;
+  direct_reports: OrgTreeNode[];
+}
+
+/**
+ * Response from /api/org-hierarchy/tree endpoint
+ */
+export interface OrgTreeResponse {
+  roots: OrgTreeNode[];
+  total_managers: number;
+}
+
+/**
  * Organization Hierarchy Service
  *
  * Provides methods for querying organizational structures using OrgService backend.
@@ -171,5 +189,36 @@ export const orgHierarchyService = {
   async getReportIds(employeeId: number): Promise<number[]> {
     const response = await this.getAllReports(employeeId);
     return response.all_reports.map((emp) => emp.employee_id);
+  },
+
+  /**
+   * Get hierarchical organization tree structure
+   *
+   * Returns the org structure as a tree with parent-child relationships.
+   * Only includes managers with at least min_team_size total reports.
+   *
+   * @param minTeamSize - Minimum total team size (default: 1)
+   * @returns Promise<OrgTreeResponse> - Tree with root managers and nested reports
+   *
+   * @example
+   * ```typescript
+   * const tree = await orgHierarchyService.getOrgTree();
+   * // Display as expandable tree in UI
+   * tree.roots.forEach(root => {
+   *   console.log(`${root.name} (${root.team_size} reports)`);
+   *   root.direct_reports.forEach(child => {
+   *     console.log(`  - ${child.name}`);
+   *   });
+   * });
+   * ```
+   */
+  async getOrgTree(minTeamSize: number = 1): Promise<OrgTreeResponse> {
+    const params = new URLSearchParams();
+    if (minTeamSize > 1) {
+      params.append("min_team_size", minTeamSize.toString());
+    }
+
+    const url = `/api/org-hierarchy/tree${params.toString() ? `?${params.toString()}` : ""}`;
+    return apiClient.get<OrgTreeResponse>(url);
   },
 };

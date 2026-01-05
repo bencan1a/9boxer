@@ -4,6 +4,10 @@
  * Optimized overlay component shown during drag operations.
  * Memoized to prevent unnecessary re-renders during drag movements.
  *
+ * **Selection Highlighting**:
+ * - Selected: Blue outer glow (3px box-shadow) using primary color
+ * - Can combine with movement borders (e.g., orange border + blue glow)
+ *
  * @component
  */
 
@@ -24,6 +28,7 @@ import { useGridZoom } from "../../contexts/GridZoomContext";
 interface DraggedEmployeeTileProps {
   employee: Employee;
   donutModeActive?: boolean;
+  isSelected?: boolean;
 }
 
 /**
@@ -37,6 +42,7 @@ const truncate = (str: string, maxLength: number): string => {
 const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
   employee,
   donutModeActive = false,
+  isSelected = false,
 }) => {
   const theme = useTheme();
   const { tokens } = useGridZoom();
@@ -64,6 +70,13 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
     return "divider";
   };
 
+  // Get selection outline color from theme tokens
+  const selectionOutline =
+    theme.palette.mode === "dark"
+      ? theme.tokens.colors.selection.dark.outline
+      : theme.tokens.colors.selection.light.outline;
+  const selectionWidth = theme.tokens.colors.selection.light.outlineWidth;
+
   return (
     <Card
       sx={{
@@ -77,8 +90,13 @@ const DraggedEmployeeTileComponent: React.FC<DraggedEmployeeTileProps> = ({
         border: 2,
         borderStyle: "solid",
         borderColor: getBorderColor(),
-        boxShadow: 6,
+        // Selection state: blue outer glow (can combine with border colors)
+        // When dragging a selected employee, show both the drag shadow and selection glow
+        boxShadow: isSelected
+          ? `0 0 0 ${selectionWidth}px ${selectionOutline}, 0 8px 16px rgba(0,0,0,0.3)`
+          : 6,
       }}
+      data-selected={isSelected}
     >
       {/* Flag Badges - Top Right Strip */}
       {flags.length > 0 && (
@@ -256,7 +274,8 @@ export const DraggedEmployeeTile = React.memo(
       prevProps.employee.original_grid_position ===
         nextProps.employee.original_grid_position &&
       areArraysEqual(prevProps.employee.flags, nextProps.employee.flags) &&
-      prevProps.donutModeActive === nextProps.donutModeActive
+      prevProps.donutModeActive === nextProps.donutModeActive &&
+      prevProps.isSelected === nextProps.isSelected
     );
   }
 );

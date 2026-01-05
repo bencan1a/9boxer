@@ -250,6 +250,11 @@ export async function generateScreenshots(
   };
 
   let browser: Browser | null = null;
+  let context: any = null;
+
+  // Enable tracing only if explicitly requested (trace on error only)
+  const enableTracing =
+    process.env.ENABLE_TRACE === "1" || process.env.ENABLE_TRACE === "true";
 
   try {
     // Start servers
@@ -262,16 +267,17 @@ export async function generateScreenshots(
       headless: options.headless ?? true,
     });
 
-    const context = await browser.newContext({
+    context = await browser.newContext({
       viewport: options.viewport || { width: 1400, height: 900 },
     });
 
-    // Enable tracing for debugging
-    await context.tracing.start({
-      screenshots: true,
-      snapshots: true,
-      sources: true,
-    });
+    if (enableTracing) {
+      await context.tracing.start({
+        screenshots: true,
+        snapshots: true,
+        sources: true,
+      });
+    }
 
     const page = (await context.pages()[0]) || (await context.newPage());
 
@@ -317,24 +323,26 @@ export async function generateScreenshots(
         results.failed.push({ name, error: errorMessage });
         console.error(`✗ Failed: ${name} - ${errorMessage}`);
 
-        // Save trace for debugging
-        try {
-          const tracesDir = path.join(process.cwd(), "playwright-traces");
-          if (!fs.existsSync(tracesDir)) {
-            fs.mkdirSync(tracesDir, { recursive: true });
-          }
-          const tracePath = path.join(tracesDir, `${name}-trace.zip`);
-          await context.tracing.stop({ path: tracePath });
-          console.log(`  📊 Trace saved: ${tracePath}`);
+        // Save trace for debugging (only if tracing is enabled)
+        if (enableTracing) {
+          try {
+            const tracesDir = path.join(process.cwd(), "playwright-traces");
+            if (!fs.existsSync(tracesDir)) {
+              fs.mkdirSync(tracesDir, { recursive: true });
+            }
+            const tracePath = path.join(tracesDir, `${name}-trace.zip`);
+            await context.tracing.stop({ path: tracePath });
+            console.log(`  📊 Trace saved: ${tracePath}`);
 
-          // Restart tracing for next screenshot
-          await context.tracing.start({
-            screenshots: true,
-            snapshots: true,
-            sources: true,
-          });
-        } catch (traceError) {
-          console.error(`  ⚠️  Failed to save trace: ${traceError}`);
+            // Restart tracing for next screenshot
+            await context.tracing.start({
+              screenshots: true,
+              snapshots: true,
+              sources: true,
+            });
+          } catch (traceError) {
+            console.error(`  ⚠️  Failed to save trace: ${traceError}`);
+          }
         }
       }
 
@@ -356,7 +364,7 @@ export async function generateScreenshots(
   } finally {
     // Cleanup - stop tracing if still active
     try {
-      if (context) {
+      if (context && enableTracing) {
         await context.tracing.stop();
       }
     } catch (error) {

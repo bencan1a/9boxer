@@ -71,11 +71,13 @@ During calibration, you'll drag employees as your team reaches consensus on rati
 
 A common calibration task: review employees at the same job level to ensure balanced ratings.
 
-1. Click the **Filters** button (top toolbar)
+1. Click the **Filters** button in the FilterToolbar (floating toolbar at the top-left of the grid, above the vertical axis)
 2. Under **Level**, select a specific level (e.g., "Manager")
 3. The grid now shows only employees at that level
 
 ![Filters panel expanded](images/screenshots/filters/filters-panel-expanded.png)
+
+The FilterToolbar also displays your employee count (e.g., "15 of 200 employees" when filtered) and a summary of active filters.
 
 This helps you compare apples to apples during discussions. Clear the filter when done.
 
