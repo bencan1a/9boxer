@@ -89,3 +89,29 @@ def test_org_service_caching() -> None:
 
     # Should return the same cached object
     assert tree1 is tree2
+
+
+def test_sample_data_has_exactly_one_ceo() -> None:
+    """Test that sample data always generates exactly one CEO (single org tree root).
+
+    Regression test for bug where multiple CEOs created two independent org trees,
+    causing confusion in the filter drawer where VPs appeared as roots.
+    """
+    # Test with various dataset sizes
+    for size in [50, 100, 200, 300]:
+        config = RichDatasetConfig(size=size, seed=42)
+        employees = generate_rich_dataset(config)
+
+        # Count CEOs (MT6 level with no manager)
+        ceos = [emp for emp in employees if emp.job_level == "MT6"]
+
+        assert len(ceos) == 1, (
+            f"Expected exactly 1 CEO for dataset size {size}, but found {len(ceos)}. "
+            "Multiple CEOs create independent org trees instead of a single hierarchy."
+        )
+
+        # Verify CEO has no manager
+        ceo = ceos[0]
+        assert ceo.direct_manager == "None", (
+            f"CEO {ceo.name} should have no manager, but has manager={ceo.direct_manager}"
+        )

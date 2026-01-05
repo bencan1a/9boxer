@@ -106,8 +106,17 @@ This reveals department-specific patterns the global view hides.
 
 ---
 
+## Statistical Analysis & Methodology
+
+The Statistics tab provides descriptive analytics (counts, percentages, distributions). For **anomaly detection** using statistical tests, see the [Intelligence](intelligence.md) tab.
+
+For technical users interested in the statistical methodology behind anomaly detection—including chi-square tests, Z-scores, effect sizes, and severity determination—see the **[Detection Methodology](detection-methodology.md)** reference guide.
+
+---
+
 ## Next Steps
 
 - [Intelligence](intelligence.md) - Detect rating anomalies and bias
+- [Detection Methodology](detection-methodology.md) - Technical deep dive on statistical methods
 - [Understanding the Grid](understanding-grid.md) - What each position means
 - [Filtering](filters.md) - Focus on specific groups

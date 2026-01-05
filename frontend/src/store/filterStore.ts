@@ -10,11 +10,9 @@ interface FilterState {
   selectedJobFunctions: string[];
   selectedLocations: string[];
   selectedManagers: string[];
-  selectedManagerEmployeeIds: Map<string, number[]>; // Map of manager name to their employee IDs
+  selectedManagerEmployeeIds: Record<string, number[]>; // Map of manager name to their employee IDs
   selectedFlags: string[];
   excludedEmployeeIds: number[];
-  reportingChainFilter: string | null; // Manager name for display
-  reportingChainEmployeeIds: number[]; // All employee IDs under the selected manager
 
   // UI state
   isDrawerOpen: boolean;
@@ -24,13 +22,9 @@ interface FilterState {
   toggleJobFunction: (jobFunction: string) => void;
   toggleLocation: (location: string) => void;
   toggleManager: (manager: string, employeeIds: number[]) => void;
+  selectManager: (manager: string, employeeIds: number[]) => void;
   toggleFlag: (flag: string) => void;
   setExcludedIds: (ids: number[]) => void;
-  setReportingChainFilter: (
-    managerName: string | null,
-    employeeIds: number[]
-  ) => void;
-  clearReportingChainFilter: () => void;
   clearAllFilters: () => void;
   toggleDrawer: () => void;
 
@@ -44,11 +38,9 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   selectedJobFunctions: [],
   selectedLocations: [],
   selectedManagers: [],
-  selectedManagerEmployeeIds: new Map(),
+  selectedManagerEmployeeIds: {},
   selectedFlags: [],
   excludedEmployeeIds: [],
-  reportingChainFilter: null,
-  reportingChainEmployeeIds: [],
   isDrawerOpen: false,
 
   // Actions
@@ -92,20 +84,31 @@ export const useFilterStore = create<FilterState>((set, get) => ({
         ? state.selectedManagers.filter((m) => m !== manager)
         : [...state.selectedManagers, manager];
 
-      // Update employee IDs map
-      const newEmployeeIdsMap = new Map(state.selectedManagerEmployeeIds);
+      // Update employee IDs record
+      let newEmployeeIdsRecord: Record<string, number[]>;
       if (isSelected) {
-        // Remove manager from map
-        newEmployeeIdsMap.delete(manager);
+        // Remove manager from record
+        const { [manager]: _, ...rest } = state.selectedManagerEmployeeIds;
+        newEmployeeIdsRecord = rest;
       } else {
-        // Add manager and their employee IDs to map
-        newEmployeeIdsMap.set(manager, employeeIds);
+        // Add manager and their employee IDs to record
+        newEmployeeIdsRecord = {
+          ...state.selectedManagerEmployeeIds,
+          [manager]: employeeIds,
+        };
       }
 
       return {
         selectedManagers: newSelectedManagers,
-        selectedManagerEmployeeIds: newEmployeeIdsMap,
+        selectedManagerEmployeeIds: newEmployeeIdsRecord,
       };
+    });
+  },
+
+  selectManager: (manager: string, employeeIds: number[]) => {
+    set({
+      selectedManagers: [manager],
+      selectedManagerEmployeeIds: { [manager]: employeeIds },
     });
   },
 
@@ -124,31 +127,15 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     set({ excludedEmployeeIds: ids });
   },
 
-  setReportingChainFilter: (
-    managerName: string | null,
-    employeeIds: number[]
-  ) => {
-    set({
-      reportingChainFilter: managerName,
-      reportingChainEmployeeIds: employeeIds,
-    });
-  },
-
-  clearReportingChainFilter: () => {
-    set({ reportingChainFilter: null, reportingChainEmployeeIds: [] });
-  },
-
   clearAllFilters: () => {
     set({
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
-      selectedManagerEmployeeIds: new Map(),
+      selectedManagerEmployeeIds: {},
       selectedFlags: [],
       excludedEmployeeIds: [],
-      reportingChainFilter: null,
-      reportingChainEmployeeIds: [],
     });
   },
 
@@ -165,8 +152,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       state.selectedLocations.length > 0 ||
       state.selectedManagers.length > 0 ||
       state.selectedFlags.length > 0 ||
-      state.excludedEmployeeIds.length > 0 ||
-      state.reportingChainFilter !== null
+      state.excludedEmployeeIds.length > 0
     );
   },
 }));

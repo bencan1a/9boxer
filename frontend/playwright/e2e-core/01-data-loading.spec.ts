@@ -147,11 +147,14 @@ test.describe("Data Loading Tests", () => {
     });
 
     // ✅ Success Criterion: New sample data loads successfully
-    // Verify success notification appears (check immediately after dialog closes)
-    // Note: Snackbar auto-hides after 4 seconds, so check this early
+    // Wait for network idle to ensure backend response is fully processed
+    await page.waitForLoadState("networkidle");
+
+    // Verify success notification appears
+    // Note: Snackbar auto-hides after 4 seconds, so use 8s timeout (4s + network delay)
     await expect(
       page.getByRole("alert").filter({ hasText: /successfully loaded/i })
-    ).toBeVisible({ timeout: 5000 });
+    ).toBeVisible({ timeout: 8000 });
 
     // ✅ Success Criterion: Grid displays 200 employees
     await page.waitForSelector('[data-testid^="employee-card-"]', {

@@ -16,7 +16,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import { useTheme } from "@mui/material/styles";
+import { useTheme, alpha } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface FilterSectionProps {
@@ -90,6 +90,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   testId = "filter-section",
 }) => {
   const theme = useTheme();
+  const hasActiveFilters = count !== undefined && count > 0;
 
   return (
     <Accordion
@@ -99,8 +100,16 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       elevation={0}
       data-testid={testId}
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: hasActiveFilters
+          ? alpha(theme.palette.primary.main, 0.04)
+          : "transparent",
         "&:before": { display: "none" },
+        // Always have the border to prevent jitter - just change its color
+        borderLeft: `4px solid ${hasActiveFilters ? theme.palette.primary.main : "transparent"}`,
+        borderRadius: 0, // Force square corners
+        pl: 1.5,
+        my: 0.5,
+        transition: `all ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
       }}
     >
       <AccordionSummary
@@ -108,25 +117,58 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
         aria-controls={`${testId}-content`}
         id={`${testId}-header`}
         data-testid={`${testId}-header`}
+        sx={{
+          minHeight: theme.tokens.dimensions.menuItem.minHeight,
+          borderRadius: 0, // Force square corners on summary
+          "&.Mui-expanded": {
+            minHeight: theme.tokens.dimensions.menuItem.minHeight,
+          },
+          "& .MuiAccordionSummary-content": {
+            my: 1.5,
+            alignItems: "center", // Vertically center content to prevent height changes
+          },
+        }}
       >
         <Typography
           variant="subtitle2"
           fontWeight="bold"
-          sx={{ color: theme.palette.text.primary }}
+          sx={{
+            color: hasActiveFilters
+              ? theme.palette.primary.main
+              : theme.palette.text.primary,
+            display: "flex",
+            alignItems: "center",
+          }}
         >
           {title}
-          {count !== undefined && count > 0 && (
-            <Chip
-              label={count}
-              size="small"
-              data-testid={`${testId}-count-badge`}
-              sx={{ ml: 1 }}
-            />
-          )}
+          {/* Always render chip to prevent vertical jitter, but hide when count is 0 */}
+          <Chip
+            label={count || 0}
+            size="small"
+            color="primary"
+            data-testid={`${testId}-count-badge`}
+            sx={{
+              ml: 1,
+              height: "20px", // Compact height to match text
+              "& .MuiChip-label": {
+                px: 0.75,
+                py: 0,
+                fontSize: "0.75rem",
+                lineHeight: "20px",
+              },
+              fontWeight: theme.tokens.typography.fontWeight.semiBold,
+              visibility: hasActiveFilters ? "visible" : "hidden",
+              opacity: hasActiveFilters ? 1 : 0,
+              transition: `opacity ${theme.tokens.duration.fast} ${theme.tokens.easing.easeInOut}`,
+            }}
+          />
         </Typography>
       </AccordionSummary>
       <AccordionDetails
-        sx={{ pt: 0 }}
+        sx={{
+          pt: 0,
+          pb: 2,
+        }}
         data-testid={`${testId}-content`}
         id={`${testId}-content`}
         role="region"

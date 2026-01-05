@@ -85,6 +85,18 @@ export const colors = {
     donutMode: "#9c27b0", // Purple - donut mode modification indicator
   },
 
+  // Selection colors for UI state indication
+  selection: {
+    light: {
+      outline: "#1976d2", // Blue - selected employee indicator (primary.main)
+      outlineWidth: 3, // Width of selection outline/glow in pixels
+    },
+    dark: {
+      outline: "#90caf9", // Lighter blue for dark mode (primary.main in dark)
+      outlineWidth: 3,
+    },
+  },
+
   // Grid box colors (9-box grid positions)
   gridBox: {
     light: {
@@ -326,12 +338,12 @@ export const dimensions = {
 
   // Drawer dimensions (left sidebar filter drawer)
   drawer: {
-    width: 280, // Filter drawer width
+    width: 420, // Filter drawer width (1.5x wider to accommodate org tree)
   },
 
   // AppBar dimensions
   appBar: {
-    height: 64, // Standard AppBar height
+    height: 48, // AppBar height (reduced by 25% from 64px)
     logoSize: 28, // App logo icon size
   },
 
@@ -343,7 +355,7 @@ export const dimensions = {
 
   // Axis dimensions
   axis: {
-    verticalWidth: 64, // Width of vertical axis label
+    verticalWidth: 45, // Width of vertical axis label (reduced by 30% from 64px)
   },
 
   // Box header (fixed sizing, does not scale with zoom)
@@ -374,6 +386,12 @@ export const dimensions = {
   distributionTable: {
     groupingColumnWidth: 120, // Width of grouping indicator column
     groupingBorderWidth: 4, // Border width for grouping indicators
+  },
+
+  // Menu item dimensions (used in tree nodes, list items, etc.)
+  menuItem: {
+    minHeight: 32, // Compact menu item height
+    paddingY: 0, // No additional vertical padding (minHeight provides spacing)
   },
 } as const;
 

@@ -17,11 +17,15 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { useTranslation } from "react-i18next";
 import { useSession } from "../../hooks/useSession";
 import { useFilters } from "../../hooks/useFilters";
+import { useEmployeeSearch } from "../../hooks/useEmployeeSearch";
+import { SearchHighlight } from "../common/SearchHighlight";
+import { useDebounced } from "../../hooks/useDebounced";
 
 interface ExclusionDialogProps {
   open: boolean;
@@ -40,6 +44,16 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Initialize employee search with fuzzy matching
+  // Note: Searches ALL employees (not filteredEmployees) because exclusion
+  // is independent of current filter state - users should be able to exclude
+  // anyone in the organization, not just currently visible employees
+  const { search, isReady, error } = useEmployeeSearch({
+    employees,
+    threshold: 0.3,
+    resultLimit: 100, // Higher limit for checkbox list (vs 10 for autocomplete)
+  });
+
   // Initialize selected IDs when dialog opens
   React.useEffect(() => {
     if (open) {
@@ -48,18 +62,17 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
     }
   }, [open, excludedEmployeeIds]);
 
-  // Filter employees by search term
-  const filteredEmployees = useMemo(() => {
-    if (!searchTerm) return employees;
+  // Debounce search input to prevent excessive search operations
+  const debouncedSearchTerm = useDebounced(searchTerm, 300);
 
-    const searchLower = searchTerm.toLowerCase();
-    return employees.filter(
-      (emp) =>
-        emp.name.toLowerCase().includes(searchLower) ||
-        emp.business_title.toLowerCase().includes(searchLower) ||
-        emp.job_level.toLowerCase().includes(searchLower)
-    );
-  }, [employees, searchTerm]);
+  // Filter employees by search term using fuzzy search
+  const filteredEmployees = useMemo(() => {
+    if (!debouncedSearchTerm || !isReady) return employees;
+
+    // Use fuzzy search instead of basic string matching
+    // Extract employee from search results to normalize type
+    return search(debouncedSearchTerm).map((result) => result.employee);
+  }, [employees, debouncedSearchTerm, search, isReady]);
 
   // Quick filter functions
   const excludeVPs = () => {
@@ -255,6 +268,18 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
 
         <Divider sx={{ my: 1 }} />
 
+        {/* Error Alert */}
+        {error && (
+          <Alert
+            severity="error"
+            sx={{ mb: 2 }}
+            data-testid="exclusion-search-error"
+          >
+            {t("filters.searchUnavailable", "Search unavailable")}:{" "}
+            {error.message}
+          </Alert>
+        )}
+
         {/* Employee List */}
         <Box sx={{ maxHeight: 400, overflow: "auto" }}>
           <FormGroup>
@@ -271,9 +296,16 @@ export const ExclusionDialog: React.FC<ExclusionDialogProps> = ({
                 }
                 label={
                   <Box>
-                    <Typography variant="body2">{emp.name}</Typography>
+                    <Typography variant="body2">
+                      <SearchHighlight text={emp.name} query={searchTerm} />
+                    </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {emp.job_level} • {emp.manager}
+                      <SearchHighlight
+                        text={emp.job_level}
+                        query={searchTerm}
+                      />{" "}
+                      •{" "}
+                      <SearchHighlight text={emp.manager} query={searchTerm} />
                     </Typography>
                   </Box>
                 }

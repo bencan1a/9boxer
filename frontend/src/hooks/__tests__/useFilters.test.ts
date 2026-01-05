@@ -227,110 +227,9 @@ describe("useFilters", () => {
       });
     });
 
-    describe("Reporting chain filtering", () => {
-      it("filters by direct manager (case-insensitive)", () => {
-        const employees: Employee[] = [
-          createEmployee({ employee_id: 1, manager: "Alice Smith" }),
-          createEmployee({ employee_id: 2, manager: "Bob Jones" }),
-        ];
-
-        const { result } = renderHook(() => useFilters());
-
-        act(() => {
-          // Pass employee IDs for employees reporting to alice smith
-          result.current.setReportingChainFilter("alice smith", [1]);
-        });
-
-        const filtered = result.current.applyFilters(employees);
-        expect(filtered).toHaveLength(1);
-        expect(filtered[0].employee_id).toBe(1);
-      });
-
-      it("filters by management chain levels (case-insensitive)", () => {
-        const employees: Employee[] = [
-          createEmployee({
-            employee_id: 1,
-            manager: "Direct Manager",
-            management_chain_01: "Level 1 Manager",
-            management_chain_02: "Level 2 Manager",
-          }),
-          createEmployee({
-            employee_id: 2,
-            manager: "Another Manager",
-            management_chain_01: "Different Manager",
-          }),
-        ];
-
-        const { result } = renderHook(() => useFilters());
-
-        act(() => {
-          // Pass employee IDs for employees under level 2 manager
-          result.current.setReportingChainFilter("level 2 manager", [1]);
-        });
-
-        const filtered = result.current.applyFilters(employees);
-        expect(filtered).toHaveLength(1);
-        expect(filtered[0].employee_id).toBe(1);
-      });
-
-      it("searches through all management chain levels", () => {
-        const employees: Employee[] = [
-          createEmployee({
-            employee_id: 1,
-            management_chain_03: "Target Manager",
-          }),
-          createEmployee({
-            employee_id: 2,
-            management_chain_04: "Target Manager",
-          }),
-          createEmployee({
-            employee_id: 3,
-            management_chain_05: "Target Manager",
-          }),
-          createEmployee({
-            employee_id: 4,
-            management_chain_06: "Target Manager",
-          }),
-        ];
-
-        const { result } = renderHook(() => useFilters());
-
-        act(() => {
-          // Pass employee IDs for all employees under Target Manager
-          result.current.setReportingChainFilter(
-            "Target Manager",
-            [1, 2, 3, 4]
-          );
-        });
-
-        const filtered = result.current.applyFilters(employees);
-        expect(filtered).toHaveLength(4);
-      });
-
-      it("clears reporting chain filter", () => {
-        const employees: Employee[] = [
-          createEmployee({ employee_id: 1, manager: "Alice Smith" }),
-          createEmployee({ employee_id: 2, manager: "Bob Jones" }),
-        ];
-
-        const { result } = renderHook(() => useFilters());
-
-        act(() => {
-          // Pass employee IDs for Alice Smith's reports
-          result.current.setReportingChainFilter("Alice Smith", [1]);
-        });
-
-        let filtered = result.current.applyFilters(employees);
-        expect(filtered).toHaveLength(1);
-
-        act(() => {
-          result.current.clearReportingChainFilter();
-        });
-
-        filtered = result.current.applyFilters(employees);
-        expect(filtered).toHaveLength(2);
-      });
-    });
+    // NOTE: Reporting chain filtering has been unified with manager filtering
+    // The manager filter now handles both direct manager selection and
+    // organizational hierarchy filtering through the same mechanism
 
     describe("Flag filtering", () => {
       it("filters employees by selected flags (AND logic)", () => {
@@ -558,7 +457,7 @@ describe("useFilters", () => {
       act(() => {
         result.current.toggleLevel("MT1");
         result.current.toggleJobFunction("Engineering");
-        result.current.setReportingChainFilter("Alice Smith");
+        result.current.toggleManager("Alice Smith", [1, 2, 3]);
       });
 
       expect(result.current.hasActiveFilters).toBe(true);
@@ -570,7 +469,6 @@ describe("useFilters", () => {
       expect(result.current.hasActiveFilters).toBe(false);
       expect(result.current.selectedLevels).toEqual([]);
       expect(result.current.selectedJobFunctions).toEqual([]);
-      expect(result.current.reportingChainFilter).toBeNull();
     });
   });
 

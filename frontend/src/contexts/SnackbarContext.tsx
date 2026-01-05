@@ -8,8 +8,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import AlertColor from "@mui/material/AlertColor";
+import Alert, { AlertColor } from "@mui/material/Alert";
 
 interface SnackbarMessage {
   id: number;

@@ -92,9 +92,6 @@ export const CalibrationSummarySection: React.FC<
     );
   }
 
-  // Data is validated above, destructure what we need
-  const _data = data; // Mark as used to satisfy linter
-
   return (
     <Card
       variant="outlined"

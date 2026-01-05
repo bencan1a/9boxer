@@ -362,7 +362,7 @@ export const ReportingChainActive: Story = {
   decorators: [
     withStoreState(() => {
       const store = useFilterStore.getState();
-      store.setReportingChainFilter("Jane Smith");
+      store.toggleManager("Jane Smith", []);
     }),
   ],
 };
@@ -396,8 +396,8 @@ export const MultipleFiltersActive: Story = {
       // Flags
       store.toggleFlag("promotion_ready");
       store.toggleFlag("succession_candidate");
-      // Reporting chain
-      store.setReportingChainFilter("Jane Smith");
+      // Manager filter
+      store.toggleManager("Jane Smith", []);
     }),
   ],
 };
@@ -540,7 +540,7 @@ export const DarkTheme: Story = {
       store.toggleJobFunction("Engineering");
       store.toggleLocation("USA");
       store.toggleFlag("promotion_ready");
-      store.setReportingChainFilter("Jane Smith");
+      store.toggleManager("Jane Smith", []);
     }),
   ],
   parameters: {

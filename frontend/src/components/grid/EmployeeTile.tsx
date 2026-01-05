@@ -8,6 +8,10 @@
  * - Session Modified: Full orange border (2px)
  * - Donut Mode: Full purple border (2px)
  *
+ * **Selection Highlighting**:
+ * - Selected: Blue outer glow (3px box-shadow) using primary color
+ * - Can combine with movement borders (e.g., orange border + blue glow)
+ *
  * **Flag Display** (Treatment 2 - Badge Strip):
  * - Individual colored circular badges (16px) at top-right
  * - Each flag shows its semantic color
@@ -47,8 +51,10 @@ export type OriginalPositionVariant =
 interface EmployeeTileProps {
   employee: Employee;
   onSelect: (employeeId: number) => void;
+  onDoubleClick?: (employeeId: number) => void;
   donutModeActive?: boolean;
   originalPositionVariant?: OriginalPositionVariant;
+  isSelected?: boolean;
 }
 
 /**
@@ -62,8 +68,10 @@ const truncate = (str: string, maxLength: number): string => {
 const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
   employee,
   onSelect,
+  onDoubleClick,
   donutModeActive = false,
   originalPositionVariant = "icon-text",
+  isSelected = false,
 }) => {
   const theme = useTheme();
   const { tokens } = useGridZoom();
@@ -80,6 +88,17 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       employee.name
     );
     onSelect(employee.employee_id);
+  };
+
+  const handleCardDoubleClick = () => {
+    logger.debug(
+      "Card double-clicked - opening details:",
+      employee.employee_id,
+      employee.name
+    );
+    if (onDoubleClick) {
+      onDoubleClick(employee.employee_id);
+    }
   };
 
   // Get flags
@@ -113,10 +132,18 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     (donutModeActive && employee.donut_position) ||
     employee.modified_in_session;
 
+  // Get selection outline color from theme tokens
+  const selectionOutline =
+    theme.palette.mode === "dark"
+      ? theme.tokens.colors.selection.dark.outline
+      : theme.tokens.colors.selection.light.outline;
+  const selectionWidth = theme.tokens.colors.selection.light.outlineWidth;
+
   return (
     <Card
       ref={setNodeRef}
       onClick={handleCardClick}
+      onDoubleClick={handleCardDoubleClick}
       sx={{
         minWidth: tokens.tile.minWidth,
         maxWidth: tokens.tile.maxWidth,
@@ -133,14 +160,20 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
         border: 2,
         borderStyle: "solid",
         borderColor: showBorder ? getBorderColor() : "divider",
-        boxShadow: 1,
+        // Selection state: blue outer glow (can combine with border colors)
+        boxShadow: isSelected
+          ? `0 0 0 ${selectionWidth}px ${selectionOutline}`
+          : 1,
         "&:hover": {
-          boxShadow: 3,
+          boxShadow: isSelected
+            ? `0 0 0 ${selectionWidth}px ${selectionOutline}, 0 4px 8px rgba(0,0,0,0.15)`
+            : 3,
         },
       }}
       data-testid={`employee-card-${employee.employee_id}`}
       data-position={employee.grid_position}
       data-donut-position={employee.donut_position || ""}
+      data-selected={isSelected}
     >
       {/* Flag Badges - Top Right Strip */}
       {flags.length > 0 && (
@@ -333,7 +366,9 @@ export const EmployeeTile = React.memo(
       areArraysEqual(prevProps.employee.flags, nextProps.employee.flags) &&
       prevProps.donutModeActive === nextProps.donutModeActive &&
       prevProps.originalPositionVariant === nextProps.originalPositionVariant &&
-      prevProps.onSelect === nextProps.onSelect
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.onSelect === nextProps.onSelect &&
+      prevProps.onDoubleClick === nextProps.onDoubleClick
     );
   }
 );

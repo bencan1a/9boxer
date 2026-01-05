@@ -625,7 +625,7 @@ async def generate_sample_employees(
             filename=filename,
             file_path="",  # No actual file for generated data
             sheet_name="Sample Data",
-            sheet_index=0,
+            sheet_index=1,  # Employee Data sheet (index 1), Summary is sheet 0
             employees=employees,
         )
 

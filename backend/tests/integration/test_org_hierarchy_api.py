@@ -356,3 +356,49 @@ def test_org_hierarchy_api_performance(
 
         assert response.status_code == 200
         assert duration < 1.0  # Should complete in under 1 second
+
+
+def test_org_tree_has_single_root(
+    test_client: TestClient,
+    sample_session_with_org_hierarchy: dict,
+) -> None:
+    """Test that org tree has exactly one root (CEO).
+
+    Regression test for bug where multiple CEOs created two independent org trees,
+    causing VPs to appear as roots in the filter drawer.
+    """
+    # Get org tree
+    response = test_client.get("/api/org-hierarchy/tree?min_team_size=1")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert "roots" in data
+    assert "total_managers" in data
+
+    # Should have exactly one root (the CEO)
+    assert len(data["roots"]) == 1, (
+        f"Expected exactly 1 root (CEO) in org tree, but found {len(data['roots'])}. "
+        "Multiple roots indicate multiple CEOs creating independent org hierarchies."
+    )
+
+    # Verify the root has no manager (is truly a CEO)
+    root = data["roots"][0]
+    assert "employee_id" in root
+    assert "name" in root
+    assert "team_size" in root
+
+    # Get employee details to verify CEO status
+    employees_response = test_client.get("/api/employees")
+    assert employees_response.status_code == 200
+    employees = employees_response.json()["employees"]
+
+    # Find the root employee
+    root_employee = next(
+        (emp for emp in employees if emp["employee_id"] == root["employee_id"]), None
+    )
+    assert root_employee is not None
+
+    # Verify this is a CEO (MT6 level)
+    assert root_employee.get("job_level") == "MT6", (
+        f"Root of org tree should be MT6 (CEO), but found {root_employee.get('job_level')}"
+    )

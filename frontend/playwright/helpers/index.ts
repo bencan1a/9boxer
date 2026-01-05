@@ -22,6 +22,7 @@ export {
   clickTabAndWait,
   openFileMenu,
   openFilterDrawer,
+  expandFilterSection,
   closeAllDialogsAndOverlays,
   resetToEmptyState,
   expandManagerAnomalyDetails,

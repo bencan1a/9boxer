@@ -191,6 +191,8 @@ nav:
       - Multi-Year Tracking: reference/multi-year-tracking.md
     - Troubleshooting: troubleshooting.md
     - FAQ: faq.md
+  - About:
+    - How We Build: about/how-we-build.md
 
 # UPDATED: Custom CSS for design system alignment
 # design-tokens.css is auto-generated from frontend/src/theme/tokens.ts
