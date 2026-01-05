@@ -1,10 +1,10 @@
 {
-  "totalComponents": 80,
-  "componentsWithStories": 64,
-  "componentsWithScreenshots": 26,
-  "totalScreenshots": 74,
-  "storybookScreenshots": 72,
-  "fullAppScreenshots": 2,
+  "totalComponents": 85,
+  "componentsWithStories": 66,
+  "componentsWithScreenshots": 28,
+  "totalScreenshots": 81,
+  "storybookScreenshots": 75,
+  "fullAppScreenshots": 6,
   "manualScreenshots": 0,
   "componentBreakdown": [
     {
@@ -63,6 +63,56 @@
       "screenshots": []
     },
     {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/FilterToolbar.tsx",
+      "name": "FilterToolbar",
+      "hasStory": true,
+      "screenshotCount": 7,
+      "screenshots": [
+        {
+          "name": "filters-panel-expanded",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "filter-toolbar-expanded",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filter-toolbar-with-active-filters",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "filter-toolbar-search-autocomplete",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "grid-basic-layout",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "filters-active-indicator",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "filter-toolbar-and-grid",
+          "source": "full-app",
+          "manual": false
+        }
+      ]
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/FilterToolbarContainer.tsx",
+      "name": "FilterToolbarContainer",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LanguageSelector.tsx",
       "name": "LanguageSelector",
       "hasStory": true,
@@ -73,6 +123,20 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LoadingSpinner.tsx",
       "name": "LoadingSpinner",
       "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/SearchHighlight.tsx",
+      "name": "SearchHighlight",
+      "hasStory": false,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/SimplifiedToolbar.tsx",
+      "name": "SimplifiedToolbar",
+      "hasStory": false,
       "screenshotCount": 0,
       "screenshots": []
     },
@@ -196,13 +260,8 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FilterDrawer.tsx",
       "name": "FilterDrawer",
       "hasStory": true,
-      "screenshotCount": 5,
+      "screenshotCount": 7,
       "screenshots": [
-        {
-          "name": "filters-panel-expanded",
-          "source": "storybook",
-          "manual": false
-        },
         {
           "name": "filters-flags-section",
           "source": "storybook",
@@ -210,6 +269,21 @@
         },
         {
           "name": "filters-reporting-chain",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "org-tree-filter-expanded",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "org-tree-filter-search",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "org-tree-multi-select",
           "source": "storybook",
           "manual": false
         },
@@ -270,14 +344,37 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/OrgTreeFilter.tsx",
       "name": "OrgTreeFilter",
-      "hasStory": false,
-      "screenshotCount": 0,
-      "screenshots": []
+      "hasStory": true,
+      "screenshotCount": 3,
+      "screenshots": [
+        {
+          "name": "filters-panel-expanded",
+          "source": "full-app",
+          "manual": false
+        },
+        {
+          "name": "org-tree-filter-search",
+          "source": "storybook",
+          "manual": false
+        },
+        {
+          "name": "org-tree-multi-select",
+          "source": "storybook",
+          "manual": false
+        }
+      ]
     },
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/ReportingChainFilter.tsx",
       "name": "ReportingChainFilter",
       "hasStory": true,
+      "screenshotCount": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/SearchableTreeNode.tsx",
+      "name": "SearchableTreeNode",
+      "hasStory": false,
       "screenshotCount": 0,
       "screenshots": []
     },
@@ -346,7 +443,7 @@
       "screenshots": [
         {
           "name": "grid-basic-layout",
-          "source": "storybook",
+          "source": "full-app",
           "manual": false
         }
       ]
@@ -429,7 +526,7 @@
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.tsx",
       "name": "NineBoxGrid",
       "hasStory": true,
-      "screenshotCount": 6,
+      "screenshotCount": 5,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
@@ -443,11 +540,6 @@
         },
         {
           "name": "workflow-grid-axes-labeled",
-          "source": "storybook",
-          "manual": false
-        },
-        {
-          "name": "grid-basic-layout",
           "source": "storybook",
           "manual": false
         },
@@ -982,6 +1074,25 @@
       "screenshots": []
     },
     {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/FilterToolbar.stories.tsx",
+      "componentName": "FilterToolbar",
+      "usedInScreenshots": 3,
+      "screenshots": [
+        {
+          "name": "filter-toolbar-expanded",
+          "storyId": "app-common-filtertoolbar--expanded-default"
+        },
+        {
+          "name": "filter-toolbar-with-active-filters",
+          "storyId": "app-common-filtertoolbar--with-active-filters"
+        },
+        {
+          "name": "filter-toolbar-search-autocomplete",
+          "storyId": "app-common-filtertoolbar--compact-with-filters"
+        }
+      ]
+    },
+    {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/common/LanguageSelector.stories.tsx",
       "componentName": "LanguageSelector",
       "usedInScreenshots": 0,
@@ -1092,12 +1203,8 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/FilterDrawer.stories.tsx",
       "componentName": "FilterDrawer",
-      "usedInScreenshots": 5,
+      "usedInScreenshots": 7,
       "screenshots": [
-        {
-          "name": "filters-panel-expanded",
-          "storyId": "app-dashboard-filterdrawer--all-sections-expanded"
-        },
         {
           "name": "filters-flags-section",
           "storyId": "app-dashboard-filterdrawer--flags-active"
@@ -1105,6 +1212,18 @@
         {
           "name": "filters-reporting-chain",
           "storyId": "app-dashboard-filterdrawer--reporting-chain-active"
+        },
+        {
+          "name": "org-tree-filter-expanded",
+          "storyId": "app-dashboard-filterdrawer--managers-selected"
+        },
+        {
+          "name": "org-tree-filter-search",
+          "storyId": "app-dashboard-filterdrawer--managers-selected"
+        },
+        {
+          "name": "org-tree-multi-select",
+          "storyId": "app-dashboard-filterdrawer--managers-selected"
         },
         {
           "name": "filters-logic-or-example",
@@ -1149,6 +1268,12 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/GridPositionFilter.stories.tsx",
       "componentName": "GridPositionFilter",
+      "usedInScreenshots": 0,
+      "screenshots": []
+    },
+    {
+      "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/dashboard/filters/OrgTreeFilter.stories.tsx",
+      "componentName": "OrgTreeFilter",
       "usedInScreenshots": 0,
       "screenshots": []
     },
@@ -1265,7 +1390,7 @@
     {
       "path": "/home/runner/work/9boxer/9boxer/frontend/src/components/grid/NineBoxGrid.stories.tsx",
       "componentName": "NineBoxGrid",
-      "usedInScreenshots": 6,
+      "usedInScreenshots": 5,
       "screenshots": [
         {
           "name": "quickstart-grid-populated",
@@ -1277,10 +1402,6 @@
         },
         {
           "name": "workflow-grid-axes-labeled",
-          "storyId": "app-grid-nineboxgrid--populated"
-        },
-        {
-          "name": "grid-basic-layout",
           "storyId": "app-grid-nineboxgrid--populated"
         },
         {
