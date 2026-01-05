@@ -10,7 +10,7 @@
  *   - filter-toolbar-compact: Compact variant with all elements inline
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -66,6 +66,8 @@ export interface FilterToolbarProps {
   employees?: Employee[];
   /** Whether the toolbar is disabled */
   disabled?: boolean;
+  /** Container width for auto-collapse detection */
+  containerWidth?: number;
 }
 
 /**
@@ -83,6 +85,7 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
   onEmployeeSelect,
   employees = [],
   disabled = false,
+  containerWidth,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -113,6 +116,30 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
       return false; // Default to expanded if localStorage unavailable
     }
   });
+
+  // Track previous container width for transition detection
+  const prevWidthRef = useRef<number | undefined>(undefined);
+
+  // Auto-collapse when container width transitions below threshold
+  useEffect(() => {
+    if (containerWidth === undefined) return;
+
+    const threshold = 1300; // Same threshold as in NineBoxGrid
+    const prevWidth = prevWidthRef.current;
+
+    // Detect transition: wide → narrow, and toolbar is expanded
+    if (
+      prevWidth !== undefined &&
+      prevWidth >= threshold &&
+      containerWidth < threshold &&
+      !isCollapsed
+    ) {
+      setIsCollapsed(true);
+    }
+
+    // Update ref with current width for next comparison
+    prevWidthRef.current = containerWidth;
+  }, [containerWidth, isCollapsed]);
 
   // Hide on small screens (< 600px width)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -283,10 +310,6 @@ export const FilterToolbar: React.FC<FilterToolbarProps> = ({
     <Box
       data-testid="filter-toolbar"
       sx={{
-        position: "absolute",
-        top: `-${theme.tokens.dimensions.gridContainer.padding}px`,
-        left: 0,
-        zIndex: 10,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 1,
         boxShadow: 3,

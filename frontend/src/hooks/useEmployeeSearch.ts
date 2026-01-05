@@ -23,7 +23,7 @@
  */
 
 import { useMemo, useCallback } from "react";
-import Fuse, { FuseResultMatch } from "fuse.js";
+import Fuse, { FuseResultMatch, IFuseOptions } from "fuse.js";
 import { Employee } from "../types/employee";
 
 /**
@@ -122,7 +122,7 @@ export function useEmployeeSearch(
       }
 
       // Configure Fuse.js with weighted search fields
-      const fuseOptions: Fuse.IFuseOptions<Employee> = {
+      const fuseOptions: IFuseOptions<Employee> = {
         // Search fields with relevance weights
         keys: [
           { name: "name", weight: 0.45 }, // Highest priority - employee name

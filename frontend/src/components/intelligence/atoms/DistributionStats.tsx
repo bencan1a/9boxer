@@ -9,7 +9,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import type { DistributionData } from "../../../types/intelligence";
-import { PERFORMANCE_BUCKETS } from "../../../constants/performanceBuckets";
+import { isInPerformanceBucket } from "../../../constants/performanceBuckets";
 
 export interface DistributionStatsProps {
   /**
@@ -94,13 +94,13 @@ export const DistributionStats: React.FC<DistributionStatsProps> = ({
    */
   const getPositionColor = (position: number): string => {
     // High Performers: [M,H], [H,H], [H,M] = positions 8, 9, 6
-    if (PERFORMANCE_BUCKETS.High.includes(position)) {
+    if (isInPerformanceBucket(position, "High")) {
       return (
         theme.palette.gridBox?.highPerformer || theme.palette.success.light
       );
     }
     // Needs Attention: [L,L], [M,L], [L,M] = positions 1, 2, 4
-    if (PERFORMANCE_BUCKETS.Low.includes(position)) {
+    if (isInPerformanceBucket(position, "Low")) {
       return theme.palette.gridBox?.needsAttention || theme.palette.error.light;
     }
     // Solid Performer: [M,M] = position 5

@@ -496,7 +496,7 @@ class ManagementChainBuilder:
 
         # Calculate level distribution (pyramid: 40% MT1, 25% MT2, 20% MT3, 10% MT4, 4% MT5, 1% MT6)
         level_distribution = {
-            "MT6": max(1, int(size * 0.01)),  # At least 1 CEO
+            "MT6": 1,  # Always exactly one CEO (single root of org tree)
             "MT5": max(1, int(size * 0.04)),  # VPs
             "MT4": max(1, int(size * 0.10)),  # Directors
             "MT3": max(1, int(size * 0.20)),  # Managers

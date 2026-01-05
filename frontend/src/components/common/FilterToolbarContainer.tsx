@@ -21,6 +21,8 @@ import { SimplifiedToolbar } from "./SimplifiedToolbar";
 export interface FilterToolbarContainerProps {
   /** Callback when search value changes */
   onSearchChange?: (value: string) => void;
+  /** Container width for auto-collapse detection */
+  containerWidth?: number;
 }
 
 /**
@@ -30,6 +32,7 @@ export interface FilterToolbarContainerProps {
  */
 export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
   onSearchChange,
+  containerWidth,
 }) => {
   const { employees: filteredEmployees, selectEmployee } = useEmployees();
   const { hasActiveFilters, toggleDrawer } = useFilters();
@@ -137,6 +140,7 @@ export const FilterToolbarContainer: React.FC<FilterToolbarContainerProps> = ({
         onEmployeeSelect={handleEmployeeSelect}
         employees={filteredEmployees}
         disabled={totalCount === 0}
+        containerWidth={containerWidth}
       />
     </ErrorBoundary>
   );

@@ -14,9 +14,21 @@ interface StatisticsData {
   high_performers: number;
   distribution: PositionDistribution[];
   groupedStats?: {
-    highPerformers: { positions: number[]; count: number; percentage: number };
-    middleTier: { positions: number[]; count: number; percentage: number };
-    lowPerformers: { positions: number[]; count: number; percentage: number };
+    highPerformers: {
+      positions: readonly number[];
+      count: number;
+      percentage: number;
+    };
+    middleTier: {
+      positions: readonly number[];
+      count: number;
+      percentage: number;
+    };
+    lowPerformers: {
+      positions: readonly number[];
+      count: number;
+      percentage: number;
+    };
   };
 }
 

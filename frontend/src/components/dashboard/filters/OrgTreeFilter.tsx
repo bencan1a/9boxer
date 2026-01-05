@@ -86,7 +86,7 @@ export const OrgTreeFilter: React.FC<OrgTreeFilterProps> = ({
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
 
   // Filter tree and get matching node IDs
-  const { filteredNodes, matchingIds } = useMemo(
+  const { filteredNodes } = useMemo(
     () => filterTree(orgTree, debouncedQuery),
     [orgTree, debouncedQuery]
   );

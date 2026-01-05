@@ -21,7 +21,6 @@ import { FilterDrawer } from "./FilterDrawer";
 import { NineBoxGrid } from "../grid/NineBoxGrid";
 import { RightPanel } from "../panel/RightPanel";
 import { FileUploadDialog } from "../common/FileUploadDialog";
-import { ViewControls } from "../common/ViewControls";
 import { EmptyState } from "./DashboardEmptyState";
 import { LoadSampleDialog } from "../dialogs/LoadSampleDialog";
 import { LoadingSpinner } from "../common/LoadingSpinner";
@@ -370,8 +369,6 @@ export const DashboardPage: React.FC = () => {
                       setIsResizing={setIsResizing}
                     >
                       <NineBoxGrid />
-                      {/* View Controls (view mode + zoom + fullscreen) */}
-                      <ViewControls />
                     </GridZoomProvider>
                   </Box>
                 </Panel>
