@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2026-01-05T18:08:35.369322+00:00
-**Source SHA**: d5c65b4ee9af4289d2db6f4743649cc12310b9c3
+**Generated**: 2026-01-06T07:45:17.533402+00:00
+**Source SHA**: 52e0dd76d3612282baa0f2a5874849b13c19b06d
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -519,19 +519,18 @@ A standalone desktop application for visualizing and managing employee performan
 
 **Download the latest release for your platform:**
 
-- **Windows**: Download and run `9Boxer-Setup-1.0.0.exe`
-- **macOS**: Download and open `9Boxer-1.0.0.dmg`, drag to Applications
-- **Linux**: Download `9Boxer-1.0.0.AppImage`, make executable, and run
+- **Windows**: `9Boxer-Setup-[version].exe` (~300MB)
+- **macOS**: `9Boxer-[version]-macOS-[arch].zip` (~300MB)
+  - Apple Silicon (M1/M2/M3): Download `arm64` version
+  - Intel Macs: Download `x64` version
+- **Linux**: `9Boxer-[version].AppImage` (~300MB)
 
-No Python or Node.js installation required! Everything is bundled in the installer.
+**No Python or Node.js installation required** - everything is bundled in the installer.
 
-### Development Setup (Developers)
+#### Important: Security Warnings
 
-**Prerequisites:**
-- Python 3.10+ (for backend development)
-- Node.js 18+ (for frontend development)
-- Git
+Since 9Boxer is an internal development tool without commercial code signing, you'll see security warnings on first launch:
 
-**Option 1: Run Electron App in Development Mode (Recommended for Full Testi
+*
 ...[truncated]
 ```
