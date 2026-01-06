@@ -2,7 +2,7 @@
  * Grid box component (droppable)
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState, useEffect, Profiler } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import Box from "@mui/material/Box";
 import { alpha } from "@mui/system";
@@ -58,6 +58,63 @@ export const GridBox: React.FC<GridBoxProps> = ({
     id: `grid-${position}`,
     data: { position },
   });
+
+  // Track container width for fixed-size tile optimization
+  // CRITICAL: Only update state when crossing threshold to avoid excessive re-renders
+  const boxRef = useRef<HTMLDivElement | null>(null);
+  const [isWideLayout, setIsWideLayout] = useState(true);
+  const lastWidthRef = useRef(0);
+
+  // ResizeObserver to track container width changes - but ONLY update when crossing threshold
+  useEffect(() => {
+    const element = boxRef.current;
+    if (!element) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        const threshold = tokens.tile.columnThreshold;
+
+        // Only update state if we cross the threshold
+        // This prevents re-renders on every pixel change
+        const wasWide = lastWidthRef.current < threshold;
+        const isWide = width < threshold;
+
+        if (wasWide !== isWide) {
+          setIsWideLayout(isWide);
+          lastWidthRef.current = width;
+        }
+      }
+    });
+
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [tokens.tile.columnThreshold]);
+
+  // Track what causes re-renders (DEV only)
+  useEffect(() => {
+    if (import.meta.env.DEV && employees.length > 20) {
+      console.log(`[Perf] GridBox-${position} re-render trigger:`, {
+        employeeCount: employees.length,
+        isExpanded,
+        isCollapsed,
+        isResizing,
+        isWideLayout,
+        selectedEmployeeId,
+      });
+    }
+  }, [
+    position,
+    employees,
+    isExpanded,
+    isCollapsed,
+    isResizing,
+    isWideLayout,
+    selectedEmployeeId,
+  ]);
 
   // Background color based on position (performance/potential) - Memoized
   // Position layout: [7=L,H], [8=M,H], [9=H,H] (top row)
@@ -158,37 +215,63 @@ export const GridBox: React.FC<GridBoxProps> = ({
     theme.tokens.dimensions.gridBox.normalMax,
   ]);
 
-  return (
-    <Box
-      ref={setNodeRef}
-      sx={boxStyling}
-      aria-expanded={isExpanded}
-      data-testid={`grid-box-${position}`}
-    >
-      {/* Header */}
-      <BoxHeader
-        position={position}
-        positionName={getPositionName(position)}
-        shortLabel={shortLabel}
-        employeeCount={employees.length}
-        isExpanded={isExpanded}
-        isCollapsed={isCollapsed}
-        onExpand={onExpand}
-        onCollapse={onCollapse}
-        positionGuidance={getPositionGuidance(position)}
-      />
+  // Performance profiler callback for individual GridBox
+  const onRenderCallback = (
+    _id: string,
+    phase: "mount" | "update" | "nested-update",
+    actualDuration: number
+  ) => {
+    // Log renders that take longer than 30ms for individual boxes
+    if (import.meta.env.DEV && actualDuration > 30) {
+      console.log(
+        `[Perf] GridBox-${position} (${employees.length} employees) ${phase}: ${actualDuration.toFixed(2)}ms`,
+        {
+          isExpanded,
+          isCollapsed,
+          isWideLayout,
+        }
+      );
+    }
+  };
 
-      {/* Employees - hidden when collapsed */}
-      {!isCollapsed && (
-        <EmployeeTileList
-          employees={employees}
+  return (
+    <Profiler id={`GridBox-${position}`} onRender={onRenderCallback}>
+      <Box
+        ref={(node: HTMLDivElement | null) => {
+          // Combine both refs: one for dnd-kit, one for ResizeObserver
+          setNodeRef(node);
+          boxRef.current = node;
+        }}
+        sx={boxStyling}
+        aria-expanded={isExpanded}
+        data-testid={`grid-box-${position}`}
+      >
+        {/* Header */}
+        <BoxHeader
+          position={position}
+          positionName={getPositionName(position)}
+          shortLabel={shortLabel}
+          employeeCount={employees.length}
           isExpanded={isExpanded}
-          onSelectEmployee={onSelectEmployee}
-          onDoubleClickEmployee={onDoubleClickEmployee}
-          selectedEmployeeId={selectedEmployeeId}
-          donutModeActive={donutModeActive}
+          isCollapsed={isCollapsed}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+          positionGuidance={getPositionGuidance(position)}
         />
-      )}
-    </Box>
+
+        {/* Employees - hidden when collapsed */}
+        {!isCollapsed && (
+          <EmployeeTileList
+            employees={employees}
+            isExpanded={isExpanded}
+            isWideLayout={isWideLayout}
+            onSelectEmployee={onSelectEmployee}
+            onDoubleClickEmployee={onDoubleClickEmployee}
+            selectedEmployeeId={selectedEmployeeId}
+            donutModeActive={donutModeActive}
+          />
+        )}
+      </Box>
+    </Profiler>
   );
 };

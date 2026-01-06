@@ -27,6 +27,8 @@ export interface EmployeeTileListProps {
   employees: Employee[];
   /** Whether to use multi-column grid layout (expanded mode) */
   isExpanded: boolean;
+  /** Whether to use wide (single-column) layout based on container width */
+  isWideLayout?: boolean;
   /** Callback fired when an employee tile is clicked */
   onSelectEmployee: (employeeId: number) => void;
   /** Callback fired when an employee tile is double-clicked */
@@ -50,6 +52,7 @@ export interface EmployeeTileListProps {
 export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   employees,
   isExpanded: _isExpanded,
+  isWideLayout = false,
   onSelectEmployee,
   onDoubleClickEmployee,
   selectedEmployeeId = null,
@@ -61,11 +64,21 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   const onRenderCallback = (
     _id: string,
     phase: "mount" | "update" | "nested-update",
-    actualDuration: number
+    actualDuration: number,
+    baseDuration: number
   ) => {
-    if (import.meta.env.DEV && actualDuration > 50) {
+    if (import.meta.env.DEV && actualDuration > 30) {
       console.warn(
-        `[Perf] EmployeeTileList (${employees.length} tiles) ${phase}: ${actualDuration.toFixed(2)}ms`
+        `[Perf] EmployeeTileList (${employees.length} tiles) ${phase}: ${actualDuration.toFixed(2)}ms`,
+        {
+          actualDuration: actualDuration.toFixed(2) + "ms",
+          baseDuration: baseDuration.toFixed(2) + "ms",
+          overhead: (actualDuration - baseDuration).toFixed(2) + "ms",
+          isWideLayout,
+          tileWidth: isWideLayout
+            ? tokens.tile.wideWidth
+            : tokens.tile.narrowWidth,
+        }
       );
     }
   };
@@ -75,9 +88,11 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
       <Box
         data-testid="employee-tile-list"
         sx={{
-          // Multi-column grid layout for better space utilization with smaller tiles
+          // Multi-column grid layout with fixed tile widths for better performance
           display: "grid",
-          gridTemplateColumns: `repeat(auto-fill, minmax(${tokens.tile.minWidth}px, 1fr))`,
+          gridTemplateColumns: isWideLayout
+            ? `${tokens.tile.wideWidth}px` // Single wide column when container is narrow
+            : `repeat(auto-fill, ${tokens.tile.narrowWidth}px)`, // Multiple narrow columns when container is wide
           gap: `${tokens.spacing.gap}px`,
           // Ensure minimum height when empty for visibility in tests/Storybook
           minHeight: employees.length === 0 ? "48px" : undefined,

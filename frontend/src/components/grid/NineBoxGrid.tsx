@@ -52,12 +52,22 @@ const EXPANDED_POSITION_STORAGE_KEY = "nineBoxExpandedPosition";
 const onRenderCallback = (
   id: string,
   phase: "mount" | "update" | "nested-update",
-  actualDuration: number
+  actualDuration: number,
+  baseDuration: number,
+  startTime: number,
+  commitTime: number
 ) => {
   // Only log in development mode and only warn about significantly slow renders
   if (import.meta.env.DEV && actualDuration > 100) {
     console.warn(
-      `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms (significantly slower than 60fps)`
+      `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms (significantly slower than 60fps)`,
+      {
+        actualDuration: actualDuration.toFixed(2) + "ms",
+        baseDuration: baseDuration.toFixed(2) + "ms",
+        startTime: startTime.toFixed(2) + "ms",
+        commitTime: commitTime.toFixed(2) + "ms",
+        overhead: (actualDuration - baseDuration).toFixed(2) + "ms",
+      }
     );
   }
 };

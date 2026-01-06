@@ -95,6 +95,10 @@ export const DashboardPage: React.FC = () => {
     };
   }, []);
 
+  // Performance tracking for resize events (DEV only)
+  const resizeCountRef = useRef(0);
+  const resizeStartTimeRef = useRef<number | null>(null);
+
   // Throttled resize handler using requestAnimationFrame
   const handlePanelResize = useCallback(
     (sizes: number[]) => {
@@ -109,6 +113,16 @@ export const DashboardPage: React.FC = () => {
       // This prevents resize handling during the collapse/expand animation
       if (isRightPanelCollapsed || rightSize < 1) {
         return;
+      }
+
+      // Track resize events (DEV only)
+      if (import.meta.env.DEV) {
+        if (resizeStartTimeRef.current === null) {
+          resizeStartTimeRef.current = performance.now();
+          resizeCountRef.current = 0;
+          console.log("[Perf] Panel resize drag started");
+        }
+        resizeCountRef.current++;
       }
 
       // Set resizing state using functional update to avoid stale closure
@@ -135,6 +149,9 @@ export const DashboardPage: React.FC = () => {
         // Track panel size changes
         if (rightSize !== rightPanelSize) {
           setRightPanelSize(rightSize);
+          if (import.meta.env.DEV) {
+            console.log(`[Perf] Panel size update: ${rightSize.toFixed(1)}%`);
+          }
         }
 
         // Guard again before setting timeout
@@ -145,6 +162,20 @@ export const DashboardPage: React.FC = () => {
           // Guard in timeout callback
           if (!isMountedRef.current) return;
           setIsResizing(false);
+
+          // Log resize session stats (DEV only)
+          if (import.meta.env.DEV && resizeStartTimeRef.current !== null) {
+            const duration = performance.now() - resizeStartTimeRef.current;
+            console.log("[Perf] Panel resize drag ended:", {
+              totalEvents: resizeCountRef.current,
+              duration: duration.toFixed(0) + "ms",
+              eventsPerSecond: (
+                resizeCountRef.current /
+                (duration / 1000)
+              ).toFixed(1),
+            });
+            resizeStartTimeRef.current = null;
+          }
         }, 150); // 150ms debounce for resize end
       });
     },

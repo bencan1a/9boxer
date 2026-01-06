@@ -27,6 +27,9 @@ interface ZoomTokens {
   tile: {
     minWidth: number;
     maxWidth: number;
+    wideWidth: number; // Fixed width for single-column layout
+    narrowWidth: number; // Fixed width for multi-column layout
+    columnThreshold: number; // Container width threshold for column switching
     paddingY: number;
     paddingX: number;
     dragHandleWidth: number;

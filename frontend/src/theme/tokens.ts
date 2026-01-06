@@ -208,8 +208,11 @@ export const dimensions = {
     // Zoom level 0: Compact (50% label) - Smallest size
     level0: {
       tile: {
-        minWidth: 120, // 250 * 0.48
-        maxWidth: 178, // 370 * 0.48
+        minWidth: 120, // 250 * 0.48 (legacy - use narrowWidth)
+        maxWidth: 178, // 370 * 0.48 (legacy - use wideWidth)
+        wideWidth: 170, // Fixed width for single-column layout
+        narrowWidth: 120, // Fixed width for multi-column layout
+        columnThreshold: 300, // Container width threshold for column switching
         paddingY: 4, // Vertical padding (top/bottom)
         paddingX: 6, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 16, // Compact drag handle
@@ -234,8 +237,11 @@ export const dimensions = {
     // Zoom level 1: Medium (75% label)
     level1: {
       tile: {
-        minWidth: 150, // 250 * 0.6
-        maxWidth: 222, // 370 * 0.6
+        minWidth: 150, // 250 * 0.6 (legacy - use narrowWidth)
+        maxWidth: 222, // 370 * 0.6 (legacy - use wideWidth)
+        wideWidth: 210, // Fixed width for single-column layout
+        narrowWidth: 150, // Fixed width for multi-column layout
+        columnThreshold: 360, // Container width threshold for column switching
         paddingY: 5, // Vertical padding (top/bottom)
         paddingX: 7, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 18, // Compact drag handle
@@ -260,8 +266,11 @@ export const dimensions = {
     // Zoom level 2: Normal (100% label - baseline/default)
     level2: {
       tile: {
-        minWidth: 200, // 250 * 0.8
-        maxWidth: 296, // 370 * 0.8
+        minWidth: 200, // 250 * 0.8 (legacy - use narrowWidth)
+        maxWidth: 296, // 370 * 0.8 (legacy - use wideWidth)
+        wideWidth: 280, // Fixed width for single-column layout
+        narrowWidth: 200, // Fixed width for multi-column layout
+        columnThreshold: 450, // Container width threshold for column switching
         paddingY: 6, // Vertical padding (top/bottom)
         paddingX: 8, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 20, // Normal drag handle
@@ -286,8 +295,11 @@ export const dimensions = {
     // Zoom level 3: Comfortable (125% label)
     level3: {
       tile: {
-        minWidth: 313, // 250 * 1.25
-        maxWidth: 463, // 370 * 1.25
+        minWidth: 313, // 250 * 1.25 (legacy - use narrowWidth)
+        maxWidth: 463, // 370 * 1.25 (legacy - use wideWidth)
+        wideWidth: 440, // Fixed width for single-column layout
+        narrowWidth: 313, // Fixed width for multi-column layout
+        columnThreshold: 680, // Container width threshold for column switching
         paddingY: 10, // Vertical padding (top/bottom)
         paddingX: 12, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 24, // Comfortable drag handle
@@ -312,8 +324,11 @@ export const dimensions = {
     // Zoom level 4: Presentation (150% label)
     level4: {
       tile: {
-        minWidth: 375, // 250 * 1.5
-        maxWidth: 555, // 370 * 1.5
+        minWidth: 375, // 250 * 1.5 (legacy - use narrowWidth)
+        maxWidth: 555, // 370 * 1.5 (legacy - use wideWidth)
+        wideWidth: 520, // Fixed width for single-column layout
+        narrowWidth: 375, // Fixed width for multi-column layout
+        columnThreshold: 820, // Container width threshold for column switching
         paddingY: 14, // Vertical padding (top/bottom)
         paddingX: 16, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 28, // Presentation drag handle

@@ -165,8 +165,8 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
   // Memoize Card sx prop to avoid recalculation
   const cardSx = useMemo(
     () => ({
-      minWidth: tokens.tile.minWidth,
-      maxWidth: tokens.tile.maxWidth,
+      // Width is now controlled by the grid's fixed column widths for better performance
+      // No need for minWidth/maxWidth - tiles fill their grid cells
       cursor: "pointer",
       display: "flex",
       opacity: isDragging
@@ -191,8 +191,6 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       },
     }),
     [
-      tokens.tile.minWidth,
-      tokens.tile.maxWidth,
       isDragging,
       donutModeActive,
       employee.donut_position,
