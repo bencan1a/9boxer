@@ -15,6 +15,7 @@ import { Page, expect } from "@playwright/test";
  * Click the zoom in button
  *
  * Increases the zoom level by one step (~10%).
+ * Waits for the zoom percentage to update before returning.
  *
  * @param page - Playwright Page object
  *
@@ -26,14 +27,23 @@ import { Page, expect } from "@playwright/test";
  * ```
  */
 export async function zoomIn(page: Page): Promise<void> {
+  const zoomPercentage = page.locator('[data-testid="zoom-percentage"]');
+  const currentText = await zoomPercentage.textContent();
+
   const zoomInButton = page.locator('[data-testid="zoom-in-button"]');
   await zoomInButton.click();
+
+  // Wait for percentage to change (React state update)
+  await expect(zoomPercentage).not.toHaveText(currentText || "", {
+    timeout: 2000,
+  });
 }
 
 /**
  * Click the zoom out button
  *
  * Decreases the zoom level by one step (~10%).
+ * Waits for the zoom percentage to update before returning.
  *
  * @param page - Playwright Page object
  *
@@ -45,8 +55,16 @@ export async function zoomIn(page: Page): Promise<void> {
  * ```
  */
 export async function zoomOut(page: Page): Promise<void> {
+  const zoomPercentage = page.locator('[data-testid="zoom-percentage"]');
+  const currentText = await zoomPercentage.textContent();
+
   const zoomOutButton = page.locator('[data-testid="zoom-out-button"]');
   await zoomOutButton.click();
+
+  // Wait for percentage to change (React state update)
+  await expect(zoomPercentage).not.toHaveText(currentText || "", {
+    timeout: 2000,
+  });
 }
 
 /**
@@ -78,6 +96,7 @@ export async function resetZoom(page: Page): Promise<void> {
  *
  * Extracts the zoom percentage from the zoom display and returns it as a number.
  * For example, "110%" returns 110.
+ * Waits for the element to be visible and stable before reading.
  *
  * @param page - Playwright Page object
  * @returns The current zoom level as a number (100 = 100%)
@@ -92,6 +111,10 @@ export async function resetZoom(page: Page): Promise<void> {
  */
 export async function getZoomLevel(page: Page): Promise<number> {
   const zoomPercentage = page.locator('[data-testid="zoom-percentage"]');
+
+  // Wait for element to be visible and stable
+  await expect(zoomPercentage).toBeVisible({ timeout: 2000 });
+
   const text = await zoomPercentage.textContent();
 
   if (!text) {
@@ -112,6 +135,7 @@ export async function getZoomLevel(page: Page): Promise<number> {
  *
  * Gets the current zoom level and verifies it matches the expected value
  * within the specified tolerance.
+ * Adds a small wait to ensure zoom animation/state update has completed.
  *
  * @param page - Playwright Page object
  * @param expectedLevel - Expected zoom level (100 = 100%)
@@ -128,6 +152,9 @@ export async function verifyZoomLevel(
   expectedLevel: number,
   tolerance: number = 1
 ): Promise<void> {
+  // Small wait to ensure any zoom animation/transition has completed
+  await page.waitForTimeout(100);
+
   const actualLevel = await getZoomLevel(page);
   const difference = Math.abs(actualLevel - expectedLevel);
 

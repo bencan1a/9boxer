@@ -122,9 +122,21 @@ export async function changeLanguage(
   // Close settings dialog
   await page.keyboard.press("Escape");
 
+  // Wait for the dialog to actually close before checking UI updates
+  const dialog = page
+    .locator('[role="dialog"]')
+    .filter({ hasText: /settings|language/i });
+  await expect(dialog).not.toBeVisible({ timeout: 2000 });
+
   // Verify language change took effect by checking tab text
   const expectedTabText = language === "en" ? "Details" : "Detalles";
+  const oldTabText = language === "en" ? "Detalles" : "Details";
   const detailsTab = page.locator('[data-testid="details-tab"]');
+
+  // Wait for old text to disappear (ensures React re-rendered with new translation)
+  await expect(detailsTab).not.toContainText(oldTabText, { timeout: 3000 });
+
+  // Now verify the new text is present
   await expect(detailsTab).toContainText(expectedTabText, { timeout: 5000 });
 }
 

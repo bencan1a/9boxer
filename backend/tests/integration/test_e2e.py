@@ -348,7 +348,7 @@ def test_export_preserves_original_formatting_when_exported_then_data_intact(
 
     # Should have employee data
     assert sheet.cell(1, 1).value == "Employee ID"
-    assert sheet.max_row >= 6  # Header + 5 employees
+    assert sheet.max_row >= 51  # Header + 50 employees
 
     # 5. Verify changes reflected
     # Find performance column
