@@ -86,12 +86,12 @@ function getBackendPath(): string {
 /**
  * Get backend environment variables for configuration.
  *
- * In production: Uses environment variables set at build time (more secure)
+ * In production: Reads from runtime-config.json (generated at build time with env vars baked in)
  * In development: Reads from .env file for convenience
  *
  * Security note: In production builds, sensitive values like ANTHROPIC_API_KEY
- * should be set as environment variables during the build/release process,
- * not bundled as plain text files.
+ * are baked into runtime-config.json during the build process. This config file
+ * is generated from environment variables and bundled with the app.
  *
  * Returns environment variables as key-value object
  */
@@ -99,27 +99,47 @@ function getBackendEnv(): Record<string, string> {
   const envVars: Record<string, string> = {};
 
   if (app.isPackaged) {
-    // Production: Use environment variables from build process
-    // These should be set during CI/CD or build script
-    console.log(
-      "📄 Loading backend config from build-time environment variables"
-    );
-
-    if (process.env.ANTHROPIC_API_KEY) {
-      envVars.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-      console.log("✅ ANTHROPIC_API_KEY loaded from environment");
-    } else {
-      console.warn(
-        "⚠️ ANTHROPIC_API_KEY not found in environment - AI features will be disabled"
+    // Production: Read from runtime-config.json generated at build time
+    try {
+      const fs = require("fs");
+      const configPath = path.join(
+        __dirname,
+        "../dist-electron/runtime-config.json"
       );
-    }
 
-    if (process.env.LLM_MODEL) {
-      envVars.LLM_MODEL = process.env.LLM_MODEL;
-    }
+      console.log(
+        `📄 Loading backend config from build-time config: ${configPath}`
+      );
 
-    if (process.env.LLM_MAX_TOKENS) {
-      envVars.LLM_MAX_TOKENS = process.env.LLM_MAX_TOKENS;
+      if (fs.existsSync(configPath)) {
+        const configContent = fs.readFileSync(configPath, "utf-8");
+        const config = JSON.parse(configContent);
+
+        if (config.ANTHROPIC_API_KEY) {
+          envVars.ANTHROPIC_API_KEY = config.ANTHROPIC_API_KEY;
+          console.log(
+            `✅ ANTHROPIC_API_KEY loaded from build-time config (built: ${config.BUILD_TIMESTAMP || "unknown"})`
+          );
+        } else {
+          console.warn(
+            "⚠️ ANTHROPIC_API_KEY not found in config - AI features will be disabled"
+          );
+        }
+
+        if (config.LLM_MODEL) {
+          envVars.LLM_MODEL = config.LLM_MODEL;
+        }
+
+        if (config.LLM_MAX_TOKENS) {
+          envVars.LLM_MAX_TOKENS = config.LLM_MAX_TOKENS;
+        }
+      } else {
+        console.warn(
+          `⚠️ Runtime config not found at ${configPath} - AI features will be disabled`
+        );
+      }
+    } catch (error) {
+      console.error("❌ Failed to read runtime config:", error);
     }
   } else {
     // Development: Read from .env file for convenience

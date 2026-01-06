@@ -124,20 +124,35 @@ def load_system_prompt(filepath: str = "backend/config/calibration_agent_prompt.
         FileNotFoundError: If prompt file doesn't exist
         UnicodeDecodeError: If file is not valid UTF-8 text
     """
+    import sys
+
     prompt_file = Path(filepath)
 
-    # If the file doesn't exist at the given path, try relative to the project root
+    # If the file doesn't exist at the given path, try different resolution strategies
     if not prompt_file.exists():
-        # Try finding project root by looking for backend/config directory
-        current = Path(__file__).resolve()
-        # Go up from backend/src/ninebox/services/llm_service.py to project root
-        project_root = current.parent.parent.parent.parent.parent
-        alternative_path = project_root / filepath
-
-        if alternative_path.exists():
-            prompt_file = alternative_path
+        # Strategy 1: Check if running in PyInstaller bundle (frozen mode)
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            # In PyInstaller bundle, data files are at sys._MEIPASS/config/
+            # Use getattr to avoid type checker errors (attribute only exists in frozen mode)
+            meipass = getattr(sys, "_MEIPASS", "")
+            frozen_path = Path(meipass) / "config" / "calibration_agent_prompt.txt"
+            if frozen_path.exists():
+                prompt_file = frozen_path
+            else:
+                raise FileNotFoundError(
+                    f"System prompt file not found in PyInstaller bundle: {frozen_path}"
+                )
         else:
-            raise FileNotFoundError(f"System prompt file not found: {filepath}")
+            # Strategy 2: Try finding project root
+            current = Path(__file__).resolve()
+            # Go up from backend/src/ninebox/services/llm_service.py to project root
+            project_root = current.parent.parent.parent.parent.parent
+            alternative_path = project_root / filepath
+
+            if alternative_path.exists():
+                prompt_file = alternative_path
+            else:
+                raise FileNotFoundError(f"System prompt file not found: {filepath}")
 
     # Read and validate the file content
     # Use strict error handling to ensure file is valid UTF-8 text

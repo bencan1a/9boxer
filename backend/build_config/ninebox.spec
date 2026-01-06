@@ -23,11 +23,12 @@ main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
-# Collect ninebox data files (schema.sql and any other data files)
+# Collect ninebox data files (schema.sql, prompt files, and any other data files)
 # Manually specify data files since ninebox is installed in editable mode
-# In frozen mode, these will be available at ninebox/models/schema.sql relative to _MEIPASS
+# In frozen mode, these will be available relative to _MEIPASS
 ninebox_datas = [
     (str(src_dir / 'ninebox' / 'models' / 'schema.sql'), 'ninebox/models'),
+    (str(backend_dir / 'config' / 'calibration_agent_prompt.txt'), 'config'),
 ]
 
 # Note: setuptools and pkg_resources are build-time dependencies only,

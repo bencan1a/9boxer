@@ -209,7 +209,7 @@ export const CalibrationSummarySection: React.FC<
       </Box>
 
       {/* Show error if AI generation failed - outside Collapse to ensure visibility */}
-      {error && data && (
+      {error && (
         <Box sx={{ px: 2, pt: 2 }}>
           <Alert severity="error">
             {t("intelligence.calibrationSummary.generationError", {
