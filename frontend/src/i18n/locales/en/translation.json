@@ -379,7 +379,7 @@
       "generating": "Generating...",
       "generateAI": "Generate AI Summary",
       "generateSummary": "Generate AI Summary",
-      "generatingMessage": "Generating AI-powered summary... This may take a moment.",
+      "generatingMessage": "Generating AI-powered summary... This will take 30-40 seconds. You can keep working while it is put together.",
       "generationError": "Failed to generate AI summary: {{error}}",
       "refresh": "Refresh",
       "noData": "No calibration summary data available",

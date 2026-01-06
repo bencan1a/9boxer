@@ -5,6 +5,7 @@
   },
   "dashboard": {
     "appBar": {
+      "filters": "Filtry",
       "filterEmployees": "Filtrovat zaměstnance",
       "activeFilters": "Aktivní filtry:",
       "levels": "Úrovně",
@@ -82,6 +83,19 @@
       "showPanel": "Zobrazit panel",
       "hidePanel": "Skrýt panel"
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Hledat zaměstnance...",
+    "noEmployeesFound": "Nebyli nalezeni žádní zaměstnanci",
+    "noActiveFilters": "Žádné filtry nejsou aktivní",
+    "activeFilters": "Aktivní filtry",
+    "expandToolbar": "Rozbalit panel nástrojů",
+    "collapseToolbar": "Sbalit panel nástrojů",
+    "searchManagers": "Hledat manažery...",
+    "noManagersFound": "Nebyli nalezeni žádní manažeři",
+    "searchUnavailable": "Vyhledávání není dostupné",
+    "unavailable": "Filtry nejsou dostupné",
+    "unavailableMessage": "Panel filtrování je dočasně nedostupný. Stále můžete zobrazit všechny zaměstnance v mřížce."
   },
   "grid": {
     "axes": {
@@ -432,6 +446,13 @@
     "retry": "Zkusit znovu",
     "quit": "Ukončit",
     "retryConnection": "Zkusit připojení znovu",
+    "hide": "Skrýt",
+    "show": "Zobrazit",
+    "dismiss": "Zavřít",
+    "loading": "Načítání...",
+    "clearSearch": "Vymazat vyhledávání",
+    "expand": "Rozbalit",
+    "collapse": "Sbalit",
     "fileUpload": {
       "dialogTitle": "Importovat soubor Excel",
       "description": "Importujte soubor Excel pro mapování talentů 9-box (.xlsx nebo .xls)",
@@ -465,11 +486,7 @@
       "title": "Ajaj! Něco se pokazilo",
       "message": "Došlo k neočekávané chybě. Prosím, zkuste stránku znovu načíst.",
       "returnHome": "Vrátit se domů"
-    },
-    "hide": "Skrýt",
-    "show": "Zobrazit",
-    "dismiss": "Zavřít",
-    "loading": "Načítání..."
+    }
   },
   "messages": {
     "success": "Úspěch",
@@ -507,7 +524,13 @@
       "dataOverview": "Přehled dat",
       "insights": "Poznatky z kalibrace",
       "generating": "Generuji...",
+      "generateAI": "Generovat souhrn s AI",
       "generateSummary": "Generovat souhrn s AI",
+      "generatingMessage": "Generování souhrnu pomocí AI... Toto potrvá 30-40 sekund. Můžete pokračovat v práci, zatímco se připravuje.",
+      "generationError": "Nepodařilo se vygenerovat souhrn s AI: {{error}}",
+      "refresh": "Obnovit",
+      "noData": "Nejsou k dispozici data souhrnu kalibrace",
+      "invalidData": "Byla přijata neplatná datová struktura. Obnovte a zkuste to znovu.",
       "llmNotAvailable": "Souhrn s AI vyžaduje konfiguraci ANTHROPIC_API_KEY",
       "selectAll": "Vybrat vše",
       "deselectAll": "Zrušit výběr všech",

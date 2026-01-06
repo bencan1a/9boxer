@@ -5,6 +5,7 @@
   },
   "dashboard": {
     "appBar": {
+      "filters": "Filter",
       "filterEmployees": "Mitarbeiter filtern",
       "activeFilters": "Aktive Filter:",
       "levels": "Ebenen",
@@ -82,6 +83,19 @@
       "showPanel": "Panel anzeigen",
       "hidePanel": "Panel ausblenden"
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Mitarbeiter suchen...",
+    "noEmployeesFound": "Keine Mitarbeiter gefunden",
+    "noActiveFilters": "Keine Filter aktiv",
+    "activeFilters": "Aktive Filter",
+    "expandToolbar": "Symbolleiste erweitern",
+    "collapseToolbar": "Symbolleiste reduzieren",
+    "searchManagers": "Manager suchen...",
+    "noManagersFound": "Keine Manager gefunden",
+    "searchUnavailable": "Suche nicht verfügbar",
+    "unavailable": "Filter nicht verfügbar",
+    "unavailableMessage": "Die Filtersymbolleiste ist vorübergehend nicht verfügbar. Sie können weiterhin alle Mitarbeiter im Raster anzeigen."
   },
   "grid": {
     "axes": {
@@ -432,6 +446,13 @@
     "retry": "Wiederholen",
     "quit": "Beenden",
     "retryConnection": "Verbindung wiederholen",
+    "hide": "Verbergen",
+    "show": "Anzeigen",
+    "dismiss": "Schließen",
+    "loading": "Lädt...",
+    "clearSearch": "Suche löschen",
+    "expand": "Erweitern",
+    "collapse": "Reduzieren",
     "fileUpload": {
       "dialogTitle": "Excel-Datei importieren",
       "description": "Importieren Sie eine 9-Box-Talent-Mapping-Excel-Datei (.xlsx oder .xls)",
@@ -465,11 +486,7 @@
       "title": "Hoppla! Etwas ist schiefgelaufen",
       "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden.",
       "returnHome": "Zur Startseite zurückkehren"
-    },
-    "hide": "Verbergen",
-    "show": "Anzeigen",
-    "dismiss": "Schließen",
-    "loading": "Laden..."
+    }
   },
   "messages": {
     "success": "Erfolg",
@@ -507,7 +524,13 @@
       "dataOverview": "Datenübersicht",
       "insights": "Kalibrierungserkenntnisse",
       "generating": "Generiert...",
+      "generateAI": "KI-Zusammenfassung generieren",
       "generateSummary": "KI-Zusammenfassung generieren",
+      "generatingMessage": "Generierung der KI-Zusammenfassung... Dies dauert 30-40 Sekunden. Sie können weiterarbeiten, während sie zusammengestellt wird.",
+      "generationError": "KI-Zusammenfassung konnte nicht generiert werden: {{error}}",
+      "refresh": "Aktualisieren",
+      "noData": "Keine Kalibrierungszusammenfassungsdaten verfügbar",
+      "invalidData": "Ungültige Datenstruktur empfangen. Bitte aktualisieren und erneut versuchen.",
       "llmNotAvailable": "KI-Zusammenfassung erfordert die Konfiguration von ANTHROPIC_API_KEY",
       "selectAll": "Alle auswählen",
       "deselectAll": "Alle abwählen",

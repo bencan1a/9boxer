@@ -222,7 +222,7 @@ export const CalibrationSummarySection: React.FC<
             >
               {t("intelligence.calibrationSummary.generatingMessage", {
                 defaultValue:
-                  "Generating AI-powered summary... This may take a moment.",
+                  "Generating AI-powered summary... This will take 30-40 seconds. You can keep working while it is put together.",
               })}
             </Alert>
           )}

@@ -5,6 +5,7 @@
   },
   "dashboard": {
     "appBar": {
+      "filters": "Filtres",
       "filterEmployees": "Filtrer les collaborateurs",
       "activeFilters": "Filtres actifs :",
       "levels": "Niveaux",
@@ -82,6 +83,19 @@
       "showPanel": "Afficher le panneau",
       "hidePanel": "Masquer le panneau"
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Rechercher des collaborateurs...",
+    "noEmployeesFound": "Aucun collaborateur trouvé",
+    "noActiveFilters": "Aucun filtre actif",
+    "activeFilters": "Filtres actifs",
+    "expandToolbar": "Développer la barre d'outils",
+    "collapseToolbar": "Réduire la barre d'outils",
+    "searchManagers": "Rechercher des managers...",
+    "noManagersFound": "Aucun manager trouvé",
+    "searchUnavailable": "Recherche indisponible",
+    "unavailable": "Filtres indisponibles",
+    "unavailableMessage": "La barre d'outils de filtrage est temporairement indisponible. Vous pouvez toujours voir tous les collaborateurs dans la grille."
   },
   "grid": {
     "axes": {
@@ -432,6 +446,13 @@
     "retry": "Réessayer",
     "quit": "Quitter",
     "retryConnection": "Réessayer la connexion",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "dismiss": "Fermer",
+    "loading": "Chargement...",
+    "clearSearch": "Effacer la recherche",
+    "expand": "Développer",
+    "collapse": "Réduire",
     "fileUpload": {
       "dialogTitle": "Importer un fichier Excel",
       "description": "Importer un fichier Excel de cartographie des talents 9-Box (.xlsx ou .xls)",
@@ -465,11 +486,7 @@
       "title": "Oups ! Une erreur s'est produite",
       "message": "Une erreur inattendue s'est produite. Veuillez essayer de recharger la page.",
       "returnHome": "Retour à l'accueil"
-    },
-    "hide": "Masquer",
-    "show": "Afficher",
-    "dismiss": "Fermer",
-    "loading": "Chargement..."
+    }
   },
   "messages": {
     "success": "Succès",
@@ -507,7 +524,13 @@
       "dataOverview": "Aperçu des données",
       "insights": "Analyses de calibration",
       "generating": "Génération en cours...",
+      "generateAI": "Générer le résumé IA",
       "generateSummary": "Générer le résumé IA",
+      "generatingMessage": "Génération du résumé IA... Cela prendra 30-40 secondes. Vous pouvez continuer à travailler pendant la préparation.",
+      "generationError": "Échec de la génération du résumé IA : {{error}}",
+      "refresh": "Actualiser",
+      "noData": "Aucune donnée de résumé de calibration disponible",
+      "invalidData": "Structure de données non valide reçue. Veuillez actualiser et réessayer.",
       "llmNotAvailable": "Le résumé IA nécessite la configuration de ANTHROPIC_API_KEY",
       "selectAll": "Tout sélectionner",
       "deselectAll": "Tout désélectionner",
