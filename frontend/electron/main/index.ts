@@ -84,6 +84,87 @@ function getBackendPath(): string {
 }
 
 /**
+ * Get backend environment variables for configuration.
+ *
+ * In production: Uses environment variables set at build time (more secure)
+ * In development: Reads from .env file for convenience
+ *
+ * Security note: In production builds, sensitive values like ANTHROPIC_API_KEY
+ * should be set as environment variables during the build/release process,
+ * not bundled as plain text files.
+ *
+ * Returns environment variables as key-value object
+ */
+function getBackendEnv(): Record<string, string> {
+  const envVars: Record<string, string> = {};
+
+  if (app.isPackaged) {
+    // Production: Use environment variables from build process
+    // These should be set during CI/CD or build script
+    console.log(
+      "📄 Loading backend config from build-time environment variables"
+    );
+
+    if (process.env.ANTHROPIC_API_KEY) {
+      envVars.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+      console.log("✅ ANTHROPIC_API_KEY loaded from environment");
+    } else {
+      console.warn(
+        "⚠️ ANTHROPIC_API_KEY not found in environment - AI features will be disabled"
+      );
+    }
+
+    if (process.env.LLM_MODEL) {
+      envVars.LLM_MODEL = process.env.LLM_MODEL;
+    }
+
+    if (process.env.LLM_MAX_TOKENS) {
+      envVars.LLM_MAX_TOKENS = process.env.LLM_MAX_TOKENS;
+    }
+  } else {
+    // Development: Read from .env file for convenience
+    try {
+      const fs = require("fs");
+      const envPath = path.join(__dirname, "../../../backend/.env");
+
+      console.log(`📄 Reading backend .env from: ${envPath}`);
+
+      if (!fs.existsSync(envPath)) {
+        console.warn(`⚠️ Backend .env file not found at: ${envPath}`);
+        return envVars;
+      }
+
+      const envContent = fs.readFileSync(envPath, "utf-8");
+      const lines = envContent.split("\n");
+
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        // Skip empty lines and comments
+        if (!trimmedLine || trimmedLine.startsWith("#")) {
+          continue;
+        }
+
+        // Parse KEY=VALUE format
+        const match = trimmedLine.match(/^([^=]+)=(.*)$/);
+        if (match) {
+          const key = match[1].trim();
+          const value = match[2].trim();
+          envVars[key] = value;
+        }
+      }
+
+      console.log(
+        `✅ Loaded ${Object.keys(envVars).length} environment variables from .env`
+      );
+    } catch (error) {
+      console.error("❌ Failed to read backend .env file:", error);
+    }
+  }
+
+  return envVars;
+}
+
+/**
  * Create and display the splash screen while the backend loads.
  * Splash screen is frameless, transparent, and always on top.
  */
@@ -201,6 +282,9 @@ async function startBackend(): Promise<number> {
     throw new Error(`Backend executable not found at: ${backendPath}`);
   }
 
+  // Get backend environment variables
+  const backendEnv = getBackendEnv();
+
   // Return a promise that resolves with the discovered port
   return new Promise<number>((resolve, reject) => {
     let portDiscovered = false;
@@ -209,6 +293,7 @@ async function startBackend(): Promise<number> {
     backendProcess = spawn(backendPath, [], {
       env: {
         ...process.env,
+        ...backendEnv, // Include .env variables (ANTHROPIC_API_KEY, LLM_MODEL, etc.)
         APP_DATA_DIR: appDataPath,
         PORT: BACKEND_PORT.toString(), // Request port, backend may use alternative
       },

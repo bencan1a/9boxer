@@ -112,19 +112,32 @@ jobs:
 
       # Use the same build script as local development for consistency
       # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
+      # Pass ANTHROPIC_API_KEY as environment variable to enable AI features
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:linux -- --x64
 
       - name: Build Electron app (Windows)
         if: matrix.platform == 'windows'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:win -- --x64
 
       - name: Build Electron app (macOS)
         if: matrix.platform == 'macos'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:mac -- --x64 --arm64
 
       # Upload artifacts
@@ -157,22 +170,37 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R release-artifacts/
 
-      - name: Extract changelog
-        id: changelog
+      - name: Prepare release notes from template
+        id: release_notes
         run: |
           VERSION="${{ github.event.inputs.version }}"
 
+          # Read the release template
+          TEMPLATE=$(cat .github/RELEASE_TEMPLATE.md)
+
+          # Replace [VERSION] placeholder
+          RELEASE_NOTES="${TEMPLATE//\[VERSION\]/${VERSION}}"
+
           # Extract changelog section for this version if CHANGELOG.md exists
           if [ -f "CHANGELOG.md" ]; then
-            CHANGELOG=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1)
+            CHANGELOG=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1 | sed '1d')
+
+            # If changelog exists, replace the "What's New" placeholder sections
+            if [ -n "$CHANGELOG" ]; then
+              # Create temporary file with changelog content
+              echo "$CHANGELOG" > /tmp/changelog.txt
+
+              # Replace placeholder sections (this is basic - manual editing may be needed)
+              RELEASE_NOTES=$(echo "$RELEASE_NOTES" | sed '/^### New Features$/,/^### Improvements$/{
+                /^### New Features$/r /tmp/changelog.txt
+                /^- \[Feature.*description\]/d
+              }')
+            fi
           fi
 
-          if [ -z "$CHANGELOG" ]; then
-            CHANGELOG="Release version ${VERSION}"
-          fi
-
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          # Save to output
+          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Delete existing release if present
@@ -187,15 +215,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
-          name: Release v${{ github.event.inputs.version }}
+          name: 9Boxer v${{ github.event.inputs.version }}
           files: |
             release-artifacts/**/*-Windows-*.exe
             release-artifacts/**/*-macOS-*.zip
             release-artifacts/**/*-Linux-*.AppImage
-          body: ${{ steps.changelog.outputs.changelog }}
+          body: ${{ steps.release_notes.outputs.release_notes }}
           prerelease: ${{ github.event.inputs.prerelease }}
           make_latest: true
-          generate_release_notes: true
+          generate_release_notes: false
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

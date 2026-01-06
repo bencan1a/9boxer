@@ -32,11 +32,36 @@ A standalone desktop application for visualizing and managing employee performan
 
 **Download the latest release for your platform:**
 
-- **Windows**: Download and run `9Boxer-Setup-1.0.0.exe`
-- **macOS**: Download `9Boxer-1.0.0.zip`, extract, and drag to Applications. **Note**: On first launch, you may need to right-click the app and select "Open" to bypass macOS Gatekeeper (unsigned app for internal use). See [INSTALL_MACOS.md](INSTALL_MACOS.md) for detailed instructions.
-- **Linux**: Download `9Boxer-1.0.0.AppImage`, make executable, and run
+- **Windows**: `9Boxer-Setup-[version].exe` (~300MB)
+- **macOS**: `9Boxer-[version]-macOS-[arch].zip` (~300MB)
+  - Apple Silicon (M1/M2/M3): Download `arm64` version
+  - Intel Macs: Download `x64` version
+- **Linux**: `9Boxer-[version].AppImage` (~300MB)
 
-No Python or Node.js installation required! Everything is bundled in the installer.
+**No Python or Node.js installation required** - everything is bundled in the installer.
+
+#### Important: Security Warnings
+
+Since 9Boxer is an internal development tool without commercial code signing, you'll see security warnings on first launch:
+
+**Windows Users:**
+1. Run the installer
+2. Click "More info" on the SmartScreen warning
+3. Click "Run anyway"
+4. Complete the installer wizard
+
+**macOS Users:**
+1. Extract the ZIP and move to Applications
+2. **Right-click** (not double-click) on `9Boxer.app`
+3. Select "Open" from the menu
+4. Click "Open" in the security dialog
+
+**After first launch**, these warnings won't appear again.
+
+**Need help?** See detailed installation guides:
+- [Windows Installation Guide](resources/user-guide/docs/INSTALL_WINDOWS.md)
+- [macOS Installation Guide](resources/user-guide/docs/INSTALL_MACOS.md)
+- [User Guide: Installation](resources/user-guide/docs/installation.md)
 
 ### Development Setup (Developers)
 
@@ -305,6 +330,50 @@ Contents:
 - `ninebox.db` - SQLite database with employees and changes
 - `backend.log` - Backend server logs (production mode)
 - Uploaded Excel files (temporary)
+
+### AI Features Configuration
+
+9Boxer includes optional AI-powered features using Claude (Anthropic's LLM API) for calibration meeting summaries.
+
+**Security Note**: The API key is **NOT** stored in plain text files in production builds. Instead, it's baked into the application at build time using environment variables.
+
+**For Development:**
+
+Create a `backend/.env` file with your API key:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-api03-...
+LLM_MODEL=claude-sonnet-4-5-20250929
+LLM_MAX_TOKENS=4096
+```
+
+**For Production Builds:**
+
+When building releases, set the `ANTHROPIC_API_KEY` environment variable:
+
+```bash
+# Local production build
+export ANTHROPIC_API_KEY=sk-ant-api03-...  # Linux/macOS
+# or
+set ANTHROPIC_API_KEY=sk-ant-api03-...     # Windows
+
+cd frontend
+npm run electron:build
+```
+
+**For GitHub Actions Releases:**
+
+The workflow automatically uses the `ANTHROPIC_API_KEY` secret. To configure:
+
+1. Go to your GitHub repository settings
+2. Navigate to **Secrets and variables** → **Actions**
+3. Add a new repository secret named `ANTHROPIC_API_KEY`
+4. Paste your Anthropic API key as the value
+
+The release workflow (`.github/workflows/release.yml`) will automatically include this key in production builds.
+
+**Without API Key:**
+If no API key is configured, the AI summary features will be disabled gracefully - users will see a warning but the app will function normally.
 
 ## Deployment
 

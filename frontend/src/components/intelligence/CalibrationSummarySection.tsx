@@ -42,6 +42,13 @@ export const CalibrationSummarySection: React.FC<
   const { data, isLoading, isGeneratingAI, error, generateAISummary, summary } =
     useCalibrationSummary();
 
+  // Auto-expand section when error occurs to ensure error is visible
+  React.useEffect(() => {
+    if (error) {
+      setExpanded(true);
+    }
+  }, [error]);
+
   // Loading state (initial data load)
   if (isLoading) {
     return (
@@ -201,18 +208,20 @@ export const CalibrationSummarySection: React.FC<
         </Box>
       </Box>
 
+      {/* Show error if AI generation failed - outside Collapse to ensure visibility */}
+      {error && data && (
+        <Box sx={{ px: 2, pt: 2 }}>
+          <Alert severity="error">
+            {t("intelligence.calibrationSummary.generationError", {
+              defaultValue: "Failed to generate AI summary: {{error}}",
+              error: error.message,
+            })}
+          </Alert>
+        </Box>
+      )}
+
       <Collapse in={expanded}>
         <CardContent>
-          {/* Show error if AI generation failed but we have data */}
-          {error && data && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {t("intelligence.calibrationSummary.generationError", {
-                defaultValue: "Failed to generate AI summary: {{error}}",
-                error: error.message,
-              })}
-            </Alert>
-          )}
-
           {/* Show generating indicator if AI summary is being generated */}
           {isGeneratingAI && !summary && (
             <Alert
