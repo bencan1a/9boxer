@@ -3,17 +3,14 @@
  *
  * This script:
  * 1. Renders the Logo component (gradient-bordered variant) at various sizes
- * 2. Captures screenshots as PNG files
+ * 2. Converts SVG to PNG using sharp (lightweight alternative to Playwright)
  * 3. Saves to frontend/build/ directory
  *
- * After running this, use frontend/scripts/create_icon.py to generate .ico file
+ * After running this, use frontend/scripts/create_icns.ts to generate .icns file
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// SVG generation requires literal color values and has unused imports for type checking
-
-import { chromium } from "@playwright/test";
-import { writeFileSync, mkdirSync } from "fs";
+import sharp from "sharp";
+import { mkdirSync } from "fs";
 import { join } from "path";
 
 // SVG template for gradient-bordered logo
@@ -105,49 +102,17 @@ async function generateIcons() {
   console.log("Generating logo icon files...");
   console.log("=".repeat(50));
 
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-
   for (const size of sizes) {
     console.log(`Generating ${size}x${size} icon...`);
 
     const svg = getLogoSVG(size);
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body {
-              margin: 0;
-              padding: 0;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: ${size}px;
-              height: ${size}px;
-              background: transparent;
-            }
-          </style>
-        </head>
-        <body>
-          ${svg}
-        </body>
-      </html>
-    `;
-
-    await page.setContent(html);
-    await page.setViewportSize({ width: size, height: size });
-
     const outputPath = join(buildDir, `icon_${size}x${size}.png`);
-    await page.screenshot({
-      path: outputPath,
-      omitBackground: true,
-    });
+
+    // Use sharp to convert SVG to PNG
+    await sharp(Buffer.from(svg)).resize(size, size).png().toFile(outputPath);
 
     console.log(`   [OK] Saved: icon_${size}x${size}.png`);
   }
-
-  await browser.close();
 
   // Also save the main icon.png (512x512)
   const mainIconSrc = join(buildDir, "icon_512x512.png");
@@ -160,9 +125,9 @@ async function generateIcons() {
   console.log("All PNG icons generated successfully!");
   console.log(`Output directory: ${buildDir}`);
   console.log("\nNext steps:");
-  console.log("  1. Run: cd frontend && python scripts/create_icon.py");
-  console.log("     (Creates Windows .ico file)");
-  console.log("  2. For macOS .icns: Use online converter or macOS iconutil");
+  console.log("  1. Run: cd frontend && npm run generate:icns");
+  console.log("     (Creates macOS .icns file - works on Windows!)");
+  console.log("  2. For Windows .ico: Run python scripts/create_icon.py");
   console.log("     (Electron Builder can auto-generate from icon.png)");
 }
 
