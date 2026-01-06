@@ -189,6 +189,9 @@ jobs:
 
       - name: Run Playwright E2E tests
         working-directory: frontend
+        timeout-minutes: 30
+        env:
+          PLAYWRIGHT_WORKERS: 1
         run: npm run test:e2e:pw
 
       - name: Upload Playwright report

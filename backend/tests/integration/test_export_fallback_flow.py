@@ -101,7 +101,8 @@ class TestExportFallbackFlow:
 
         result = response.json()
         assert result["success"] is True
-        assert result["file_path"] == str(new_file_path)
+        # Normalize paths for comparison (handles Windows short paths and macOS /private prefix)
+        assert Path(result["file_path"]).resolve() == new_file_path.resolve()
         assert new_file_path.exists()
 
     def test_full_workflow_upload_change_export_update_original(
@@ -209,7 +210,8 @@ class TestExportFallbackFlow:
 
         result = response.json()
         assert result["success"] is True
-        assert result["file_path"] == str(new_file_path)
+        # Normalize paths for comparison (handles Windows short paths and macOS /private prefix)
+        assert Path(result["file_path"]).resolve() == new_file_path.resolve()
         assert new_file_path.exists()
 
         # Verify original file still exists (wasn't modified)

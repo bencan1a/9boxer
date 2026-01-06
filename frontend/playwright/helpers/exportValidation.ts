@@ -70,8 +70,10 @@ async function parseExcelFile(filePath: string): Promise<EmployeeRow[]> {
     } else {
       // Data rows
       const rowData: Record<string, unknown> = {};
-      cleanValues.forEach((val, i) => {
-        rowData[headers[i]] = val;
+      // Include ALL headers, not just the ones with values in this row
+      // (ExcelJS row.values only returns up to the last non-empty cell)
+      headers.forEach((header, i) => {
+        rowData[header] = cleanValues[i] ?? null;
       });
       rows.push(rowData as EmployeeRow);
     }
