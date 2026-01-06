@@ -48,6 +48,7 @@ interface SessionState {
 
   // Calibration summary data
   calibrationSummary: CalibrationSummaryData | null;
+  isGeneratingAISummary: boolean;
 
   // Actions
   uploadFile: (file: File, filePath?: string) => Promise<void>;
@@ -72,6 +73,7 @@ interface SessionState {
   // Calibration summary actions
   setCalibrationSummary: (data: CalibrationSummaryData | null) => void;
   clearCalibrationSummary: () => void;
+  setIsGeneratingAISummary: (isGenerating: boolean) => void;
 
   // Donut Mode actions
   toggleDonutMode: (enabled: boolean) => Promise<void>;
@@ -104,6 +106,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   // Calibration summary data
   calibrationSummary: null,
+  isGeneratingAISummary: false,
 
   uploadFile: async (file: File, filePath?: string) => {
     set({ isLoading: true, error: null });
@@ -555,6 +558,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     set({ calibrationSummary: null });
   },
 
+  setIsGeneratingAISummary: (isGenerating: boolean) => {
+    set({ isGeneratingAISummary: isGenerating });
+  },
+
   // ==================== Donut Mode Actions ====================
 
   toggleDonutMode: async (enabled: boolean) => {
@@ -693,3 +700,7 @@ export const selectSetCalibrationSummary = (state: SessionState) =>
   state.setCalibrationSummary;
 export const selectClearCalibrationSummary = (state: SessionState) =>
   state.clearCalibrationSummary;
+export const selectIsGeneratingAISummary = (state: SessionState) =>
+  state.isGeneratingAISummary;
+export const selectSetIsGeneratingAISummary = (state: SessionState) =>
+  state.setIsGeneratingAISummary;

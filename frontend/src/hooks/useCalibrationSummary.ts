@@ -13,6 +13,8 @@ import {
   selectCalibrationSummary,
   selectSetCalibrationSummary,
   selectEmployees,
+  selectIsGeneratingAISummary,
+  selectSetIsGeneratingAISummary,
 } from "../store/sessionStore";
 
 /**
@@ -114,10 +116,11 @@ export const useCalibrationSummary = (
   const data = useSessionStore(selectCalibrationSummary);
   const setData = useSessionStore(selectSetCalibrationSummary);
   const employees = useSessionStore(selectEmployees);
+  const isGeneratingAI = useSessionStore(selectIsGeneratingAISummary);
+  const setIsGeneratingAI = useSessionStore(selectSetIsGeneratingAISummary);
 
   // Loading and error state are local (not persisted)
   const [isLoading, setIsLoading] = useState(false);
-  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   // Insight selection state is local UI state (not persisted across tabs)

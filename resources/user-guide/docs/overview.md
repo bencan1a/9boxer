@@ -10,9 +10,9 @@
 
 | Platform | Download |
 |----------|----------|
-| Windows | [Download for Windows](#coming-soon) |
-| macOS | [Download for macOS](#coming-soon) |
-| Linux | [Download for Linux](#coming-soon) |
+| Windows | [Download for Windows](https://github.com/bencan1a/9boxer/releases) |
+| macOS | [Download for macOS](https://github.com/bencan1a/9boxer/releases) |
+| Linux | [Download for Linux](https://github.com/bencan1a/9boxer/releases) |
 
 > **Privacy First:** All data stays on your computer. No cloud uploads, no external servers.
 

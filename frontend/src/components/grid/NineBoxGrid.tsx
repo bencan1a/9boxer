@@ -14,7 +14,7 @@
  *   - filters-before-after: Before/after filtering comparison
  */
 
-import React, { useState, useEffect, Profiler } from "react";
+import React, { useState, useEffect, useCallback, Profiler } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -36,7 +36,6 @@ import {
 } from "../../store/sessionStore";
 import {
   useUiStore,
-  selectIsRightPanelCollapsed,
   selectSetRightPanelCollapsed,
   selectSetActiveTab,
 } from "../../store/uiStore";
@@ -55,18 +54,11 @@ const onRenderCallback = (
   phase: "mount" | "update" | "nested-update",
   actualDuration: number
 ) => {
-  // Only log in development mode
-  if (import.meta.env.DEV) {
-    // Warn if render takes longer than 16ms (60fps threshold)
-    if (actualDuration > 16) {
-      console.warn(
-        `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms (slower than 60fps)`
-      );
-    } else {
-      console.log(
-        `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms`
-      );
-    }
+  // Only log in development mode and only warn about significantly slow renders
+  if (import.meta.env.DEV && actualDuration > 100) {
+    console.warn(
+      `[Performance] ${id} ${phase}: ${actualDuration.toFixed(2)}ms (significantly slower than 60fps)`
+    );
   }
 };
 
@@ -91,7 +83,7 @@ export const NineBoxGrid: React.FC = () => {
   const moveEmployeeDonut = useSessionStore(selectMoveEmployeeDonut);
 
   // UI store selectors for panel control
-  const isRightPanelCollapsed = useUiStore(selectIsRightPanelCollapsed);
+  // Only get setters (not state) to avoid re-renders when panel state changes
   const setRightPanelCollapsed = useUiStore(selectSetRightPanelCollapsed);
   const setActiveTab = useUiStore(selectSetActiveTab);
 
@@ -170,20 +162,24 @@ export const NineBoxGrid: React.FC = () => {
     localStorage.removeItem(EXPANDED_POSITION_STORAGE_KEY);
   };
 
-  const handleEmployeeDoubleClick = (employeeId: number) => {
-    logger.debug("Employee double-clicked, opening details panel:", employeeId);
+  const handleEmployeeDoubleClick = useCallback(
+    (employeeId: number) => {
+      logger.debug(
+        "Employee double-clicked, opening details panel:",
+        employeeId
+      );
 
-    // Select the employee
-    selectEmployee(employeeId);
+      // Select the employee
+      selectEmployee(employeeId);
 
-    // Open the panel if it's collapsed
-    if (isRightPanelCollapsed) {
+      // Ensure panel is open (safe to call even if already open)
       setRightPanelCollapsed(false, false);
-    }
 
-    // Switch to the Details tab (index 0)
-    setActiveTab(0);
-  };
+      // Switch to the Details tab (index 0)
+      setActiveTab(0);
+    },
+    [selectEmployee, setRightPanelCollapsed, setActiveTab]
+  );
 
   // ESC key listener for collapse
   useEffect(() => {

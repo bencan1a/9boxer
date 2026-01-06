@@ -24,7 +24,7 @@
  *   - details-flag-badges: Employee tiles showing individual flag badges in top-right corner
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -101,24 +101,38 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     }
   };
 
-  // Get flags
-  const flags = employee.flags || [];
+  // Memoize computed values to avoid recalculation on every render
+  const flags = useMemo(() => employee.flags || [], [employee.flags]);
 
-  // Determine if employee has moved and what the original position was
-  const hasMoved = donutModeActive
-    ? Boolean(employee.donut_position)
-    : employee.modified_in_session;
+  const hasMoved = useMemo(
+    () =>
+      donutModeActive
+        ? Boolean(employee.donut_position)
+        : employee.modified_in_session,
+    [donutModeActive, employee.donut_position, employee.modified_in_session]
+  );
 
-  const originalPosition = donutModeActive
-    ? employee.grid_position // In donut mode, grid_position is where they started
-    : employee.original_grid_position || null; // In normal mode, use original_grid_position if available
+  const originalPosition = useMemo(
+    () =>
+      donutModeActive
+        ? employee.grid_position
+        : employee.original_grid_position || null,
+    [donutModeActive, employee.grid_position, employee.original_grid_position]
+  );
 
-  const originalPositionLabel = originalPosition
-    ? getPositionLabel(originalPosition)
-    : null;
+  const originalPositionLabel = useMemo(
+    () => (originalPosition ? getPositionLabel(originalPosition) : null),
+    [originalPosition]
+  );
 
-  // Determine border color based on modification state
-  const getBorderColor = () => {
+  const showBorder = useMemo(
+    () =>
+      (donutModeActive && employee.donut_position) ||
+      employee.modified_in_session,
+    [donutModeActive, employee.donut_position, employee.modified_in_session]
+  );
+
+  const borderColor = useMemo(() => {
     if (donutModeActive && employee.donut_position) {
       return theme.tokens.colors.semantic.donutMode; // Purple
     }
@@ -126,50 +140,120 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       return theme.palette.secondary.main; // Orange
     }
     return "transparent";
-  };
+  }, [
+    donutModeActive,
+    employee.donut_position,
+    employee.modified_in_session,
+    theme.tokens.colors.semantic.donutMode,
+    theme.palette.secondary.main,
+  ]);
 
-  const showBorder =
-    (donutModeActive && employee.donut_position) ||
-    employee.modified_in_session;
+  const selectionStyles = useMemo(() => {
+    const outline =
+      theme.palette.mode === "dark"
+        ? theme.tokens.colors.selection.dark.outline
+        : theme.tokens.colors.selection.light.outline;
+    const width = theme.tokens.colors.selection.light.outlineWidth;
+    return { outline, width };
+  }, [
+    theme.palette.mode,
+    theme.tokens.colors.selection.dark.outline,
+    theme.tokens.colors.selection.light.outline,
+    theme.tokens.colors.selection.light.outlineWidth,
+  ]);
 
-  // Get selection outline color from theme tokens
-  const selectionOutline =
-    theme.palette.mode === "dark"
-      ? theme.tokens.colors.selection.dark.outline
-      : theme.tokens.colors.selection.light.outline;
-  const selectionWidth = theme.tokens.colors.selection.light.outlineWidth;
+  // Memoize Card sx prop to avoid recalculation
+  const cardSx = useMemo(
+    () => ({
+      minWidth: tokens.tile.minWidth,
+      maxWidth: tokens.tile.maxWidth,
+      cursor: "pointer",
+      display: "flex",
+      opacity: isDragging
+        ? 0.5
+        : donutModeActive && employee.donut_position
+          ? 0.7
+          : 1,
+      userSelect: "none",
+      position: "relative",
+      // Consistent full border for both movement types
+      border: 2,
+      borderStyle: "solid",
+      borderColor: showBorder ? borderColor : "divider",
+      // Selection state: blue outer glow (can combine with border colors)
+      boxShadow: isSelected
+        ? `0 0 0 ${selectionStyles.width}px ${selectionStyles.outline}`
+        : 1,
+      "&:hover": {
+        boxShadow: isSelected
+          ? `0 0 0 ${selectionStyles.width}px ${selectionStyles.outline}, 0 4px 8px rgba(0,0,0,0.15)`
+          : 3,
+      },
+    }),
+    [
+      tokens.tile.minWidth,
+      tokens.tile.maxWidth,
+      isDragging,
+      donutModeActive,
+      employee.donut_position,
+      showBorder,
+      borderColor,
+      isSelected,
+      selectionStyles.width,
+      selectionStyles.outline,
+    ]
+  );
+
+  // Memoize flag container sx
+  const flagContainerSx = useMemo(
+    () => ({
+      position: "absolute",
+      top: theme.tokens.spacing.xs,
+      right: theme.tokens.spacing.xs,
+      display: "flex",
+      flexDirection: "row",
+      gap: `${tokens.spacing.flagGap}px`,
+      zIndex: 1,
+    }),
+    [theme.tokens.spacing.xs, tokens.spacing.flagGap]
+  );
+
+  // Memoize drag handle sx
+  const dragHandleSx = useMemo(
+    () => ({
+      width: tokens.tile.dragHandleWidth,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "grab",
+      borderRight: 1,
+      borderColor: "divider",
+      backgroundColor: "action.hover",
+      "&:active": {
+        cursor: "grabbing",
+      },
+    }),
+    [tokens.tile.dragHandleWidth]
+  );
+
+  // Memoize card content sx
+  const cardContentSx = useMemo(
+    () => ({
+      py: `${tokens.tile.paddingY}px`,
+      pl: `${tokens.tile.paddingX}px`,
+      pr: 3,
+      "&:last-child": { pb: `${tokens.tile.paddingY}px` },
+      flex: 1,
+    }),
+    [tokens.tile.paddingY, tokens.tile.paddingX]
+  );
 
   return (
     <Card
       ref={setNodeRef}
       onClick={handleCardClick}
       onDoubleClick={handleCardDoubleClick}
-      sx={{
-        minWidth: tokens.tile.minWidth,
-        maxWidth: tokens.tile.maxWidth,
-        cursor: "pointer",
-        display: "flex",
-        opacity: isDragging
-          ? 0.5
-          : donutModeActive && employee.donut_position
-            ? 0.7
-            : 1,
-        userSelect: "none",
-        position: "relative",
-        // Consistent full border for both movement types
-        border: 2,
-        borderStyle: "solid",
-        borderColor: showBorder ? getBorderColor() : "divider",
-        // Selection state: blue outer glow (can combine with border colors)
-        boxShadow: isSelected
-          ? `0 0 0 ${selectionWidth}px ${selectionOutline}`
-          : 1,
-        "&:hover": {
-          boxShadow: isSelected
-            ? `0 0 0 ${selectionWidth}px ${selectionOutline}, 0 4px 8px rgba(0,0,0,0.15)`
-            : 3,
-        },
-      }}
+      sx={cardSx}
       data-testid={`employee-card-${employee.employee_id}`}
       data-position={employee.grid_position}
       data-donut-position={employee.donut_position || ""}
@@ -177,17 +261,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     >
       {/* Flag Badges - Top Right Strip */}
       {flags.length > 0 && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: theme.tokens.spacing.xs,
-            right: theme.tokens.spacing.xs,
-            display: "flex",
-            flexDirection: "row",
-            gap: `${tokens.spacing.flagGap}px`,
-            zIndex: 1,
-          }}
-        >
+        <Box sx={flagContainerSx}>
           {flags.map((flag, index) => (
             <Tooltip
               key={index}
@@ -221,19 +295,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
         ref={setActivatorNodeRef}
         {...listeners}
         {...attributes}
-        sx={{
-          width: tokens.tile.dragHandleWidth,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "grab",
-          borderRight: 1,
-          borderColor: "divider",
-          backgroundColor: "action.hover",
-          "&:active": {
-            cursor: "grabbing",
-          },
-        }}
+        sx={dragHandleSx}
         onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to card
       >
         <DragIndicatorIcon
@@ -242,15 +304,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       </Box>
 
       {/* Card Content */}
-      <CardContent
-        sx={{
-          py: `${tokens.tile.paddingY}px`,
-          pl: `${tokens.tile.paddingX}px`,
-          pr: 3,
-          "&:last-child": { pb: `${tokens.tile.paddingY}px` },
-          flex: 1,
-        }}
-      >
+      <CardContent sx={cardContentSx}>
         {/* Row 1: Name */}
         <Typography
           variant="subtitle2"

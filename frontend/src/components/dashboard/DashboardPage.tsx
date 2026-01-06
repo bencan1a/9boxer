@@ -98,6 +98,19 @@ export const DashboardPage: React.FC = () => {
   // Throttled resize handler using requestAnimationFrame
   const handlePanelResize = useCallback(
     (sizes: number[]) => {
+      // Skip resize handling if panel is collapsed or sizes are invalid
+      if (sizes.length !== 2) {
+        return;
+      }
+
+      const rightSize = sizes[1];
+
+      // Skip if panel is collapsed/collapsing (size near 0) or if state says collapsed
+      // This prevents resize handling during the collapse/expand animation
+      if (isRightPanelCollapsed || rightSize < 1) {
+        return;
+      }
+
       // Set resizing state using functional update to avoid stale closure
       setIsResizing((prev) => {
         if (!prev) return true; // Only update if not already resizing
@@ -119,12 +132,9 @@ export const DashboardPage: React.FC = () => {
         // Guard against unmounted component
         if (!isMountedRef.current) return;
 
-        // Track panel size changes (only when panel is visible)
-        if (!isRightPanelCollapsed && sizes.length === 2) {
-          const rightSize = sizes[1];
-          if (rightSize !== rightPanelSize) {
-            setRightPanelSize(rightSize);
-          }
+        // Track panel size changes
+        if (rightSize !== rightPanelSize) {
+          setRightPanelSize(rightSize);
         }
 
         // Guard again before setting timeout

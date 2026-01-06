@@ -14,9 +14,9 @@ Download 9Boxer for your platform and launch the app.
 
 | Platform | Download |
 |----------|----------|
-| Windows | [Download for Windows](#coming-soon) |
-| macOS | [Download for macOS](#coming-soon) |
-| Linux | [Download for Linux](#coming-soon) |
+| Windows | [Download for Windows](https://github.com/bencan1a/9boxer/releases) |
+| macOS | [Download for macOS](https://github.com/bencan1a/9boxer/releases) |
+| Linux | [Download for Linux](https://github.com/bencan1a/9boxer/releases) |
 
 > 9Boxer runs locally on your computer. Your employee data never leaves your machine.
 

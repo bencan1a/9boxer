@@ -13,7 +13,7 @@
  * ```
  */
 
-import React from "react";
+import React, { Profiler } from "react";
 import Box from "@mui/material/Box";
 import { Employee } from "../../types/employee";
 import { EmployeeTile } from "./EmployeeTile";
@@ -57,28 +57,43 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
 }) => {
   const { tokens } = useGridZoom();
 
+  // Performance profiler callback - only log significantly slow renders
+  const onRenderCallback = (
+    _id: string,
+    phase: "mount" | "update" | "nested-update",
+    actualDuration: number
+  ) => {
+    if (import.meta.env.DEV && actualDuration > 50) {
+      console.warn(
+        `[Perf] EmployeeTileList (${employees.length} tiles) ${phase}: ${actualDuration.toFixed(2)}ms`
+      );
+    }
+  };
+
   return (
-    <Box
-      data-testid="employee-tile-list"
-      sx={{
-        // Multi-column grid layout for better space utilization with smaller tiles
-        display: "grid",
-        gridTemplateColumns: `repeat(auto-fill, minmax(${tokens.tile.minWidth}px, 1fr))`,
-        gap: `${tokens.spacing.gap}px`,
-        // Ensure minimum height when empty for visibility in tests/Storybook
-        minHeight: employees.length === 0 ? "48px" : undefined,
-      }}
-    >
-      {employees.map((employee) => (
-        <EmployeeTile
-          key={employee.employee_id}
-          employee={employee}
-          onSelect={onSelectEmployee}
-          onDoubleClick={onDoubleClickEmployee}
-          isSelected={employee.employee_id === selectedEmployeeId}
-          donutModeActive={donutModeActive}
-        />
-      ))}
-    </Box>
+    <Profiler id="EmployeeTileList" onRender={onRenderCallback}>
+      <Box
+        data-testid="employee-tile-list"
+        sx={{
+          // Multi-column grid layout for better space utilization with smaller tiles
+          display: "grid",
+          gridTemplateColumns: `repeat(auto-fill, minmax(${tokens.tile.minWidth}px, 1fr))`,
+          gap: `${tokens.spacing.gap}px`,
+          // Ensure minimum height when empty for visibility in tests/Storybook
+          minHeight: employees.length === 0 ? "48px" : undefined,
+        }}
+      >
+        {employees.map((employee) => (
+          <EmployeeTile
+            key={employee.employee_id}
+            employee={employee}
+            onSelect={onSelectEmployee}
+            onDoubleClick={onDoubleClickEmployee}
+            isSelected={employee.employee_id === selectedEmployeeId}
+            donutModeActive={donutModeActive}
+          />
+        ))}
+      </Box>
+    </Profiler>
   );
 };

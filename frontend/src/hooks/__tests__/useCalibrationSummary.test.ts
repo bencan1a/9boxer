@@ -22,6 +22,10 @@ vi.mock("../../store/sessionStore", () => ({
   selectCalibrationSummary: vi.fn((state) => state.calibrationSummary),
   selectSetCalibrationSummary: vi.fn((state) => state.setCalibrationSummary),
   selectEmployees: vi.fn((state) => state.employees),
+  selectIsGeneratingAISummary: vi.fn((state) => state.isGeneratingAISummary),
+  selectSetIsGeneratingAISummary: vi.fn(
+    (state) => state.setIsGeneratingAISummary
+  ),
 }));
 
 describe("useCalibrationSummary", () => {
@@ -29,6 +33,8 @@ describe("useCalibrationSummary", () => {
     calibrationSummary: CalibrationSummaryData | null;
     setCalibrationSummary: (data: CalibrationSummaryData | null) => void;
     employees: unknown[];
+    isGeneratingAISummary: boolean;
+    setIsGeneratingAISummary: (isGenerating: boolean) => void;
   };
 
   beforeEach(() => {
@@ -40,6 +46,10 @@ describe("useCalibrationSummary", () => {
         mockStoreState.calibrationSummary = data;
       }),
       employees: [],
+      isGeneratingAISummary: false,
+      setIsGeneratingAISummary: vi.fn((isGenerating) => {
+        mockStoreState.isGeneratingAISummary = isGenerating;
+      }),
     };
 
     // Default mock for useSessionStore with selector support
