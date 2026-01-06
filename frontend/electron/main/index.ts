@@ -20,6 +20,15 @@ let windowStateManager: WindowStateManager | null = null;
 // Mode detection (lazy to avoid accessing app before it's ready)
 const getIsDev = () => !app.isPackaged;
 
+// Debug build detection - checks if this is a production build with debug flags enabled
+const getIsDebugBuild = () => {
+  try {
+    return app.isPackaged && require("../../package.json").debugBuild === true;
+  } catch {
+    return false;
+  }
+};
+
 // Backend configuration
 // Default to port 38000 to avoid conflicts with common services on 38000
 let BACKEND_PORT = parseInt(process.env.BACKEND_PORT || "38000", 10);
@@ -102,10 +111,7 @@ function getBackendEnv(): Record<string, string> {
     // Production: Read from runtime-config.json generated at build time
     try {
       const fs = require("fs");
-      const configPath = path.join(
-        __dirname,
-        "../dist-electron/runtime-config.json"
-      );
+      const configPath = path.join(__dirname, "../runtime-config.json");
 
       console.log(
         `📄 Loading backend config from build-time config: ${configPath}`
@@ -233,6 +239,12 @@ function setupLogging(): void {
     console.log("🔧 Running in DEVELOPMENT mode");
     console.log("📁 App path:", app.getAppPath());
     console.log("📁 User data path:", app.getPath("userData"));
+  } else if (getIsDebugBuild()) {
+    console.log(
+      "🐛 Running in DEBUG BUILD mode (production build with dev console)"
+    );
+    console.log("📁 App path:", app.getAppPath());
+    console.log("📁 User data path:", app.getPath("userData"));
   } else {
     console.log("🚀 Running in PRODUCTION mode");
     console.log("📁 App path:", app.getAppPath());
@@ -253,6 +265,7 @@ function logEnvironmentInfo(): void {
   console.log("  Architecture:", process.arch);
   console.log("  Development:", getIsDev());
   console.log("  Packaged:", app.isPackaged);
+  console.log("  Debug Build:", getIsDebugBuild());
 }
 
 /**
@@ -349,8 +362,8 @@ async function startBackend(): Promise<number> {
       backendProcess.stdout.on("data", (data: Buffer) => {
         const output = data.toString();
 
-        // Log output for debugging (dev mode)
-        if (getIsDev()) {
+        // Log output for debugging (dev mode or debug build)
+        if (getIsDev() || getIsDebugBuild()) {
           console.log("Backend stdout:", output);
         }
 
@@ -394,8 +407,8 @@ async function startBackend(): Promise<number> {
       backendProcess.stderr.on("data", (data: Buffer) => {
         const output = data.toString();
 
-        // Log errors for debugging (dev mode)
-        if (getIsDev()) {
+        // Log errors for debugging (dev mode or debug build)
+        if (getIsDev() || getIsDebugBuild()) {
           console.error("Backend stderr:", output);
         }
 
