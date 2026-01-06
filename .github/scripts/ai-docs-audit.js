@@ -66,13 +66,16 @@ Before working on these tasks, review these key resources:
 **Core Documentation:**
 - [CLAUDE_INDEX.md](CLAUDE_INDEX.md) - Main entry point for AI agents
 - [AGENTS.md](AGENTS.md) - Development workflow and command reference
-- [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md) - Documentation system rules
+- **[AGENT_DOCS_CONTRACT.md](internal-docs/AGENT_DOCS_CONTRACT.md) - Documentation philosophy and audit guidelines** ⚡ **READ THIS FIRST**
 
 **Key Principles for Internal Docs:**
+- **Layered Architecture**: Navigation layer (quick-start) → Reference layer (detailed) is VALID, not duplication
 - **Anti-Proliferation**: Update existing docs, don't create new ones
 - **Current State Only**: Document "how it works now", not "changed from X to Y"
 - **No Memory Assumption**: Agents have no context of past implementations
 - **Agent-Optimized Language**: Present tense, active voice, actionable commands
+
+**IMPORTANT**: Before consolidating docs, verify they are truly duplicate (>80% identical content), not just related topics or layered architecture
 
 **Where Things Live:**
 - Core guides: \`CLAUDE_INDEX.md\`, \`AGENTS.md\`, \`GITHUB_AGENT.md\`
@@ -368,12 +371,31 @@ function buildInternalDocsContext(changes, internalDocs, newDocs) {
   context.push('\n## Purpose');
   context.push('You are auditing INTERNAL documentation for AI agents working on 9Boxer.');
   context.push('This is NOT user-facing documentation - it is for AI agents like yourself.');
-  context.push('\n## Key Principles for Internal Docs:');
-  context.push('1. **Anti-Proliferation**: Update existing docs, do NOT create new ones');
-  context.push('2. **Current State Only**: Document "how it works now", not "changed from X to Y"');
-  context.push('3. **No Memory Assumption**: Agents have no context of how things used to work');
-  context.push('4. **Agent-Optimized Language**: Present tense, active voice, actionable commands');
-  context.push('5. **Single Source of Truth**: No duplicates, no conflicts');
+
+  // Load and include AGENT_DOCS_CONTRACT.md
+  const contractPath = path.join(PROJECT_ROOT, 'internal-docs/AGENT_DOCS_CONTRACT.md');
+  if (fs.existsSync(contractPath)) {
+    context.push('\n## REQUIRED READING: Agent Documentation Contract');
+    context.push('\nBefore performing this audit, you MUST read and follow the documentation philosophy:');
+    context.push('\n---');
+    const contractContent = fs.readFileSync(contractPath, 'utf-8');
+    context.push(contractContent);
+    context.push('\n---');
+    context.push('\n**CRITICAL**: Apply the principles from AGENT_DOCS_CONTRACT.md to this audit.');
+    context.push('Specifically:');
+    context.push('- Respect the layered architecture (navigation → reference is VALID, not duplication)');
+    context.push('- Use the Consolidation Decision Tree before flagging duplication');
+    context.push('- Follow the Audit System Checklist for validation');
+    context.push('- Measure duplication accurately (>80% identical content threshold)');
+  } else {
+    // Fallback to basic principles if contract doesn't exist
+    context.push('\n## Key Principles for Internal Docs:');
+    context.push('1. **Anti-Proliferation**: Update existing docs, do NOT create new ones');
+    context.push('2. **Current State Only**: Document "how it works now", not "changed from X to Y"');
+    context.push('3. **No Memory Assumption**: Agents have no context of how things used to work');
+    context.push('4. **Agent-Optimized Language**: Present tense, active voice, actionable commands');
+    context.push('5. **Single Source of Truth**: No duplicates, no conflicts');
+  }
 
   context.push('\n## Core Internal Docs Structure:');
   context.push('- `CLAUDE_INDEX.md` - Main entry point for AI agents');
@@ -513,6 +535,30 @@ async function analyzeInternalDocs(context) {
 
 Analyze the recent code changes and current INTERNAL documentation to identify issues.
 
+**CRITICAL VALIDATION REQUIREMENTS** (from AGENT_DOCS_CONTRACT.md):
+
+Before flagging any "duplication" issue, you MUST:
+1. ✅ Check if it's intentional layered architecture (navigation layer → reference layer)
+2. ✅ Verify >80% identical detailed content (not just related topics)
+3. ✅ Confirm both docs serve identical purpose (not quick-start vs deep-dive)
+4. ✅ Verify consolidation would help agent understanding (not harm it)
+
+Before creating any task, you MUST:
+1. ✅ Verify commit hashes actually exist
+2. ✅ Verify claimed sections/files actually exist
+3. ✅ Check if work is already complete
+4. ✅ Assess impact on agent comprehension
+
+**Valid Patterns (DO NOT flag as duplication):**
+- ✅ CLAUDE_INDEX.md has quick command + link to detailed doc = CORRECT layered architecture
+- ✅ AGENTS.md references platform-specific doc = CORRECT separation of concerns
+- ✅ Quick-start in navigation doc + comprehensive guide in reference doc = VALID pattern
+
+**Invalid Patterns (SHOULD flag for consolidation):**
+- ❌ Same detailed content in 2+ docs with no linking relationship
+- ❌ >80% identical comprehensive guides in multiple locations
+- ❌ Conflicting instructions for the same task
+
 **Remember**: This is documentation for AI AGENTS, not end users. Focus on:
 
 1. **New Features Not in CLAUDE_INDEX.md**: Any new features/systems that agents need to know about
@@ -520,13 +566,14 @@ Analyze the recent code changes and current INTERNAL documentation to identify i
 3. **Testing Docs Drift**: Testing patterns that don't reflect current test structure
 4. **Conflicting Recommendations**: Contradictory guidance in different docs
 5. **Stale Examples**: Code examples that are >30 days old without verification
-6. **NEW DOCS CONSOLIDATION**: For any new internal docs detected, provide specific consolidation plan
+6. **HARMFUL DUPLICATION ONLY**: Only flag true duplication (>80% identical detailed content), NOT layered architecture
 
 **IMPORTANT CONSTRAINTS**:
 - Maximum 15 findings total (prioritize critical and high priority issues)
 - Keep descriptions under 200 characters each
 - Keep action steps under 300 characters each
 - Focus on the most impactful issues
+- DO NOT flag intentional layered architecture as duplication
 
 For each issue you find, provide:
 1. **Type**: One of: outdated, missing, conflict, consolidation, stale-example

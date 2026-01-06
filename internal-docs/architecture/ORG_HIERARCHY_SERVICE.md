@@ -1302,7 +1302,938 @@ async def get_org_subtree(
 
 ---
 
+## LLM Service Architecture
+
+The LLM service provides AI-powered calibration summaries and insights using Claude (Anthropic API). This service analyzes employee rating distributions, organizational hierarchies, and statistical anomalies to generate actionable recommendations for calibration meetings.
+
+### Overview
+
+The LLM service architecture follows an "insight types registry" pattern that enables dual use:
+- **Intelligence Tab Visualizations** - Statistical analyses displayed in the UI
+- **AI Calibration Summaries** - LLM-generated insights and recommendations
+
+All analyses are registered in a centralized registry, ensuring consistency between UI display and AI data generation.
+
+**Key Characteristics:**
+- Agent-first architecture (LLM generates insights directly from calibration data)
+- Structured outputs using JSON schema (guarantees valid JSON responses)
+- Complete anonymization (no PII sent to external APIs)
+- Optimized token usage (level-by-level aggregations, flagged employees only)
+- Comprehensive metrics logging (cost tracking, performance monitoring)
+
+---
+
+### Architecture Components
+
+#### 1. Analysis Registry (`analysis_registry.py`)
+
+**Purpose:** Centralized registry for all statistical analyses
+
+The analysis registry is the foundation of the insight types pattern. All statistical analyses are registered in a single location, making it easy to add new analyses with one-line registration.
+
+**Registry Structure:**
+
+```python
+from ninebox.services.intelligence_service import (
+    calculate_function_analysis,
+    calculate_level_analysis,
+    calculate_location_analysis,
+    calculate_manager_analysis,
+    calculate_per_level_distribution,
+    calculate_tenure_analysis,
+)
+
+# Central registry of all analyses - list of (name, function) tuples
+ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
+    ("location", calculate_location_analysis),
+    ("function", calculate_function_analysis),
+    ("level", calculate_level_analysis),
+    ("tenure", calculate_tenure_analysis),
+    ("manager", calculate_manager_analysis),
+    ("per_level_distribution", calculate_per_level_distribution),
+]
+```
+
+**Key Functions:**
+
+```python
+def run_all_analyses(employees: list[Employee]) -> dict[str, dict[str, Any]]:
+    """Run all registered analyses and return results.
+
+    Returns:
+        Dictionary mapping analysis names to their results
+        {
+            "location": {"status": "green", "p_value": 0.23, ...},
+            "function": {"status": "red", "p_value": 0.001, ...},
+            "level": {"status": "green", "p_value": 0.45, ...},
+            ...
+        }
+    """
+
+def get_registered_analyses() -> list[str]:
+    """Get list of all registered analysis names."""
+
+def get_analysis_function(name: str) -> AnalysisFunction | None:
+    """Get analysis function by name."""
+```
+
+**Usage Example:**
+
+```python
+from ninebox.services.analysis_registry import run_all_analyses
+
+# Run all analyses through the registry
+analyses = run_all_analyses(employees)
+
+# Access individual analysis results
+location_analysis = analyses["location"]
+print(f"Location analysis status: {location_analysis['status']}")  # "green", "yellow", or "red"
+print(f"P-value: {location_analysis['p_value']}")
+
+# Check for anomalies
+for analysis_name, result in analyses.items():
+    if result["status"] == "red":
+        print(f"ALERT: {analysis_name} analysis shows significant anomaly")
+```
+
+---
+
+#### 2. LLM Service (`llm_service.py`)
+
+**Purpose:** Integration with Claude API for AI-powered analysis
+
+The LLM service generates natural language summaries and structured insights from calibration data. All data is anonymized before transmission - no PII is ever sent to external APIs.
+
+**Configuration:**
+
+```python
+# Environment variables
+ANTHROPIC_API_KEY=your_api_key_here        # Required for LLM features
+LLM_MODEL=claude-sonnet-4-5-20250929       # Optional (defaults to Sonnet 4.5)
+
+# Available models
+DEFAULT_MODEL = "claude-sonnet-4-5-20250929"  # Balanced (default)
+HAIKU_MODEL = "claude-haiku-3-5-20250110"     # 3-5x faster, lower cost
+```
+
+**Key Methods:**
+
+```python
+class LLMService:
+    def __init__(self, api_key: str | None = None, model: str | None = None):
+        """Initialize LLM service.
+
+        Args:
+            api_key: Optional API key override (defaults to ANTHROPIC_API_KEY env var)
+            model: Optional model override (defaults to LLM_MODEL env var or Sonnet 4.5)
+        """
+
+    def is_available(self) -> LLMAvailability:
+        """Check if LLM service is available and configured.
+
+        Returns:
+            {"available": bool, "reason": str | None}
+        """
+
+    def generate_calibration_analysis(
+        self,
+        data_package: dict,
+        model: str | None = None,
+    ) -> dict:
+        """Generate agent-driven calibration analysis (summary + issues).
+
+        Uses structured outputs (beta API) to guarantee valid JSON.
+
+        Args:
+            data_package: Full calibration data from package_for_llm()
+            model: Optional model override
+
+        Returns:
+            {
+                "summary": "Executive summary text...",
+                "issues": [
+                    {
+                        "type": "anomaly",
+                        "category": "level",
+                        "priority": "high",
+                        "title": "...",
+                        "description": "...",
+                        "affected_count": 25,
+                        "source_data": {...}
+                    },
+                    ...
+                ]
+            }
+
+        Raises:
+            RuntimeError: If LLM service is not available
+        """
+```
+
+**Usage Example:**
+
+```python
+from ninebox.services.llm_service import LLMService
+from ninebox.services.data_packaging_service import package_for_llm
+from ninebox.services.analysis_registry import run_all_analyses
+
+# Initialize service
+llm_service = LLMService()
+
+# Check availability
+availability = llm_service.is_available()
+if not availability["available"]:
+    print(f"LLM service unavailable: {availability['reason']}")
+    return
+
+# Run analyses
+analyses = run_all_analyses(employees)
+
+# Package data for LLM (anonymized, optimized)
+data_package = package_for_llm(employees, analyses, org_data)
+
+# Generate AI analysis
+result = llm_service.generate_calibration_analysis(data_package)
+
+print(f"Summary: {result['summary']}")
+print(f"Found {len(result['issues'])} issues")
+
+# Process issues
+for issue in result["issues"]:
+    print(f"{issue['priority'].upper()}: {issue['title']}")
+    print(f"  Category: {issue['category']}")
+    print(f"  Affected: {issue['affected_count']} employees")
+```
+
+**Metrics Logging:**
+
+The LLM service logs comprehensive metrics for cost tracking and performance monitoring:
+
+```
+{
+  "event": "llm_call",
+  "status": "success",
+  "model": "claude-sonnet-4-5-20250929",
+  "duration_ms": 3245.67,
+  "tokens": {
+    "input": 4532,
+    "output": 1823,
+    "total": 6355
+  },
+  "cost_usd": {
+    "input": 0.013596,
+    "output": 0.027345,
+    "total": 0.040941
+  }
+}
+```
+
+---
+
+#### 3. Data Packaging Service (`data_packaging_service.py`)
+
+**Purpose:** Package calibration data for LLM analysis with anonymization and optimization
+
+The data packaging service prepares employee data for LLM consumption. It provides two packaging modes: anonymized for LLM APIs and complete for UI display.
+
+**Key Optimizations:**
+
+- **Aggregated Distributions:** Sends level-by-level aggregated statistics instead of all individual records
+- **Flagged Employees Only:** Only includes individual records for flagged employees (succession, flight risk, etc.)
+- **Removed Redundant Fields:** Excludes text labels derivable from numeric values
+- **PII Exclusions:** No employee_id, business_title, job_title, manager_id, or real names
+
+**Token Savings:** For a 300-employee dataset, optimizations reduce token usage from ~30,000 to ~5,000 (83% reduction).
+
+**Key Functions:**
+
+```python
+def package_for_llm(
+    employees: list[Employee],
+    analyses: dict[str, dict],
+    org_data: dict | None = None,
+) -> dict:
+    """Package calibration data for LLM analysis (optimized & anonymized).
+
+    Safe to send to external LLM APIs.
+
+    Returns:
+        {
+            "level_breakdown": {
+                "levels": [
+                    {
+                        "level": "MT3",
+                        "total_employees": 42,
+                        "grid_distribution": {5: 20, 6: 10, 9: 12},
+                        "performance_distribution": {"High": 15, "Medium": 25, "Low": 2},
+                        "flagged_count": 8
+                    },
+                    ...
+                ]
+            },
+            "flagged_employees": [
+                {
+                    "id": "Employee_1",  # Anonymized
+                    "level": "MT3",
+                    "function": "Engineering",
+                    "performance_rating": 3,
+                    "flags": ["High Performer", "Succession Planning"]
+                },
+                ...
+            ],
+            "organization": {
+                "managers": [...],
+                "total_employees": 300,
+                "total_managers": 45
+            },
+            "analyses": {
+                "location": {...},
+                "function": {...},
+                ...
+            },
+            "overview": {
+                "total_employees": 300,
+                "stars_percentage": 12.5,
+                "high_performers_percentage": 22.3,
+                ...
+            }
+        }
+    """
+
+def package_for_ui(
+    employees: list[Employee],
+    analyses: dict[str, dict],
+    org_data: dict | None = None,
+) -> dict:
+    """Package calibration data for UI display (includes all fields).
+
+    DO NOT send this output to external LLM APIs.
+
+    Returns:
+        Dictionary with complete calibration data including PII fields
+    """
+```
+
+**Usage Example:**
+
+```python
+from ninebox.services.data_packaging_service import package_for_llm, package_for_ui
+from ninebox.services.analysis_registry import run_all_analyses
+from ninebox.services.org_service import OrgService
+
+# Run analyses
+analyses = run_all_analyses(employees)
+
+# Build org data
+org_service = OrgService(employees, validate=False)
+org_data = {
+    "total_employees": len(employees),
+    "total_managers": len(org_service.find_managers(min_team_size=1)),
+}
+
+# Package for LLM (anonymized, optimized)
+llm_package = package_for_llm(employees, analyses, org_data)
+print(f"LLM package size: {len(str(llm_package))} chars")
+# Safe to send to external APIs - no PII
+
+# Package for UI (complete, includes PII)
+ui_package = package_for_ui(employees, analyses, org_data)
+print(f"UI package size: {len(str(ui_package))} chars")
+# Contains PII - only for internal display
+```
+
+---
+
+#### 4. Calibration Summary Service (`calibration_summary_service.py`)
+
+**Purpose:** Generate complete calibration summaries for meeting preparation
+
+The calibration summary service orchestrates the entire analysis pipeline:
+1. Calculate data overview and time allocation
+2. Run all analyses through the registry
+3. Package data for LLM
+4. Generate AI-powered insights and summary (or fallback to legacy logic)
+
+**Agent-First Architecture:**
+
+The service supports two modes:
+- **Agent Mode (`use_agent=True`):** LLM generates insights directly from calibration data (default)
+- **Legacy Mode (`use_agent=False`):** Uses internal logic for insights (no AI summary)
+
+**Key Methods:**
+
+```python
+class CalibrationSummaryService:
+    def __init__(self, llm_service: Any = None):
+        """Initialize service with optional LLM service for AI features."""
+
+    def calculate_summary(
+        self, employees: list[Employee], use_agent: bool = True
+    ) -> CalibrationSummaryResponse:
+        """Calculate complete calibration summary.
+
+        Args:
+            employees: List of employee records
+            use_agent: If True, use LLM agent for insights. If False, use legacy logic.
+
+        Returns:
+            {
+                "data_overview": {
+                    "total_employees": 300,
+                    "stars_percentage": 12.5,
+                    "high_performers_percentage": 22.3,
+                    ...
+                },
+                "time_allocation": {
+                    "estimated_duration_minutes": 120,
+                    "breakdown_by_level": [...],
+                    ...
+                },
+                "insights": [
+                    {
+                        "id": "...",
+                        "type": "anomaly",
+                        "category": "level",
+                        "priority": "high",
+                        "title": "...",
+                        "description": "...",
+                        "affected_count": 25,
+                        ...
+                    },
+                    ...
+                ],
+                "summary": "Executive summary text..." | None
+            }
+        """
+```
+
+**Usage Example:**
+
+```python
+from ninebox.services.calibration_summary_service import CalibrationSummaryService
+from ninebox.services.llm_service import LLMService
+
+# Initialize services
+llm_service = LLMService()
+summary_service = CalibrationSummaryService(llm_service=llm_service)
+
+# Generate summary (agent mode)
+result = summary_service.calculate_summary(employees, use_agent=True)
+
+print(f"Data Overview:")
+print(f"  Total: {result['data_overview']['total_employees']} employees")
+print(f"  Stars: {result['data_overview']['stars_percentage']}%")
+
+print(f"\nTime Allocation:")
+print(f"  Duration: {result['time_allocation']['estimated_duration_minutes']} minutes")
+
+print(f"\nInsights: {len(result['insights'])} total")
+for insight in result["insights"]:
+    print(f"  {insight['priority'].upper()}: {insight['title']}")
+
+print(f"\nSummary:")
+print(result["summary"])  # AI-generated executive summary (or None if unavailable)
+```
+
+**Fallback Behavior:**
+
+If LLM service is unavailable or fails, the service automatically falls back to legacy logic:
+
+```python
+try:
+    # Call LLM agent
+    agent_result = llm_service.generate_calibration_analysis(data_package)
+    insights = transformer.transform_agent_issues(agent_result["issues"])
+    summary = agent_result["summary"]
+except Exception as e:
+    logger.error(f"LLM agent failed, falling back to legacy: {e}")
+    insights = self._generate_insights_legacy(data_overview, time_allocation, analyses)
+    summary = None
+```
+
+---
+
+#### 5. Insight Types (`types/insights.py`)
+
+**Purpose:** Shared type definitions for insights and related data structures
+
+The `types/insights.py` module provides TypedDict definitions that are shared across multiple services. Moving these types to a shared module avoids circular import dependencies.
+
+**Key Types:**
+
+```python
+from typing import TypedDict
+
+class InsightSourceData(TypedDict, total=False):
+    """Source data for an insight, used for LLM context.
+
+    All fields are optional (total=False) to allow different insight types
+    to include only the relevant source data fields.
+    """
+    z_score: float
+    p_value: float
+    observed_pct: float
+    expected_pct: float
+    center_count: int
+    center_pct: float
+    recommended_max_pct: float
+    total_minutes: int
+    by_level: dict[str, int]
+    category: str
+    categories_affected: list[str]
+
+class Insight(TypedDict):
+    """A discrete, selectable insight for meeting preparation.
+
+    Required fields:
+    - id, type, category, priority, title, description, affected_count, source_data
+
+    Optional fields (for clustering):
+    - cluster_id, cluster_title
+    """
+    id: str
+    type: str  # anomaly, focus_area, recommendation, time_allocation
+    category: str  # location, function, level, tenure, distribution, time
+    priority: str  # high, medium, low
+    title: str
+    description: str
+    affected_count: int
+    source_data: InsightSourceData
+    cluster_id: str | None  # Optional
+    cluster_title: str | None  # Optional
+```
+
+**Usage Example:**
+
+```python
+from ninebox.types.insights import Insight, InsightSourceData
+
+# Create an insight
+insight: Insight = {
+    "id": "anomaly-location-123",
+    "type": "anomaly",
+    "category": "location",
+    "priority": "high",
+    "title": "Seattle office has 45% high performers vs 20% expected",
+    "description": "Significant location bias detected...",
+    "affected_count": 42,
+    "source_data": {
+        "z_score": 3.5,
+        "p_value": 0.0004,
+        "observed_pct": 45.0,
+        "expected_pct": 20.0,
+        "category": "Seattle",
+    },
+}
+
+# Type checking works correctly
+print(insight["title"])  # Type: str
+print(insight["affected_count"])  # Type: int
+```
+
+---
+
+### Integration Patterns
+
+#### Pattern 1: Generate AI Calibration Summary (#backend #ai-agent)
+
+**Scenario:** Generate AI-powered calibration summary with insights and recommendations
+
+**Implementation:**
+
+```python
+from ninebox.services.calibration_summary_service import CalibrationSummaryService
+from ninebox.services.llm_service import LLMService
+
+# Initialize services
+llm_service = LLMService(api_key=api_key)  # Or use ANTHROPIC_API_KEY env var
+summary_service = CalibrationSummaryService(llm_service=llm_service)
+
+# Check LLM availability
+availability = llm_service.is_available()
+if not availability["available"]:
+    print(f"WARNING: LLM unavailable - {availability['reason']}")
+    print("Falling back to legacy mode (no AI summary)")
+
+# Generate summary (agent mode)
+result = summary_service.calculate_summary(employees, use_agent=True)
+
+# Display results
+print("=" * 80)
+print("CALIBRATION SUMMARY")
+print("=" * 80)
+
+print(f"\nDATA OVERVIEW:")
+print(f"  Total Employees: {result['data_overview']['total_employees']}")
+print(f"  Stars (Pos 9): {result['data_overview']['stars_percentage']}%")
+print(f"  High Performers: {result['data_overview']['high_performers_percentage']}%")
+print(f"  Center Box: {result['data_overview']['center_box_percentage']}%")
+
+print(f"\nTIME ALLOCATION:")
+print(f"  Estimated Duration: {result['time_allocation']['estimated_duration_minutes']} min")
+for breakdown in result['time_allocation']['breakdown_by_level']:
+    print(f"    {breakdown['level']}: {breakdown['minutes']} min ({breakdown['percentage']:.1f}%)")
+
+print(f"\nINSIGHTS ({len(result['insights'])} total):")
+for insight in result["insights"]:
+    priority_marker = "🔴" if insight["priority"] == "high" else "🟡" if insight["priority"] == "medium" else "🟢"
+    print(f"{priority_marker} {insight['title']}")
+    print(f"    {insight['description']}")
+    print(f"    Affected: {insight['affected_count']} employees")
+
+if result["summary"]:
+    print(f"\nEXECUTIVE SUMMARY:")
+    print(result["summary"])
+else:
+    print(f"\nEXECUTIVE SUMMARY: Not available (LLM service unavailable)")
+```
+
+**Output Example:**
+
+```
+================================================================================
+CALIBRATION SUMMARY
+================================================================================
+
+DATA OVERVIEW:
+  Total Employees: 300
+  Stars (Pos 9): 12.5%
+  High Performers: 22.3%
+  Center Box: 48.2%
+
+TIME ALLOCATION:
+  Estimated Duration: 120 min
+    IC: 45 min (37.5%)
+    Manager: 35 min (29.2%)
+    Director: 25 min (20.8%)
+    VP: 15 min (12.5%)
+
+INSIGHTS (5 total):
+🔴 Seattle office has 45% high performers vs 20% expected
+    Significant location bias detected (p=0.0004, large effect). Seattle: 45.0% high performers vs 20.0% expected (z=3.50, higher than baseline).
+    Affected: 42 employees
+🟡 52% of employees in center box
+    Consider running a Donut Mode exercise to differentiate Core Performers. A crowded center box may indicate managers are avoiding differentiation.
+    Affected: 156 employees
+🟢 Estimated 2h 0m for full calibration
+    Suggested breakdown: 45m IC, 35m Manager, 25m Director, 15m VP
+    Affected: 300 employees
+
+EXECUTIVE SUMMARY:
+The calibration data reveals several key patterns requiring attention. First, there is a significant location-based anomaly: Seattle office shows 45% high performers compared to the expected 20% baseline (p<0.001), affecting 42 employees. This suggests potential rating inconsistency that should be addressed during calibration.
+
+Second, 52% of employees are concentrated in the center box (position 5), indicating possible differentiation avoidance. Running a Donut Mode exercise could help managers better distinguish among Core Performers.
+
+The estimated meeting duration is 2 hours, with the recommended sequence: IC levels (45 min), Managers (35 min), Directors (25 min), and VPs (15 min). Focus calibration efforts on the Seattle office anomaly and center box differentiation.
+```
+
+---
+
+#### Pattern 2: Add New Analysis to Registry (#backend #registry)
+
+**Scenario:** Add a new statistical analysis that will automatically be included in both UI and LLM pipelines
+
+**Implementation:**
+
+```python
+# 1. Create the analysis function in intelligence_service.py
+def calculate_remote_work_analysis(employees: list[Employee]) -> dict[str, Any]:
+    """Analyze performance distribution for remote vs on-site employees.
+
+    Returns:
+        Dictionary with statistical analysis results (same structure as other analyses)
+    """
+    if not employees:
+        return _empty_analysis("No employees to analyze")
+
+    # Group by remote work status
+    remote_groups = {}
+    for emp in employees:
+        status = "Remote" if emp.is_remote else "On-Site"
+        perf = emp.performance.value
+        if status not in remote_groups:
+            remote_groups[status] = {"High": 0, "Medium": 0, "Low": 0}
+        remote_groups[status][perf] += 1
+
+    # Build contingency table and run chi-square test
+    # ... (similar to calculate_location_analysis)
+
+    return {
+        "chi_square": round(chi2, 3),
+        "p_value": round(p_value, 4),
+        "effect_size": round(effect_size, 3),
+        "degrees_of_freedom": dof,
+        "sample_size": n,
+        "status": status,
+        "deviations": deviations,
+        "interpretation": interpretation,
+    }
+
+# 2. Register the analysis in analysis_registry.py
+ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
+    ("location", calculate_location_analysis),
+    ("function", calculate_function_analysis),
+    ("level", calculate_level_analysis),
+    ("tenure", calculate_tenure_analysis),
+    ("manager", calculate_manager_analysis),
+    ("per_level_distribution", calculate_per_level_distribution),
+    ("remote_work", calculate_remote_work_analysis),  # NEW ANALYSIS
+]
+
+# That's it! The new analysis is now automatically included in:
+# - run_all_analyses() output
+# - Data packaging for LLM
+# - UI intelligence tab display
+# - Agent-generated insights
+```
+
+**Key Points:**
+- Single-line registration makes it easy to add new analyses
+- No changes needed to LLM service, data packaging, or UI code
+- Consistency guaranteed between UI and AI pipelines
+- Analysis results automatically included in LLM data package
+
+---
+
+### Deprecated Components
+
+#### useLLMSummary Hook (REMOVED)
+
+**Status:** Deprecated and removed in commit eb29178
+
+**Previous Location:** `frontend/src/hooks/useLLMSummary.ts`
+
+**Reason for Removal:** Replaced by agent-first architecture where LLM service is called from backend calibration summary service, not directly from frontend.
+
+**Migration Path:**
+
+```typescript
+// OLD APPROACH (DEPRECATED - DO NOT USE)
+import { useLLMSummary } from '@/hooks/useLLMSummary';
+
+const { generateSummary, isLoading } = useLLMSummary();
+const summary = await generateSummary(employees);
+
+// NEW APPROACH (CURRENT)
+// Call backend endpoint which uses CalibrationSummaryService internally
+const response = await fetch('/api/calibration/summary', {
+  method: 'POST',
+  body: JSON.stringify({ use_agent: true }),
+});
+const result = await response.json();
+const summary = result.summary;
+```
+
+**Key Differences:**
+- Old: Frontend directly called LLM service (security risk, exposed API key)
+- New: Backend service handles all LLM interactions (secure, logged, monitored)
+- Old: Manual data packaging in frontend
+- New: Optimized data packaging in backend with anonymization
+- Old: No fallback if LLM unavailable
+- New: Automatic fallback to legacy insights if LLM fails
+
+**Do Not Use:** Any frontend code attempting to import or use `useLLMSummary` will fail. All LLM interactions must go through the backend CalibrationSummaryService.
+
+---
+
+### Best Practices
+
+#### 1. Always Use Analysis Registry
+
+**Correct:**
+```python
+from ninebox.services.analysis_registry import run_all_analyses
+
+# Run all analyses through registry
+analyses = run_all_analyses(employees)
+location_analysis = analyses["location"]
+```
+
+**Incorrect:**
+```python
+from ninebox.services.intelligence_service import calculate_location_analysis
+
+# Don't call analysis functions directly
+location_analysis = calculate_location_analysis(employees)
+# This bypasses the registry and won't be included in LLM data package
+```
+
+#### 2. Always Anonymize for LLM
+
+**Correct:**
+```python
+from ninebox.services.data_packaging_service import package_for_llm
+
+# Anonymized package for LLM (safe for external APIs)
+llm_package = package_for_llm(employees, analyses, org_data)
+result = llm_service.generate_calibration_analysis(llm_package)
+```
+
+**Incorrect:**
+```python
+from ninebox.services.data_packaging_service import package_for_ui
+
+# UI package contains PII - DO NOT send to external APIs
+ui_package = package_for_ui(employees, analyses, org_data)
+result = llm_service.generate_calibration_analysis(ui_package)  # SECURITY RISK!
+```
+
+#### 3. Always Check LLM Availability
+
+**Correct:**
+```python
+llm_service = LLMService()
+availability = llm_service.is_available()
+
+if availability["available"]:
+    result = llm_service.generate_calibration_analysis(data_package)
+else:
+    logger.warning(f"LLM unavailable: {availability['reason']}")
+    # Use fallback logic
+```
+
+**Incorrect:**
+```python
+llm_service = LLMService()
+result = llm_service.generate_calibration_analysis(data_package)  # May raise RuntimeError
+```
+
+#### 4. Always Use Agent Mode in Production
+
+**Correct:**
+```python
+# Production: Use agent mode for AI-powered insights
+summary_service = CalibrationSummaryService(llm_service=llm_service)
+result = summary_service.calculate_summary(employees, use_agent=True)
+```
+
+**Incorrect:**
+```python
+# Legacy mode is only for fallback/testing - not recommended for production
+result = summary_service.calculate_summary(employees, use_agent=False)
+```
+
+---
+
+### Performance Characteristics
+
+#### LLM Service Performance
+
+| Operation | Typical Performance | Cost (USD) | Notes |
+|-----------|-------------------|-----------|-------|
+| `generate_calibration_analysis()` (Sonnet 4.5) | 3-5 seconds | $0.04-0.08 | 300 employees, all analyses |
+| `generate_calibration_analysis()` (Haiku) | 1-2 seconds | $0.01-0.02 | 3-5x faster, slightly lower quality |
+| Data packaging (`package_for_llm`) | <10ms | Free | Client-side operation |
+| Analysis registry (`run_all_analyses`) | <50ms | Free | 300 employees, 6 analyses |
+
+**Token Usage (300 employees):**
+- Input tokens: ~4,500-5,500 (after optimization)
+- Output tokens: ~1,500-2,500 (summary + structured issues)
+- Total tokens: ~6,000-8,000 per call
+
+**Cost Optimization:**
+- Use Haiku model for 70% cost reduction (set `LLM_MODEL=claude-haiku-3-5-20250110`)
+- Data packaging optimizations save 83% tokens vs unoptimized approach
+- Cache analysis results to avoid redundant LLM calls
+
+---
+
+### Troubleshooting
+
+#### Issue: "LLM service not available: ANTHROPIC_API_KEY environment variable not set"
+
+**Symptom:** LLM features unavailable, no AI summary generated
+
+**Diagnosis:** Anthropic API key not configured
+
+**Fix:**
+```bash
+# Set environment variable
+export ANTHROPIC_API_KEY=your_api_key_here
+
+# Or add to .env file
+echo "ANTHROPIC_API_KEY=your_api_key_here" >> .env
+
+# Restart application
+```
+
+**Verification:**
+```python
+llm_service = LLMService()
+availability = llm_service.is_available()
+print(availability)
+# {"available": True, "reason": None}
+```
+
+---
+
+#### Issue: "Failed to generate calibration analysis: Rate limit exceeded"
+
+**Symptom:** LLM calls failing with rate limit errors
+
+**Diagnosis:** Too many API calls in short time period
+
+**Fix:**
+```python
+# 1. Reduce call frequency (cache results)
+from functools import lru_cache
+
+@lru_cache(maxsize=10)
+def get_cached_summary(employee_hash: str) -> dict:
+    """Cache LLM results to avoid redundant calls."""
+    result = summary_service.calculate_summary(employees, use_agent=True)
+    return result
+
+# 2. Switch to Haiku model (higher rate limits)
+llm_service = LLMService(model=HAIKU_MODEL)
+
+# 3. Add retry logic with exponential backoff
+import time
+
+for attempt in range(3):
+    try:
+        result = llm_service.generate_calibration_analysis(data_package)
+        break
+    except Exception as e:
+        if "rate limit" in str(e).lower():
+            wait_time = 2 ** attempt  # 1s, 2s, 4s
+            logger.warning(f"Rate limit hit, retrying in {wait_time}s...")
+            time.sleep(wait_time)
+        else:
+            raise
+```
+
+---
+
+#### Issue: "Large input detected: ~35000 tokens. This may result in high costs"
+
+**Symptom:** Warning logged about large input size
+
+**Diagnosis:** Data package too large (too many employees or verbose analyses)
+
+**Fix:**
+```python
+# 1. Verify you're using package_for_llm (not package_for_ui)
+data_package = package_for_llm(employees, analyses, org_data)  # Correct
+# data_package = package_for_ui(employees, analyses, org_data)  # Wrong!
+
+# 2. Reduce employee count if using sample data
+employees = employees[:100]  # Test with subset first
+
+# 3. Filter analyses to only include relevant ones
+analyses = run_all_analyses(employees)
+filtered_analyses = {
+    k: v for k, v in analyses.items()
+    if k in ["location", "function", "level"]  # Exclude manager/tenure
+}
+data_package = package_for_llm(employees, filtered_analyses, org_data)
+```
+
+---
+
 ## Related Documentation
+
+### Organization Hierarchy Service
 
 - **OrgService Source:** [backend/src/ninebox/services/org_service.py](../../backend/src/ninebox/services/org_service.py)
 - **Unit Tests:** [backend/tests/unit/services/test_org_service.py](../../backend/tests/unit/services/test_org_service.py)
@@ -1314,15 +2245,27 @@ async def get_org_subtree(
 - **Testing Guidelines:** [../testing/](../testing/)
 - **GitHub Issue #159:** [FilterDrawer Integration](https://github.com/bencan1a/9boxer/issues/159)
 
+### LLM Service Architecture
+
+- **Analysis Registry:** [backend/src/ninebox/services/analysis_registry.py](../../backend/src/ninebox/services/analysis_registry.py)
+- **LLM Service:** [backend/src/ninebox/services/llm_service.py](../../backend/src/ninebox/services/llm_service.py)
+- **Data Packaging Service:** [backend/src/ninebox/services/data_packaging_service.py](../../backend/src/ninebox/services/data_packaging_service.py)
+- **Calibration Summary Service:** [backend/src/ninebox/services/calibration_summary_service.py](../../backend/src/ninebox/services/calibration_summary_service.py)
+- **Insight Transformer:** [backend/src/ninebox/services/insight_transformer.py](../../backend/src/ninebox/services/insight_transformer.py)
+- **Insight Types:** [backend/src/ninebox/types/insights.py](../../backend/src/ninebox/types/insights.py)
+- **LLM Service Tests:** [backend/tests/unit/services/test_llm_service.py](../../backend/tests/unit/services/test_llm_service.py)
+- **Commit de55cb3:** [refactor: organize insight types and streamline LLM service](https://github.com/bencan1a/9boxer/commit/de55cb3)
+- **Commit eb29178:** [fix: remove deprecated useLLMSummary hook (issue #209)](https://github.com/bencan1a/9boxer/commit/eb29178)
+
 ---
 
 ## Tags for Search
 
-`#org-service` `#organizational-hierarchy` `#directed-graph` `#manager-analysis` `#bias-detection` `#filtering` `#reporting-chain` `#employee-id` `#id-based-architecture` `#caching` `#validation` `#intelligence` `#analytics` `#testing` `#e2e-tests` `#phase-1` `#phase-2` `#phase-3` `#phase-4` `#phase-5`
+`#org-service` `#organizational-hierarchy` `#directed-graph` `#manager-analysis` `#bias-detection` `#filtering` `#reporting-chain` `#employee-id` `#id-based-architecture` `#caching` `#validation` `#intelligence` `#analytics` `#testing` `#e2e-tests` `#phase-1` `#phase-2` `#phase-3` `#phase-4` `#phase-5` `#llm-service` `#ai-agent` `#insight-registry` `#analysis-registry` `#calibration-summary` `#data-packaging` `#anonymization` `#claude-api` `#anthropic` `#structured-outputs` `#agent-first`
 
 ---
 
-**Document Status:** Complete (Phase 6 delivered)
+**Document Status:** Complete (Phase 6 delivered, LLM Service Architecture added 2026-01-05)
 **Test Coverage:** 96% unit coverage, 100% integration coverage, 4 E2E tests
-**Performance:** <10ms initialization, <5ms org tree build (300 employees)
-**Last Updated:** 2026-01-01
+**Performance:** <10ms initialization, <5ms org tree build (300 employees), 3-5s LLM analysis
+**Last Updated:** 2026-01-05
