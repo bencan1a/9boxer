@@ -27,13 +27,19 @@ const sampleDataCache = new WeakMap<Page, boolean>();
  * For tests that specifically need to test Excel upload functionality,
  * use uploadExcelFile() directly.
  *
+ * **Virtualization Support:**
+ * Due to virtualized rendering, only ~20-50 employee cards are rendered in the DOM
+ * at any given time. This function verifies data is loaded by checking:
+ * - At least 20 visible employee cards (proves virtualization is working)
+ * - Filter button is enabled (proves all data loaded from backend)
+ *
  * **Performance Optimization:**
  * When used in serial test suites (test.describe.configure({ mode: 'serial' })),
  * this function caches the loaded state and skips redundant API calls.
  * For isolated tests, it loads data normally each time.
  *
  * @param page - Playwright page object
- * @param size - Number of employees to generate (default: 200)
+ * @param size - Number of employees to generate (default: 200). Note: validation only checks for visible cards due to virtualization.
  * @param options - Optional configuration
  * @param options.skipCache - Force reload even if data is cached (default: false)
  *
@@ -72,9 +78,9 @@ export async function loadSampleData(
       .count()
       .catch(() => 0);
 
-    // Cache is valid if grid is visible AND we have at least 90% of expected employees
-    // (allows for small variations in data generation)
-    if (gridVisible && cardsCount >= size * 0.9) {
+    // VIRTUALIZATION-AWARE: Cache is valid if grid is visible AND we have at least 20 visible cards
+    // (with virtualization, only ~20-50 cards are rendered at a time)
+    if (gridVisible && cardsCount >= 20) {
       // Cache is valid, skip reload
       return;
     }
@@ -128,44 +134,28 @@ export async function loadSampleData(
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
 
-  // Verify ~200 employees have loaded (prevents race conditions)
-  {
-    const expectedCount = 200;
-    const minAcceptableCount = Math.floor(expectedCount * 0.9); // 180 minimum
-
-    await expect(async () => {
-      const cardCount = await page
-        .locator('[data-testid^="employee-card-"]')
-        .count();
-      if (cardCount < minAcceptableCount) {
-        throw new Error(
-          `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
-        );
-      }
-    }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
-  }
-
-  // Wait for sessionId to be set (filter button becomes enabled)
-  // This ensures the full application state is ready before proceeding
-  const filterButton = page.locator('[data-testid="filter-button"]');
-  await expect(filterButton).toBeEnabled({ timeout: 5000 });
-
-  // CRITICAL: Verify that we have the expected number of employee cards
-  // This ensures the frontend has fully loaded all employees from the backend
-  // Wait up to 5 seconds for at least 90% of expected employees to be present
-  const expectedCount = size;
-  const minAcceptableCount = Math.floor(expectedCount * 0.9);
+  // VIRTUALIZATION-AWARE: With virtualized lists, only visible tiles are rendered (~20-50 depending on viewport)
+  // Instead of counting ALL employees in the DOM, we verify:
+  // 1. At least 20 employee cards are visible (proves virtualization is working)
+  // 2. Filter button is enabled (proves session/data is loaded)
+  const minVisibleCards = 20; // Enough to prove virtualization is working
 
   await expect(async () => {
     const cardCount = await page
       .locator('[data-testid^="employee-card-"]')
       .count();
-    if (cardCount < minAcceptableCount) {
+    if (cardCount < minVisibleCards) {
       throw new Error(
-        `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
+        `Expected at least ${minVisibleCards} visible employee cards (virtualized), but found ${cardCount}`
       );
     }
   }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
+
+  // Wait for sessionId to be set (filter button becomes enabled)
+  // This ensures the full application state is ready before proceeding
+  // This is the PRIMARY indicator that all data has been loaded from the backend
+  const filterButton = page.locator('[data-testid="filter-button"]');
+  await expect(filterButton).toBeEnabled({ timeout: 5000 });
 
   // Mark as cached for this page context
   sampleDataCache.set(page, true);
@@ -181,6 +171,11 @@ export async function loadSampleData(
  * then waits for data to load and grid to populate.
  *
  * Note: The empty state button always loads 200 employees (hardcoded in UI).
+ *
+ * **Virtualization Support:**
+ * Due to virtualized rendering, only ~20-50 employee cards are rendered in the DOM
+ * at any given time. This function verifies data is loaded by checking visible cards
+ * and the filter button enabled state.
  *
  * @param page - Playwright page object
  *
@@ -234,25 +229,26 @@ export async function loadSampleDataFromEmptyState(page: Page): Promise<void> {
   const firstCard = page.locator('[data-testid^="employee-card-"]').first();
   await expect(firstCard).toBeVisible({ timeout: 5000 });
 
-  // Verify ~200 employees have loaded (prevents race conditions)
-  {
-    const expectedCount = 200;
-    const minAcceptableCount = Math.floor(expectedCount * 0.9); // 180 minimum
+  // VIRTUALIZATION-AWARE: With virtualized lists, only visible tiles are rendered (~20-50 depending on viewport)
+  // Instead of counting ALL employees in the DOM, we verify:
+  // 1. At least 20 employee cards are visible (proves virtualization is working)
+  // 2. Filter button is enabled (proves session/data is loaded)
+  const minVisibleCards = 20; // Enough to prove virtualization is working
 
-    await expect(async () => {
-      const cardCount = await page
-        .locator('[data-testid^="employee-card-"]')
-        .count();
-      if (cardCount < minAcceptableCount) {
-        throw new Error(
-          `Expected at least ${minAcceptableCount} employees, but found ${cardCount}`
-        );
-      }
-    }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
-  }
+  await expect(async () => {
+    const cardCount = await page
+      .locator('[data-testid^="employee-card-"]')
+      .count();
+    if (cardCount < minVisibleCards) {
+      throw new Error(
+        `Expected at least ${minVisibleCards} visible employee cards (virtualized), but found ${cardCount}`
+      );
+    }
+  }).toPass({ timeout: 5000, intervals: [100, 250, 500] });
 
   // Wait for sessionId to be set (filter button becomes enabled)
   // This ensures the full application state is ready before proceeding
+  // This is the PRIMARY indicator that all data has been loaded from the backend
   const filterButton = page.locator('[data-testid="filter-button"]');
   await expect(filterButton).toBeEnabled({ timeout: 5000 });
 

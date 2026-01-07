@@ -368,7 +368,7 @@ export const performanceUtils = {
     }
 
     // Force garbage collection if available (Chrome DevTools)
-    const globalWithGc = global as typeof global & { gc?: () => void };
+    const globalWithGc = globalThis as typeof globalThis & { gc?: () => void };
     if (globalWithGc.gc) {
       globalWithGc.gc();
     }

@@ -138,13 +138,14 @@ export async function expectFilterActive(page: Page): Promise<void> {
 }
 
 /**
- * Get the count of visible employee cards
+ * Get the count of visible employees from the UI display
  *
- * Returns the number of employee cards currently visible in the grid.
- * Useful for verifying filter results.
+ * VIRTUALIZATION-AWARE: With virtualized rendering, only ~20-50 cards are in the DOM.
+ * This function reads the actual employee count from the UI display text,
+ * which shows the true count (e.g., "200" or "45 of 200").
  *
  * @param page - Playwright Page object
- * @returns Number of visible employees
+ * @returns Number of visible employees (reads from UI, not DOM count)
  *
  * @example
  * ```typescript
@@ -154,8 +155,21 @@ export async function expectFilterActive(page: Page): Promise<void> {
  * ```
  */
 export async function getVisibleEmployeeCount(page: Page): Promise<number> {
-  const cards = page.locator('[data-testid^="employee-card-"]');
-  return await cards.count();
+  const countDisplay = page.locator('[data-testid="employee-count"]');
+  const text = await countDisplay.textContent();
+
+  if (!text) {
+    throw new Error("Employee count display not found");
+  }
+
+  // Handle both formats: "200" (no filter) and "45 of 200" (filtered)
+  // Extract the first number which is the visible/filtered count
+  const match = text.match(/^(\d+)/);
+  if (!match) {
+    throw new Error(`Could not parse employee count from text: "${text}"`);
+  }
+
+  return parseInt(match[1], 10);
 }
 
 /**

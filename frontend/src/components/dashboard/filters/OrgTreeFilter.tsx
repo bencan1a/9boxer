@@ -138,7 +138,7 @@ export const OrgTreeFilter: React.FC<OrgTreeFilterProps> = ({
   }
 
   return (
-    <Box>
+    <Box data-testid="org-tree-filter">
       {/* Search input */}
       <TextField
         fullWidth

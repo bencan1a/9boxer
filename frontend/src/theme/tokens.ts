@@ -197,6 +197,15 @@ export const dimensions = {
     spacing: 8,
   },
 
+  // Scrollbar styling
+  scrollbar: {
+    width: 12, // Scrollbar width
+    height: 12, // Scrollbar height
+    borderRadius: 4, // Rounded scrollbar to match box corners
+    thumbBorderRadius: 6, // Thumb border radius
+    thumbBorderWidth: 3, // Thumb border width
+  },
+
   // Grid zoom levels (5 discrete levels)
   // Base tile size: 250px-370px (reduced by 30px from original 280px-400px)
   // Level 0: Compact (50%) - Maximum information density
@@ -381,14 +390,6 @@ export const dimensions = {
     iconMargin: 8, // ml: 1 (8px)
     badgeFontSize: "0.65rem",
     badgeHeight: 16,
-  },
-
-  // Scrollbar dimensions
-  scrollbar: {
-    width: 12,
-    height: 12,
-    thumbBorderRadius: 6,
-    thumbBorderWidth: 3,
   },
 
   // Progress bar dimensions (used in ColoredPercentageBar)

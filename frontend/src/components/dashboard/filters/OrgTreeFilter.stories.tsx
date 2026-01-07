@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { OrgTreeFilter } from "./OrgTreeFilter";
 import { ManagerInfo } from "../../../services/orgHierarchyService";
 import {
@@ -8,6 +8,8 @@ import {
   PotentialLevel,
 } from "../../../types/employee";
 import Box from "@mui/material/Box";
+import { useOrgHierarchy } from "../../../hooks/useOrgHierarchy";
+import { useSessionStore } from "../../../store/sessionStore";
 
 /**
  * Create comprehensive org hierarchy mock data
@@ -25,8 +27,7 @@ const createMockOrgData = (): {
     name: string,
     jobFunction: string,
     manager: string,
-    jobLevel: string,
-    isManager: boolean = false
+    jobLevel: string
   ): Employee => {
     const emp: Employee = {
       employee_id: employeeId++,
@@ -64,7 +65,7 @@ const createMockOrgData = (): {
   };
 
   // CEO (top level - no manager in org)
-  const ceo = createEmployee("Jennifer Williams", "Executive", "", "MT6", true);
+  const ceo = createEmployee("Jennifer Williams", "Executive", "", "MT6");
   employees.push(ceo);
 
   // VP Level (reports to CEO)
@@ -72,22 +73,19 @@ const createMockOrgData = (): {
     "Sarah Chen",
     "Engineering",
     "Jennifer Williams",
-    "MT6",
-    true
+    "MT6"
   );
   const vpProduct = createEmployee(
     "Marcus Lee",
     "Product",
     "Jennifer Williams",
-    "MT6",
-    true
+    "MT6"
   );
   const vpDesign = createEmployee(
     "Peter Miller",
     "Design",
     "Jennifer Williams",
-    "MT5",
-    true
+    "MT5"
   );
   employees.push(vpEngineering, vpProduct, vpDesign);
 
@@ -96,22 +94,19 @@ const createMockOrgData = (): {
     "David Rodriguez",
     "Engineering",
     "Sarah Chen",
-    "MT5",
-    true
+    "MT5"
   );
   const dirFrontend = createEmployee(
     "Emily Zhang",
     "Engineering",
     "Sarah Chen",
-    "MT5",
-    true
+    "MT5"
   );
   const dirInfra = createEmployee(
     "Michael Johnson",
     "Engineering",
     "Sarah Chen",
-    "MT5",
-    true
+    "MT5"
   );
   employees.push(dirBackend, dirFrontend, dirInfra);
 
@@ -120,32 +115,23 @@ const createMockOrgData = (): {
     "Jessica Taylor",
     "Product",
     "Marcus Lee",
-    "MT5",
-    true
+    "MT5"
   );
   const dirProductB = createEmployee(
     "Robert Kim",
     "Product",
     "Marcus Lee",
-    "MT4",
-    true
+    "MT4"
   );
   employees.push(dirProductA, dirProductB);
 
   // Design Directors (report to Peter Miller)
-  const dirUX = createEmployee(
-    "Amanda White",
-    "Design",
-    "Peter Miller",
-    "MT4",
-    true
-  );
+  const dirUX = createEmployee("Amanda White", "Design", "Peter Miller", "MT4");
   const dirVisual = createEmployee(
     "Chris Anderson",
     "Design",
     "Peter Miller",
-    "MT4",
-    true
+    "MT4"
   );
   employees.push(dirUX, dirVisual);
 
@@ -154,15 +140,13 @@ const createMockOrgData = (): {
     "James Wilson",
     "Engineering",
     "David Rodriguez",
-    "MT4",
-    true
+    "MT4"
   );
   const tlBackendDB = createEmployee(
     "Lisa Martinez",
     "Engineering",
     "David Rodriguez",
-    "MT3",
-    true
+    "MT3"
   );
   employees.push(tlBackendAPI, tlBackendDB);
 
@@ -171,15 +155,13 @@ const createMockOrgData = (): {
     "Kevin Brown",
     "Engineering",
     "Emily Zhang",
-    "MT4",
-    true
+    "MT4"
   );
   const tlFrontendMobile = createEmployee(
     "Rachel Green",
     "Engineering",
     "Emily Zhang",
-    "MT3",
-    true
+    "MT3"
   );
   employees.push(tlFrontendReact, tlFrontendMobile);
 
@@ -335,16 +317,23 @@ const mockData = createMockOrgData();
  */
 const OrgTreeFilterWrapper: React.FC<{
   initialSelectedManagers?: string[];
-  managers?: ManagerInfo[];
   employees?: Employee[];
-}> = ({
-  initialSelectedManagers = [],
-  managers = mockData.managers,
-  employees = mockData.employees,
-}) => {
+}> = ({ initialSelectedManagers = [], employees = mockData.employees }) => {
   const [selectedManagers, setSelectedManagers] = useState<string[]>(
     initialSelectedManagers
   );
+
+  // Set up session store with employees for the hook to work
+  useEffect(() => {
+    useSessionStore.setState({
+      employees,
+      sessionId: "story-session",
+      filename: "story-employees.xlsx",
+    });
+  }, [employees]);
+
+  // Use the org hierarchy hook to get the org tree
+  const { orgTree } = useOrgHierarchy();
 
   const handleToggleManager = (managerName: string) => {
     setSelectedManagers((prev) =>
@@ -357,8 +346,7 @@ const OrgTreeFilterWrapper: React.FC<{
   return (
     <Box sx={{ width: 320, p: 2, backgroundColor: "background.paper" }}>
       <OrgTreeFilter
-        managers={managers}
-        employees={employees}
+        orgTree={orgTree}
         selectedManagers={selectedManagers}
         onToggleManager={handleToggleManager}
       />
@@ -383,12 +371,9 @@ const meta: Meta<typeof OrgTreeFilter> = {
     },
   },
   argTypes: {
-    managers: {
-      description: "List of managers with employee IDs, names, and team sizes",
-    },
-    employees: {
+    orgTree: {
       description:
-        "List of all employees (used to determine reporting relationships)",
+        "Hierarchical organization tree with manager nodes and team sizes",
     },
     selectedManagers: {
       description: "Array of manager names that are currently selected",
@@ -449,16 +434,13 @@ export const SearchResults: Story = {
     },
   },
   render: () => {
-    // Filter managers to simulate search for "chen"
-    const filteredManagers = mockData.managers.filter((m) =>
-      m.name.toLowerCase().includes("chen")
+    // Filter employees to simulate search for "chen"
+    const filteredEmployees = mockData.employees.filter(
+      (e) =>
+        e.name.toLowerCase().includes("chen") ||
+        e.manager.toLowerCase().includes("chen")
     );
-    return (
-      <OrgTreeFilterWrapper
-        managers={filteredManagers}
-        employees={mockData.employees}
-      />
-    );
+    return <OrgTreeFilterWrapper employees={filteredEmployees} />;
   },
 };
 
@@ -505,9 +487,7 @@ export const EmptyState: Story = {
       },
     },
   },
-  render: () => (
-    <OrgTreeFilterWrapper managers={[]} employees={mockData.employees} />
-  ),
+  render: () => <OrgTreeFilterWrapper employees={[]} />,
 };
 
 /**
@@ -527,19 +507,11 @@ export const SmallTeam: Story = {
     },
   },
   render: () => {
-    const smallOrgManagers: ManagerInfo[] = [
-      {
-        employee_id: 100,
-        name: "Kevin Brown",
-        team_size: 2,
-      },
-    ];
-    return (
-      <OrgTreeFilterWrapper
-        managers={smallOrgManagers}
-        employees={mockData.employees}
-      />
+    // Create a small org with just Kevin Brown and his reports
+    const smallOrgEmployees = mockData.employees.filter(
+      (e) => e.manager === "Kevin Brown" || e.name === "Kevin Brown"
     );
+    return <OrgTreeFilterWrapper employees={smallOrgEmployees} />;
   },
 };
 
@@ -605,15 +577,17 @@ export const TeamLeadsOnly: Story = {
     },
   },
   render: () => {
-    const teamLeadManagers = mockData.managers.filter(
-      (m) => m.team_size <= 3 && m.team_size > 0
+    // Filter to show only team leads and their reports
+    const teamLeadNames = [
+      "James Wilson",
+      "Lisa Martinez",
+      "Kevin Brown",
+      "Rachel Green",
+    ];
+    const teamLeadEmployees = mockData.employees.filter(
+      (e) => teamLeadNames.includes(e.name) || teamLeadNames.includes(e.manager)
     );
-    return (
-      <OrgTreeFilterWrapper
-        managers={teamLeadManagers}
-        employees={mockData.employees}
-      />
-    );
+    return <OrgTreeFilterWrapper employees={teamLeadEmployees} />;
   },
 };
 

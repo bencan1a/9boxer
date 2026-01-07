@@ -96,6 +96,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={0}
           onImportClick={onImportClick}
+          onLoadSampleClick={vi.fn()}
           onExportClick={vi.fn()}
         />
       </TestWrapper>
@@ -124,6 +125,7 @@ describe("FileMenuButton", () => {
           fileName="employees.xlsx"
           changeCount={3}
           onImportClick={vi.fn()}
+          onLoadSampleClick={vi.fn()}
           onExportClick={onExportClick}
         />
       </TestWrapper>

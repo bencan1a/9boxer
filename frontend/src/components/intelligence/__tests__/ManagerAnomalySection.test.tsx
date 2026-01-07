@@ -389,6 +389,7 @@ describe("ManagerAnomalySection", () => {
           {
             category: "High Z Manager",
             team_size: 20,
+            employee_ids: [],
             high_pct: 80.0,
             medium_pct: 15.0,
             low_pct: 5.0,

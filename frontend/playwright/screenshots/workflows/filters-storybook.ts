@@ -286,7 +286,7 @@ export async function generateFilterToolbarExpanded(
     outputPath,
     theme: "light",
     waitTime: 500,
-    selector: '.filter-toolbar, [class*="FilterToolbar"]', // Crop to just the toolbar component
+    // Use default #storybook-root selector since FilterToolbar is the only component
   });
 }
 
@@ -315,8 +315,7 @@ export async function generateFilterToolbarWithActiveFilters(
     outputPath,
     theme: "light",
     waitTime: 500,
-    selector:
-      '[data-testid="filter-toolbar"], .filter-toolbar, [class*="FilterToolbar"]', // Crop to just the toolbar component
+    // Use default #storybook-root selector since FilterToolbar is the only component
   });
 }
 

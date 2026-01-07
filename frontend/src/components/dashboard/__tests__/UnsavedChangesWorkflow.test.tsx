@@ -92,25 +92,31 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
           {
-            event_id: 2,
+            event_id: "2",
             employee_id: 2,
-            event_type: "position_change",
+            employee_name: "Employee 2",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Low",
-            from_potential: "Medium",
-            to_performance: "Medium",
-            to_potential: "High",
+            old_position: 2,
+            new_position: 8,
+            old_performance: "Low",
+            new_performance: "Medium",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -154,14 +160,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -209,14 +218,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -271,14 +283,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -317,14 +332,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -367,14 +385,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -412,14 +433,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -474,14 +498,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -533,11 +560,14 @@ describe("Unsaved Changes Workflow", () => {
       ]);
       vi.mocked(api.apiClient.upload).mockResolvedValue({
         session_id: "new-session-456",
-        message: "File uploaded successfully",
+        employee_count: 0,
         filename: "recent.xlsx",
+        uploaded_at: "2024-01-01T00:00:00Z",
       });
       vi.mocked(api.apiClient.getEmployees).mockResolvedValue({
         employees: [],
+        total: 0,
+        filtered: 0,
       });
 
       // Set up session with events (unsaved changes)
@@ -547,14 +577,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];
@@ -630,14 +663,17 @@ describe("Unsaved Changes Workflow", () => {
         sessionStore.current.filename = "employees.xlsx";
         sessionStore.current.events = [
           {
-            event_id: 1,
+            event_id: "1",
             employee_id: 1,
-            event_type: "position_change",
+            employee_name: "Employee 1",
+            event_type: "grid_move",
             timestamp: "2024-01-01T00:00:00Z",
-            from_performance: "Medium",
-            from_potential: "Medium",
-            to_performance: "High",
-            to_potential: "High",
+            old_position: 5,
+            new_position: 9,
+            old_performance: "Medium",
+            new_performance: "High",
+            old_potential: "Medium",
+            new_potential: "High",
             notes: null,
           },
         ];

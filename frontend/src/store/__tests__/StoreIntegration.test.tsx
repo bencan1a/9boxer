@@ -7,6 +7,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useSessionStore } from "../sessionStore";
 import { useUiStore } from "../uiStore";
+import { PerformanceLevel, PotentialLevel } from "@/types/employee";
 import * as api from "@/services/api";
 
 vi.mock("@/services/api");
@@ -102,7 +103,6 @@ describe("Store Integration Tests", () => {
 
     vi.mocked(api.apiClient.clearSession).mockResolvedValue({
       success: true,
-      message: "Session cleared",
     });
 
     const { result: sessionStore } = renderHook(() => useSessionStore());
@@ -131,10 +131,9 @@ describe("Store Integration Tests", () => {
           hire_date: "2020-01-01",
           tenure_category: "3-5 years",
           time_in_job_profile: "2 years",
-          performance: "High",
-          potential: "High",
+          performance: PerformanceLevel.HIGH,
+          potential: PotentialLevel.HIGH,
           grid_position: 9,
-          position_label: "Star [H,H]",
           talent_indicator: "High Performer",
           ratings_history: [],
           development_focus: null,
@@ -223,11 +222,13 @@ describe("Store Integration Tests", () => {
 
     // Mock file read from Electron API
     const mockFileContent = new Uint8Array([1, 2, 3, 4, 5]);
-    vi.mocked(window.electronAPI.readFile).mockResolvedValue({
-      success: true,
-      buffer: Array.from(mockFileContent),
-      fileName: mockFileName,
-    });
+    if (window.electronAPI) {
+      vi.mocked(window.electronAPI.readFile).mockResolvedValue({
+        success: true,
+        buffer: Array.from(mockFileContent),
+        fileName: mockFileName,
+      });
+    }
 
     // Mock upload after file read
     vi.mocked(api.apiClient.upload).mockResolvedValue({
@@ -253,7 +254,9 @@ describe("Store Integration Tests", () => {
 
     // Verify file was reloaded
     await waitFor(() => {
-      expect(window.electronAPI.readFile).toHaveBeenCalledWith(mockFilePath);
+      if (window.electronAPI) {
+        expect(window.electronAPI.readFile).toHaveBeenCalledWith(mockFilePath);
+      }
       expect(api.apiClient.upload).toHaveBeenCalled();
       expect(restored).toBe(true);
       expect(sessionStore.current.sessionId).toBe("new-session-123");

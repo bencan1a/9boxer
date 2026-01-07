@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "../../../test/utils";
 import { EmployeeTileList } from "../EmployeeTileList";
 import { createMockEmployee } from "../../../test/mockData";
@@ -6,10 +6,39 @@ import { GridZoomProvider } from "../../../contexts/GridZoomContext";
 import type { Employee } from "../../../types/employee";
 import { tokens } from "../../../theme/tokens";
 
-// Wrapper for GridZoomProvider
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <GridZoomProvider>{children}</GridZoomProvider>
-);
+// Mock TanStack Virtual to disable virtualization in tests
+// This allows all items to render without complex viewport mocking
+vi.mock("@tanstack/react-virtual", () => ({
+  useVirtualizer: ({ count }: { count: number }) => ({
+    getVirtualItems: () =>
+      Array.from({ length: count }, (_, index) => ({
+        index,
+        key: index,
+        start: index * 100,
+        size: 100,
+      })),
+    getTotalSize: () => count * 100,
+    scrollToIndex: vi.fn(),
+    measure: vi.fn(),
+  }),
+}));
+
+// Wrapper for GridZoomProvider with scroll container
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <GridZoomProvider>
+      <div
+        style={{
+          width: "400px",
+          height: "500px",
+          overflow: "auto",
+        }}
+      >
+        {children}
+      </div>
+    </GridZoomProvider>
+  );
+};
 
 describe("EmployeeTileList", () => {
   const mockOnSelect = vi.fn();
@@ -20,8 +49,95 @@ describe("EmployeeTileList", () => {
     createMockEmployee({ employee_id: 3, name: "Carol" }),
   ];
 
+  // Mock ResizeObserver to provide container dimensions for virtualization
+  let resizeObserverCallback: ResizeObserverCallback | null = null;
+
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock ResizeObserver to simulate container width
+    global.ResizeObserver = class ResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        resizeObserverCallback = callback;
+      }
+      observe(element: HTMLElement) {
+        // Mock the element's clientWidth so updateWidth() reads a non-zero value
+        Object.defineProperty(element, "clientWidth", {
+          configurable: true,
+          value: 400,
+        });
+        Object.defineProperty(element, "clientHeight", {
+          configurable: true,
+          value: 500,
+        });
+
+        // Mock the parent scroll container for TanStack Virtual
+        const parentElement = element.parentElement;
+        if (parentElement) {
+          Object.defineProperty(parentElement, "clientWidth", {
+            configurable: true,
+            value: 400,
+          });
+          Object.defineProperty(parentElement, "clientHeight", {
+            configurable: true,
+            value: 500,
+          });
+          Object.defineProperty(parentElement, "scrollHeight", {
+            configurable: true,
+            value: 1000,
+          });
+          Object.defineProperty(parentElement, "scrollTop", {
+            configurable: true,
+            writable: true,
+            value: 0,
+          });
+          Object.defineProperty(parentElement, "getBoundingClientRect", {
+            configurable: true,
+            value: () => ({
+              width: 400,
+              height: 500,
+              top: 0,
+              left: 0,
+              right: 400,
+              bottom: 500,
+              x: 0,
+              y: 0,
+            }),
+          });
+        }
+
+        // Trigger the callback immediately to simulate initial measurement
+        if (resizeObserverCallback) {
+          resizeObserverCallback(
+            [
+              {
+                target: element,
+                contentRect: {
+                  width: 400,
+                  height: 500,
+                  top: 0,
+                  left: 0,
+                  bottom: 500,
+                  right: 400,
+                  x: 0,
+                  y: 0,
+                } as DOMRectReadOnly,
+                borderBoxSize: [] as ResizeObserverSize[],
+                contentBoxSize: [] as ResizeObserverSize[],
+                devicePixelContentBoxSize: [] as ResizeObserverSize[],
+              } as ResizeObserverEntry,
+            ],
+            this
+          );
+        }
+      }
+      disconnect() {}
+      unobserve() {}
+    };
+  });
+
+  afterEach(() => {
+    resizeObserverCallback = null;
   });
 
   it("renders empty list without errors", () => {
@@ -40,8 +156,8 @@ describe("EmployeeTileList", () => {
     expect(screen.queryByTestId(/employee-card-/)).not.toBeInTheDocument();
   });
 
-  it("renders all employees in the list", () => {
-    render(
+  it("renders all employees in the list", async () => {
+    const { debug } = render(
       <TestWrapper>
         <EmployeeTileList
           employees={threeEmployees}
@@ -51,7 +167,16 @@ describe("EmployeeTileList", () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText("Alice")).toBeInTheDocument();
+    // Debug to see what's actually rendered
+    debug();
+
+    // Wait for virtualization to render after ResizeObserver callback
+    await vi.waitFor(
+      () => {
+        expect(screen.getByText("Alice")).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
     expect(screen.getByText("Bob")).toBeInTheDocument();
     expect(screen.getByText("Carol")).toBeInTheDocument();
   });
@@ -67,8 +192,12 @@ describe("EmployeeTileList", () => {
       </TestWrapper>
     );
 
-    const listContainer = container.firstChild as HTMLElement;
-    const styles = window.getComputedStyle(listContainer);
+    // With virtualization, grid layout is on the virtual row containers
+    const virtualRow = container.querySelector(
+      '[data-index="0"]'
+    ) as HTMLElement;
+    expect(virtualRow).toBeInTheDocument();
+    const styles = window.getComputedStyle(virtualRow);
     expect(styles.display).toBe("grid");
   });
 
@@ -83,8 +212,12 @@ describe("EmployeeTileList", () => {
       </TestWrapper>
     );
 
-    const listContainer = container.firstChild as HTMLElement;
-    const styles = window.getComputedStyle(listContainer);
+    // With virtualization, grid layout is on the virtual row containers
+    const virtualRow = container.querySelector(
+      '[data-index="0"]'
+    ) as HTMLElement;
+    expect(virtualRow).toBeInTheDocument();
+    const styles = window.getComputedStyle(virtualRow);
     expect(styles.display).toBe("grid");
   });
 
@@ -99,8 +232,12 @@ describe("EmployeeTileList", () => {
       </TestWrapper>
     );
 
-    const listContainer = container.firstChild as HTMLElement;
-    const styles = window.getComputedStyle(listContainer);
+    // With virtualization, gap is on the virtual row containers
+    const virtualRow = container.querySelector(
+      '[data-index="0"]'
+    ) as HTMLElement;
+    expect(virtualRow).toBeInTheDocument();
+    const styles = window.getComputedStyle(virtualRow);
     // Default zoom level (level2) - use token value for gap
     const expectedGap = `${tokens.dimensions.gridZoom.level2.spacing.gap}px`;
     expect(styles.gap).toBe(expectedGap);

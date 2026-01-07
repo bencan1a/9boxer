@@ -41,7 +41,6 @@ const createEmployee = (overrides: Partial<Employee>): Employee => ({
   performance: PerformanceLevel.MEDIUM,
   potential: PotentialLevel.MEDIUM,
   grid_position: 5,
-  position_label: "Core Talent [M,M]",
   talent_indicator: "Core",
   ratings_history: [],
   development_focus: null,

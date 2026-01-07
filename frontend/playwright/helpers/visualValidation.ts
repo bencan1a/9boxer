@@ -148,13 +148,13 @@ export async function verifyBadgeCount(
 }
 
 /**
- * Verify filter button has active indicator (orange dot)
+ * Verify filter button has active indicator (orange background)
  *
- * Validates that the filter button shows the orange dot indicator that appears
+ * Validates that the filter button shows the orange background that appears
  * when filters are active. This is a critical visual element for the filters documentation.
  *
  * @param page - Playwright Page object
- * @throws Error if filter button not found or orange dot not visible
+ * @throws Error if filter button not found or orange background not visible
  *
  * @example
  * ```typescript
@@ -166,54 +166,43 @@ export async function verifyBadgeCount(
  * ```
  */
 export async function verifyFilterActive(page: Page): Promise<void> {
-  // The orange dot is a MUI Badge component with data-testid="filter-badge"
-  const filterBadge = page.locator('[data-testid="filter-badge"]');
+  // The filter button has data-testid="filter-button"
+  const filterButton = page.locator('[data-testid="filter-button"]');
 
-  // Verify badge exists
-  await expect(filterBadge).toBeVisible();
+  // Verify button exists
+  await expect(filterButton).toBeVisible();
 
-  // Verify badge is not invisible (MUI Badge sets invisible attribute when no filters active)
-  const badgeClasses = await filterBadge.getAttribute("class");
-  if (badgeClasses && badgeClasses.includes("invisible")) {
+  // Verify button has orange background color (secondary.main theme color)
+  // When filters are active, the button gets backgroundColor: secondary.main
+  const backgroundColor = await filterButton.evaluate(
+    (el) => window.getComputedStyle(el).backgroundColor
+  );
+
+  // Convert design system hex color to RGB for comparison
+  const hexToRgb = (hex: string): string => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return "";
+    return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
+  };
+
+  // The secondary.main color from theme should be an orange color
+  // Check if background is NOT transparent or default (should be colored)
+  if (
+    backgroundColor === "rgba(0, 0, 0, 0)" ||
+    backgroundColor === "transparent" ||
+    backgroundColor.includes("255, 255, 255")
+  ) {
     throw new Error(
-      "Filter button orange dot indicator not visible. " +
+      "Filter button orange background not visible. " +
+        `Background color is ${backgroundColor} (expected orange/colored background). ` +
         "Filters may not be active, or visual indicator failed to appear. " +
         "Screenshot would not demonstrate active filter state."
     );
   }
 
-  // Verify badge dot element has orange color
-  const badgeDot = filterBadge.locator('[class*="MuiBadge-badge"]');
-  try {
-    await expect(badgeDot).toBeVisible({ timeout: 2000 });
-
-    // Verify badge has orange/warning color (optional but recommended)
-    const badgeColor = await badgeDot.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor
-    );
-
-    // Convert design system hex color to RGB for comparison
-    const hexToRgb = (hex: string): string => {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      if (!result) return "";
-      return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
-    };
-
-    const expectedColor = hexToRgb(tokens.colors.semantic.warning);
-    if (!badgeColor.includes(expectedColor)) {
-      console.warn(
-        `Warning: Filter badge color is ${badgeColor}, expected ${expectedColor} from design system. ` +
-          `(tokens.colors.semantic.warning = ${tokens.colors.semantic.warning}). ` +
-          `Visual may not match documentation expectations.`
-      );
-    }
-  } catch (error) {
-    throw new Error(
-      "Filter button orange dot indicator not visible. " +
-        "Filters may not be active, or visual indicator failed to appear. " +
-        "Screenshot would not demonstrate active filter state."
-    );
-  }
+  console.log(
+    `✓ Filter button has active background color: ${backgroundColor}`
+  );
 }
 
 /**

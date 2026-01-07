@@ -3,6 +3,8 @@
  * Used in Storybook stories and testing
  */
 
+import { ManagerDeviation as APIManagerDeviation } from "../types/api";
+
 /**
  * Types matching the chart component interfaces
  */
@@ -327,19 +329,8 @@ export const mockLevelDistributionLongNames: LevelDistribution[] = [
  * Baseline: 20% High / 70% Medium / 10% Low
  */
 
-export interface ManagerDeviation {
-  category: string; // Manager name
-  team_size: number;
-  high_pct: number;
-  medium_pct: number;
-  low_pct: number;
-  high_deviation: number;
-  medium_deviation: number;
-  low_deviation: number;
-  total_deviation: number;
-  z_score: number;
-  is_significant: boolean;
-}
+// Re-export the API type for backward compatibility
+export type ManagerDeviation = APIManagerDeviation;
 
 /**
  * Helper to create a manager deviation data point
@@ -349,7 +340,8 @@ export const createManagerDeviation = (
   teamSize: number,
   highPct: number,
   mediumPct: number,
-  lowPct: number
+  lowPct: number,
+  employeeIds: number[] = []
 ): ManagerDeviation => {
   const BASELINE_HIGH = 20.0;
   const BASELINE_MEDIUM = 70.0;
@@ -375,6 +367,7 @@ export const createManagerDeviation = (
   return {
     category: managerName,
     team_size: teamSize,
+    employee_ids: employeeIds,
     high_pct: highPct,
     medium_pct: mediumPct,
     low_pct: lowPct,
@@ -391,68 +384,68 @@ export const createManagerDeviation = (
  * Small dataset with 3 managers
  */
 export const mockManagerDeviationSmall: ManagerDeviation[] = [
-  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3),
-  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0),
-  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8),
+  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3, []),
+  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0, []),
+  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8, []),
 ];
 
 /**
  * Medium dataset with 6 managers
  */
 export const mockManagerDeviationMedium: ManagerDeviation[] = [
-  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3),
-  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0),
-  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8),
-  createManagerDeviation("Product Manager", 18, 22.2, 66.7, 11.1),
-  createManagerDeviation("VP Engineering", 25, 24.0, 68.0, 8.0),
-  createManagerDeviation("Director Marketing", 12, 16.7, 75.0, 8.3),
+  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3, []),
+  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0, []),
+  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8, []),
+  createManagerDeviation("Product Manager", 18, 22.2, 66.7, 11.1, []),
+  createManagerDeviation("VP Engineering", 25, 24.0, 68.0, 8.0, []),
+  createManagerDeviation("Director Marketing", 12, 16.7, 75.0, 8.3, []),
 ];
 
 /**
  * Large dataset with 10 managers
  */
 export const mockManagerDeviationLarge: ManagerDeviation[] = [
-  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3),
-  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0),
-  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8),
-  createManagerDeviation("Product Manager", 18, 22.2, 66.7, 11.1),
-  createManagerDeviation("VP Engineering", 25, 24.0, 68.0, 8.0),
-  createManagerDeviation("Director Marketing", 12, 16.7, 75.0, 8.3),
-  createManagerDeviation("Operations Manager", 14, 28.6, 64.3, 7.1),
-  createManagerDeviation("Sales Manager", 16, 18.8, 68.8, 12.5),
-  createManagerDeviation("HR Manager", 11, 27.3, 63.6, 9.1),
-  createManagerDeviation("Director Operations", 20, 15.0, 70.0, 15.0),
+  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3, []),
+  createManagerDeviation("VP Product", 15, 6.7, 73.3, 20.0, []),
+  createManagerDeviation("Director Sales", 21, 33.3, 61.9, 4.8, []),
+  createManagerDeviation("Product Manager", 18, 22.2, 66.7, 11.1, []),
+  createManagerDeviation("VP Engineering", 25, 24.0, 68.0, 8.0, []),
+  createManagerDeviation("Director Marketing", 12, 16.7, 75.0, 8.3, []),
+  createManagerDeviation("Operations Manager", 14, 28.6, 64.3, 7.1, []),
+  createManagerDeviation("Sales Manager", 16, 18.8, 68.8, 12.5, []),
+  createManagerDeviation("HR Manager", 11, 27.3, 63.6, 9.1, []),
+  createManagerDeviation("Director Operations", 20, 15.0, 70.0, 15.0, []),
 ];
 
 /**
  * All managers well-calibrated (close to 20/70/10 baseline)
  */
 export const mockManagerDeviationAllGood: ManagerDeviation[] = [
-  createManagerDeviation("Manager A", 20, 20.0, 70.0, 10.0),
-  createManagerDeviation("Manager B", 18, 22.2, 66.7, 11.1),
-  createManagerDeviation("Manager C", 22, 18.2, 72.7, 9.1),
-  createManagerDeviation("Manager D", 15, 20.0, 73.3, 6.7),
+  createManagerDeviation("Manager A", 20, 20.0, 70.0, 10.0, []),
+  createManagerDeviation("Manager B", 18, 22.2, 66.7, 11.1, []),
+  createManagerDeviation("Manager C", 22, 18.2, 72.7, 9.1, []),
+  createManagerDeviation("Manager D", 15, 20.0, 73.3, 6.7, []),
 ];
 
 /**
  * Mixed significance levels
  */
 export const mockManagerDeviationMixed: ManagerDeviation[] = [
-  createManagerDeviation("High Bias Manager", 20, 50.0, 45.0, 5.0),
-  createManagerDeviation("Low Bias Manager", 18, 5.6, 77.8, 16.7),
-  createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1),
-  createManagerDeviation("Slightly High", 15, 26.7, 66.7, 6.7),
-  createManagerDeviation("Slightly Low", 19, 15.8, 73.7, 10.5),
+  createManagerDeviation("High Bias Manager", 20, 50.0, 45.0, 5.0, []),
+  createManagerDeviation("Low Bias Manager", 18, 5.6, 77.8, 16.7, []),
+  createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1, []),
+  createManagerDeviation("Slightly High", 15, 26.7, 66.7, 6.7, []),
+  createManagerDeviation("Slightly Low", 19, 15.8, 73.7, 10.5, []),
 ];
 
 /**
  * All highly anomalous managers
  */
 export const mockManagerDeviationAllBad: ManagerDeviation[] = [
-  createManagerDeviation("Too Generous", 20, 65.0, 30.0, 5.0),
-  createManagerDeviation("Too Harsh", 18, 0.0, 72.2, 27.8),
-  createManagerDeviation("All Medium", 22, 4.5, 95.5, 0.0),
-  createManagerDeviation("Inverted Pyramid", 15, 13.3, 20.0, 66.7),
+  createManagerDeviation("Too Generous", 20, 65.0, 30.0, 5.0, []),
+  createManagerDeviation("Too Harsh", 18, 0.0, 72.2, 27.8, []),
+  createManagerDeviation("All Medium", 22, 4.5, 95.5, 0.0, []),
+  createManagerDeviation("Inverted Pyramid", 15, 13.3, 20.0, 66.7, []),
 ];
 
 /**
@@ -464,7 +457,7 @@ export const mockManagerDeviationEmpty: ManagerDeviation[] = [];
  * Single manager only
  */
 export const mockManagerDeviationSingle: ManagerDeviation[] = [
-  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3),
+  createManagerDeviation("Engineering Manager", 19, 47.4, 47.4, 5.3, []),
 ];
 
 /**
@@ -476,20 +469,23 @@ export const mockManagerDeviationLongNames: ManagerDeviation[] = [
     20,
     45.0,
     50.0,
-    5.0
+    5.0,
+    []
   ),
   createManagerDeviation(
     "Director of Global Product Management and Strategy",
     18,
     10.0,
     75.0,
-    15.0
+    15.0,
+    []
   ),
   createManagerDeviation(
     "Chief Technology Officer and Head of Innovation",
     15,
     30.0,
     65.0,
-    5.0
+    5.0,
+    []
   ),
 ];

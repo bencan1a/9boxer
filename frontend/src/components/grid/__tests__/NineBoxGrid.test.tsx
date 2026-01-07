@@ -4,6 +4,22 @@ import { NineBoxGrid } from "../NineBoxGrid";
 import { mockEmployeesByPosition, mockEmployees } from "../../../test/mockData";
 import { useSessionStore } from "../../../store/sessionStore";
 
+// Mock TanStack Virtual to disable virtualization in tests
+vi.mock("@tanstack/react-virtual", () => ({
+  useVirtualizer: ({ count }: { count: number }) => ({
+    getVirtualItems: () =>
+      Array.from({ length: count }, (_, index) => ({
+        index,
+        key: index,
+        start: index * 100,
+        size: 100,
+      })),
+    getTotalSize: () => count * 100,
+    scrollToIndex: vi.fn(),
+    measure: vi.fn(),
+  }),
+}));
+
 const mockMoveEmployee = vi.fn();
 const mockMoveEmployeeDonut = vi.fn();
 const mockSelectEmployee = vi.fn();

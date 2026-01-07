@@ -487,8 +487,8 @@ export const ManagersSelected: Story = {
   decorators: [
     withStoreState(() => {
       const store = useFilterStore.getState();
-      store.toggleManager("Jane Smith");
-      store.toggleManager("John Doe");
+      store.toggleManager("Jane Smith", []);
+      store.toggleManager("John Doe", []);
     }),
   ],
   parameters: {

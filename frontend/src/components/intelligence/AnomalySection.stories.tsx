@@ -103,9 +103,11 @@ export const YellowStatus: Story = {
 export const RedStatus: Story = {
   tags: ["screenshot"],
   parameters: {
-    screenshot: { enabled: true, id: "intelligence-anomaly-red" },
-    screenshot: { enabled: true, id: "quickstart-intelligence-bias-detected" },
-    screenshot: { enabled: true, id: "intelligence-anomaly-details" },
+    screenshot: [
+      { enabled: true, id: "intelligence-anomaly-red" },
+      { enabled: true, id: "quickstart-intelligence-bias-detected" },
+      { enabled: true, id: "intelligence-anomaly-details" },
+    ],
   },
   args: {
     title: "Level Analysis",
