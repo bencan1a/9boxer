@@ -12,7 +12,6 @@ These tests require the frozen executable to be built first using:
     ./scripts/build_executable.sh
 """
 
-import io
 import os
 import socket
 import subprocess
@@ -554,14 +553,23 @@ def test_frozen_excel_export(
         timeout=5,
     )
 
-    # Export to Excel
-    response = requests.post(f"{base_url}/api/session/export", headers=auth_headers, timeout=10)
+    # Export to Excel (returns JSON with file path)
+    response = requests.post(
+        f"{base_url}/api/session/export",
+        json={"mode": "update_original"},
+        headers=auth_headers,
+        timeout=10,
+    )
     assert response.status_code == 200
-    assert len(response.content) > 0
+    export_data = response.json()
+    assert export_data["success"] is True
+    assert "file_path" in export_data
 
-    # Verify file is valid Excel
-    exported_file = io.BytesIO(response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    # Verify exported file exists and is valid Excel
+    exported_file_path = Path(export_data["file_path"])
+    assert exported_file_path.exists(), f"Exported file not found at {exported_file_path}"
+
+    workbook = openpyxl.load_workbook(exported_file_path)
 
     # Should have at least 2 sheets
     assert len(workbook.worksheets) >= 2
@@ -605,13 +613,23 @@ def test_frozen_excel_export_contains_changes(
         timeout=5,
     )
 
-    # Export
-    response = requests.post(f"{base_url}/api/session/export", headers=auth_headers, timeout=10)
+    # Export (returns JSON with file path)
+    response = requests.post(
+        f"{base_url}/api/session/export",
+        json={"mode": "update_original"},
+        headers=auth_headers,
+        timeout=10,
+    )
     assert response.status_code == 200
+    export_data = response.json()
+    assert export_data["success"] is True
+    assert "file_path" in export_data
 
     # Verify changes are in exported file
-    exported_file = io.BytesIO(response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    exported_file_path = Path(export_data["file_path"])
+    assert exported_file_path.exists(), f"Exported file not found at {exported_file_path}"
+
+    workbook = openpyxl.load_workbook(exported_file_path)
     sheet = workbook.worksheets[1]
 
     # Find "Modified in Session" column
@@ -878,14 +896,23 @@ def test_frozen_complete_workflow(
     stats = stats_response.json()
     assert stats["modified_employees"] == 1
 
-    # 5. Export file
-    export_response = requests.post(f"{base_url}/api/session/export", headers=headers, timeout=10)
+    # 5. Export file (returns JSON with file path)
+    export_response = requests.post(
+        f"{base_url}/api/session/export",
+        json={"mode": "update_original"},
+        headers=headers,
+        timeout=10,
+    )
     assert export_response.status_code == 200
-    assert len(export_response.content) > 0
+    export_data = export_response.json()
+    assert export_data["success"] is True
+    assert "file_path" in export_data
 
-    # 6. Verify exported file
-    exported_file = io.BytesIO(export_response.content)
-    workbook = openpyxl.load_workbook(exported_file)
+    # 6. Verify exported file exists and is valid Excel
+    exported_file_path = Path(export_data["file_path"])
+    assert exported_file_path.exists(), f"Exported file not found at {exported_file_path}"
+
+    workbook = openpyxl.load_workbook(exported_file_path)
     assert len(workbook.worksheets) >= 2
 
     print("\n[OK] Complete workflow test passed")

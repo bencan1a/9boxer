@@ -27,7 +27,6 @@ export const createMockEmployee = (overrides?: Partial<Employee>): Employee => {
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.HIGH,
     grid_position: 9,
-    position_label: "Star [H,H]",
     talent_indicator: "High Performer",
     ratings_history: [
       { year: 2023, rating: "Leading" },
@@ -55,7 +54,6 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.HIGH,
     grid_position: 9,
-    position_label: "Star [H,H]",
   }),
   createMockEmployee({
     employee_id: 2,
@@ -64,7 +62,6 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.MEDIUM,
     potential: PotentialLevel.HIGH,
     grid_position: 8,
-    position_label: "Growth [M,H]",
   }),
   createMockEmployee({
     employee_id: 3,
@@ -73,7 +70,6 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.LOW,
     potential: PotentialLevel.HIGH,
     grid_position: 7,
-    position_label: "Enigma [L,H]",
   }),
   createMockEmployee({
     employee_id: 4,
@@ -82,7 +78,6 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.HIGH,
     potential: PotentialLevel.MEDIUM,
     grid_position: 6,
-    position_label: "High Impact [H,M]",
     modified_in_session: true,
   }),
   createMockEmployee({
@@ -92,7 +87,6 @@ export const mockEmployees: Employee[] = [
     performance: PerformanceLevel.MEDIUM,
     potential: PotentialLevel.MEDIUM,
     grid_position: 5,
-    position_label: "Core Talent [M,M]",
   }),
 ];
 

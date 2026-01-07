@@ -19,6 +19,7 @@ import * as fs from "fs";
 import * as storybookComponents from "./workflows/storybook-components";
 import * as fileOperations from "./workflows/file-operations";
 import * as filtersStorybook from "./workflows/filters-storybook";
+import * as filterToolbarApp from "./workflows/filter-toolbar-app";
 import * as statisticsStorybook from "./workflows/statistics-storybook";
 import * as intelligence from "./workflows/intelligence";
 import * as intelligenceStorybook from "./workflows/intelligence-storybook";
@@ -32,6 +33,7 @@ const workflowModules: Record<string, any> = {
   "storybook-components": storybookComponents,
   "file-operations": fileOperations,
   "filters-storybook": filtersStorybook,
+  "filter-toolbar-app": filterToolbarApp,
   "statistics-storybook": statisticsStorybook,
   intelligence,
   "intelligence-storybook": intelligenceStorybook,

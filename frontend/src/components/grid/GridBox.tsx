@@ -158,7 +158,10 @@ export const GridBox: React.FC<GridBoxProps> = ({
         ? "none"
         : `min-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, max-height ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, opacity ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, background-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-color ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, border-style ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}, box-shadow ${theme.tokens.duration.normal} ${theme.tokens.easing.easeInOut}`,
       userSelect: "none" as const,
-      overflowY: isCollapsed ? ("hidden" as const) : ("auto" as const),
+      // Flexbox layout: header sticky at top, tiles scrollable below
+      display: "flex",
+      flexDirection: "column" as const,
+      overflow: "hidden", // Outer box doesn't scroll - inner scroll container handles it
     };
 
     // Collapsed state takes precedence if both are true (though validation warns about this)
@@ -173,8 +176,6 @@ export const GridBox: React.FC<GridBoxProps> = ({
           : theme.tokens.opacity.gridCollapsedIdle,
         backgroundColor: isOver ? "primary.light" : alpha(bgColor, 0.5),
         borderStyle: isOver ? "dashed" : "solid",
-        display: "flex",
-        flexDirection: "column" as const,
         justifyContent: "center",
       };
     }
@@ -246,7 +247,7 @@ export const GridBox: React.FC<GridBoxProps> = ({
         aria-expanded={isExpanded}
         data-testid={`grid-box-${position}`}
       >
-        {/* Header */}
+        {/* Header - stays fixed at top */}
         <BoxHeader
           position={position}
           positionName={getPositionName(position)}
@@ -259,17 +260,42 @@ export const GridBox: React.FC<GridBoxProps> = ({
           positionGuidance={getPositionGuidance(position)}
         />
 
-        {/* Employees - hidden when collapsed */}
+        {/* Employees - scrollable container with custom scrollbar */}
         {!isCollapsed && (
-          <EmployeeTileList
-            employees={employees}
-            isExpanded={isExpanded}
-            isWideLayout={isWideLayout}
-            onSelectEmployee={onSelectEmployee}
-            onDoubleClickEmployee={onDoubleClickEmployee}
-            selectedEmployeeId={selectedEmployeeId}
-            donutModeActive={donutModeActive}
-          />
+          <Box
+            sx={{
+              flex: 1,
+              minHeight: 0, // Critical for flexbox scroll container
+              overflowY: "auto",
+              // Custom scrollbar styling
+              scrollbarWidth: "thin", // Firefox
+              scrollbarColor: `${theme.palette.divider} transparent`, // Firefox: thumb track
+              "&::-webkit-scrollbar": {
+                width: `${theme.tokens.dimensions.scrollbar.width}px`,
+              },
+              "&::-webkit-scrollbar-track": {
+                background: "transparent",
+                borderRadius: `${theme.tokens.dimensions.scrollbar.borderRadius}px`,
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: theme.palette.divider,
+                borderRadius: `${theme.tokens.dimensions.scrollbar.borderRadius}px`,
+                "&:hover": {
+                  backgroundColor: theme.palette.text.secondary,
+                },
+              },
+            }}
+          >
+            <EmployeeTileList
+              employees={employees}
+              isExpanded={isExpanded}
+              isWideLayout={isWideLayout}
+              onSelectEmployee={onSelectEmployee}
+              onDoubleClickEmployee={onDoubleClickEmployee}
+              selectedEmployeeId={selectedEmployeeId}
+              donutModeActive={donutModeActive}
+            />
+          </Box>
         )}
       </Box>
     </Profiler>

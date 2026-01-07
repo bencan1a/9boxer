@@ -397,7 +397,7 @@ export const ManyEmployees_ZoomInteractive: Story = {
               maxWidth: `${zoomTokens.tile.maxWidth}px !important`,
             },
             "& .MuiCardContent-root": {
-              padding: `${zoomTokens.tile.padding}px !important`,
+              padding: `${zoomTokens.tile.paddingY}px ${zoomTokens.tile.paddingX}px !important`,
             },
             "& .MuiTypography-subtitle2": {
               fontSize: `${zoomTokens.font.name} !important`,
@@ -452,32 +452,6 @@ export const ManyEmployees_ZoomInteractive: Story = {
     onExpand: fn(),
     onCollapse: fn(),
     donutModeActive: false,
-    zoomLevel: 2,
-  },
-  argTypes: {
-    zoomLevel: {
-      control: {
-        type: "select",
-        labels: {
-          0: "Level 0: Ultra Compact (48%)",
-          1: "Level 1: Compact (60%)",
-          2: "Level 2: Normal (80%)",
-          3: "Level 3: Comfortable (125%)",
-          4: "Level 4: Presentation (150%)",
-        },
-      },
-      options: [0, 1, 2, 3, 4],
-      description:
-        "Grid zoom level (0=Ultra Compact, 2=Normal, 4=Presentation)",
-    },
-    isExpanded: {
-      control: "boolean",
-      description: "Whether the box is in expanded state (full height)",
-    },
-    isCollapsed: {
-      control: "boolean",
-      description: "Whether the box is in collapsed state (minimal height)",
-    },
   },
   parameters: {
     layout: "fullscreen",

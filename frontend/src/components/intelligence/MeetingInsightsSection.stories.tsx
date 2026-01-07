@@ -14,8 +14,8 @@ const mockInsights: Insight[] = [
     description:
       "MT3 level has 64% in center box vs. 35% expected (p<0.001, z-score 3.2). This represents 45 employees and is statistically significant. Consider deep-dive discussion on MT3 rating patterns to identify whether this reflects genuine performance clustering or rating conservatism.",
     affected_count: 45,
-    cluster: "MT3 Level Requires Deep Review",
     cluster_id: "cluster-mt3",
+    cluster_title: "MT3 Level Requires Deep Review",
     source_data: {
       z_score: 3.2,
       p_value: 0.001,
@@ -32,8 +32,8 @@ const mockInsights: Insight[] = [
     description:
       "New hires (< 1 year) at MT3 are 80% in center box vs. 41% company average (p<0.01). This affects 28 employees. New manager conservatism or insufficient performance data may be contributing factors.",
     affected_count: 28,
-    cluster: "MT3 Level Requires Deep Review",
     cluster_id: "cluster-mt3",
+    cluster_title: "MT3 Level Requires Deep Review",
     source_data: {
       z_score: 2.8,
       p_value: 0.01,
@@ -50,11 +50,10 @@ const mockInsights: Insight[] = [
     description:
       "Current distribution shows 52% in center box, above 45% threshold. Donut Mode exercise can help managers differentiate by forcing relative ranking. Run for 10-15 minutes before level-specific discussions to warm up calibration thinking.",
     affected_count: 0,
-    cluster: null,
-    cluster_id: null,
+    cluster_id: undefined,
+    cluster_title: undefined,
     source_data: {
       center_pct: 52.0,
-      threshold_pct: 45.0,
     },
   },
   {
@@ -66,11 +65,11 @@ const mockInsights: Insight[] = [
     description:
       "Based on 45 affected employees and complexity of tenure patterns, recommend 45-minute focused discussion. Schedule after IC calibration for context on broader patterns.",
     affected_count: 45,
-    cluster: "MT3 Level Requires Deep Review",
     cluster_id: "cluster-mt3",
+    cluster_title: "MT3 Level Requires Deep Review",
     source_data: {
-      estimated_minutes: 45,
-      employee_count: 45,
+      total_minutes: 45,
+      by_level: { MT3: 45 },
     },
   },
   {
@@ -82,8 +81,8 @@ const mockInsights: Insight[] = [
     description:
       "Remote location shows 45% lower performers vs. 11.5% company average (p<0.001, z-score 4.1). This affects 23 employees and is highly significant. Investigate whether this reflects actual performance differences, rating bias, or insufficient visibility into remote work contributions.",
     affected_count: 23,
-    cluster: null,
-    cluster_id: null,
+    cluster_id: undefined,
+    cluster_title: undefined,
     source_data: {
       z_score: 4.1,
       p_value: 0.001,
@@ -100,9 +99,10 @@ const mockInsights: Insight[] = [
     description:
       "Engineering has 55% in center box vs. 30% recommended maximum. This affects 65 employees. Determine if clustering reflects genuine role similarity or indicates calibration drift requiring intervention.",
     affected_count: 65,
-    cluster: null,
-    cluster_id: null,
+    cluster_id: undefined,
+    cluster_title: undefined,
     source_data: {
+      center_count: 65,
       center_pct: 55.0,
       recommended_max_pct: 30.0,
     },
@@ -116,11 +116,10 @@ const mockInsights: Insight[] = [
     description:
       "MT3 has 45 employees with complex patterns while MT4 has only 12. Consider splitting these levels to allow adequate time for MT3 discussion without rushing MT4 calibration. This improves calibration quality for both groups.",
     affected_count: 57,
-    cluster: null,
-    cluster_id: null,
+    cluster_id: undefined,
+    cluster_title: undefined,
     source_data: {
-      mt3_count: 45,
-      mt4_count: 12,
+      by_level: { MT3: 45, MT4: 12 },
     },
   },
   {
@@ -132,8 +131,8 @@ const mockInsights: Insight[] = [
     description:
       "Employees with 3+ years tenure demonstrate expected distribution patterns across all performance categories (p=0.68). This represents 112 employees and suggests stable, consistent rating practices for experienced team members.",
     affected_count: 112,
-    cluster: null,
-    cluster_id: null,
+    cluster_id: undefined,
+    cluster_title: undefined,
     source_data: {
       p_value: 0.68,
     },

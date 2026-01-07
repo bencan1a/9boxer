@@ -148,9 +148,9 @@ describe("EmployeeChangesSummary", () => {
       notes: "Normal change",
     };
 
-    const donutChange: GridMoveEvent = {
+    const donutChange: DonutMoveEvent = {
       event_id: `event-${Math.random()}`,
-      event_type: "grid_move",
+      event_type: "donut_move",
       employee_id: 123,
       employee_name: "John Doe",
       timestamp: "2025-12-24T09:15:00Z",
@@ -348,9 +348,9 @@ describe("EmployeeChangesSummary", () => {
   });
 
   it("allows editing notes for donut changes", async () => {
-    const donutChange: GridMoveEvent = {
+    const donutChange: DonutMoveEvent = {
       event_id: `event-${Math.random()}`,
-      event_type: "grid_move",
+      event_type: "donut_move",
       employee_id: 456,
       employee_name: "Jane Smith",
       timestamp: "2025-12-24T09:15:00Z",

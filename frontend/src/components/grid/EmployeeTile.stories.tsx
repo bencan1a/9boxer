@@ -432,11 +432,14 @@ export const ZoomLevels: Story = {
       const scales = [0.6, 0.8, 1.0, 1.25, 1.5];
       const scale = scales[level] || 1.0;
 
+      // Convert rem to px (assuming 1rem = 16px)
+      const remToPx = (rem: string) => parseFloat(rem) * 16;
+
       return {
         fontSize: {
-          sm: tokens.typography.fontSize.sm * scale,
-          base: tokens.typography.fontSize.base * scale,
-          lg: tokens.typography.fontSize.lg * scale,
+          sm: remToPx(tokens.typography.fontSize.body2) * scale,
+          base: remToPx(tokens.typography.fontSize.body1) * scale,
+          lg: remToPx(tokens.typography.fontSize.h6) * scale,
         },
         spacing: {
           xs: tokens.spacing.xs * scale,
@@ -484,7 +487,7 @@ export const ZoomLevels: Story = {
               <strong>Zoom Level {zoomLevel}:</strong> {levelNames[zoomLevel]} (
               {(
                 (getZoomTokens(zoomLevel).fontSize.base /
-                  tokens.typography.fontSize.base) *
+                  (parseFloat(tokens.typography.fontSize.body1) * 16)) *
                 100
               ).toFixed(0)}
               %)
@@ -537,23 +540,6 @@ export const ZoomLevels: Story = {
     },
     onSelect: fn(),
     donutModeActive: false,
-    zoomLevel: 2, // Default to normal (100%)
-  },
-  argTypes: {
-    zoomLevel: {
-      control: {
-        type: "select",
-        options: [0, 1, 2, 3, 4],
-        labels: {
-          0: "Level 0: Compact (60%)",
-          1: "Level 1: Comfortable- (80%)",
-          2: "Level 2: Normal (100%)",
-          3: "Level 3: Comfortable+ (125%)",
-          4: "Level 4: Presentation (150%)",
-        },
-      },
-      description: "Zoom level for testing tile scaling",
-    },
   },
   parameters: {
     layout: "fullscreen",

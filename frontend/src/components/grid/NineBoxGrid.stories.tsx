@@ -781,7 +781,7 @@ export const ZoomLevels_Interactive: Story = {
               maxWidth: `${zoomTokens.tile.maxWidth}px !important`,
             },
             "& .MuiCardContent-root": {
-              padding: `${zoomTokens.tile.padding}px !important`,
+              padding: `${zoomTokens.tile.paddingY}px ${zoomTokens.tile.paddingX}px !important`,
             },
             "& .MuiTypography-subtitle2": {
               fontSize: `${zoomTokens.font.name} !important`,
@@ -990,7 +990,7 @@ export const ZoomLevels_TokenMatrix: Story = {
                 })}
               </tr>
               <tr style={{ borderBottom: "1px solid #eee" }}>
-                <td style={{ padding: "8px 12px" }}>Padding</td>
+                <td style={{ padding: "8px 12px" }}>Padding (Y/X)</td>
                 {levels.map((level) => {
                   const tokens = getZoomTokens(level);
                   return (
@@ -1003,7 +1003,7 @@ export const ZoomLevels_TokenMatrix: Story = {
                           level === 2 ? "#e3f2fd" : "transparent",
                       }}
                     >
-                      {tokens.tile.padding}px
+                      {tokens.tile.paddingY}/{tokens.tile.paddingX}px
                     </td>
                   );
                 })}

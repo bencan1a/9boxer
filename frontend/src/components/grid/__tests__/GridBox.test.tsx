@@ -5,6 +5,22 @@ import { mockEmployees } from "../../../test/mockData";
 import { DndContext } from "@dnd-kit/core";
 import { getTranslatedText } from "../../../test/i18nTestUtils";
 
+// Mock TanStack Virtual to disable virtualization in tests
+vi.mock("@tanstack/react-virtual", () => ({
+  useVirtualizer: ({ count }: { count: number }) => ({
+    getVirtualItems: () =>
+      Array.from({ length: count }, (_, index) => ({
+        index,
+        key: index,
+        start: index * 100,
+        size: 100,
+      })),
+    getTotalSize: () => count * 100,
+    scrollToIndex: vi.fn(),
+    measure: vi.fn(),
+  }),
+}));
+
 // Wrapper for drag-and-drop context
 const DndWrapper = ({ children }: { children: React.ReactNode }) => (
   <DndContext>{children}</DndContext>

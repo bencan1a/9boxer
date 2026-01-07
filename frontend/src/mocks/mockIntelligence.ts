@@ -273,9 +273,9 @@ export const mockGreenManagerAnalysis: ManagerAnalysis = {
   sample_size: 150,
   status: "green",
   deviations: [
-    createManagerDeviation("Manager A", 20, 20.0, 70.0, 10.0),
-    createManagerDeviation("Manager B", 18, 22.2, 66.7, 11.1),
-    createManagerDeviation("Manager C", 22, 18.2, 72.7, 9.1),
+    createManagerDeviation("Manager A", 20, 20.0, 70.0, 10.0, []),
+    createManagerDeviation("Manager B", 18, 22.2, 66.7, 11.1, []),
+    createManagerDeviation("Manager C", 22, 18.2, 72.7, 9.1, []),
   ],
   interpretation:
     "Manager rating distributions are generally aligned with the 20/70/10 baseline. No significant anomalies detected.",
@@ -292,9 +292,9 @@ export const mockYellowManagerAnalysis: ManagerAnalysis = {
   sample_size: 150,
   status: "yellow",
   deviations: [
-    createManagerDeviation("Slightly High Manager", 20, 28.0, 65.0, 7.0),
-    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1),
-    createManagerDeviation("Slightly Low Manager", 19, 15.8, 73.7, 10.5),
+    createManagerDeviation("Slightly High Manager", 20, 28.0, 65.0, 7.0, []),
+    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1, []),
+    createManagerDeviation("Slightly Low Manager", 19, 15.8, 73.7, 10.5, []),
   ],
   interpretation:
     "Notable manager rating pattern detected (p=0.0320, medium effect). Slightly High Manager (team size: 20): 28.0% high performers (vs 20% baseline, above by 8.0%). Total deviation: 16.0% (z=1.79). Small sample sizes limit statistical significance.",
@@ -311,9 +311,9 @@ export const mockRedManagerAnalysis: ManagerAnalysis = {
   sample_size: 150,
   status: "red",
   deviations: [
-    createManagerDeviation("High Bias Manager", 20, 50.0, 45.0, 5.0),
-    createManagerDeviation("Low Bias Manager", 18, 5.6, 77.8, 16.7),
-    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1),
+    createManagerDeviation("High Bias Manager", 20, 50.0, 45.0, 5.0, []),
+    createManagerDeviation("Low Bias Manager", 18, 5.6, 77.8, 16.7, []),
+    createManagerDeviation("Well Calibrated", 22, 18.2, 72.7, 9.1, []),
   ],
   interpretation:
     "Manager rating bias detected (2 managers with significant deviations) (p=0.0001, large effect). High Bias Manager (team size: 20): 50.0% high performers (vs 20% baseline, above by 30.0%). Total deviation: 60.0% (z=6.71).",

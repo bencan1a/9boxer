@@ -74,10 +74,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [],
       summary: "AI summary text",
@@ -108,10 +116,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [],
       summary: null,
@@ -168,10 +184,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [
         {
@@ -223,10 +247,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [
         {
@@ -278,10 +310,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [
         {
@@ -343,10 +383,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [
         {
@@ -404,10 +452,18 @@ describe("useCalibrationSummary", () => {
         center_box_percentage: 50,
         lower_performers_count: 10,
         lower_performers_percentage: 10,
+        by_level: { MT1: 10, MT2: 20, MT3: 15 },
+        by_function: { Engineering: 30, Sales: 15 },
+        by_location: { USA: 25, UK: 20 },
+        high_performers_count: 20,
+        high_performers_percentage: 20,
       },
       time_allocation: {
         estimated_duration_minutes: 120,
         suggested_sequence: ["Stars", "Center Box", "Lower Performers"],
+        breakdown_by_level: [
+          { level: "MT1", employee_count: 10, minutes: 60, percentage: 20 },
+        ],
       },
       insights: [
         {

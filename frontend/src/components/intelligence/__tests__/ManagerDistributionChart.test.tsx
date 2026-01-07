@@ -330,6 +330,7 @@ describe("ManagerDistributionChart", () => {
         {
           category: "Manager Zero",
           team_size: 0,
+          employee_ids: [],
           high_pct: 0,
           medium_pct: 0,
           low_pct: 0,

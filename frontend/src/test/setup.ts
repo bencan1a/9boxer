@@ -6,8 +6,6 @@ import { afterEach } from "vitest";
 // Enhanced to provide mock dimensions to prevent Recharts warnings about 0x0 containers
 global.ResizeObserver = class ResizeObserver {
   constructor(callback: ResizeObserverCallback) {
-    // Store callback for potential future use
-    this.callback = callback;
     // Immediately trigger callback with mock dimensions in next tick
     // This simulates the browser measuring the container
     setTimeout(() => {
@@ -34,8 +32,6 @@ global.ResizeObserver = class ResizeObserver {
       );
     }, 0);
   }
-
-  private callback: ResizeObserverCallback;
 
   observe() {}
   unobserve() {}

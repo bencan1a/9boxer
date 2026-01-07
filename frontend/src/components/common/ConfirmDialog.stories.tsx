@@ -3,6 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
 import { useState } from "react";
 import { ConfirmDialog } from "./ConfirmDialog";
 import Button from "@mui/material/Button";
@@ -63,6 +64,9 @@ const DialogWrapper = (args: React.ComponentProps<typeof ConfirmDialog>) => {
 export const Default: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Confirm Action",
     message: "Are you sure you want to proceed with this action?",
   },
@@ -74,6 +78,9 @@ export const Default: Story = {
 export const DeleteConfirmation: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Delete Employee",
     message:
       "Are you sure you want to delete this employee? This action cannot be undone.",
@@ -89,6 +96,9 @@ export const DeleteConfirmation: Story = {
 export const DiscardChanges: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Discard Changes",
     message: "You have unsaved changes. Are you sure you want to discard them?",
     confirmLabel: "Discard",
@@ -103,6 +113,9 @@ export const DiscardChanges: Story = {
 export const SuccessAction: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Approve Changes",
     message: "Are you sure you want to approve and publish these changes?",
     confirmLabel: "Approve",
@@ -117,6 +130,9 @@ export const SuccessAction: Story = {
 export const Loading: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Processing",
     message: "Please wait while we process your request...",
     confirmLabel: "Confirm",
@@ -131,6 +147,9 @@ export const Loading: Story = {
 export const Large: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Important Notice",
     message:
       "This is a longer message that provides more detailed information about the action you're about to take. Please read carefully before confirming.",
@@ -146,6 +165,9 @@ export const Large: Story = {
 export const ExportConfirmation: Story = {
   render: (args) => <DialogWrapper {...args} />,
   args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(),
     title: "Export Data",
     message: "This will export all employee data to an Excel file. Continue?",
     confirmLabel: "Export",

@@ -35,7 +35,7 @@ const createEdgeCaseEmployee = (overrides: Partial<Employee>): Employee => ({
   job_function: "Engineering",
   location: "USA",
   // CRITICAL: These are the fields that can be undefined/null in real data
-  manager: undefined, // CEO or orphaned employee
+  manager: "", // CEO or orphaned employee
   management_chain_01: null,
   management_chain_02: null,
   management_chain_03: null,
@@ -48,7 +48,6 @@ const createEdgeCaseEmployee = (overrides: Partial<Employee>): Employee => ({
   performance: PerformanceLevel.MEDIUM,
   potential: PotentialLevel.MEDIUM,
   grid_position: 5,
-  position_label: "Core Talent [M,M]",
   talent_indicator: "Core",
   ratings_history: [],
   development_focus: null,

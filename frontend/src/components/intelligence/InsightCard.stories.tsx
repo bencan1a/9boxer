@@ -150,7 +150,6 @@ const mockHighPriorityWithCluster: Insight = {
   description:
     "MT3 level has 64% in center box vs. 35% expected (p<0.001, z-score 3.2). This represents 45 employees and is statistically significant. Consider deep-dive discussion on MT3 rating patterns to identify whether this reflects genuine performance clustering or rating conservatism.",
   affected_count: 45,
-  cluster: "MT3 Level Requires Deep Review",
   cluster_id: "cluster-mt3",
   cluster_title: "MT3 Level Requires Deep Review",
   source_data: {

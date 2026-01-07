@@ -8,7 +8,11 @@ import { ViewControls } from "../ViewControls";
 
 // Mock session store with default state
 const mockToggleDonutMode = vi.fn();
-let mockSessionState = {
+let mockSessionState: {
+  sessionId: string | null;
+  donutModeActive: boolean;
+  toggleDonutMode: typeof mockToggleDonutMode;
+} = {
   sessionId: "test-session",
   donutModeActive: false,
   toggleDonutMode: mockToggleDonutMode,

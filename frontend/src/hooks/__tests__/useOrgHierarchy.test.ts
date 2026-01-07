@@ -12,7 +12,6 @@ describe("traverseTree", () => {
       const nodeA: OrgTreeNode = {
         employee_id: 1,
         name: "Alice",
-        job_title: "Manager",
         team_size: 2,
         direct_reports: [],
       };
@@ -20,7 +19,6 @@ describe("traverseTree", () => {
       const nodeB: OrgTreeNode = {
         employee_id: 2,
         name: "Bob",
-        job_title: "Lead",
         team_size: 1,
         direct_reports: [],
       };
@@ -49,19 +47,16 @@ describe("traverseTree", () => {
         {
           employee_id: 1,
           name: "Manager",
-          job_title: "CEO",
           team_size: 3,
           direct_reports: [
             {
               employee_id: 2,
               name: "Lead A",
-              job_title: "Team Lead",
               team_size: 1,
               direct_reports: [
                 {
                   employee_id: 3,
                   name: "Dev A",
-                  job_title: "Developer",
                   team_size: 0,
                   direct_reports: [],
                 },
@@ -70,7 +65,6 @@ describe("traverseTree", () => {
             {
               employee_id: 4,
               name: "Lead B",
-              job_title: "Team Lead",
               team_size: 0,
               direct_reports: [],
             },
@@ -96,7 +90,6 @@ describe("traverseTree", () => {
       const nodeA: OrgTreeNode = {
         employee_id: 1,
         name: "Alice",
-        job_title: "Manager",
         team_size: 0,
         direct_reports: [],
       };
@@ -104,7 +97,6 @@ describe("traverseTree", () => {
       const nodeB: OrgTreeNode = {
         employee_id: 1, // Same ID as nodeA
         name: "Alice Clone",
-        job_title: "Manager",
         team_size: 0,
         direct_reports: [],
       };
