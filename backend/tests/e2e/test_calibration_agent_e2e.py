@@ -339,75 +339,11 @@ class TestAgentFirstHappyPath:
 
 
 # =============================================================================
-# Test Fallback to Legacy
-# =============================================================================
-
-
-class TestLegacyFallback:
-    """Tests for fallback to legacy mode when LLM fails."""
-
-    def test_fallback_when_llm_raises_runtime_error(
-        self, test_client: TestClient, session_with_sample_data: dict
-    ) -> None:
-        """Test fallback to legacy when LLM service raises RuntimeError."""
-        with patch(
-            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
-            side_effect=RuntimeError("LLM service failed"),
-        ):
-            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
-
-            assert response.status_code == 200
-            data = response.json()
-
-            # Should fall back to legacy
-            assert data["summary"] is None
-            assert len(data["insights"]) > 0
-
-    def test_fallback_when_llm_unavailable(
-        self, test_client: TestClient, session_with_sample_data: dict
-    ) -> None:
-        """Test fallback to legacy when LLM is not available (no API key)."""
-        # Mock LLM service to be unavailable
-        with patch(
-            "ninebox.services.llm_service.LLMService.is_available",
-            return_value={"available": False, "reason": "No API key"},
-        ):
-            with patch(
-                "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
-                side_effect=RuntimeError("LLM service not available: No API key"),
-            ):
-                response = test_client.get(
-                    "/api/calibration-summary", headers=session_with_sample_data
-                )
-
-                assert response.status_code == 200
-                data = response.json()
-
-                # Should fall back to legacy
-                assert data["summary"] is None
-                assert len(data["insights"]) > 0
-
-    def test_fallback_preserves_data_integrity(
-        self, test_client: TestClient, session_with_sample_data: dict
-    ) -> None:
-        """Test that fallback to legacy preserves data overview and time allocation."""
-        with patch(
-            "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
-            side_effect=RuntimeError("LLM failed"),
-        ):
-            response = test_client.get("/api/calibration-summary", headers=session_with_sample_data)
-
-            assert response.status_code == 200
-            data = response.json()
-
-            # Data overview and time allocation should still be correct
-            assert data["data_overview"]["total_employees"] == 100
-            assert data["time_allocation"]["estimated_duration_minutes"] > 0
-
-
-# =============================================================================
 # Test Legacy Mode (use_agent=false)
 # =============================================================================
+# NOTE: Legacy fallback on LLM failure has been removed. The system now requires
+# LLM to be available and will return 500 if it fails. Only explicit use_agent=false
+# still uses legacy mode.
 
 
 class TestLegacyMode:
@@ -598,11 +534,14 @@ class TestPerformance:
     def test_large_employee_list_performance(
         self, test_client: TestClient, mock_valid_agent_response
     ) -> None:
-        """Test that system handles large employee lists efficiently."""
-        # Create large sample
+        """Test that system handles large employee lists efficiently.
+
+        NOTE: API maximum is 300 employees (see GenerateSampleRequest in employees.py).
+        """
+        # Create large sample (300 is the API maximum)
         response = test_client.post(
             "/api/employees/generate-sample",
-            json={"size": 500, "include_bias": True, "seed": 999},
+            json={"size": 300, "include_bias": True, "seed": 999},
         )
         assert response.status_code == 200
 
@@ -616,7 +555,7 @@ class TestPerformance:
             assert response.status_code == 200
             data = response.json()
 
-            assert data["data_overview"]["total_employees"] == 500
+            assert data["data_overview"]["total_employees"] == 300
             assert data["summary"] is not None
             assert len(data["insights"]) > 0
 
