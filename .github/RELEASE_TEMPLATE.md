@@ -15,6 +15,12 @@ Choose the installer for your operating system:
 
 ---
 
+## Important: First-Time Installation
+
+**macOS:** The app is signed and notarized by Apple. Just download, extract, and run.
+
+**Windows:** The app is signed with Azure Trusted Signing.
+
 ## Installation
 
 ### Windows Installation
