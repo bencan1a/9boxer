@@ -51,7 +51,13 @@
     "icon": "build/icon.icns",
     "category": "public.app-category.business",
     "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
-    "identity": null
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+    "notarize": {
+      "teamId": "${env.APPLE_TEAM_ID}"
+    }
   },
   "linux": {
     "target": ["AppImage"],
