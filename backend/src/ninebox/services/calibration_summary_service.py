@@ -214,28 +214,22 @@ class CalibrationSummaryService:
 
         # Choose insight generation approach
         if use_agent:
-            try:
-                # Check if LLM service is available
-                if self._llm_service is None:
-                    raise RuntimeError("LLM service not configured")
+            # Check if LLM service is available
+            if self._llm_service is None:
+                raise RuntimeError("LLM service not configured")
 
-                # Package data for LLM
-                from ninebox.services.data_packaging_service import package_for_llm
+            # Package data for LLM
+            from ninebox.services.data_packaging_service import package_for_llm
 
-                data_package = package_for_llm(employees, analyses, org_data)
+            data_package = package_for_llm(employees, analyses, org_data)
 
-                # Call LLM agent
-                agent_result = self._llm_service.generate_calibration_analysis(data_package)
+            # Call LLM agent
+            agent_result = self._llm_service.generate_calibration_analysis(data_package)
 
-                # Transform agent's issues to Insight objects using InsightTransformer
-                transformer = InsightTransformer()
-                insights = transformer.transform_agent_issues(agent_result["issues"])
-                summary = agent_result["summary"]
-
-            except Exception as e:
-                logger.error(f"LLM agent failed, falling back to legacy: {e}")
-                insights = self._generate_insights_legacy(data_overview, time_allocation, analyses)
-                summary = None
+            # Transform agent's issues to Insight objects using InsightTransformer
+            transformer = InsightTransformer()
+            insights = transformer.transform_agent_issues(agent_result["issues"])
+            summary = agent_result["summary"]
         else:
             # Legacy approach
             insights = self._generate_insights_legacy(data_overview, time_allocation, analyses)

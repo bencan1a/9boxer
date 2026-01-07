@@ -38,6 +38,7 @@ export const CalibrationSummarySection: React.FC<
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const [showErrorDetails, setShowErrorDetails] = useState(false);
 
   const { data, isLoading, isGeneratingAI, error, generateAISummary, summary } =
     useCalibrationSummary();
@@ -208,20 +209,50 @@ export const CalibrationSummarySection: React.FC<
         </Box>
       </Box>
 
-      {/* Show error if AI generation failed - outside Collapse to ensure visibility */}
-      {error && (
-        <Box sx={{ px: 2, pt: 2 }}>
-          <Alert severity="error">
-            {t("intelligence.calibrationSummary.generationError", {
-              defaultValue: "Failed to generate AI summary: {{error}}",
-              error: error.message,
-            })}
-          </Alert>
-        </Box>
-      )}
-
       <Collapse in={expanded}>
         <CardContent>
+          {/* Show error if AI generation failed */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                {t("intelligence.calibrationSummary.errorFriendly", {
+                  defaultValue:
+                    "Sorry, we're unable to generate the AI summary right now.",
+                })}
+              </Typography>
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => setShowErrorDetails(!showErrorDetails)}
+                sx={{ textTransform: "none", p: 0, minWidth: 0 }}
+              >
+                {showErrorDetails
+                  ? t("intelligence.calibrationSummary.hideDetails", {
+                      defaultValue: "Hide details",
+                    })
+                  : t("intelligence.calibrationSummary.showDetails", {
+                      defaultValue: "Show details",
+                    })}
+              </Button>
+              <Collapse in={showErrorDetails}>
+                <Box
+                  sx={{
+                    mt: 1,
+                    p: 1,
+                    bgcolor: "background.paper",
+                    borderRadius: 1,
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Typography variant="caption" component="pre" sx={{ m: 0 }}>
+                    {error.message}
+                  </Typography>
+                </Box>
+              </Collapse>
+            </Alert>
+          )}
+
           {/* Show generating indicator if AI summary is being generated */}
           {isGeneratingAI && !summary && (
             <Alert
