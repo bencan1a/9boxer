@@ -165,10 +165,6 @@ jobs:
           # Set APPLE_API_KEY to the file path for use in notarization step
           echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
 
-          # Show certificate info (without revealing sensitive data)
-          echo "=== Certificate Info ==="
-          security find-identity -v -p codesigning
-
       - name: Build Electron app (macOS)
         if: matrix.platform == 'macos'
         working-directory: frontend
