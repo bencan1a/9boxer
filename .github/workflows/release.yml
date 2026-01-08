@@ -215,8 +215,8 @@ jobs:
               echo "notarytool exit code: $NOTARY_EXIT_CODE"
               echo "Finished notarytool at $(date)"
 
-              # Extract submission ID from output
-              SUBMISSION_ID=$(grep -o 'id: [a-f0-9-]*' notarytool-output.txt | head -1 | cut -d' ' -f2)
+              # Extract submission ID from output (UUID format)
+              SUBMISSION_ID=$(grep -oE 'id: [a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' notarytool-output.txt | head -1 | cut -d' ' -f2)
               echo "Submission ID: $SUBMISSION_ID"
 
               # If we have a submission ID, get the log
