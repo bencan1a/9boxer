@@ -190,31 +190,37 @@ jobs:
           echo "=== Finding built zip files ==="
           ls -la frontend/release/*.zip || true
 
+          # Verify API key file exists
+          echo "=== Checking API key file ==="
+          ls -la "$RUNNER_TEMP/AuthKey.p8" || echo "API key file not found!"
+          head -1 "$RUNNER_TEMP/AuthKey.p8" || true
+
           # Notarize each zip file
           for zipfile in frontend/release/*.zip; do
             if [ -f "$zipfile" ]; then
               echo "=== Notarizing: $zipfile ==="
+              echo "Starting notarytool at $(date)"
 
-              # Submit and capture the submission ID
-              SUBMIT_OUTPUT=$(xcrun notarytool submit "$zipfile" \
+              # Run notarytool with verbose output (no capture, real-time output)
+              # Save to file for later parsing
+              xcrun notarytool submit "$zipfile" \
                 --key "$RUNNER_TEMP/AuthKey.p8" \
                 --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
                 --issuer "${{ secrets.APPLE_API_ISSUER }}" \
-                --output-format json \
+                --verbose \
                 --wait \
                 --timeout 20m \
-                2>&1) || true
+                2>&1 | tee notarytool-output.txt
 
-              echo "Notarytool output: $SUBMIT_OUTPUT"
+              NOTARY_EXIT_CODE=${PIPESTATUS[0]}
+              echo "notarytool exit code: $NOTARY_EXIT_CODE"
+              echo "Finished notarytool at $(date)"
 
-              # Extract submission ID and status
-              SUBMISSION_ID=$(echo "$SUBMIT_OUTPUT" | grep -o '"id"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | cut -d'"' -f4)
-              STATUS=$(echo "$SUBMIT_OUTPUT" | grep -o '"status"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | cut -d'"' -f4)
-
+              # Extract submission ID from output
+              SUBMISSION_ID=$(grep -o 'id: [a-f0-9-]*' notarytool-output.txt | head -1 | cut -d' ' -f2)
               echo "Submission ID: $SUBMISSION_ID"
-              echo "Status: $STATUS"
 
-              # If we have a submission ID, get the log regardless of status
+              # If we have a submission ID, get the log
               if [ -n "$SUBMISSION_ID" ]; then
                 echo "=== Fetching notarization log ==="
                 xcrun notarytool log "$SUBMISSION_ID" \
@@ -226,8 +232,8 @@ jobs:
               fi
 
               # Check if notarization succeeded
-              if [ "$STATUS" != "Accepted" ]; then
-                echo "::error::Notarization failed with status: $STATUS"
+              if [ $NOTARY_EXIT_CODE -ne 0 ]; then
+                echo "::error::Notarization failed with exit code: $NOTARY_EXIT_CODE"
                 exit 1
               fi
 
