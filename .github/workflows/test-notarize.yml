@@ -1,0 +1,107 @@
+name: Test Notarization (Minimal App)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create minimal Electron app
+        run: |
+          mkdir -p test-app && cd test-app
+
+          cat > package.json << 'EOF'
+          {
+            "name": "notarize-test",
+            "version": "1.0.0",
+            "main": "main.js",
+            "scripts": {
+              "build": "electron-builder --mac --x64"
+            },
+            "devDependencies": {
+              "electron": "^28.0.0",
+              "electron-builder": "^24.9.1"
+            },
+            "build": {
+              "appId": "com.test.notarize",
+              "productName": "NotarizeTest",
+              "mac": {
+                "target": ["dmg"],
+                "hardenedRuntime": true,
+                "gatekeeperAssess": false,
+                "entitlements": "entitlements.mac.plist",
+                "entitlementsInherit": "entitlements.mac.plist"
+              }
+            }
+          }
+          EOF
+
+          cat > main.js << 'EOF'
+          const { app, BrowserWindow } = require('electron');
+          function createWindow() {
+            const win = new BrowserWindow({ width: 400, height: 300 });
+            win.loadFile('index.html');
+          }
+          app.whenReady().then(createWindow);
+          app.on('window-all-closed', () => app.quit());
+          EOF
+
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html><body><h1>Hello World</h1></body></html>
+          EOF
+
+          cat > entitlements.mac.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>com.apple.security.cs.allow-jit</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Install dependencies
+        working-directory: test-app
+        run: npm install
+
+      - name: Prepare signing credentials
+        run: |
+          echo "${{ secrets.APPLE_API_KEY_BASE64 }}" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
+          echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
+
+      - name: Build and sign
+        working-directory: test-app
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+        run: npm run build
+
+      - name: List built files
+        run: ls -la test-app/dist/*.dmg
+
+      - name: Submit for notarization
+        run: |
+          DMG=$(ls test-app/dist/*.dmg | head -1)
+          echo "Submitting: $DMG"
+
+          xcrun notarytool submit "$DMG" \
+            --key "$APPLE_API_KEY" \
+            --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
+            --issuer "${{ secrets.APPLE_API_ISSUER }}" \
+            --verbose \
+            --wait \
+            --timeout 30m
+
+      - name: Staple if successful
+        run: |
+          DMG=$(ls test-app/dist/*.dmg | head -1)
+          xcrun stapler staple "$DMG"
+          echo "SUCCESS! Minimal app notarized successfully."
