@@ -44,7 +44,7 @@
     ],
     "icon": "build/icon.ico",
     "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
-    "signAndEditExecutable": false
+    "signAndEditExecutable": true
   },
   "mac": {
     "target": ["zip"],
