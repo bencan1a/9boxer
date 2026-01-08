@@ -15,25 +15,16 @@ Choose the installer for your operating system:
 
 ---
 
-## Important: First-Time Installation
-
-**macOS:** The app is signed and notarized by Apple. Just download, extract, and run.
-
-**Windows:** You'll see a SmartScreen warning on first launch (the app is not Windows code-signed).
+## Installation
 
 ### Windows Installation
 
 1. **Download** `9Boxer-Setup-[VERSION].exe`
 2. **Double-click** to run the installer
-3. **Bypass SmartScreen warning:**
-   - Click **"More info"** (small link on left)
-   - Click **"Run anyway"** button that appears
-4. **Follow the installer wizard**
-5. **Launch 9Boxer**
+3. **Follow the installer wizard**
+4. **Launch 9Boxer**
 
 **Firewall prompt:** Click "Allow access" when Windows Firewall asks (this lets the backend communicate locally).
-
-**After first launch:** The security warning won't appear again. Double-click normally to launch.
 
 ### macOS Installation
 
@@ -69,6 +60,7 @@ sudo dnf install fuse-libs
 - Open source (source code available for review)
 - Runs entirely on your computer (no cloud dependencies)
 - Your data never leaves your machine
+- Windows builds are signed with Azure Trusted Signing
 - macOS builds are signed and notarized by Apple
 
 ### Data Privacy
