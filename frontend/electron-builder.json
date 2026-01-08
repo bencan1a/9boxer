@@ -43,7 +43,8 @@
       }
     ],
     "icon": "build/icon.ico",
-    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
+    "signAndEditExecutable": true
   },
   "mac": {
     "target": ["dmg"],
