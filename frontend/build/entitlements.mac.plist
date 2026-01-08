@@ -5,5 +5,13 @@
     <!-- Required for Electron's V8 JavaScript engine -->
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
+
+    <!-- Required for PyInstaller bundles - allows loading embedded Python libraries -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- Required for PyInstaller to load its bundled libraries -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
 </dict>
 </plist>
