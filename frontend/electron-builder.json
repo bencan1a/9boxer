@@ -47,7 +47,7 @@
     "signAndEditExecutable": true
   },
   "mac": {
-    "target": ["zip"],
+    "target": ["dmg"],
     "icon": "build/icon.icns",
     "category": "public.app-category.business",
     "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
