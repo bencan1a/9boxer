@@ -162,7 +162,7 @@ jobs:
         run: |
           # Decode and write the App Store Connect API key to a file
           echo "${{ secrets.APPLE_API_KEY_BASE64 }}" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
-          # Set APPLE_API_KEY to the file path (electron-builder expects this)
+          # Set APPLE_API_KEY to the file path for use in notarization step
           echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
 
           # Show certificate info (without revealing sensitive data)
@@ -192,7 +192,7 @@ jobs:
 
           # Verify API key file exists
           echo "=== Checking API key file ==="
-          ls -la "$RUNNER_TEMP/AuthKey.p8" || echo "API key file not found!"
+          ls -la "$APPLE_API_KEY" || echo "API key file not found!"
 
           # Notarize each DMG file
           for dmgfile in frontend/release/*.dmg; do
@@ -202,7 +202,7 @@ jobs:
 
               # Submit DMG directly to Apple (DMG is a supported format)
               xcrun notarytool submit "$dmgfile" \
-                --key "$RUNNER_TEMP/AuthKey.p8" \
+                --key "$APPLE_API_KEY" \
                 --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
                 --issuer "${{ secrets.APPLE_API_ISSUER }}" \
                 --verbose \
@@ -222,7 +222,7 @@ jobs:
               if [ -n "$SUBMISSION_ID" ]; then
                 echo "=== Fetching notarization log ==="
                 xcrun notarytool log "$SUBMISSION_ID" \
-                  --key "$RUNNER_TEMP/AuthKey.p8" \
+                  --key "$APPLE_API_KEY" \
                   --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
                   --issuer "${{ secrets.APPLE_API_ISSUER }}" \
                   notarization-log.json || true
