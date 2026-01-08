@@ -187,38 +187,21 @@ jobs:
         if: matrix.platform == 'macos'
         timeout-minutes: 30
         run: |
-          echo "=== Finding built zip files ==="
-          ls -la frontend/release/*.zip || true
+          echo "=== Finding built DMG files ==="
+          ls -la frontend/release/*.dmg || true
 
           # Verify API key file exists
           echo "=== Checking API key file ==="
           ls -la "$RUNNER_TEMP/AuthKey.p8" || echo "API key file not found!"
 
-          # Process each zip file
-          for zipfile in frontend/release/*.zip; do
-            if [ -f "$zipfile" ]; then
-              echo "=== Processing: $zipfile ==="
-
-              # Step 1: Extract the .app from the zip
-              WORKDIR=$(mktemp -d)
-              echo "Extracting to $WORKDIR"
-              unzip -q "$zipfile" -d "$WORKDIR"
-              ls -la "$WORKDIR"
-
-              # Find the .app bundle
-              APP_PATH=$(find "$WORKDIR" -name "*.app" -type d | head -1)
-              echo "Found app: $APP_PATH"
-
-              if [ -z "$APP_PATH" ]; then
-                echo "::error::No .app bundle found in $zipfile"
-                exit 1
-              fi
-
-              # Step 2: Submit the .app for notarization
-              echo "=== Submitting for notarization: $APP_PATH ==="
+          # Notarize each DMG file
+          for dmgfile in frontend/release/*.dmg; do
+            if [ -f "$dmgfile" ]; then
+              echo "=== Notarizing: $dmgfile ==="
               echo "Starting notarytool at $(date)"
 
-              xcrun notarytool submit "$APP_PATH" \
+              # Submit DMG directly to Apple (DMG is a supported format)
+              xcrun notarytool submit "$dmgfile" \
                 --key "$RUNNER_TEMP/AuthKey.p8" \
                 --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
                 --issuer "${{ secrets.APPLE_API_ISSUER }}" \
@@ -252,17 +235,11 @@ jobs:
                 exit 1
               fi
 
-              # Step 3: Staple the notarization ticket to the .app
+              # Staple the notarization ticket directly to the DMG
               echo "=== Stapling notarization ticket ==="
-              xcrun stapler staple "$APP_PATH"
+              xcrun stapler staple "$dmgfile"
 
-              # Step 4: Re-zip the stapled .app
-              echo "=== Re-creating zip with stapled app ==="
-              rm "$zipfile"
-              ditto -c -k --keepParent "$APP_PATH" "$zipfile"
-              rm -rf "$WORKDIR"
-
-              echo "=== Notarization complete for: $zipfile ==="
+              echo "=== Notarization complete for: $dmgfile ==="
             fi
           done
 
