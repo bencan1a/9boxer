@@ -30,7 +30,11 @@ fi
 RELEASE_DIR="frontend/release"
 
 # Find all DMGs and store in an array to handle filenames with spaces
-mapfile -t DMGS < <(find "$RELEASE_DIR" -maxdepth 1 -name "*.dmg")
+# Using bash 3.2-compatible approach (macOS default bash version)
+DMGS=()
+while IFS= read -r -d '' file; do
+  DMGS+=("$file")
+done < <(find "$RELEASE_DIR" -maxdepth 1 -name "*.dmg" -print0)
 
 if [ ${#DMGS[@]} -eq 0 ]; then
   echo "No DMG files found in $RELEASE_DIR to notarize."
