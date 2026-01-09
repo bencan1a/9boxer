@@ -59,9 +59,23 @@ notarize_file() {
   fi
 
   echo "Checking spctl assessment..."
-  if ! spctl -a -t open --context context:primary-signature -v "$FILE" 2>&1; then
-    echo "Warning: spctl assessment failed. This is expected before notarization but might indicate signing issues if certificates are invalid."
-    echo "Continuing nonetheless..."
+  SPCTL_OUTPUT=$(spctl -a -t open --context context:primary-signature -v "$FILE" 2>&1)
+  SPCTL_EXIT_CODE=$?
+
+  if [ $SPCTL_EXIT_CODE -ne 0 ]; then
+    echo "spctl assessment failed for $FILE:"
+    echo "$SPCTL_OUTPUT"
+
+    # Distinguish expected failures (not notarized yet) from genuine signing problems
+    if echo "$SPCTL_OUTPUT" | grep -qi "not notarized"; then
+      echo "Warning: File is not notarized yet (expected). Continuing to submit for notarization..."
+    elif echo "$SPCTL_OUTPUT" | grep -qi "source=Unnotarized Developer ID"; then
+      echo "Warning: Unnotarized Developer ID build detected (expected). Continuing to submit for notarization..."
+    else
+      echo "Error: spctl assessment indicates a signing or certificate problem. This suggests the DMG signing step failed."
+      echo "Aborting notarization for $FILE to avoid wasting time and API calls."
+      return 1
+    fi
   else
     echo "spctl check passed locally."
   fi
