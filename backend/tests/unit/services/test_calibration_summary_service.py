@@ -187,8 +187,8 @@ class TestCalibrationSummaryService:
             create_employee(i + 100, level="MT5", grid_position=5) for i in range(30)
         ]
 
-        result_lower = service.calculate_summary(lower_performers)
-        result_center = service.calculate_summary(center_box)
+        result_lower = service.calculate_summary(lower_performers, use_agent=False)
+        result_center = service.calculate_summary(center_box, use_agent=False)
 
         # Lower performers should get more time total
         # (Both exceed min bound so multipliers apply)

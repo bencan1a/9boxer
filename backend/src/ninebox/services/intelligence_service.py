@@ -5,47 +5,44 @@ in employee rating distributions across various dimensions (location, function, 
 """
 
 import logging
+import math
 from typing import Any, cast
-
-import numpy as np
 
 from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import PERFORMANCE_BUCKETS
 from ninebox.services.org_service import OrgService
+from ninebox.utils import pure_statistics as ps
 
 
-def _chi_square_test(contingency_table: np.ndarray) -> tuple[float, float, int, np.ndarray]:
+def _chi_square_test(
+    contingency_table: list[list[int]],
+) -> tuple[float, float, int, list[list[float]]]:
     """Perform chi-square test of independence.
 
     Args:
-        contingency_table: 2D array of observed frequencies
+        contingency_table: 2D list of observed frequencies
 
     Returns:
         Tuple of (chi2_statistic, p_value, degrees_of_freedom, expected_frequencies)
     """
-    from scipy.stats import chi2_contingency
-
-    chi2, p_value, dof, expected = chi2_contingency(contingency_table)
-    return float(chi2), float(p_value), int(dof), expected
+    return ps.chi_square_test(contingency_table)
 
 
-def _calculate_z_scores(observed: np.ndarray, expected: np.ndarray) -> np.ndarray:
+def _calculate_z_scores(
+    observed: list[list[int]], expected: list[list[float]]
+) -> list[list[float]]:
     """Calculate standardized residuals (z-scores) for each cell.
 
     Z-score formula: (observed - expected) / sqrt(expected)
 
     Args:
-        observed: Array of observed frequencies
-        expected: Array of expected frequencies
+        observed: 2D list of observed frequencies
+        expected: 2D list of expected frequencies
 
     Returns:
-        Array of z-scores (standardized residuals)
+        2D list of z-scores (standardized residuals)
     """
-    # Avoid division by zero
-    with np.errstate(divide="ignore", invalid="ignore"):
-        z_scores = (observed - expected) / np.sqrt(expected)
-        z_scores = np.nan_to_num(z_scores, nan=0.0, posinf=0.0, neginf=0.0)
-    return cast("np.ndarray[Any, Any]", z_scores)
+    return ps.calculate_z_scores(observed, expected)
 
 
 def _calculate_manager_chi_square(
@@ -82,15 +79,11 @@ def _calculate_manager_chi_square(
         which violates chi-square assumptions. However, this is acceptable for
         exploratory analysis and is more rigorous than the previous heuristic.
     """
-    from scipy.stats import chisquare
-
     # Calculate expected counts from percentages
-    expected = np.array([team_size * p / 100.0 for p in expected_pct])
+    expected = [team_size * p / 100.0 for p in expected_pct]
 
     # Perform chi-square goodness-of-fit test
-    result = chisquare(f_obs=observed_counts, f_exp=expected)
-
-    return float(result.statistic), float(result.pvalue)
+    return ps.chi_square_goodness_of_fit(observed_counts, expected)
 
 
 def _cramers_v(chi2: float, n: int, rows: int, cols: int) -> float:
@@ -109,19 +102,19 @@ def _cramers_v(chi2: float, n: int, rows: int, cols: int) -> float:
     """
     if n == 0 or min(rows, cols) <= 1:
         return 0.0
-    return float(np.sqrt(chi2 / (n * min(rows - 1, cols - 1))))
+    return math.sqrt(chi2 / (n * min(rows - 1, cols - 1)))
 
 
-def _safe_sample_size_check(counts: np.ndarray) -> bool:
+def _safe_sample_size_check(counts: list[list[float]]) -> bool:
     """Check if all expected counts are >= 5 for chi-square test validity.
 
     Args:
-        counts: Array of expected frequencies
+        counts: 2D list of expected frequencies
 
     Returns:
         True if all expected counts >= 5, False otherwise
     """
-    return bool(np.all(counts >= 5))
+    return ps.all_values_ge(counts, 5.0)
 
 
 def _get_status(
@@ -222,9 +215,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=locations, cols=performance levels
     location_names = sorted(locations.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array(
-        [[locations[loc][perf] for perf in perf_levels] for loc in location_names]
-    )
+    contingency = [[locations[loc][perf] for perf in perf_levels] for loc in location_names]
 
     # Check sample size FIRST (more important than checking for empty categories)
     n = len(employees)
@@ -242,10 +233,8 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Check if chi-square test is valid
     if not _safe_sample_size_check(expected):
         # Use Fisher's exact test for 2x2 tables
-        if contingency.shape == (2, 2):
-            from scipy.stats import fisher_exact
-
-            _, p_value = fisher_exact(contingency)
+        if len(contingency) == 2 and len(contingency[0]) == 2:
+            _, p_value = ps.fisher_exact_test(contingency)
             chi2 = 0.0  # Fisher's exact doesn't have chi2 statistic
 
     # Calculate effect size
@@ -274,7 +263,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
         )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
+    deviations.sort(key=lambda x: abs(cast("float", x["z_score"])), reverse=True)
 
     # Generate status (considers p-value, effect size, AND individual deviations)
     status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
@@ -366,9 +355,9 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         )
 
     # Build contingency table with only positions that have data
-    contingency = np.array(
-        [[grouped_functions[func][pos] for pos in positions_with_data] for func in function_names]
-    )
+    contingency = [
+        [grouped_functions[func][pos] for pos in positions_with_data] for func in function_names
+    ]
 
     # Check sample size
     n = len(employees)
@@ -376,8 +365,8 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         return _empty_analysis(f"Sample size too small (N={n}, need >= 30)")
 
     # Check if contingency table has any zero rows (all functions should have employees)
-    row_sums = contingency.sum(axis=1)
-    if np.any(row_sums == 0):
+    row_sums = ps.sum_rows(contingency)
+    if ps.any_zero(row_sums):
         return _empty_analysis("Contingency table has empty function categories")
 
     # Perform chi-square test
@@ -410,7 +399,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
             # Calculate z-score correctly for combined high performer category
             # Using formula: (observed - expected) / sqrt(expected)
             if expected_high > 0:
-                z_score_high = (observed_high - expected_high) / np.sqrt(expected_high)
+                z_score_high = (observed_high - expected_high) / math.sqrt(expected_high)
             else:
                 z_score_high = 0.0
         else:
@@ -418,7 +407,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
             observed_high = total_in_func
             expected_high = sum(expected[i])
             if expected_high > 0:
-                z_score_high = (observed_high - expected_high) / np.sqrt(expected_high)
+                z_score_high = (observed_high - expected_high) / math.sqrt(expected_high)
             else:
                 z_score_high = 0.0
 
@@ -437,7 +426,7 @@ def calculate_function_analysis(employees: list[Employee]) -> dict[str, Any]:
         )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
+    deviations.sort(key=lambda x: abs(cast("float", x["z_score"])), reverse=True)
 
     # Generate status (considers p-value, effect size, AND individual deviations)
     status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
@@ -485,7 +474,7 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=levels, cols=performance
     level_names = sorted(levels.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array([[levels[lvl][perf] for perf in perf_levels] for lvl in level_names])
+    contingency = [[levels[lvl][perf] for perf in perf_levels] for lvl in level_names]
 
     # Check sample size
     n = len(employees)
@@ -493,9 +482,9 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
         return _empty_analysis(f"Sample size too small (N={n}, need >= 30)")
 
     # Check if contingency table has any zero rows or columns (which would cause chi-square to fail)
-    row_sums = contingency.sum(axis=1)
-    col_sums = contingency.sum(axis=0)
-    if np.any(row_sums == 0) or np.any(col_sums == 0):
+    row_sums = ps.sum_rows(contingency)
+    col_sums = ps.sum_cols(contingency)
+    if ps.any_zero(row_sums) or ps.any_zero(col_sums):
         return _empty_analysis("Contingency table has empty categories")
 
     # Perform chi-square test
@@ -532,7 +521,7 @@ def calculate_level_analysis(employees: list[Employee]) -> dict[str, Any]:
         )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
+    deviations.sort(key=lambda x: abs(cast("float", x["z_score"])), reverse=True)
 
     # Generate status (UNIFORMITY TEST - p > 0.05 is GOOD, but still check individual deviations)
     status = _get_status(p_value, effect_size, deviations, is_uniformity_test=True)
@@ -579,7 +568,7 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
     # Build contingency table: rows=tenure categories, cols=performance
     tenure_names = sorted(tenures.keys())
     perf_levels = ["High", "Medium", "Low"]
-    contingency = np.array([[tenures[ten][perf] for perf in perf_levels] for ten in tenure_names])
+    contingency = [[tenures[ten][perf] for perf in perf_levels] for ten in tenure_names]
 
     # Check sample size
     n = len(employees)
@@ -587,9 +576,9 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
         return _empty_analysis(f"Sample size too small (N={n}, need >= 30)")
 
     # Check if contingency table has any zero rows or columns (which would cause chi-square to fail)
-    row_sums = contingency.sum(axis=1)
-    col_sums = contingency.sum(axis=0)
-    if np.any(row_sums == 0) or np.any(col_sums == 0):
+    row_sums = ps.sum_rows(contingency)
+    col_sums = ps.sum_cols(contingency)
+    if ps.any_zero(row_sums) or ps.any_zero(col_sums):
         return _empty_analysis("Contingency table has empty categories")
 
     # Perform chi-square test
@@ -626,7 +615,7 @@ def calculate_tenure_analysis(employees: list[Employee]) -> dict[str, Any]:
         )
 
     # Sort by absolute z-score
-    deviations.sort(key=lambda x: abs(float(x["z_score"])), reverse=True)
+    deviations.sort(key=lambda x: abs(cast("float", x["z_score"])), reverse=True)
 
     # Generate status (considers p-value, effect size, AND individual deviations)
     status = _get_status(p_value, effect_size, deviations, is_uniformity_test=False)
@@ -849,7 +838,7 @@ def _calculate_manager_statistics(
         # from the chi-square statistic. For chi-square with 2 df, significant values are:
         # chi2 ≈ 5.99 at p=0.05 (z≈2.0), chi2 ≈ 9.21 at p=0.01 (z≈3.0)
         # We use sqrt(chi2) as a rough z-score equivalent for consistency with old code
-        z_score_equivalent = float(np.sqrt(chi2))
+        z_score_equivalent = math.sqrt(chi2)
 
         deviations.append(
             {
@@ -1083,14 +1072,14 @@ def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any
 
         # Calculate z-scores for each performance tier
         z_high = (
-            ((high_count - expected_high) / np.sqrt(expected_high)) if expected_high > 0 else 0.0
+            ((high_count - expected_high) / math.sqrt(expected_high)) if expected_high > 0 else 0.0
         )
         z_medium = (
-            ((medium_count - expected_medium) / np.sqrt(expected_medium))
+            ((medium_count - expected_medium) / math.sqrt(expected_medium))
             if expected_medium > 0
             else 0.0
         )
-        z_low = ((low_count - expected_low) / np.sqrt(expected_low)) if expected_low > 0 else 0.0
+        z_low = ((low_count - expected_low) / math.sqrt(expected_low)) if expected_low > 0 else 0.0
 
         # Determine level status based on z-scores
         max_z = max(abs(z_high), abs(z_medium), abs(z_low))
@@ -1137,12 +1126,12 @@ def calculate_per_level_distribution(employees: list[Employee]) -> dict[str, Any
         contingency_table_data.append([high_count, medium_count, low_count])
 
     # Perform overall chi-square test
-    contingency = np.array(contingency_table_data)
+    contingency = contingency_table_data
 
     # Check if contingency table has any zero rows or columns
-    row_sums = contingency.sum(axis=1)
-    col_sums = contingency.sum(axis=0)
-    if np.any(row_sums == 0) or np.any(col_sums == 0):
+    row_sums = ps.sum_rows(contingency)
+    col_sums = ps.sum_cols(contingency)
+    if ps.any_zero(row_sums) or ps.any_zero(col_sums):
         # Some levels or performance tiers have zero employees
         # Still return level-by-level results but mark overall test as invalid
         overall_status = _determine_overall_status_from_levels(level_results)

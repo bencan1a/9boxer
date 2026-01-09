@@ -19,10 +19,6 @@ backend_dir = spec_dir.parent
 src_dir = backend_dir / 'src'
 main_script = backend_dir / 'src' / 'ninebox' / 'main.py'
 
-# Collect scipy and numpy with all their binaries and data files
-scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
-numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
-
 # Collect ninebox data files (schema.sql, prompt files, and any other data files)
 # Manually specify data files since ninebox is installed in editable mode
 # In frozen mode, these will be available relative to _MEIPASS
@@ -38,8 +34,8 @@ ninebox_datas = [
 a = Analysis(
     [str(main_script)],  # Main entry point
     pathex=[str(src_dir)],  # Add src to path for module resolution
-    binaries=scipy_binaries + numpy_binaries,
-    datas=scipy_datas + numpy_datas + ninebox_datas,
+    binaries=[],
+    datas=ninebox_datas,
     hiddenimports=[
         # FastAPI and dependencies
         'fastapi',
@@ -62,8 +58,6 @@ a = Analysis(
         # Data processing
         'pandas',
         'openpyxl',
-        'scipy',
-        'numpy',
 
         # All ninebox modules
         'ninebox',
@@ -90,7 +84,8 @@ a = Analysis(
         'ninebox.services.statistics_service',
         'ninebox.utils',
         'ninebox.utils.paths',
-    ] + scipy_hiddenimports + numpy_hiddenimports,
+        'ninebox.utils.pure_statistics',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -102,7 +97,6 @@ a = Analysis(
         'jupyter',
         'notebook',
         'pytest',
-        # Note: unittest is needed by numpy.testing (used by scipy), so don't exclude it
         # Exclude pkg_resources to avoid setuptools vendored jaraco.text Lorem ipsum.txt error
         'pkg_resources',
     ],

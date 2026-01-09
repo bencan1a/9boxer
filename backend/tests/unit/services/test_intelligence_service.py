@@ -2,7 +2,6 @@
 
 from datetime import date
 
-import numpy as np
 import pytest
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
@@ -27,28 +26,29 @@ def test_chi_square_test_with_known_values() -> None:
     """Test chi-square calculation with known values."""
     # Known contingency table with expected results
     # Example: Test independence of two categories
-    contingency = np.array([[10, 10, 20], [20, 20, 10]])
+    contingency = [[10, 10, 20], [20, 20, 10]]
 
     chi2, p_value, dof, expected = _chi_square_test(contingency)
 
     assert chi2 > 0
     assert 0 <= p_value <= 1
     assert dof == 2  # (rows-1) * (cols-1) = (2-1) * (3-1) = 2
-    assert expected.shape == contingency.shape
+    assert len(expected) == len(contingency)
+    assert len(expected[0]) == len(contingency[0])
 
 
 def test_calculate_z_scores() -> None:
     """Test z-score calculation."""
-    observed = np.array([10, 20, 30])
-    expected = np.array([15, 15, 30])
+    observed = [[10, 20, 30]]
+    expected = [[15.0, 15.0, 30.0]]
 
     z_scores = _calculate_z_scores(observed, expected)
 
     # Z-score formula: (observed - expected) / sqrt(expected)
     # For first element: (10 - 15) / sqrt(15) ≈ -1.29
-    assert z_scores[0] < 0
-    assert z_scores[1] > 0
-    assert abs(z_scores[2]) < 0.1  # Should be ~0
+    assert z_scores[0][0] < 0
+    assert z_scores[0][1] > 0
+    assert abs(z_scores[0][2]) < 0.1  # Should be ~0
 
 
 def test_cramers_v_calculation() -> None:
@@ -78,11 +78,11 @@ def test_cramers_v_edge_cases() -> None:
 def test_safe_sample_size_check() -> None:
     """Test sample size validation."""
     # All counts >= 5
-    assert _safe_sample_size_check(np.array([5, 10, 15])) is True
+    assert _safe_sample_size_check([[5.0, 10.0, 15.0]]) is True
 
     # Some counts < 5
-    assert _safe_sample_size_check(np.array([4, 10, 15])) is False
-    assert _safe_sample_size_check(np.array([0, 5, 10])) is False
+    assert _safe_sample_size_check([[4.0, 10.0, 15.0]]) is False
+    assert _safe_sample_size_check([[0.0, 5.0, 10.0]]) is False
 
 
 # Test analysis functions with sample data

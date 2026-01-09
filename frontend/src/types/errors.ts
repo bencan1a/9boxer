@@ -2,7 +2,7 @@
  * Error handling types and utilities
  */
 
-import type { AxiosError } from "axios";
+import { ApiError } from "../services/api";
 
 /**
  * Backend error response structure
@@ -12,24 +12,10 @@ export interface BackendErrorResponse {
 }
 
 /**
- * Type guard for Axios errors
- */
-function isAxiosError(
-  error: unknown
-): error is AxiosError<BackendErrorResponse> {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "isAxiosError" in error &&
-    error.isAxiosError === true
-  );
-}
-
-/**
  * Extract error message from various error types
  *
  * Handles:
- * - Axios errors with backend response
+ * - ApiError from fetch-based API client
  * - HTTP status errors
  * - Network errors
  * - Standard Error objects
@@ -49,20 +35,10 @@ function isAxiosError(
  * ```
  */
 export function extractErrorMessage(error: unknown): string {
-  // Axios error with backend response
-  if (isAxiosError(error)) {
-    const detail = error.response?.data?.detail;
-    if (detail) return detail;
-
-    // HTTP status error
-    if (error.response?.status) {
-      return `Request failed with status ${error.response.status}`;
-    }
-
-    // Network error
-    if (error.request) {
-      return "Network error: Unable to reach server";
-    }
+  // ApiError with backend response details
+  if (error instanceof ApiError) {
+    // Message already contains detail or formatted error
+    return error.message;
   }
 
   // Standard Error object

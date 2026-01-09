@@ -242,7 +242,8 @@ jobs:
           rm "$CERTIFICATE_PATH"
 
       - name: Notarize macOS app
-        if: matrix.platform == 'macos'
+        # Temporarily disabled due to Apple notarization issues
+        if: false  # Original condition: matrix.platform == 'macos'
         timeout-minutes: 35
         env:
           APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
