@@ -248,8 +248,13 @@ class TestDatabaseIntegrity:
         self, test_client: TestClient, sample_excel_file: Path
     ) -> None:
         """Test that creating a session inserts a database row."""
-        # Count database rows before upload
+        # Clear any existing sessions to ensure clean state for this test
+        # (session manager uses INSERT OR REPLACE, so count won't increase if session already exists)
         db_mgr = get_db_manager()
+        with db_mgr.get_connection() as conn:
+            conn.execute("DELETE FROM sessions")
+
+        # Count database rows before upload (should be 0)
         with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             initial_count = cursor.fetchone()[0]
@@ -277,6 +282,8 @@ class TestDatabaseIntegrity:
         self, test_client: TestClient, sample_excel_file: Path
     ) -> None:
         """Test that moving an employee updates the database row."""
+        import time
+
         # Upload file
         with open(sample_excel_file, "rb") as f:  # noqa: PTH123
             files = {
@@ -296,6 +303,9 @@ class TestDatabaseIntegrity:
             initial_updated_at = row["updated_at"] if row else None
 
         assert initial_updated_at is not None
+
+        # Small delay to ensure different timestamp (operations can complete in same microsecond)
+        time.sleep(0.001)
 
         # Move employee
         response = test_client.get("/api/employees")
