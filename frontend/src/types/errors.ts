@@ -4,6 +4,9 @@
 
 import { ApiError } from "../services/api";
 
+// Re-export ApiError for convenience
+export { ApiError };
+
 /**
  * Backend error response structure
  */
