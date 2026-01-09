@@ -180,6 +180,35 @@ jobs:
           APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
         run: npm run electron:build:mac -- --x64 --arm64
 
+      - name: Sign macOS DMG files
+        if: matrix.platform == 'macos'
+        run: |
+          # Find the Developer ID Application signing identity
+          IDENTITY=$(security find-identity -v -p codesigning | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
+
+          if [ -z "$IDENTITY" ]; then
+            echo "Error: No Developer ID Application certificate found"
+            exit 1
+          fi
+
+          echo "Using signing identity: $IDENTITY"
+
+          # Sign all DMG files
+          for dmg in frontend/release/*.dmg; do
+            if [ -f "$dmg" ]; then
+              echo "Signing: $dmg"
+              codesign --sign "$IDENTITY" \
+                --timestamp \
+                --options runtime \
+                --force \
+                "$dmg"
+
+              # Verify the signature
+              echo "Verifying signature..."
+              codesign -dv --verbose=4 "$dmg"
+            fi
+          done
+
       - name: Notarize macOS app
         if: matrix.platform == 'macos'
         timeout-minutes: 35
