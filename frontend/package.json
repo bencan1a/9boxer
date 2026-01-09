@@ -93,6 +93,8 @@
     "@mui/material": "^5.14.20",
     "@tanstack/react-virtual": "^3.13.17",
     "axios": "^1.13.2",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.1.7",
     "fuse.js": "^7.1.0",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",

@@ -92,6 +92,63 @@ interface ElectronAPI {
       }) => void
     ) => () => void;
   };
+  update: {
+    /**
+     * Manually trigger an update check.
+     */
+    checkForUpdates: () => Promise<{ success: boolean }>;
+    /**
+     * Download an available update.
+     */
+    downloadUpdate: () => Promise<{ success: boolean }>;
+    /**
+     * Install a downloaded update and restart the app.
+     */
+    installAndRestart: () => Promise<{ success: boolean }>;
+    /**
+     * Get the current update status.
+     */
+    getStatus: () => Promise<{
+      currentVersion: string;
+      updateAvailable: boolean;
+      updateVersion: string | null;
+      downloadInProgress: boolean;
+      updateDownloaded: boolean;
+    }>;
+    /**
+     * Listen for update available event.
+     */
+    onUpdateAvailable: (
+      callback: (info: {
+        version: string;
+        releaseDate: string;
+        releaseNotes: string;
+      }) => void
+    ) => () => void;
+    /**
+     * Listen for download progress updates.
+     */
+    onDownloadProgress: (
+      callback: (progress: {
+        percent: number;
+        bytesPerSecond: number;
+        transferred: number;
+        total: number;
+      }) => void
+    ) => () => void;
+    /**
+     * Listen for update downloaded event.
+     */
+    onUpdateDownloaded: (
+      callback: (info: { version: string }) => void
+    ) => () => void;
+    /**
+     * Listen for update error event.
+     */
+    onUpdateError: (
+      callback: (error: { message: string }) => void
+    ) => () => void;
+  };
 }
 
 // Expose protected methods that allow the renderer process to use
@@ -260,6 +317,76 @@ contextBridge.exposeInMainWorld("electronAPI", {
       return () => {
         ipcRenderer.removeListener("backend:connection-status", listener);
       };
+    },
+  },
+
+  // Auto-Update APIs
+  update: {
+    checkForUpdates: (): Promise<{ success: boolean }> =>
+      ipcRenderer.invoke("update:checkForUpdates"),
+
+    downloadUpdate: (): Promise<{ success: boolean }> =>
+      ipcRenderer.invoke("update:downloadUpdate"),
+
+    installAndRestart: (): Promise<{ success: boolean }> =>
+      ipcRenderer.invoke("update:installAndRestart"),
+
+    getStatus: (): Promise<{
+      currentVersion: string;
+      updateAvailable: boolean;
+      updateVersion: string | null;
+      downloadInProgress: boolean;
+      updateDownloaded: boolean;
+    }> => ipcRenderer.invoke("update:getStatus"),
+
+    onUpdateAvailable: (
+      callback: (info: {
+        version: string;
+        releaseDate: string;
+        releaseNotes: string;
+      }) => void
+    ): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, info: any) => {
+        callback(info);
+      };
+      ipcRenderer.on("update:available", listener);
+      return () => ipcRenderer.removeListener("update:available", listener);
+    },
+
+    onDownloadProgress: (
+      callback: (progress: {
+        percent: number;
+        bytesPerSecond: number;
+        transferred: number;
+        total: number;
+      }) => void
+    ): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, progress: any) => {
+        callback(progress);
+      };
+      ipcRenderer.on("update:download-progress", listener);
+      return () =>
+        ipcRenderer.removeListener("update:download-progress", listener);
+    },
+
+    onUpdateDownloaded: (
+      callback: (info: { version: string }) => void
+    ): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, info: any) => {
+        callback(info);
+      };
+      ipcRenderer.on("update:downloaded", listener);
+      return () => ipcRenderer.removeListener("update:downloaded", listener);
+    },
+
+    onUpdateError: (
+      callback: (error: { message: string }) => void
+    ): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, error: any) => {
+        callback(error);
+      };
+      ipcRenderer.on("update:error", listener);
+      return () => ipcRenderer.removeListener("update:error", listener);
     },
   },
 
