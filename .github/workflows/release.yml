@@ -40,6 +40,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Update version in package.json
+        working-directory: frontend
+        run: |
+          # Update version in package.json to match release input
+          RELEASE_VERSION="${{ github.event.inputs.version }}"
+          echo "📦 Updating package.json version to: $RELEASE_VERSION"
+
+          # Use npm version to update package.json (--no-git-tag-version prevents git operations)
+          npm version "$RELEASE_VERSION" --no-git-tag-version --allow-same-version
+
+          # Verify the update
+          UPDATED_VERSION=$(node -p "require('./package.json').version")
+          echo "✅ Package.json version updated: $UPDATED_VERSION"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -51,8 +51,25 @@ export const AboutDialog: React.FC<AboutDialogProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const appVersion = "1.0.0";
+  const [appVersion, setAppVersion] = useState<string>("1.0.0"); // Fallback version
   const appName = "9Boxer";
+
+  // Fetch app version from Electron when component mounts or when running in Electron
+  useEffect(() => {
+    const fetchVersion = async () => {
+      if (window.electronAPI?.getAppVersion) {
+        try {
+          const version = await window.electronAPI.getAppVersion();
+          setAppVersion(version);
+        } catch (error) {
+          console.error("Failed to fetch app version:", error);
+          // Keep fallback version if fetch fails
+        }
+      }
+    };
+
+    fetchVersion();
+  }, []);
 
   const renderSimpleContent = (): JSX.Element => (
     <Box>
