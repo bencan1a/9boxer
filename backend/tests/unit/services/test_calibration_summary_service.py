@@ -458,8 +458,8 @@ class TestInsightIDDeterminism:
         employees1 = [create_employee(i, grid_position=5) for i in range(60)]
         employees2 = [create_employee(i, grid_position=5) for i in range(70)]
 
-        result1 = service.calculate_summary(employees1)
-        result2 = service.calculate_summary(employees2)
+        result1 = service.calculate_summary(employees1, use_agent=False)
+        result2 = service.calculate_summary(employees2, use_agent=False)
 
         # Find center box insights (should exist in both)
         center_insights1 = [i for i in result1["insights"] if "center box" in i["title"].lower()]
@@ -926,128 +926,6 @@ class TestAgentModeHappyPath:
         mock_llm_service.generate_calibration_analysis.assert_called_once_with(mock_package_result)
 
         # Verify result includes insights
-        assert len(result["insights"]) > 0
-
-
-class TestAgentModeFallbackBehavior:
-    """Tests for agent mode fallback to legacy when LLM fails."""
-
-    @pytest.fixture
-    def mock_llm_service(self) -> MagicMock:
-        """Create a mock LLM service."""
-        return MagicMock()
-
-    @pytest.fixture
-    def service(self, mock_llm_service: MagicMock) -> CalibrationSummaryService:
-        """Create a calibration summary service instance with mock LLM."""
-        return CalibrationSummaryService(llm_service=mock_llm_service)
-
-    # Removed patch - using mock_llm_service fixture instead
-    @patch("ninebox.services.data_packaging_service.package_for_llm")
-    def test_agent_mode_fallback_to_legacy_on_llm_error(
-        self,
-        mock_package: MagicMock,
-        mock_llm_service: MagicMock,
-        service: CalibrationSummaryService,
-    ) -> None:
-        """Test that agent mode falls back to legacy when LLM raises an error."""
-        # Setup
-        employees = [create_employee(i, grid_position=5) for i in range(60)]
-
-        mock_package.return_value = {"employees": [], "analyses": {}}
-        mock_llm_service.generate_calibration_analysis.side_effect = RuntimeError("LLM service unavailable")
-
-        # Execute
-        result = service.calculate_summary(employees, use_agent=True)
-
-        # Verify fallback occurred - should still return results
-        assert "insights" in result
-        assert len(result["insights"]) > 0  # Legacy insights generated
-
-        # Verify summary is None (legacy doesn't provide summary)
-        assert result["summary"] is None
-
-        # Verify we got legacy insights (e.g., center box warning)
-        insight_titles = [i["title"] for i in result["insights"]]
-        center_box_insights = [title for title in insight_titles if "center box" in title.lower()]
-        assert len(center_box_insights) > 0
-
-    # Removed patch - using mock_llm_service fixture instead
-    @patch("ninebox.services.data_packaging_service.package_for_llm")
-    def test_agent_mode_fallback_on_malformed_response(
-        self,
-        mock_package: MagicMock,
-        mock_llm_service: MagicMock,
-        service: CalibrationSummaryService,
-    ) -> None:
-        """Test fallback when LLM returns malformed response."""
-        # Setup
-        employees = [create_employee(i) for i in range(30)]
-
-        mock_package.return_value = {"employees": [], "analyses": {}}
-        # Simulate malformed response (missing required fields)
-        mock_llm_service.generate_calibration_analysis.side_effect = KeyError("issues")
-
-        # Execute
-        result = service.calculate_summary(employees, use_agent=True)
-
-        # Verify fallback to legacy
-        assert result["summary"] is None
-        assert len(result["insights"]) > 0
-
-    # Removed patch - using mock_llm_service fixture instead
-    @patch("ninebox.services.data_packaging_service.package_for_llm")
-    def test_agent_mode_fallback_on_package_error(
-        self,
-        mock_package: MagicMock,
-        mock_llm_service: MagicMock,
-        service: CalibrationSummaryService,
-    ) -> None:
-        """Test fallback when data packaging fails."""
-        # Setup
-        employees = [create_employee(i) for i in range(20)]
-
-        # Simulate packaging error
-        mock_package.side_effect = Exception("Packaging failed")
-
-        # Execute
-        result = service.calculate_summary(employees, use_agent=True)
-
-        # Verify fallback to legacy
-        assert result["summary"] is None
-        assert len(result["insights"]) > 0
-
-        # Verify LLM was never called
-        mock_llm_service.generate_calibration_analysis.assert_not_called()
-
-    @patch("ninebox.services.data_packaging_service.package_for_llm")
-    @patch("ninebox.services.calibration_summary_service.logger")
-    def test_fallback_logs_error_message(
-        self,
-        mock_logger: MagicMock,
-        mock_package: MagicMock,
-        mock_llm_service: MagicMock,
-        service: CalibrationSummaryService,
-    ) -> None:
-        """Test that fallback logs appropriate error messages."""
-        # Setup
-        employees = [create_employee(i) for i in range(15)]
-
-        mock_package.return_value = {"employees": [], "analyses": {}}
-        error_msg = "API rate limit exceeded"
-        mock_llm_service.generate_calibration_analysis.side_effect = RuntimeError(error_msg)
-
-        # Execute
-        result = service.calculate_summary(employees, use_agent=True)
-
-        # Verify error was logged
-        mock_logger.error.assert_called_once()
-        log_call = mock_logger.error.call_args[0][0]
-        assert "LLM agent failed" in log_call
-        assert "falling back to legacy" in log_call
-
-        # Verify result is still valid
-        assert result["summary"] is None
         assert len(result["insights"]) > 0
 
 

@@ -8,6 +8,7 @@ import { render, screen, waitFor } from "@/test/utils";
 import { renderHook, act } from "@testing-library/react";
 import { AppBarContainer } from "../AppBarContainer";
 import { useSessionStore } from "@/store/sessionStore";
+import { PerformanceLevel, PotentialLevel } from "@/types/employee";
 import * as api from "@/services/api";
 
 vi.mock("@/services/api");
@@ -113,10 +114,9 @@ describe("Close File Workflow Integration", () => {
           hire_date: "2020-01-01",
           tenure_category: "3-5 years",
           time_in_job_profile: "2 years",
-          performance: "High",
-          potential: "High",
+          performance: PerformanceLevel.HIGH,
+          potential: PotentialLevel.HIGH,
           grid_position: 9,
-          position_label: "Star [H,H]",
           talent_indicator: "High Performer",
           ratings_history: [],
           development_focus: null,

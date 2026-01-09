@@ -38,6 +38,7 @@ const meta = {
   args: {
     // Default args for all stories
     onImportClick: fn(),
+    onLoadSampleClick: fn(),
     onExportClick: fn(),
     onFilterClick: fn(),
     onSettingsClick: fn(),

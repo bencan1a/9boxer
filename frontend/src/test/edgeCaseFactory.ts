@@ -54,7 +54,6 @@ export const createEdgeCaseEmployee = (
     performance: PerformanceLevel.MEDIUM,
     potential: PotentialLevel.MEDIUM,
     grid_position: 5,
-    position_label: "Core Talent [M,M]",
     talent_indicator: "Core",
     ratings_history: [],
     development_focus: null,
@@ -72,15 +71,16 @@ export const createEdgeCaseEmployee = (
         ...baseEmployee,
         name: "John Smith (CEO)",
         job_level: "MT6",
-        manager: undefined, // CEO has no manager
+        manager: "", // CEO has no manager
         business_title: "Chief Executive Officer",
       };
 
     case EdgeCaseScenario.ORPHANED_EMPLOYEE:
       return {
         ...baseEmployee,
-        manager: undefined, // Employee with missing manager reference
-        management_chain_01: undefined,
+        manager: "", // Employee with missing manager reference
+        business_title: "",
+        promotion_status: null,
       };
 
     case EdgeCaseScenario.EMPTY_STRINGS:
@@ -105,9 +105,9 @@ export const createEdgeCaseEmployee = (
       return {
         ...baseEmployee,
         flags: undefined,
-        ratings_history: undefined as any,
-        development_focus: undefined,
-        development_action: undefined,
+        ratings_history: [],
+        development_focus: null,
+        development_action: null,
       };
 
     case EdgeCaseScenario.SPECIAL_CHARACTERS:
@@ -189,9 +189,8 @@ export const generateRealisticDataset = (size: number = 50): Employee[] => {
         PotentialLevel.HIGH,
       ][i % 3],
       grid_position: (i % 3) * 3 + ((i % 3) + 1),
-      position_label: "Standard Label",
       talent_indicator: "Core",
-      ratings_history: i % 3 === 0 ? undefined : [],
+      ratings_history: [],
       development_focus: i % 4 === 0 ? null : "Standard focus",
       development_action: null,
       notes: null,

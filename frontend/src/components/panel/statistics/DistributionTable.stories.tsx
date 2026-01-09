@@ -63,7 +63,6 @@ export const BalancedDistribution: Story = {
   tags: ["screenshot"],
   parameters: {
     screenshot: { enabled: true, id: "statistics-panel-distribution" },
-    screenshot: { enabled: true, id: "statistics-panel-distribution" },
   },
   args: {
     distribution: createDistribution({

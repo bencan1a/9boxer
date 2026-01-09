@@ -3,6 +3,7 @@ import { render, screen } from "../../../test/utils";
 import { RatingsTimeline } from "../RatingsTimeline";
 import { createMockEmployee } from "../../../test/mockData";
 import { getTranslatedText } from "../../../test/i18nTestUtils";
+import { PerformanceLevel, PotentialLevel } from "@/types/employee";
 
 describe("RatingsTimeline", () => {
   it("renders performance history heading when displayed", () => {
@@ -22,8 +23,8 @@ describe("RatingsTimeline", () => {
 
   it("displays current year rating correctly", () => {
     const employee = createMockEmployee({
-      performance: "High",
-      potential: "High",
+      performance: PerformanceLevel.HIGH,
+      potential: PotentialLevel.HIGH,
       ratings_history: [],
     });
 
@@ -94,8 +95,8 @@ describe("RatingsTimeline", () => {
 
   it("displays both current and historical ratings together", () => {
     const employee = createMockEmployee({
-      performance: "High",
-      potential: "Medium",
+      performance: PerformanceLevel.HIGH,
+      potential: PotentialLevel.MEDIUM,
       ratings_history: [
         { year: 2023, rating: "Leading" },
         { year: 2022, rating: "Strong" },
@@ -121,8 +122,8 @@ describe("RatingsTimeline", () => {
 
   it("displays performance and potential for current year", () => {
     const employee = createMockEmployee({
-      performance: "High",
-      potential: "Medium",
+      performance: PerformanceLevel.HIGH,
+      potential: PotentialLevel.MEDIUM,
       ratings_history: [],
     });
 

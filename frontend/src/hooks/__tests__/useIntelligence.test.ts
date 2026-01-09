@@ -18,30 +18,62 @@ vi.mock("../../store/sessionStore", () => ({
 }));
 
 const mockIntelligenceData: IntelligenceData = {
-  anomalies: [
-    {
-      grid_position: 9,
-      observed_count: 5,
-      expected_range: [2, 4],
-      severity: "medium",
-      message: "Position 9 has more employees than expected",
-      deviation_type: "over",
-      z_score: 2.5,
-      p_value: 0.012,
-    },
-  ],
-  insights: [
-    {
-      category: "distribution",
-      message: "High concentration in medium performance",
-      severity: "info",
-      affected_positions: [4, 5, 6],
-      recommendation: "Consider performance calibration",
-    },
-  ],
   quality_score: 75.5,
-  total_employees: 100,
-  positions_analyzed: 9,
+  anomaly_count: {
+    green: 5,
+    yellow: 3,
+    red: 1,
+  },
+  location_analysis: {
+    chi_square: 0,
+    p_value: 0.5,
+    effect_size: 0.1,
+    degrees_of_freedom: 2,
+    sample_size: 100,
+    status: "green",
+    deviations: [],
+    interpretation: "No significant anomalies detected",
+  },
+  function_analysis: {
+    chi_square: 0,
+    p_value: 0.5,
+    effect_size: 0.1,
+    degrees_of_freedom: 2,
+    sample_size: 100,
+    status: "green",
+    deviations: [],
+    interpretation: "No significant anomalies detected",
+  },
+  level_analysis: {
+    chi_square: 0,
+    p_value: 0.5,
+    effect_size: 0.1,
+    degrees_of_freedom: 2,
+    sample_size: 100,
+    status: "green",
+    deviations: [],
+    interpretation: "No significant anomalies detected",
+  },
+  tenure_analysis: {
+    chi_square: 0,
+    p_value: 0.5,
+    effect_size: 0.1,
+    degrees_of_freedom: 2,
+    sample_size: 100,
+    status: "green",
+    deviations: [],
+    interpretation: "No significant anomalies detected",
+  },
+  manager_analysis: {
+    chi_square: 0,
+    p_value: 0.5,
+    effect_size: 0.1,
+    degrees_of_freedom: 2,
+    sample_size: 100,
+    status: "green",
+    deviations: [],
+    interpretation: "No significant anomalies detected",
+  },
 };
 
 describe("useIntelligence", () => {
@@ -243,11 +275,62 @@ describe("useIntelligence", () => {
   describe("Edge cases", () => {
     it("handles empty intelligence data", async () => {
       const emptyData: IntelligenceData = {
-        anomalies: [],
-        insights: [],
         quality_score: 0,
-        total_employees: 0,
-        positions_analyzed: 0,
+        anomaly_count: {
+          green: 0,
+          yellow: 0,
+          red: 0,
+        },
+        location_analysis: {
+          chi_square: 0,
+          p_value: 1,
+          effect_size: 0,
+          degrees_of_freedom: 0,
+          sample_size: 0,
+          status: "green",
+          deviations: [],
+          interpretation: "No data",
+        },
+        function_analysis: {
+          chi_square: 0,
+          p_value: 1,
+          effect_size: 0,
+          degrees_of_freedom: 0,
+          sample_size: 0,
+          status: "green",
+          deviations: [],
+          interpretation: "No data",
+        },
+        level_analysis: {
+          chi_square: 0,
+          p_value: 1,
+          effect_size: 0,
+          degrees_of_freedom: 0,
+          sample_size: 0,
+          status: "green",
+          deviations: [],
+          interpretation: "No data",
+        },
+        tenure_analysis: {
+          chi_square: 0,
+          p_value: 1,
+          effect_size: 0,
+          degrees_of_freedom: 0,
+          sample_size: 0,
+          status: "green",
+          deviations: [],
+          interpretation: "No data",
+        },
+        manager_analysis: {
+          chi_square: 0,
+          p_value: 1,
+          effect_size: 0,
+          degrees_of_freedom: 0,
+          sample_size: 0,
+          status: "green",
+          deviations: [],
+          interpretation: "No data",
+        },
       };
 
       (apiClient.getIntelligence as ReturnType<typeof vi.fn>).mockResolvedValue(

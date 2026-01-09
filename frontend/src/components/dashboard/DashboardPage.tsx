@@ -78,7 +78,7 @@ export const DashboardPage: React.FC = () => {
   const [isLoadingSample, setIsLoadingSample] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const rafIdRef = useRef<number>();
-  const resizeTimeoutRef = useRef<NodeJS.Timeout>();
+  const resizeTimeoutRef = useRef<number>();
   const isMountedRef = useRef(true);
 
   // Cleanup RAF and timeouts on unmount
@@ -125,12 +125,6 @@ export const DashboardPage: React.FC = () => {
         resizeCountRef.current++;
       }
 
-      // Set resizing state using functional update to avoid stale closure
-      setIsResizing((prev) => {
-        if (!prev) return true; // Only update if not already resizing
-        return prev; // Keep current value
-      });
-
       // Cancel previous RAF if still pending
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
@@ -146,19 +140,24 @@ export const DashboardPage: React.FC = () => {
         // Guard against unmounted component
         if (!isMountedRef.current) return;
 
-        // Track panel size changes
-        if (rightSize !== rightPanelSize) {
-          setRightPanelSize(rightSize);
-          if (import.meta.env.DEV) {
-            console.log(`[Perf] Panel size update: ${rightSize.toFixed(1)}%`);
-          }
+        // Set resizing state on first RAF - deferred to allow drag cursor to appear first
+        // This prevents blocking the initial drag feedback with a synchronous render
+        setIsResizing((prev) => {
+          if (!prev) return true; // Only update if not already resizing
+          return prev; // Keep current value
+        });
+
+        // Update panel size
+        setRightPanelSize(rightSize);
+        if (import.meta.env.DEV) {
+          console.log(`[Perf] Panel size update: ${rightSize.toFixed(1)}%`);
         }
 
         // Guard again before setting timeout
         if (!isMountedRef.current) return;
 
         // Set timeout to end resize state after resize stops
-        resizeTimeoutRef.current = setTimeout(() => {
+        resizeTimeoutRef.current = window.setTimeout(() => {
           // Guard in timeout callback
           if (!isMountedRef.current) return;
           setIsResizing(false);
@@ -179,7 +178,7 @@ export const DashboardPage: React.FC = () => {
         }, 150); // 150ms debounce for resize end
       });
     },
-    [isRightPanelCollapsed, rightPanelSize, setRightPanelSize]
+    [isRightPanelCollapsed, setRightPanelSize] // Removed rightPanelSize - prevents callback recreation during drag
   );
 
   // Restore session from localStorage on mount
@@ -223,12 +222,12 @@ export const DashboardPage: React.FC = () => {
 
   // Track window resize and auto-collapse/reopen panel based on screen size
   useEffect(() => {
-    let resizeTimeout: NodeJS.Timeout;
+    let resizeTimeout: number;
 
     const handleResize = () => {
       // Debounce window resize to avoid excessive checks
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
+      resizeTimeout = window.setTimeout(() => {
         const width = window.innerWidth;
         setWindowWidth(width);
 

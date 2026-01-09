@@ -20,6 +20,11 @@ describe("ManagementChain", () => {
       orgTree: [],
       getReportIds: mockGetReportIds,
       getReportingChain: vi.fn().mockResolvedValue([1]),
+      isLoading: false,
+      error: null,
+      getReportsFor: vi.fn(),
+      getManagerByName: vi.fn(),
+      refreshManagers: vi.fn(),
     });
 
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
@@ -29,7 +34,6 @@ describe("ManagementChain", () => {
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
-      selectedManagerEmployeeIds: {},
       selectedFlags: [],
       excludedEmployeeIds: [],
       isDrawerOpen: false,
@@ -166,10 +170,12 @@ describe("ManagementChain", () => {
   it("highlights active filter manager with success color", () => {
     vi.spyOn(useFiltersHook, "useFilters").mockReturnValue({
       toggleManager: mockToggleManager,
+      selectManager: mockSelectManager,
       selectedLevels: [],
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: ["Jane Smith"],
+      selectedFlags: [],
       excludedEmployeeIds: [],
       isDrawerOpen: false,
       hasActiveFilters: true,
@@ -257,6 +263,7 @@ describe("ManagementChain", () => {
       selectedJobFunctions: [],
       selectedLocations: [],
       selectedManagers: [],
+      selectedFlags: [],
       excludedEmployeeIds: [],
       isDrawerOpen: false,
       hasActiveFilters: true,
@@ -264,11 +271,13 @@ describe("ManagementChain", () => {
       toggleJobFunction: vi.fn(),
       toggleLocation: vi.fn(),
       toggleManager: vi.fn(),
+      selectManager: vi.fn(),
       setExcludedIds: vi.fn(),
       clearAllFilters: vi.fn(),
       toggleDrawer: vi.fn(),
       applyFilters: vi.fn(),
       getAvailableOptions: vi.fn(),
+      toggleFlag: vi.fn(),
     });
 
     const employee = createMockEmployee({

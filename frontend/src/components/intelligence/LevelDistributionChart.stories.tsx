@@ -80,7 +80,6 @@ export const NormalDistribution: Story = {
   tags: ["screenshot"],
   parameters: {
     screenshot: { enabled: true, id: "intelligence-level-distribution" },
-    screenshot: { enabled: true, id: "intelligence-level-distribution" },
   },
   args: {
     data: mockLevelDistributionNormal,

@@ -20,6 +20,7 @@ import {
   switchPanelTab,
   openFilterDrawer,
   expandManagerAnomalyDetails,
+  getVisibleEmployeeCount,
 } from "../helpers";
 
 test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
@@ -50,9 +51,8 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
   test("13.1 - Click manager in Intelligence tab filters employee list", async ({
     page,
   }) => {
-    // Get initial employee count
-    const initialCards = page.locator('[data-testid^="employee-card-"]');
-    const initialCount = await initialCards.count();
+    // Get initial employee count from UI (virtualization-aware)
+    const initialCount = await getVisibleEmployeeCount(page);
     expect(initialCount).toBeGreaterThan(0);
 
     // Switch to Intelligence tab
@@ -86,12 +86,17 @@ test.describe("Section 13: Organization Hierarchy Filter Tests", () => {
     // ✅ Click manager name to apply filter
     await firstManagerLink.click();
 
-    // ✅ Wait for filter to be applied - use state-based wait
+    // ✅ Wait for filter to be applied
     await page.waitForLoadState("networkidle");
 
+    // Wait for the employee count display to show the filtered format "X of Y"
+    // This ensures the filter has been fully applied before we read the count
+    const employeeCountDisplay = page.locator('[data-testid="employee-count"]');
+    await expect(employeeCountDisplay).toContainText("of", { timeout: 10000 });
+
     // ✅ Verify employee count decreased (filtered to team)
-    const filteredCards = page.locator('[data-testid^="employee-card-"]');
-    const filteredCount = await filteredCards.count();
+    // Read from UI display (virtualization-aware)
+    const filteredCount = await getVisibleEmployeeCount(page);
 
     // Filtered count should be less than initial (manager has a subset of employees)
     expect(filteredCount).toBeLessThan(initialCount);

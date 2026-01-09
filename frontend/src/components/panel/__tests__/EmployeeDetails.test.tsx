@@ -168,11 +168,11 @@ describe("EmployeeDetails", () => {
 
   it("hides info rows when field values are null", () => {
     const employee = createMockEmployee({
-      job_function: null,
-      location: null,
-      job_level: null,
-      tenure_category: null,
-      time_in_job_profile: null,
+      job_function: undefined,
+      location: undefined,
+      job_level: undefined,
+      tenure_category: undefined,
+      time_in_job_profile: undefined,
     });
 
     render(<EmployeeDetails employee={employee} />);

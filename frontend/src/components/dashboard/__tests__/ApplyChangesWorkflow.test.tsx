@@ -67,11 +67,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = null;
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -106,11 +112,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -141,10 +153,12 @@ describe("Apply Changes Workflow Integration", () => {
     });
     vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
       session_id: "test-session-123",
+      active: true,
       uploaded_filename: "employees.xlsx",
       events: [],
-      total_employees: 100,
-      modified_employees: 0,
+      employee_count: 100,
+      changes_count: 0,
+      created_at: "2024-01-01T00:00:00Z",
     });
 
     localStorage.setItem("last_file_path", "/path/to/employees.xlsx");
@@ -159,11 +173,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -208,10 +228,12 @@ describe("Apply Changes Workflow Integration", () => {
     });
     vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
       session_id: "test-session-123",
+      active: true,
       uploaded_filename: "new_file.xlsx",
       events: [],
-      total_employees: 100,
-      modified_employees: 0,
+      employee_count: 100,
+      changes_count: 0,
+      created_at: "2024-01-01T00:00:00Z",
     });
 
     // Mock loadEmployees
@@ -224,11 +246,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -281,10 +309,12 @@ describe("Apply Changes Workflow Integration", () => {
     });
     vi.mocked(api.apiClient.getSessionStatus).mockResolvedValue({
       session_id: "test-session-123",
+      active: true,
       uploaded_filename: "employees.xlsx",
       events: [],
-      total_employees: 100,
-      modified_employees: 0,
+      employee_count: 100,
+      changes_count: 0,
+      created_at: "2024-01-01T00:00:00Z",
     });
 
     localStorage.setItem("last_file_path", filePath);
@@ -299,11 +329,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -359,11 +395,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -417,11 +459,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -466,11 +514,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -523,11 +577,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];
@@ -582,11 +642,17 @@ describe("Apply Changes Workflow Integration", () => {
       sessionStore.current.filename = "employees.xlsx";
       sessionStore.current.events = [
         {
-          event_id: 1,
+          event_id: "1",
           employee_id: 1,
-          event_type: "employee_moved",
+          employee_name: "Test Employee",
+          event_type: "grid_move",
           timestamp: "2024-01-01T00:00:00Z",
-          changes: { performance: "High", potential: "High" },
+          old_position: 5,
+          new_position: 9,
+          old_performance: "Medium",
+          new_performance: "High",
+          old_potential: "Medium",
+          new_potential: "High",
           notes: null,
         },
       ];

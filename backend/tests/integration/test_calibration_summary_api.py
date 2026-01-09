@@ -380,10 +380,10 @@ class TestCalibrationSummaryErrorCases:
         # In practice, the API prevents creating sessions without employees.
         pass
 
-    def test_agent_mode_fallback_when_llm_fails(
+    def test_agent_mode_when_llm_fails(
         self, test_client: TestClient, session_with_sample_data: dict
     ) -> None:
-        """Test that agent mode falls back to legacy when LLM fails."""
+        """Test that agent mode returns error when LLM fails."""
         # Mock LLM to raise an exception
         with patch(
             "ninebox.services.llm_service.LLMService.generate_calibration_analysis",
@@ -393,12 +393,8 @@ class TestCalibrationSummaryErrorCases:
                 "/api/calibration-summary?use_agent=true", headers=session_with_sample_data
             )
 
-            assert response.status_code == 200
-            data = response.json()
-
-            # Should fall back to legacy mode
-            assert data["summary"] is None  # No LLM summary
-            assert len(data["insights"]) > 0  # But still has insights from legacy
+            # Should return 500 error since there's no legacy fallback
+            assert response.status_code == 500
 
 
 # =============================================================================

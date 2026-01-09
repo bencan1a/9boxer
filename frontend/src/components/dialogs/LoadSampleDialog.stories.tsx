@@ -3,6 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
 import { useState } from "react";
 import { LoadSampleDialog } from "./LoadSampleDialog";
 import Button from "@mui/material/Button";
@@ -42,7 +43,7 @@ const DialogWrapper = (args: {
 
     // Simulate error
     if (args.simulateError) {
-      throw new Error("Failed to generate sample data");
+      throw new globalThis.Error("Failed to generate sample data");
     }
 
     // Success - close dialog
@@ -79,6 +80,12 @@ export const NoExistingData: Story = {
       },
     },
   },
+  args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(async () => {}),
+    hasExistingData: false,
+  },
   render: () => <DialogWrapper hasExistingData={false} />,
 };
 
@@ -86,6 +93,12 @@ export const NoExistingData: Story = {
  * Warning state - existing data will be replaced
  */
 export const WithExistingData: Story = {
+  args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(async () => {}),
+    hasExistingData: true,
+  },
   render: () => <DialogWrapper hasExistingData={true} />,
   parameters: {
     docs: {
@@ -101,6 +114,12 @@ export const WithExistingData: Story = {
  * Loading state - data generation in progress
  */
 export const Loading: Story = {
+  args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(async () => {}),
+    hasExistingData: false,
+  },
   render: () => <DialogWrapper hasExistingData={false} simulateDelay={true} />,
   parameters: {
     docs: {
@@ -116,6 +135,12 @@ export const Loading: Story = {
  * Error state - generation failed
  */
 export const Error: Story = {
+  args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(async () => {}),
+    hasExistingData: false,
+  },
   render: () => <DialogWrapper hasExistingData={false} simulateError={true} />,
   parameters: {
     docs: {
@@ -131,6 +156,12 @@ export const Error: Story = {
  * Dark mode - with existing data warning
  */
 export const DarkMode: Story = {
+  args: {
+    open: true,
+    onClose: fn(),
+    onConfirm: fn(async () => {}),
+    hasExistingData: true,
+  },
   render: () => <DialogWrapper hasExistingData={true} />,
   parameters: {
     backgrounds: { default: "dark" },

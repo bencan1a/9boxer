@@ -23,6 +23,9 @@ concurrency:
 jobs:
   frontend-performance:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
     defaults:
       run:
         working-directory: frontend

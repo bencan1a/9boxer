@@ -137,6 +137,7 @@
   /* Scrollbar Dimensions */
   --dimension-scrollbar-width: 12px;
   --dimension-scrollbar-height: 12px;
+  --dimension-scrollbar-border-radius: 4px;
   --dimension-scrollbar-thumb-border-radius: 6px;
   --dimension-scrollbar-thumb-border-width: 3px;
 }
