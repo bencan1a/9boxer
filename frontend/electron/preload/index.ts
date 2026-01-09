@@ -32,6 +32,11 @@ interface ElectronAPI {
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
   showLogs: () => Promise<{ success: boolean }>;
   /**
+   * Get the application version from package.json.
+   * @returns Promise resolving to the version string (e.g., "1.0.0")
+   */
+  getAppVersion: () => Promise<string>;
+  /**
    * Notify the main process that session restoration is complete.
    * This will close the splash screen if it's still visible.
    */
@@ -182,6 +187,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
    */
   showLogs: (): Promise<{ success: boolean }> =>
     ipcRenderer.invoke("app:showLogs"),
+
+  /**
+   * Get the application version from package.json.
+   * This is the version set in frontend/package.json and used by Electron Builder.
+   *
+   * @returns Promise resolving to the version string (e.g., "1.0.0")
+   *
+   * @example
+   * ```typescript
+   * const version = await window.electronAPI.getAppVersion();
+   * console.log('App version:', version);
+   * ```
+   */
+  getAppVersion: (): Promise<string> => ipcRenderer.invoke("app:getVersion"),
 
   /**
    * Notify the main process that session restoration is complete.

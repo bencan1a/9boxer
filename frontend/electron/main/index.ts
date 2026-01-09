@@ -888,6 +888,13 @@ function setupIpcHandlers(): void {
     return BACKEND_URL;
   });
 
+  // Handle getting app version
+  ipcMain.handle("app:getVersion", () => {
+    const version = app.getVersion();
+    console.log("📦 Renderer requested app version:", version);
+    return version;
+  });
+
   // Handle session restoration completion notification
   ipcMain.handle("app:sessionRestored", () => {
     console.log("✅ Session restoration complete, closing splash screen");
