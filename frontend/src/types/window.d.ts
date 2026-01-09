@@ -41,6 +41,41 @@ interface ElectronAPI {
       }) => void
     ) => () => void;
   };
+
+  // Auto-update APIs
+  update: {
+    checkForUpdates: () => Promise<{ success: boolean }>;
+    downloadUpdate: () => Promise<{ success: boolean }>;
+    installAndRestart: () => Promise<{ success: boolean }>;
+    getStatus: () => Promise<{
+      currentVersion: string;
+      updateAvailable: boolean;
+      updateVersion: string | null;
+      downloadInProgress: boolean;
+      updateDownloaded: boolean;
+    }>;
+    onUpdateAvailable: (
+      callback: (info: {
+        version: string;
+        releaseDate: string;
+        releaseNotes: string;
+      }) => void
+    ) => () => void;
+    onDownloadProgress: (
+      callback: (progress: {
+        percent: number;
+        bytesPerSecond: number;
+        transferred: number;
+        total: number;
+      }) => void
+    ) => () => void;
+    onUpdateDownloaded: (
+      callback: (info: { version: string }) => void
+    ) => () => void;
+    onUpdateError: (
+      callback: (error: { message: string }) => void
+    ) => () => void;
+  };
 }
 
 declare global {

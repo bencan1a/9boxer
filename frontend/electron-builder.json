@@ -43,10 +43,11 @@
       }
     ],
     "icon": "build/icon.ico",
-    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
+    "signAndEditExecutable": true
   },
   "mac": {
-    "target": ["dmg"],
+    "target": ["zip", "dmg"],
     "icon": "build/icon.icns",
     "category": "public.app-category.business",
     "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
@@ -71,10 +72,16 @@
     "shortcutName": "9Boxer",
     "uninstallDisplayName": "9Boxer",
     "installerIcon": "build/icon.ico",
-    "uninstallerIcon": "build/icon.ico"
+    "uninstallerIcon": "build/icon.ico",
+    "differentialPackage": true
   },
   "dmg": {
     "title": "${productName} ${version}"
   },
-  "publish": null
+  "publish": {
+    "provider": "github",
+    "owner": "bencan1a",
+    "repo": "9boxer",
+    "releaseType": "release"
+  }
 }

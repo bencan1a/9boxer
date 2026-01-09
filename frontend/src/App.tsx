@@ -15,6 +15,7 @@ import { SnackbarProvider } from "./contexts/SnackbarContext";
 import { logger } from "./utils/logger";
 import { initializeConfig } from "./config";
 import { initPerformanceMonitoring } from "./utils/performance";
+import { UpdateNotification } from "./components/update/UpdateNotification";
 
 const App: React.FC = () => {
   // Get effective theme from store
@@ -115,6 +116,7 @@ const App: React.FC = () => {
               backgroundColor: "background.default",
             }}
           >
+            <UpdateNotification />
             <HashRouter
               future={{
                 v7_relativeSplatPath: true,

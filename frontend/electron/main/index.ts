@@ -10,6 +10,13 @@ import { spawn, ChildProcess } from "child_process";
 import path from "path";
 import axios from "axios";
 import { WindowStateManager } from "./windowState";
+import {
+  initAutoUpdater,
+  startUpdateChecks,
+  stopUpdateChecks,
+  setupUpdateIpcHandlers,
+  UpdateAnalyticsEvent,
+} from "./autoUpdater";
 
 // Global references
 let mainWindow: BrowserWindow | null = null;
@@ -887,6 +894,9 @@ function setupIpcHandlers(): void {
     closeSplashScreen();
     return { success: true };
   });
+
+  // Set up auto-update IPC handlers
+  setupUpdateIpcHandlers();
 }
 
 /**
@@ -1070,6 +1080,21 @@ app.on("ready", async () => {
 
       // Start health monitoring after app is fully loaded
       startHealthMonitoring();
+
+      // Initialize auto-updater (production only)
+      if (!getIsDev()) {
+        initAutoUpdater(async (event: UpdateAnalyticsEvent) => {
+          try {
+            await axios.post(
+              `${BACKEND_URL}/api/analytics/update-events`,
+              event
+            );
+          } catch (error) {
+            console.error("Failed to send update analytics:", error);
+          }
+        });
+        startUpdateChecks();
+      }
     });
   } catch (error) {
     console.error("❌ Failed to start app:", error);
@@ -1139,6 +1164,9 @@ app.on("ready", async () => {
 app.on("window-all-closed", () => {
   // Stop health monitoring
   stopHealthMonitoring();
+
+  // Stop update checks
+  stopUpdateChecks();
 
   // Kill backend before quitting (skip in external backend mode)
   if (!USE_EXTERNAL_BACKEND && backendProcess) {
