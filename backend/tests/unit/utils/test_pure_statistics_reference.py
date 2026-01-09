@@ -94,8 +94,12 @@ class TestChiSquareTest:
         ps_chi2, ps_p, ps_dof, _ = ps.chi_square_test(table)
 
         assert abs(ps_chi2 - scipy_chi2) < 0.001
+<<<<<<< HEAD
         # P-value tolerance: 5% absolute or 60% relative error
         assert abs(ps_p - scipy_p) < max(0.6 * scipy_p, 0.05)
+=======
+        assert abs(ps_p - scipy_p) < 0.001
+>>>>>>> 37b929b (refactor: Phase 2 & 3 - Replace scipy/numpy and axios dependencies)
         assert ps_dof == scipy_dof
 
 
