@@ -1,7 +1,7 @@
 {
-  "appId": "com.yourcompany.ninebox",
+  "appId": "net.ashwoodgrove.9boxer",
   "productName": "9Boxer",
-  "copyright": "Copyright © 2025 Your Company",
+  "copyright": "Copyright © 2025 Ashwood Grove",
   "directories": {
     "output": "release"
   },
@@ -43,15 +43,18 @@
       }
     ],
     "icon": "build/icon.ico",
-    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
-    "signAndEditExecutable": false
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
   },
   "mac": {
-    "target": ["zip"],
+    "target": ["dmg"],
     "icon": "build/icon.icns",
     "category": "public.app-category.business",
     "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
-    "identity": null
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+    "notarize": false
   },
   "linux": {
     "target": ["AppImage"],

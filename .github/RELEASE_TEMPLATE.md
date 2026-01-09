@@ -15,40 +15,25 @@ Choose the installer for your operating system:
 
 ---
 
-## Important: First-Time Installation
-
-9Boxer is an internal development tool without commercial code signing. You'll see security warnings on first launch.
+## Installation
 
 ### Windows Installation
 
 1. **Download** `9Boxer-Setup-[VERSION].exe`
 2. **Double-click** to run the installer
-3. **Bypass SmartScreen warning:**
-   - Click **"More info"** (small link on left)
-   - Click **"Run anyway"** button that appears
-4. **Follow the installer wizard**
-5. **Launch 9Boxer**
+3. **Follow the installer wizard**
+4. **Launch 9Boxer**
 
 **Firewall prompt:** Click "Allow access" when Windows Firewall asks (this lets the backend communicate locally).
-
-**After first launch:** The security warning won't appear again. Double-click normally to launch.
 
 ### macOS Installation
 
 1. **Download** the correct ZIP for your Mac architecture
 2. **Extract** the ZIP file (double-click)
 3. **Move** `9Boxer.app` to your Applications folder
-4. **Bypass Gatekeeper (critical first step):**
-   - **Right-click** (not double-click!) on `9Boxer.app`
-   - Select **"Open"** from the menu
-   - Click **"Open"** in the security dialog
-5. **9Boxer launches**
+4. **Double-click** to launch
 
-**After first launch:** The security warning won't appear again. Double-click normally to launch.
-
-**Common issues:**
-- "9Boxer is damaged" → Run `xattr -cr /Applications/9Boxer.app` in Terminal
-- Still blocked → See [macOS Installation Guide](resources/user-guide/docs/INSTALL_MACOS.md)
+**First launch:** macOS may briefly show "Verifying..." while checking the app's notarization. This is normal and only happens once.
 
 ### Linux Installation
 
@@ -75,8 +60,8 @@ sudo dnf install fuse-libs
 - Open source (source code available for review)
 - Runs entirely on your computer (no cloud dependencies)
 - Your data never leaves your machine
-
-The security warnings just mean the app isn't commercially signed - they don't indicate danger.
+- Windows builds are signed with Azure Trusted Signing
+- macOS builds are signed and notarized by Apple
 
 ### Data Privacy
 

@@ -30,9 +30,7 @@ dependencies = [
     "openpyxl>=3.1.0",
     "pydantic>=2.4.0",
     "pydantic-settings>=2.0.0",
-    "scipy>=1.11.0",
-    "numpy>=1.24.0",  # Required by intelligence_service.py
-    "anthropic>=0.39.0",  # Optional: for AI-powered calibration summaries
+    "anthropic>=0.70.0",  # Required for structured outputs (output_format parameter)
 ]
 
 [project.optional-dependencies]
@@ -47,11 +45,6 @@ dev = [
     "httpx>=0.25.0",
     "requests>=2.31.0",  # Used by e2e tests for frozen executable testing
     "psutil>=5.9.0",  # Used by performance tests for resource monitoring
-    "hypothesis>=6.98.0",
-    "factory-boy>=3.3.0",
-    "faker>=22.0.0",
-    "playwright>=1.40.0",  # Used by screenshot generation tool
-    "Pillow>=10.0.0",  # Used by frontend build scripts for icon generation
 
     # Code quality
     "ruff>=0.1.0",
@@ -64,13 +57,15 @@ dev = [
     "types-requests",
     "pandas-stubs>=2.0.0",
     "types-openpyxl>=3.1.0",
-    "scipy-stubs>=1.11.0",
 
     # Development tools
     "ipython>=8.20.0",
     "ipdb>=0.13.13",
     "pre-commit>=3.6.0",
     "pyyaml>=6.0",  # Used by pre-commit workflow validation hook
+
+    # Build tools
+    "Pillow>=10.0.0",  # Used by frontend build scripts for icon generation
 
     # Documentation
     "mkdocs-material>=9.5.0",
@@ -152,7 +147,7 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
-module = ["pandas.*", "openpyxl.*", "jose.*", "passlib.*", "scipy.*", "anthropic", "anthropic.*"]
+module = ["pandas.*", "openpyxl.*", "jose.*", "passlib.*", "anthropic", "anthropic.*"]
 ignore_missing_imports = true
 
 [tool.ruff]

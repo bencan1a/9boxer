@@ -154,10 +154,6 @@ Close the app and reopen it, then re-upload your file. This resets the session c
 
 If you need to go back to an earlier state, re-upload your original Excel file or a previously exported version. Each export creates a snapshot you can return to. See [Exporting](exporting.md).
 
-### Why does Windows warn me the app is unsafe during installation?
-
-The app isn't yet code-signed with a Microsoft certificate, triggering a standard security warning. Click "More info" then "Run anyway" to proceed. The app is safe - all code is open source and can be reviewed. See [Troubleshooting](troubleshooting.md#windows-security-warning).
-
 ### Can I export if I haven't made any changes?
 
 No. The Apply button is disabled if you haven't moved any employees. You must make at least one change (drag someone to a different box) before you can export. To create a backup of unchanged data, move one employee, export, then move them back.

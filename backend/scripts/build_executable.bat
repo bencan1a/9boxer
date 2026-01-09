@@ -56,13 +56,23 @@ if %ERRORLEVEL% NEQ 0 (
 echo Building with PyInstaller...
 REM Use --noconfirm to skip the delete prompt since we already cleaned above
 pyinstaller --noconfirm build_config\ninebox.spec
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo ERROR: PyInstaller failed!
+    echo This is usually caused by file locks. Try:
+    echo   1. Close all running ninebox.exe processes
+    echo   2. Close any file explorers or apps viewing the dist folder
+    echo   3. Restart your computer if the issue persists
+    exit /b 1
+)
 
 echo Testing executable...
 if exist "dist\ninebox\ninebox.exe" (
     echo Build complete: dist\ninebox\ninebox.exe
     dir dist\ninebox\ninebox.exe
 ) else (
-    echo Build failed - executable not found
+    echo.
+    echo ERROR: Build appeared to succeed but executable not found at dist\ninebox\ninebox.exe
     exit /b 1
 )
 

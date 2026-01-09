@@ -3,9 +3,9 @@
 from datetime import date
 
 import pytest
-from scipy.stats import chi2_contingency
 
 from ninebox.models.constants import ALLOWED_FLAGS
+from ninebox.utils.pure_statistics import chi_square_test
 from ninebox.models.employee import Employee, PerformanceLevel
 from ninebox.services.sample_data_generator import (
     ManagementChainBuilder,
@@ -431,7 +431,7 @@ class TestBiasPatterns:
         non_usa_low_med = len(non_usa_employees) - non_usa_high
 
         contingency_table = [[usa_high, usa_low_med], [non_usa_high, non_usa_low_med]]
-        _, p_value, _, _ = chi2_contingency(contingency_table)
+        _, p_value, _, _ = chi_square_test(contingency_table)
 
         # Bias should be statistically significant (p < 0.05)
         assert p_value < 0.05, f"USA bias not significant: p={p_value}"
@@ -465,7 +465,7 @@ class TestBiasPatterns:
         non_sales_low_med = len(non_sales_employees) - non_sales_high
 
         contingency_table = [[sales_high, sales_low_med], [non_sales_high, non_sales_low_med]]
-        _, p_value, _, _ = chi2_contingency(contingency_table)
+        _, p_value, _, _ = chi_square_test(contingency_table)
 
         # Bias should be statistically significant
         assert p_value < 0.05, f"Sales bias not significant: p={p_value}"

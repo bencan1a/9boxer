@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write  # Required for Azure OIDC authentication
 
 jobs:
   build:
@@ -129,7 +130,41 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LLM_MODEL: claude-sonnet-4-5-20250929
           LLM_MAX_TOKENS: 4096
+          # Skip electron-builder's built-in signing - we'll use Azure Trusted Signing after
+          # Setting to empty string disables auto-discovery; CSC_LINK absence confirms no signing
+          CSC_IDENTITY_AUTO_DISCOVERY: ''
         run: npm run electron:build:win -- --x64
+
+      - name: Azure Login (OIDC)
+        if: matrix.platform == 'windows'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Sign Windows executables with Azure Trusted Signing
+        if: matrix.platform == 'windows'
+        uses: azure/trusted-signing-action@v0.5.0
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          endpoint: ${{ secrets.AZURE_SIGNING_ENDPOINT }}
+          trusted-signing-account-name: ${{ secrets.AZURE_SIGNING_ACCOUNT_NAME }}
+          certificate-profile-name: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
+          files-folder: frontend/release
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Prepare macOS signing credentials
+        if: matrix.platform == 'macos'
+        run: |
+          # Decode and write the App Store Connect API key to a file
+          echo "${{ secrets.APPLE_API_KEY_BASE64 }}" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
+          # Set APPLE_API_KEY to the file path for use in notarization step
+          echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
 
       - name: Build Electron app (macOS)
         if: matrix.platform == 'macos'
@@ -138,7 +173,88 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LLM_MODEL: claude-sonnet-4-5-20250929
           LLM_MAX_TOKENS: 4096
+          # Code signing
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+          # Apple API key for notarization (file path set in previous step)
+          APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
         run: npm run electron:build:mac -- --x64 --arm64
+
+      - name: Sign macOS DMG files
+        if: matrix.platform == 'macos'
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+        run: |
+          # Import certificate to keychain (same approach electron-builder uses)
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
+          # Decode certificate
+          echo "$CSC_LINK" | base64 --decode > "$CERTIFICATE_PATH"
+
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          # Temporarily disable shell debug tracing so the certificate password is not logged
+          XTRACE_STATE="$(set -o | grep -E 'xtrace[[:space:]]+on' || true)"
+          set +x
+          security import "$CERTIFICATE_PATH" -P "$CSC_KEY_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          # Restore previous xtrace state if it was enabled
+          if [ -n "$XTRACE_STATE" ]; then
+            set -x
+          fi
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+          # Find the signing identity
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
+
+          if [ -z "$IDENTITY" ]; then
+            echo "Error: No Developer ID Application certificate found"
+            exit 1
+          fi
+
+          echo "Using signing identity: $IDENTITY"
+
+          # Sign all DMG files
+          for dmg in frontend/release/*.dmg; do
+            if [ -f "$dmg" ]; then
+              echo "Signing: $dmg"
+              codesign --sign "$IDENTITY" \
+                --timestamp \
+                --options runtime \
+                --force \
+                --keychain "$KEYCHAIN_PATH" \
+                "$dmg"
+
+              # Verify the signature
+              echo "Verifying signature..."
+              codesign -dv --verbose=4 "$dmg"
+            fi
+          done
+
+          # Cleanup
+          security delete-keychain "$KEYCHAIN_PATH"
+          rm "$CERTIFICATE_PATH"
+
+      - name: Notarize macOS app
+        # Temporarily disabled due to Apple notarization issues
+        if: false  # Original condition: matrix.platform == 'macos'
+        timeout-minutes: 35
+        env:
+          APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          # Make script executable
+          chmod +x .github/scripts/notarize-mac.sh
+
+          # Run the notarization script
+          ./.github/scripts/notarize-mac.sh
 
       # Upload artifacts
       - name: Upload build artifacts
@@ -148,7 +264,7 @@ jobs:
           path: |
             frontend/release/**/*.AppImage
             frontend/release/**/*.exe
-            frontend/release/**/*.zip
+            frontend/release/**/*.dmg
           retention-days: 90
           if-no-files-found: error
 
@@ -218,7 +334,7 @@ jobs:
           name: 9Boxer v${{ github.event.inputs.version }}
           files: |
             release-artifacts/**/*-Windows-*.exe
-            release-artifacts/**/*-macOS-*.zip
+            release-artifacts/**/*-macOS-*.dmg
             release-artifacts/**/*-Linux-*.AppImage
           body: ${{ steps.release_notes.outputs.release_notes }}
           prerelease: ${{ github.event.inputs.prerelease }}

@@ -1,12 +1,11 @@
 /**
- * API client service using Axios
+ * API client service using native fetch API
  *
  * This client uses a dynamic base URL that is initialized at runtime.
  * In Electron mode, the base URL is obtained from the main process to support
  * dynamic port selection when there are port conflicts.
  */
 
-import axios, { AxiosInstance, AxiosError } from "axios";
 import {
   UploadResponse,
   SessionStatusResponse,
@@ -42,6 +41,21 @@ export class ApiError extends Error {
 }
 
 /**
+ * Check if an error is a network/connection error (not an HTTP error)
+ */
+function isConnectionError(error: unknown): boolean {
+  // ApiError with statusCode means we got an HTTP response (not a connection error)
+  if (error instanceof ApiError && error.statusCode !== undefined) {
+    return false;
+  }
+  // TypeError is thrown by fetch for network errors
+  if (error instanceof TypeError) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Retry an operation with exponential backoff.
  * Only retries on connection errors (not HTTP 4xx/5xx errors).
  *
@@ -65,12 +79,7 @@ async function withRetry<T>(
       lastError = error as Error;
 
       // Only retry on connection errors (no response), not on HTTP errors (4xx/5xx)
-      const isAxiosError = axios.isAxiosError(error);
-      const hasResponse = isAxiosError && error.response !== undefined;
-      const isApiErrorWithStatus =
-        error instanceof ApiError && error.statusCode !== undefined;
-
-      if (hasResponse || isApiErrorWithStatus) {
+      if (!isConnectionError(error)) {
         // Don't retry on HTTP errors (client/server errors)
         throw error;
       }
@@ -100,37 +109,12 @@ async function withRetry<T>(
 }
 
 class ApiClient {
-  private client: AxiosInstance;
+  private baseURL: string;
 
   constructor() {
     // Initialize with dynamic base URL from config
     // The base URL is set by initializeConfig() before the API client is used
-    this.client = axios.create({
-      baseURL: getApiBaseUrl(),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    // Add response interceptor to extract backend error details
-    this.client.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError<{ detail?: string }>) => {
-        // Extract backend error detail if available
-        const detail = error.response?.data?.detail;
-        const statusCode = error.response?.status;
-
-        // Create informative error message
-        let message = error.message;
-        if (detail) {
-          message = detail;
-        } else if (statusCode) {
-          message = `Request failed with status ${statusCode}`;
-        }
-
-        throw new ApiError(message, statusCode, detail);
-      }
-    );
+    this.baseURL = getApiBaseUrl();
   }
 
   /**
@@ -142,8 +126,55 @@ class ApiClient {
    * @param baseURL - The new base URL to use
    */
   updateBaseUrl(baseURL: string): void {
-    this.client.defaults.baseURL = baseURL;
+    this.baseURL = baseURL;
     console.log(`[ApiClient] Base URL updated to: ${baseURL}`);
+  }
+
+  /**
+   * Internal fetch wrapper that handles common error processing
+   */
+  private async fetch<T>(url: string, options?: RequestInit): Promise<T> {
+    const fullUrl = `${this.baseURL}${url}`;
+
+    try {
+      const response = await fetch(fullUrl, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+      });
+
+      // Handle HTTP errors
+      if (!response.ok) {
+        // Try to extract backend error detail
+        let detail: string | undefined;
+        let message = `Request failed with status ${response.status}`;
+
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            detail = errorData.detail;
+            message = errorData.detail;
+          }
+        } catch {
+          // If JSON parsing fails, use status text
+          message = response.statusText || message;
+        }
+
+        throw new ApiError(message, response.status, detail);
+      }
+
+      // Parse JSON response
+      return await response.json();
+    } catch (error) {
+      // Re-throw ApiError as-is
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      // Wrap other errors (network errors, etc.)
+      throw error;
+    }
   }
 
   /**
@@ -157,8 +188,7 @@ class ApiClient {
    */
   async get<T>(url: string): Promise<T> {
     return withRetry(async () => {
-      const response = await this.client.get<T>(url);
-      return response.data;
+      return this.fetch<T>(url, { method: "GET" });
     });
   }
 
@@ -173,40 +203,50 @@ class ApiClient {
       formData.append("original_file_path", filePath);
     }
 
-    const response = await this.client.post<UploadResponse>(
-      "/api/session/upload",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    // Note: Don't set Content-Type for FormData, browser will set it with boundary
+    const fullUrl = `${this.baseURL}/api/session/upload`;
+    const response = await fetch(fullUrl, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      let detail: string | undefined;
+      let message = `Request failed with status ${response.status}`;
+      try {
+        const errorData = await response.json();
+        if (errorData.detail) {
+          detail = errorData.detail;
+          message = errorData.detail;
+        }
+      } catch {
+        message = response.statusText || message;
       }
-    );
-    return response.data;
+      throw new ApiError(message, response.status, detail);
+    }
+
+    return await response.json();
   }
 
   async getSessionStatus(): Promise<SessionStatusResponse> {
     return withRetry(async () => {
-      const response = await this.client.get<SessionStatusResponse>(
-        "/api/session/status"
-      );
-      return response.data;
+      return this.fetch<SessionStatusResponse>("/api/session/status", {
+        method: "GET",
+      });
     });
   }
 
   async clearSession(): Promise<{ success: boolean }> {
-    const response = await this.client.delete<{ success: boolean }>(
-      "/api/session/clear"
-    );
-    return response.data;
+    return this.fetch<{ success: boolean }>("/api/session/clear", {
+      method: "DELETE",
+    });
   }
 
   async closeSession(): Promise<{ success: boolean; message: string }> {
-    const response = await this.client.post<{
-      success: boolean;
-      message: string;
-    }>("/api/session/close");
-    return response.data;
+    return this.fetch<{ success: boolean; message: string }>(
+      "/api/session/close",
+      { method: "POST" }
+    );
   }
 
   async exportSession(request?: {
@@ -219,44 +259,52 @@ class ApiClient {
     error?: string;
     fallback_to_save_new?: boolean;
   }> {
-    const response = await this.client.post<{
+    return this.fetch<{
       success: boolean;
       message?: string;
       file_path?: string;
       error?: string;
       fallback_to_save_new?: boolean;
-    }>("/api/session/export", request || { mode: "update_original" });
-    return response.data;
+    }>("/api/session/export", {
+      method: "POST",
+      body: JSON.stringify(request || { mode: "update_original" }),
+    });
   }
 
   async updateChangeNotes(
     employeeId: number,
     notes: string
   ): Promise<TrackableEvent> {
-    const response = await this.client.patch<TrackableEvent>(
+    return this.fetch<TrackableEvent>(
       `/api/session/changes/${employeeId}/notes`,
-      { notes }
+      {
+        method: "PATCH",
+        body: JSON.stringify({ notes }),
+      }
     );
-    return response.data;
   }
 
   async updateDonutChangeNotes(
     employeeId: number,
     notes: string
   ): Promise<TrackableEvent> {
-    const response = await this.client.patch<TrackableEvent>(
+    return this.fetch<TrackableEvent>(
       `/api/session/donut-changes/${employeeId}/notes`,
-      { notes }
+      {
+        method: "PATCH",
+        body: JSON.stringify({ notes }),
+      }
     );
-    return response.data;
   }
 
   async toggleDonutMode(enabled: boolean): Promise<DonutModeToggleResponse> {
-    const response = await this.client.post<DonutModeToggleResponse>(
+    return this.fetch<DonutModeToggleResponse>(
       "/api/session/toggle-donut-mode",
-      { enabled }
+      {
+        method: "POST",
+        body: JSON.stringify({ enabled }),
+      }
     );
-    return response.data;
   }
 
   // ==================== Employee Methods ====================
@@ -295,20 +343,17 @@ class ApiClient {
         params.append("potential", filters.potential.join(","));
       }
 
-      const response = await this.client.get<EmployeesResponse>(
-        "/api/employees",
-        {
-          params,
-        }
-      );
-      return response.data;
+      const url = params.toString()
+        ? `/api/employees?${params.toString()}`
+        : "/api/employees";
+
+      return this.fetch<EmployeesResponse>(url, { method: "GET" });
     });
   }
 
   async getEmployeeById(id: number): Promise<Employee> {
     return withRetry(async () => {
-      const response = await this.client.get<Employee>(`/api/employees/${id}`);
-      return response.data;
+      return this.fetch<Employee>(`/api/employees/${id}`, { method: "GET" });
     });
   }
 
@@ -317,14 +362,13 @@ class ApiClient {
     performance: string,
     potential: string
   ): Promise<MoveResponse> {
-    const response = await this.client.patch<MoveResponse>(
-      `/api/employees/${employeeId}/move`,
-      {
+    return this.fetch<MoveResponse>(`/api/employees/${employeeId}/move`, {
+      method: "PATCH",
+      body: JSON.stringify({
         performance,
         potential,
-      } as MoveRequest
-    );
-    return response.data;
+      } as MoveRequest),
+    });
   }
 
   async moveEmployeeDonut(
@@ -333,34 +377,32 @@ class ApiClient {
     potential: string,
     notes?: string
   ): Promise<MoveResponse> {
-    const response = await this.client.patch<MoveResponse>(
-      `/api/employees/${employeeId}/move-donut`,
-      {
+    return this.fetch<MoveResponse>(`/api/employees/${employeeId}/move-donut`, {
+      method: "PATCH",
+      body: JSON.stringify({
         performance,
         potential,
         notes,
-      } as MoveDonutRequest
-    );
-    return response.data;
+      } as MoveDonutRequest),
+    });
   }
 
   async updateEmployee(
     employeeId: number,
     updates: Partial<Employee>
   ): Promise<{ employee: Employee }> {
-    const response = await this.client.patch<{ employee: Employee }>(
-      `/api/employees/${employeeId}`,
-      updates
-    );
-    return response.data;
+    return this.fetch<{ employee: Employee }>(`/api/employees/${employeeId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    });
   }
 
   async getFilterOptions(): Promise<FilterOptionsResponse> {
     return withRetry(async () => {
-      const response = await this.client.get<FilterOptionsResponse>(
-        "/api/employees/filter-options"
+      return this.fetch<FilterOptionsResponse>(
+        "/api/employees/filter-options",
+        { method: "GET" }
       );
-      return response.data;
     });
   }
 
@@ -379,21 +421,23 @@ class ApiClient {
     session_id: string;
     filename: string;
   }> {
-    const response = await this.client.post("/api/employees/generate-sample", {
-      size,
-      include_bias,
-      seed,
+    return this.fetch("/api/employees/generate-sample", {
+      method: "POST",
+      body: JSON.stringify({
+        size,
+        include_bias,
+        seed,
+      }),
     });
-    return response.data;
   }
 
   // ==================== Statistics Methods ====================
 
   async getStatistics(): Promise<StatisticsResponse> {
     return withRetry(async () => {
-      const response =
-        await this.client.get<StatisticsResponse>("/api/statistics");
-      return response.data;
+      return this.fetch<StatisticsResponse>("/api/statistics", {
+        method: "GET",
+      });
     });
   }
 
@@ -401,9 +445,9 @@ class ApiClient {
 
   async getIntelligence(): Promise<IntelligenceData> {
     return withRetry(async () => {
-      const response =
-        await this.client.get<IntelligenceData>("/api/intelligence");
-      return response.data;
+      return this.fetch<IntelligenceData>("/api/intelligence", {
+        method: "GET",
+      });
     });
   }
 
@@ -425,56 +469,56 @@ class ApiClient {
         ? `/api/calibration-summary?${queryParams.toString()}`
         : "/api/calibration-summary";
 
-      const response = await this.client.get<CalibrationSummaryData>(url);
-      return response.data;
+      return this.fetch<CalibrationSummaryData>(url, { method: "GET" });
     });
   }
 
   async checkLLMAvailability(): Promise<LLMAvailability> {
-    const response = await this.client.get<LLMAvailability>(
-      "/api/calibration-summary/llm-availability"
+    return this.fetch<LLMAvailability>(
+      "/api/calibration-summary/llm-availability",
+      { method: "GET" }
     );
-    return response.data;
   }
 
   async generateLLMSummary(
     selectedInsightIds: string[]
   ): Promise<LLMSummaryResult> {
-    const response = await this.client.post<LLMSummaryResult>(
+    return this.fetch<LLMSummaryResult>(
       "/api/calibration-summary/generate-summary",
-      { selected_insight_ids: selectedInsightIds } as GenerateSummaryRequest
+      {
+        method: "POST",
+        body: JSON.stringify({
+          selected_insight_ids: selectedInsightIds,
+        } as GenerateSummaryRequest),
+      }
     );
-    return response.data;
   }
 
   // ==================== Preferences Methods ====================
 
   async getRecentFiles(): Promise<RecentFile[]> {
-    const response = await this.client.get<RecentFile[]>(
-      "/api/preferences/recent-files"
-    );
-    return response.data;
+    return this.fetch<RecentFile[]>("/api/preferences/recent-files", {
+      method: "GET",
+    });
   }
 
   async addRecentFile(
     path: string,
     name: string
   ): Promise<{ success: boolean }> {
-    const response = await this.client.post<{ success: boolean }>(
-      "/api/preferences/recent-files",
-      {
+    return this.fetch<{ success: boolean }>("/api/preferences/recent-files", {
+      method: "POST",
+      body: JSON.stringify({
         path,
         name,
-      }
-    );
-    return response.data;
+      }),
+    });
   }
 
   async clearRecentFiles(): Promise<{ success: boolean }> {
-    const response = await this.client.delete<{ success: boolean }>(
-      "/api/preferences/recent-files"
-    );
-    return response.data;
+    return this.fetch<{ success: boolean }>("/api/preferences/recent-files", {
+      method: "DELETE",
+    });
   }
 }
 

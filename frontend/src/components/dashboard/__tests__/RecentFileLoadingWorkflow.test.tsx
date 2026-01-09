@@ -48,6 +48,16 @@ vi.mock("../../../services/api", () => ({
   apiClient: {
     exportSession: vi.fn(),
   },
+  ApiError: class ApiError extends Error {
+    constructor(
+      message: string,
+      public statusCode?: number,
+      public detail?: string
+    ) {
+      super(message);
+      this.name = "ApiError";
+    }
+  },
 }));
 
 // Mock the sample data service
