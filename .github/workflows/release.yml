@@ -182,9 +182,29 @@ jobs:
 
       - name: Sign macOS DMG files
         if: matrix.platform == 'macos'
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
         run: |
-          # Find the Developer ID Application signing identity
-          IDENTITY=$(security find-identity -v -p codesigning | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
+          # Import certificate to keychain (same approach electron-builder uses)
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
+          # Decode certificate
+          echo "$CSC_LINK" | base64 --decode > "$CERTIFICATE_PATH"
+
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          security import "$CERTIFICATE_PATH" -P "$CSC_KEY_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+          # Find the signing identity
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
 
           if [ -z "$IDENTITY" ]; then
             echo "Error: No Developer ID Application certificate found"
@@ -201,6 +221,7 @@ jobs:
                 --timestamp \
                 --options runtime \
                 --force \
+                --keychain "$KEYCHAIN_PATH" \
                 "$dmg"
 
               # Verify the signature
@@ -208,6 +229,10 @@ jobs:
               codesign -dv --verbose=4 "$dmg"
             fi
           done
+
+          # Cleanup
+          security delete-keychain "$KEYCHAIN_PATH"
+          rm "$CERTIFICATE_PATH"
 
       - name: Notarize macOS app
         if: matrix.platform == 'macos'
