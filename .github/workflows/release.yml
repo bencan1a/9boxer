@@ -178,8 +178,6 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
           # Apple API key for notarization (file path set in previous step)
           APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
-          # Debug logging
-          DEBUG: electron-builder,electron-builder:*,electron-osx-sign*
         run: npm run electron:build:mac -- --x64 --arm64
 
       - name: Notarize macOS app
