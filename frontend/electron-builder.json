@@ -1,7 +1,7 @@
 {
   "appId": "net.ashwoodgrove.9boxer",
   "productName": "9Boxer",
-  "copyright": "Copyright © 2025 Your Company",
+  "copyright": "Copyright © 2025 Ashwood Grove",
   "directories": {
     "output": "release"
   },
@@ -43,8 +43,7 @@
       }
     ],
     "icon": "build/icon.ico",
-    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}",
-    "signAndEditExecutable": true
+    "artifactName": "${productName}-${version}-Windows-${arch}.${ext}"
   },
   "mac": {
     "target": ["dmg"],

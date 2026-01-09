@@ -6,11 +6,13 @@
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
 
-    <!-- Required for PyInstaller bundles - allows loading embedded Python libraries -->
-    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
-    <true/>
-
-    <!-- Required for PyInstaller to load its bundled libraries -->
+    <!-- Required for PyInstaller to load its bundled Python libraries and NumPy/SciPy native extensions
+         This allows loading the PyInstaller-bundled Python interpreter and compiled C extensions
+         (numpy, scipy, pandas) without requiring them to have individual code signatures.
+         Note: Modern NumPy with Apple Accelerate does NOT require allow-unsigned-executable-memory.
+         If the app crashes on macOS with code signature errors mentioning executable memory,
+         you may need to add: com.apple.security.cs.allow-unsigned-executable-memory
+    -->
     <key>com.apple.security.cs.disable-library-validation</key>
     <true/>
 </dict>
