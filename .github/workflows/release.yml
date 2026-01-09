@@ -200,7 +200,14 @@ jobs:
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
           # Import certificate
+          # Temporarily disable shell debug tracing so the certificate password is not logged
+          XTRACE_STATE="$(set -o | grep -E 'xtrace[[:space:]]+on' || true)"
+          set +x
           security import "$CERTIFICATE_PATH" -P "$CSC_KEY_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          # Restore previous xtrace state if it was enabled
+          if [ -n "$XTRACE_STATE" ]; then
+            set -x
+          fi
           security list-keychain -d user -s "$KEYCHAIN_PATH"
 
           # Find the signing identity
