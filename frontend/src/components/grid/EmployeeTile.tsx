@@ -176,10 +176,10 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
           : 1,
       userSelect: "none",
       position: "relative",
-      // Consistent full border for both movement types
-      border: 2,
-      borderStyle: "solid",
-      borderColor: showBorder ? borderColor : "divider",
+      // Border only for modified/donut tiles (Treatment 2 full border)
+      ...(showBorder && {
+        border: `2px solid ${borderColor}`,
+      }),
       // Selection state: blue outer glow (can combine with border colors)
       boxShadow: isSelected
         ? `0 0 0 ${selectionStyles.width}px ${selectionStyles.outline}`
