@@ -45,7 +45,7 @@ export function initAutoUpdater(analyticsFunc: AnalyticsCallback): void {
   analyticsCallback = analyticsFunc;
 
   // Configure auto-updater
-  autoUpdater.autoDownload = false; // Manual download for user control
+  autoUpdater.autoDownload = true; // Automatically download updates in background
   autoUpdater.autoInstallOnAppQuit = true; // Install on quit
 
   // Set up event listeners

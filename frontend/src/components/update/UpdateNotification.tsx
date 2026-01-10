@@ -5,7 +5,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Download from "@mui/icons-material/Download";
-import Refresh from "@mui/icons-material/Refresh";
 import CloudDownload from "@mui/icons-material/CloudDownload";
 import {
   ERROR_MESSAGES,
@@ -174,7 +173,7 @@ export const UpdateNotification: React.FC = () => {
           </Button>
         }
       >
-        Update {status.updateVersion} is ready to install. It will be applied
+        Update {status.updateVersion} has been downloaded and will be installed
         when you restart the app.
       </Alert>
     );
@@ -199,29 +198,22 @@ export const UpdateNotification: React.FC = () => {
     );
   }
 
-  // Update available, not downloaded yet
-  if (status.updateAvailable && updateInfo) {
+  // Update available, download starting automatically
+  if (status.updateAvailable && updateInfo && !status.downloadInProgress) {
     return (
-      <Alert
-        severity="info"
-        icon={<Refresh />}
-        sx={{ mb: 2 }}
-        action={
-          <Button
-            color="inherit"
-            size="small"
-            onClick={() => window.electronAPI?.update.downloadUpdate()}
-          >
-            Download
-          </Button>
-        }
-      >
+      <Alert severity="info" icon={<Download />} sx={{ mb: 2 }}>
         <Typography variant="body2" fontWeight="medium">
           Version {updateInfo.version} is available
         </Typography>
         <Typography variant="caption" sx={{ mt: 0.5, display: "block" }}>
           Current: {status.currentVersion} • Released:{" "}
           {new Date(updateInfo.releaseDate).toLocaleDateString()}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ mt: 0.5, display: "block", opacity: 0.8 }}
+        >
+          Download starting automatically...
         </Typography>
       </Alert>
     );
