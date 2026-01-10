@@ -222,6 +222,18 @@ export interface ElectronAPI {
     }>;
 
     /**
+     * Get the path to the auto-updater log file.
+     * @returns Promise resolving to the log file path
+     */
+    getLogPath: () => Promise<string>;
+
+    /**
+     * Open the auto-updater log file in the default editor.
+     * @returns Promise resolving to success status and path
+     */
+    openLogFile: () => Promise<{ success: boolean; path: string }>;
+
+    /**
      * Register a callback for when an update becomes available.
      * @param callback - Function to call with update info
      * @returns Cleanup function to remove the listener

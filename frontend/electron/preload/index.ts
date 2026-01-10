@@ -121,6 +121,14 @@ interface ElectronAPI {
       updateDownloaded: boolean;
     }>;
     /**
+     * Get the path to the auto-updater log file.
+     */
+    getLogPath: () => Promise<string>;
+    /**
+     * Open the auto-updater log file in the default editor.
+     */
+    openLogFile: () => Promise<{ success: boolean; path: string }>;
+    /**
      * Listen for update available event.
      */
     onUpdateAvailable: (
@@ -289,7 +297,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
      * const url = await window.electronAPI.backend.getUrl();
      * console.log('Backend URL:', url);
      * // Use this URL to configure API client
-     * axios.defaults.baseURL = url;
+     * api.setBaseURL(url);
      * ```
      */
     getUrl: (): Promise<string> => ipcRenderer.invoke("backend:getUrl"),
@@ -357,6 +365,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
       downloadInProgress: boolean;
       updateDownloaded: boolean;
     }> => ipcRenderer.invoke("update:getStatus"),
+
+    getLogPath: (): Promise<string> => ipcRenderer.invoke("update:getLogPath"),
+
+    openLogFile: (): Promise<{ success: boolean; path: string }> =>
+      ipcRenderer.invoke("update:openLogFile"),
 
     onUpdateAvailable: (
       callback: (info: {

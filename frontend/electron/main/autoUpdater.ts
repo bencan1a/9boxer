@@ -1,10 +1,17 @@
 import { autoUpdater } from "electron-updater";
-import { ipcMain, BrowserWindow } from "electron";
+import { ipcMain, BrowserWindow, app } from "electron";
 import log from "electron-log";
 
 // Configure logging
-log.transports.file.level = "info";
+log.transports.file.level = "debug"; // Changed to debug for better troubleshooting
 autoUpdater.logger = log;
+
+// Log updater configuration on startup
+log.info("electron-updater configuration:");
+log.info(`  autoDownload: ${autoUpdater.autoDownload}`);
+log.info(`  autoInstallOnAppQuit: ${autoUpdater.autoInstallOnAppQuit}`);
+log.info(`  channel: ${autoUpdater.channel || "latest"}`);
+log.info(`  allowPrerelease: ${autoUpdater.allowPrerelease}`);
 
 // Update check configuration
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6 hours
@@ -51,6 +58,13 @@ export function initAutoUpdater(analyticsFunc: AnalyticsCallback): void {
   // Set up event listeners
   setupEventListeners();
 
+  // Log important paths and configuration
+  log.info("=== Auto-updater Initialization ===");
+  log.info(`Log file location: ${log.transports.file.getFile().path}`);
+  log.info(`App version: ${app.getVersion()}`);
+  log.info(`Platform: ${process.platform} (${process.arch})`);
+  log.info(`App path: ${app.getAppPath()}`);
+  log.info(`User data: ${app.getPath("userData")}`);
   log.info("Auto-updater initialized");
 }
 
@@ -193,10 +207,26 @@ function setupEventListeners(): void {
  */
 export async function checkForUpdates(): Promise<void> {
   try {
-    log.info("Checking for updates...");
-    await autoUpdater.checkForUpdates();
-  } catch (error) {
-    log.error("Failed to check for updates:", error);
+    log.info("=== Checking for updates ===");
+    log.info(`Current version: ${autoUpdater.currentVersion.version}`);
+    log.info(`Feed URL: ${autoUpdater.getFeedURL()}`);
+    log.info(`Auto-download: ${autoUpdater.autoDownload}`);
+
+    const result = await autoUpdater.checkForUpdates();
+
+    if (result) {
+      log.info(`Update check result:`, {
+        updateInfo: result.updateInfo,
+        downloadPromise: result.downloadPromise ? "Present" : "None",
+        cancellationToken: result.cancellationToken ? "Present" : "None",
+      });
+    }
+  } catch (error: any) {
+    log.error("Failed to check for updates:", {
+      message: error?.message,
+      stack: error?.stack,
+      code: error?.code,
+    });
   }
 }
 
@@ -334,5 +364,18 @@ export function setupUpdateIpcHandlers(): void {
       downloadInProgress,
       updateDownloaded,
     };
+  });
+
+  // Get log file path
+  ipcMain.handle("update:getLogPath", () => {
+    return log.transports.file.getFile().path;
+  });
+
+  // Open log file in external editor
+  ipcMain.handle("update:openLogFile", async () => {
+    const { shell } = require("electron");
+    const logPath = log.transports.file.getFile().path;
+    await shell.openPath(logPath);
+    return { success: true, path: logPath };
   });
 }

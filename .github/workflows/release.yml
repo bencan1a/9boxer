@@ -345,7 +345,10 @@ jobs:
           path: |
             frontend/release/**/*.AppImage
             frontend/release/**/*.exe
+            frontend/release/**/*.exe.blockmap
             frontend/release/**/*.dmg
+            frontend/release/**/*.dmg.blockmap
+            frontend/release/**/*.zip
             frontend/release/**/latest*.yml
           retention-days: 90
           if-no-files-found: error
@@ -443,7 +446,10 @@ jobs:
           name: 9Boxer v${{ github.event.inputs.version }}
           files: |
             release-artifacts/**/*-Windows-*.exe
+            release-artifacts/**/*-Windows-*.exe.blockmap
             release-artifacts/**/*-macOS-*.dmg
+            release-artifacts/**/*-macOS-*.dmg.blockmap
+            release-artifacts/**/*-macOS-*.zip
             release-artifacts/**/*-Linux-*.AppImage
             release-artifacts/**/latest*.yml
           body: ${{ steps.release_notes.outputs.release_notes }}
