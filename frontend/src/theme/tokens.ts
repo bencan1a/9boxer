@@ -237,7 +237,8 @@ export const dimensions = {
         history: 9,
       },
       spacing: {
-        gap: 4, // Very tight spacing between tiles
+        gap: 12, // Horizontal spacing between tiles (column gap)
+        rowGap: 1, // Vertical spacing between tiles (row gap)
         flagGap: 2,
         boxPadding: 4, // Minimal padding inside grid boxes
       },
@@ -266,7 +267,8 @@ export const dimensions = {
         history: 10,
       },
       spacing: {
-        gap: 6, // Tight spacing between tiles
+        gap: 16, // Horizontal spacing between tiles (column gap)
+        rowGap: 1, // Vertical spacing between tiles (row gap)
         flagGap: 3,
         boxPadding: 6, // Compact padding inside grid boxes
       },
@@ -295,7 +297,8 @@ export const dimensions = {
         history: 11,
       },
       spacing: {
-        gap: 8, // Normal spacing between tiles
+        gap: 18, // Horizontal spacing between tiles (column gap) - increased by 10px
+        rowGap: 2, // Vertical spacing between tiles (row gap) - reduced significantly
         flagGap: 3,
         boxPadding: 8, // Normal padding inside grid boxes
       },
@@ -324,7 +327,8 @@ export const dimensions = {
         history: 15,
       },
       spacing: {
-        gap: 12, // Comfortable spacing between tiles
+        gap: 22, // Horizontal spacing between tiles (column gap)
+        rowGap: 3, // Vertical spacing between tiles (row gap)
         flagGap: 5,
         boxPadding: 12, // Comfortable padding inside grid boxes
       },
@@ -353,7 +357,8 @@ export const dimensions = {
         history: 18,
       },
       spacing: {
-        gap: 16, // Presentation spacing between tiles
+        gap: 26, // Horizontal spacing between tiles (column gap)
+        rowGap: 4, // Vertical spacing between tiles (row gap)
         flagGap: 6,
         boxPadding: 16, // Presentation padding inside grid boxes
       },

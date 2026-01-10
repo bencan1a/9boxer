@@ -238,9 +238,11 @@ describe("EmployeeTileList", () => {
     ) as HTMLElement;
     expect(virtualRow).toBeInTheDocument();
     const styles = window.getComputedStyle(virtualRow);
-    // Default zoom level (level2) - use token value for gap
-    const expectedGap = `${tokens.dimensions.gridZoom.level2.spacing.gap}px`;
-    expect(styles.gap).toBe(expectedGap);
+    // Default zoom level (level2) - check both columnGap and rowGap
+    const expectedColumnGap = `${tokens.dimensions.gridZoom.level2.spacing.gap}px`;
+    const expectedRowGap = `${tokens.dimensions.gridZoom.level2.spacing.rowGap}px`;
+    expect(styles.columnGap).toBe(expectedColumnGap);
+    expect(styles.rowGap).toBe(expectedRowGap);
   });
 
   it("passes onSelectEmployee callback to tiles", () => {

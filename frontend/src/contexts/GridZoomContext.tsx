@@ -36,7 +36,12 @@ interface ZoomTokens {
   };
   font: { name: string; titleLevel: string; metadata: string };
   icon: { dragHandle: number; flag: number; history: number };
-  spacing: { gap: number; flagGap: number; boxPadding: number };
+  spacing: {
+    gap: number;
+    rowGap: number;
+    flagGap: number;
+    boxPadding: number;
+  };
 }
 
 interface GridZoomContextType {
