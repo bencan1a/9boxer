@@ -41,13 +41,16 @@ export const Toast: React.FC<ToastProps> = ({
   title,
   action,
   persistent = false,
-  duration = 4000,
+  duration = 6000,
   onClose,
   open,
   ...snackbarProps
 }) => {
   const theme = useTheme();
   const [isPaused, setIsPaused] = React.useState(false);
+  const timerRef = React.useRef<number | null>(null);
+  const remainingTimeRef = React.useRef<number>(duration);
+  const startTimeRef = React.useRef<number | null>(null);
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -57,25 +60,67 @@ export const Toast: React.FC<ToastProps> = ({
     if (persistent && reason === "clickaway") {
       return;
     }
+    // Clear timer when closing
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     onClose?.();
   };
 
   const handleMouseEnter = () => {
-    if (!persistent) {
-      setIsPaused(true);
-    }
+    setIsPaused(true);
   };
 
   const handleMouseLeave = () => {
-    if (!persistent) {
-      setIsPaused(false);
-    }
+    setIsPaused(false);
   };
+
+  // Manual timer management for proper pause/resume
+  React.useEffect(() => {
+    if (!open || persistent) {
+      return;
+    }
+
+    if (isPaused) {
+      // Pause: calculate remaining time and clear timer
+      if (timerRef.current && startTimeRef.current !== null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+        const elapsed = Date.now() - startTimeRef.current;
+        remainingTimeRef.current = Math.max(
+          0,
+          remainingTimeRef.current - elapsed
+        );
+      }
+    } else {
+      // Resume or start: create new timer with remaining time
+      startTimeRef.current = Date.now();
+      timerRef.current = setTimeout(() => {
+        onClose?.();
+      }, remainingTimeRef.current);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [open, isPaused, persistent, onClose]);
+
+  // Reset timer when toast opens
+  React.useEffect(() => {
+    if (open) {
+      remainingTimeRef.current = duration;
+      startTimeRef.current = null;
+    }
+  }, [open, duration]);
 
   return (
     <Snackbar
       open={open}
-      autoHideDuration={persistent ? null : isPaused ? null : duration}
+      autoHideDuration={null}
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       {...snackbarProps}
@@ -103,14 +148,19 @@ export const Toast: React.FC<ToastProps> = ({
           borderRadius: `${theme.tokens.radius.md}px`,
           "& .MuiAlert-icon": {
             fontSize: "24px",
+            alignSelf: "center",
           },
           "& .MuiAlert-message": {
             flex: 1,
             padding: `${theme.tokens.spacing.sm}px 0`,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           },
           "& .MuiAlert-action": {
-            alignItems: "flex-start",
-            paddingTop: `${theme.tokens.spacing.sm}px`,
+            alignItems: "center",
+            padding: 0,
+            paddingLeft: `${theme.tokens.spacing.sm}px`,
           },
         }}
         action={
