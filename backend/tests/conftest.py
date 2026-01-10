@@ -216,10 +216,21 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
             # Ignore errors during cleanup (e.g., if database doesn't exist yet)
             pass
 
-    # Clear caches BEFORE test to ensure fresh instances
+    # Clear ALL dependency injection caches BEFORE test to ensure fresh instances
     try:
+        from ninebox.core.dependencies import (
+            get_calibration_summary_service,
+            get_employee_service,
+            get_llm_service,
+            get_statistics_service,
+        )
+
         get_session_manager.cache_clear()
         get_db_manager.cache_clear()
+        get_employee_service.cache_clear()
+        get_statistics_service.cache_clear()
+        get_calibration_summary_service.cache_clear()
+        get_llm_service.cache_clear()
     except Exception:
         pass
 
@@ -282,10 +293,21 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
     except Exception:
         pass  # If manager doesn't exist yet, that's fine
 
-    # Clear the lru_cache to get fresh instances for next test
+    # Clear ALL dependency injection lru_caches to get fresh instances for next test
     try:
+        from ninebox.core.dependencies import (
+            get_calibration_summary_service,
+            get_employee_service,
+            get_llm_service,
+            get_statistics_service,
+        )
+
         get_session_manager.cache_clear()
         get_db_manager.cache_clear()
+        get_employee_service.cache_clear()
+        get_statistics_service.cache_clear()
+        get_calibration_summary_service.cache_clear()
+        get_llm_service.cache_clear()
     except Exception:
         pass
 

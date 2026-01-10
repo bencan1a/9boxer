@@ -1,6 +1,7 @@
 """Tests for application configuration module."""
 
 import os
+from collections.abc import Generator
 from unittest.mock import patch
 
 import pytest
@@ -8,6 +9,51 @@ import pytest
 from ninebox.core.config import Settings, settings
 
 pytestmark = pytest.mark.unit
+
+
+@pytest.fixture(autouse=True)
+def cleanup_config_env_state() -> Generator[None, None, None]:
+    """Clean up configuration-related environment state before and after each test.
+
+    Ensures environment variables don't leak between tests.
+    This is critical for Settings tests that create new Settings instances
+    with different environment variables.
+    """
+    # List of all environment variables that Settings reads
+    env_vars_to_isolate = [
+        "APP_DATA_DIR",      # May affect paths referenced by config
+        "DATABASE_PATH",     # May affect paths referenced by config
+        "APP_NAME",          # Used by Settings
+        "DEBUG",             # Used by Settings
+        "MAX_UPLOAD_SIZE",   # Used by Settings
+        "CORS_ORIGINS",      # Used by Settings
+        "ANTHROPIC_API_KEY", # Used by Settings (LLM)
+        "LLM_MODEL",         # Used by Settings (LLM)
+        "LLM_MAX_TOKENS",    # Used by Settings (LLM)
+    ]
+
+    # BEFORE test: Save ALL original environment variables
+    original_env = {}
+    for var_name in env_vars_to_isolate:
+        original_env[var_name] = os.environ.get(var_name)
+
+    # BEFORE test: Clear all environment variables so tests start clean
+    # This ensures that session-scoped fixtures don't interfere with
+    # unit tests that need to test specific environment configurations
+    for var_name in env_vars_to_isolate:
+        if var_name in os.environ:
+            del os.environ[var_name]
+
+    yield
+
+    # AFTER test: Restore ALL original environment variables
+    for var_name, original_value in original_env.items():
+        if original_value is None:
+            # Variable wasn't set originally, ensure it's removed
+            os.environ.pop(var_name, None)
+        else:
+            # Variable was set originally, restore it
+            os.environ[var_name] = original_value
 
 
 class TestSettings:
@@ -20,7 +66,7 @@ class TestSettings:
 
         # Assert
         assert config.app_name == "9Boxer"
-        assert config.app_version == "0.1.0"
+        assert config.app_version == "1.0.0"
         assert config.debug is False
         assert isinstance(config.cors_origins, list)
         assert len(config.cors_origins) == 2
@@ -97,7 +143,7 @@ class TestSettingsSingleton:
         """Test singleton has expected default values."""
         # Assert
         assert settings.app_name == "9Boxer"
-        assert settings.app_version == "0.1.0"
+        assert settings.app_version == "1.0.0"
         assert isinstance(settings.cors_origins, list)
         assert settings.max_upload_size > 0
 

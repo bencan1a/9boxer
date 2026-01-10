@@ -18,31 +18,48 @@ def cleanup_env_state() -> Generator[None, None, None]:
     """Clean up environment state before and after each test.
 
     Ensures environment variables don't leak between tests.
-    Temporarily removes APP_DATA_DIR so patches can work correctly.
-    """
-    # Save original environment variables
-    original_app_data_dir = os.environ.get("APP_DATA_DIR")
-    original_database_path = os.environ.get("DATABASE_PATH")
+    Preserves session-scoped APP_DATA_DIR and DATABASE_PATH from conftest.
 
-    # BEFORE test: Temporarily remove APP_DATA_DIR so patches work
-    # The session-scoped test_db_path fixture sets this, but unit tests need to patch it
-    if "APP_DATA_DIR" in os.environ:
-        del os.environ["APP_DATA_DIR"]
-    if "DATABASE_PATH" in os.environ:
-        del os.environ["DATABASE_PATH"]
+    This fixture handles all environment variables that could affect database
+    path resolution and configuration settings, while respecting session-level
+    test database configuration.
+    """
+    # List of all environment variables that should be isolated
+    env_vars_to_isolate = [
+        "APP_NAME",          # Used by Settings
+        "DEBUG",             # Used by Settings
+        "MAX_UPLOAD_SIZE",   # Used by Settings
+        "CORS_ORIGINS",      # Used by Settings
+        "ANTHROPIC_API_KEY", # Used by Settings (LLM)
+        "LLM_MODEL",         # Used by Settings (LLM)
+        "LLM_MAX_TOKENS",    # Used by Settings (LLM)
+    ]
+
+    # IMPORTANT: DO NOT clear APP_DATA_DIR and DATABASE_PATH
+    # These are set by the session-scoped test_db_path fixture in conftest.py
+    # and should persist across all tests to ensure consistent database paths
+
+    # BEFORE test: Save ALL original environment variables (except session-scoped ones)
+    original_env = {}
+    for var_name in env_vars_to_isolate:
+        original_env[var_name] = os.environ.get(var_name)
+
+    # BEFORE test: Clear only test-specific environment variables
+    # Leave APP_DATA_DIR and DATABASE_PATH alone - they're managed by session fixture
+    for var_name in env_vars_to_isolate:
+        if var_name in os.environ:
+            del os.environ[var_name]
 
     yield
 
-    # AFTER test: Restore original environment variables
-    if original_app_data_dir is None:
-        os.environ.pop("APP_DATA_DIR", None)
-    else:
-        os.environ["APP_DATA_DIR"] = original_app_data_dir
-
-    if original_database_path is None:
-        os.environ.pop("DATABASE_PATH", None)
-    else:
-        os.environ["DATABASE_PATH"] = original_database_path
+    # AFTER test: Restore test-specific environment variables only
+    for var_name, original_value in original_env.items():
+        if original_value is None:
+            # Variable wasn't set originally, ensure it's removed
+            os.environ.pop(var_name, None)
+        else:
+            # Variable was set originally, restore it
+            os.environ[var_name] = original_value
 
 
 class TestGetDbPath:
