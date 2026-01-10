@@ -42,6 +42,7 @@ jobs:
 
       - name: Update version in package.json
         working-directory: frontend
+        shell: bash
         run: |
           # Update version in package.json to match release input
           RELEASE_VERSION="${{ github.event.inputs.version }}"
