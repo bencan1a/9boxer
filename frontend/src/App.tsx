@@ -12,6 +12,8 @@ import { useUiStore } from "./store/uiStore";
 import { DashboardPage } from "./components/dashboard/DashboardPage";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { AISummaryNotifications } from "./components/notifications/AISummaryNotifications";
 import { logger } from "./utils/logger";
 import { initializeConfig } from "./config";
 import { initPerformanceMonitoring } from "./utils/performance";
@@ -108,30 +110,33 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
         <SnackbarProvider>
-          <CssBaseline />
-          <Box
-            sx={{
-              transition: "background-color 0.3s ease, color 0.3s ease",
-              minHeight: "100vh",
-              backgroundColor: "background.default",
-            }}
-          >
-            <UpdateNotification />
-            <HashRouter
-              future={{
-                v7_relativeSplatPath: true,
-                v7_startTransition: true,
+          <NotificationProvider>
+            <CssBaseline />
+            <AISummaryNotifications />
+            <Box
+              sx={{
+                transition: "background-color 0.3s ease, color 0.3s ease",
+                minHeight: "100vh",
+                backgroundColor: "background.default",
               }}
             >
-              <Routes>
-                <Route
-                  path="/"
-                  element={<Navigate to="/dashboard" replace />}
-                />
-                <Route path="/dashboard" element={<DashboardPage />} />
-              </Routes>
-            </HashRouter>
-          </Box>
+              <UpdateNotification />
+              <HashRouter
+                future={{
+                  v7_relativeSplatPath: true,
+                  v7_startTransition: true,
+                }}
+              >
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Navigate to="/dashboard" replace />}
+                  />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                </Routes>
+              </HashRouter>
+            </Box>
+          </NotificationProvider>
         </SnackbarProvider>
       </ThemeProvider>
     </ErrorBoundary>
