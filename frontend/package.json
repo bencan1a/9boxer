@@ -109,6 +109,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@playwright/test": "^1.57.0",
     "@storybook/addon-a11y": "^10.1.10",
     "@storybook/addon-docs": "^10.1.10",

@@ -228,6 +228,23 @@ def test_deserialize_when_session_with_changes_then_reconstructs_changes(
     sample_employees: list[Employee],
 ) -> None:
     """Test deserializing a session with employee moves."""
+    # Clear all dependency caches to ensure clean state
+    from ninebox.core.dependencies import (
+        get_calibration_summary_service,
+        get_db_manager,
+        get_employee_service,
+        get_llm_service,
+        get_session_manager,
+        get_statistics_service,
+    )
+
+    get_db_manager.cache_clear()
+    get_session_manager.cache_clear()
+    get_employee_service.cache_clear()
+    get_statistics_service.cache_clear()
+    get_calibration_summary_service.cache_clear()
+    get_llm_service.cache_clear()
+
     first_emp = sample_employees[0]
     second_emp = sample_employees[1]
     original_session = SessionState(
@@ -469,6 +486,23 @@ def test_round_trip_serialization_when_multiple_moves_then_preserves_all(
     sample_employees: list[Employee],
 ) -> None:
     """Test round-trip serialization with multiple employee moves."""
+    # Clear all dependency caches to ensure clean state
+    from ninebox.core.dependencies import (
+        get_calibration_summary_service,
+        get_db_manager,
+        get_employee_service,
+        get_llm_service,
+        get_session_manager,
+        get_statistics_service,
+    )
+
+    get_db_manager.cache_clear()
+    get_session_manager.cache_clear()
+    get_employee_service.cache_clear()
+    get_statistics_service.cache_clear()
+    get_calibration_summary_service.cache_clear()
+    get_llm_service.cache_clear()
+
     first_emp = sample_employees[0]
     second_emp = sample_employees[1]
     third_emp = sample_employees[2]

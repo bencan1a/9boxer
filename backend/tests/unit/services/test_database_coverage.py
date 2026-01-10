@@ -7,13 +7,50 @@ to meet the 80% coverage requirement for changed files.
 import sqlite3
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from ninebox.services.database import DatabaseManager
 
 pytestmark = pytest.mark.unit
+
+
+@pytest.fixture(autouse=True)
+def reset_database_schema_state():
+    """Reset DatabaseManager schema state before and after each test.
+
+    This fixture ensures test isolation for database schema tests by:
+    1. Resetting the _schema_initialized flag before each test
+    2. Cleaning up any schema state after each test
+    3. Forcing garbage collection to clear any cached instances
+
+    This is critical for tests that intentionally test schema initialization
+    and migrations, as they modify database schema state.
+    """
+    import gc
+
+    # Reset schema state BEFORE test
+    # Clear any existing DatabaseManager instances from previous tests
+    for obj in gc.get_objects():
+        if isinstance(obj, DatabaseManager):
+            obj._schema_initialized = False
+            obj._db_path_cache = None  # Also reset db path cache
+
+    # Force garbage collection to clear any cached instances
+    gc.collect()
+
+    yield
+
+    # Clean up AFTER test - reset any DatabaseManager instances that were created
+    # This ensures the next test starts with a clean slate
+    for obj in gc.get_objects():
+        if isinstance(obj, DatabaseManager):
+            obj._schema_initialized = False
+            obj._db_path_cache = None
+
+    # Force garbage collection after cleanup
+    gc.collect()
 
 
 def test_ensure_schema_when_schema_not_found_then_raises_file_not_found_error() -> None:

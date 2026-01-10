@@ -362,9 +362,9 @@ class TestLLMAvailability:
 class TestCalibrationSummaryErrorCases:
     """Error handling and edge cases."""
 
-    def test_calibration_summary_without_session(self, test_client: TestClient) -> None:
+    def test_calibration_summary_without_session(self, test_client: TestClient, clean_session_state) -> None:
         """Test endpoint returns 404 when no session exists."""
-        # Don't create a session - call directly
+        # Don't create a session - call directly (clean_session_state ensures no cached sessions)
         response = test_client.get("/api/calibration-summary")
 
         assert response.status_code == 404

@@ -350,38 +350,65 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R release-artifacts/
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies for release notes
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate release notes with AI
+        working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          node scripts/generate-release-notes.js "$VERSION"
+
       - name: Prepare release notes from template
         id: release_notes
         run: |
           VERSION="${{ github.event.inputs.version }}"
 
-          # Read the release template
-          TEMPLATE=$(cat .github/RELEASE_TEMPLATE.md)
+          # Get previous version tag for changelog link
+          PREV_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
-          # Replace [VERSION] placeholder
-          RELEASE_NOTES="${TEMPLATE//\[VERSION\]/${VERSION}}"
-
-          # Extract changelog section for this version if CHANGELOG.md exists
+          # Extract changelog content for this version
           if [ -f "CHANGELOG.md" ]; then
-            CHANGELOG=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1 | sed '1d')
-
-            # If changelog exists, replace the "What's New" placeholder sections
-            if [ -n "$CHANGELOG" ]; then
-              # Create temporary file with changelog content
-              echo "$CHANGELOG" > /tmp/changelog.txt
-
-              # Replace placeholder sections (this is basic - manual editing may be needed)
-              RELEASE_NOTES=$(echo "$RELEASE_NOTES" | sed '/^### New Features$/,/^### Improvements$/{
-                /^### New Features$/r /tmp/changelog.txt
-                /^- \[Feature.*description\]/d
-              }')
-            fi
+            CHANGELOG_CONTENT=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1 | tail -n +2)
+          else
+            CHANGELOG_CONTENT="No changelog found for this version."
           fi
 
+          # Build release notes with template header and changelog content
+          cat > /tmp/release_notes.md <<EOF
+          # 9Boxer v${VERSION}
+
+          ${CHANGELOG_CONTENT}
+
+          ## Download
+
+          Choose the appropriate installer for your platform from the assets below:
+          - **Windows**: \`9Boxer-Setup-${VERSION}.exe\`
+          - **macOS (Apple Silicon)**: \`9Boxer-${VERSION}-macOS-arm64.zip\` (M1/M2/M3 Macs)
+          - **macOS (Intel)**: \`9Boxer-${VERSION}-macOS-x64.zip\`
+          - **Linux**: \`9Boxer-${VERSION}.AppImage\`
+
+          **First time installing?** See the [Installation Guide](resources/user-guide/docs/installation.md) for detailed instructions.
+
+          ---
+
+          **Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_VERSION}...v${VERSION}
+          EOF
+
           # Save to output
-          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "release_notes<<EOF"
+            cat /tmp/release_notes.md
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Delete existing release if present
         continue-on-error: true

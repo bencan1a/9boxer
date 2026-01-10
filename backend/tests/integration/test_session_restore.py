@@ -245,14 +245,18 @@ class TestDatabaseIntegrity:
     """Test database state and integrity during session operations."""
 
     def test_database_when_session_created_then_row_inserted(
-        self, test_client: TestClient, sample_excel_file: Path
+        self, test_client: TestClient, sample_excel_file: Path, clean_session_state
     ) -> None:
         """Test that creating a session inserts a database row."""
-        # Count database rows before upload
+        # clean_session_state ensures we start with no sessions in cache or database
+
+        # Count database rows before upload (should be 0)
         db_mgr = get_db_manager()
         with db_mgr.get_connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             initial_count = cursor.fetchone()[0]
+
+        assert initial_count == 0, "Database should start with no sessions"
 
         # Upload file
         with open(sample_excel_file, "rb") as f:  # noqa: PTH123
@@ -271,7 +275,7 @@ class TestDatabaseIntegrity:
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             final_count = cursor.fetchone()[0]
 
-        assert final_count == initial_count + 1
+        assert final_count == 1, "Database should have exactly 1 session after upload"
 
     def test_database_when_employee_moved_then_row_updated(
         self, test_client: TestClient, sample_excel_file: Path

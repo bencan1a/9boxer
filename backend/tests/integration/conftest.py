@@ -89,6 +89,44 @@ def db_transaction(request: pytest.FixtureRequest, db_connection: sqlite3.Connec
 
 
 @pytest.fixture(scope="function")
+def clean_session_state(db_connection) -> Generator[None, None, None]:
+    """Clear session manager cache and database state for tests that expect no session.
+
+    This fixture ensures complete isolation for tests that explicitly verify
+    "no session" behavior by:
+    1. Clearing the @lru_cache on get_session_manager() to force a fresh instance
+    2. Clearing the sessions table in the database
+    3. Yielding control to the test
+    4. Transaction rollback (handled by db_transaction fixture) cleans up any sessions created
+
+    Use this fixture for tests that:
+    - Expect 404 "No active session" responses
+    - Test initial state before any session is created
+    - Need to verify clean slate behavior
+
+    Example:
+        def test_endpoint_without_session(test_client, clean_session_state):
+            response = test_client.get("/api/some-endpoint")
+            assert response.status_code == 404
+
+    Args:
+        db_connection: Shared database connection for transaction-based isolation
+    """
+    from ninebox.core.dependencies import get_session_manager  # noqa: PLC0415
+
+    # Clear the lru_cache to force a fresh SessionManager instance
+    get_session_manager.cache_clear()
+
+    # Clear sessions table to ensure no leftover sessions from previous tests
+    db_connection.execute("DELETE FROM sessions")
+    db_connection.commit()
+
+    yield
+
+    # Cleanup is handled by db_transaction fixture (transaction rollback)
+
+
+@pytest.fixture(scope="function")
 def export_dir(test_db_path: str) -> Generator[Path, None, None]:  # noqa: ARG001
     """Provide a valid export directory within the allowed paths.
 

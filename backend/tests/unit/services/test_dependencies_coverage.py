@@ -159,6 +159,14 @@ def test_get_org_service_returns_org_service_with_session_employees(
     """Test that get_org_service returns OrgService initialized with session employees."""
     from ninebox.models.session import SessionState
 
+    # Clear all dependency caches to ensure clean state
+    get_db_manager.cache_clear()
+    get_session_manager.cache_clear()
+    get_employee_service.cache_clear()
+    get_statistics_service.cache_clear()
+    get_calibration_summary_service.cache_clear()
+    get_llm_service.cache_clear()
+
     # Create a mock session with employees
     manager = get_session_manager()
     session = manager.get_session("local-user")
