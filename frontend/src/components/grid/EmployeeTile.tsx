@@ -167,6 +167,9 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     () => ({
       // Width is now controlled by the grid's fixed column widths for better performance
       // No need for minWidth/maxWidth - tiles fill their grid cells
+      // Height is explicitly set to prevent grid row stretching
+      height: `${tokens.tile.height}px`,
+      boxSizing: "border-box", // Include border in dimensions
       cursor: "pointer",
       display: "flex",
       opacity: isDragging
@@ -176,10 +179,8 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
           : 1,
       userSelect: "none",
       position: "relative",
-      // Border only for modified/donut tiles (Treatment 2 full border)
-      ...(showBorder && {
-        border: `2px solid ${borderColor}`,
-      }),
+      // Always render border for consistent sizing, but transparent when not needed
+      border: `2px solid ${showBorder ? borderColor : "transparent"}`,
       // Selection state: blue outer glow (can combine with border colors)
       boxShadow: isSelected
         ? `0 0 0 ${selectionStyles.width}px ${selectionStyles.outline}`
@@ -191,6 +192,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
       },
     }),
     [
+      tokens.tile.height,
       isDragging,
       donutModeActive,
       employee.donut_position,
@@ -239,7 +241,7 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
     () => ({
       py: `${tokens.tile.paddingY}px`,
       pl: `${tokens.tile.paddingX}px`,
-      pr: 3,
+      pr: `${tokens.tile.paddingX}px`, // Consistent with left padding
       "&:last-child": { pb: `${tokens.tile.paddingY}px` },
       flex: 1,
     }),
@@ -307,12 +309,12 @@ const EmployeeTileComponent: React.FC<EmployeeTileProps> = ({
         <Typography
           variant="subtitle2"
           fontWeight="bold"
-          gutterBottom
           sx={{
             fontSize: tokens.font.name,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            mb: 0.5, // Fixed margin instead of gutterBottom
           }}
         >
           {employee.name}

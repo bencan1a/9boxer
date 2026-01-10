@@ -225,6 +225,7 @@ export const dimensions = {
         paddingY: 4, // Vertical padding (top/bottom)
         paddingX: 6, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 16, // Compact drag handle
+        height: 52, // Fixed tile height (includes border, padding, and content)
       },
       font: {
         name: "0.7rem", // Very small for ultra compact
@@ -238,9 +239,10 @@ export const dimensions = {
       },
       spacing: {
         gap: 12, // Horizontal spacing between tiles (column gap)
-        rowGap: 1, // Vertical spacing between tiles (row gap)
+        rowGap: 6, // Vertical spacing between tiles (row gap)
         flagGap: 2,
         boxPadding: 4, // Minimal padding inside grid boxes
+        containerPadding: 8, // Padding around grid container to prevent border/glow clipping
       },
     },
 
@@ -255,6 +257,7 @@ export const dimensions = {
         paddingY: 5, // Vertical padding (top/bottom)
         paddingX: 7, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 18, // Compact drag handle
+        height: 56, // Fixed tile height (includes border, padding, and content)
       },
       font: {
         name: "0.8rem",
@@ -268,9 +271,10 @@ export const dimensions = {
       },
       spacing: {
         gap: 16, // Horizontal spacing between tiles (column gap)
-        rowGap: 1, // Vertical spacing between tiles (row gap)
+        rowGap: 8, // Vertical spacing between tiles (row gap)
         flagGap: 3,
         boxPadding: 6, // Compact padding inside grid boxes
+        containerPadding: 10, // Padding around grid container to prevent border/glow clipping
       },
     },
 
@@ -285,6 +289,7 @@ export const dimensions = {
         paddingY: 6, // Vertical padding (top/bottom)
         paddingX: 8, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 20, // Normal drag handle
+        height: 64, // Fixed tile height (includes border, padding, and content)
       },
       font: {
         name: "0.95rem",
@@ -298,9 +303,10 @@ export const dimensions = {
       },
       spacing: {
         gap: 18, // Horizontal spacing between tiles (column gap) - increased by 10px
-        rowGap: 2, // Vertical spacing between tiles (row gap) - reduced significantly
+        rowGap: 10, // Vertical spacing between tiles (row gap)
         flagGap: 3,
         boxPadding: 8, // Normal padding inside grid boxes
+        containerPadding: 12, // Padding around grid container to prevent border/glow clipping
       },
     },
 
@@ -315,6 +321,7 @@ export const dimensions = {
         paddingY: 10, // Vertical padding (top/bottom)
         paddingX: 12, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 24, // Comfortable drag handle
+        height: 80, // Fixed tile height (includes border, padding, and content)
       },
       font: {
         name: "1.25rem",
@@ -328,9 +335,10 @@ export const dimensions = {
       },
       spacing: {
         gap: 22, // Horizontal spacing between tiles (column gap)
-        rowGap: 3, // Vertical spacing between tiles (row gap)
+        rowGap: 16, // Vertical spacing between tiles (row gap)
         flagGap: 5,
         boxPadding: 12, // Comfortable padding inside grid boxes
+        containerPadding: 14, // Padding around grid container to prevent border/glow clipping
       },
     },
 
@@ -345,6 +353,7 @@ export const dimensions = {
         paddingY: 14, // Vertical padding (top/bottom)
         paddingX: 16, // Horizontal padding (left, between drag handle and content)
         dragHandleWidth: 28, // Presentation drag handle
+        height: 96, // Fixed tile height (includes border, padding, and content)
       },
       font: {
         name: "1.5rem",
@@ -358,9 +367,10 @@ export const dimensions = {
       },
       spacing: {
         gap: 26, // Horizontal spacing between tiles (column gap)
-        rowGap: 4, // Vertical spacing between tiles (row gap)
+        rowGap: 20, // Vertical spacing between tiles (row gap)
         flagGap: 6,
         boxPadding: 16, // Presentation padding inside grid boxes
+        containerPadding: 16, // Padding around grid container to prevent border/glow clipping
       },
     },
   },

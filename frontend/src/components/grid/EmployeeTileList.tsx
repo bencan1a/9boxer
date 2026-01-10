@@ -69,10 +69,10 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   const tileWidth = isWideLayout
     ? tokens.tile.wideWidth
     : tokens.tile.narrowWidth;
-  const tileHeight = 80; // Approximate height of EmployeeTile
+  const tileHeight = tokens.tile.height; // Fixed tile height from tokens
   const columnGap = tokens.spacing.gap; // Horizontal spacing
   const rowGap = tokens.spacing.rowGap; // Vertical spacing
-  const containerPadding = 12; // Padding to prevent border clipping
+  const containerPadding = tokens.spacing.containerPadding; // Zoom-responsive padding to prevent border/glow clipping
 
   // Measure container width on mount and resize
   useEffect(() => {
@@ -100,12 +100,14 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
     if (containerWidth === 0) return 1; // Default before measurement
     if (isWideLayout) return 1; // Single column in wide layout
 
+    // Account for container padding when calculating available width
+    const availableWidth = containerWidth - containerPadding * 2;
     // Calculate columns that fit: floor((width + columnGap) / (tileWidth + columnGap))
     const cols = Math.floor(
-      (containerWidth + columnGap) / (tileWidth + columnGap)
+      (availableWidth + columnGap) / (tileWidth + columnGap)
     );
     return Math.max(1, cols); // At least 1 column
-  }, [containerWidth, isWideLayout, tileWidth, columnGap]);
+  }, [containerWidth, isWideLayout, tileWidth, columnGap, containerPadding]);
 
   // Group employees into virtual rows
   const employeeRows = useMemo(() => {
@@ -214,6 +216,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
                     : `repeat(${columnsPerRow}, ${tokens.tile.narrowWidth}px)`,
                   columnGap: `${columnGap}px`,
                   rowGap: `${rowGap}px`,
+                  alignItems: "start", // Prevent tiles from stretching to match tallest tile in row
                 }}
               >
                 {row.map((employee) => (
