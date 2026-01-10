@@ -36,6 +36,7 @@ export interface NotificationBannerProps {
   actions?: NotificationAction[];
   onClose?: () => void;
   closable?: boolean;
+  floating?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -55,6 +56,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
   actions = [],
   onClose,
   closable = true,
+  floating = false,
   sx,
 }) => {
   const theme = useTheme();
@@ -65,11 +67,14 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
   // Select the appropriate icon
   const iconElement = icon || defaultIcons[variant];
 
-  // Calculate background and border colors with appropriate alpha
-  const backgroundColor = alpha(
-    color.main,
-    theme.palette.mode === "dark" ? 0.15 : 0.1
-  );
+  // Calculate background and border colors
+  // Floating banners are opaque, embedded banners use alpha for subtlety
+  const backgroundColor = floating
+    ? theme.palette.mode === "dark"
+      ? theme.palette.background.paper
+      : theme.palette.background.paper
+    : alpha(color.main, theme.palette.mode === "dark" ? 0.15 : 0.1);
+
   const borderColor = alpha(
     theme.palette.mode === "dark" ? color.light : color.main,
     theme.palette.mode === "dark" ? 0.5 : 0.3
@@ -77,15 +82,45 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
   const borderLeftColor =
     theme.palette.mode === "dark" ? color.light : color.main;
 
+  // Floating-specific styles
+  const floatingStyles = floating
+    ? {
+        position: "fixed" as const,
+        top: `${theme.tokens.spacing.lg}px`,
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "50%",
+        maxWidth: "800px",
+        minWidth: "600px",
+        zIndex: theme.zIndex.snackbar,
+        animation: "slideDown 0.3s ease-out",
+        "@keyframes slideDown": {
+          from: {
+            opacity: 0,
+            transform: "translateX(-50%) translateY(-20px)",
+          },
+          to: {
+            opacity: 1,
+            transform: "translateX(-50%) translateY(0)",
+          },
+        },
+      }
+    : {};
+
   return (
     <Box
       role="alert"
       aria-live={variant === "error" ? "assertive" : "polite"}
       sx={{
+        position: "relative",
         display: "flex",
         alignItems: "flex-start",
         gap: `${theme.tokens.spacing.md}px`,
         padding: `${theme.tokens.spacing.md}px`,
+        paddingRight:
+          floating && closable && onClose
+            ? `${theme.tokens.spacing.xl}px`
+            : `${theme.tokens.spacing.md}px`,
         backgroundColor,
         border: `1px solid ${borderColor}`,
         borderLeft: `4px solid ${borderLeftColor}`,
@@ -101,6 +136,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
               ? theme.tokens.shadows.elevated.dark
               : theme.tokens.shadows.elevated.light,
         },
+        ...floatingStyles,
         ...sx,
       }}
     >
@@ -188,14 +224,35 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
         )}
       </Box>
 
+      {/* Close button - top right for floating, inline for embedded */}
+      {closable && onClose && floating && (
+        <IconButton
+          size="small"
+          onClick={onClose}
+          aria-label="Close notification"
+          sx={{
+            position: "absolute",
+            top: `${theme.tokens.spacing.sm}px`,
+            right: `${theme.tokens.spacing.sm}px`,
+            color: theme.palette.text.secondary,
+            "&:hover": {
+              color: theme.palette.text.primary,
+            },
+          }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      )}
+
       {/* Actions */}
-      {(actions.length > 0 || (closable && onClose)) && (
+      {actions.length > 0 && (
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: floating ? "row" : "column",
             gap: `${theme.tokens.spacing.sm}px`,
-            alignItems: "flex-end",
+            alignItems: floating ? "center" : "flex-end",
+            alignSelf: floating ? "flex-end" : "flex-start",
             flexShrink: 0,
           }}
         >
@@ -215,21 +272,31 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
               {action.label}
             </Button>
           ))}
-          {closable && onClose && actions.length === 0 && (
-            <IconButton
-              size="small"
-              onClick={onClose}
-              aria-label="Close notification"
-              sx={{
-                color: theme.palette.text.secondary,
-                "&:hover": {
-                  color: theme.palette.text.primary,
-                },
-              }}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          )}
+        </Box>
+      )}
+
+      {/* Close button - inline for embedded banners */}
+      {closable && onClose && !floating && actions.length === 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+            flexShrink: 0,
+          }}
+        >
+          <IconButton
+            size="small"
+            onClick={onClose}
+            aria-label="Close notification"
+            sx={{
+              color: theme.palette.text.secondary,
+              "&:hover": {
+                color: theme.palette.text.primary,
+              },
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
         </Box>
       )}
     </Box>

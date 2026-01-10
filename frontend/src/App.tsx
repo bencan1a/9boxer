@@ -18,6 +18,7 @@ import { logger } from "./utils/logger";
 import { initializeConfig } from "./config";
 import { initPerformanceMonitoring } from "./utils/performance";
 import { UpdateNotificationBanner } from "./components/update/UpdateNotificationBanner";
+import { UpdateSimulator } from "./components/update/UpdateSimulator";
 
 const App: React.FC = () => {
   // Get effective theme from store
@@ -113,6 +114,7 @@ const App: React.FC = () => {
           <NotificationProvider>
             <CssBaseline />
             <AISummaryNotifications />
+            <UpdateSimulator />
             <Box
               sx={{
                 transition: "background-color 0.3s ease, color 0.3s ease",
