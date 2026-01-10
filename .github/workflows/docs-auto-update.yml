@@ -321,6 +321,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ github.event_name == 'workflow_dispatch' && inputs.base_branch || github.base_ref || 'main' }}
           commit-message: |
             docs: auto-update screenshots for PR #${{ github.event.number }}
 

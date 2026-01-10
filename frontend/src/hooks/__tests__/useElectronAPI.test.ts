@@ -3,6 +3,18 @@ import { renderHook } from "@testing-library/react";
 import { useElectronAPI } from "../useElectronAPI";
 import type { ElectronAPI } from "../../types/electron";
 
+// Mock update API for testing
+const mockUpdateAPI = {
+  checkForUpdates: vi.fn(),
+  downloadUpdate: vi.fn(),
+  installAndRestart: vi.fn(),
+  getStatus: vi.fn(),
+  onUpdateAvailable: vi.fn(),
+  onDownloadProgress: vi.fn(),
+  onUpdateDownloaded: vi.fn(),
+  onUpdateError: vi.fn(),
+};
+
 describe("useElectronAPI", () => {
   let originalElectronAPI: ElectronAPI | undefined;
 
@@ -40,6 +52,7 @@ describe("useElectronAPI", () => {
           getUrl: vi.fn(),
           onConnectionStatusChange: vi.fn(),
         },
+        update: mockUpdateAPI,
       };
 
       const { result } = renderHook(() => useElectronAPI());
@@ -77,6 +90,7 @@ describe("useElectronAPI", () => {
           getUrl: vi.fn(),
           onConnectionStatusChange: vi.fn(),
         },
+        update: mockUpdateAPI,
       };
     });
 
@@ -223,6 +237,7 @@ describe("useElectronAPI", () => {
           getUrl: vi.fn(),
           onConnectionStatusChange: vi.fn(),
         },
+        update: mockUpdateAPI,
       };
     });
 
@@ -338,6 +353,7 @@ describe("useElectronAPI", () => {
           getUrl: vi.fn(),
           onConnectionStatusChange: vi.fn(),
         },
+        update: mockUpdateAPI,
       };
     });
 

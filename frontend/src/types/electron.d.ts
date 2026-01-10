@@ -55,6 +55,20 @@ export interface ElectronAPI {
   openUserGuide: () => Promise<{ success: boolean; error?: string }>;
 
   /**
+   * Get the application version from package.json.
+   * This is the version set in frontend/package.json and used by Electron Builder.
+   *
+   * @returns Promise resolving to the version string (e.g., "1.0.0")
+   *
+   * @example
+   * ```typescript
+   * const version = await window.electronAPI?.getAppVersion();
+   * console.log('App version:', version);
+   * ```
+   */
+  getAppVersion: () => Promise<string>;
+
+  /**
    * Notify the main process that session restoration is complete.
    * This will close the splash screen if it's still visible.
    *
@@ -170,6 +184,86 @@ export interface ElectronAPI {
         status: "connected" | "reconnecting" | "disconnected";
         port?: number;
       }) => void
+    ) => () => void;
+  };
+
+  /**
+   * Auto-update APIs for managing application updates.
+   */
+  update: {
+    /**
+     * Manually check for updates.
+     * @returns Promise resolving to success status
+     */
+    checkForUpdates: () => Promise<{ success: boolean }>;
+
+    /**
+     * Download an available update.
+     * @returns Promise resolving to success status
+     */
+    downloadUpdate: () => Promise<{ success: boolean }>;
+
+    /**
+     * Install downloaded update and restart the application.
+     * @returns Promise resolving to success status
+     */
+    installAndRestart: () => Promise<{ success: boolean }>;
+
+    /**
+     * Get current update status.
+     * @returns Promise resolving to current update state
+     */
+    getStatus: () => Promise<{
+      currentVersion: string;
+      updateAvailable: boolean;
+      updateVersion: string | null;
+      downloadInProgress: boolean;
+      updateDownloaded: boolean;
+    }>;
+
+    /**
+     * Register a callback for when an update becomes available.
+     * @param callback - Function to call with update info
+     * @returns Cleanup function to remove the listener
+     */
+    onUpdateAvailable: (
+      callback: (info: {
+        version: string;
+        releaseDate: string;
+        releaseNotes: string;
+      }) => void
+    ) => () => void;
+
+    /**
+     * Register a callback for download progress updates.
+     * @param callback - Function to call with progress info
+     * @returns Cleanup function to remove the listener
+     */
+    onDownloadProgress: (
+      callback: (progress: {
+        percent: number;
+        bytesPerSecond: number;
+        transferred: number;
+        total: number;
+      }) => void
+    ) => () => void;
+
+    /**
+     * Register a callback for when an update has been downloaded.
+     * @param callback - Function to call with update info
+     * @returns Cleanup function to remove the listener
+     */
+    onUpdateDownloaded: (
+      callback: (info: { version: string }) => void
+    ) => () => void;
+
+    /**
+     * Register a callback for update errors.
+     * @param callback - Function to call with error info
+     * @returns Cleanup function to remove the listener
+     */
+    onUpdateError: (
+      callback: (error: { message: string }) => void
     ) => () => void;
   };
 

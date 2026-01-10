@@ -69,8 +69,10 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
   const tileWidth = isWideLayout
     ? tokens.tile.wideWidth
     : tokens.tile.narrowWidth;
-  const tileHeight = 80; // Approximate height of EmployeeTile
-  const gap = tokens.spacing.gap;
+  const tileHeight = tokens.tile.height; // Fixed tile height from tokens
+  const columnGap = tokens.spacing.gap; // Horizontal spacing
+  const rowGap = tokens.spacing.rowGap; // Vertical spacing
+  const containerPadding = tokens.spacing.containerPadding; // Zoom-responsive padding to prevent border/glow clipping
 
   // Measure container width on mount and resize
   useEffect(() => {
@@ -98,10 +100,14 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
     if (containerWidth === 0) return 1; // Default before measurement
     if (isWideLayout) return 1; // Single column in wide layout
 
-    // Calculate columns that fit: floor((width + gap) / (tileWidth + gap))
-    const cols = Math.floor((containerWidth + gap) / (tileWidth + gap));
+    // Account for container padding when calculating available width
+    const availableWidth = containerWidth - containerPadding * 2;
+    // Calculate columns that fit: floor((width + columnGap) / (tileWidth + columnGap))
+    const cols = Math.floor(
+      (availableWidth + columnGap) / (tileWidth + columnGap)
+    );
     return Math.max(1, cols); // At least 1 column
-  }, [containerWidth, isWideLayout, tileWidth, gap]);
+  }, [containerWidth, isWideLayout, tileWidth, columnGap, containerPadding]);
 
   // Group employees into virtual rows
   const employeeRows = useMemo(() => {
@@ -117,7 +123,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
     count: employeeRows.length,
     // CRITICAL: Scroll container is the direct parent (GridBox > scrollable Box wrapper > EmployeeTileList)
     getScrollElement: () => parentRef.current?.parentElement ?? null,
-    estimateSize: () => tileHeight + gap,
+    estimateSize: () => tileHeight + rowGap, // Use rowGap for vertical spacing
     overscan: 1, // Render 1 extra row above/below viewport (tighter buffer for multi-column layout)
   });
 
@@ -183,7 +189,7 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
         {/* Virtual scroll container with total height */}
         <Box
           sx={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
+            height: `${rowVirtualizer.getTotalSize() + containerPadding * 2}px`,
             width: "100%",
             position: "relative",
           }}
@@ -200,15 +206,17 @@ export const EmployeeTileList: React.FC<EmployeeTileListProps> = ({
                 sx={{
                   position: "absolute",
                   top: 0,
-                  left: 0,
-                  width: "100%",
-                  transform: `translateY(${virtualRow.start}px)`,
+                  left: `${containerPadding}px`,
+                  right: `${containerPadding}px`,
+                  transform: `translateY(${virtualRow.start + containerPadding}px)`,
                   // Multi-column grid layout within each virtual row
                   display: "grid",
                   gridTemplateColumns: isWideLayout
                     ? `${tokens.tile.wideWidth}px`
                     : `repeat(${columnsPerRow}, ${tokens.tile.narrowWidth}px)`,
-                  gap: `${gap}px`,
+                  columnGap: `${columnGap}px`,
+                  rowGap: `${rowGap}px`,
+                  alignItems: "start", // Prevent tiles from stretching to match tallest tile in row
                 }}
               >
                 {row.map((employee) => (

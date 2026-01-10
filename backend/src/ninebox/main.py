@@ -45,6 +45,7 @@ from ninebox.api import (  # noqa: E402
     preferences,
     session,
     statistics,
+    update_analytics,
 )
 from ninebox.core.config import settings  # noqa: E402
 from ninebox.core.dependencies import get_session_manager  # noqa: E402
@@ -80,6 +81,7 @@ app.include_router(intelligence.router, prefix="/api")
 app.include_router(calibration_summary.router, prefix="/api")
 app.include_router(preferences.router, prefix="/api")
 app.include_router(org_hierarchy.router, prefix="/api")
+app.include_router(update_analytics.router, prefix="/api")
 
 
 @app.get("/")

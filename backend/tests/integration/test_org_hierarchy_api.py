@@ -71,9 +71,10 @@ def test_get_managers_when_min_team_size_10_then_filters_small_teams(
 
 def test_get_managers_when_no_session_then_returns_404(
     test_client: TestClient,
+    clean_session_state,
 ) -> None:
     """Test GET /api/org-hierarchy/managers returns 404 when no session exists."""
-    # Create a fresh client with no session
+    # Create a fresh client with no session (clean_session_state ensures no cached sessions)
     from ninebox.main import app
 
     fresh_client = TestClient(app)

@@ -37,6 +37,7 @@ The 9Boxer Design System ensures:
 | **[design-tokens.md](design-tokens.md)** | All design constants (colors, spacing, shadows, etc.) - centralized in `frontend/src/theme/tokens.ts` |
 | **[layout-patterns.md](layout-patterns.md)** | Application layout structure and UI zones |
 | **[interaction-patterns.md](interaction-patterns.md)** | Animations, drag-drop, feedback mechanisms |
+| **[notification-patterns.md](notification-patterns.md)** | Banner vs toast decision guide, notification system integration |
 
 ### 🧩 Components
 

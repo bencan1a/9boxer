@@ -352,7 +352,7 @@ def _regularized_gamma_inc(a: float, x: float) -> float:
         if abs(term) < epsilon * abs(total):
             break
 
-    result = prefix * a * total
+    result = prefix * total
 
     # Clamp to valid range [0, 1] due to numerical precision issues
     return max(0.0, min(1.0, result))

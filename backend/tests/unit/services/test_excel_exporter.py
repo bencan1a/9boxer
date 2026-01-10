@@ -23,13 +23,56 @@ def cleanup_openpyxl_state() -> Generator[None, None, None]:
     and don't pollute other tests.
     """
     import gc
+    import sys
 
-    # Before test: Force garbage collection to clean up any lingering workbook references
+    # Before test: Aggressive cleanup to ensure clean state
+    # 1. Force multiple garbage collection passes to break circular references
     gc.collect()
+    gc.collect()
+    gc.collect()
+
+    # 2. Clear any cached openpyxl modules that might hold state
+    # This ensures fresh imports get clean module state
+    openpyxl_modules = [
+        name for name in sys.modules.keys()
+        if name.startswith('openpyxl')
+    ]
+
+    # Store references to avoid module re-import issues during iteration
+    modules_to_clear = []
+    for name in openpyxl_modules:
+        module = sys.modules.get(name)
+        if module and hasattr(module, '__dict__'):
+            # Clear module-level caches if they exist
+            if hasattr(module, '_cache'):
+                try:
+                    module._cache.clear()
+                except (AttributeError, TypeError):
+                    pass
+            # Track for potential cleanup
+            modules_to_clear.append(name)
 
     yield
 
-    # After test: Force garbage collection again
+    # After test: More aggressive cleanup
+    # 1. Force close any lingering workbook objects by collecting multiple times
+    # This is critical because openpyxl workbooks may have circular references
+    gc.collect()
+    gc.collect()
+    gc.collect()
+
+    # 2. Clear openpyxl module caches again
+    for name in openpyxl_modules:
+        module = sys.modules.get(name)
+        if module and hasattr(module, '__dict__'):
+            if hasattr(module, '_cache'):
+                try:
+                    module._cache.clear()
+                except (AttributeError, TypeError):
+                    pass
+
+    # 3. Final aggressive garbage collection
+    gc.collect()
     gc.collect()
 
 

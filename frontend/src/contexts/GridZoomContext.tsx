@@ -33,10 +33,17 @@ interface ZoomTokens {
     paddingY: number;
     paddingX: number;
     dragHandleWidth: number;
+    height: number; // Fixed tile height to prevent grid row stretching
   };
   font: { name: string; titleLevel: string; metadata: string };
   icon: { dragHandle: number; flag: number; history: number };
-  spacing: { gap: number; flagGap: number; boxPadding: number };
+  spacing: {
+    gap: number;
+    rowGap: number;
+    flagGap: number;
+    boxPadding: number;
+    containerPadding: number; // Padding around grid container to prevent border/glow clipping
+  };
 }
 
 interface GridZoomContextType {

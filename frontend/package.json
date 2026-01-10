@@ -91,8 +91,9 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.14.20",
-    "@tanstack/react-virtual": "^3.13.17",
-    "axios": "^1.13.2",
+    "@tanstack/react-virtual": "^3.11.1",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.1.7",
     "fuse.js": "^7.1.0",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
@@ -107,6 +108,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@playwright/test": "^1.57.0",
     "@storybook/addon-a11y": "^10.1.10",
     "@storybook/addon-docs": "^10.1.10",

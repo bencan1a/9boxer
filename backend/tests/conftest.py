@@ -199,6 +199,9 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
     if not is_integration_test:
         try:
             temp_db = DatabaseManager()
+            # Force the db path to match our test environment to prevent lazy resolution issues
+            # DatabaseManager uses lazy path resolution, so we must set this explicitly
+            temp_db._db_path_cache = Path(os.environ["APP_DATA_DIR"]) / "ninebox.db"
             with temp_db.get_connection() as conn:
                 # Check if tables exist before trying to delete (avoids "no such table" errors)
                 cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -216,10 +219,30 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
             # Ignore errors during cleanup (e.g., if database doesn't exist yet)
             pass
 
-    # Clear caches BEFORE test to ensure fresh instances
+    # Reset any existing DatabaseManager instance that might be cached
+    # This forces re-resolution of paths on next use
     try:
+        existing_manager = get_db_manager()
+        existing_manager._db_path_cache = None
+        existing_manager._schema_initialized = False
+    except Exception:
+        pass  # Manager doesn't exist yet, that's fine
+
+    # Clear ALL dependency injection caches BEFORE test to ensure fresh instances
+    try:
+        from ninebox.core.dependencies import (
+            get_calibration_summary_service,
+            get_employee_service,
+            get_llm_service,
+            get_statistics_service,
+        )
+
         get_session_manager.cache_clear()
         get_db_manager.cache_clear()
+        get_employee_service.cache_clear()
+        get_statistics_service.cache_clear()
+        get_calibration_summary_service.cache_clear()
+        get_llm_service.cache_clear()
     except Exception:
         pass
 
@@ -263,6 +286,8 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
         if not is_patched:
             # Only clean up for unit tests (not patched)
             temp_db = DatabaseManager()
+            # Force the db path to match our test environment to prevent lazy resolution issues
+            temp_db._db_path_cache = Path(os.environ["APP_DATA_DIR"]) / "ninebox.db"
             with temp_db.get_connection() as conn:
                 # Clear all tables to ensure full isolation
                 conn.execute("DELETE FROM historical_ratings")
@@ -282,10 +307,30 @@ def setup_test_db(request: pytest.FixtureRequest) -> Generator[None, None, None]
     except Exception:
         pass  # If manager doesn't exist yet, that's fine
 
-    # Clear the lru_cache to get fresh instances for next test
+    # Reset any existing DatabaseManager instance before clearing caches
+    # This forces re-resolution of paths for the next test
     try:
+        existing_manager = get_db_manager()
+        existing_manager._db_path_cache = None
+        existing_manager._schema_initialized = False
+    except Exception:
+        pass  # Manager doesn't exist, that's fine
+
+    # Clear ALL dependency injection lru_caches to get fresh instances for next test
+    try:
+        from ninebox.core.dependencies import (
+            get_calibration_summary_service,
+            get_employee_service,
+            get_llm_service,
+            get_statistics_service,
+        )
+
         get_session_manager.cache_clear()
         get_db_manager.cache_clear()
+        get_employee_service.cache_clear()
+        get_statistics_service.cache_clear()
+        get_calibration_summary_service.cache_clear()
+        get_llm_service.cache_clear()
     except Exception:
         pass
 
