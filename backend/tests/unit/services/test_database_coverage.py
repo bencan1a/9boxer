@@ -24,11 +24,21 @@ def reset_database_schema_state():
     1. Resetting the _schema_initialized flag before each test
     2. Cleaning up any schema state after each test
     3. Forcing garbage collection to clear any cached instances
+    4. Clearing dependency injection caches that might hold stale instances
 
     This is critical for tests that intentionally test schema initialization
     and migrations, as they modify database schema state.
     """
     import gc
+
+    # Clear dependency injection caches FIRST to ensure fresh instances
+    # This is critical when performance and unit tests run in the same process
+    try:
+        from ninebox.core.dependencies import get_db_manager, get_session_manager
+        get_db_manager.cache_clear()
+        get_session_manager.cache_clear()
+    except Exception:
+        pass
 
     # Reset schema state BEFORE test
     # Clear any existing DatabaseManager instances from previous tests
@@ -48,6 +58,14 @@ def reset_database_schema_state():
         if isinstance(obj, DatabaseManager):
             obj._schema_initialized = False
             obj._db_path_cache = None
+
+    # Clear dependency injection caches again after test
+    try:
+        from ninebox.core.dependencies import get_db_manager, get_session_manager
+        get_db_manager.cache_clear()
+        get_session_manager.cache_clear()
+    except Exception:
+        pass
 
     # Force garbage collection after cleanup
     gc.collect()

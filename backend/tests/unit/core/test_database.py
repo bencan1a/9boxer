@@ -80,8 +80,10 @@ class TestGetDbPath:
         custom_data_dir = tmp_path / "app_data"
 
         # Act
-        with patch("ninebox.core.database.get_user_data_dir", return_value=custom_data_dir):
-            result = get_db_path()
+        # Temporarily remove APP_DATA_DIR to ensure patch takes precedence
+        with patch.dict(os.environ, {"APP_DATA_DIR": str(custom_data_dir)}):
+            with patch("ninebox.core.database.get_user_data_dir", return_value=custom_data_dir):
+                result = get_db_path()
 
         # Assert
         assert result == custom_data_dir / "ninebox.db"
@@ -116,9 +118,11 @@ class TestGetDbPath:
         custom_data_dir = tmp_path / "frozen_app_data"
 
         # Act
+        # Temporarily set APP_DATA_DIR to ensure patch takes precedence
         # Simulate frozen mode by using get_user_data_dir which handles frozen mode
-        with patch("ninebox.core.database.get_user_data_dir", return_value=custom_data_dir):
-            result = get_db_path()
+        with patch.dict(os.environ, {"APP_DATA_DIR": str(custom_data_dir)}):
+            with patch("ninebox.core.database.get_user_data_dir", return_value=custom_data_dir):
+                result = get_db_path()
 
         # Assert
         assert result == custom_data_dir / "ninebox.db"
@@ -131,8 +135,10 @@ class TestGetDbPath:
         windows_style_dir = tmp_path / "AppData" / "Local" / "ninebox"
 
         # Act
-        with patch("ninebox.core.database.get_user_data_dir", return_value=windows_style_dir):
-            result = get_db_path()
+        # Temporarily set APP_DATA_DIR to ensure patch takes precedence
+        with patch.dict(os.environ, {"APP_DATA_DIR": str(windows_style_dir)}):
+            with patch("ninebox.core.database.get_user_data_dir", return_value=windows_style_dir):
+                result = get_db_path()
 
         # Assert
         assert result == windows_style_dir / "ninebox.db"

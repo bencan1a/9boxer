@@ -273,6 +273,8 @@ onDragCancel() {
 
 ## Feedback Mechanisms
 
+> **See also:** [notification-patterns.md](notification-patterns.md) for comprehensive banner vs toast decision guide and notification system integration
+
 ### Loading States
 
 #### 1. Full-Screen Loading (Initial Load)
@@ -940,6 +942,7 @@ const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 - **[Layout Patterns](layout-patterns.md)** - Where interactions happen
 - **[Component Guidelines](component-guidelines.md)** - Component-specific interaction patterns
 - **[Accessibility Standards](accessibility-standards.md)** - WCAG compliance for interactions
+- **[Notification Patterns](notification-patterns.md)** - Banner vs toast decision guide and notification system
 
 ---
 
