@@ -187,7 +187,8 @@ jobs:
 
           # Re-run electron-builder in publish-only mode
           # This will regenerate latest.yml with correct checksums from the signed exe
-          npx electron-builder --win --x64 --config electron-builder.config.cjs --publish always --prepackaged release
+          # electron-builder will auto-discover electron-builder.json
+          npx electron-builder --win --x64 --publish always --prepackaged release
 
       - name: Prepare macOS signing credentials
         if: matrix.platform == 'macos'
