@@ -106,6 +106,68 @@ export const ERROR_MESSAGES = {
     buttons: ["Quit"],
     type: "error" as const,
   },
+
+  // ============================================
+  // Auto-Update Error Messages
+  // ============================================
+
+  /**
+   * Update metadata files not found on server (404 error).
+   * Release may still be publishing or update server is being configured.
+   */
+  updateMetadataMissing: {
+    title: "Update Check Failed",
+    message: "Update check failed. The update server is being configured.",
+    detail: "Please try again later or check for updates manually.",
+    type: "error" as const,
+  },
+
+  /**
+   * Network connectivity issues while checking for updates.
+   * User should check their internet connection.
+   */
+  updateNetworkError: {
+    title: "Connection Failed",
+    message: "Unable to connect to the update server.",
+    detail: "Please check your internet connection and try again.",
+    type: "error" as const,
+  },
+
+  /**
+   * Server-side errors (5xx) when checking for updates.
+   * Update server is temporarily unavailable.
+   */
+  updateServerError: {
+    title: "Server Unavailable",
+    message: "The update server is temporarily unavailable.",
+    detail: "Please try again later.",
+    type: "error" as const,
+  },
+
+  /**
+   * Update file verification failed (checksum/signature mismatch).
+   * Potential security issue or corrupted download.
+   */
+  updateVerificationFailed: {
+    title: "Update Verification Failed",
+    message:
+      "Update verification failed. The downloaded update may be corrupted.",
+    detail:
+      "Please try downloading the update again. If the problem persists, download the installer manually from the website.",
+    type: "error" as const,
+  },
+
+  /**
+   * Generic update error for unclassified failures.
+   * Provides fallback message with option to retry.
+   */
+  updateGenericError: {
+    title: "Update Check Failed",
+    message: "An error occurred while checking for updates.",
+    detail:
+      "Please try again. If the problem persists, check for updates manually.",
+    type: "error" as const,
+  },
 } as const;
 
 /**

@@ -7,6 +7,47 @@ import Typography from "@mui/material/Typography";
 import Download from "@mui/icons-material/Download";
 import Refresh from "@mui/icons-material/Refresh";
 import CloudDownload from "@mui/icons-material/CloudDownload";
+import {
+  ERROR_MESSAGES,
+  type ErrorMessageConfig,
+} from "../../utils/errorMessages";
+
+/**
+ * Categorize update errors and return appropriate error message configuration
+ */
+function getUpdateErrorMessage(errorMessage: string): ErrorMessageConfig {
+  // Check for 404 errors (missing release files)
+  if (errorMessage.includes("404") && errorMessage.includes("latest.yml")) {
+    return ERROR_MESSAGES.updateMetadataMissing;
+  }
+
+  // Check for network/connection errors
+  if (
+    errorMessage.includes("ENOTFOUND") ||
+    errorMessage.includes("ECONNREFUSED") ||
+    errorMessage.includes("ETIMEDOUT") ||
+    errorMessage.includes("network")
+  ) {
+    return ERROR_MESSAGES.updateNetworkError;
+  }
+
+  // Check for server errors
+  if (errorMessage.includes("500") || errorMessage.includes("503")) {
+    return ERROR_MESSAGES.updateServerError;
+  }
+
+  // Check for checksum/verification errors
+  if (
+    errorMessage.includes("checksum") ||
+    errorMessage.includes("integrity") ||
+    errorMessage.includes("signature")
+  ) {
+    return ERROR_MESSAGES.updateVerificationFailed;
+  }
+
+  // Generic error - use fallback
+  return ERROR_MESSAGES.updateGenericError;
+}
 
 interface UpdateStatus {
   currentVersion: string;
@@ -84,9 +125,34 @@ export const UpdateNotification: React.FC = () => {
 
   // Error state
   if (error) {
+    const errorConfig = getUpdateErrorMessage(error);
     return (
-      <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>
-        Update failed: {error}
+      <Alert
+        severity="error"
+        onClose={() => setError(null)}
+        sx={{ mb: 2 }}
+        action={
+          <Button
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setError(null);
+              window.electronAPI?.update.checkForUpdates();
+            }}
+          >
+            Retry
+          </Button>
+        }
+      >
+        <Typography variant="body2" fontWeight="medium">
+          {errorConfig.message}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ mt: 0.5, display: "block", opacity: 0.8 }}
+        >
+          {errorConfig.detail}
+        </Typography>
       </Alert>
     );
   }
