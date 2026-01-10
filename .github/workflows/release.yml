@@ -149,7 +149,7 @@ jobs:
           # Skip electron-builder's built-in signing - we'll use Azure Trusted Signing after
           CSC_IDENTITY_AUTO_DISCOVERY: false
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run electron:build:win -- --x64 --publish always
+        run: npm run electron:build:win -- --x64 --publish never
 
       - name: Azure Login (OIDC)
         if: matrix.platform == 'windows'
@@ -173,6 +173,21 @@ jobs:
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
+
+      - name: Regenerate metadata and publish signed Windows build
+        if: matrix.platform == 'windows'
+        working-directory: frontend
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Regenerating latest.yml with signed exe checksums..."
+          # Delete old latest.yml (has wrong checksum)
+          rm -f release/latest.yml
+
+          # Re-run electron-builder in publish-only mode
+          # This will regenerate latest.yml with correct checksums from the signed exe
+          npx electron-builder --win --x64 --config electron-builder.config.cjs --publish always --prepackaged release
 
       - name: Prepare macOS signing credentials
         if: matrix.platform == 'macos'
