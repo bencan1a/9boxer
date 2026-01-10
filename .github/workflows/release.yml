@@ -168,7 +168,7 @@ jobs:
           endpoint: ${{ secrets.AZURE_SIGNING_ENDPOINT }}
           trusted-signing-account-name: ${{ secrets.AZURE_SIGNING_ACCOUNT_NAME }}
           certificate-profile-name: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
-          files-folder: frontend/release
+          files-folder: frontend/release/win-unpacked
           files-folder-filter: exe
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
@@ -182,13 +182,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Regenerating latest.yml with signed exe checksums..."
-          # Delete old latest.yml (has wrong checksum)
+          # Delete old installer and metadata (has wrong checksum)
+          rm -f release/*.exe
           rm -f release/latest.yml
 
-          # Re-run electron-builder in publish-only mode
-          # This will regenerate latest.yml with correct checksums from the signed exe
+          # Re-run electron-builder with the unpacked app directory
+          # This will regenerate the installer and latest.yml with correct checksums from the signed exe
           # electron-builder will auto-discover electron-builder.json
-          npx electron-builder --win --x64 --publish always --prepackaged release
+          npx electron-builder --win --x64 --publish always --prepackaged release/win-unpacked
 
       - name: Prepare macOS signing credentials
         if: matrix.platform == 'macos'
