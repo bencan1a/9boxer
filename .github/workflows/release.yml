@@ -329,6 +329,7 @@ jobs:
             frontend/release/**/*.AppImage
             frontend/release/**/*.exe
             frontend/release/**/*.dmg
+            frontend/release/**/latest*.yml
           retention-days: 90
           if-no-files-found: error
 
@@ -427,6 +428,7 @@ jobs:
             release-artifacts/**/*-Windows-*.exe
             release-artifacts/**/*-macOS-*.dmg
             release-artifacts/**/*-Linux-*.AppImage
+            release-artifacts/**/latest*.yml
           body: ${{ steps.release_notes.outputs.release_notes }}
           prerelease: ${{ github.event.inputs.prerelease }}
           make_latest: true

@@ -148,17 +148,40 @@ function setupEventListeners(): void {
     log.error("Auto-updater error:", error);
     downloadInProgress = false;
 
-    // Send analytics
+    // Categorize error for better logging
+    let errorCategory = "unknown";
+    if (error.message.includes("404")) {
+      errorCategory = "missing_files";
+      log.warn(
+        "Update metadata files not found on server - this may be expected if release is still being published"
+      );
+    } else if (
+      error.message.includes("ENOTFOUND") ||
+      error.message.includes("ETIMEDOUT")
+    ) {
+      errorCategory = "network";
+      log.warn("Network error while checking for updates");
+    } else if (
+      error.message.includes("checksum") ||
+      error.message.includes("signature")
+    ) {
+      errorCategory = "verification";
+      log.error("Update verification failed - potential security issue");
+    } else {
+      log.error("Unexpected auto-updater error:", error);
+    }
+
+    // Send analytics with error category
     trackEvent({
       eventType: "error",
       fromVersion: autoUpdater.currentVersion.version,
       toVersion: latestVersion,
       platform: process.platform,
       arch: process.arch,
-      errorMessage: error.message,
+      errorMessage: `[${errorCategory}] ${error.message}`,
     });
 
-    // Notify renderer
+    // Notify renderer with cleaned error message
     broadcastToRenderers("update:error", {
       message: error.message,
     });
