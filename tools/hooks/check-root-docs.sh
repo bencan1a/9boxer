@@ -71,7 +71,7 @@ if [ ${#VIOLATIONS[@]} -gt 0 ]; then
     echo "  ✓ $allowed_file"
   done
   echo ""
-  echo "See AGENTS.md (lines 51-59) for file organization rules."
+  echo "See AGENTS.md for file organization rules and allowed root-level docs."
   exit 1
 fi
 

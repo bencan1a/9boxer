@@ -141,7 +141,8 @@ function validatePNG(filePath: string): { valid: boolean; error?: string } {
         try {
           fs.closeSync(fd);
         } catch (closeErr) {
-          // Log close errors for debugging but do not override any original error
+          // Log close errors for debugging. This won't mask errors from the try block
+          // since we're already in the finally clause and errors are returned via validation result.
           console.error(
             `Warning: failed to close file descriptor for "${filePath}":`,
             closeErr

@@ -21,7 +21,7 @@
  * }
  */
 
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -92,10 +92,27 @@ function getModifiedFiles(baseBranch: string): string[] {
     // Sanitize branch name to prevent command injection
     const safeBranch = sanitizeBranchName(baseBranch);
 
-    const gitDiff = execSync(`git diff --name-only ${safeBranch}...HEAD`, {
-      encoding: "utf-8",
-      cwd: FRONTEND_DIR,
-    }).trim();
+    // Use spawnSync with array arguments to avoid shell injection
+    const result = spawnSync(
+      "git",
+      ["diff", "--name-only", safeBranch + "...HEAD"],
+      {
+        encoding: "utf-8",
+        cwd: FRONTEND_DIR,
+      }
+    );
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    if (result.status !== 0) {
+      throw new Error(
+        `git diff failed with status ${result.status}: ${result.stderr}`
+      );
+    }
+
+    const gitDiff = result.stdout.trim();
 
     if (!gitDiff) {
       return [];
