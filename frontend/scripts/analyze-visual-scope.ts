@@ -218,7 +218,12 @@ function isSnapshotInScope(
     // Pattern is like "app-grid-employeetile--*"
     // Convert to regex: app-grid-employeetile--.*
     const patternRegex = new RegExp(
-      "^" + pattern.replace(/\*/g, ".*").replace(/--/g, ".*") + "$"
+      "^" +
+        pattern
+          // Only treat a trailing "--*" as a wildcard segment, not every occurrence
+          .replace(/--\*$/, "--.*")
+          .replace(/\*/g, ".*") +
+      "$"
     );
 
     // Check if the snapshot name starts with the story pattern
@@ -342,8 +347,8 @@ async function main() {
   // Exit with appropriate code
   // 0 = success (all in-scope or no failures)
   // 1 = out-of-scope failures detected
-  // 2 = global change detected
-  if (result.globalChangeDetected || result.metadata.globalChangeRatio > 0.5) {
+  // 2 = global change detected (explicitly flagged)
+  if (result.globalChangeDetected) {
     process.exit(2);
   } else if (result.outOfScope.length > 0) {
     process.exit(1);
