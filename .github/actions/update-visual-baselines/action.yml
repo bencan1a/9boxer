@@ -53,24 +53,12 @@ runs:
         CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
         echo "Current branch: $CURRENT_BRANCH"
 
-        # Sanitize branch name for safety (remove any potentially dangerous characters)
-        # This prevents issues if branch name contains special characters
-        # Note: We remove forward slashes too to prevent path traversal issues
-        SAFE_BRANCH=$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9_-]//g')
-
-        # Validate that sanitized branch name is non-empty and doesn't start with hyphen
-        if [[ -z "$SAFE_BRANCH" ]] || [[ "$SAFE_BRANCH" =~ ^- ]]; then
-          echo "Error: Invalid branch name after sanitization: '$CURRENT_BRANCH' -> '$SAFE_BRANCH'"
-          exit 1
-        fi
-
-        if [[ "$SAFE_BRANCH" != "$CURRENT_BRANCH" ]]; then
-          echo "Warning: Branch name was sanitized from '$CURRENT_BRANCH' to '$SAFE_BRANCH'"
-          CURRENT_BRANCH="$SAFE_BRANCH"
-        fi
-
-        # If on main/master, create a new branch
+        # If on main/master, create a new branch to hold baseline updates
         if [[ "$CURRENT_BRANCH" == "main" ]] || [[ "$CURRENT_BRANCH" == "master" ]]; then
+          # Create unique branch name
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          OS_LOWER=$(echo "${{ inputs.os-name }}" | tr '[:upper:]' '[:lower:]')
+          NEW_BRANCH="update-visual-baselines-${OS_LOWER}-${TIMESTAMP}"
           # Create unique branch name
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           OS_LOWER=$(echo "${{ inputs.os-name }}" | tr '[:upper:]' '[:lower:]')
