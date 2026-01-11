@@ -195,8 +195,10 @@ jobs:
           Auto-updated by visual-regression-smart workflow.
           EOF
 
-            # Push to PR branch
-            git push
+            # Synchronize with remote and push safely to PR branch
+            CURRENT_BRANCH="${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD)}"
+            git pull --rebase origin "$CURRENT_BRANCH"
+            git push --force-with-lease origin "$CURRENT_BRANCH"
 
             echo "committed=true" >> $GITHUB_OUTPUT
             echo "Successfully committed and pushed baseline updates"
