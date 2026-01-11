@@ -25,8 +25,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Fetch full history for proper git diff analysis
-          fetch-depth: 0
+          # Fetch sufficient history for git diff analysis without full clone
+          fetch-depth: 100
           # Use a token that can push to protected branches
           token: ${{ secrets.GITHUB_TOKEN }}
 
