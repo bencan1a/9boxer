@@ -6,7 +6,7 @@ import {
   FlagAddEvent,
   FlagRemoveEvent,
 } from "../../types/events";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const meta = {
   title: "App/Right Panel/Changes/EventDisplay",

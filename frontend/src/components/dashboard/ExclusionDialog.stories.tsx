@@ -21,7 +21,7 @@ import {
   PerformanceLevel,
   PotentialLevel,
 } from "../../types/employee";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 /**
  * Create mock employees for the dialog

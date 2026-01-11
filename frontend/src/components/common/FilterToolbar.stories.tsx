@@ -38,10 +38,10 @@ const meta: Meta<typeof FilterToolbar> = {
     (Story) => (
       <Box
         sx={{
-          width: "100%",
           height: "400px",
           position: "relative",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "background.default",
+          display: "inline-block",
         }}
       >
         <Story />
@@ -234,10 +234,10 @@ export const ExpandedDefault: Story = {
       return (
         <Box
           sx={{
-            width: "100%",
             height: "400px",
             position: "relative",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "background.default",
+            display: "inline-block",
           }}
         >
           <Story />
@@ -286,10 +286,10 @@ export const WithActiveFilters: Story = {
       return (
         <Box
           sx={{
-            width: "100%",
             height: "400px",
             position: "relative",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "background.default",
+            display: "inline-block",
           }}
         >
           <Story />
@@ -340,10 +340,10 @@ export const WithSearchResults: Story = {
       return (
         <Box
           sx={{
-            width: "100%",
             height: "400px",
             position: "relative",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "background.default",
+            display: "inline-block",
           }}
         >
           <Story />
@@ -393,10 +393,10 @@ export const CollapsedState: Story = {
       return (
         <Box
           sx={{
-            width: "100%",
             height: "400px",
             position: "relative",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "background.default",
+            display: "inline-block",
           }}
         >
           <Story />
@@ -421,54 +421,6 @@ export const CollapsedState: Story = {
  * ========================================================================
  * Original stories demonstrating different toolbar variants
  */
-
-/**
- * Variant 1: Compact - All elements inline (default)
- * All controls displayed in a single horizontal toolbar
- */
-export const CompactNoFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-compact-no-filters" },
-    docs: {
-      description: {
-        story:
-          "Compact variant with no active filters. Shows filter button, employee count, and search box in a single row.",
-      },
-    },
-  },
-  args: {
-    activeFilters: [],
-    filteredCount: 200,
-    totalCount: 200,
-    hasActiveFilters: false,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
-export const CompactWithFilters: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-compact-filters" },
-    docs: {
-      description: {
-        story:
-          "Compact variant with active filters. Shows filter badge, reduced employee count, and truncated filter info.",
-      },
-    },
-  },
-  args: {
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
 
 /**
  * Additional states
@@ -534,52 +486,6 @@ export const HeavilyFiltered: Story = {
   },
 };
 
-/**
- * Collapse/Expand Feature (Compact Variant)
- */
-export const CompactCollapsed: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filter-toolbar-compact-collapsed" },
-    docs: {
-      description: {
-        story:
-          "Compact toolbar in collapsed state. Shows only filter button with badge and toggle button. " +
-          "Click the chevron to expand and reveal employee count, filter info, and search box.",
-      },
-    },
-  },
-  decorators: [
-    (Story) => {
-      // Set collapsed state in localStorage before rendering
-      if (typeof window !== "undefined") {
-        localStorage.setItem("filterToolbarCollapsed", "true");
-      }
-      return (
-        <Box
-          sx={{
-            width: "100%",
-            height: "200px",
-            position: "relative",
-            backgroundColor: "#f5f5f5",
-          }}
-        >
-          <Story />
-        </Box>
-      );
-    },
-  ],
-  args: {
-    activeFilters: sampleFilters,
-    filteredCount: 45,
-    totalCount: 200,
-    hasActiveFilters: true,
-    onFilterClick: () => console.log("Filter clicked"),
-    onSearchChange: (value) => console.log("Search:", value),
-    employees: mockEmployees,
-  },
-};
-
 export const CompactCollapsedNoFilters: Story = {
   parameters: {
     docs: {
@@ -597,10 +503,10 @@ export const CompactCollapsedNoFilters: Story = {
       return (
         <Box
           sx={{
-            width: "100%",
             height: "200px",
             position: "relative",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "background.default",
+            display: "inline-block",
           }}
         >
           <Story />

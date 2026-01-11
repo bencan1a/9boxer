@@ -62,7 +62,7 @@ The devcontainer is designed to **exactly match** the CI environment to ensure:
 | **Venv** | None | None | ✅ |
 | **Node.js Version** | 20 | 20 | ✅ |
 | **Python Version** | 3.13 | 3.13 | ✅ |
-| **npm install** | `npm ci --legacy-peer-deps` | `npm install --legacy-peer-deps` | ⚠️ See note |
+| **npm install** | `npm ci` | `npm install` | ✅ |
 | **Playwright** | `--with-deps chromium` | `--with-deps` | ⚠️ See note |
 | **Display** | Headless (implicit) | Xvfb :99 | ✅ |
 
@@ -76,9 +76,8 @@ The devcontainer is designed to **exactly match** the CI environment to ensure:
 **Why different**:
 - `npm ci` requires exact lock file match, fails if out of sync
 - `npm install` is more flexible for development workflow
-- Both use `--legacy-peer-deps` for compatibility
 
-**Recommendation**: Use `npm ci --legacy-peer-deps` in devcontainer to match CI exactly
+**Recommendation**: Use `npm ci` in devcontainer to match CI exactly
 
 #### Playwright Browser Installation
 

@@ -5,7 +5,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ExclusionList } from "./ExclusionList";
 import Box from "@mui/material/Box";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof ExclusionList> = {
   title: "App/Dashboard/Filters/ExclusionList",

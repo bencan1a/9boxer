@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ApplyChangesDialog } from "./ApplyChangesDialog";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof ApplyChangesDialog> = {
   title: "App/Dialogs/ApplyChangesDialog",

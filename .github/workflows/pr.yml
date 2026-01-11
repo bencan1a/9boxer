@@ -517,7 +517,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Run Vitest component tests
         working-directory: frontend
@@ -580,7 +580,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Cache Playwright browsers
         id: playwright-cache

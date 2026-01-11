@@ -187,7 +187,7 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci --legacy-peer-deps
+          npm ci
 
       - name: Install Playwright browsers
         run: |
@@ -330,8 +330,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Check if there are changes to commit
-          if [[ -n $(git status --porcelain resources/user-guide/docs/images/screenshots/) ]]; then
-            git add resources/user-guide/docs/images/screenshots/
+          if [[ -n $(git status --porcelain resources/user-guide-vitepress/docs/public/images/screenshots/) ]]; then
+            git add resources/user-guide-vitepress/docs/public/images/screenshots/
             git commit -m "docs: auto-update screenshots for affected components
 
             Updated ${{ needs.detect-doc-impact.outputs.screenshot_count }} screenshot(s) affected by component changes:
@@ -415,9 +415,9 @@ jobs:
             });
 
       - name: Upload Screenshot Artifacts
-        if: always() && hashFiles('resources/user-guide/docs/images/screenshots/**') != ''
+        if: always() && hashFiles('resources/user-guide-vitepress/docs/public/images/screenshots/**') != ''
         uses: actions/upload-artifact@v4
         with:
           name: regenerated-screenshots
-          path: resources/user-guide/docs/images/screenshots/
+          path: resources/user-guide-vitepress/docs/public/images/screenshots/
           retention-days: 30

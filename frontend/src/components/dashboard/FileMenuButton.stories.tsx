@@ -7,7 +7,7 @@
 // Hardcoded colors are intentional for visual examples
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn, userEvent, within } from "@storybook/test";
+import { fn, userEvent, within } from "storybook/test";
 import { FileMenuButton } from "./FileMenuButton";
 import Box from "@mui/material/Box";
 

@@ -8,7 +8,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import EmptyState from "./DashboardEmptyState";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";

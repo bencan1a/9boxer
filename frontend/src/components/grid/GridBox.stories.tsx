@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { DndContext } from "@dnd-kit/core";
 import Box from "@mui/material/Box";
 import { GridBox } from "./GridBox";
