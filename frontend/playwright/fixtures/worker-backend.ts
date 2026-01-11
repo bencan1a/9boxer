@@ -8,7 +8,6 @@ import { spawn, ChildProcess } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import axios from "axios";
 
 // Increase timeout for CI environments (especially Windows/macOS which are slower)
 const MAX_RETRIES = process.env.CI ? 180 : 90; // 3 minutes for CI, 90 seconds locally
@@ -34,8 +33,15 @@ async function waitForBackend(url: string, workerIndex: number): Promise<void> {
 
   for (let i = 0; i < MAX_RETRIES; i++) {
     try {
-      const response = await axios.get(healthUrl, { timeout: 2000 });
-      if (response.status === 200) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+      const response = await fetch(healthUrl, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
         console.log(`[Worker ${workerIndex}] ✓ Backend is healthy and ready`);
         return;
       }

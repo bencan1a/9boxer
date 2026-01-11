@@ -8,7 +8,6 @@ import {
 } from "electron";
 import { spawn, ChildProcess } from "child_process";
 import path from "path";
-import axios from "axios";
 import { WindowStateManager } from "./windowState";
 import {
   initAutoUpdater,
@@ -286,10 +285,15 @@ async function waitForBackend(
 
   for (let i = 0; i < maxAttempts; i++) {
     try {
-      const response = await axios.get(`${BACKEND_URL}/health`, {
-        timeout: 1000,
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1000);
+
+      const response = await fetch(`${BACKEND_URL}/health`, {
+        signal: controller.signal,
       });
-      if (response.status === 200) {
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
         console.log("✅ Backend ready");
         return true;
       }
@@ -564,10 +568,18 @@ async function attemptBackendRestart(): Promise<boolean> {
  */
 async function performHealthCheck(): Promise<boolean> {
   try {
-    const response = await axios.get(`${BACKEND_URL}/health`, {
-      timeout: HEALTH_CHECK_TIMEOUT,
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      HEALTH_CHECK_TIMEOUT
+    );
+
+    const response = await fetch(`${BACKEND_URL}/health`, {
+      signal: controller.signal,
     });
-    return response.status === 200;
+    clearTimeout(timeoutId);
+
+    return response.ok;
   } catch (error) {
     console.warn(
       "⚠️ Health check failed:",
@@ -1092,10 +1104,11 @@ app.on("ready", async () => {
       if (!getIsDev()) {
         initAutoUpdater(async (event: UpdateAnalyticsEvent) => {
           try {
-            await axios.post(
-              `${BACKEND_URL}/api/analytics/update-events`,
-              event
-            );
+            await fetch(`${BACKEND_URL}/api/analytics/update-events`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(event),
+            });
           } catch (error) {
             console.error("Failed to send update analytics:", error);
           }

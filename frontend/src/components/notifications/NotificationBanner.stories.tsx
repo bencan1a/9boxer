@@ -34,6 +34,11 @@ const meta: Meta<typeof NotificationBanner> = {
       control: "boolean",
       description: "Whether the notification can be dismissed",
     },
+    floating: {
+      control: "boolean",
+      description:
+        "Whether to display as a floating notification at the top center of the viewport",
+    },
   },
   decorators: [
     (Story) => (
@@ -289,6 +294,41 @@ export const AutoUpdateReady: Story = {
       description: {
         story:
           "Real-world use case: Update silently downloaded in background and ready for installation. This is the ONLY notification users see since download happens automatically.",
+      },
+    },
+  },
+};
+
+export const AutoUpdateReadyFloating: Story = {
+  name: "Use Case: Auto-Update Ready (Floating)",
+  args: {
+    variant: "success",
+    title: "Update 0.9.1 is ready",
+    description: "Restart to install and enjoy the latest features",
+    icon: <CloudDownload />,
+    floating: true,
+    actions: [
+      {
+        label: "Restart Now",
+        onClick: () => console.log("Restarting application..."),
+        variant: "contained",
+        color: "primary",
+      },
+    ],
+    closable: true,
+    onClose: () => console.log("Dismissed"),
+  },
+  tags: ["screenshot"],
+  parameters: {
+    screenshot: {
+      enabled: true,
+      id: "notification-banner-use-case-ready-floating",
+    },
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Floating variant: Non-intrusive notification at top center of viewport. Close button (X) in top-right corner follows window control convention. Primary action (Restart Now) in bottom-right follows modal dialog pattern. No redundant 'Later' button - use X to dismiss.",
       },
     },
   },

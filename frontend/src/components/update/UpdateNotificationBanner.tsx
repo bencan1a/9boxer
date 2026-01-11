@@ -51,26 +51,20 @@ interface UpdateStatus {
   updateDownloaded: boolean;
 }
 
-interface UpdateInfo {
-  version: string;
-  releaseDate: string;
-  releaseNotes: string;
-}
-
 /**
- * Simplified auto-update notification banner
+ * Simplified auto-update notification banner with floating mode
  *
  * Since auto-update downloads silently in the background, this component
  * only shows notifications for:
- * 1. Update ready to install (requires user action: restart)
- * 2. Download errors (optional - allows user to dismiss)
+ * 1. Update ready to install (floating banner - requires user action: restart)
+ * 2. Download errors (floating banner - allows user to retry or dismiss)
  *
  * Download progress is NOT shown as it happens silently.
  */
 export const UpdateNotificationBanner: React.FC = () => {
   const [status, setStatus] = useState<UpdateStatus | null>(null);
-  const [_updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     // Check if electronAPI is available (only available in Electron environment)
@@ -81,19 +75,12 @@ export const UpdateNotificationBanner: React.FC = () => {
     // Get initial status
     window.electronAPI.update.getStatus().then(setStatus);
 
-    // Listen for update events
-    const cleanupAvailable = window.electronAPI.update.onUpdateAvailable(
-      (info: UpdateInfo) => {
-        setUpdateInfo(info);
-        // Refresh status when update becomes available
-        window.electronAPI?.update.getStatus().then(setStatus);
-      }
-    );
-
+    // Listen for update downloaded event (the only one we show in silent mode)
     const cleanupDownloaded = window.electronAPI.update.onUpdateDownloaded(
       () => {
         // Refresh status when download completes
         window.electronAPI?.update.getStatus().then(setStatus);
+        setDismissed(false); // Ensure notification is shown when download completes
       }
     );
 
@@ -104,15 +91,15 @@ export const UpdateNotificationBanner: React.FC = () => {
     );
 
     return () => {
-      cleanupAvailable();
       cleanupDownloaded();
       cleanupError();
     };
   }, []);
 
-  if (!status) return null;
+  // Don't show if dismissed or no status
+  if (!status || dismissed) return null;
 
-  // Error state (optional - shown if silent download fails)
+  // Error state (only show critical errors in floating mode)
   if (error) {
     const errorConfig = getUpdateErrorMessage(error);
     return (
@@ -120,7 +107,16 @@ export const UpdateNotificationBanner: React.FC = () => {
         variant="error"
         title={errorConfig.title}
         description={errorConfig.detail}
+        floating={true}
         actions={[
+          {
+            label: "Retry",
+            onClick: () => {
+              setError(null);
+              window.electronAPI?.update.checkForUpdates();
+            },
+            variant: "contained",
+          },
           {
             label: "Dismiss",
             onClick: () => setError(null),
@@ -134,7 +130,8 @@ export const UpdateNotificationBanner: React.FC = () => {
   }
 
   // Update downloaded and ready to install
-  // This is the PRIMARY notification users will see
+  // FLOATING BANNER: Non-intrusive, appears at top center
+  // X button (top-right) dismisses, "Restart Now" (bottom-right) is primary action
   if (status.updateDownloaded) {
     return (
       <NotificationBanner
@@ -142,6 +139,7 @@ export const UpdateNotificationBanner: React.FC = () => {
         title={`Update ${status.updateVersion} is ready`}
         description="Restart to install and enjoy the latest features"
         icon={<CloudDownload />}
+        floating={true}
         actions={[
           {
             label: "Restart Now",
@@ -149,25 +147,14 @@ export const UpdateNotificationBanner: React.FC = () => {
             variant: "contained",
             color: "primary",
           },
-          {
-            label: "Later",
-            onClick: () => {
-              // Hide the banner temporarily
-              // It will reappear on next app launch if update still pending
-              setStatus((prev) =>
-                prev ? { ...prev, updateDownloaded: false } : null
-              );
-            },
-            variant: "text",
-          },
         ]}
-        closable={false}
+        closable={true}
+        onClose={() => setDismissed(true)}
       />
     );
   }
 
-  // No notification shown during:
-  // - Update available (downloads silently)
-  // - Download in progress (happens in background)
+  // Silent mode: Don't show anything for "update available" or "download in progress"
+  // The update downloads automatically in the background
   return null;
 };
