@@ -1,0 +1,80 @@
+name: 'Update Visual Baselines'
+description: 'Run visual regression tests and commit updated baselines'
+
+inputs:
+  os-name:
+    description: 'OS name for commit message and artifact (Linux, Windows, macOS)'
+    required: true
+  reason:
+    description: 'Reason for baseline update'
+    required: true
+  actor:
+    description: 'GitHub actor triggering the update'
+    required: true
+  run-id:
+    description: 'GitHub Actions run ID'
+    required: true
+  server-url:
+    description: 'GitHub server URL'
+    required: true
+  repository:
+    description: 'GitHub repository'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Update visual regression baselines
+      shell: bash
+      working-directory: frontend
+      run: npm run test:visual:update
+      env:
+        CI: true
+
+    - name: Check for changes
+      id: check_changes
+      shell: bash
+      run: |
+        if git diff --quiet; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push baseline updates
+      if: steps.check_changes.outputs.has_changes == 'true'
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add frontend/playwright/visual/**/*.png
+        git commit -m "chore: update visual baselines (${{ inputs.os-name }}) [skip ci]
+
+        Reason: ${{ inputs.reason }}
+
+        Updated by: @${{ inputs.actor }}
+        Workflow run: ${{ inputs.server-url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run-id }}"
+        git push
+
+    - name: Upload baseline screenshots
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: visual-baselines-${{ inputs.os-name }}
+        path: frontend/playwright/visual/**/*.png
+        retention-days: 30
+
+    - name: Summary (changes detected)
+      if: steps.check_changes.outputs.has_changes == 'true'
+      shell: bash
+      run: |
+        echo "## ✅ Visual Baselines Updated (${{ inputs.os-name }})" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Reason:** ${{ inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Updated by:** @${{ inputs.actor }}" >> $GITHUB_STEP_SUMMARY
+
+    - name: Summary (no changes)
+      if: steps.check_changes.outputs.has_changes == 'false'
+      shell: bash
+      run: |
+        echo "## ℹ️ No Baseline Changes (${{ inputs.os-name }})" >> $GITHUB_STEP_SUMMARY
