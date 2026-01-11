@@ -107,7 +107,6 @@ markers = [
 
 [tool.coverage.run]
 source = ["backend/src"]
-parallel = true
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
@@ -115,6 +114,7 @@ omit = [
     "*/venv/*",
 ]
 relative_files = true
+concurrency = ["multiprocessing"]
 
 [tool.coverage.report]
 exclude_lines = [
