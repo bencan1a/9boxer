@@ -218,7 +218,12 @@ function isSnapshotInScope(
     // Pattern is like "app-grid-employeetile--*"
     // Convert to regex: app-grid-employeetile--.*
     const patternRegex = new RegExp(
-      "^" + pattern.replace(/\*/g, ".*").replace(/--/g, ".*") + "$"
+      "^" +
+        pattern
+          // Only treat "--*" as a wildcard segment, not every occurrence of "--"
+          .replace(/--\*/g, "--.*")
+          .replace(/\*/g, ".*") +
+      "$"
     );
 
     // Check if the snapshot name starts with the story pattern
