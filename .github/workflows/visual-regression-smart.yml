@@ -194,7 +194,7 @@ jobs:
             # Commit updated baselines
             git add playwright/visual/**/*.png
 
-            cat << 'EOF' | git commit -F -
+            cat << EOF | git commit -F -
           chore: auto-update visual baselines (in-scope)
 
           Updated ${{ steps.smart-update.outputs.updated_count }} baseline(s) for intentional changes.
