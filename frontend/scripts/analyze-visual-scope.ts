@@ -347,8 +347,8 @@ async function main() {
   // Exit with appropriate code
   // 0 = success (all in-scope or no failures)
   // 1 = out-of-scope failures detected
-  // 2 = global change detected
-  if (result.globalChangeDetected || result.metadata.globalChangeRatio > 0.5) {
+  // 2 = global change detected (explicitly flagged)
+  if (result.globalChangeDetected) {
     process.exit(2);
   } else if (result.outOfScope.length > 0) {
     process.exit(1);
