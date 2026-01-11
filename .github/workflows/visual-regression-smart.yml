@@ -243,7 +243,8 @@ jobs:
 
               # Check if we should retry
               if [ $attempt -lt $max_attempts ]; then
-                local wait_time=$((backoff ** attempt))
+                # Use awk with -v for safe variable passing (no shell expansion issues)
+                local wait_time=$(awk -v b="$backoff" -v a="$attempt" 'BEGIN {print int(b ^ a)}')
                 echo "Push failed, waiting ${wait_time}s before retry..."
                 sleep $wait_time
               fi

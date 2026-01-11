@@ -1,0 +1,179 @@
+name: 'Update Visual Baselines'
+description: 'Run visual regression tests and commit updated baselines'
+
+inputs:
+  os-name:
+    description: 'OS name for commit message and artifact (Linux, Windows, macOS)'
+    required: true
+  reason:
+    description: 'Reason for baseline update'
+    required: true
+  actor:
+    description: 'GitHub actor triggering the update'
+    required: true
+  run-id:
+    description: 'GitHub Actions run ID'
+    required: true
+  server-url:
+    description: 'GitHub server URL'
+    required: true
+  repository:
+    description: 'GitHub repository'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Update visual regression baselines
+      shell: bash
+      working-directory: frontend
+      run: npm run test:visual:update
+      env:
+        CI: true
+
+    - name: Check for changes
+      id: check_changes
+      shell: bash
+      run: |
+        # Run git diff and capture its exit code
+        # Exit code 0 = no changes, 1 = changes detected, other = error
+        set +e
+        git diff --quiet
+        EXIT_CODE=$?
+        set -e
+
+        if [[ "$EXIT_CODE" -eq 0 ]]; then
+          # No changes
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        elif [[ "$EXIT_CODE" -eq 1 ]]; then
+          # Changes detected
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        else
+          # git diff failed; log and default to no changes
+          echo "git diff failed with exit code $EXIT_CODE; defaulting has_changes=false"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        fi
+
+        # Ensure the step succeeds even if git diff failed
+        exit 0
+
+    - name: Commit and push baseline updates
+      id: commit_updates
+      if: steps.check_changes.outputs.has_changes == 'true'
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        # Determine current branch
+        CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+        echo "Current branch: $CURRENT_BRANCH"
+
+        # If on main/master, create a new branch to hold baseline updates
+        if [[ "$CURRENT_BRANCH" == "main" ]] || [[ "$CURRENT_BRANCH" == "master" ]]; then
+          # Create unique branch name
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          OS_LOWER=$(echo "${{ inputs.os-name }}" | tr '[:upper:]' '[:lower:]')
+          NEW_BRANCH="update-visual-baselines-${OS_LOWER}-${TIMESTAMP}"
+
+          echo "Creating new branch: $NEW_BRANCH"
+          git checkout -b "$NEW_BRANCH"
+
+          # Commit changes
+          git add frontend/playwright/visual/**/*.png
+          git commit -m "chore: update visual baselines (${{ inputs.os-name }}) [skip ci]
+
+          Reason: ${{ inputs.reason }}
+
+          Updated by: @${{ inputs.actor }}
+          Workflow run: ${{ inputs.server-url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run-id }}"
+
+          # Push new branch
+          git push -u origin "$NEW_BRANCH"
+
+          echo "branch_name=$NEW_BRANCH" >> $GITHUB_OUTPUT
+          echo "created_branch=true" >> $GITHUB_OUTPUT
+        else
+          # On feature branch, commit and push directly
+          git add frontend/playwright/visual/**/*.png
+          git commit -m "chore: update visual baselines (${{ inputs.os-name }}) [skip ci]
+
+          Reason: ${{ inputs.reason }}
+
+          Updated by: @${{ inputs.actor }}
+          Workflow run: ${{ inputs.server-url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run-id }}"
+
+          # Push with retry logic (exponential backoff and clear error reporting)
+          MAX_ATTEMPTS=3
+          attempt=1
+          while [[ "$attempt" -le "$MAX_ATTEMPTS" ]]; do
+            echo "Attempt $attempt/$MAX_ATTEMPTS: pushing changes to origin/$CURRENT_BRANCH..."
+            if git push; then
+              echo "Push succeeded on attempt $attempt."
+              break
+            fi
+
+            echo "Push failed on attempt $attempt."
+
+            echo "Running 'git pull --rebase' to resolve potential conflicts..."
+            if ! git pull --rebase; then
+              echo "Error: 'git pull --rebase' failed on attempt $attempt. Aborting."
+              exit 1
+            fi
+
+            if [[ "$attempt" -lt "$MAX_ATTEMPTS" ]]; then
+              backoff=$((2 ** (attempt - 1)))
+              echo "Retrying push after ${backoff}s backoff..."
+              sleep "$backoff"
+            fi
+
+            attempt=$((attempt + 1))
+          done
+
+          if [[ "$attempt" -gt "$MAX_ATTEMPTS" ]]; then
+            echo "Error: Failed to push changes to origin/$CURRENT_BRANCH after $MAX_ATTEMPTS attempts."
+            exit 1
+          fi
+          echo "branch_name=$CURRENT_BRANCH" >> $GITHUB_OUTPUT
+          echo "created_branch=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Upload baseline screenshots
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: visual-baselines-${{ inputs.os-name }}
+        path: frontend/playwright/visual/**/*.png
+        retention-days: 30
+
+    - name: Summary (changes detected)
+      if: steps.check_changes.outputs.has_changes == 'true'
+      shell: bash
+      run: |
+        CREATED_BRANCH="${{ steps.commit_updates.outputs.created_branch }}"
+        BRANCH_NAME="${{ steps.commit_updates.outputs.branch_name }}"
+
+        if [[ "$CREATED_BRANCH" == "true" ]]; then
+          echo "## ✅ Visual Baselines Updated (${{ inputs.os-name }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated by:** @${{ inputs.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Branch Protection Notice:** Changes pushed to new branch \`$BRANCH_NAME\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "A new branch was created because direct pushes to main are not allowed." >> $GITHUB_STEP_SUMMARY
+          echo "Please create a pull request to merge these baseline updates." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "## ✅ Visual Baselines Updated (${{ inputs.os-name }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated by:** @${{ inputs.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Changes committed to branch: \`$BRANCH_NAME\`" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Summary (no changes)
+      if: steps.check_changes.outputs.has_changes == 'false'
+      shell: bash
+      run: |
+        echo "## ℹ️ No Baseline Changes (${{ inputs.os-name }})" >> $GITHUB_STEP_SUMMARY
