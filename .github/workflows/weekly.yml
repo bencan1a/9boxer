@@ -85,10 +85,10 @@ jobs:
         run: uv pip install --system -e '.[dev]'
 
       - name: Run unit tests with coverage
-        run: pytest backend/tests/unit/ --cov=backend/src --cov-report=term -v
+        run: pytest backend/tests/unit/ --cov=backend/src --cov-report= -v
 
       - name: Run integration tests with coverage
-        run: pytest backend/tests/integration/ --cov=backend/src --cov-append --cov-report=term -v -n 0
+        run: pytest backend/tests/integration/ --cov=backend/src --cov-append --cov-report= -v -n 0
 
       - name: Run performance tests
         run: pytest backend/tests/performance/ -v --durations=10
