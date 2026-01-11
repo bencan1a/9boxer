@@ -1,0 +1,17 @@
+{
+  "name": "9boxer-user-guide-vitepress",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "VitePress documentation for 9Boxer",
+  "scripts": {
+    "dev": "vitepress dev docs --port 38081",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs --port 38082"
+  },
+  "devDependencies": {
+    "mermaid": "^11.12.2",
+    "vitepress": "^1.5.0",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}

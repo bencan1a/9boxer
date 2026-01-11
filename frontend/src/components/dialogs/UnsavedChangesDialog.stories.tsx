@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { UnsavedChangesDialog } from "./UnsavedChangesDialog";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof UnsavedChangesDialog> = {
   title: "App/Dialogs/UnsavedChangesDialog",

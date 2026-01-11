@@ -264,7 +264,7 @@ actionlint .github/workflows/update-visual-baselines.yml
 ```bash
 # Ensure dependencies installed
 cd frontend
-npm ci --legacy-peer-deps
+npm ci
 ```
 
 **Error: Git diff failed**

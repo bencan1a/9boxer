@@ -296,7 +296,9 @@ The function is lightweight - it only:
 ### Issue 2: Peer Dependency Conflicts
 **Problem**: Installing rollup-plugin-visualizer failed due to Storybook peer dependency conflicts
 
-**Resolution**: Used `--legacy-peer-deps` flag to bypass peer dependency checks
+**Resolution**: Originally used `--legacy-peer-deps` flag to bypass peer dependency checks
+
+**Update (2026-01)**: Resolved by migrating from `@storybook/test@8.6.14` to Storybook 10 compatible approach. The `--legacy-peer-deps` flag is no longer needed.
 
 ---
 

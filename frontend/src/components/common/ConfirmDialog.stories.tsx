@@ -3,7 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { useState } from "react";
 import { ConfirmDialog } from "./ConfirmDialog";
 import Button from "@mui/material/Button";

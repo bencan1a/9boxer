@@ -18,7 +18,7 @@ import { useSessionStore } from "../../store/sessionStore";
 const createMockEmployees = (): Employee[] => {
   const employees: Employee[] = [];
 
-  // Helper to create employee
+  // Helper to create employee with proper management chain
   const createEmployee = (
     id: number,
     name: string,
@@ -26,7 +26,8 @@ const createMockEmployees = (): Employee[] => {
     location: string,
     manager: string,
     jobLevel: string,
-    flags: string[] = []
+    flags: string[] = [],
+    managementChain: string[] = []
   ): Employee => ({
     employee_id: id,
     name,
@@ -37,12 +38,12 @@ const createMockEmployees = (): Employee[] => {
     job_function: jobFunction,
     location,
     manager,
-    management_chain_01: manager,
-    management_chain_02: "CEO",
-    management_chain_03: null,
-    management_chain_04: null,
-    management_chain_05: null,
-    management_chain_06: null,
+    management_chain_01: managementChain[0] || manager || null,
+    management_chain_02: managementChain[1] || null,
+    management_chain_03: managementChain[2] || null,
+    management_chain_04: managementChain[3] || null,
+    management_chain_05: managementChain[4] || null,
+    management_chain_06: managementChain[5] || null,
     hire_date: "2020-01-15",
     tenure_category: "3-5 years",
     time_in_job_profile: "2 years",
@@ -61,7 +62,8 @@ const createMockEmployees = (): Employee[] => {
     flags,
   });
 
-  // Create diverse employee set
+  // Create diverse employee set with proper management chains
+  // Jane Smith reports to VP Engineering
   employees.push(
     createEmployee(
       1,
@@ -70,30 +72,57 @@ const createMockEmployees = (): Employee[] => {
       "USA",
       "Jane Smith",
       "MT4",
-      ["promotion_ready", "succession_candidate"]
+      ["promotion_ready", "succession_candidate"],
+      ["Jane Smith", "VP Engineering", "CEO"]
     )
   );
   employees.push(
-    createEmployee(2, "Bob Smith", "Engineering", "USA", "Jane Smith", "MT3", [
-      "new_hire",
-    ])
+    createEmployee(
+      2,
+      "Bob Smith",
+      "Engineering",
+      "USA",
+      "Jane Smith",
+      "MT3",
+      ["new_hire"],
+      ["Jane Smith", "VP Engineering", "CEO"]
+    )
   );
   employees.push(
-    createEmployee(3, "Carol White", "Product", "Europe", "John Doe", "MT5", [
-      "high_retention_priority",
-      "promotion_ready",
-    ])
+    createEmployee(
+      3,
+      "Carol White",
+      "Product",
+      "Europe",
+      "John Doe",
+      "MT5",
+      ["high_retention_priority", "promotion_ready"],
+      ["John Doe", "VP Product", "CEO"]
+    )
   );
   employees.push(
-    createEmployee(4, "David Brown", "Product", "Europe", "John Doe", "MT4", [
-      "flight_risk",
-      "flagged_for_discussion",
-    ])
+    createEmployee(
+      4,
+      "David Brown",
+      "Product",
+      "Europe",
+      "John Doe",
+      "MT4",
+      ["flight_risk", "flagged_for_discussion"],
+      ["John Doe", "VP Product", "CEO"]
+    )
   );
   employees.push(
-    createEmployee(5, "Eve Davis", "Design", "Australia", "Sarah Lee", "MT3", [
-      "ready_for_lateral_move",
-    ])
+    createEmployee(
+      5,
+      "Eve Davis",
+      "Design",
+      "Australia",
+      "Sarah Lee",
+      "MT3",
+      ["ready_for_lateral_move"],
+      ["Sarah Lee", "VP Design", "CEO"]
+    )
   );
   employees.push(
     createEmployee(
@@ -103,18 +132,33 @@ const createMockEmployees = (): Employee[] => {
       "USA",
       "Jane Smith",
       "MT2",
-      ["pip"]
+      ["pip"],
+      ["Jane Smith", "VP Engineering", "CEO"]
     )
   );
   employees.push(
-    createEmployee(7, "Grace Martinez", "Product", "India", "John Doe", "MT4", [
-      "succession_candidate",
-    ])
+    createEmployee(
+      7,
+      "Grace Martinez",
+      "Product",
+      "India",
+      "John Doe",
+      "MT4",
+      ["succession_candidate"],
+      ["John Doe", "VP Product", "CEO"]
+    )
   );
   employees.push(
-    createEmployee(8, "Henry Taylor", "Design", "Canada", "Sarah Lee", "MT5", [
-      "promotion_ready",
-    ])
+    createEmployee(
+      8,
+      "Henry Taylor",
+      "Design",
+      "Canada",
+      "Sarah Lee",
+      "MT5",
+      ["promotion_ready"],
+      ["Sarah Lee", "VP Design", "CEO"]
+    )
   );
   employees.push(
     createEmployee(
@@ -124,18 +168,33 @@ const createMockEmployees = (): Employee[] => {
       "India",
       "Mike Zhang",
       "MT6",
-      ["high_retention_priority", "succession_candidate"]
+      ["high_retention_priority", "succession_candidate"],
+      ["Mike Zhang", "VP Engineering", "CEO"]
     )
   );
   employees.push(
-    createEmployee(10, "Jack Anderson", "Product", "USA", "Jane Smith", "MT4", [
-      "flight_risk",
-    ])
+    createEmployee(
+      10,
+      "Jack Anderson",
+      "Product",
+      "USA",
+      "Jane Smith",
+      "MT4",
+      ["flight_risk"],
+      ["Jane Smith", "VP Engineering", "CEO"]
+    )
   );
   employees.push(
-    createEmployee(11, "Karen Lee", "Design", "Europe", "Sarah Lee", "MT3", [
-      "new_hire",
-    ])
+    createEmployee(
+      11,
+      "Karen Lee",
+      "Design",
+      "Europe",
+      "Sarah Lee",
+      "MT3",
+      ["new_hire"],
+      ["Sarah Lee", "VP Design", "CEO"]
+    )
   );
   employees.push(
     createEmployee(
@@ -145,7 +204,58 @@ const createMockEmployees = (): Employee[] => {
       "Australia",
       "Mike Zhang",
       "MT4",
-      ["flagged_for_discussion"]
+      ["flagged_for_discussion"],
+      ["Mike Zhang", "VP Engineering", "CEO"]
+    )
+  );
+
+  // Add the managers themselves as employees so they appear in the org hierarchy
+  employees.push(
+    createEmployee(
+      13,
+      "Jane Smith",
+      "Engineering",
+      "USA",
+      "VP Engineering",
+      "MT5",
+      [],
+      ["VP Engineering", "CEO"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      14,
+      "John Doe",
+      "Product",
+      "USA",
+      "VP Product",
+      "MT5",
+      [],
+      ["VP Product", "CEO"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      15,
+      "Sarah Lee",
+      "Design",
+      "USA",
+      "VP Design",
+      "MT5",
+      [],
+      ["VP Design", "CEO"]
+    )
+  );
+  employees.push(
+    createEmployee(
+      16,
+      "Mike Zhang",
+      "Engineering",
+      "USA",
+      "VP Engineering",
+      "MT5",
+      [],
+      ["VP Engineering", "CEO"]
     )
   );
 
@@ -186,7 +296,14 @@ const withStoreState = (
     }, []);
 
     return (
-      <Box sx={{ position: "relative", height: "100vh", width: "100vw" }}>
+      <Box
+        sx={{
+          position: "relative",
+          height: "600px",
+          width: "100%",
+          overflow: "hidden",
+        }}
+      >
         <Story />
       </Box>
     );
@@ -403,30 +520,26 @@ export const MultipleFiltersActive: Story = {
 };
 
 /**
- * All sections expanded - full drawer anatomy
+ * Default state - drawer with collapsed sections
  */
-export const AllSectionsExpanded: Story = {
+export const Default: Story = {
   tags: ["screenshot"],
   parameters: {
-    screenshot: { enabled: true, id: "filters-panel-expanded" },
+    screenshot: { enabled: true, id: "filters-panel-default" },
     docs: {
       description: {
         story:
-          "Full drawer anatomy with all filter sections visible. " +
-          "IMPORTANT: Manually expand all sections in Storybook to view. " +
-          "Shows: Job Levels (MT1-MT6), Job Functions, Locations, Managers, " +
-          "Flags (8 types), Reporting Chain, and Exclusions. " +
-          "Some filters are selected to demonstrate count badges.",
+          "Default filter drawer state with all sections collapsed. " +
+          "Shows all available filter sections: Job Levels, Job Functions, Locations, Managers, " +
+          "Flags, Reporting Chain, and Exclusions. " +
+          "Sections can be expanded by clicking on their headers. " +
+          "This is the initial state users see when opening the filter drawer.",
       },
     },
   },
   decorators: [
     withStoreState(() => {
-      const store = useFilterStore.getState();
-      // Add some filters to show counts
-      store.toggleJobFunction("Engineering");
-      store.toggleLocation("USA");
-      store.toggleFlag("promotion_ready");
+      // No filters applied, sections collapsed by default
     }),
   ],
 };
@@ -582,64 +695,4 @@ export const LightTheme: Story = {
       },
     },
   },
-};
-
-/**
- * Multiple selections in one category (OR logic)
- * Demonstrates that selecting Engineering AND Sales shows employees in EITHER function.
- * Used for filters-logic-or-example screenshot.
- */
-export const MultipleSelectionsOr: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filters-logic-or-example" },
-    docs: {
-      description: {
-        story:
-          "Demonstrates OR logic within a single filter category. " +
-          "When Engineering and Product are both selected in Job Functions, " +
-          "employees in EITHER function are shown (union). " +
-          "This is the default behavior for multiple selections within one category.",
-      },
-    },
-  },
-  decorators: [
-    withStoreState(() => {
-      const store = useFilterStore.getState();
-      // Multiple selections in Job Functions (OR logic)
-      store.toggleJobFunction("Engineering");
-      store.toggleJobFunction("Product");
-    }),
-  ],
-};
-
-/**
- * Selections across multiple categories (AND logic)
- * Demonstrates that selecting a Job Function AND a Location shows only employees matching BOTH.
- * Used for filters-logic-and-example screenshot.
- */
-export const MultipleCategoriesAnd: Story = {
-  tags: ["screenshot"],
-  parameters: {
-    screenshot: { enabled: true, id: "filters-logic-and-example" },
-    docs: {
-      description: {
-        story:
-          "Demonstrates AND logic across different filter categories. " +
-          "When Engineering is selected in Job Functions AND USA is selected in Locations, " +
-          "only employees matching BOTH criteria are shown (intersection). " +
-          "Different categories are combined with AND logic.",
-      },
-    },
-  },
-  decorators: [
-    withStoreState(() => {
-      const store = useFilterStore.getState();
-      // Selections in different categories (AND logic)
-      store.toggleJobFunction("Engineering");
-      store.toggleLocation("USA");
-      // Add a flag too to show multiple AND conditions
-      store.toggleFlag("promotion_ready");
-    }),
-  ],
 };

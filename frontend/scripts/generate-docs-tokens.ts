@@ -3,7 +3,7 @@
  * Generate Design Tokens CSS for Documentation
  *
  * This script reads the TypeScript design tokens from frontend/src/theme/tokens.ts
- * and generates a CSS file with custom properties for use in the MkDocs documentation.
+ * and generates a CSS file with custom properties for use in the VitePress documentation.
  *
  * This ensures the documentation design system stays in sync with the application.
  *
@@ -276,13 +276,13 @@ function main() {
   const css = generateCSS();
   const outputPath = join(
     __dirname,
-    "../../resources/user-guide/docs/stylesheets/design-tokens.css"
+    "../../resources/user-guide-vitepress/docs/public/stylesheets/design-tokens.css"
   );
 
   writeFileSync(outputPath, css, "utf8");
 
   console.log(
-    "✅ Generated: resources/user-guide/docs/stylesheets/design-tokens.css"
+    "✅ Generated: resources/user-guide-vitepress/docs/public/stylesheets/design-tokens.css"
   );
   console.log("");
   console.log("📊 Token Summary:");
@@ -297,7 +297,9 @@ function main() {
   console.log("💡 Next steps:");
   console.log("   1. Review the generated CSS file");
   console.log("   2. Update extra.css to use the new CSS custom properties");
-  console.log("   3. Run 'mkdocs serve' to preview changes");
+  console.log(
+    "   3. Run 'npm run docs:dev' in resources/user-guide-vitepress to preview changes"
+  );
 }
 
 main();

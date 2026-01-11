@@ -115,7 +115,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeTileModified",
-    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-orange-border.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/making-changes-orange-border.png",
     description: "Employee tile with full orange modified border (2px)",
     storyId: "app-grid-employeetile--modified-normal-mode",
     cropping: "element",
@@ -128,7 +128,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeDetailsPanelWithChanges",
-    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-employee-details.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/making-changes-employee-details.png",
     description:
       "Employee details panel showing updated ratings with visible changes",
     storyId: "app-right-panel-details-employeedetails--with-changes",
@@ -142,7 +142,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateRatingsTimeline",
-    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-timeline.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/making-changes-timeline.png",
     description: "Performance History timeline in employee details",
     storyId: "app-right-panel-details-ratingstimeline--default",
     cropping: "panel",
@@ -155,7 +155,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateChangesTab",
-    path: "resources/user-guide/docs/images/screenshots/workflow/making-changes-changes-tab.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/making-changes-changes-tab.png",
     description: "Changes tab with employee movements",
     storyId: "app-right-panel-changes-changetrackertab--default",
     cropping: "panel",
@@ -170,7 +170,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateChangesTab",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-add-note.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/workflow-changes-add-note.png",
     description: "Changes tab with note field highlighted",
     storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
     cropping: "panel",
@@ -186,7 +186,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "filter-toolbar-app",
     function: "generateFilterDrawerExpanded",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-panel-expanded.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/filters-panel-expanded.png",
     description:
       "Filter panel expanded showing OrgTreeFilter with hierarchical org tree (UPDATED for FilterToolbar integration)",
     cropping: "container",
@@ -210,7 +210,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateGridPopulated",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-grid-populated.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/quickstart/quickstart-grid-populated.png",
     description: "Populated 9-box grid after successful file upload",
     storyId: "app-grid-nineboxgrid--populated",
     cropping: "container",
@@ -223,7 +223,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmptyStateWithSampleButton",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-empty-state-sample-button.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/quickstart/quickstart-empty-state-sample-button.png",
     description:
       "Empty state showing 'Load Sample Data' button for quick onboarding (quickstart tour step 1)",
     storyId: "app-dashboard-emptystate--default",
@@ -237,7 +237,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeDetailsPanel",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-employee-details-with-history.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/quickstart/quickstart-employee-details-with-history.png",
     description:
       "Employee details panel showing flags, reporting chain, and complete job information (quickstart tour step 2)",
     storyId: "app-right-panel-details-employeedetails--default",
@@ -253,7 +253,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generatePanelDistribution",
-    path: "resources/user-guide/docs/images/screenshots/quickstart/quickstart-statistics-distribution.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/quickstart/quickstart-statistics-distribution.png",
     description:
       "Statistics tab showing healthy distribution patterns in sample data (quickstart tour step 4)",
     storyId:
@@ -268,7 +268,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateFileMenuImport",
-    path: "resources/user-guide/docs/images/screenshots/workflow/calibration-file-import.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/calibration-file-import.png",
     description:
       "File menu open with Import Data menu item highlighted (cropped to menu only)",
     storyId: "app-dashboard-filemenubutton--menu-open",
@@ -281,7 +281,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence",
     function: "intelligenceSummaryNeedsAttention",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-summary-anomalies.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-summary-anomalies.png",
     description:
       "Intelligence summary showing low quality score and high anomaly count",
     storyId:
@@ -303,7 +303,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence",
     function: "intelligenceLevelDistribution",
-    path: "resources/user-guide/docs/images/screenshots/distribution-chart-ideal.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/distribution-chart-ideal.png",
     description:
       "Distribution section showing ideal talent distribution across 9-box grid",
     storyId:
@@ -322,7 +322,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence",
     function: "intelligenceAnomalyRed",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-anomaly-red.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-anomaly-red.png",
     description:
       "AnomalySection component with red status (p < 0.01), showing severe statistical anomalies requiring investigation",
     storyId: "app-right-panel-intelligence-anomalysection--red-status",
@@ -339,7 +339,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generatePanelDistribution",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-panel-distribution.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/statistics-panel-distribution.png",
     description:
       "Statistics panel distribution table with grouping indicators (balanced distribution)",
     storyId:
@@ -379,7 +379,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     workflow: "storybook-components",
     function: "generateViewControlsGridView",
     storyId: "app-common-viewcontrols--grid-view-active",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-grid.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/view-controls-grid.png",
     description:
       "Closeup of ViewControls toolbar with Grid view active, showing toggle, zoom controls, and fullscreen button",
     cropping: "container",
@@ -392,7 +392,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     workflow: "storybook-components",
     function: "generateViewControlsDonutView",
     storyId: "app-common-viewcontrols--donut-view-active",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-donut.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/view-controls-donut.png",
     description: "ViewControls toolbar with Donut view active",
     cropping: "container",
     caption: "View controls with donut view mode selected",
@@ -403,7 +403,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "view-controls",
     function: "generateSettingsDialog",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-dialog.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/settings-dialog.png",
     description:
       "Settings dialog showing theme options (Light/Dark/Auto) and language dropdown (English/Español)",
     storyId: "app-settings-settingsdialog--open",
@@ -426,7 +426,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFlagsFiltering",
-    path: "resources/user-guide/docs/images/screenshots/filters/flags-section.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/flags-section.png",
     description:
       "Flags section in FilterDrawer showing all 8 flag types with checkboxes, counts, and active selections",
     storyId: "app-dashboard-filterdrawer--flags-active",
@@ -439,7 +439,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateReportingChainFilterActive",
-    path: "resources/user-guide/docs/images/screenshots/filters/reporting-chain-filter.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/reporting-chain-filter.png",
     description:
       "Reporting Chain section in FilterDrawer with active manager filter chip",
     storyId: "app-dashboard-filterdrawer--reporting-chain-active",
@@ -454,7 +454,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFilterToolbarExpanded",
-    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-expanded.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/toolbar/filter-toolbar-expanded.png",
     description:
       "FilterToolbar in expanded state with filter button, employee count, and search box",
     storyId: "app-common-filtertoolbar--expanded-default",
@@ -468,7 +468,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFilterToolbarWithActiveFilters",
-    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-with-active-filters.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/toolbar/filter-toolbar-with-active-filters.png",
     description:
       "FilterToolbar with active filters showing orange highlighted button and filtered employee count",
     storyId: "app-common-filtertoolbar--with-active-filters",
@@ -482,7 +482,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFilterToolbarSearchAutocomplete",
-    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-search-autocomplete.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/toolbar/filter-toolbar-search-autocomplete.png",
     description:
       "FilterToolbar employee search with autocomplete dropdown showing highlighted matches",
     storyId: "app-common-filtertoolbar--compact-with-filters",
@@ -498,7 +498,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateOrgTreeFilterExpanded",
-    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-filter-expanded.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/org-tree-filter-expanded.png",
     description:
       "Hierarchical organization tree in FilterDrawer with manager names, team sizes, and expand/collapse controls",
     storyId: "app-dashboard-filterdrawer--managers-selected",
@@ -512,7 +512,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateOrgTreeFilterSearch",
-    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-filter-search.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/org-tree-filter-search.png",
     description:
       "OrgTreeFilter with search active, showing highlighted manager names and auto-expanded tree",
     storyId: "app-dashboard-filterdrawer--managers-selected",
@@ -525,7 +525,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateOrgTreeMultiSelect",
-    path: "resources/user-guide/docs/images/screenshots/filters/org-tree-multi-select.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/org-tree-multi-select.png",
     description:
       "OrgTreeFilter showing multiple managers selected with checkboxes across different hierarchy levels",
     storyId: "app-dashboard-filterdrawer--managers-selected",
@@ -541,7 +541,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateUnsavedChangesDialog",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/unsaved-changes-dialog.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/unsaved-changes-dialog.png",
     description:
       "Unsaved Changes protection dialog with Apply Changes, Discard, and Cancel options",
     storyId: "app-dialogs-unsavedchangesdialog--multiple-changes",
@@ -554,7 +554,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateApplyChangesDialogDefault",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-dialog-default.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/apply-changes-dialog-default.png",
     description:
       "Apply Changes dialog in default mode (update original file, checkbox unchecked)",
     storyId: "app-dialogs-applychangesdialog--default",
@@ -568,7 +568,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateFileErrorFallback",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/file-error-fallback.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/file-error-fallback.png",
     description:
       "File error fallback - error message when original file can't be updated",
     storyId: "app-dialogs-applychangesdialog--with-error",
@@ -583,7 +583,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateExclusionsDialog",
-    path: "resources/user-guide/docs/images/screenshots/filters/exclusions-dialog.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/exclusions-dialog.png",
     description:
       "Manage Exclusions dialog with search field, quick filter buttons, and employee checkbox list",
     storyId: "app-dashboard-exclusiondialog--default",
@@ -598,7 +598,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateLocationBias",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-location.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-location.png",
     description:
       "Location bias detector showing performance distribution across offices and remote workers",
     storyId:
@@ -613,7 +613,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateFunctionBias",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-function.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-function.png",
     description:
       "Job function bias detector showing performance distribution across departments",
     storyId:
@@ -628,7 +628,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateLevelBias",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-level.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-level.png",
     description:
       "Job level bias detector showing performance distribution across job levels",
     storyId: "app-right-panel-intelligence-anomalysection--level-bias-detector",
@@ -642,7 +642,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateTenureBias",
-    path: "resources/user-guide/docs/images/screenshots/workflow/intelligence-tenure.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/intelligence-tenure.png",
     description:
       "Tenure bias detector showing performance distribution across tenure categories",
     storyId:
@@ -659,7 +659,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generateDistributionTable",
-    path: "resources/user-guide/docs/images/screenshots/statistics/distribution-table.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/distribution-table.png",
     description:
       "9-box distribution table showing employee counts and percentages per position",
     storyId:
@@ -676,7 +676,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateDonutModeGrid",
-    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-grid-normal.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/donut-mode/donut-mode-grid-normal.png",
     description: "Grid in donut mode showing employee tiles",
     storyId: "app-grid-nineboxgrid--donut-mode",
     cropping: "container",
@@ -688,7 +688,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateDonutChangesTab",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-donut-notes-example.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/workflow-donut-notes-example.png",
     description:
       "Donut changes tab showing tracked movements with calibration notes",
     storyId: "app-right-panel-changes-changetrackertab--donut-changes",
@@ -701,7 +701,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateChangesTabWithNotes",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-changes-good-note.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/workflow-changes-good-note.png",
     description:
       "Changes tab showing employee movements with well-documented notes",
     storyId: "app-right-panel-changes-changetrackertab--grid-changes-only",
@@ -714,7 +714,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateGridWithAxesLabeled",
-    path: "resources/user-guide/docs/images/screenshots/workflow/workflow-grid-axes-labeled.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/workflow/workflow-grid-axes-labeled.png",
     description: "9-box grid with Performance and Potential axes labeled",
     storyId: "app-grid-nineboxgrid--populated",
     cropping: "container",
@@ -728,7 +728,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "file-operations",
     function: "generateFileMenuApplyChanges",
-    path: "resources/user-guide/docs/images/screenshots/exporting/file-menu-apply-changes.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/exporting/file-menu-apply-changes.png",
     description: "File menu with Apply Changes option highlighted",
     cropping: "container",
     caption: "File menu showing Apply Changes option for exporting to Excel",
@@ -746,7 +746,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "filter-toolbar-app",
     function: "generateGridBasicLayoutWithToolbar",
-    path: "resources/user-guide/docs/images/screenshots/grid/grid-basic-layout.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/grid-basic-layout.png",
     description:
       "Full 9-box grid with FilterToolbar at top-left, axis labels, and all 9 position names visible (UPDATED for FilterToolbar integration)",
     cropping: "container",
@@ -759,7 +759,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateGridColorCoding",
-    path: "resources/user-guide/docs/images/screenshots/grid/grid-color-coding-boxes.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/grid-color-coding-boxes.png",
     description:
       "Grid view emphasizing the background color scheme - green top row, yellow/amber middle row, orange bottom row",
     storyId: "app-grid-nineboxgrid--populated",
@@ -773,7 +773,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeTileStates",
-    path: "resources/user-guide/docs/images/screenshots/grid/grid-employee-tile-states.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/grid-employee-tile-states.png",
     description:
       "Composite showing 4 different employee tile states: default blue, orange border (modified), purple border (donut), and flag chips",
     storyId: "app-grid-employeetile--all-states-composite",
@@ -787,7 +787,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateGridBoxExpanded",
-    path: "resources/user-guide/docs/images/screenshots/grid/grid-box-expanded.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/grid-box-expanded.png",
     description:
       "Single grid box (Position 5) expanded to show multi-column layout with expand/collapse icon visible",
     storyId: "app-grid-gridbox--expanded",
@@ -803,7 +803,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFiltersOrLogic",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-logic-or-example.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/filters-logic-or-example.png",
     description:
       "Filter drawer showing Job Functions section with Engineering and Sales both checked to illustrate OR behavior",
     storyId: "app-dashboard-filterdrawer--multiple-selections-or",
@@ -817,7 +817,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "filters-storybook",
     function: "generateFiltersAndLogic",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-logic-and-example.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/filters-logic-and-example.png",
     description:
       "Filter drawer showing selections in two different categories (Job Function + Performance) to illustrate AND behavior",
     storyId: "app-dashboard-filterdrawer--multiple-categories-and",
@@ -831,7 +831,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "filter-toolbar-app",
     function: "generateFilterActiveIndicator",
-    path: "resources/user-guide/docs/images/screenshots/filters/filters-active-indicator.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/filters/filters-active-indicator.png",
     description:
       "FilterToolbar showing orange highlighted filter button and filtered employee count (UPDATED for FilterToolbar integration)",
     cropping: "element",
@@ -846,7 +846,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "filter-toolbar-app",
     function: "generateFilterToolbarAndGrid",
-    path: "resources/user-guide/docs/images/screenshots/toolbar/filter-toolbar-and-grid.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/toolbar/filter-toolbar-and-grid.png",
     description:
       "Full grid view with FilterToolbar visible at top-left, showing integration with the application",
     cropping: "grid",
@@ -861,7 +861,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateDonutModeTilePurple",
-    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-employee-tile-purple.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/donut-mode/donut-mode-employee-tile-purple.png",
     description:
       "Single employee tile showing the purple border and visual indication of original Position 5 placement",
     storyId: "app-grid-employeetile--donut-mode",
@@ -875,7 +875,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateDonutModeTabsToggle",
-    path: "resources/user-guide/docs/images/screenshots/donut-mode/donut-mode-changes-tabs-toggle.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/donut-mode/donut-mode-changes-tabs-toggle.png",
     description:
       "Changes tab interface showing both tab options (Regular Changes and Donut Changes)",
     storyId: "app-right-panel-changes-changetrackertab--with-donut-mode",
@@ -891,7 +891,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generateStatisticsTabLocation",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-tab-location.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/statistics-tab-location.png",
     description:
       "Full right panel view with the Statistics tab highlighted, showing where users click to access statistics",
     storyId: "app-right-panel-tabs--statistics-selected",
@@ -905,7 +905,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generateStatisticsGroupingDropdown",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouping-dropdown.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/statistics-grouping-dropdown.png",
     description:
       "Statistics panel with the grouping selector expanded to show all available grouping dimensions (Department, Manager, Location, Job Level)",
     storyId: "app-right-panel-statistics-distributiontable--grouping-menu-open",
@@ -919,7 +919,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "statistics-storybook",
     function: "generateStatisticsGroupedDistribution",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-grouped-distribution.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/statistics-grouped-distribution.png",
     description:
       "Statistics panel showing the distribution table when grouped by Department, with sections showing different group breakdowns",
     storyId:
@@ -933,7 +933,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "full-app",
     workflow: "statistics-storybook",
     function: "generateStatisticsWithFilters",
-    path: "resources/user-guide/docs/images/screenshots/statistics/statistics-with-filters.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/statistics/statistics-with-filters.png",
     description:
       "Statistics panel with filter context visible, showing how distribution changes when filters are active",
     cropping: "panel",
@@ -950,7 +950,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeDetailsFullPanel",
-    path: "resources/user-guide/docs/images/screenshots/details/employee-details-full-panel.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/details/employee-details-full-panel.png",
     description:
       "Complete employee details panel showing all sections: ratings, job info, flags, org chain, and timeline",
     storyId: "app-right-panel-details-employeedetails--default",
@@ -964,7 +964,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeTileModifiedBorder",
-    path: "resources/user-guide/docs/images/screenshots/grid/employee-tile-modified-border.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/employee-tile-modified-border.png",
     description:
       "Single employee tile showing the orange left border indicating the employee was modified in the current session",
     storyId: "app-grid-employeetile--modified-normal-mode",
@@ -978,7 +978,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeTimelineHistory",
-    path: "resources/user-guide/docs/images/screenshots/details/employee-timeline-history.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/details/employee-timeline-history.png",
     description:
       "Timeline section in Details tab showing chronological history of rating changes with dates and positions",
     storyId: "app-right-panel-details-ratingstimeline--with-history",
@@ -992,7 +992,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeFlagsSection",
-    path: "resources/user-guide/docs/images/screenshots/details/employee-flags-section.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/details/employee-flags-section.png",
     description:
       "Flags section in Details tab showing existing flag chips and Add Flag dropdown menu open",
     storyId: "app-right-panel-details-flagselector--dropdown-open",
@@ -1011,7 +1011,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateApplyButtonWithBadge",
-    path: "resources/user-guide/docs/images/screenshots/toolbar/apply-button-with-badge.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/toolbar/apply-button-with-badge.png",
     description:
       "Apply button in toolbar showing badge with number of pending changes (e.g., '5' in red badge)",
     storyId: "app-dashboard-filemenubutton--with-changes-badge",
@@ -1025,7 +1025,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateEmployeeTileBigMoverFlag",
-    path: "resources/user-guide/docs/images/screenshots/grid/employee-tile-big-mover-flag.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/employee-tile-big-mover-flag.png",
     description:
       "Employee tile showing the Big Mover flag chip (cyan color) indicating significant tier change",
     storyId: "app-grid-employeetile--with-big-mover-flag",
@@ -1039,7 +1039,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateGridChangeIndicators",
-    path: "resources/user-guide/docs/images/screenshots/grid/grid-change-indicators.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/grid/grid-change-indicators.png",
     description:
       "Grid view showing multiple visual indicators: orange borders on modified tiles and Big Mover flags",
     storyId: "app-grid-nineboxgrid--with-changes",
@@ -1058,7 +1058,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateIntelligenceTabLocation",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-tab-location.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/intelligence-tab-location.png",
     description:
       "Right panel header showing all four tabs with Intelligence tab (fourth) highlighted",
     storyId: "app-right-panel-tabs--intelligence-selected",
@@ -1072,7 +1072,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateIntelligenceQualityScore",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-quality-score.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/intelligence-quality-score.png",
     description:
       "Quality score display at top of Intelligence panel showing overall score (0-100) with color indicator",
     storyId: "app-right-panel-intelligence-qualityscore--needs-attention",
@@ -1086,7 +1086,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateIntelligenceAnomalyCardDetail",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/intelligence-anomaly-card-detail.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/intelligence-anomaly-card-detail.png",
     description:
       "Detailed anomaly card view showing dimension, expected vs actual counts, deviation amount, and affected categories",
     storyId: "app-right-panel-intelligence-anomalysection--red-status",
@@ -1105,7 +1105,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateAISummaryButton",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-generate-button.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/ai-summary-generate-button.png",
     description:
       "Calibration Summary section showing 'Generate AI Summary' button before AI summary is generated",
     storyId:
@@ -1120,7 +1120,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateAISummaryExpanded",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-expanded.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/ai-summary-expanded.png",
     description:
       "AI-generated executive summary fully expanded showing 2-3 paragraph analysis with 'Powered by Claude' badge",
     storyId:
@@ -1135,7 +1135,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateAISummaryPreview",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/ai-summary-preview.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/ai-summary-preview.png",
     description:
       "AI summary collapsed to 3-line preview with 'Read full' button and gradient fade effect",
     storyId:
@@ -1150,7 +1150,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateCalibrationInsightsSection",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/calibration-insights-section.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/calibration-insights-section.png",
     description:
       "Meeting Insights section with priority filters (All/High/Medium/Low), multiple selectable insight cards, and cluster badges",
     storyId:
@@ -1165,7 +1165,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateInsightCardDetail",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/insight-card-detail.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/insight-card-detail.png",
     description:
       "Single insight card showing HIGH priority badge (red), level category icon, cluster badge, title, description, and affected employee count",
     storyId: "intelligence-calibrationsummary-insightcard--with-cluster-badge",
@@ -1179,7 +1179,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateInsightClusterExample",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/insight-cluster-example.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/insight-cluster-example.png",
     description:
       "Multiple insight cards (2-3) with same cluster badge demonstrating how related insights are grouped together",
     storyId:
@@ -1194,7 +1194,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "intelligence-storybook",
     function: "generateDataOverviewCards",
-    path: "resources/user-guide/docs/images/screenshots/intelligence/data-overview-cards.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/intelligence/data-overview-cards.png",
     description:
       "Three summary cards showing Quality Score (Good), Anomaly Count (2 red, 5 yellow, 3 green chips), and Org Overview stats",
     storyId: "app-right-panel-intelligence-intelligencesummary--good-quality",
@@ -1213,7 +1213,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateFileMenuApplyButton",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-apply-button.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/file-menu-apply-button.png",
     description:
       "File menu dropdown with Apply Changes button visible and highlighted, showing change count",
     storyId: "app-dashboard-filemenubutton--menu-open-with-changes",
@@ -1226,7 +1226,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateApplyChangesSaveAsOption",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/apply-changes-save-as-option.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/apply-changes-save-as-option.png",
     description:
       "Apply Changes dialog with 'Save to different file' checkbox checked, showing file path input",
     storyId: "app-dialogs-applychangesdialog--save-as-mode",
@@ -1239,7 +1239,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateFileMenuRecentFiles",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/file-menu-recent-files.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/file-menu-recent-files.png",
     description:
       "File menu dropdown showing Recent Files submenu with list of previously opened files",
     storyId: "app-dashboard-filemenubutton--menu-open-with-recent-files",
@@ -1252,7 +1252,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateExportSuccessMessage",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/export-success-message.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/export-success-message.png",
     description:
       "Success notification/toast showing export completed with file path and action buttons",
     storyId: "app-common-notification--export-success",
@@ -1265,7 +1265,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "file-operations",
     function: "generateExportedExcelColumns",
-    path: "resources/user-guide/docs/images/screenshots/file-ops/exported-excel-columns.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/file-ops/exported-excel-columns.png",
     description:
       "Mock Excel view showing the 4 9Boxer columns added during export",
     storyId: "app-common-mockexcelview--exported-columns",
@@ -1284,7 +1284,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "view-controls",
     function: "generateSettingsGearIconLocation",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-gear-icon-location.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/settings-gear-icon-location.png",
     description:
       "AppBar/header area showing the gear icon location in the top-right corner with visual emphasis",
     storyId: "app-dashboard-appbar--default",
@@ -1297,7 +1297,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "view-controls",
     function: "generateSettingsThemeSelector",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/settings-theme-selector.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/settings-theme-selector.png",
     description:
       "Settings dialog focused on the Theme Mode section showing Light/Dark/Auto options",
     storyId: "app-settings-settingsdialog--open",
@@ -1310,7 +1310,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateViewControlsZoom",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-zoom.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/view-controls-zoom.png",
     description:
       "Close-up of zoom controls in ViewControls toolbar showing minus, reset, plus buttons and percentage",
     storyId: "app-common-viewcontrols--grid-view-active",
@@ -1324,7 +1324,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateViewControlsFullscreen",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-fullscreen.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/view-controls-fullscreen.png",
     description: "Close-up of fullscreen toggle button in ViewControls toolbar",
     storyId: "app-common-viewcontrols--grid-view-active",
     cropping: "element",
@@ -1336,7 +1336,7 @@ export const screenshotConfig: Record<string, ScreenshotMetadata> = {
     source: "storybook",
     workflow: "storybook-components",
     function: "generateViewControlsModeToggle",
-    path: "resources/user-guide/docs/images/screenshots/view-controls/view-controls-mode-toggle.png",
+    path: "resources/user-guide-vitepress/docs/public/images/screenshots/view-controls/view-controls-mode-toggle.png",
     description:
       "Close-up of view mode toggle showing Grid and Donut mode buttons",
     storyId: "app-common-viewcontrols--grid-view-active",
