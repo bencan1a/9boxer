@@ -6,13 +6,21 @@ set -e
 
 # Allowed markdown files in root (project-essential only)
 ALLOWED_ROOT_DOCS=(
+  # Primary project overview and quickstart for all users
   "README.md"
+  # Chronological record of notable changes across releases
   "CHANGELOG.md"
+  # Guidelines and processes for external and internal contributors
   "CONTRIBUTING.md"
+  # Top-level guide for agent workflows and file organization rules
   "AGENTS.md"
+  # Index and navigation entrypoint for Claude/agent-specific docs
   "CLAUDE_INDEX.md"
+  # Onboarding and usage guide specifically for GitHub Agents
   "GITHUB_AGENT.md"
+  # Canonical open-source license for the repository
   "LICENSE.md"
+  # Community standards and expected behavior for collaborators
   "CODE_OF_CONDUCT.md"
 )
 

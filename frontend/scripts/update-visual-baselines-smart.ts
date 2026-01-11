@@ -140,8 +140,12 @@ function validatePNG(filePath: string): { valid: boolean; error?: string } {
       if (fd !== undefined) {
         try {
           fs.closeSync(fd);
-        } catch {
-          // Ignore close errors to preserve original error, if any
+        } catch (closeErr) {
+          // Log close errors for debugging but do not override any original error
+          console.error(
+            `Warning: failed to close file descriptor for "${filePath}":`,
+            closeErr,
+          );
         }
       }
     }
@@ -224,9 +228,13 @@ async function updateBaselines(snapshots: string[]): Promise<UpdateResult> {
         `npx playwright test --project=visual --update-snapshots ${spec}`,
         {
           cwd: FRONTEND_DIR,
-          // Inherit stdin but fully suppress stdout/stderr so Playwright output
-          // cannot interfere with this script's JSON output on stdout.
-          stdio: ["inherit", "ignore", "ignore"],
+          // Inherit stdin. In CI, also inherit stdout/stderr so Playwright logs
+          // are visible for debugging. Locally, suppress them so they cannot
+          // interfere with this script's JSON output on stdout.
+          stdio:
+            process.env.CI === "true" || process.env.CI === "1"
+              ? ["inherit", "inherit", "inherit"]
+              : ["inherit", "ignore", "ignore"],
         }
       );
 

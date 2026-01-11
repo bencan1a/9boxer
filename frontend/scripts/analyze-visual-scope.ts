@@ -58,11 +58,41 @@ interface ScopeAnalysisResult {
 }
 
 /**
+ * Validate and sanitize branch name to prevent command injection
+ * Only allows alphanumeric characters, forward slashes, hyphens, underscores, and dots
+ */
+function sanitizeBranchName(branchName: string): string {
+  if (!branchName || typeof branchName !== "string") {
+    throw new Error("Branch name must be a non-empty string");
+  }
+
+  // Only allow safe characters: alphanumeric, forward slash, hyphen, underscore, dot
+  const safePattern = /^[a-zA-Z0-9/_.-]+$/;
+  if (!safePattern.test(branchName)) {
+    throw new Error(
+      `Invalid branch name: "${branchName}". Branch names can only contain alphanumeric characters, forward slashes, hyphens, underscores, and dots.`
+    );
+  }
+
+  // Additional check: prevent path traversal attempts
+  if (branchName.includes("..") || branchName.startsWith("/")) {
+    throw new Error(
+      `Invalid branch name: "${branchName}". Path traversal patterns are not allowed.`
+    );
+  }
+
+  return branchName;
+}
+
+/**
  * Get list of modified files from git diff
  */
 function getModifiedFiles(baseBranch: string): string[] {
   try {
-    const gitDiff = execSync(`git diff --name-only ${baseBranch}...HEAD`, {
+    // Sanitize branch name to prevent command injection
+    const safeBranch = sanitizeBranchName(baseBranch);
+
+    const gitDiff = execSync(`git diff --name-only ${safeBranch}...HEAD`, {
       encoding: "utf-8",
       cwd: FRONTEND_DIR,
     }).trim();
@@ -202,6 +232,7 @@ function mapFilesToStoryPatterns(modifiedFiles: string[]): {
 
 /**
  * Check if a snapshot name matches any of the affected story patterns
+ * Uses a more precise matching strategy to reduce false positives
  */
 function isSnapshotInScope(
   snapshotName: string,
@@ -211,37 +242,44 @@ function isSnapshotInScope(
   // Example: "employee-tile-default-light.png" -> need to find matching pattern
   // Snapshot names follow the format: <story-id-based-name>-<theme>.png
 
-  // Remove theme suffix (-light.png, -dark.png)
+  // Remove theme suffix (-light.png, -dark.png) and file extension
   const nameWithoutTheme = snapshotName.replace(/-(light|dark)\.png$/, "");
 
   for (const pattern of storyPatterns) {
     // Pattern is like "app-grid-employeetile--*"
-    // Convert to regex: app-grid-employeetile--.*
-    const patternRegex = new RegExp(
-      "^" +
-        pattern
-          // Only treat a trailing "--*" as a wildcard segment, not every occurrence
-          .replace(/--\*$/, "--.*")
-          .replace(/\*/g, ".*") +
-        "$"
-    );
-
-    // Check if the snapshot name starts with the story pattern
-    // We need to be flexible because snapshot names might not exactly match story IDs
+    // Extract the base pattern without the wildcard
     const patternPrefix = pattern.replace(/--\*$/, "");
 
-    if (
-      nameWithoutTheme.includes(patternPrefix) ||
-      patternRegex.test(nameWithoutTheme)
-    ) {
+    // Strategy 1: Exact prefix match (most reliable)
+    // The snapshot should start with the story pattern prefix
+    if (nameWithoutTheme.startsWith(patternPrefix)) {
       return true;
     }
 
-    // Also check if any part of the pattern matches
-    // For "app-grid-employeetile--*", check if "employeetile" is in the snapshot name
-    const componentPart = patternPrefix.split("-").pop();
-    if (componentPart && nameWithoutTheme.includes(componentPart)) {
+    // Strategy 2: Regex match with strict boundaries
+    // Convert to regex: ^app-grid-employeetile--.*$
+    // This ensures we match the complete pattern structure
+    const patternRegex = new RegExp(
+      "^" + patternPrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "--.*$"
+    );
+    if (patternRegex.test(nameWithoutTheme)) {
       return true;
+    }
+
+    // Strategy 3: Component name match with context (reduced false positives)
+    // Only match if the component name appears with common story delimiters
+    // This prevents "tile" from matching "employeetile"
+    const componentPart = patternPrefix.split("-").pop();
+    if (componentPart && componentPart.length > 3) {
+      // Only use this for longer component names
+      // Match component name with word boundaries or delimiters
+      const componentRegex = new RegExp(
+        `(^|[-_])${componentPart.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([-_]|$)`,
+        "i"
+      );
+      if (componentRegex.test(nameWithoutTheme)) {
+        return true;
+      }
     }
   }
 
