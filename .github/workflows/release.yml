@@ -388,6 +388,19 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           node scripts/generate-release-notes.js "$VERSION"
 
+      - name: Verify CHANGELOG.md was updated
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          echo "=== Checking CHANGELOG.md ==="
+          if [ -f "CHANGELOG.md" ]; then
+            echo "✅ CHANGELOG.md exists"
+            echo ""
+            echo "=== Looking for section: ## [${VERSION}] ==="
+            grep -A 20 "^## \[${VERSION}\]" CHANGELOG.md || echo "❌ Section not found!"
+          else
+            echo "❌ CHANGELOG.md not found!"
+          fi
+
       - name: Prepare release notes from template
         id: release_notes
         run: |
@@ -397,32 +410,53 @@ jobs:
           PREV_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
           # Extract changelog content for this version
+          # Escape dots in version for regex
+          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
+
           if [ -f "CHANGELOG.md" ]; then
-            CHANGELOG_CONTENT=$(awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | head -n -1 | tail -n +2)
+            # Extract from ## [VERSION] to next ## [ or end of file
+            CHANGELOG_CONTENT=$(awk "/^## \[${ESCAPED_VERSION}\]/,/^## \[/ {
+              if (/^## \[${ESCAPED_VERSION}\]/) next;
+              if (/^## \[/) exit;
+              print
+            }" CHANGELOG.md)
+
+            # Trim leading/trailing whitespace
+            CHANGELOG_CONTENT=$(echo "$CHANGELOG_CONTENT" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           else
             CHANGELOG_CONTENT="No changelog found for this version."
           fi
 
-          # Build release notes with template header and changelog content
-          cat > /tmp/release_notes.md <<EOF
-          # 9Boxer v${VERSION}
+          # Debug: Check if changelog content was extracted
+          echo "DEBUG: Checking for changelog section [${VERSION}]"
+          if [ -n "$CHANGELOG_CONTENT" ]; then
+            echo "DEBUG: Changelog content found (${#CHANGELOG_CONTENT} characters)"
+          else
+            echo "ERROR: No changelog content extracted for version ${VERSION}"
+            echo "DEBUG: Available sections in CHANGELOG.md:"
+            grep "^## \[" CHANGELOG.md || echo "No sections found"
+          fi
 
-          ${CHANGELOG_CONTENT}
-
-          ## Download
-
-          Choose the appropriate installer for your platform from the assets below:
-          - **Windows**: \`9Boxer-Setup-${VERSION}.exe\`
-          - **macOS (Apple Silicon)**: \`9Boxer-${VERSION}-macOS-arm64.zip\` (M1/M2/M3 Macs)
-          - **macOS (Intel)**: \`9Boxer-${VERSION}-macOS-x64.zip\`
-          - **Linux**: \`9Boxer-${VERSION}.AppImage\`
-
-          **First time installing?** See the [Installation Guide](resources/user-guide/docs/installation.md) for detailed instructions.
-
-          ---
-
-          **Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_VERSION}...v${VERSION}
-          EOF
+          # Build release notes
+          {
+            echo "# 9Boxer v${VERSION}"
+            echo ""
+            echo "$CHANGELOG_CONTENT"
+            echo ""
+            echo "## Download"
+            echo ""
+            echo "Choose the appropriate installer for your platform from the assets below:"
+            echo "- **Windows**: \`9Boxer-Setup-${VERSION}.exe\`"
+            echo "- **macOS (Apple Silicon)**: \`9Boxer-${VERSION}-macOS-arm64.zip\` (M1/M2/M3 Macs)"
+            echo "- **macOS (Intel)**: \`9Boxer-${VERSION}-macOS-x64.zip\`"
+            echo "- **Linux**: \`9Boxer-${VERSION}.AppImage\`"
+            echo ""
+            echo "**First time installing?** See the [Installation Guide](resources/user-guide/docs/installation.md) for detailed instructions."
+            echo ""
+            echo "---"
+            echo ""
+            echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_VERSION}...v${VERSION}"
+          } > /tmp/release_notes.md
 
           # Save to output
           {

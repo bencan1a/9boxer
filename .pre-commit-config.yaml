@@ -83,6 +83,14 @@ repos:
         files: ^(CLAUDE_INDEX\.md|AGENTS\.md|GITHUB_AGENT\.md)$
         pass_filenames: true
 
+      # Documentation organization - prevents agents from creating docs in root
+      - id: check-root-docs
+        name: prevent disallowed markdown files in project root
+        entry: bash tools/hooks/check-root-docs.sh
+        language: system
+        files: ^[^/]+\.md$
+        pass_filenames: false
+
   # Prettier format checking for frontend files (local hook for ARM64 compatibility)
   - repo: local
     hooks:

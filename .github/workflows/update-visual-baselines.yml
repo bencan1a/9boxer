@@ -8,9 +8,35 @@ on:
         required: false
         type: string
         default: 'Visual baseline update'
+      multi_os:
+        description: 'Update baselines on all OSes (Windows, macOS, Linux)'
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      reason:
+        description: 'Reason for baseline update'
+        required: false
+        type: string
+        default: 'Visual baseline update (triggered automatically)'
+      branch:
+        description: 'Branch to update baselines on'
+        required: false
+        type: string
+        default: 'main'
+      multi_os:
+        description: 'Update baselines on all OSes'
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    # Run every Sunday at 2 AM UTC (weekly comprehensive baseline check)
+    - cron: '0 2 * * 0'
 
 jobs:
-  update-baselines:
+  # Linux baselines - always run (fast feedback for PRs)
+  update-baselines-linux:
     name: Update Visual Baselines (Linux)
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -21,6 +47,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.branch || github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
@@ -92,9 +119,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add frontend/playwright/visual/**/*.png
-          git commit -m "chore: update visual regression baselines [skip ci]
+          git commit -m "chore: update visual baselines (Linux) [skip ci]
 
-          Reason: ${{ github.event.inputs.reason }}
+          Reason: ${{ github.event.inputs.reason || inputs.reason }}
 
           Updated by: @${{ github.actor }}
           Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -111,20 +138,255 @@ jobs:
       - name: Summary
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          echo "## ✅ Visual Baselines Updated" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Visual Baselines Updated (Linux)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Reason:** ${{ github.event.inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ github.event.inputs.reason || inputs.reason }}" >> $GITHUB_STEP_SUMMARY
           echo "**Updated by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Changed Files:" >> $GITHUB_STEP_SUMMARY
-          git diff --name-only HEAD~1 | grep '\.png$' | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY
 
       - name: No changes summary
         if: steps.check_changes.outputs.has_changes == 'false'
         run: |
-          echo "## ℹ️ No Baseline Changes" >> $GITHUB_STEP_SUMMARY
+          echo "## ℹ️ No Baseline Changes (Linux)" >> $GITHUB_STEP_SUMMARY
+
+  # Windows baselines - run weekly or on-demand
+  update-baselines-windows:
+    name: Update Visual Baselines (Windows)
+    runs-on: windows-latest
+    if: inputs.multi_os == true || github.event_name == 'schedule'
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install Python dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            C:\Users\runneradmin\AppData\Local\ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Update visual regression baselines
+        working-directory: frontend
+        run: npm run test:visual:update
+        env:
+          CI: true
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          # Run git diff and capture its exit code
+          git diff --quiet
+          $exitCode = $LASTEXITCODE
+
+          if ($exitCode -eq 0) {
+            # No changes
+            "has_changes=false" >> $env:GITHUB_OUTPUT
+          } elseif ($exitCode -eq 1) {
+            # Changes detected
+            "has_changes=true" >> $env:GITHUB_OUTPUT
+          } else {
+            # git diff failed; log and default to no changes
+            Write-Host "git diff failed with exit code $exitCode; defaulting has_changes=false"
+            "has_changes=false" >> $env:GITHUB_OUTPUT
+          }
+
+          # Ensure the step succeeds even if git diff failed
+          exit 0
+
+      - name: Commit and push baseline updates
+        if: steps.check_changes.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/playwright/visual/**/*.png
+          git commit -m "chore: update visual baselines (Windows) [skip ci]
+
+          Reason: ${{ github.event.inputs.reason || inputs.reason }}
+
+          Updated by: @${{ github.actor }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git push
+
+      - name: Upload baseline screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines-windows
+          path: frontend/playwright/visual/**/*.png
+          retention-days: 30
+
+      - name: Summary
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          echo "## ✅ Visual Baselines Updated (Windows)" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ github.event.inputs.reason || inputs.reason }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Updated by:** @${{ github.actor }}" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: No changes summary
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          echo "## ℹ️ No Baseline Changes (Windows)" >> $env:GITHUB_STEP_SUMMARY
+
+  # macOS baselines - run weekly or on-demand
+  update-baselines-macos:
+    name: Update Visual Baselines (macOS)
+    runs-on: macos-latest
+    if: inputs.multi_os == true || github.event_name == 'schedule'
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install Python dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            C:\Users\runneradmin\AppData\Local\ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Update visual regression baselines
+        working-directory: frontend
+        run: npm run test:visual:update
+        env:
+          CI: true
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push baseline updates
+        if: steps.check_changes.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/playwright/visual/**/*.png
+          git commit -m "chore: update visual baselines (macOS) [skip ci]
+
+          Reason: ${{ github.event.inputs.reason || inputs.reason }}
+
+          Updated by: @${{ github.actor }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git push
+
+      - name: Upload baseline screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines-macos
+          path: frontend/playwright/visual/**/*.png
+          retention-days: 30
+
+      - name: Summary
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          echo "## ✅ Visual Baselines Updated (macOS)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The visual regression tests passed without generating new baselines." >> $GITHUB_STEP_SUMMARY
-          echo "This might mean:" >> $GITHUB_STEP_SUMMARY
-          echo "- All baselines are already up to date" >> $GITHUB_STEP_SUMMARY
-          echo "- No visual changes were detected" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ github.event.inputs.reason || inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: No changes summary
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          echo "## ℹ️ No Baseline Changes (macOS)" >> $GITHUB_STEP_SUMMARY

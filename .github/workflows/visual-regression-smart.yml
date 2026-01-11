@@ -1,0 +1,643 @@
+name: Visual Regression Tests (Smart)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/.storybook/**'
+      - 'frontend/playwright/visual/**'
+      - 'frontend/playwright.config.ts'
+      - 'frontend/scripts/analyze-visual-scope.ts'
+      - 'frontend/scripts/update-visual-baselines-smart.ts'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: visual-regression-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  visual-tests:
+    name: Visual Regression Tests with Smart Auto-Update
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch sufficient history for git diff analysis without full clone
+          fetch-depth: 100
+          # Use a token that can push to protected branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Security check - Block fork PRs from write operations
+        id: fork-check
+        run: |
+          # Check if this is a fork PR
+          if [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ]; then
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+            echo "⚠️  This PR is from a fork. Auto-update of baselines is disabled for security."
+            echo "Fork PRs cannot automatically commit baseline updates to prevent unauthorized modifications."
+          else
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+            echo "✅ This PR is from the main repository. Auto-update is enabled."
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Cache uv packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/AppData/Local/uv/cache
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install Python dependencies
+        run: uv pip install --system -e '.[dev]'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run visual regression tests (first attempt)
+        id: visual-tests-first
+        working-directory: frontend
+        continue-on-error: true
+        run: npm run test:visual
+        env:
+          CI: true
+
+      - name: Collect failed snapshots
+        id: collect-failures
+        if: steps.visual-tests-first.outcome == 'failure'
+        working-directory: frontend
+        run: |
+          # Start with a clean list of failed snapshots
+          : > failed-snapshots.txt
+          COUNT=0
+
+          if [ -d "test-results" ]; then
+            while IFS= read -r -d '' file; do
+              # Extract snapshot name from diff file path in a way that is safe for special characters
+              base_name=$(basename "$file")
+              SNAPSHOT_NAME="$base_name"
+              case "$SNAPSHOT_NAME" in
+                *-actual.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-actual.png}.png" ;;
+                *-diff.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-diff.png}.png" ;;
+                *-expected.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-expected.png}.png" ;;
+                *-previous.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-previous.png}.png" ;;
+              esac
+              printf '%s\n' "$SNAPSHOT_NAME" >> failed-snapshots.txt
+              COUNT=$((COUNT + 1))
+            done < <(find test-results -name "*-diff.png" -print0)
+          fi
+
+          # Ensure COUNT is defined even if no test-results directory exists
+          : "${COUNT:=0}"
+
+          # Remove duplicates and sort
+          if [ -s failed-snapshots.txt ]; then
+            sort -u failed-snapshots.txt > failed-snapshots-sorted.txt
+            mv failed-snapshots-sorted.txt failed-snapshots.txt
+            # Recount after deduplication
+            COUNT=$(wc -l < failed-snapshots.txt | tr -d ' ')
+          fi
+
+          # Output count for logs
+          echo "Found $COUNT unique failed snapshot(s)"
+          echo "failed_count=$COUNT" >> $GITHUB_OUTPUT
+
+          # Show the list
+          if [ -s failed-snapshots.txt ]; then
+            cat failed-snapshots.txt
+          fi
+
+      - name: Analyze visual scope
+        id: analyze-scope
+        if: steps.visual-tests-first.outcome == 'failure'
+        working-directory: frontend
+        run: |
+          # Ensure the base branch ref is available locally
+          git fetch origin ${{ github.base_ref }}
+          # Run scope analysis
+          if ! npx tsx scripts/analyze-visual-scope.ts origin/${{ github.base_ref }} --from-file failed-snapshots.txt > scope-analysis.json; then
+            echo "Scope analysis command failed; proceeding with default values." >&2
+          fi
+
+          # Validate scope-analysis.json before using jq
+          if [ ! -s scope-analysis.json ] || ! jq empty scope-analysis.json >/dev/null 2>&1; then
+            echo "scope-analysis.json is missing, empty, or invalid JSON; using default scope analysis values." >&2
+            IN_SCOPE_COUNT=0
+            OUT_OF_SCOPE_COUNT=0
+            GLOBAL_CHANGE="false"
+            CONFIDENCE="low"
+            : > in-scope-snapshots.txt
+          else
+            # Extract results from valid JSON
+            IN_SCOPE_COUNT=$(jq '.metadata.inScopeCount' scope-analysis.json)
+            OUT_OF_SCOPE_COUNT=$(jq '.metadata.outOfScopeCount' scope-analysis.json)
+            GLOBAL_CHANGE=$(jq -r '.globalChangeDetected' scope-analysis.json)
+            CONFIDENCE=$(jq -r '.confidence' scope-analysis.json)
+
+            # Extract in-scope snapshots to a file
+            jq -r '.inScope[]' scope-analysis.json > in-scope-snapshots.txt || true
+          fi
+
+          echo "in_scope_count=$IN_SCOPE_COUNT" >> $GITHUB_OUTPUT
+          echo "out_of_scope_count=$OUT_OF_SCOPE_COUNT" >> $GITHUB_OUTPUT
+          echo "global_change=$GLOBAL_CHANGE" >> $GITHUB_OUTPUT
+          echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
+          echo "Scope Analysis Results:"
+          echo "  In-scope: $IN_SCOPE_COUNT"
+          echo "  Out-of-scope: $OUT_OF_SCOPE_COUNT"
+          echo "  Global change: $GLOBAL_CHANGE"
+          echo "  Confidence: $CONFIDENCE"
+
+      - name: Smart baseline update
+        id: smart-update
+        if: |
+          steps.visual-tests-first.outcome == 'failure' &&
+          steps.analyze-scope.outputs.in_scope_count > 0 &&
+          steps.analyze-scope.outputs.global_change == 'false'
+        working-directory: frontend
+        run: |
+          # Update in-scope baselines only
+          npx tsx scripts/update-visual-baselines-smart.ts --from-file in-scope-snapshots.txt > update-results.json || true
+
+          # Extract results
+          SUCCESS=$(jq -r '.success' update-results.json)
+          UPDATED_COUNT=$(jq '.metadata.successCount' update-results.json)
+
+          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+          echo "updated_count=$UPDATED_COUNT" >> $GITHUB_OUTPUT
+
+          echo "Smart Update Results:"
+          echo "  Success: $SUCCESS"
+          echo "  Updated: $UPDATED_COUNT baselines"
+
+      - name: Commit baseline updates
+        id: commit-updates
+        if: |
+          steps.smart-update.outcome == 'success' &&
+          steps.smart-update.outputs.updated_count > 0 &&
+          steps.fork-check.outputs.is_fork != 'true'
+        working-directory: frontend
+        run: |
+          # Function to retry git operations with exponential backoff
+          retry_git_push() {
+            local max_attempts=5
+            local attempt=1
+            local backoff=2
+
+            while [ $attempt -le $max_attempts ]; do
+              echo "Attempt $attempt of $max_attempts to push changes..."
+
+              # Try to pull and push
+              CURRENT_BRANCH="${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD)}"
+
+              if git pull --rebase origin "$CURRENT_BRANCH" && \
+                 git push --force-with-lease origin "$CURRENT_BRANCH"; then
+                echo "Successfully pushed changes on attempt $attempt"
+                return 0
+              fi
+
+              # Check if we should retry
+              if [ $attempt -lt $max_attempts ]; then
+                local wait_time=$((backoff ** attempt))
+                echo "Push failed, waiting ${wait_time}s before retry..."
+                sleep $wait_time
+              fi
+
+              attempt=$((attempt + 1))
+            done
+
+            echo "Failed to push changes after $max_attempts attempts"
+            return 1
+          }
+
+          # Check if there are changes to commit
+          if [ -n "$(git status --porcelain playwright/visual/**/*.png)" ]; then
+            # Get list of updated components from scope analysis
+            COMPONENTS=$(jq -r '.affectedStoryPatterns | join(", ")' scope-analysis.json)
+
+            # Store GitHub Actions outputs in shell variables for proper expansion
+            UPDATED_COUNT="${{ steps.smart-update.outputs.updated_count }}"
+            IN_SCOPE_COUNT="${{ steps.analyze-scope.outputs.in_scope_count }}"
+            OUT_OF_SCOPE_COUNT="${{ steps.analyze-scope.outputs.out_of_scope_count }}"
+            CONFIDENCE="${{ steps.analyze-scope.outputs.confidence }}"
+
+            # Commit updated baselines
+            git add playwright/visual/**/*.png
+
+            # Create commit message with proper variable expansion
+            git commit -m "chore: auto-update visual baselines (in-scope)" \
+              -m "" \
+              -m "Updated ${UPDATED_COUNT} baseline(s) for intentional changes." \
+              -m "" \
+              -m "Components affected: ${COMPONENTS}" \
+              -m "" \
+              -m "In-scope updates: ${IN_SCOPE_COUNT}" \
+              -m "Out-of-scope failures: ${OUT_OF_SCOPE_COUNT}" \
+              -m "Confidence: ${CONFIDENCE}" \
+              -m "" \
+              -m "Auto-updated by visual-regression-smart workflow."
+
+            # Push with retry logic
+            if retry_git_push; then
+              echo "committed=true" >> $GITHUB_OUTPUT
+              echo "Successfully committed and pushed baseline updates"
+            else
+              echo "committed=false" >> $GITHUB_OUTPUT
+              echo "Failed to push baseline updates after multiple retries"
+              exit 1
+            fi
+          else
+            echo "committed=false" >> $GITHUB_OUTPUT
+            echo "No baseline changes to commit"
+          fi
+
+      - name: Re-run visual tests (after baseline update)
+        id: visual-tests-rerun
+        if: steps.commit-updates.outputs.committed == 'true'
+        working-directory: frontend
+        continue-on-error: true
+        run: |
+          # Pull the latest changes (our commit)
+          git pull --rebase
+
+          # Re-run tests
+          npm run test:visual
+        env:
+          CI: true
+
+      - name: Collect remaining failures
+        id: collect-remaining
+        if: steps.visual-tests-rerun.outcome == 'failure'
+        working-directory: frontend
+        run: |
+          # Count remaining diff images
+          REMAINING_COUNT=0
+          if [ -d "test-results" ]; then
+            REMAINING_COUNT=$(find test-results -name "*-diff.png" | wc -l)
+          fi
+
+          echo "remaining_count=$REMAINING_COUNT" >> $GITHUB_OUTPUT
+          echo "Remaining failures: $REMAINING_COUNT"
+
+      - name: Upload test results
+        if: always() && (hashFiles('frontend/playwright-report-visual/**') != '' || hashFiles('frontend/test-results/**') != '')
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-results
+          path: |
+            frontend/playwright-report-visual/
+            frontend/test-results/
+            frontend/scope-analysis.json
+            frontend/update-results.json
+          retention-days: 30
+
+      - name: Upload visual diff images
+        if: always() && hashFiles('frontend/test-results/**/*-diff.png') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: frontend/test-results/**/*-diff.png
+          retention-days: 30
+
+      - name: Comment PR with results - Auto-updated
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.commit-updates.outputs.committed == 'true' &&
+          (steps.visual-tests-rerun.outcome == 'success' || steps.visual-tests-rerun.outcome == 'skipped')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const inScopeCount = ${{ steps.analyze-scope.outputs.in_scope_count }};
+            const updatedCount = ${{ steps.smart-update.outputs.updated_count }};
+
+            const body = `## ✅ Visual Regression Tests Passed (Auto-Updated)
+
+            **${updatedCount} baseline(s) automatically updated** for intentional changes.
+
+            ### Summary
+            - **In-scope changes:** ${inScopeCount} baseline(s) updated and committed
+            - **Out-of-scope changes:** None detected
+            - **Confidence:** ${{ steps.analyze-scope.outputs.confidence }}
+
+            The visual baselines have been automatically updated and committed to this PR branch.
+            All visual tests now pass.
+
+            [View updated baselines in commit history](https://github.com/${{ github.repository }}/commits/${{ github.head_ref }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Comment PR with fork security notice
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.fork-check.outputs.is_fork == 'true' &&
+          steps.visual-tests-first.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## 🔒 Visual Regression Tests - Fork PR Security Notice
+
+            This PR is from a forked repository. For security reasons, automatic baseline updates are **disabled** for fork PRs.
+
+            ### What this means:
+            - Visual regression test failures must be reviewed manually
+            - Baseline updates cannot be automatically committed
+            - A maintainer must update baselines if the changes are intentional
+
+            ### For maintainers:
+            If these visual changes are expected and acceptable:
+            1. Check out this PR branch locally
+            2. Run \`npm run test:visual:update\` in the frontend directory
+            3. Review and commit the baseline updates
+            4. Push to the PR branch
+
+            This security measure prevents unauthorized modifications to the repository.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Comment PR with results - Out-of-scope failures
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.analyze-scope.outcome == 'success' &&
+          steps.analyze-scope.outputs.out_of_scope_count > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const inScopeCount = ${{ steps.analyze-scope.outputs.in_scope_count || 0 }};
+            const outOfScopeCount = ${{ steps.analyze-scope.outputs.out_of_scope_count }};
+            const updatedCount = ${{ steps.smart-update.outputs.updated_count || 0 }};
+
+            // Read scope analysis
+            let outOfScopeList = '';
+            try {
+              const scopeData = JSON.parse(fs.readFileSync('frontend/scope-analysis.json', 'utf-8'));
+              outOfScopeList = scopeData.outOfScope.map(s => `- ${s}`).join('\n');
+            } catch (e) {
+              outOfScopeList = '- Unable to load out-of-scope snapshot list';
+            }
+
+            const body = `## ⚠️ Visual Regression: Out-of-Scope Changes Detected
+
+            ### Summary
+            - **In-scope changes:** ${inScopeCount} baseline(s) ${updatedCount > 0 ? '(auto-updated ✓)' : ''}
+            - **Out-of-scope changes:** ${outOfScopeCount} failure(s) ❌
+            - **Confidence:** ${{ steps.analyze-scope.outputs.confidence }}
+
+            ${updatedCount > 0 ? '### ✅ Auto-Updated Baselines\n\n' + inScopeCount + ' baseline(s) for intentional changes were automatically updated and committed.\n\n' : ''}
+
+            ### ⚠️ Unintended Changes Detected
+
+            **${outOfScopeCount} visual regression(s) in components you didn't modify:**
+
+            ${outOfScopeList}
+
+            **This indicates potential cross-component pollution!** Your changes may have unintentionally affected other components.
+
+            ### What to do:
+            1. Download the \`visual-diffs\` artifact to review the unexpected changes
+            2. Investigate why your changes affected these unrelated components
+            3. Fix the unintended side effects, or
+            4. If the changes are actually intentional, modify those component files to make them in-scope
+
+            [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Trigger baseline update workflow for global change
+        id: trigger-baseline-update
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.analyze-scope.outcome == 'success' &&
+          steps.analyze-scope.outputs.global_change == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const failedCount = ${{ steps.collect-failures.outputs.failed_count }};
+
+            try {
+              // Trigger the baseline update workflow on this PR branch
+              const response = await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'update-visual-baselines.yml',
+                ref: context.payload.pull_request.head.ref,
+                inputs: {
+                  reason: `Global change detected in PR #${context.issue.number} - Auto-triggered baseline update`
+                }
+              });
+
+              if (response.status !== 204) {
+                const message = `Failed to trigger baseline update workflow (status: ${response.status}) on branch ${context.payload.pull_request.head.ref}.`;
+                console.error(message);
+
+                const body = `## 🔄 Visual Regression: Global Change Detected
+
+                **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+
+                ### Global Change Indicators
+                - Modified theme files, tokens, global styles, or Storybook configuration
+                - Changes affect many unrelated components
+                - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+
+                ### Automatic Baseline Update
+
+                ⚠️ **Attempted to trigger the baseline update workflow, but the request was not accepted (status: ${response.status}).**
+
+                The automatic baseline update could not be started. You may need to update baselines manually.
+
+                **Manual baseline update:**
+
+                \`\`\`bash
+                cd frontend
+                npm run test:visual:update
+                git add playwright/visual/**/*.png
+                git commit -m "chore: update visual baselines for global design change"
+                git push
+                \`\`\`
+
+                [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+                `;
+
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: body
+                });
+
+                core.setFailed(message);
+                return;
+              }
+
+              console.log('Triggered baseline update workflow on branch:', context.payload.pull_request.head.ref);
+
+              // Comment on PR (success path)
+              const body = `## 🔄 Visual Regression: Global Change Detected
+
+              **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+
+              ### Global Change Indicators
+              - Modified theme files, tokens, global styles, or Storybook configuration
+              - Changes affect many unrelated components
+              - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+
+              ### Automatic Baseline Update
+
+              ✅ **Automatically triggered the baseline update workflow** on this PR branch.
+
+              The [Update Visual Baselines workflow](https://github.com/${{ github.repository }}/actions/workflows/update-visual-baselines.yml) has been started to regenerate all baselines on this branch.
+
+              **What happens next:**
+              1. The baseline update workflow will regenerate all visual baselines
+              2. Updated baselines will be committed to this PR branch
+              3. Visual tests will automatically re-run with the new baselines
+              4. Review the baseline changes carefully before merging
+
+              **Alternative (if you prefer manual control):**
+              You can also update baselines manually:
+
+              \`\`\`bash
+              cd frontend
+              npm run test:visual:update
+              git add playwright/visual/**/*.png
+              git commit -m "chore: update visual baselines for global design change"
+              git push
+              \`\`\`
+
+              [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (error) {
+              const message = `Failed to trigger baseline update workflow on branch ${context.payload.pull_request.head.ref}: ${error && error.message ? error.message : error}`;
+              console.error(message);
+
+              const body = `## 🔄 Visual Regression: Global Change Detected
+
+              **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+
+              ### Global Change Indicators
+              - Modified theme files, tokens, global styles, or Storybook configuration
+              - Changes affect many unrelated components
+              - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+
+              ### Automatic Baseline Update
+
+              ⚠️ **Automatic baseline update could not be triggered due to an error.**
+
+              Error details:
+              \`\`\`
+              ${message}
+              \`\`\`
+
+              **Manual baseline update:**
+
+              \`\`\`bash
+              cd frontend
+              npm run test:visual:update
+              git add playwright/visual/**/*.png
+              git commit -m "chore: update visual baselines for global design change"
+              git push
+              \`\`\`
+
+              [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+
+              core.setFailed(message);
+            }
+      - name: Final test status
+        if: steps.visual-tests-first.outcome == 'failure'
+        run: |
+          # Determine final status
+          if [ "${{ steps.visual-tests-rerun.outcome }}" = "success" ]; then
+            echo "✅ All visual tests passed after smart baseline update"
+            exit 0
+          elif [ "${{ steps.analyze-scope.outputs.out_of_scope_count }}" != "0" ]; then
+            echo "❌ Out-of-scope visual regressions detected"
+            exit 1
+          elif [ "${{ steps.analyze-scope.outputs.global_change }}" = "true" ]; then
+            echo "🔄 Global change detected - baseline update workflow triggered"
+            echo "The baseline update workflow will regenerate baselines on this PR branch"
+            echo "Tests will re-run automatically after baselines are updated"
+            # Exit with success since we've triggered the fix
+            exit 0
+          else
+            echo "❌ Visual tests failed"
+            exit 1
+          fi
