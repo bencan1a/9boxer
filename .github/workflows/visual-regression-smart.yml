@@ -15,6 +15,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: visual-regression-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   visual-tests:
     name: Visual Regression Tests with Smart Auto-Update
@@ -29,6 +33,19 @@ jobs:
           fetch-depth: 100
           # Use a token that can push to protected branches
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Security check - Block fork PRs from write operations
+        id: fork-check
+        run: |
+          # Check if this is a fork PR
+          if [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ]; then
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+            echo "⚠️  This PR is from a fork. Auto-update of baselines is disabled for security."
+            echo "Fork PRs cannot automatically commit baseline updates to prevent unauthorized modifications."
+          else
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+            echo "✅ This PR is from the main repository. Auto-update is enabled."
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -95,26 +112,45 @@ jobs:
         if: steps.visual-tests-first.outcome == 'failure'
         working-directory: frontend
         run: |
-          # Find all diff images
-          FAILED_SNAPSHOTS=()
+          # Start with a clean list of failed snapshots
+          : > failed-snapshots.txt
+          COUNT=0
+
           if [ -d "test-results" ]; then
             while IFS= read -r -d '' file; do
-              # Extract snapshot name from diff file path
-              SNAPSHOT_NAME=$(basename "$file" | sed 's/-actual\.png$/.png/' | sed 's/-diff\.png$/.png/')
-              FAILED_SNAPSHOTS+=("$SNAPSHOT_NAME")
+              # Extract snapshot name from diff file path in a way that is safe for special characters
+              base_name=$(basename "$file")
+              SNAPSHOT_NAME="$base_name"
+              case "$SNAPSHOT_NAME" in
+                *-actual.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-actual.png}.png" ;;
+                *-diff.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-diff.png}.png" ;;
+                *-expected.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-expected.png}.png" ;;
+                *-previous.png) SNAPSHOT_NAME="${SNAPSHOT_NAME%-previous.png}.png" ;;
+              esac
+              printf '%s\n' "$SNAPSHOT_NAME" >> failed-snapshots.txt
+              COUNT=$((COUNT + 1))
             done < <(find test-results -name "*-diff.png" -print0)
           fi
 
-          # Create a file with failed snapshot names
-          printf '%s\n' "${FAILED_SNAPSHOTS[@]}" > failed-snapshots.txt
+          # Ensure COUNT is defined even if no test-results directory exists
+          : "${COUNT:=0}"
+
+          # Remove duplicates and sort
+          if [ -s failed-snapshots.txt ]; then
+            sort -u failed-snapshots.txt > failed-snapshots-sorted.txt
+            mv failed-snapshots-sorted.txt failed-snapshots.txt
+            # Recount after deduplication
+            COUNT=$(wc -l < failed-snapshots.txt | tr -d ' ')
+          fi
 
           # Output count for logs
-          COUNT=${#FAILED_SNAPSHOTS[@]}
-          echo "Found $COUNT failed snapshot(s)"
+          echo "Found $COUNT unique failed snapshot(s)"
           echo "failed_count=$COUNT" >> $GITHUB_OUTPUT
 
           # Show the list
-          cat failed-snapshots.txt
+          if [ -s failed-snapshots.txt ]; then
+            cat failed-snapshots.txt
+          fi
 
       - name: Analyze visual scope
         id: analyze-scope
@@ -183,38 +219,78 @@ jobs:
         id: commit-updates
         if: |
           steps.smart-update.outcome == 'success' &&
-          steps.smart-update.outputs.updated_count > 0
+          steps.smart-update.outputs.updated_count > 0 &&
+          steps.fork-check.outputs.is_fork != 'true'
         working-directory: frontend
         run: |
+          # Function to retry git operations with exponential backoff
+          retry_git_push() {
+            local max_attempts=5
+            local attempt=1
+            local backoff=2
+
+            while [ $attempt -le $max_attempts ]; do
+              echo "Attempt $attempt of $max_attempts to push changes..."
+
+              # Try to pull and push
+              CURRENT_BRANCH="${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD)}"
+
+              if git pull --rebase origin "$CURRENT_BRANCH" && \
+                 git push --force-with-lease origin "$CURRENT_BRANCH"; then
+                echo "Successfully pushed changes on attempt $attempt"
+                return 0
+              fi
+
+              # Check if we should retry
+              if [ $attempt -lt $max_attempts ]; then
+                local wait_time=$((backoff ** attempt))
+                echo "Push failed, waiting ${wait_time}s before retry..."
+                sleep $wait_time
+              fi
+
+              attempt=$((attempt + 1))
+            done
+
+            echo "Failed to push changes after $max_attempts attempts"
+            return 1
+          }
+
           # Check if there are changes to commit
           if [ -n "$(git status --porcelain playwright/visual/**/*.png)" ]; then
             # Get list of updated components from scope analysis
             COMPONENTS=$(jq -r '.affectedStoryPatterns | join(", ")' scope-analysis.json)
 
+            # Store GitHub Actions outputs in shell variables for proper expansion
+            UPDATED_COUNT="${{ steps.smart-update.outputs.updated_count }}"
+            IN_SCOPE_COUNT="${{ steps.analyze-scope.outputs.in_scope_count }}"
+            OUT_OF_SCOPE_COUNT="${{ steps.analyze-scope.outputs.out_of_scope_count }}"
+            CONFIDENCE="${{ steps.analyze-scope.outputs.confidence }}"
+
             # Commit updated baselines
             git add playwright/visual/**/*.png
 
-            cat << EOF | git commit -F -
-          chore: auto-update visual baselines (in-scope)
+            # Create commit message with proper variable expansion
+            git commit -m "chore: auto-update visual baselines (in-scope)" \
+              -m "" \
+              -m "Updated ${UPDATED_COUNT} baseline(s) for intentional changes." \
+              -m "" \
+              -m "Components affected: ${COMPONENTS}" \
+              -m "" \
+              -m "In-scope updates: ${IN_SCOPE_COUNT}" \
+              -m "Out-of-scope failures: ${OUT_OF_SCOPE_COUNT}" \
+              -m "Confidence: ${CONFIDENCE}" \
+              -m "" \
+              -m "Auto-updated by visual-regression-smart workflow."
 
-          Updated \${{ steps.smart-update.outputs.updated_count }} baseline(s) for intentional changes.
-
-          Components affected: $COMPONENTS
-
-          In-scope updates: \${{ steps.analyze-scope.outputs.in_scope_count }}
-          Out-of-scope failures: \${{ steps.analyze-scope.outputs.out_of_scope_count }}
-          Confidence: \${{ steps.analyze-scope.outputs.confidence }}
-
-          Auto-updated by visual-regression-smart workflow.
-          EOF
-
-            # Synchronize with remote and push safely to PR branch
-            CURRENT_BRANCH="${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD)}"
-            git pull --rebase origin "$CURRENT_BRANCH"
-            git push --force-with-lease origin "$CURRENT_BRANCH"
-
-            echo "committed=true" >> $GITHUB_OUTPUT
-            echo "Successfully committed and pushed baseline updates"
+            # Push with retry logic
+            if retry_git_push; then
+              echo "committed=true" >> $GITHUB_OUTPUT
+              echo "Successfully committed and pushed baseline updates"
+            else
+              echo "committed=false" >> $GITHUB_OUTPUT
+              echo "Failed to push baseline updates after multiple retries"
+              exit 1
+            fi
           else
             echo "committed=false" >> $GITHUB_OUTPUT
             echo "No baseline changes to commit"
@@ -292,6 +368,40 @@ jobs:
             All visual tests now pass.
 
             [View updated baselines in commit history](https://github.com/${{ github.repository }}/commits/${{ github.head_ref }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Comment PR with fork security notice
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.fork-check.outputs.is_fork == 'true' &&
+          steps.visual-tests-first.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## 🔒 Visual Regression Tests - Fork PR Security Notice
+
+            This PR is from a forked repository. For security reasons, automatic baseline updates are **disabled** for fork PRs.
+
+            ### What this means:
+            - Visual regression test failures must be reviewed manually
+            - Baseline updates cannot be automatically committed
+            - A maintainer must update baselines if the changes are intentional
+
+            ### For maintainers:
+            If these visual changes are expected and acceptable:
+            1. Check out this PR branch locally
+            2. Run \`npm run test:visual:update\` in the frontend directory
+            3. Review and commit the baseline updates
+            4. Push to the PR branch
+
+            This security measure prevents unauthorized modifications to the repository.
             `;
 
             github.rest.issues.createComment({
