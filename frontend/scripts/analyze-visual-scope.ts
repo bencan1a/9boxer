@@ -220,8 +220,8 @@ function isSnapshotInScope(
     const patternRegex = new RegExp(
       "^" +
         pattern
-          // Only treat "--*" as a wildcard segment, not every occurrence of "--"
-          .replace(/--\*/g, "--.*")
+          // Only treat a trailing "--*" as a wildcard segment, not every occurrence
+          .replace(/--\*$/, "--.*")
           .replace(/\*/g, ".*") +
       "$"
     );
