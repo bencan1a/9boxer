@@ -85,6 +85,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Install user guide dependencies
+        working-directory: resources/user-guide-vitepress
+        run: npm ci
+
       - name: Generate macOS icon
         if: matrix.platform == 'macos'
         working-directory: frontend
@@ -92,11 +96,7 @@ jobs:
           npm run generate:icons
           npm run generate:icns
 
-      # Install MkDocs dependencies for user guide generation
-      # Note: npm run generate:guide expects mkdocs-material to be available
-      - name: Install MkDocs for user guide
-        run: uv pip install --system mkdocs-material
-
+      # User guide is built with VitePress (dependencies installed in separate step above)
       # Use the same build script as local development for consistency
       # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
       - name: Build Electron app (Linux)

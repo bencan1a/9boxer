@@ -114,6 +114,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Install user guide dependencies
+        working-directory: resources/user-guide-vitepress
+        run: npm ci
+
       - name: Generate macOS icon
         if: matrix.platform == 'macos'
         working-directory: frontend
@@ -121,7 +125,7 @@ jobs:
           npm run generate:icons
           npm run generate:icns
 
-      # User guide is now built with VitePress (npm dependencies already installed)
+      # User guide is built with VitePress (dependencies installed in separate step above)
       # Use the same build script as local development for consistency
       # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
       # Pass ANTHROPIC_API_KEY as environment variable to enable AI features
