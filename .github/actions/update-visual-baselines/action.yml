@@ -54,7 +54,7 @@ runs:
 
         Updated by: @${{ inputs.actor }}
         Workflow run: ${{ inputs.server-url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run-id }}"
-        git push
+        git push || (git pull --rebase && git push)
 
     - name: Upload baseline screenshots
       if: always()
