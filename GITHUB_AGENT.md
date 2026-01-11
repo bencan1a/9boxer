@@ -261,9 +261,11 @@ npm run format                   # Prettier
 ### Update Documentation
 
 **User Documentation:**
-- Edit `USER_GUIDE.md` in project root
+- Edit markdown files in `resources/user-guide-vitepress/docs/`
 - Follow voice & tone guide: `internal-docs/contributing/voice-and-tone-guide.md`
-- Regenerate HTML: `python tools/convert_user_guide.py`
+- Preview: `npm run docs:dev:vitepress` (opens at http://localhost:38081)
+- Build: `npm run docs:build:vitepress`
+- See [VitePress README](resources/user-guide-vitepress/README.md) for details
 
 **Developer Documentation:**
 - Permanent docs → `internal-docs/` directory

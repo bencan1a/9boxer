@@ -14,7 +14,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-        exclude: ^mkdocs\.yml$  # Exclude mkdocs.yml (has custom YAML tags)
+        exclude: (^mkdocs\.yml$|^archive/)  # Exclude mkdocs.yml and archive (has custom YAML tags)
       - id: check-toml
       - id: check-json
         exclude: ^frontend/tsconfig.*\.json$  # Exclude tsconfig.json (allows comments)
@@ -124,8 +124,8 @@ repos:
 
       # Auto-generate documentation design tokens when design system changes
       # Triggers when: frontend/src/theme/tokens.ts is modified
-      # Action: Regenerates resources/user-guide/docs/stylesheets/design-tokens.css
-      # This ensures documentation design stays in sync with the application
+      # Action: Regenerates resources/user-guide-vitepress/docs/public/stylesheets/design-tokens.css
+      # This ensures VitePress documentation design stays in sync with the application
       - id: generate-docs-tokens
         name: generate documentation design tokens
         entry: bash tools/generate-docs-tokens-hook.sh

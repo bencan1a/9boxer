@@ -280,7 +280,7 @@ Use for jobs requiring Node.js/frontend:
 **What it does:**
 1. Sets up Node.js (specified version) with npm caching
 2. Caches node_modules
-3. Installs npm dependencies (`npm ci --legacy-peer-deps`)
+3. Installs npm dependencies (`npm ci`)
 4. Optionally caches and installs Playwright browsers
 
 ### Manual Setup (When Actions Not Suitable)
@@ -317,7 +317,7 @@ For full-stack jobs requiring both Python and Node:
 
 - name: Install frontend dependencies
   working-directory: frontend
-  run: npm ci --legacy-peer-deps
+  run: npm ci
 ```
 
 ### Version Standards

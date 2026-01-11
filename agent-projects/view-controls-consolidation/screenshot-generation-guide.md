@@ -15,7 +15,7 @@ Before generating screenshots:
 2. **Install frontend dependencies:**
    ```bash
    cd frontend
-   npm install --legacy-peer-deps
+   npm install
    ```
 
 3. **Install Playwright browsers:**
@@ -141,7 +141,7 @@ Error: Cannot find module '@playwright/test'
 **Solution:** Install dependencies:
 ```bash
 cd frontend
-npm install --legacy-peer-deps
+npm install
 npx playwright install chromium
 ```
 

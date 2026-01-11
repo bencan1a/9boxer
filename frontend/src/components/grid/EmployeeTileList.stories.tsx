@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { GridZoomProvider } from "../../contexts/GridZoomContext";
 import { EmployeeTileList } from "./EmployeeTileList";
 import type {

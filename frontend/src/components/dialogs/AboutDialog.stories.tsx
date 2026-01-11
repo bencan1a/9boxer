@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { AboutDialog } from "./AboutDialog";
 import { useState } from "react";
 import Button from "@mui/material/Button";

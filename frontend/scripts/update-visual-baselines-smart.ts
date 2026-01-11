@@ -144,7 +144,7 @@ function validatePNG(filePath: string): { valid: boolean; error?: string } {
           // Log close errors for debugging but do not override any original error
           console.error(
             `Warning: failed to close file descriptor for "${filePath}":`,
-            closeErr,
+            closeErr
           );
         }
       }

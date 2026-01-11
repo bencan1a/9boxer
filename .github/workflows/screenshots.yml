@@ -26,7 +26,7 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci --legacy-peer-deps
+          npm ci
 
       - name: Install Playwright browsers
         run: |
@@ -57,14 +57,14 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code resources/user-guide/docs/images/screenshots/ || echo "changes=true" >> $GITHUB_OUTPUT
+          git diff --exit-code resources/user-guide-vitepress/docs/public/images/screenshots/ || echo "changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit updated screenshots
         if: steps.git-check.outputs.changes == 'true'
         run: |
           git config user.name "Screenshot Bot"
           git config user.email "bot@9boxer.com"
-          git add resources/user-guide/docs/images/screenshots/
+          git add resources/user-guide-vitepress/docs/public/images/screenshots/
           git commit -m "docs: regenerate screenshots [skip ci]"
           git push
 
@@ -73,5 +73,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: resources/user-guide/docs/images/screenshots/
+          path: resources/user-guide-vitepress/docs/public/images/screenshots/
           retention-days: 7

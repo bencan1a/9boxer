@@ -1,0 +1,666 @@
+/**
+ * 9Boxer Documentation Custom Styles
+ *
+ * This stylesheet applies documentation-specific styling while leveraging
+ * the auto-generated design tokens from design-tokens.css.
+ *
+ * Design tokens are generated from: frontend/src/theme/tokens.ts
+ * To regenerate tokens: npm run generate:docs-tokens (from frontend directory)
+ *
+ * This file should only contain:
+ * 1. Documentation-specific font scaling (smaller than app)
+ * 2. MkDocs Material theme mappings
+ * 3. Custom documentation components
+ */
+
+/* Global font rendering improvements to match app */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================================
+   MKDOCS MATERIAL THEME VARIABLE MAPPINGS
+   Map MkDocs Material variables to our design tokens
+   Aligned with 9Boxer app's dark purple/blue aesthetic
+   ============================================================================ */
+
+:root {
+  /* Primary Colors - Map to design tokens */
+  --md-primary-fg-color: var(--color-primary-main);
+  --md-primary-fg-color--light: var(--color-primary-light);
+  --md-primary-fg-color--dark: var(--color-primary-dark);
+
+  /* Secondary/Accent Colors - Map to design tokens */
+  --md-accent-fg-color: var(--color-secondary-main);
+  --md-accent-fg-color--transparent: rgba(255, 152, 0, 0.1);
+
+  /* Background Colors - Map to design tokens */
+  --md-default-bg-color: var(--color-background-default);
+  --md-code-bg-color: var(--color-background-paper);
+
+  /* Text Colors - Map to design tokens */
+  --md-default-fg-color: var(--color-text-primary);
+  --md-default-fg-color--light: var(--color-text-secondary);
+  --md-default-fg-color--lighter: var(--color-text-disabled);
+
+  /* Semantic Colors - Map to design tokens */
+  --md-success-fg-color: var(--color-semantic-success);
+  --md-warning-fg-color: var(--color-semantic-warning);
+  --md-error-fg-color: var(--color-semantic-error);
+  --md-info-fg-color: var(--color-semantic-info);
+
+  /* Grid Box Colors - Map to design tokens */
+  --grid-high-performer: var(--color-grid-box-high-performer);
+  --grid-needs-attention: var(--color-grid-box-needs-attention);
+  --grid-solid-performer: var(--color-grid-box-solid-performer);
+  --grid-development: var(--color-grid-box-development);
+}
+
+/* Light mode enhancements - match app's light theme */
+[data-md-color-scheme="default"] {
+  /* Clean backgrounds matching app */
+  --md-default-bg-color: #fafafa;
+  --md-code-bg-color: #ffffff;
+  --md-default-bg-color--light: #f5f5f5;
+  --md-default-bg-color--lighter: #eeeeee;
+
+  /* Enhanced link colors for light mode */
+  --md-typeset-a-color: var(--color-primary-main);
+}
+
+/* Dark mode variable mappings - enhanced to match app */
+[data-md-color-scheme="slate"] {
+  /* Dark mode tokens are defined in design-tokens.css */
+  /* Additional overrides for MkDocs Material theme */
+  --md-accent-fg-color--transparent: rgba(255, 183, 77, 0.1);
+
+  /* Enhance contrast for better readability in dark mode */
+  --md-typeset-a-color: var(--color-primary-light);
+
+  /* Sidebar styling to match app's navigation */
+  --md-default-bg-color--light: #1e1e1e;
+  --md-default-bg-color--lighter: #252525;
+  --md-default-bg-color--lightest: #2d2d2d;
+}
+
+/* ============================================================================
+   APP-INSPIRED ENHANCEMENTS
+   Additional styling to match 9Boxer app aesthetic for both themes
+   ============================================================================ */
+
+/* Make navigation links more prominent (app-like) */
+.md-nav__link {
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-fast) var(--easing-ease-in-out);
+}
+
+.md-nav__link:hover {
+  background-color: rgba(25, 118, 210, 0.08);
+}
+
+.md-nav__link--active {
+  background-color: rgba(25, 118, 210, 0.12);
+  font-weight: var(--typography-font-weight-medium);
+}
+
+/* ============================================================================
+   LIGHT MODE APP STYLING
+   ============================================================================ */
+
+[data-md-color-scheme="default"] .md-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-md-color-scheme="default"] .md-sidebar {
+  background-color: #fafafa;
+}
+
+[data-md-color-scheme="default"] .md-typeset pre {
+  background-color: #f5f5f5;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .md-typeset table:not([class]) {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .md-typeset table:not([class]) th {
+  background-color: rgba(25, 118, 210, 0.08);
+  border-bottom: 2px solid rgba(25, 118, 210, 0.2);
+}
+
+/* ============================================================================
+   DARK MODE APP STYLING
+   ============================================================================ */
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #1e1e1e !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-sidebar {
+  background-color: #1e1e1e;
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre {
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: rgba(63, 81, 181, 0.1);
+  border-bottom: 2px solid rgba(63, 81, 181, 0.3);
+}
+
+/* ============================================================================
+   TYPOGRAPHY SYSTEM - DOCUMENTATION-SPECIFIC SCALING
+   Lighter weights and smaller sizes to match mkdocs-material demo
+   ============================================================================ */
+
+.md-typeset {
+  /* Base font family from design tokens */
+  font-family: var(--typography-font-family);
+
+  /* Smaller body text matching mkdocs-material demo (~10pt) */
+  font-size: 0.8rem;  /* 12.8px - lighter than our previous 14px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 */
+  line-height: 1.6;
+
+  /* Improve font rendering to match app */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings - Lighter weight matching mkdocs-material demo */
+/* Using 400 (regular) instead of 500 (medium) for cleaner look */
+.md-typeset h1 {
+  font-size: 1.6rem;      /* 25.6px - Slightly smaller, cleaner */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.3;
+  margin-top: 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+.md-typeset h2 {
+  font-size: 1.25rem;     /* 20px - Lighter hierarchy */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.4;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.md-typeset h3 {
+  font-size: 1rem;        /* 16px - Compact and clean */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.5;
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.md-typeset h4 {
+  font-size: 0.9rem;      /* 14.4px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: 1.5;
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.md-typeset h5 {
+  font-size: 0.85rem;     /* 13.6px */
+  font-weight: var(--typography-font-weight-regular);  /* 400 instead of 500 */
+  line-height: var(--typography-line-height-normal);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.md-typeset h6 {
+  font-size: 0.8rem;      /* 12.8px - Same as body */
+  font-weight: var(--typography-font-weight-medium);  /* 500 - slightly bolder for H6 */
+  line-height: var(--typography-line-height-normal);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Body text variants */
+.md-typeset p {
+  font-size: 0.8rem;      /* 12.8px - matches mkdocs-material */
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+.md-typeset li {
+  font-size: 0.8rem;      /* Match body text in lists */
+  line-height: 1.6;
+}
+
+.md-typeset .text-small,
+.md-typeset small {
+  font-size: 0.75rem;     /* 12px */
+  line-height: 1.6;
+}
+
+.md-typeset .caption {
+  font-size: 0.7rem;      /* 11.2px */
+  line-height: 1.6;
+  color: var(--md-default-fg-color--light);
+}
+
+/* Code typography */
+.md-typeset code {
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.75rem;     /* 12px - proportionally smaller */
+  font-weight: var(--typography-font-weight-regular);
+}
+
+.md-typeset pre code {
+  font-size: 0.75rem;     /* 12px for code blocks */
+}
+
+/* ============================================================================
+   SEMANTIC COLORS - ADMONITIONS
+   Matches tokens.colors.semantic
+   ============================================================================ */
+
+/* Success (Green) - #4caf50 */
+.md-typeset .admonition.success,
+.md-typeset .admonition.check,
+.md-typeset .admonition.done {
+  border-color: var(--md-success-fg-color);
+}
+
+.md-typeset .admonition.success > .admonition-title,
+.md-typeset .admonition.check > .admonition-title,
+.md-typeset .admonition.done > .admonition-title {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+/* Warning (Orange) - #ff9800 */
+.md-typeset .admonition.warning,
+.md-typeset .admonition.caution,
+.md-typeset .admonition.attention {
+  border-color: var(--md-warning-fg-color);
+}
+
+.md-typeset .admonition.warning > .admonition-title,
+.md-typeset .admonition.caution > .admonition-title,
+.md-typeset .admonition.attention > .admonition-title {
+  background-color: rgba(255, 152, 0, 0.1);
+}
+
+/* Error/Danger (Red) - #f44336 */
+.md-typeset .admonition.danger,
+.md-typeset .admonition.error,
+.md-typeset .admonition.fail {
+  border-color: var(--md-error-fg-color);
+}
+
+.md-typeset .admonition.danger > .admonition-title,
+.md-typeset .admonition.error > .admonition-title,
+.md-typeset .admonition.fail > .admonition-title {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* Info (Blue) - #1976d2 */
+.md-typeset .admonition.info,
+.md-typeset .admonition.note,
+.md-typeset .admonition.seealso {
+  border-color: var(--md-info-fg-color);
+}
+
+.md-typeset .admonition.info > .admonition-title,
+.md-typeset .admonition.note > .admonition-title,
+.md-typeset .admonition.seealso > .admonition-title {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+/* ============================================================================
+   GRID BOX SEMANTIC COLORS
+   For documentation examples about the 9-box grid
+   Uses auto-generated design tokens
+   ============================================================================ */
+
+.grid-high-performer {
+  background-color: var(--grid-high-performer);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+.grid-needs-attention {
+  background-color: var(--grid-needs-attention);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+.grid-solid-performer {
+  background-color: var(--grid-solid-performer);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+.grid-development {
+  background-color: var(--grid-development);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+/* ============================================================================
+   SPACING UTILITIES
+   Uses auto-generated spacing tokens (8px grid system)
+   ============================================================================ */
+
+.spacing-xs  { padding: var(--spacing-xs); }
+.spacing-sm  { padding: var(--spacing-sm); }
+.spacing-md  { padding: var(--spacing-md); }
+.spacing-lg  { padding: var(--spacing-lg); }
+.spacing-xl  { padding: var(--spacing-xl); }
+.spacing-xxl { padding: var(--spacing-xxl); }
+
+.margin-xs  { margin: var(--spacing-xs); }
+.margin-sm  { margin: var(--spacing-sm); }
+.margin-md  { margin: var(--spacing-md); }
+.margin-lg  { margin: var(--spacing-lg); }
+.margin-xl  { margin: var(--spacing-xl); }
+.margin-xxl { margin: var(--spacing-xxl); }
+
+/* Margin bottom variants (common use case) */
+.mb-xs  { margin-bottom: var(--spacing-xs); }
+.mb-sm  { margin-bottom: var(--spacing-sm); }
+.mb-md  { margin-bottom: var(--spacing-md); }
+.mb-lg  { margin-bottom: var(--spacing-lg); }
+.mb-xl  { margin-bottom: var(--spacing-xl); }
+.mb-xxl { margin-bottom: var(--spacing-xxl); }
+
+/* ============================================================================
+   SHADOWS & ELEVATION
+   Uses auto-generated shadow tokens (automatically adjust for light/dark mode)
+   ============================================================================ */
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+.shadow-dropdown {
+  box-shadow: var(--shadow-dropdown);
+}
+
+/* Apply card shadow to common elements */
+.md-typeset .admonition {
+  box-shadow: var(--shadow-card);
+}
+
+/* ============================================================================
+   BORDER RADIUS
+   Uses auto-generated radius tokens
+   ============================================================================ */
+
+.radius-none { border-radius: var(--radius-none); }
+.radius-sm   { border-radius: var(--radius-sm); }
+.radius-md   { border-radius: var(--radius-md); }
+.radius-lg   { border-radius: var(--radius-lg); }
+.radius-xl   { border-radius: var(--radius-xl); }
+.radius-round { border-radius: var(--radius-round); }
+
+/* Apply default border radius to common elements */
+.md-typeset .admonition,
+.md-typeset code,
+.md-typeset pre,
+.md-typeset table,
+.md-typeset img {
+  border-radius: var(--radius-md);
+}
+
+/* ============================================================================
+   SCROLLBAR STYLING
+   Uses auto-generated scrollbar tokens (automatically adjust for light/dark mode)
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: var(--dimension-scrollbar-width);
+  height: var(--dimension-scrollbar-height);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: var(--dimension-scrollbar-thumb-border-radius);
+  border: var(--dimension-scrollbar-thumb-border-width) solid var(--color-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-scrollbar-thumb-hover);
+}
+
+/* ============================================================================
+   HEADER CUSTOMIZATION
+   Override Material theme header to match app styling
+   ============================================================================ */
+
+/* Remove the light blue header background - use neutral colors instead */
+.md-header {
+  background-color: var(--md-code-bg-color) !important;
+  color: var(--md-default-fg-color) !important;
+  box-shadow: var(--shadow-card);
+}
+
+/* Header title styling */
+.md-header__title {
+  font-size: 1.125rem;  /* 18px - Documentation-specific (smaller than app) */
+  font-weight: var(--typography-font-weight-medium);
+  color: var(--md-default-fg-color);
+}
+
+/* Header buttons */
+.md-header__button {
+  color: var(--md-default-fg-color);
+}
+
+/* Search button styling */
+.md-search__input {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================================
+   TRANSITIONS & ANIMATIONS
+   Uses auto-generated duration and easing tokens
+   ============================================================================ */
+
+/* Smooth transitions for interactive elements */
+.md-typeset a,
+.md-typeset button,
+.md-header,
+.md-nav__link {
+  transition: all var(--duration-fast) var(--easing-ease-in-out);
+}
+
+/* Panel/drawer transitions */
+.md-sidebar {
+  transition: transform var(--duration-normal) var(--easing-ease-out);
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Focus indicators matching design system */
+.md-typeset a:focus,
+.md-typeset button:focus {
+  outline: 2px solid var(--md-primary-fg-color);
+  outline-offset: 2px;
+}
+
+/* Skip to content link (keyboard navigation) */
+.md-skip {
+  background-color: var(--md-primary-fg-color);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================================
+   TABLE OF CONTENTS - RIGHT SIDEBAR
+   Remove scrolling container, show full list, widen for single-line items
+   ============================================================================ */
+
+/* Widen the right sidebar to fit TOC items on single lines */
+.md-sidebar--secondary {
+  width: 16rem;  /* Increased from default 12.1rem */
+}
+
+/* Remove max-height constraint that causes scrolling */
+.md-nav--secondary .md-nav__list {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Make the TOC sidebar not scroll internally */
+.md-sidebar--secondary .md-sidebar__inner {
+  overflow: visible;
+}
+
+/* Ensure the TOC wrapper doesn't constrain height */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  overflow: visible;
+}
+
+/* Allow TOC links to use full width without wrapping */
+.md-nav--secondary .md-nav__link {
+  white-space: nowrap;
+}
+
+/* Prevent ellipsis truncation on TOC items - show full text */
+.md-nav--secondary .md-ellipsis {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   SCREENSHOT PLACEHOLDERS
+   Visible placeholder boxes for screenshots that haven't been created yet
+   ============================================================================ */
+
+.screenshot-placeholder {
+  display: block;
+  width: 100%;
+  min-height: 200px;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(25, 118, 210, 0.1) 100%);
+  border: 2px dashed rgba(25, 118, 210, 0.3);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-md) 0;
+  position: relative;
+}
+
+.screenshot-placeholder::before {
+  content: "Screenshot Placeholder";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(25, 118, 210, 0.5);
+  font-size: 0.9rem;
+  font-weight: var(--typography-font-weight-medium);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] .screenshot-placeholder {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-md-color-scheme="slate"] .screenshot-placeholder::before {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* When the actual image loads, hide the placeholder styling */
+.screenshot-placeholder[src]:not([src*="placeholder"]) {
+  min-height: auto;
+  background: none;
+  border: none;
+}
+
+.screenshot-placeholder[src]:not([src*="placeholder"])::before {
+  display: none;
+}
+
+/* ============================================================================
+   CUSTOM COMPONENTS
+   ============================================================================ */
+
+/* Callout boxes for special content */
+.callout {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--md-primary-fg-color);
+  background-color: rgba(25, 118, 210, 0.05);
+}
+
+/* Code block enhancements */
+.md-typeset pre > code {
+  background-color: var(--md-code-bg-color);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
+
+/* Table styling */
+.md-typeset table {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.md-typeset table th {
+  background-color: rgba(25, 118, 210, 0.1);
+  font-weight: var(--typography-font-weight-medium);
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+  /* Use light mode colors for printing */
+  :root {
+    --md-default-bg-color: var(--color-background-paper);
+    --md-default-fg-color: var(--color-text-primary);
+  }
+
+  /* Remove shadows for print */
+  .md-typeset .admonition,
+  .shadow-card,
+  .shadow-elevated {
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+}

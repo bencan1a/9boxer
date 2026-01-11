@@ -136,7 +136,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Check i18n translation formatting
         working-directory: frontend
@@ -334,7 +334,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Run Vitest component tests (excluding performance tests)
         working-directory: frontend
@@ -370,7 +370,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Run Performance Tests
         working-directory: frontend
@@ -425,7 +425,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Cache Playwright browsers
         id: playwright-cache
@@ -474,7 +474,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Validate screenshots are up to date
         working-directory: frontend

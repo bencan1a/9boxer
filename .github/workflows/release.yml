@@ -112,7 +112,7 @@ jobs:
       # Frontend build
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Generate macOS icon
         if: matrix.platform == 'macos'
@@ -121,11 +121,7 @@ jobs:
           npm run generate:icons
           npm run generate:icns
 
-      # Install MkDocs dependencies for user guide generation
-      # Note: npm run generate:guide expects mkdocs-material to be available
-      - name: Install MkDocs for user guide
-        run: uv pip install --system mkdocs-material
-
+      # User guide is now built with VitePress (npm dependencies already installed)
       # Use the same build script as local development for consistency
       # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
       # Pass ANTHROPIC_API_KEY as environment variable to enable AI features
@@ -378,7 +374,7 @@ jobs:
 
       - name: Install frontend dependencies for release notes
         working-directory: frontend
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Generate release notes with AI
         working-directory: frontend

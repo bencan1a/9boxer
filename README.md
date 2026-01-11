@@ -58,10 +58,7 @@ Since 9Boxer is an internal development tool without commercial code signing, yo
 
 **After first launch**, these warnings won't appear again.
 
-**Need help?** See detailed installation guides:
-- [Windows Installation Guide](resources/user-guide/docs/INSTALL_WINDOWS.md)
-- [macOS Installation Guide](resources/user-guide/docs/INSTALL_MACOS.md)
-- [User Guide: Installation](resources/user-guide/docs/installation.md)
+**Need help?** See the [User Guide](resources/user-guide-vitepress/README.md) for detailed instructions.
 
 ### Development Setup (Developers)
 
@@ -396,7 +393,12 @@ The project was originally a Docker-based web application but has migrated to a 
 
 ## User Guide
 
-See [USER_GUIDE.md](USER_GUIDE.md) for detailed user instructions with screenshots.
+The 9Boxer User Guide is built with VitePress and bundled with the application.
+
+**Access the guide:**
+- **In the app**: Click Help → User Guide from the menu
+- **During development**: Run `npm run docs:dev:vitepress` from the frontend directory
+- **Documentation source**: [resources/user-guide-vitepress/](resources/user-guide-vitepress/README.md)
 
 ## Contributing
 
@@ -423,7 +425,7 @@ MIT License - see LICENSE file for details
 ## Support
 
 For issues and questions:
-1. Check [USER_GUIDE.md](USER_GUIDE.md) for usage help
+1. Check the User Guide (Help → User Guide in the app) for usage help
 2. Check [DEPLOYMENT.md](DEPLOYMENT.md) for deployment issues
 3. Open an issue on GitHub
 

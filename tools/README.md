@@ -27,21 +27,20 @@ python tools/build_context.py
 
 See [AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md) for complete documentation system rules.
 
-### `build_user_guide.py`
-Converts markdown user guide to standalone HTML with embedded assets.
+### `build_user_guide.py` (Deprecated - Archived)
+**Status**: This MkDocs-based build script has been replaced by VitePress.
+**Archive Location**: `archive/mkdocs-legacy/build_user_guide.py`
 
-**Purpose**: Generates `resources/USER_GUIDE.html` from markdown for bundling with Electron app.
+The user guide is now built using VitePress (TypeScript/Node-based):
 
-**Usage**:
+**New Build Process**:
 ```bash
-# From project root
-. .venv/bin/activate
-python tools/build_user_guide.py
-
-# Or via npm (from frontend directory)
+# From frontend directory
 cd frontend
-npm run generate:guide
+npm run generate:guide:vitepress
 ```
+
+**VitePress Documentation**: See [resources/user-guide-vitepress/README.md](../resources/user-guide-vitepress/README.md)
 
 **Automation**: Runs automatically during Electron build process (`npm run electron:build`).
 

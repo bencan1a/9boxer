@@ -3,7 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { useState } from "react";
 import { LoadSampleDialog } from "./LoadSampleDialog";
 import Button from "@mui/material/Button";
@@ -86,7 +86,6 @@ export const NoExistingData: Story = {
     onConfirm: fn(async () => {}),
     hasExistingData: false,
   },
-  render: () => <DialogWrapper hasExistingData={false} />,
 };
 
 /**
@@ -99,7 +98,6 @@ export const WithExistingData: Story = {
     onConfirm: fn(async () => {}),
     hasExistingData: true,
   },
-  render: () => <DialogWrapper hasExistingData={true} />,
   parameters: {
     docs: {
       description: {
@@ -112,20 +110,23 @@ export const WithExistingData: Story = {
 
 /**
  * Loading state - data generation in progress
+ * Note: This story shows the dialog ready state. Click 'Load Sample Data' to see loading spinner.
  */
 export const Loading: Story = {
   args: {
     open: true,
     onClose: fn(),
-    onConfirm: fn(async () => {}),
+    onConfirm: fn(async () => {
+      // Simulate loading delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }),
     hasExistingData: false,
   },
-  render: () => <DialogWrapper hasExistingData={false} simulateDelay={true} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Shows loading spinner while sample data is being generated. Click confirm to see the loading state.",
+          "Dialog ready to load sample data. Click 'Load Sample Data' button to see loading spinner while data is being generated.",
       },
     },
   },
@@ -133,20 +134,23 @@ export const Loading: Story = {
 
 /**
  * Error state - generation failed
+ * Note: This story shows the dialog ready state. Click 'Load Sample Data' to see error.
  */
 export const Error: Story = {
   args: {
     open: true,
     onClose: fn(),
-    onConfirm: fn(async () => {}),
+    onConfirm: fn(async () => {
+      // Simulate error
+      throw new globalThis.Error("Failed to generate sample data");
+    }),
     hasExistingData: false,
   },
-  render: () => <DialogWrapper hasExistingData={false} simulateError={true} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Shows error message when sample data generation fails. Click confirm to see the error state.",
+          "Dialog ready to load sample data. Click 'Load Sample Data' button to see error message when generation fails.",
       },
     },
   },
@@ -162,7 +166,6 @@ export const DarkMode: Story = {
     onConfirm: fn(async () => {}),
     hasExistingData: true,
   },
-  render: () => <DialogWrapper hasExistingData={true} />,
   parameters: {
     backgrounds: { default: "dark" },
     docs: {

@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend
-          npm ci --legacy-peer-deps
+          npm ci
 
       - name: Generate Coverage Report
         run: node .github/scripts/screenshot-coverage.js

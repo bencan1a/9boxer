@@ -1,15 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { OrgTreeFilter } from "./OrgTreeFilter";
-import { ManagerInfo } from "../../../services/orgHierarchyService";
+import {
+  ManagerInfo,
+  OrgTreeNode,
+} from "../../../services/orgHierarchyService";
 import {
   Employee,
   PerformanceLevel,
   PotentialLevel,
 } from "../../../types/employee";
 import Box from "@mui/material/Box";
-import { useOrgHierarchy } from "../../../hooks/useOrgHierarchy";
-import { useSessionStore } from "../../../store/sessionStore";
 
 /**
  * Create comprehensive org hierarchy mock data
@@ -313,6 +314,78 @@ const createMockOrgData = (): {
 const mockData = createMockOrgData();
 
 /**
+ * Build org tree from employee data
+ * Converts flat employee list into hierarchical OrgTreeNode structure
+ */
+const buildOrgTree = (
+  employees: Employee[],
+  managers: ManagerInfo[]
+): OrgTreeNode[] => {
+  // Create a map of manager names to their info
+  const managerMap = new Map(managers.map((m) => [m.name, m]));
+
+  // Create a map to hold nodes by employee_id
+  const nodeMap = new Map<number, OrgTreeNode>();
+
+  // Initialize all manager nodes
+  managers.forEach((manager) => {
+    nodeMap.set(manager.employee_id, {
+      employee_id: manager.employee_id,
+      name: manager.name,
+      team_size: manager.team_size,
+      direct_reports: [],
+    });
+  });
+
+  // Build parent-child relationships
+  managers.forEach((manager) => {
+    // Find this manager's manager in the employee list
+    const managerEmployee = employees.find((e) => e.name === manager.name);
+    if (managerEmployee && managerEmployee.manager) {
+      const parentManager = managerMap.get(managerEmployee.manager);
+      if (parentManager) {
+        const parentNode = nodeMap.get(parentManager.employee_id);
+        const currentNode = nodeMap.get(manager.employee_id);
+        if (parentNode && currentNode) {
+          parentNode.direct_reports.push(currentNode);
+        }
+      }
+    }
+  });
+
+  // Find root nodes (managers with no manager or manager not in list)
+  const roots: OrgTreeNode[] = [];
+  managers.forEach((manager) => {
+    const managerEmployee = employees.find((e) => e.name === manager.name);
+    const hasParentInTree =
+      managerEmployee?.manager && managerMap.has(managerEmployee.manager);
+
+    if (!hasParentInTree) {
+      const node = nodeMap.get(manager.employee_id);
+      if (node) {
+        roots.push(node);
+      }
+    }
+  });
+
+  // Sort roots by team size (descending) then name
+  roots.sort(
+    (a, b) => b.team_size - a.team_size || a.name.localeCompare(b.name)
+  );
+
+  // Recursively sort all children
+  const sortChildren = (node: OrgTreeNode) => {
+    node.direct_reports.sort(
+      (a, b) => b.team_size - a.team_size || a.name.localeCompare(b.name)
+    );
+    node.direct_reports.forEach(sortChildren);
+  };
+  roots.forEach(sortChildren);
+
+  return roots;
+};
+
+/**
  * Interactive wrapper with state management
  */
 const OrgTreeFilterWrapper: React.FC<{
@@ -323,17 +396,14 @@ const OrgTreeFilterWrapper: React.FC<{
     initialSelectedManagers
   );
 
-  // Set up session store with employees for the hook to work
-  useEffect(() => {
-    useSessionStore.setState({
-      employees,
-      sessionId: "story-session",
-      filename: "story-employees.xlsx",
-    });
+  // Build org tree from mock data instead of using the hook
+  const orgTree = useMemo(() => {
+    // Find which employees in our list are managers
+    const managersInData = mockData.managers.filter((m) =>
+      employees.some((e) => e.name === m.name)
+    );
+    return buildOrgTree(employees, managersInData);
   }, [employees]);
-
-  // Use the org hierarchy hook to get the org tree
-  const { orgTree } = useOrgHierarchy();
 
   const handleToggleManager = (managerName: string) => {
     setSelectedManagers((prev) =>

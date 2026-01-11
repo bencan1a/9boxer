@@ -3,7 +3,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { ChangeIndicator } from "./ChangeIndicator";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
