@@ -60,7 +60,7 @@ runs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: visual-baselines-${{ inputs.os-name }}
+        name: visual-baselines-${{ toLower(inputs.os-name) }}
         path: frontend/playwright/visual/**/*.png
         retention-days: 30
 
