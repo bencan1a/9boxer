@@ -55,7 +55,8 @@ runs:
 
         # Sanitize branch name for safety (remove any potentially dangerous characters)
         # This prevents issues if branch name contains special characters
-        SAFE_BRANCH=$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9/_-]//g')
+        # Note: We remove forward slashes too to prevent path traversal issues
+        SAFE_BRANCH=$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9_-]//g')
 
         if [[ "$SAFE_BRANCH" != "$CURRENT_BRANCH" ]]; then
           echo "Warning: Branch name was sanitized from '$CURRENT_BRANCH' to '$SAFE_BRANCH'"

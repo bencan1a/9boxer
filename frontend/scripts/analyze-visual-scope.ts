@@ -95,7 +95,7 @@ function getModifiedFiles(baseBranch: string): string[] {
     // Use spawnSync with array arguments to avoid shell injection
     const result = spawnSync(
       "git",
-      ["diff", "--name-only", `${safeBranch}...HEAD`],
+      ["diff", "--name-only", safeBranch + "...HEAD"],
       {
         encoding: "utf-8",
         cwd: FRONTEND_DIR,
