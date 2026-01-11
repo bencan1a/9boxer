@@ -412,13 +412,12 @@ npm run test:visual:update-smart --from-file to-update.txt
 
 **Cause**: Branch protection rules prevent bot pushes.
 
-**Fix**: Ensure `github-actions[bot]` is allowed to push to PR branches:
+**Fix**: Keep strict branch protection and adjust workflows instead:
 
-```yaml
-# In branch protection rules
-- Allow force pushes: Enable for admins and bots
-- Allow bypassing required pull request reviews: Enable for bots
-```
+- Configure visual-regression workflows to push baseline updates to a dedicated update branch (e.g., `visual-baseline/update`) and open a pull request, rather than pushing directly to protected branches.
+- Use the minimal required `GITHUB_TOKEN` permissions (e.g., `contents: write` only for the specific workflow that needs to update baselines).
+- If additional automation is required, use a dedicated bot account or fine-grained PAT with restricted repository and scope, still going through PRs subject to required reviews.
+- **Avoid** enabling "Allow force pushes" or "Allow bypassing required pull request reviews" for bots on protected branches, as this can let a compromised or misconfigured bot push arbitrary code without human review.
 
 ### Git Fetch Depth Issues
 
