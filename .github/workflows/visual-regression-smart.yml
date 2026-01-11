@@ -355,62 +355,149 @@ jobs:
           script: |
             const failedCount = ${{ steps.collect-failures.outputs.failed_count }};
 
-            // Trigger the baseline update workflow on this PR branch
-            const response = await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'update-visual-baselines.yml',
-              ref: context.payload.pull_request.head.ref,
-              inputs: {
-                reason: `Global change detected in PR #${context.issue.number} - Auto-triggered baseline update`
+            try {
+              // Trigger the baseline update workflow on this PR branch
+              const response = await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'update-visual-baselines.yml',
+                ref: context.payload.pull_request.head.ref,
+                inputs: {
+                  reason: `Global change detected in PR #${context.issue.number} - Auto-triggered baseline update`
+                }
+              });
+
+              if (response.status !== 204) {
+                const message = `Failed to trigger baseline update workflow (status: ${response.status}) on branch ${context.payload.pull_request.head.ref}.`;
+                console.error(message);
+
+                const body = `## 🔄 Visual Regression: Global Change Detected
+
+                **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+
+                ### Global Change Indicators
+                - Modified theme files, tokens, global styles, or Storybook configuration
+                - Changes affect many unrelated components
+                - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+
+                ### Automatic Baseline Update
+
+                ⚠️ **Attempted to trigger the baseline update workflow, but the request was not accepted (status: ${response.status}).**
+
+                The automatic baseline update could not be started. You may need to update baselines manually.
+
+                **Manual baseline update:**
+
+                \`\`\`bash
+                cd frontend
+                npm run test:visual:update
+                git add playwright/visual/**/*.png
+                git commit -m "chore: update visual baselines for global design change"
+                git push
+                \`\`\`
+
+                [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+                `;
+
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: body
+                });
+
+                core.setFailed(message);
+                return;
               }
-            });
 
-            console.log('Triggered baseline update workflow on branch:', context.payload.pull_request.head.ref);
+              console.log('Triggered baseline update workflow on branch:', context.payload.pull_request.head.ref);
 
-            // Comment on PR
-            const body = `## 🔄 Visual Regression: Global Change Detected
+              // Comment on PR (success path)
+              const body = `## 🔄 Visual Regression: Global Change Detected
 
-            **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+              **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
 
-            ### Global Change Indicators
-            - Modified theme files, tokens, global styles, or Storybook configuration
-            - Changes affect many unrelated components
-            - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+              ### Global Change Indicators
+              - Modified theme files, tokens, global styles, or Storybook configuration
+              - Changes affect many unrelated components
+              - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
 
-            ### Automatic Baseline Update
+              ### Automatic Baseline Update
 
-            ✅ **Automatically triggered the baseline update workflow** on this PR branch.
+              ✅ **Automatically triggered the baseline update workflow** on this PR branch.
 
-            The [Update Visual Baselines workflow](https://github.com/${{ github.repository }}/actions/workflows/update-visual-baselines.yml) has been started to regenerate all baselines on this branch.
+              The [Update Visual Baselines workflow](https://github.com/${{ github.repository }}/actions/workflows/update-visual-baselines.yml) has been started to regenerate all baselines on this branch.
 
-            **What happens next:**
-            1. The baseline update workflow will regenerate all visual baselines
-            2. Updated baselines will be committed to this PR branch
-            3. Visual tests will automatically re-run with the new baselines
-            4. Review the baseline changes carefully before merging
+              **What happens next:**
+              1. The baseline update workflow will regenerate all visual baselines
+              2. Updated baselines will be committed to this PR branch
+              3. Visual tests will automatically re-run with the new baselines
+              4. Review the baseline changes carefully before merging
 
-            **Alternative (if you prefer manual control):**
-            You can also update baselines manually:
+              **Alternative (if you prefer manual control):**
+              You can also update baselines manually:
 
-            \`\`\`bash
-            cd frontend
-            npm run test:visual:update
-            git add playwright/visual/**/*.png
-            git commit -m "chore: update visual baselines for global design change"
-            git push
-            \`\`\`
+              \`\`\`bash
+              cd frontend
+              npm run test:visual:update
+              git add playwright/visual/**/*.png
+              git commit -m "chore: update visual baselines for global design change"
+              git push
+              \`\`\`
 
-            [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            `;
+              [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
 
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (error) {
+              const message = `Failed to trigger baseline update workflow on branch ${context.payload.pull_request.head.ref}: ${error && error.message ? error.message : error}`;
+              console.error(message);
 
+              const body = `## 🔄 Visual Regression: Global Change Detected
+
+              **${failedCount} visual test failure(s)** detected, and a **global change pattern** was identified.
+
+              ### Global Change Indicators
+              - Modified theme files, tokens, global styles, or Storybook configuration
+              - Changes affect many unrelated components
+              - Confidence: ${{ steps.analyze-scope.outputs.confidence }}
+
+              ### Automatic Baseline Update
+
+              ⚠️ **Automatic baseline update could not be triggered due to an error.**
+
+              Error details:
+              \`\`\`
+              ${message}
+              \`\`\`
+
+              **Manual baseline update:**
+
+              \`\`\`bash
+              cd frontend
+              npm run test:visual:update
+              git add playwright/visual/**/*.png
+              git commit -m "chore: update visual baselines for global design change"
+              git push
+              \`\`\`
+
+              [View full test report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+
+              core.setFailed(message);
+            }
       - name: Final test status
         if: steps.visual-tests-first.outcome == 'failure'
         run: |
