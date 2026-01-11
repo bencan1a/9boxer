@@ -99,19 +99,32 @@ jobs:
       # User guide is built with VitePress (dependencies installed in separate step above)
       # Use the same build script as local development for consistency
       # This includes: generate:guide, build (with prebuild hook), electron:compile, electron-builder
+      # Pass ANTHROPIC_API_KEY as environment variable to enable AI features
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:linux -- --x64
 
       - name: Build Electron app (Windows)
         if: matrix.platform == 'windows'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:win -- --x64
 
       - name: Build Electron app (macOS)
         if: matrix.platform == 'macos'
         working-directory: frontend
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: claude-sonnet-4-5-20250929
+          LLM_MAX_TOKENS: 4096
         run: npm run electron:build:mac -- --x64 --arm64
 
       # Upload artifacts
