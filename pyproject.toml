@@ -107,6 +107,7 @@ markers = [
 
 [tool.coverage.run]
 source = ["backend/src"]
+parallel = true
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
