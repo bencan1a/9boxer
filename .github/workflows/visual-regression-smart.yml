@@ -124,22 +124,33 @@ jobs:
           # Ensure the base branch ref is available locally
           git fetch origin ${{ github.base_ref }}
           # Run scope analysis
-          npx tsx scripts/analyze-visual-scope.ts origin/${{ github.base_ref }} --from-file failed-snapshots.txt > scope-analysis.json || true
+          if ! npx tsx scripts/analyze-visual-scope.ts origin/${{ github.base_ref }} --from-file failed-snapshots.txt > scope-analysis.json; then
+            echo "Scope analysis command failed; proceeding with default values." >&2
+          fi
 
-          # Extract results
-          IN_SCOPE_COUNT=$(jq '.metadata.inScopeCount' scope-analysis.json)
-          OUT_OF_SCOPE_COUNT=$(jq '.metadata.outOfScopeCount' scope-analysis.json)
-          GLOBAL_CHANGE=$(jq -r '.globalChangeDetected' scope-analysis.json)
-          CONFIDENCE=$(jq -r '.confidence' scope-analysis.json)
+          # Validate scope-analysis.json before using jq
+          if [ ! -s scope-analysis.json ] || ! jq empty scope-analysis.json >/dev/null 2>&1; then
+            echo "scope-analysis.json is missing, empty, or invalid JSON; using default scope analysis values." >&2
+            IN_SCOPE_COUNT=0
+            OUT_OF_SCOPE_COUNT=0
+            GLOBAL_CHANGE="false"
+            CONFIDENCE="low"
+            : > in-scope-snapshots.txt
+          else
+            # Extract results from valid JSON
+            IN_SCOPE_COUNT=$(jq '.metadata.inScopeCount' scope-analysis.json)
+            OUT_OF_SCOPE_COUNT=$(jq '.metadata.outOfScopeCount' scope-analysis.json)
+            GLOBAL_CHANGE=$(jq -r '.globalChangeDetected' scope-analysis.json)
+            CONFIDENCE=$(jq -r '.confidence' scope-analysis.json)
+
+            # Extract in-scope snapshots to a file
+            jq -r '.inScope[]' scope-analysis.json > in-scope-snapshots.txt || true
+          fi
 
           echo "in_scope_count=$IN_SCOPE_COUNT" >> $GITHUB_OUTPUT
           echo "out_of_scope_count=$OUT_OF_SCOPE_COUNT" >> $GITHUB_OUTPUT
           echo "global_change=$GLOBAL_CHANGE" >> $GITHUB_OUTPUT
           echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
-
-          # Extract in-scope snapshots to a file
-          jq -r '.inScope[]' scope-analysis.json > in-scope-snapshots.txt || true
-
           echo "Scope Analysis Results:"
           echo "  In-scope: $IN_SCOPE_COUNT"
           echo "  Out-of-scope: $OUT_OF_SCOPE_COUNT"
