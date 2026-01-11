@@ -55,6 +55,8 @@
     "test:visual:ui": "playwright test --project=visual --ui",
     "test:visual:debug": "playwright test --project=visual --debug",
     "test:visual:update": "playwright test --project=visual --update-snapshots --workers=2 --trace=on-first-retry",
+    "test:visual:analyze-scope": "npx tsx scripts/analyze-visual-scope.ts",
+    "test:visual:update-smart": "npx tsx scripts/update-visual-baselines-smart.ts",
     "test:docs-visual": "playwright test --project=docs-visual",
     "test:docs-visual:ui": "playwright test --project=docs-visual --ui",
     "test:docs-visual:update": "playwright test --project=docs-visual --update-snapshots --workers=2 --trace=on-first-retry",
