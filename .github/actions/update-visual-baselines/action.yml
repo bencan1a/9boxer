@@ -91,9 +91,37 @@ runs:
           Updated by: @${{ inputs.actor }}
           Workflow run: ${{ inputs.server-url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run-id }}"
 
-          # Push with retry logic
-          git push || (git pull --rebase && git push)
+          # Push with retry logic (exponential backoff and clear error reporting)
+          MAX_ATTEMPTS=3
+          attempt=1
+          while [[ "$attempt" -le "$MAX_ATTEMPTS" ]]; do
+            echo "Attempt $attempt/$MAX_ATTEMPTS: pushing changes to origin/$CURRENT_BRANCH..."
+            if git push; then
+              echo "Push succeeded on attempt $attempt."
+              break
+            fi
 
+            echo "Push failed on attempt $attempt."
+
+            echo "Running 'git pull --rebase' to resolve potential conflicts..."
+            if ! git pull --rebase; then
+              echo "Error: 'git pull --rebase' failed on attempt $attempt. Aborting."
+              exit 1
+            fi
+
+            if [[ "$attempt" -lt "$MAX_ATTEMPTS" ]]; then
+              backoff=$((2 ** (attempt - 1)))
+              echo "Retrying push after ${backoff}s backoff..."
+              sleep "$backoff"
+            fi
+
+            attempt=$((attempt + 1))
+          done
+
+          if [[ "$attempt" -gt "$MAX_ATTEMPTS" ]]; then
+            echo "Error: Failed to push changes to origin/$CURRENT_BRANCH after $MAX_ATTEMPTS attempts."
+            exit 1
+          fi
           echo "branch_name=$CURRENT_BRANCH" >> $GITHUB_OUTPUT
           echo "created_branch=false" >> $GITHUB_OUTPUT
         fi
