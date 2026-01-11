@@ -214,7 +214,9 @@ async function updateBaselines(snapshots: string[]): Promise<UpdateResult> {
         `npx playwright test --project=visual --update-snapshots ${spec}`,
         {
           cwd: FRONTEND_DIR,
-          stdio: ["inherit", "pipe", "pipe"],
+          // Inherit stdin but fully suppress stdout/stderr so Playwright output
+          // cannot interfere with this script's JSON output on stdout.
+          stdio: ["inherit", "ignore", "ignore"],
         }
       );
 
