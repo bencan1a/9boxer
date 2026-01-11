@@ -132,9 +132,19 @@ function validatePNG(filePath: string): { valid: boolean; error?: string } {
 
     // Check PNG magic number (first 8 bytes)
     const buffer = Buffer.alloc(8);
-    const fd = fs.openSync(filePath, "r");
-    fs.readSync(fd, buffer, 0, 8, 0);
-    fs.closeSync(fd);
+    let fd: number | undefined;
+    try {
+      fd = fs.openSync(filePath, "r");
+      fs.readSync(fd, buffer, 0, 8, 0);
+    } finally {
+      if (fd !== undefined) {
+        try {
+          fs.closeSync(fd);
+        } catch {
+          // Ignore close errors to preserve original error, if any
+        }
+      }
+    }
 
     const pngMagic = Buffer.from([
       0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
