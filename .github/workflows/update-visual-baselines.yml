@@ -221,14 +221,28 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if (git diff --quiet) {
-            echo "has_changes=false" >> $env:GITHUB_OUTPUT
+          # Run git diff and capture its exit code
+          git diff --quiet
+          $exitCode = $LASTEXITCODE
+
+          if ($exitCode -eq 0) {
+            # No changes
+            "has_changes=false" >> $env:GITHUB_OUTPUT
+          } elseif ($exitCode -eq 1) {
+            # Changes detected
+            "has_changes=true" >> $env:GITHUB_OUTPUT
           } else {
-            echo "has_changes=true" >> $env:GITHUB_OUTPUT
+            # git diff failed; log and default to no changes
+            Write-Host "git diff failed with exit code $exitCode; defaulting has_changes=false"
+            "has_changes=false" >> $env:GITHUB_OUTPUT
           }
+
+          # Ensure the step succeeds even if git diff failed
+          exit 0
 
       - name: Commit and push baseline updates
         if: steps.check_changes.outputs.has_changes == 'true'
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -343,6 +357,7 @@ jobs:
 
       - name: Commit and push baseline updates
         if: steps.check_changes.outputs.has_changes == 'true'
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
