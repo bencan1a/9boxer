@@ -28,12 +28,16 @@ For complete workflow documentation, see **[CLAUDE_INDEX.md](../../CLAUDE_INDEX.
 ### Development Workflows
 - `feature-checklist.yml` - Feature development checklist validation
 
+### AI/Code Review Workflows
+- `claude.yml` - Claude Code assistant (responds to @claude mentions)
+- `claude-code-review.yml` - Automated Claude code review on PRs
+
 ### Environment Setup
 - `copilot-setup-steps.yml` - GitHub Copilot environment setup
 
 ---
 
-**Total Workflows:** 13
+**Total Workflows:** 15
 
 For more details on workflows, see:
 - Detailed workflow descriptions
