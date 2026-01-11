@@ -85,10 +85,17 @@ jobs:
         run: uv pip install --system -e '.[dev]'
 
       - name: Run unit and integration tests with combined coverage
-        run: pytest backend/tests/unit/ backend/tests/integration/ --cov=backend/src --cov-report=xml --cov-report=html --cov-report=term -v
+        run: pytest backend/tests/unit/ backend/tests/integration/ --cov=backend/src --cov-report= -v
 
       - name: Run performance tests
         run: pytest backend/tests/performance/ -v --durations=10
+
+      - name: Combine parallel coverage data and generate reports
+        run: |
+          python -m coverage combine
+          python -m coverage xml
+          python -m coverage html
+          python -m coverage report
 
       - name: Enforce coverage threshold
         run: python -m coverage report --fail-under=70
