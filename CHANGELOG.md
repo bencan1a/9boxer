@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-01-11
+
+9Boxer v1.0.0 marks our first major release milestone with enhanced application stability and maintenance. The app now updates itself automatically in the background, ensuring you always have the latest features and security improvements without interruption to your workflow.
+
+### What's New
+- Automatic updates now download and install silently in the background, with notifications when new versions are ready
+
+### Improvements
+- Enhanced application security with improved code signing for macOS users
+
 ## [0.9] - 2026-01-10
 
 This release focuses on improving application security and reliability, particularly for macOS users. We've implemented code signing and notarization for macOS builds to ensure smooth installation without security warnings, along with numerous bug fixes that enhance the stability of the application across all platforms.
