@@ -121,6 +121,8 @@ jobs:
         if: steps.visual-tests-first.outcome == 'failure'
         working-directory: frontend
         run: |
+          # Ensure the base branch ref is available locally
+          git fetch origin ${{ github.base_ref }}
           # Run scope analysis
           npx tsx scripts/analyze-visual-scope.ts origin/${{ github.base_ref }} --from-file failed-snapshots.txt > scope-analysis.json || true
 
