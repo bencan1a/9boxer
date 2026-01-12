@@ -1,6 +1,5 @@
 """Fixtures for performance tests."""
 
-import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 

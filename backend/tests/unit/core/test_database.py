@@ -95,8 +95,10 @@ class TestGetDbPath:
         custom_dir = tmp_path / "custom_app_data"
 
         # Act
+        # Must also patch get_user_data_dir since get_db_path calls it
         with patch.dict(os.environ, {"APP_DATA_DIR": str(custom_dir)}):
-            result = get_db_path()
+            with patch("ninebox.core.database.get_user_data_dir", return_value=custom_dir):
+                result = get_db_path()
 
         # Assert
         assert result.parent == custom_dir
@@ -174,8 +176,15 @@ class TestDatabasePathIntegration:
         nested_dir = tmp_path / "level1" / "level2" / "level3" / "app_data"
 
         # Act
+        # Create a mock that mimics get_user_data_dir behavior (creates dir and returns it)
+        def mock_get_user_data_dir_with_mkdir() -> Path:
+            nested_dir.mkdir(parents=True, exist_ok=True)
+            return nested_dir
+
+        # Must also patch get_user_data_dir since get_db_path calls it
         with patch.dict(os.environ, {"APP_DATA_DIR": str(nested_dir)}):
-            db_path = get_db_path()
+            with patch("ninebox.core.database.get_user_data_dir", side_effect=mock_get_user_data_dir_with_mkdir):
+                db_path = get_db_path()
 
         # Assert
         assert db_path.parent == nested_dir
