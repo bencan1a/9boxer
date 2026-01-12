@@ -253,7 +253,8 @@ jobs:
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
         run: |
           # Notarize each .app bundle
-          for app in release/mac-*/9Boxer.app; do
+          # Note: electron-builder creates release/mac/ for x64 and release/mac-arm64/ for arm64
+          for app in release/mac*/9Boxer.app; do
             if [ -d "$app" ]; then
               echo "=== Notarizing: $app ==="
 
@@ -288,9 +289,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Package each architecture
-          for dir in release/mac-*; do
+          # Note: electron-builder creates release/mac/ for x64 and release/mac-arm64/ for arm64
+          for dir in release/mac release/mac-*; do
             if [ -d "$dir" ]; then
-              arch=$(echo "$dir" | sed 's/.*mac-//')
+              # Extract architecture from directory name
+              if [[ "$dir" == "release/mac-"* ]]; then
+                arch=$(echo "$dir" | sed 's/.*mac-//')
+              else
+                arch="x64"  # release/mac is x64
+              fi
               echo "=== Packaging $arch ==="
               npx electron-builder --mac --$arch --prepackaged "$dir" --publish always
             fi
