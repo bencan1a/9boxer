@@ -502,7 +502,8 @@ async function main() {
 
     // Create a minimal changelog entry for re-releases
     const minimalReleaseNotes = {
-      summary: "Re-release of existing version with build/packaging updates.",
+      summary:
+        "Re-release of existing version (no code changes since previous release).",
       features: [],
       fixes: [],
       breaking: [],
@@ -513,7 +514,9 @@ async function main() {
     updateChangelog(version, minimalReleaseNotes);
 
     console.log("✅ Done! CHANGELOG.md has been updated with minimal entry.");
-    console.log("This is a re-release with no code changes.");
+    console.log(
+      "This is a re-release with no code changes since previous release."
+    );
     process.exit(0);
   }
 
