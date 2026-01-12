@@ -78,11 +78,13 @@ jobs:
           echo "✅ Package.json version updated: $UPDATED_VERSION"
 
       - name: Setup Python
+        if: steps.should_build.outputs.build == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
       - name: Setup Node.js
+        if: steps.should_build.outputs.build == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -90,6 +92,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Cache uv packages
+        if: steps.should_build.outputs.build == 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -100,6 +103,7 @@ jobs:
             uv-${{ runner.os }}-
 
       - name: Cache node_modules
+        if: steps.should_build.outputs.build == 'true'
         uses: actions/cache@v4
         with:
           path: frontend/node_modules
@@ -109,22 +113,24 @@ jobs:
 
       # Backend build
       - name: Install uv
+        if: steps.should_build.outputs.build == 'true'
         run: pip install uv
 
       - name: Install Python dependencies
+        if: steps.should_build.outputs.build == 'true'
         run: |
           uv pip install --system pyinstaller
           uv pip install --system -e .
 
       - name: Build backend executable (Linux/macOS)
-        if: matrix.platform != 'windows'
+        if: steps.should_build.outputs.build == 'true' && matrix.platform != 'windows'
         working-directory: backend
         run: |
           pyinstaller build_config/ninebox.spec
           ls -lh dist/ninebox/
 
       - name: Build backend executable (Windows)
-        if: matrix.platform == 'windows'
+        if: steps.should_build.outputs.build == 'true' && matrix.platform == 'windows'
         working-directory: backend
         shell: pwsh
         run: |
@@ -133,10 +139,12 @@ jobs:
 
       # Frontend build
       - name: Install frontend dependencies
+        if: steps.should_build.outputs.build == 'true'
         working-directory: frontend
         run: npm ci
 
       - name: Install user guide dependencies
+        if: steps.should_build.outputs.build == 'true'
         working-directory: resources/user-guide-vitepress
         run: npm ci
 
