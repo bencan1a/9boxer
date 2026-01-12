@@ -48,7 +48,7 @@
     "test:unit": "vitest run --exclude='**/*.performance.test.*' --exclude='**/*.memory.test.*'",
     "test:fast": "vitest run --reporter=dot --bail=5",
     "test:perf": "vitest run --reporter=verbose --testNamePattern='(Performance|Memory Leak)'",
-    "test:performance": "vitest run --testMatch='**/*.performance.test.ts'",
+    "test:performance": "vitest run src/hooks/__tests__/useEmployeeSearch.performance.test.ts",
     "benchmark:search": "npx tsx scripts/benchmark-search.ts",
     "test:coverage": "vitest run --coverage",
     "test:cleanup": "node scripts/cleanup-dev-servers.mjs",
