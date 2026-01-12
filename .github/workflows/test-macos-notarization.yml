@@ -1,0 +1,145 @@
+name: Test macOS Notarization
+
+# Streamlined workflow to test macOS notarization with pre-built/signed artifacts
+# This allows rapid iteration on notarization without rebuilding each time
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: 'Build Electron workflow run ID (find it at Actions > Build Electron App > [run] > URL)'
+        required: true
+        type: string
+      artifact_name:
+        description: 'Artifact name from build-electron (usually: 9boxer-macos-COMMIT_SHA)'
+        required: true
+        type: string
+      version:
+        description: 'Version being tested (for artifact naming only)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  notarize:
+    name: Test macOS Notarization
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download signed macOS build from build-electron workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.inputs.artifact_name }}
+          path: downloaded-artifacts/
+          run-id: ${{ github.event.inputs.build_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List downloaded artifacts
+        run: |
+          echo "=== Downloaded artifacts ==="
+          ls -lhR downloaded-artifacts/
+          echo ""
+          echo "=== Finding DMG files ==="
+          find downloaded-artifacts -name "*.dmg" -type f
+
+      - name: Prepare macOS signing credentials
+        run: |
+          # Decode and write the App Store Connect API key to a file
+          echo "${{ secrets.APPLE_API_KEY_BASE64 }}" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
+          # Set APPLE_API_KEY to the file path for use in notarization step
+          echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
+
+      - name: Notarize macOS app
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          # Find the DMG file in downloaded artifacts
+          DMG_FILE=$(find downloaded-artifacts -name "*.dmg" -type f | head -1)
+
+          if [ -z "$DMG_FILE" ]; then
+            echo "::error::No DMG file found in downloaded artifacts"
+            exit 1
+          fi
+
+          echo "=== Notarizing: $DMG_FILE ==="
+          echo "Starting notarytool at $(date)"
+
+          # Verify API key file exists
+          echo "=== Checking API key file ==="
+          ls -la "$APPLE_API_KEY" || echo "API key file not found!"
+
+          # Submit DMG directly to Apple (DMG is a supported format)
+          xcrun notarytool submit "$DMG_FILE" \
+            --key "$APPLE_API_KEY" \
+            --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
+            --issuer "${{ secrets.APPLE_API_ISSUER }}" \
+            --verbose \
+            --wait \
+            --timeout 20m \
+            2>&1 | tee notarytool-output.txt
+
+          NOTARY_EXIT_CODE=${PIPESTATUS[0]}
+          echo "notarytool exit code: $NOTARY_EXIT_CODE"
+          echo "Finished notarytool at $(date)"
+
+          # Extract submission ID from output (UUID format)
+          SUBMISSION_ID=$(grep -oE 'id: [a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' notarytool-output.txt | head -1 | cut -d' ' -f2)
+          echo "Submission ID: $SUBMISSION_ID"
+
+          # If we have a submission ID, get the log
+          if [ -n "$SUBMISSION_ID" ]; then
+            echo "=== Fetching notarization log ==="
+            xcrun notarytool log "$SUBMISSION_ID" \
+              --key "$APPLE_API_KEY" \
+              --key-id "${{ secrets.APPLE_API_KEY_ID }}" \
+              --issuer "${{ secrets.APPLE_API_ISSUER }}" \
+              notarization-log.json || true
+
+            echo "=== Notarization log contents ==="
+            cat notarization-log.json || true
+          fi
+
+          # Check if notarization succeeded
+          if [ $NOTARY_EXIT_CODE -ne 0 ]; then
+            echo "::error::Notarization failed with exit code: $NOTARY_EXIT_CODE"
+            echo "See notarization log above for details"
+            exit 1
+          fi
+
+          # Staple the notarization ticket directly to the DMG
+          echo "=== Stapling notarization ticket ==="
+          xcrun stapler staple "$DMG_FILE"
+
+          # Verify stapling
+          echo "=== Verifying staple ==="
+          xcrun stapler validate "$DMG_FILE"
+
+          echo "=== Notarization complete for: $DMG_FILE ==="
+
+          # Save DMG path for artifact upload
+          echo "NOTARIZED_DMG=$DMG_FILE" >> $GITHUB_ENV
+
+      - name: Upload notarization logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notarization-logs-${{ github.event.inputs.version }}
+          path: |
+            notarytool-output.txt
+            notarization-log.json
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload notarized artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notarized-dmg-${{ github.event.inputs.version }}
+          path: ${{ env.NOTARIZED_DMG }}
+          retention-days: 90
