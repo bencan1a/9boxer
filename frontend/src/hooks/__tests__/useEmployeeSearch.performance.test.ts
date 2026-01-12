@@ -19,7 +19,7 @@ describe("useEmployeeSearch - Enterprise Scale Performance", () => {
       { count: 2500, target: 150, label: "⚠️ Large enterprise" },
       { count: 5000, target: 200, label: "❌ Very large enterprise" },
     ])(
-      "searches $count employees in <$targetms ($label)",
+      "searches $count employees in <$target ms ($label)",
       async ({ count, target }) => {
         const employees = await generateEmployeesInMemory(count);
         const { result } = renderHook(() => useEmployeeSearch({ employees }));

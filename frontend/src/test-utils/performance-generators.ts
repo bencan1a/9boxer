@@ -13,6 +13,10 @@ import { sampleDataService } from "../services/sampleDataService";
  * Generate employees using the backend sample data service API
  * Recommended for integration tests and realistic data
  *
+ * Note: The backend supports a `create_session` parameter, but it's not exposed here
+ * since this function is primarily for integration tests that expect session creation.
+ * For performance tests that need to skip session creation, use generateEmployeesInMemory().
+ *
  * @param count - Number of employees to generate (50-10000)
  * @param options - Optional configuration
  * @returns Promise resolving to array of generated employees
