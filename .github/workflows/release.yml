@@ -221,7 +221,7 @@ jobs:
           # Set APPLE_API_KEY to the file path for use in notarization step
           echo "APPLE_API_KEY=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
 
-      - name: Build Electron app (macOS)
+      - name: Build and sign macOS app (without packaging)
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         working-directory: frontend
         env:
@@ -231,15 +231,62 @@ jobs:
           # Code signing
           CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
-          # Notarization (electron-builder built-in)
+          # Debug logging
+          DEBUG: electron-builder,electron-builder:*,electron-osx-sign*
+        run: npm run electron:build:mac -- --x64 --arm64 --dir
+
+      - name: Notarize macOS apps
+        if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
+        timeout-minutes: 30
+        working-directory: frontend
+        env:
           APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
-          # Debug logging
-          DEBUG: electron-builder,electron-builder:*,electron-osx-sign*
-          # Publishing
+        run: |
+          # Notarize each .app bundle
+          for app in release/mac-*/9Boxer.app; do
+            if [ -d "$app" ]; then
+              echo "=== Notarizing: $app ==="
+
+              # Create a ZIP of the app for submission
+              ditto -c -k --keepParent "$app" "$app.zip"
+
+              # Submit for notarization
+              xcrun notarytool submit "$app.zip" \
+                --key "$APPLE_API_KEY" \
+                --key-id "$APPLE_API_KEY_ID" \
+                --issuer "$APPLE_API_ISSUER" \
+                --wait \
+                --timeout 20m
+
+              # Staple the notarization ticket
+              xcrun stapler staple "$app"
+
+              # Verify
+              xcrun stapler validate "$app"
+
+              # Clean up submission ZIP
+              rm "$app.zip"
+
+              echo "=== Notarization complete for: $app ==="
+            fi
+          done
+
+      - name: Package notarized apps into ZIP and DMG
+        if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
+        working-directory: frontend
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run electron:build:mac -- --x64 --arm64 --publish always
+        run: |
+          # Package each architecture
+          for dir in release/mac-*; do
+            if [ -d "$dir" ]; then
+              arch=$(echo "$dir" | sed 's/.*mac-//')
+              echo "=== Packaging $arch ==="
+              npx electron-builder --mac --$arch --prepackaged "$dir" --publish always
+            fi
+          done
 
       # Upload artifacts
       - name: Upload build artifacts
