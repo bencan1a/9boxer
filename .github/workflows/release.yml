@@ -298,7 +298,7 @@ jobs:
             fi
           done
 
-      - name: Sign DMG files
+      - name: Sign DMG and ZIP files
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         working-directory: frontend
         env:
@@ -349,11 +349,28 @@ jobs:
             fi
           done
 
+          # Sign all ZIP files (required for auto-update)
+          for zip in release/*.zip; do
+            if [ -f "$zip" ]; then
+              echo "=== Signing ZIP: $zip ==="
+              codesign --sign "$IDENTITY" \
+                --timestamp \
+                --keychain "$KEYCHAIN_PATH" \
+                "$zip"
+
+              # Verify the signature
+              echo "Verifying signature..."
+              codesign -dv --verbose=2 "$zip"
+
+              echo "=== ZIP signing complete for: $zip ==="
+            fi
+          done
+
           # Cleanup
           security delete-keychain "$KEYCHAIN_PATH"
           rm "$CERTIFICATE_PATH"
 
-      - name: Notarize and validate DMG files
+      - name: Notarize and validate DMG and ZIP files
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         timeout-minutes: 30
         working-directory: frontend
@@ -382,6 +399,29 @@ jobs:
               xcrun stapler validate "$dmg"
 
               echo "=== DMG notarization complete for: $dmg ==="
+            fi
+          done
+
+          # Notarize each ZIP file (required for auto-update)
+          for zip in release/*.zip; do
+            if [ -f "$zip" ]; then
+              echo "=== Notarizing ZIP: $zip ==="
+
+              # Submit for notarization
+              xcrun notarytool submit "$zip" \
+                --key "$APPLE_API_KEY" \
+                --key-id "$APPLE_API_KEY_ID" \
+                --issuer "$APPLE_API_ISSUER" \
+                --wait \
+                --timeout 20m
+
+              # Staple the notarization ticket
+              xcrun stapler staple "$zip"
+
+              # Verify stapling
+              xcrun stapler validate "$zip"
+
+              echo "=== ZIP notarization complete for: $zip ==="
             fi
           done
 
@@ -436,6 +476,56 @@ jobs:
 
               echo ""
               echo "✅ Validation complete for: $dmg"
+              echo "---"
+            fi
+          done
+
+          # Validate all ZIP files
+          for zip in release/*.zip; do
+            if [ -f "$zip" ]; then
+              echo ""
+              echo "--- Validating: $zip ---"
+
+              # Check ZIP signature
+              echo "ZIP Code Signature:"
+              codesign -dv --verbose=2 "$zip" 2>&1 || echo "❌ ZIP not signed"
+
+              # Check ZIP notarization
+              echo ""
+              echo "ZIP Notarization:"
+              xcrun stapler validate "$zip" 2>&1 || echo "❌ ZIP notarization ticket missing"
+
+              # Check ZIP Gatekeeper assessment
+              echo ""
+              echo "ZIP Gatekeeper Assessment:"
+              spctl -a -t open --context context:primary-signature -v "$zip" 2>&1 || echo "❌ ZIP fails Gatekeeper"
+
+              # Extract and check .app inside
+              echo ""
+              echo "Extracting ZIP to check .app bundle..."
+              TEMP_DIR=$(mktemp -d)
+              unzip -q "$zip" -d "$TEMP_DIR"
+
+              APP_PATH="$TEMP_DIR/9Boxer.app"
+              if [ -d "$APP_PATH" ]; then
+                echo ""
+                echo ".app Code Signature:"
+                codesign -dv --verbose=2 "$APP_PATH" 2>&1 || echo "❌ .app not signed"
+
+                echo ""
+                echo ".app Notarization:"
+                xcrun stapler validate "$APP_PATH" 2>&1 || echo "❌ .app notarization ticket missing"
+
+                echo ""
+                echo ".app Gatekeeper Assessment:"
+                spctl -a -t exec -v "$APP_PATH" 2>&1 || echo "❌ .app fails Gatekeeper"
+              fi
+
+              # Cleanup
+              rm -rf "$TEMP_DIR"
+
+              echo ""
+              echo "✅ Validation complete for: $zip"
               echo "---"
             fi
           done
