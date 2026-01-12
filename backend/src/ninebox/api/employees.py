@@ -95,9 +95,10 @@ class DonutMoveRequest(BaseModel):
 class GenerateSampleRequest(BaseModel):
     """Request to generate sample employee dataset."""
 
-    size: int = Field(default=200, ge=50, le=300, description="Number of employees to generate")
+    size: int = Field(default=200, ge=50, le=10000, description="Number of employees to generate")
     include_bias: bool = Field(default=True, description="Include detectable bias patterns")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
+    create_session: bool = Field(default=True, description="Create a session with generated data")
 
 
 class GenerateSampleResponse(BaseModel):
@@ -553,7 +554,7 @@ async def generate_sample_employees(
     - Complete coverage of grid positions and flags
     - Reproducible results via seed parameter
 
-    The generated data IS saved to a new session for immediate use.
+    The generated data IS saved to a new session for immediate use (unless create_session=False).
 
     Args:
         request: Configuration for dataset generation
@@ -562,14 +563,14 @@ async def generate_sample_employees(
         GenerateSampleResponse containing employees and metadata
 
     Raises:
-        HTTPException: 400 if size is out of range (50-300)
+        HTTPException: 400 if size is out of range (50-10000)
         HTTPException: 500 if generation fails
 
     Example:
         >>> # Generate 200 employees with default settings
         >>> POST /api/employees/generate-sample {"size": 200}
-        >>> # Generate 100 employees with custom config
-        >>> POST /api/employees/generate-sample {"size": 100, "include_bias": false, "seed": 42}
+        >>> # Generate 10000 employees without session for testing
+        >>> POST /api/employees/generate-sample {"size": 10000, "create_session": false}
     """
     try:
         # Create configuration from request
@@ -618,26 +619,33 @@ async def generate_sample_employees(
             "bias_patterns": bias_info if request.include_bias else None,
         }
 
-        # Create a session with the generated sample data
+        # Conditionally create a session with the generated sample data
+        session_id = ""
         filename = f"Sample_Dataset_{request.size}_employees.xlsx"
-        session_id = session_manager.create_session(
-            user_id=LOCAL_USER_ID,
-            filename=filename,
-            file_path="",  # No actual file for generated data
-            sheet_name="Sample Data",
-            sheet_index=1,  # Employee Data sheet (index 1), Summary is sheet 0
-            employees=employees,
-        )
 
-        # Verify session was created and can be retrieved
-        logger.info(f"Created sample data session: {session_id}")
-        verify_session = session_manager.get_session(LOCAL_USER_ID)
-        if verify_session:
-            logger.info(
-                f"Verified session exists with {len(verify_session.current_employees)} employees"
+        if request.create_session:
+            session_id = session_manager.create_session(
+                user_id=LOCAL_USER_ID,
+                filename=filename,
+                file_path="",  # No actual file for generated data
+                sheet_name="Sample Data",
+                sheet_index=1,  # Employee Data sheet (index 1), Summary is sheet 0
+                employees=employees,
             )
+
+            # Verify session was created and can be retrieved
+            logger.info(f"Created sample data session: {session_id}")
+            verify_session = session_manager.get_session(LOCAL_USER_ID)
+            if verify_session:
+                logger.info(
+                    f"Verified session exists with {len(verify_session.current_employees)} employees"
+                )
+            else:
+                logger.error(f"CRITICAL: Session {session_id} was NOT found after creation!")
         else:
-            logger.error(f"CRITICAL: Session {session_id} was NOT found after creation!")
+            logger.info(
+                f"Skipping session creation for {request.size} employees (create_session=False)"
+            )
 
         return GenerateSampleResponse(
             employees=employees, metadata=metadata, session_id=session_id, filename=filename

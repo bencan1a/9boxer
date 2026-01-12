@@ -7,6 +7,53 @@
  */
 
 import { Employee, PerformanceLevel, PotentialLevel } from "../types/employee";
+import { sampleDataService } from "../services/sampleDataService";
+
+/**
+ * Generate employees using the backend sample data service API
+ * Recommended for integration tests and realistic data
+ *
+ * @param count - Number of employees to generate (50-10000)
+ * @param options - Optional configuration
+ * @returns Promise resolving to array of generated employees
+ */
+export async function generateEmployeesUsingService(
+  count: number,
+  options: {
+    includeBias?: boolean;
+    seed?: number;
+  } = {}
+): Promise<Employee[]> {
+  const { includeBias = true, seed } = options;
+
+  const response = await sampleDataService.generateSampleDataset({
+    size: count,
+    include_bias: includeBias,
+    seed,
+  });
+
+  return response.employees;
+}
+
+/**
+ * Generate employees in-memory without API calls
+ * Optimized for fast unit tests that need large datasets
+ *
+ * @param count - Number of employees to generate
+ * @param options - Optional configuration for data generation
+ * @returns Promise resolving to array of generated employees
+ */
+export async function generateEmployeesInMemory(
+  count: number,
+  options: {
+    withModified?: boolean;
+    withFlags?: boolean;
+    distributeEvenly?: boolean;
+  } = {}
+): Promise<Employee[]> {
+  // Wrap synchronous generation in Promise for consistent API
+  return Promise.resolve(generateLargeEmployeeDataset(count, options));
+}
 
 /**
  * Generate a large dataset of employees for performance testing
