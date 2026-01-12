@@ -9,7 +9,8 @@
  * - Memory usage patterns (if available)
  *
  * Usage:
- *   npm run benchmark:search
+ *   npm run benchmark:search              # Standard scales (200-5000)
+ *   INCLUDE_STRESS_TEST=1 npm run benchmark:search  # Include 10k test
  *
  * Requirements:
  *   - Backend server must be running on port 38000
@@ -17,18 +18,6 @@
  */
 
 import Fuse from "fuse.js";
-
-// Mock window.performance for Node.js environment
-if (typeof window === "undefined") {
-  (global as any).window = {
-    performance: {
-      now: () => performance.now(),
-      memory: undefined,
-    },
-  };
-}
-
-// Import after window mock
 const apiBaseUrl = "http://localhost:38000/api";
 
 interface Employee {
@@ -255,19 +244,24 @@ async function main() {
     }
   }
 
-  // Optional: 10k stress test (commented out by default)
-  console.log(`\n${"=".repeat(60)}`);
-  console.log("Optional Stress Test (10,000 employees)");
-  console.log("=".repeat(60));
-  console.log("Skipped by default. Uncomment in script to run.");
-  /*
-  try {
-    await benchmarkScale(10000);
-  } catch (error) {
-    console.error(`\n✗ Stress test failed:`);
-    console.error(`  ${error}`);
+  // Optional: 10k stress test (enabled via environment variable)
+  if (process.env.INCLUDE_STRESS_TEST === "1") {
+    console.log(`\n${"=".repeat(60)}`);
+    console.log("Running Stress Test (10,000 employees)");
+    console.log("=".repeat(60));
+
+    try {
+      await benchmarkScale(10000);
+    } catch (error) {
+      console.error(`\n✗ Stress test failed:`);
+      console.error(`  ${error}`);
+    }
+  } else {
+    console.log(`\n${"=".repeat(60)}`);
+    console.log("Stress Test (10,000 employees) - SKIPPED");
+    console.log("=".repeat(60));
+    console.log("Run with INCLUDE_STRESS_TEST=1 to enable");
   }
-  */
 
   console.log("\n╔══════════════════════════════════════════════════════════╗");
   console.log("║  Benchmark Complete!                                     ║");

@@ -12,7 +12,7 @@ import { sampleDataService } from "../services/sampleDataService";
 /**
  * Cache for generated enterprise datasets to avoid redundant API calls
  */
-const enterpriseDatasetCache: Map<number, Employee[]> = new Map();
+const enterpriseDatasetCache: Map<string, Employee[]> = new Map();
 
 /**
  * Generate a large dataset of employees for performance testing
@@ -421,8 +421,8 @@ export async function generateEnterpriseDataset(
 ): Promise<Employee[]> {
   const { seed, include_bias = false, useCache = true } = options;
 
-  // Check cache first
-  const cacheKey = count;
+  // Check cache first (include bias in cache key to avoid collisions)
+  const cacheKey = `${count}-${include_bias}`;
   if (useCache && enterpriseDatasetCache.has(cacheKey)) {
     return enterpriseDatasetCache.get(cacheKey)!;
   }
