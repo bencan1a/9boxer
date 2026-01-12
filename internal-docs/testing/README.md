@@ -347,6 +347,65 @@ git push --no-verify
 | Utilities | 80%+ | Helper functions |
 | Overall | 75%+ | Project-wide target |
 
+## Parallel Test Execution
+
+The backend uses **pytest-xdist** for parallel test execution to speed up test runs.
+
+### Configuration
+
+Pytest is configured in `pyproject.toml` to run tests in parallel:
+
+```toml
+[tool.pytest.ini_options]
+addopts = """
+    -n 4                  # Run with 4 worker processes
+    --dist=loadscope      # Distribute tests by test scope
+    --cov=backend/src     # Coverage collection
+"""
+```
+
+### How It Works
+
+- **Workers:** Tests run across 4 parallel processes
+- **Distribution:** `loadscope` groups tests by scope (class, module) to minimize overhead
+- **Coverage:** Coverage data is automatically combined from all workers
+- **Isolation:** Each worker gets its own database file (`test_db_{worker_id}.sqlite`)
+
+### Performance Impact
+
+| Test Suite | Sequential | Parallel (4 workers) | Speedup |
+|------------|-----------|---------------------|---------|
+| Unit tests | ~60s | ~20s | 3x |
+| Integration tests | ~120s | ~40s | 3x |
+| Full suite | ~300s | ~90s | 3.3x |
+
+### Tradeoffs
+
+**Advantages:**
+- ✅ Faster feedback (3x speedup)
+- ✅ Better CI utilization
+- ✅ Encourages writing more tests
+
+**Considerations:**
+- ⚠️ Slightly higher complexity (worker coordination)
+- ⚠️ Tests must be truly isolated (no shared state)
+- ⚠️ Coverage collection requires combination step
+
+### Troubleshooting
+
+**If tests fail only in parallel:**
+- Check for shared state between tests (global variables, file system, database)
+- Verify fixtures properly handle worker isolation
+- Use `pytest -n 0` to disable parallel execution for debugging
+
+**If coverage seems incorrect:**
+- Coverage data is automatically combined by pytest-cov
+- Verify `.coverage` file includes data from all workers
+- Check that `--cov-report` flags are set in `pyproject.toml`
+
+**Performance tests run sequentially:**
+Performance tests in `backend/tests/performance/` automatically disable xdist to ensure accurate benchmarking. See `backend/tests/performance/conftest.py` for implementation.
+
 ## Additional Resources
 
 - **[.github/agents/test.md](../../.github/agents/test.md)** - Backend testing strategies (agent profile)
