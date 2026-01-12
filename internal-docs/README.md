@@ -54,9 +54,7 @@ Quick navigation to all documentation categories:
 
 #### CI/CD & Reliability
 
-- **[cicd/](cicd/)** - CI/CD patterns, workflows, troubleshooting
-  - [README.md](cicd/README.md) - CI/CD overview
-  - [CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) - Comprehensive reliability guide (Makefile architecture, adding checks, troubleshooting)
+See **[testing/README.md](testing/README.md)** - CI/CD Integration section for Makefile architecture, adding checks, and troubleshooting
 
 #### Internationalization (i18n)
 
@@ -117,13 +115,13 @@ Quick navigation to all documentation categories:
 → Follow [contributing/voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) and [contributing/documentation-writing-guide.md](contributing/documentation-writing-guide.md)
 
 **...understand GitHub Actions workflows**
-→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) for architecture and troubleshooting
+→ See [testing/README.md](testing/README.md) (CI/CD Integration section)
 
 **...add a new code quality check**
-→ Follow [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Adding New Checks section)
+→ Follow [testing/README.md](testing/README.md) (CI/CD Integration section) and [AGENTS.md](../AGENTS.md)
 
 **...troubleshoot CI failures**
-→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Troubleshooting Guide section)
+→ See [testing/README.md](testing/README.md) (CI/CD Integration → Troubleshooting CI Failures)
 
 **...understand agent documentation system**
 → Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
@@ -373,9 +371,8 @@ Documentation is organized into category folders, each with:
 
 **Current Categories:**
 - `architecture/` - System design, ADRs, technical patterns
-- `cicd/` - CI/CD reliability, workflows, troubleshooting
 - `design-system/` - UI components, design tokens, accessibility
-- `testing/` - Test strategies, templates, best practices
+- `testing/` - Test strategies, templates, best practices, CI/CD integration
 - `i18n/` - Internationalization patterns and glossary
 - `contributing/` - Documentation writing standards
 - `components/` - Component-specific documentation

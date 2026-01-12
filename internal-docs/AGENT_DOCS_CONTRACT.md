@@ -87,7 +87,7 @@ When two docs cover related but distinct topics:
 - ❌ **Don't consolidate** just because topics are related
 
 **Example:**
-- `cicd/CI_RELIABILITY.md` = Continuous integration testing infrastructure
+- `testing/README.md` = Testing strategies, test execution, and CI/CD integration
 - `architecture/build-process.md` = Production build and packaging
 - **Action:** Add cross-references, NOT consolidation (different purposes)
 
@@ -215,9 +215,9 @@ including configuration, best practices, and troubleshooting.
 
 ### Example 3: Related but Distinct (Add cross-references, DO NOT consolidate)
 
-**File 1:** `internal-docs/cicd/CI_RELIABILITY.md`
-- Focus: Continuous integration testing infrastructure
-- Content: pre-commit hooks, make targets, test workflows
+**File 1:** `internal-docs/testing/README.md`
+- Focus: Testing strategies, test execution, and CI/CD integration
+- Content: Test frameworks, test principles, CI workflows, make targets
 
 **File 2:** `internal-docs/architecture/build-process.md`
 - Focus: Production build and packaging
