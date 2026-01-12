@@ -14,6 +14,54 @@ export default withMermaid(defineConfig({
   // Similar to MkDocs use_directory_urls: false
   base: './',
 
+  // Transform image paths for file:// protocol compatibility
+  // Converts absolute paths (/images/...) to relative (./images/...) in production builds
+  // This ensures images work when docs are served via file:// in Electron app
+  // Dev server continues to work normally with absolute paths
+  async buildEnd(siteConfig) {
+    const fs = await import('fs')
+    const path = await import('path')
+
+    // Helper function to recursively find HTML files
+    function findHtmlFiles(dir: string, fileList: string[] = []): string[] {
+      const files = fs.readdirSync(dir)
+
+      for (const file of files) {
+        const filePath = path.join(dir, file)
+        const stat = fs.statSync(filePath)
+
+        if (stat.isDirectory()) {
+          findHtmlFiles(filePath, fileList)
+        } else if (file.endsWith('.html')) {
+          fileList.push(filePath)
+        }
+      }
+
+      return fileList
+    }
+
+    // Find all HTML files in the output directory
+    const outDir = path.resolve(siteConfig.outDir)
+    const htmlFiles = findHtmlFiles(outDir)
+
+    // Process each HTML file
+    for (const file of htmlFiles) {
+      let content = fs.readFileSync(file, 'utf-8')
+
+      // Transform all absolute image paths to relative
+      // /images/foo.png -> ./images/foo.png
+      const transformed = content.replace(
+        /(<img[^>]+src=["'])\/images\//g,
+        '$1./images/'
+      )
+
+      // Only write if content changed
+      if (transformed !== content) {
+        fs.writeFileSync(file, transformed, 'utf-8')
+      }
+    }
+  },
+
   // Output directory
   outDir: '../site',
 
