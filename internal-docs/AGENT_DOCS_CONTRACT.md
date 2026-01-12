@@ -239,6 +239,57 @@ A well-tuned audit system should:
 
 ---
 
+## Automated Documentation Updates
+
+The 9Boxer project includes automated systems that create documentation updates via PRs. This establishes a contract for how agents should interact with automated documentation workflows.
+
+### Automated PR Workflows
+
+**Visual Baseline Updates:**
+- **When triggered:** Visual regression tests detect UI changes in components
+- **What happens:** Automated PR created with updated screenshot baselines
+- **Review requirements:**
+  - Review visual diffs carefully
+  - Verify changes are intentional (new feature, approved design update)
+  - Reject if changes are regressions or unintended side effects
+- **Manual override:** Agents can update baselines directly if automated PR fails
+
+**Screenshot Generation:**
+- **When triggered:** Component changes detected via git diff
+- **What happens:** Screenshots regenerated, visual regression tests run
+- **Documentation impact:** Updated screenshots in user-facing docs
+- **Validation:** Automated quality checks (dimensions, metadata, pixel differences)
+
+### Contract for Automated Updates
+
+When automation creates PRs:
+
+1. **DO NOT duplicate manually** - Let automation handle the update
+2. **Review carefully** - Automated doesn't mean auto-approved
+3. **Verify scope** - Check that only intended changes are included
+4. **Maintain timestamps** - Automation should include generation dates
+5. **Respect validation** - If automated checks fail, investigate before overriding
+
+### When to Manual Override
+
+Override automation when:
+- Automated PR fails repeatedly
+- Urgent fix needed (can't wait for automation cycle)
+- Automation doesn't cover specific use case
+- Need to adjust automation itself
+
+**Always document manual overrides** - Add comment explaining why automation was bypassed.
+
+### Integration with Documentation System
+
+Automated updates complement the anti-proliferation principle:
+- Automation updates **existing** documentation (not creates new files)
+- Changes go through same review process (PR approval required)
+- Generated content clearly marked with timestamps
+- Human review maintains quality standards
+
+---
+
 ## Revision History
 
 | Date       | Change                                    |

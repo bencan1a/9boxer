@@ -93,6 +93,26 @@ See **[testing/README.md](testing/README.md)** - CI/CD Integration section for M
 
 - **[archive/](archive/)** - Superseded documentation (organized by date)
 
+### Documentation History
+
+The 9Boxer documentation has evolved through several consolidation phases to improve clarity and reduce duplication:
+
+**[archive/2025-12-29/](archive/2025-12-29/)** - CLAUDE.md optimization
+- **Reason:** Performance optimization (43.5 KB → 14 KB, 72% reduction)
+- **Changes:** Replaced monolithic CLAUDE.md with layered CLAUDE_INDEX.md + specialized docs
+- **Result:** Better navigation, 0% duplication, environment detection
+
+**[archive/2026-01-02/](archive/2026-01-02/)** - Root-level documentation consolidation
+- **Reason:** Establish internal-docs/ as canonical source of truth
+- **Changes:** Moved BUILD.MD, DEPLOYMENT.MD, DESIGN_SYSTEM.MD into internal-docs/
+- **Result:** Single source of truth, reduced 70% overlap, clearer structure
+
+**Current consolidations (2026-01-12):**
+- Merged CI/CD documentation (internal-docs/cicd/) into testing/README.md
+- Consolidated screenshot coverage tracking into contributing/screenshot-guide.md
+
+See archive READMEs for complete consolidation history and rationale.
+
 ---
 
 ## How to Find What You Need
