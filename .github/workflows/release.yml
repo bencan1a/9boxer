@@ -298,6 +298,61 @@ jobs:
             fi
           done
 
+      - name: Sign DMG files
+        if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
+        working-directory: frontend
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+        run: |
+          # Import certificate to keychain (same approach as .app signing)
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
+          # Decode certificate
+          echo "$CSC_LINK" | base64 --decode > "$CERTIFICATE_PATH"
+
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          security import "$CERTIFICATE_PATH" -P "$CSC_KEY_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+          # Find the signing identity
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
+
+          if [ -z "$IDENTITY" ]; then
+            echo "Error: No Developer ID Application certificate found"
+            exit 1
+          fi
+
+          echo "Using signing identity: $IDENTITY"
+
+          # Sign all DMG files
+          for dmg in release/*.dmg; do
+            if [ -f "$dmg" ]; then
+              echo "=== Signing DMG: $dmg ==="
+              codesign --sign "$IDENTITY" \
+                --timestamp \
+                --keychain "$KEYCHAIN_PATH" \
+                "$dmg"
+
+              # Verify the signature
+              echo "Verifying signature..."
+              codesign -dv --verbose=2 "$dmg"
+
+              echo "=== DMG signing complete for: $dmg ==="
+            fi
+          done
+
+          # Cleanup
+          security delete-keychain "$KEYCHAIN_PATH"
+          rm "$CERTIFICATE_PATH"
+
       - name: Notarize and validate DMG files
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         timeout-minutes: 30
