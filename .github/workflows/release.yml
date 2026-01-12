@@ -166,8 +166,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LLM_MODEL: claude-sonnet-4-5-20250929
           LLM_MAX_TOKENS: 4096
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run electron:build:linux -- --x64 --publish always
+        run: npm run electron:build:linux -- --x64 --publish never
 
       - name: Build Electron app (Windows)
         if: steps.should_build.outputs.build == 'true' && matrix.platform == 'windows'
@@ -219,7 +218,7 @@ jobs:
           # Re-run electron-builder with the unpacked app directory
           # This will regenerate the installer and latest.yml with correct checksums from the signed exe
           # electron-builder will auto-discover electron-builder.json
-          npx electron-builder --win --x64 --publish always --prepackaged release/win-unpacked
+          npx electron-builder --win --x64 --publish never --prepackaged release/win-unpacked
 
       - name: Prepare macOS signing credentials
         if: steps.should_build.outputs.build == 'true' && matrix.platform == 'macos'
@@ -283,8 +282,6 @@ jobs:
       - name: Package notarized apps into ZIP and DMG
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         working-directory: frontend
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Package each architecture
           # Note: electron-builder creates release/mac/ for x64 and release/mac-arm64/ for arm64
@@ -297,7 +294,94 @@ jobs:
                 arch="x64"  # release/mac is x64
               fi
               echo "=== Packaging $arch ==="
-              npx electron-builder --mac --$arch --prepackaged "$dir" --publish always
+              npx electron-builder --mac --$arch --prepackaged "$dir" --publish never
+            fi
+          done
+
+      - name: Notarize and validate DMG files
+        if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
+        timeout-minutes: 30
+        working-directory: frontend
+        env:
+          APPLE_API_KEY: ${{ env.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          # Notarize each DMG file
+          for dmg in release/*.dmg; do
+            if [ -f "$dmg" ]; then
+              echo "=== Notarizing DMG: $dmg ==="
+
+              # Submit for notarization
+              xcrun notarytool submit "$dmg" \
+                --key "$APPLE_API_KEY" \
+                --key-id "$APPLE_API_KEY_ID" \
+                --issuer "$APPLE_API_ISSUER" \
+                --wait \
+                --timeout 20m
+
+              # Staple the notarization ticket
+              xcrun stapler staple "$dmg"
+
+              # Verify stapling
+              xcrun stapler validate "$dmg"
+
+              echo "=== DMG notarization complete for: $dmg ==="
+            fi
+          done
+
+          echo ""
+          echo "=== Validation Summary ==="
+
+          # Validate all DMG files
+          for dmg in release/*.dmg; do
+            if [ -f "$dmg" ]; then
+              echo ""
+              echo "--- Validating: $dmg ---"
+
+              # Check DMG signature
+              echo "DMG Code Signature:"
+              codesign -dv --verbose=2 "$dmg" 2>&1 || echo "❌ DMG not signed"
+
+              # Check DMG notarization
+              echo ""
+              echo "DMG Notarization:"
+              xcrun stapler validate "$dmg" 2>&1 || echo "❌ DMG notarization ticket missing"
+
+              # Check DMG Gatekeeper assessment
+              echo ""
+              echo "DMG Gatekeeper Assessment:"
+              spctl -a -t open --context context:primary-signature -v "$dmg" 2>&1 || echo "❌ DMG fails Gatekeeper"
+
+              # Mount DMG and check .app inside
+              echo ""
+              echo "Mounting DMG to check .app bundle..."
+              MOUNT_POINT=$(hdiutil attach "$dmg" | grep "/Volumes/" | tail -1 | awk '{print $3}')
+
+              if [ -n "$MOUNT_POINT" ]; then
+                APP_PATH="$MOUNT_POINT/9Boxer.app"
+
+                if [ -d "$APP_PATH" ]; then
+                  echo ""
+                  echo ".app Code Signature:"
+                  codesign -dv --verbose=2 "$APP_PATH" 2>&1 || echo "❌ .app not signed"
+
+                  echo ""
+                  echo ".app Notarization:"
+                  xcrun stapler validate "$APP_PATH" 2>&1 || echo "❌ .app notarization ticket missing"
+
+                  echo ""
+                  echo ".app Gatekeeper Assessment:"
+                  spctl -a -t exec -v "$APP_PATH" 2>&1 || echo "❌ .app fails Gatekeeper"
+                fi
+
+                # Unmount
+                hdiutil detach "$MOUNT_POINT" -quiet
+              fi
+
+              echo ""
+              echo "✅ Validation complete for: $dmg"
+              echo "---"
             fi
           done
 
