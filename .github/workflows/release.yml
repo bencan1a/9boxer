@@ -403,6 +403,8 @@ jobs:
           done
 
           # Notarize each ZIP file (required for auto-update)
+          # Note: ZIP files can be notarized but NOT stapled
+          # The .app inside already has the stapled ticket from earlier notarization
           for zip in release/*.zip; do
             if [ -f "$zip" ]; then
               echo "=== Notarizing ZIP: $zip ==="
@@ -415,11 +417,9 @@ jobs:
                 --wait \
                 --timeout 20m
 
-              # Staple the notarization ticket
-              xcrun stapler staple "$zip"
-
-              # Verify stapling
-              xcrun stapler validate "$zip"
+              # Note: Cannot staple ZIP files - stapler only works with .app, .dmg, and .pkg
+              # The notarization ticket is stored by Apple and verified online
+              # The .app inside the ZIP already has a stapled ticket
 
               echo "=== ZIP notarization complete for: $zip ==="
             fi
@@ -490,10 +490,10 @@ jobs:
               echo "ZIP Code Signature:"
               codesign -dv --verbose=2 "$zip" 2>&1 || echo "❌ ZIP not signed"
 
-              # Check ZIP notarization
+              # Note: ZIP files cannot be stapled, so we verify notarization by checking the .app inside
               echo ""
               echo "ZIP Notarization:"
-              xcrun stapler validate "$zip" 2>&1 || echo "❌ ZIP notarization ticket missing"
+              echo "ℹ️  ZIP files cannot be stapled - notarization is verified via the .app bundle inside"
 
               # Check ZIP Gatekeeper assessment
               echo ""
