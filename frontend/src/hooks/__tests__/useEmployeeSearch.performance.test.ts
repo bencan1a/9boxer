@@ -12,7 +12,7 @@
  * Run locally to validate performance characteristics.
  */
 
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, afterAll } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useEmployeeSearch } from "../useEmployeeSearch";
 import {
@@ -20,7 +20,6 @@ import {
   clearEnterpriseDatasetCache,
   performanceUtils,
 } from "../../test-utils/performance-generators";
-import { Employee } from "../../types/employee";
 
 describe("Employee Search Performance at Enterprise Scale", () => {
   // Clean up cache after all tests
