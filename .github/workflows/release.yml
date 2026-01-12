@@ -239,8 +239,6 @@ jobs:
           # Code signing
           CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
-          # Debug logging
-          DEBUG: electron-builder,electron-builder:*,electron-osx-sign*
         run: npm run electron:build:mac -- --x64 --arm64 --dir
 
       - name: Notarize macOS apps
@@ -347,6 +345,14 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Delete existing release if present
+        continue-on-error: true
+        run: |
+          gh release delete v${{ github.event.inputs.version }} --yes || true
+          git push --delete origin v${{ github.event.inputs.version }} || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate release notes with AI
         working-directory: frontend
         env:
@@ -431,14 +437,6 @@ jobs:
             cat /tmp/release_notes.md
             echo "EOF"
           } >> $GITHUB_OUTPUT
-
-      - name: Delete existing release if present
-        continue-on-error: true
-        run: |
-          gh release delete v${{ github.event.inputs.version }} --yes || true
-          git push --delete origin v${{ github.event.inputs.version }} || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
