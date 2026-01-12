@@ -20,6 +20,7 @@ Example:
     100
 """
 
+import logging
 import random  # nosec B311 - Using random for sample data generation, not cryptography
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -27,6 +28,8 @@ from enum import Enum
 
 from ninebox.models.constants import ALLOWED_FLAGS
 from ninebox.models.employee import Employee, HistoricalRating, PerformanceLevel, PotentialLevel
+
+logger = logging.getLogger(__name__)
 
 
 class ColumnCategory(str, Enum):
@@ -836,6 +839,13 @@ class RichEmployeeGenerator:
             >>> all(isinstance(emp, Employee) for emp in employees)
             True
         """
+        import time
+
+        start_time = time.time()
+        logger.info(
+            f"Starting dataset generation: size={config.size}, include_bias={config.include_bias}"
+        )
+
         self.rng = random.Random(config.seed)  # nosec B311 - Using for sample data generation, not cryptography
         self.perf_history_gen = PerformanceHistoryGenerator(seed=config.seed)
 
@@ -959,6 +969,9 @@ class RichEmployeeGenerator:
             )
 
             employees.append(employee)
+
+        elapsed_time = time.time() - start_time
+        logger.info(f"Dataset generation completed: {config.size} employees in {elapsed_time:.2f}s")
 
         return employees
 
