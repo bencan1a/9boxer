@@ -55,7 +55,9 @@
     "gatekeeperAssess": false,
     "entitlements": "build/entitlements.mac.plist",
     "entitlementsInherit": "build/entitlements.mac.inherit.plist",
-    "notarize": false
+    "notarize": {
+      "teamId": "Z5JACZS5CV"
+    }
   },
   "linux": {
     "target": ["AppImage"],
