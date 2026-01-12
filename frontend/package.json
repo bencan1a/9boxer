@@ -50,6 +50,7 @@
     "test:perf": "vitest run --reporter=verbose --testNamePattern='(Performance|Memory Leak)'",
     "test:coverage": "vitest run --coverage",
     "test:cleanup": "node scripts/cleanup-dev-servers.mjs",
+    "benchmark:search": "tsx scripts/benchmark-search.ts",
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "check:bundle:save": "node scripts/check-bundle-size.mjs --save",
     "test:e2e:pw": "playwright test --project=e2e-core",
