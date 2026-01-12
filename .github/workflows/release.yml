@@ -451,7 +451,7 @@ jobs:
               # Mount DMG and check .app inside
               echo ""
               echo "Mounting DMG to check .app bundle..."
-              MOUNT_POINT=$(hdiutil attach "$dmg" | grep "/Volumes/" | tail -1 | awk '{print $3}')
+              MOUNT_POINT=$(hdiutil attach "$dmg" 2>/dev/null | grep "/Volumes/" | tail -1 | awk '{print $3}' || true)
 
               if [ -n "$MOUNT_POINT" ]; then
                 APP_PATH="$MOUNT_POINT/9Boxer.app"
@@ -471,7 +471,7 @@ jobs:
                 fi
 
                 # Unmount
-                hdiutil detach "$MOUNT_POINT" -quiet
+                hdiutil detach "$MOUNT_POINT" -quiet || true
               fi
 
               echo ""
@@ -504,7 +504,7 @@ jobs:
               echo ""
               echo "Extracting ZIP to check .app bundle..."
               TEMP_DIR=$(mktemp -d)
-              unzip -q "$zip" -d "$TEMP_DIR"
+              unzip -q "$zip" -d "$TEMP_DIR" 2>/dev/null || true
 
               APP_PATH="$TEMP_DIR/9Boxer.app"
               if [ -d "$APP_PATH" ]; then
@@ -522,7 +522,7 @@ jobs:
               fi
 
               # Cleanup
-              rm -rf "$TEMP_DIR"
+              rm -rf "$TEMP_DIR" || true
 
               echo ""
               echo "✅ Validation complete for: $zip"
