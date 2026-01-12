@@ -104,6 +104,11 @@ ls dist/ninebox/  # Should see executable
 
 # Step 2: Build Electron application
 cd ../frontend
+
+# IMPORTANT: Set ANTHROPIC_API_KEY for AI features
+export ANTHROPIC_API_KEY="your-api-key"  # Linux/macOS
+# or: set ANTHROPIC_API_KEY=your-api-key # Windows
+
 npm run electron:build
 
 # Output in frontend/release/
@@ -112,7 +117,13 @@ npm run electron:build
 # - Linux: 9Boxer-1.0.0.AppImage
 ```
 
-**Complete build guide:** [BUILD.md](BUILD.md)
+**Environment variables:**
+- `ANTHROPIC_API_KEY` - Required for AI features (calibration summaries, intelligent insights)
+  - Get API key from: https://console.anthropic.com/
+  - If not set: Build succeeds, but AI features disabled at runtime
+  - Validated in CI (see `.github/workflows/build-electron.yml`)
+
+**Complete build guide:** [BUILD.md](BUILD.md) | **API key details:** [internal-docs/architecture/build-process.md](internal-docs/architecture/build-process.md)
 
 ---
 

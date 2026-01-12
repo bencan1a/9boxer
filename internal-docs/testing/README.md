@@ -12,6 +12,8 @@ This directory contains comprehensive testing guidance, templates, and best prac
   - **e2e-core suite**: Atomic UX validation with state-based waits (23 tests, 0 flakiness)
   - Replaces comprehensive e2e suite with focused, reliable tests
 
+**Scope Note:** This documentation covers internal developer testing (backend, frontend components, E2E application tests). User-facing documentation is maintained separately in `user-docs/` using VitePress with its own validation workflow.
+
 ## Documentation Files
 
 ### Core Principles

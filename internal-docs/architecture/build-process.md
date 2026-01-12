@@ -36,6 +36,25 @@ This guide explains how to build 9Boxer standalone desktop installers for Window
 - `fuse` for AppImage support
 - Build essentials (`build-essential` on Debian/Ubuntu)
 
+### Environment Variables
+
+**Required for AI Features:**
+
+The application includes AI-powered features (calibration summaries, intelligent insights) that require the Anthropic API:
+
+- **ANTHROPIC_API_KEY** - Anthropic Claude API key
+  - **Required for:** AI calibration summaries, LLM-based analysis
+  - **In CI/CD:** Validated in `.github/workflows/build-electron.yml` and `.github/workflows/release.yml`
+  - **Local builds:** Set environment variable before building:
+    ```bash
+    export ANTHROPIC_API_KEY="your-api-key-here"  # Linux/macOS
+    set ANTHROPIC_API_KEY=your-api-key-here       # Windows
+    ```
+  - **What happens if missing:** Build succeeds, but AI features will be disabled at runtime
+  - **Getting an API key:** https://console.anthropic.com/
+
+**Note:** The API key is bundled into the Electron application at build time to enable AI features. If not provided, the application will build successfully but AI features will show as "unavailable" to users.
+
 ## Initial Setup
 
 Clone the repository and install dependencies:

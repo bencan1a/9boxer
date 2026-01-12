@@ -919,4 +919,46 @@ docs/images/screenshots/
 
 **For questions or clarifications, refer to this guide or consult the documentation team.**
 
+---
+
+## Coverage Tracking
+
+The 9Boxer project tracks screenshot coverage to ensure comprehensive documentation. The following metrics are automatically updated by the screenshot automation system.
+
+### Summary Statistics
+
+**As of:** 2026-01-02
+
+- **Total Components:** 74
+- **Components with Stories:** 58 (78.4%)
+- **Components with Screenshots:** 18 (24.3%)
+- **Total Stories:** 59
+- **Stories Used in Screenshots:** 18 (30.5%)
+
+### Screenshot Breakdown
+
+- **Total Screenshots:** 35
+- **Storybook Screenshots:** 33 (94.3%)
+- **Full-App Screenshots:** 1
+- **Manual Screenshots:** 1
+
+### Coverage Goals
+
+| Metric | Current | Target | Status |
+|--------|---------|--------|--------|
+| Storybook Coverage | 94.3% | 40% | ✅ |
+| Component Story Coverage | 78.4% | 50% | ✅ |
+
+### Automation System
+
+Screenshot coverage is tracked automatically:
+- **Generation:** `npm run screenshots:generate` in frontend directory
+- **Registry:** `frontend/playwright/screenshots/config.ts`
+- **Workflows:** `frontend/playwright/screenshots/workflows/`
+- **Validation:** `frontend/playwright/visual-regression/README.md`
+
+**See also:** Screenshot automation documentation in `frontend/playwright/screenshots/HOWTO.md`
+
+---
+
 *Screenshot Specifications v1.0 | December 2024 | 9Boxer Documentation*
