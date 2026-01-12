@@ -497,7 +497,27 @@ async function main() {
   if (commits.length === 0) {
     console.warn("⚠️  No commits found between releases");
     console.warn("This might be a re-release or tag issue");
-    process.exit(1);
+    console.log("");
+    console.log("📝 Creating minimal changelog entry for re-release...");
+
+    // Create a minimal changelog entry for re-releases
+    const minimalReleaseNotes = {
+      summary:
+        "Re-release of existing version (no code changes since previous release).",
+      features: [],
+      fixes: [],
+      breaking: [],
+      improvements: [],
+    };
+
+    // Update CHANGELOG.md with minimal entry
+    updateChangelog(version, minimalReleaseNotes);
+
+    console.log("✅ Done! CHANGELOG.md has been updated with minimal entry.");
+    console.log(
+      "This is a re-release with no code changes since previous release."
+    );
+    process.exit(0);
   }
 
   // Generate release notes
