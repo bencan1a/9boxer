@@ -87,11 +87,11 @@ jobs:
       - name: Run unit and integration tests with combined coverage
         run: pytest backend/tests/unit/ backend/tests/integration/ --cov=. --cov-report=xml --cov-report=html --cov-report=term -v -n 0
 
-      - name: Run performance tests
-        run: pytest backend/tests/performance/ -v --durations=10
-
       - name: Enforce coverage threshold
         run: python -m coverage report --fail-under=70
+
+      - name: Run performance tests
+        run: pytest backend/tests/performance/ -v --durations=10 --no-cov
 
       - name: Run security scan
         run: make security-report
