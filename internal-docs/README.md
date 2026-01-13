@@ -54,9 +54,7 @@ Quick navigation to all documentation categories:
 
 #### CI/CD & Reliability
 
-- **[cicd/](cicd/)** - CI/CD patterns, workflows, troubleshooting
-  - [README.md](cicd/README.md) - CI/CD overview
-  - [CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) - Comprehensive reliability guide (Makefile architecture, adding checks, troubleshooting)
+See **[testing/README.md](testing/README.md)** - CI/CD Integration section for Makefile architecture, adding checks, and troubleshooting
 
 #### Internationalization (i18n)
 
@@ -95,6 +93,26 @@ Quick navigation to all documentation categories:
 
 - **[archive/](archive/)** - Superseded documentation (organized by date)
 
+### Documentation History
+
+The 9Boxer documentation has evolved through several consolidation phases to improve clarity and reduce duplication:
+
+**[archive/2025-12-29/](archive/2025-12-29/)** - CLAUDE.md optimization
+- **Reason:** Performance optimization (43.5 KB → 14 KB, 72% reduction)
+- **Changes:** Replaced monolithic CLAUDE.md with layered CLAUDE_INDEX.md + specialized docs
+- **Result:** Better navigation, 0% duplication, environment detection
+
+**[archive/2026-01-02/](archive/2026-01-02/)** - Root-level documentation consolidation
+- **Reason:** Establish internal-docs/ as canonical source of truth
+- **Changes:** Moved BUILD.MD, DEPLOYMENT.MD, DESIGN_SYSTEM.MD into internal-docs/
+- **Result:** Single source of truth, reduced 70% overlap, clearer structure
+
+**Current consolidations (2026-01-12):**
+- Merged CI/CD documentation (internal-docs/cicd/) into testing/README.md
+- Consolidated screenshot coverage tracking into contributing/screenshot-guide.md
+
+See archive READMEs for complete consolidation history and rationale.
+
 ---
 
 ## How to Find What You Need
@@ -117,13 +135,13 @@ Quick navigation to all documentation categories:
 → Follow [contributing/voice-and-tone-guide.md](contributing/voice-and-tone-guide.md) and [contributing/documentation-writing-guide.md](contributing/documentation-writing-guide.md)
 
 **...understand GitHub Actions workflows**
-→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) for architecture and troubleshooting
+→ See [testing/README.md](testing/README.md) (CI/CD Integration section)
 
 **...add a new code quality check**
-→ Follow [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Adding New Checks section)
+→ Follow [testing/README.md](testing/README.md) (CI/CD Integration section) and [AGENTS.md](../AGENTS.md)
 
 **...troubleshoot CI failures**
-→ See [cicd/CI_RELIABILITY.md](cicd/CI_RELIABILITY.md) (Troubleshooting Guide section)
+→ See [testing/README.md](testing/README.md) (CI/CD Integration → Troubleshooting CI Failures)
 
 **...understand agent documentation system**
 → Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
@@ -373,9 +391,8 @@ Documentation is organized into category folders, each with:
 
 **Current Categories:**
 - `architecture/` - System design, ADRs, technical patterns
-- `cicd/` - CI/CD reliability, workflows, troubleshooting
 - `design-system/` - UI components, design tokens, accessibility
-- `testing/` - Test strategies, templates, best practices
+- `testing/` - Test strategies, templates, best practices, CI/CD integration
 - `i18n/` - Internationalization patterns and glossary
 - `contributing/` - Documentation writing standards
 - `components/` - Component-specific documentation

@@ -111,6 +111,7 @@ cat backend/src/file.py
 | **Run frontend component tests** | [internal-docs/testing/README.md#component-tests](internal-docs/testing/README.md#component-tests) |
 | **Write E2E tests** (Playwright) | [internal-docs/testing/README.md#e2e-tests](internal-docs/testing/README.md#e2e-tests) |
 | **Understand testing strategy** | [internal-docs/testing/test-principles.md](internal-docs/testing/test-principles.md) |
+| **Visual regression testing** | [internal-docs/testing/README.md#visual-regression-testing](internal-docs/testing/README.md#visual-regression-testing) |
 
 ### Build & Deploy
 

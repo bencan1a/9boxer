@@ -12,6 +12,8 @@ This directory contains comprehensive testing guidance, templates, and best prac
   - **e2e-core suite**: Atomic UX validation with state-based waits (23 tests, 0 flakiness)
   - Replaces comprehensive e2e suite with focused, reliable tests
 
+**Scope Note:** This documentation covers internal developer testing (backend, frontend components, E2E application tests). User-facing documentation is maintained separately in `user-docs/` using VitePress with its own validation workflow.
+
 ## Documentation Files
 
 ### Core Principles
@@ -210,6 +212,123 @@ npm run test:e2e:pw:ui -- --project=e2e-core
 npm run test:e2e:pw
 ```
 
+## CI/CD Integration
+
+The 9Boxer project uses a **Makefile-centric architecture** where the Makefile serves as the single source of truth for all code quality checks, ensuring consistency between local development and CI environments.
+
+### Why This Matters
+
+- **Version Drift Prevention** - Same commands run locally and in CI
+- **Consistency** - Developer experience matches CI failures
+- **Maintainability** - Update one place, changes propagate everywhere
+- **Reproducibility** - `make check-all` locally reproduces CI checks
+
+### Make Targets for Testing
+
+| Target | Purpose | Use Case |
+|--------|---------|----------|
+| `make test` | Run pytest | Backend tests |
+| `make lint` | Run ruff linting | Code quality |
+| `make format-check` | Check code formatting | Pre-commit validation |
+| `make type-check` | Run mypy type checking | Static analysis |
+| `make security` | Run bandit security scan | Security validation |
+| `make check-all` | Run all checks (format, lint, type, security, test) | Local CI reproduction |
+| `make fix` | Auto-fix linting and formatting issues | Quick fixes |
+
+### Pre-commit Hooks
+
+All commits must pass pre-commit hooks (same checks as CI):
+
+```bash
+# From project root
+. .venv/bin/activate
+
+# Run pre-commit checks on files you're committing
+pre-commit run --files <file1> <file2> ...
+
+# Or run on all files (comprehensive)
+pre-commit run --all-files
+
+# If checks pass, proceed with commit
+git add <files>
+git commit -m "message"
+```
+
+**What pre-commit checks:**
+- Ruff format & lint (Python)
+- Mypy & Pyright type checking (Python)
+- Bandit security scan (Python)
+- ESLint & Prettier (TypeScript/JavaScript)
+- Doc size validation (CLAUDE_INDEX.md, AGENTS.md, GITHUB_AGENT.md)
+- i18n translation validation
+
+### Troubleshooting CI Failures
+
+**"Works locally, fails in CI"**
+
+| Cause | Solution |
+|-------|----------|
+| Different command being run | Verify CI uses same make target: `make <target>` |
+| Missing environment setup | Check CI job has all required setup steps |
+| Cache staleness | Clear caches by incrementing cache key version |
+| Timing issues | Add explicit waits in E2E tests; avoid arbitrary timeouts |
+
+**Reproduce CI locally:**
+```bash
+# Run exact CI check sequence
+make check-all
+
+# Or run individual checks
+make lint
+make type-check
+make security
+make test
+```
+
+**Pre-commit failures:**
+```bash
+# See what would fail
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run ruff --all-files
+
+# Reproduce full CI check suite
+make check-all
+
+# Auto-fix formatting issues
+make fix
+
+# Skip hooks (use sparingly)
+git commit --no-verify
+git push --no-verify
+```
+
+### CI Workflows
+
+**pr.yml (PR validation):**
+- Runs comprehensive tests (unit, integration, performance)
+- Enforces 80% coverage on changed files
+- Code complexity check is blocking
+
+**ci.yml (Post-merge CI):**
+- Runs on push to main/develop
+- Lint failures are warnings (non-blocking)
+- Faster feedback than PR workflow
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `Makefile` | Single source of truth for checks |
+| `.pre-commit-config.yaml` | Pre-commit hook configuration |
+| `.github/workflows/pr.yml` | PR validation workflow |
+| `.github/workflows/ci.yml` | Post-merge CI workflow |
+| `tools/hooks/*.sh` | Wrapper scripts for pre-commit hooks |
+| `pyproject.toml` | Python tool configurations (ruff, mypy, bandit) |
+
+**See also:** [AGENTS.md](../../AGENTS.md) for complete developer command reference
+
 ## Key Testing Principles
 
 1. **Simple** - No conditional logic in tests
@@ -227,6 +346,65 @@ npm run test:e2e:pw
 | API Endpoints | 80%+ | Request/response handling |
 | Utilities | 80%+ | Helper functions |
 | Overall | 75%+ | Project-wide target |
+
+## Parallel Test Execution
+
+The backend uses **pytest-xdist** for parallel test execution to speed up test runs.
+
+### Configuration
+
+Pytest is configured in `pyproject.toml` to run tests in parallel:
+
+```toml
+[tool.pytest.ini_options]
+addopts = """
+    -n 4                  # Run with 4 worker processes
+    --dist=loadscope      # Distribute tests by test scope
+    --cov=backend/src     # Coverage collection
+"""
+```
+
+### How It Works
+
+- **Workers:** Tests run across 4 parallel processes
+- **Distribution:** `loadscope` groups tests by scope (class, module) to minimize overhead
+- **Coverage:** Coverage data is automatically combined from all workers
+- **Isolation:** Each worker gets its own database file (`test_db_{worker_id}.sqlite`)
+
+### Performance Impact
+
+| Test Suite | Sequential | Parallel (4 workers) | Speedup |
+|------------|-----------|---------------------|---------|
+| Unit tests | ~60s | ~20s | 3x |
+| Integration tests | ~120s | ~40s | 3x |
+| Full suite | ~300s | ~90s | 3.3x |
+
+### Tradeoffs
+
+**Advantages:**
+- ✅ Faster feedback (3x speedup)
+- ✅ Better CI utilization
+- ✅ Encourages writing more tests
+
+**Considerations:**
+- ⚠️ Slightly higher complexity (worker coordination)
+- ⚠️ Tests must be truly isolated (no shared state)
+- ⚠️ Coverage collection requires combination step
+
+### Troubleshooting
+
+**If tests fail only in parallel:**
+- Check for shared state between tests (global variables, file system, database)
+- Verify fixtures properly handle worker isolation
+- Use `pytest -n 0` to disable parallel execution for debugging
+
+**If coverage seems incorrect:**
+- Coverage data is automatically combined by pytest-cov
+- Verify `.coverage` file includes data from all workers
+- Check that `--cov-report` flags are set in `pyproject.toml`
+
+**Performance tests run sequentially:**
+Performance tests in `backend/tests/performance/` automatically disable xdist to ensure accurate benchmarking. See `backend/tests/performance/conftest.py` for implementation.
 
 ## Additional Resources
 

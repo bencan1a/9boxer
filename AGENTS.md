@@ -104,6 +104,11 @@ ls dist/ninebox/  # Should see executable
 
 # Step 2: Build Electron application
 cd ../frontend
+
+# IMPORTANT: Set ANTHROPIC_API_KEY for AI features
+export ANTHROPIC_API_KEY="your-api-key"  # Linux/macOS
+# or: set ANTHROPIC_API_KEY=your-api-key # Windows
+
 npm run electron:build
 
 # Output in frontend/release/
@@ -112,7 +117,13 @@ npm run electron:build
 # - Linux: 9Boxer-1.0.0.AppImage
 ```
 
-**Complete build guide:** [BUILD.md](BUILD.md)
+**Environment variables:**
+- `ANTHROPIC_API_KEY` - Required for AI features (calibration summaries, intelligent insights)
+  - Get API key from: https://console.anthropic.com/
+  - If not set: Build succeeds, but AI features disabled at runtime
+  - Validated in CI (see `.github/workflows/build-electron.yml`)
+
+**Complete build guide:** [BUILD.md](BUILD.md) | **API key details:** [internal-docs/architecture/build-process.md](internal-docs/architecture/build-process.md)
 
 ---
 
@@ -164,6 +175,39 @@ npx playwright test upload-flow.spec.ts  # Specific test file
 npm run test:visual             # Run visual regression tests
 npm run test:visual:update      # Update baseline snapshots
 ```
+
+### Handling Visual Test Failures
+
+Visual regression tests compare screenshots against approved baselines. When tests fail:
+
+**1. Review the Differences**
+```bash
+cd frontend
+npm run test:visual:ui          # Open Playwright UI to see visual diffs
+```
+
+**2. Determine if Changes are Intentional**
+- ✅ **Expected changes** (new feature, design update) → Update baselines
+- ❌ **Unexpected changes** (regression, unintended side effect) → Fix the code
+
+**3. Update Baselines (if changes are approved)**
+```bash
+npm run test:visual:update      # Updates all baselines
+# Or update specific tests
+npx playwright test --update-snapshots screenshot-validation.spec.ts
+```
+
+**4. When to Reject Updates**
+- Visual differences are due to bugs or regressions
+- Changes affect components not being modified
+- Screenshots show inconsistent styling or broken UI
+- Differences are from unintended side effects
+
+**Automated Workflow:**
+The project uses automated visual baseline updates:
+- PRs are automatically created when baselines need updating
+- Review the PR carefully before merging
+- See `frontend/playwright/visual-regression/README.md` for details
 
 ### Testing Best Practices
 
