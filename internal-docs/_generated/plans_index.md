@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2026-01-06T07:45:17.533229+00:00
+**Updated**: 2026-01-13T07:54:25.489273+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## smart-employee-sorting
@@ -36,14 +36,3 @@
   - Implement AI-powered documentation audits and change detection
   - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
   - -
-
-## big-movers-feature
-- **Status**: active
-- **Owner**: Claude
-- **Created**: 2025-12-21
-- **Path**: `agent-projects/big-movers-feature/plan.md`
-- **Summary**:
-  - Add "big mover" detection for employees who moved significantly between positions
-  - Display badge on employee tiles for big movers
-  - Add filtering capability to show only big movers
-  - Ensure dynamic updates when employees are moved via drag-and-drop
