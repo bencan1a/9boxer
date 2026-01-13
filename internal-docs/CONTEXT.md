@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2026-01-06T07:45:17.533402+00:00
-**Source SHA**: 52e0dd76d3612282baa0f2a5874849b13c19b06d
+**Generated**: 2026-01-13T07:49:01.027957+00:00
+**Source SHA**: 87928c4da7369e2b4aa3f12ca7f45110d282dcfc
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -437,7 +437,7 @@ This file provides comprehensive context about the project for AI agents and dev
 
 ## Active Plans
 
-There are 4 active plan(s):
+There are 3 active plan(s):
 
 ### smart-employee-sorting
 - Owner: bencan1a
@@ -466,15 +466,6 @@ There are 4 active plan(s):
   - Implement AI-powered documentation audits and change detection
   - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
   - -
-
-### big-movers-feature
-- Owner: Claude
-- Created: 2025-12-21
-- Summary:
-  - Add "big mover" detection for employees who moved significantly between positions
-  - Display badge on employee tiles for big movers
-  - Add filtering capability to show only big movers
-  - Ensure dynamic updates when employees are moved via drag-and-drop
 
 ## API Documentation
 
