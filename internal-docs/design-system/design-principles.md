@@ -745,7 +745,7 @@ Use this checklist for every UI change:
 ## Related Documentation
 
 - [Design Tokens](design-tokens.md) - All design constants
-- [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) - Complete UI guidelines
+- [DESIGN_SYSTEM.md](README.md) - Complete UI guidelines
 - [Component Guidelines](component-guidelines.md) - Detailed component patterns (Phase 2)
 - [Accessibility Standards](accessibility-standards.md) - WCAG compliance guide (Phase 2)
 - [Layout Patterns](layout-patterns.md) - Layout and hierarchy patterns (Phase 2)

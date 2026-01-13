@@ -312,12 +312,11 @@ We chose Playwright's built-in visual regression over SaaS tools (Chromatic, Per
 
 - [Playwright Visual Comparisons Docs](https://playwright.dev/docs/test-snapshots)
 - [Visual Testing README](../../frontend/playwright/visual/README.md) (detailed API docs)
-- [9Boxer Design System](../../DESIGN_SYSTEM.md)
+- [9Boxer Design System](../design-system/README.md)
 - [Storybook Instance](http://localhost:6006) (when running locally)
 
 ## Related Documentation
 
-- [E2E Testing Guide](./e2e-testing.md)
-- [Component Testing Guide](./component-testing.md)
+- [Playwright E2E Architecture](./playwright-architecture-review.md)
 - [Testing Principles](./test-principles.md)
 - [Testing Quick Reference](./quick-reference.md)

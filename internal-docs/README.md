@@ -35,7 +35,6 @@ Quick navigation to all documentation categories:
   - [color-palette.md](design-system/color-palette.md) - Color system
   - [design-principles.md](design-system/design-principles.md) - Design philosophy
   - [linting-rules.md](design-system/linting-rules.md) - ESLint configuration
-  - [migration-summary.md](design-system/migration-summary.md) - Design system migration history
 
 #### Testing
 
@@ -58,12 +57,10 @@ See **[testing/README.md](testing/README.md)** - CI/CD Integration section for M
 
 #### Internationalization (i18n)
 
-- **[i18n/](i18n/)** - Translation patterns, glossary, testing (5 files)
+- **[i18n/](i18n/)** - Translation patterns, glossary, testing
   - [README.md](i18n/README.md) - i18n overview
   - [glossary.md](i18n/glossary.md) - Translation terms
   - [migration-patterns.md](i18n/migration-patterns.md) - i18n implementation patterns
-  - [i18n-migration-summary.md](i18n/i18n-migration-summary.md) - i18n migration history
-  - [PROGRESS.md](i18n/PROGRESS.md) - i18n implementation progress
 
 #### Contributing & Documentation Writing
 
@@ -81,7 +78,6 @@ See **[testing/README.md](testing/README.md)** - CI/CD Integration section for M
 - **[CONTEXT.md](CONTEXT.md)** - Comprehensive project context for AI agents (~150KB)
 - **[SUMMARY.md](SUMMARY.md)** - Quick index of all documentation components
 - **[facts.json](facts.json)** - Stable project truths (highest authority)
-- **[CHANGELOG.md](CHANGELOG.md)** - Documentation change history
 
 ### Auto-Generated Documentation
 
@@ -120,7 +116,7 @@ See archive READMEs for complete consolidation history and rationale.
 ### I want to...
 
 **...understand the codebase architecture**
-→ Start with [architecture/SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) or [CLAUDE.md](../CLAUDE.md)
+→ Start with [architecture/SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) or [CLAUDE_INDEX.md](../CLAUDE_INDEX.md)
 
 **...create or modify UI components**
 → Read [design-system/README.md](design-system/README.md) first (MANDATORY)
@@ -144,7 +140,7 @@ See archive READMEs for complete consolidation history and rationale.
 → See [testing/README.md](testing/README.md) (CI/CD Integration → Troubleshooting CI Failures)
 
 **...understand agent documentation system**
-→ Read [../AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)
+→ Read [AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)
 
 **...find quick command references**
 → See [AGENTS.md](../AGENTS.md)
@@ -464,8 +460,8 @@ When asked to create documentation:
 
 ## Related Documentation
 
-- **[AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)** - Documentation system rules
-- **[CLAUDE.md](../CLAUDE.md)** - Main agent entry point
+- **[AGENT_DOCS_CONTRACT.md](AGENT_DOCS_CONTRACT.md)** - Documentation system rules
+- **[CLAUDE_INDEX.md](../CLAUDE_INDEX.md)** - Main agent entry point
 - **[AGENTS.md](../AGENTS.md)** - Quick reference
 - **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
 

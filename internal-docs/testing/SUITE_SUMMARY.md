@@ -192,7 +192,7 @@ backend/tests/unit/services/test_my_new_service.py
 - **Quick reference:** [quick-reference.md](./quick-reference.md)
 - **VS Code guide:** [.vscode/README.md](../../.vscode/README.md)
 - **Configuration:** [pyproject.toml](../../pyproject.toml)
-- **CLAUDE.md:** [CLAUDE.md](../../CLAUDE.md) - Project overview with test info
+- **CLAUDE.md:** [CLAUDE_INDEX.md](../../CLAUDE_INDEX.md) - Project overview with test info
 
 ---
 

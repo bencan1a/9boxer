@@ -271,6 +271,6 @@ Before merging test changes:
 
 ## Related Documents
 
-- [PRINCIPLES.md](./PRINCIPLES.md) - Detailed anti-fragile testing principles
-- [PATTERNS.md](./PATTERNS.md) - Common testing patterns and examples
+- [test-principles.md](./test-principles.md) - Detailed anti-fragile testing principles
+- [playwright-best-practices-checklist.md](./playwright-best-practices-checklist.md) - Common testing patterns and examples
 - [METRICS.md](./METRICS.md) - Metric definitions and tracking

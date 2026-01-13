@@ -646,7 +646,7 @@ Full test suite runs on push:
 - [React Testing Library](https://testing-library.com/react)
 - [Playwright documentation](https://playwright.dev/)
 - [Testing Best Practices](https://testingjavascript.com/)
-- [Project Testing Guide](.github/agents/test.md)
+- Project Testing Guide: See `.github/agents/test.md`
 
 ---
 

@@ -972,7 +972,7 @@ useEffect(() => {
 - [Design Principles](design-principles.md) - Core UX philosophy
 - [Design Tokens](design-tokens.md) - All design constants
 - [Component Inventory](component-inventory.md) - Complete component catalog
-- [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) - Complete UI guidelines
+- [DESIGN_SYSTEM.md](README.md) - Complete UI guidelines
 - [Interaction Patterns](interaction-patterns.md) - Animation and interaction standards (Chunk 4)
 - [Component Guidelines](component-guidelines.md) - Detailed component patterns (Chunk 5)
 

@@ -408,8 +408,8 @@ Performance tests in `backend/tests/performance/` automatically disable xdist to
 
 ## Additional Resources
 
-- **[.github/agents/test.md](../../.github/agents/test.md)** - Backend testing strategies (agent profile)
-- **[CLAUDE.md](../../CLAUDE.md)** - Project-wide testing commands and architecture
+- **.github/agents/test.md** - Backend testing strategies (agent profile)
+- **[CLAUDE_INDEX.md](../../CLAUDE_INDEX.md)** - Project-wide testing commands and architecture
 - **[pytest documentation](https://docs.pytest.org/)** - Official pytest docs
 - **[React Testing Library](https://testing-library.com/react)** - RTL docs
 - **[Playwright documentation](https://playwright.dev/)** - Playwright docs

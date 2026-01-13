@@ -601,5 +601,5 @@ describe('EmployeeCard', () => {
 - [SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md) - Complete system design
 - [internal-docs/design-system/](../design-system/) - UI design patterns
 - [internal-docs/testing/](../testing/) - Testing strategies
-- [BUILD.md](../../BUILD.md) - Build instructions
-- [DEPLOYMENT.md](../../DEPLOYMENT.md) - Deployment guide
+- [build-process.md](build-process.md) - Build instructions
+- [deployment.md](deployment.md) - Deployment guide
