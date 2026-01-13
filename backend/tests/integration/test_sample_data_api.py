@@ -102,8 +102,8 @@ def test_generate_sample_employees_when_size_below_minimum_then_returns_400(
 def test_generate_sample_employees_when_size_above_maximum_then_returns_400(
     test_client: TestClient,
 ) -> None:
-    """Test size > 300 returns 400 Bad Request."""
-    response = test_client.post("/api/employees/generate-sample", json={"size": 301})
+    """Test size > 10000 returns 400 Bad Request."""
+    response = test_client.post("/api/employees/generate-sample", json={"size": 10001})
 
     assert response.status_code == 422  # Pydantic validation error
     data = response.json()
@@ -176,6 +176,60 @@ def test_generate_sample_employees_when_300_employees_then_completes_under_2_sec
 
     elapsed = end_time - start_time
     assert elapsed < 2.0, f"Generation took {elapsed:.3f}s, expected < 2.0s"
+
+
+def test_generate_sample_employees_when_size_at_new_maximum_then_returns_200_ok(
+    test_client: TestClient,
+) -> None:
+    """Test size = 10000 (new maximum) returns 200 OK."""
+    response = test_client.post("/api/employees/generate-sample", json={"size": 10000})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["employees"]) == 10000
+    assert data["metadata"]["total"] == 10000
+
+
+def test_generate_sample_employees_when_large_dataset_then_has_valid_structure(
+    test_client: TestClient,
+) -> None:
+    """Test large dataset (1000 employees) maintains valid structure."""
+    response = test_client.post("/api/employees/generate-sample", json={"size": 1000})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["employees"]) == 1000
+
+    # Verify all employees have required fields
+    for emp in data["employees"]:
+        assert "employee_id" in emp
+        assert "name" in emp
+        assert "performance" in emp
+        assert "potential" in emp
+        assert emp["performance"] in ["Low", "Medium", "High"]
+        assert emp["potential"] in ["Low", "Medium", "High"]
+        assert 1 <= emp["grid_position"] <= 9
+
+
+@pytest.mark.slow
+def test_generate_sample_employees_when_5000_employees_then_completes_successfully(
+    test_client: TestClient,
+) -> None:
+    """Test enterprise scale: 5000 employees completes successfully."""
+    import time
+
+    start_time = time.time()
+    response = test_client.post("/api/employees/generate-sample", json={"size": 5000})
+    end_time = time.time()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["employees"]) == 5000
+    assert data["metadata"]["total"] == 5000
+
+    elapsed = end_time - start_time
+    # Allow more time for larger datasets - should complete within 10 seconds
+    assert elapsed < 10.0, f"Generation took {elapsed:.3f}s, expected < 10.0s"
 
 
 def test_generate_sample_employees_when_metadata_then_has_correct_structure(
