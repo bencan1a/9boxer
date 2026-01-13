@@ -298,7 +298,7 @@ jobs:
             fi
           done
 
-      - name: Sign DMG and ZIP files
+      - name: Sign ZIP files
         if: matrix.platform == 'macos' && steps.should_build.outputs.build == 'true'
         working-directory: frontend
         env:
@@ -332,22 +332,9 @@ jobs:
 
           echo "Using signing identity: $IDENTITY"
 
-          # Sign all DMG files
-          for dmg in release/*.dmg; do
-            if [ -f "$dmg" ]; then
-              echo "=== Signing DMG: $dmg ==="
-              codesign --sign "$IDENTITY" \
-                --timestamp \
-                --keychain "$KEYCHAIN_PATH" \
-                "$dmg"
-
-              # Verify the signature
-              echo "Verifying signature..."
-              codesign -dv --verbose=2 "$dmg"
-
-              echo "=== DMG signing complete for: $dmg ==="
-            fi
-          done
+          # Note: DMG files should NOT be code-signed (only the .app inside needs signing)
+          # DMG is a disk image container - code-signing it will corrupt the DMG
+          # Only ZIP files need code-signing for electron-updater compatibility
 
           # Sign all ZIP files (required for auto-update)
           for zip in release/*.zip; do
