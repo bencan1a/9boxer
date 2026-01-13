@@ -184,7 +184,7 @@ function getRecentChanges(days) {
     // Categorize changes
     const frontend = changedFiles.filter((f) => f.startsWith('frontend/src/'));
     const backend = changedFiles.filter((f) => f.startsWith('backend/src/'));
-    const docs = changedFiles.filter((f) => f.startsWith('resources/user-guide/'));
+    const docs = changedFiles.filter((f) => f.startsWith('resources/user-guide-vitepress/'));
 
     return {
       commits,
@@ -219,7 +219,7 @@ function getRecentChanges(days) {
  * @returns {Array<Object>} Documentation files
  */
 function loadUserDocumentation() {
-  const docsDir = path.join(PROJECT_ROOT, 'resources/user-guide/docs');
+  const docsDir = path.join(PROJECT_ROOT, 'resources/user-guide-vitepress/docs');
   const docs = [];
 
   function scanDirectory(dir) {
