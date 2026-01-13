@@ -421,8 +421,8 @@ export async function generateEnterpriseDataset(
 ): Promise<Employee[]> {
   const { seed, include_bias = false, useCache = true } = options;
 
-  // Check cache first (include bias in cache key to avoid collisions)
-  const cacheKey = `${count}-${include_bias}`;
+  // Check cache first (include bias and seed in cache key to avoid collisions)
+  const cacheKey = `${count}-${include_bias}-${seed ?? "default"}`;
   if (useCache && enterpriseDatasetCache.has(cacheKey)) {
     return enterpriseDatasetCache.get(cacheKey)!;
   }

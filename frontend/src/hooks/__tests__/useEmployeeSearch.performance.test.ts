@@ -52,10 +52,8 @@ describe("Employee Search Performance at Enterprise Scale", () => {
 
         expect(employees).toHaveLength(count);
 
-        // Render hook with generated data
-        const { result } = renderHook(() =>
-          useEmployeeSearch({ employees, threshold: 0.3 })
-        );
+        // Render hook with generated data (use default threshold to match production)
+        const { result } = renderHook(() => useEmployeeSearch({ employees }));
 
         expect(result.current.isReady).toBe(true);
 
@@ -114,9 +112,7 @@ describe("Employee Search Performance at Enterprise Scale", () => {
 
       // Measure Fuse initialization time
       const initStartTime = performance.now();
-      const { result } = renderHook(() =>
-        useEmployeeSearch({ employees, threshold: 0.3 })
-      );
+      const { result } = renderHook(() => useEmployeeSearch({ employees }));
       const initEndTime = performance.now();
       const initTime = initEndTime - initStartTime;
 
@@ -159,9 +155,7 @@ describe("Employee Search Performance at Enterprise Scale", () => {
         useCache: true,
       });
 
-      const { result } = renderHook(() =>
-        useEmployeeSearch({ employees, threshold: 0.3 })
-      );
+      const { result } = renderHook(() => useEmployeeSearch({ employees }));
 
       expect(result.current.isReady).toBe(true);
 
@@ -236,9 +230,7 @@ describe("Employee Search Performance at Enterprise Scale", () => {
 
         // Measure Fuse initialization time
         const startTime = performance.now();
-        const { result } = renderHook(() =>
-          useEmployeeSearch({ employees, threshold: 0.3 })
-        );
+        const { result } = renderHook(() => useEmployeeSearch({ employees }));
         const endTime = performance.now();
 
         const initTime = endTime - startTime;
@@ -269,9 +261,7 @@ describe("Employee Search Performance at Enterprise Scale", () => {
         useCache: true,
       });
 
-      const { result } = renderHook(() =>
-        useEmployeeSearch({ employees, threshold: 0.3 })
-      );
+      const { result } = renderHook(() => useEmployeeSearch({ employees }));
 
       expect(result.current.isReady).toBe(true);
 

@@ -97,7 +97,7 @@ npm run benchmark:search
 **Features:**
 - Validates backend API availability before starting
 - Benchmarks at scales: 200, 500, 1000, 2500, 5000 employees
-- Optional 10k stress test (commented out by default)
+- Optional 10k stress test (controlled by INCLUDE_STRESS_TEST environment variable)
 
 **Metrics Collected:**
 - Data generation time
@@ -316,7 +316,7 @@ The `generateEnterpriseDataset` function caches results to:
 - Avoid redundant API calls during test runs
 - Speed up test execution
 - Reduce backend load
-- Cache is cleared between test files automatically
+- Cache is cleared when `clearEnterpriseDatasetCache()` is called (in tests, this is typically done in an `afterAll` hook at the end of each test file that uses the enterprise dataset cache)
 
 ### Fuse.js Configuration
 Optimized settings for employee search:
