@@ -95,7 +95,7 @@ class DonutMoveRequest(BaseModel):
 class GenerateSampleRequest(BaseModel):
     """Request to generate sample employee dataset."""
 
-    size: int = Field(default=200, ge=50, le=300, description="Number of employees to generate")
+    size: int = Field(default=200, ge=50, le=10000, description="Number of employees to generate")
     include_bias: bool = Field(default=True, description="Include detectable bias patterns")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
 
@@ -562,7 +562,7 @@ async def generate_sample_employees(
         GenerateSampleResponse containing employees and metadata
 
     Raises:
-        HTTPException: 400 if size is out of range (50-300)
+        HTTPException: 400 if size is out of range (50-10000)
         HTTPException: 500 if generation fails
 
     Example:

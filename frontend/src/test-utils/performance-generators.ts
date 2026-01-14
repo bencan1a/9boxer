@@ -7,6 +7,12 @@
  */
 
 import { Employee, PerformanceLevel, PotentialLevel } from "../types/employee";
+import { sampleDataService } from "../services/sampleDataService";
+
+/**
+ * Cache for generated enterprise datasets to avoid redundant API calls
+ */
+const enterpriseDatasetCache: Map<string, Employee[]> = new Map();
 
 /**
  * Generate a large dataset of employees for performance testing
@@ -379,3 +385,81 @@ export const performanceUtils = {
     return endMemory - startMemory;
   },
 };
+
+/**
+ * Generate enterprise-scale dataset using backend API
+ *
+ * This function uses the backend sample data generator for realistic data at scale.
+ * Results are cached to avoid redundant API calls during test runs.
+ *
+ * @param count - Number of employees to generate (50-10000)
+ * @param options - Optional configuration
+ * @returns Array of generated employees
+ *
+ * @remarks
+ * - Uses backend API for realistic data generation
+ * - Falls back to local generation if API is unavailable
+ * - Results are cached per count for performance
+ * - Cache is cleared between test files
+ *
+ * @example
+ * ```ts
+ * // Generate 1000 employees via API
+ * const employees = await generateEnterpriseDataset(1000);
+ *
+ * // Generate 5000 employees with custom seed
+ * const employees = await generateEnterpriseDataset(5000, { seed: 42 });
+ * ```
+ */
+export async function generateEnterpriseDataset(
+  count: number,
+  options: {
+    seed?: number;
+    include_bias?: boolean;
+    useCache?: boolean;
+  } = {}
+): Promise<Employee[]> {
+  const { seed, include_bias = false, useCache = true } = options;
+
+  // Check cache first (include bias and seed in cache key to avoid collisions)
+  const cacheKey = `${count}-${include_bias}-${seed ?? "default"}`;
+  if (useCache && enterpriseDatasetCache.has(cacheKey)) {
+    return enterpriseDatasetCache.get(cacheKey)!;
+  }
+
+  try {
+    // Try to generate via backend API for realistic data
+    const response = await sampleDataService.generateSampleDataset({
+      size: count,
+      include_bias,
+      seed,
+    });
+
+    const employees = response.employees;
+
+    // Cache the result
+    if (useCache) {
+      enterpriseDatasetCache.set(cacheKey, employees);
+    }
+
+    return employees;
+  } catch (error) {
+    // Fall back to local generation if API is unavailable
+    console.warn(
+      `[generateEnterpriseDataset] API unavailable, falling back to local generation: ${error}`
+    );
+    return generateLargeEmployeeDataset(count, {
+      distributeEvenly: true,
+      withFlags: include_bias,
+    });
+  }
+}
+
+/**
+ * Clear the enterprise dataset cache
+ *
+ * Call this between test files or when memory is a concern
+ */
+export function clearEnterpriseDatasetCache(): void {
+  enterpriseDatasetCache.clear();
+}
