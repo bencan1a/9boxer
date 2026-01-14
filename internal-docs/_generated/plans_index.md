@@ -1,6 +1,6 @@
 # Active Plans
 
-**Updated**: 2026-01-13T08:21:51.591930+00:00
+**Updated**: 2026-01-14T04:47:39.721052+00:00
 **Showing**: Plans with status=active created within 21 days
 
 ## smart-employee-sorting
