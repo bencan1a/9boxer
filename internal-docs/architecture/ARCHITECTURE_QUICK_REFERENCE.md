@@ -435,11 +435,11 @@ Quick search by pattern tags used throughout the architecture docs.
 
 ## Related Documentation
 
-- **[CLAUDE.md](../../CLAUDE.md)** - Comprehensive Claude Code guidance
+- **[CLAUDE_INDEX.md](../../CLAUDE_INDEX.md)** - Comprehensive Claude Code guidance
 - **[AGENTS.md](../../AGENTS.md)** - Development workflow cheatsheet
 - **[internal-docs/facts.json](../facts.json)** - Highest authority project truths
 - **[internal-docs/testing/](../testing/)** - Testing documentation
-- **[DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)** - UI design system
+- **[DESIGN_SYSTEM.md](../design-system/README.md)** - UI design system
 
 ---
 

@@ -606,8 +606,8 @@ The project originally supported Docker-based web deployment but has migrated to
 
 ## Related Documentation
 
-- [BUILD.md](../../BUILD.md) - Complete build instructions
-- [DEPLOYMENT.md](../../DEPLOYMENT.md) - Deployment and distribution guide
+- [build-process.md](build-process.md) - Complete build instructions
+- [deployment.md](deployment.md) - Deployment and distribution guide
 - [GUIDELINES.md](GUIDELINES.md) - Architectural decisions and patterns
 - [internal-docs/design-system/](../design-system/) - UI component architecture
 - [internal-docs/testing/](../testing/) - Testing architecture and strategies

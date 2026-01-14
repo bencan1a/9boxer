@@ -107,9 +107,9 @@ Create an ADR when making decisions about:
 
 ## Related Decisions
 
-- See [ADR-XXX](XXX-title.md) for [related context]
-- Supersedes [ADR-XXX](XXX-title.md) (if applicable)
-- Superseded by [ADR-XXX](XXX-title.md) (if applicable)
+- See ADR-XXX for related context (template example)
+- Supersedes ADR-XXX (if applicable)
+- Superseded by ADR-XXX (if applicable)
 
 ## References
 
@@ -218,5 +218,5 @@ ADRs are **immutable** once accepted. If a decision changes:
 
 - [SYSTEM_ARCHITECTURE.md](../SYSTEM_ARCHITECTURE.md) - Current architecture overview
 - [GUIDELINES.md](../GUIDELINES.md) - Architectural patterns and principles
-- [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) - UI/UX design decisions
+- [DESIGN_SYSTEM.md](../../design-system/README.md) - UI/UX design decisions
 - [facts.json](../../facts.json) - Immutable project truths (highest authority)

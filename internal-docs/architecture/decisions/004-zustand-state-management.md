@@ -321,7 +321,7 @@ function SessionProvider({ children }) {
 
 - See [ADR-003](003-http-ipc-communication.md) for backend API communication
 - See [ADR-001](001-electron-desktop-architecture.md) for Electron architecture
-- See [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) for UI component patterns
+- See [DESIGN_SYSTEM.md](../../design-system/README.md) for UI component patterns
 
 ## References
 

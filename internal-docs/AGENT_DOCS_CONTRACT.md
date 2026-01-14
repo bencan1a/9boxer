@@ -182,10 +182,10 @@ Agents performing documentation audits must read:
 ```markdown
 ## Environment Setup
 Check environment: `poetry --version && node --version`
-See [ENVIRONMENT_SETUP.md](internal-docs/ENVIRONMENT_SETUP.md) for troubleshooting.
+See [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md) for troubleshooting.
 ```
 
-**File 2:** `internal-docs/ENVIRONMENT_SETUP.md`
+**File 2:** `ENVIRONMENT_SETUP.md`
 ```markdown
 # Environment Setup Guide
 Comprehensive 15-scenario environment detection guide with troubleshooting,
@@ -300,9 +300,9 @@ Automated updates complement the anti-proliferation principle:
 
 ## Related Documentation
 
-- [CLAUDE_INDEX.md](c:\Git_Repos\9boxer\CLAUDE_INDEX.md) - Main agent navigation
-- [AGENTS.md](c:\Git_Repos\9boxer\AGENTS.md) - Development workflow and commands
-- [internal-docs/architecture/README.md](c:\Git_Repos\9boxer\internal-docs\architecture\README.md) - Architecture documentation index
+- [CLAUDE_INDEX.md](../CLAUDE_INDEX.md) - Main agent navigation
+- [AGENTS.md](../AGENTS.md) - Development workflow and commands
+- [architecture/README.md](architecture/README.md) - Architecture documentation index
 
 ---
 

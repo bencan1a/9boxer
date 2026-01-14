@@ -491,7 +491,7 @@ Alphabetical index of all major components with quick reference.
 
 - [Design Principles](design-principles.md) - Core UX philosophy
 - [Design Tokens](design-tokens.md) - All design constants
-- [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) - Complete UI guidelines
+- [DESIGN_SYSTEM.md](README.md) - Complete UI guidelines
 - [Component Guidelines](component-guidelines.md) - Detailed component patterns (Phase 2)
 - [Layout Patterns](layout-patterns.md) - Layout and hierarchy patterns (Phase 2)
 
@@ -507,9 +507,9 @@ Alphabetical index of all major components with quick reference.
 **How to know if I should create a new component:**
 1. Check if similar component exists in this inventory
 2. Review reusability matrix
-3. Follow decision tree in [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md#when-to-create-new-components)
+3. Follow decision tree in [DESIGN_SYSTEM.md](README.md#when-to-create-new-components)
 
 **How to know where a component should live:**
 1. Check component hierarchy (where it's used)
-2. Review UI zones in [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md#ui-zones--layout-structure)
+2. Review UI zones in [DESIGN_SYSTEM.md](README.md#ui-zones--layout-structure)
 3. Follow existing folder structure (common, dashboard, grid, panel, etc.)

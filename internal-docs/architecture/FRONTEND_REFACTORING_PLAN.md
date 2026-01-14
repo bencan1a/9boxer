@@ -427,7 +427,6 @@ After completion:
 ## Related Documentation
 
 - [Testing Architecture](../testing/ARCHITECTURE.md)
-- [How We Build](../../resources/user-guide/docs/about/how-we-build.md)
 - [Platform Constraints](../PLATFORM_CONSTRAINTS.md)
 
 ## GitHub Issues

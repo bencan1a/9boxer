@@ -246,9 +246,9 @@ For all PRs with UI changes:
 ## Resources
 
 ### Internal Documentation
-- **[DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)** - Main guidelines
-- **[CLAUDE.md](../../CLAUDE.md)** - Complete development guide
-- **[docs/design-system/](.)** - This directory (all design docs)
+- **[component-guidelines.md](component-guidelines.md)** - Main guidelines
+- **[CLAUDE_INDEX.md](../../CLAUDE_INDEX.md)** - Complete development guide
+- **[internal-docs/design-system/](.)** - This directory (all design docs)
 
 ### External Resources
 - **[Material-UI Documentation](https://mui.com/material-ui/)** - Component library we use
@@ -282,4 +282,4 @@ For all PRs with UI changes:
 
 **Maintained by:** Design System Team
 **Last Updated:** 2025-12-27
-**Questions?** Check [CLAUDE.md](../../CLAUDE.md) or [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)
+**Questions?** Check [CLAUDE_INDEX.md](../../CLAUDE_INDEX.md) or [component-guidelines.md](component-guidelines.md)

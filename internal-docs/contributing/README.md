@@ -159,7 +159,7 @@ HEADLESS=false npm run screenshots:generate  # Show browser
 
 1. **Update existing files** instead of creating new ones (anti-proliferation)
 2. **Use Edit tool** to preserve formatting and Git history
-3. **Test all links** after updates (relative paths: `[link](../category/file.md)`)
+3. **Test all links** after updates (use relative paths like `../category/file.md`)
 4. **Verify commands work** before documenting them
 5. **Add verification notes** when updating older content: "Verified current: YYYY-MM-DD"
 
@@ -177,9 +177,9 @@ When information conflicts, use this priority order:
 
 ## Related Documentation
 
-- **[CLAUDE.md](../../CLAUDE.md)** - Main agent entry point
+- **[CLAUDE_INDEX.md](../../CLAUDE_INDEX.md)** - Main agent entry point
 - **[AGENTS.md](../../AGENTS.md)** - Quick reference for common commands
-- **[AGENT_DOCS_CONTRACT.md](../../AGENT_DOCS_CONTRACT.md)** - Documentation system rules
+- **[AGENT_DOCS_CONTRACT.md](../AGENT_DOCS_CONTRACT.md)** - Documentation system rules
 - **[CONTRIBUTING.md](../../CONTRIBUTING.md)** - Git workflow and PR process (for humans)
 
 ---
