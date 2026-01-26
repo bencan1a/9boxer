@@ -1,7 +1,7 @@
 # Project Documentation Context
 
-**Generated**: 2026-01-13T08:21:51.592237+00:00
-**Source SHA**: 2330b142c6dd8d689deadcb503a67e34e9feef05
+**Generated**: 2026-01-26T02:46:46.028234+00:00
+**Source SHA**: dbaa4427bb9a9b3862051e87fa9aa19d854030d7
 **Max Size**: 150,000 characters
 
 This file provides comprehensive context about the project for AI agents and developers.
@@ -434,38 +434,6 @@ This file provides comprehensive context about the project for AI agents and dev
   }
 }
 ```
-
-## Active Plans
-
-There are 3 active plan(s):
-
-### smart-employee-sorting
-- Owner: bencan1a
-- Created: 2025-12-30
-- Summary:
-  - Implement three-tier sorting within grid boxes to surface employees needing discussion
-  - Modified employees first, flagged employees second, others third
-  - Frontend-only change with performance optimization for drag-drop UX
-
-### rich-sample-data-generator
-- Owner: claude
-- Created: 2025-12-28
-- Summary:
-  - Create comprehensive sample dataset generator (200-300 employees)
-  - Include complete management chains (6 levels), 3-year performance history
-  - Add detectable bias patterns for intelligence statistics validation
-  - Integrate with app UI (empty state + File menu)
-  - Support all 28 Excel schema columns
-
-### self-managing-docs-system
-- Owner: Development Team
-- Created: 2025-12-26
-- Summary:
-  - Build self-managing documentation system with automated screenshot updates
-  - Componentize key React components (NineBoxGrid, AppBar, IntelligencePanel) for Storybook
-  - Implement AI-powered documentation audits and change detection
-  - Achieve 40-46% Storybook screenshot coverage (vs 19% current)
-  - -
 
 ## API Documentation
 
