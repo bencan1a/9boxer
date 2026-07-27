@@ -11,17 +11,21 @@ import { logger } from "../utils/logger";
 import type { CalibrationSummaryData } from "../types/api";
 
 /**
- * Process employees to add "big_mover" to flags array when is_big_mover is true.
- * This ensures the computed backend property is reflected in the frontend flag system.
+ * Process employees to add movement flags ("big_mover", "medium_mover") to the
+ * flags array from the computed backend properties. This makes them filterable
+ * alongside user-assigned flags. They are stripped again before any update is
+ * sent back - see toPersistableFlags.
  */
 function processEmployeesWithBigMoverFlag(employees: Employee[]): Employee[] {
   return employees.map((emp) => {
-    if (emp.is_big_mover) {
-      // Add "big_mover" to flags array if not already present
-      const flags = emp.flags || [];
-      if (!flags.includes("big_mover")) {
-        return { ...emp, flags: [...flags, "big_mover"] };
-      }
+    const derived: string[] = [];
+    if (emp.is_big_mover) derived.push("big_mover");
+    if (emp.is_medium_mover) derived.push("medium_mover");
+
+    const flags = emp.flags || [];
+    const missing = derived.filter((flag) => !flags.includes(flag));
+    if (missing.length > 0) {
+      return { ...emp, flags: [...flags, ...missing] };
     }
     return emp;
   });

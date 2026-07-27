@@ -235,7 +235,11 @@
         "level04": "Nivel 04 (VP)",
         "level05": "Nivel 05",
         "level06": "Nivel 06"
-      }
+      },
+      "previousCalibration": "Calibración anterior",
+      "movedSteps_one": "movió {{steps}} nivel",
+      "movedSteps_other": "movió {{steps}} niveles",
+      "movedNoChange": "sin cambios"
     },
     "changeTrackerTab": {
       "noChanges": "Ningún cambio aún",

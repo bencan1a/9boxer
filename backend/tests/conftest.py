@@ -23,6 +23,7 @@ def create_test_employee(
     potential: PotentialLevel = PotentialLevel.MEDIUM,
     flags: list[str] | None = None,
     grid_position: int = 5,
+    prior_grid_position: int | None = None,
 ) -> Employee:
     """Create a minimal Employee for testing with all required fields.
 
@@ -62,6 +63,7 @@ def create_test_employee(
         performance=performance,
         potential=potential,
         grid_position=grid_position,
+        prior_grid_position=prior_grid_position,
         talent_indicator="Solid Contributor",
         flags=flags,
     )
@@ -74,6 +76,7 @@ def create_simple_test_employee(
     potential: PotentialLevel = PotentialLevel.MEDIUM,
     flags: list[str] | None = None,
     grid_position: int = 5,
+    prior_grid_position: int | None = None,
 ) -> Employee:
     """Create a minimal Employee for testing with all required fields.
 
@@ -117,6 +120,7 @@ def create_simple_test_employee(
         performance=performance,
         potential=potential,
         grid_position=grid_position,
+        prior_grid_position=prior_grid_position,
         talent_indicator="Solid Contributor",
         flags=flags,
     )
@@ -176,7 +180,9 @@ def test_db_path(request: pytest.FixtureRequest) -> Generator[str, None, None]:
 
 
 @pytest.fixture(autouse=True)
-def setup_test_db(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
+def setup_test_db(
+    request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch
+) -> Generator[None, None, None]:
     """Enhanced database isolation for VSCode test execution.
 
     This fixture provides COMPLETE database isolation when VSCode runs tests
@@ -193,6 +199,7 @@ def setup_test_db(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatc
 
     # Create unique temporary directory for THIS test
     import tempfile  # noqa: PLC0415
+
     test_temp_dir = tempfile.mkdtemp(prefix=f"test_{test_id}_", suffix="_ninebox")
     test_db_path = Path(test_temp_dir) / "ninebox.db"
 
@@ -319,6 +326,7 @@ def setup_test_db(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatc
     # Clean up temp directory
     try:
         import shutil  # noqa: PLC0415
+
         if Path(test_temp_dir).exists():
             shutil.rmtree(test_temp_dir)
     except Exception:

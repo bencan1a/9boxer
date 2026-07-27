@@ -65,6 +65,7 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
         "time in job profile": "Time in Job Profile",
         "fy25 talent indicator": "FY25 Talent Indicator",
         "talent indicator": "Talent Indicator",
+        "prior calibration 9-box label": "Prior Calibration 9-Box Label",
         "development focus": "Development Focus",
         "development action": "Development Action",
         "notes": "Notes",
@@ -783,6 +784,7 @@ class ExcelParser:
             performance=performance,
             potential=potential,
             grid_position=grid_position,
+            prior_grid_position=self._parse_prior_grid_position(row),
             talent_indicator=str(
                 row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))
             ).strip()
@@ -810,6 +812,36 @@ class ExcelParser:
         )
 
         return employee
+
+    def _parse_prior_grid_position(self, row: pd.Series) -> int | None:
+        """
+        Read the previous calibration's 9-box position from the row.
+
+        Only the explicit "Prior Calibration 9-Box Label" column is used. Talent
+        indicator labels are deliberately not inferred from: a column like
+        "FY25 Talent Indicator" may hold an assessment that is older, newer, or
+        parallel to the current one depending on how the file was assembled, so
+        guessing would produce confident but wrong movement flags.
+
+        Returns:
+            Grid position 1-9, or None if absent or not a valid position.
+        """
+        value = row.get("Prior Calibration 9-Box Label")
+        if not pd.notna(value):
+            return None
+
+        try:
+            position = int(cast("float", value))
+        except (ValueError, TypeError):
+            self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
+            return None
+
+        if not 1 <= position <= 9:
+            logger.warning(f"Prior calibration position '{value}' out of range 1-9, ignoring")
+            self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
+            return None
+
+        return position
 
     def _parse_ratings_history(self, row: pd.Series) -> list[HistoricalRating]:
         """

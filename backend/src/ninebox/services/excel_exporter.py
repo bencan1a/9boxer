@@ -263,8 +263,9 @@ class ExcelExporter:
         # review cycle round-trips, rather than a fixed 2023/2024 pair.
         history_years = sorted({r.year for e in employees for r in e.ratings_history})
         history_headers = [canonical_historical_rating_column(y) for y in history_years]
-        history_col_by_year = {year: 19 + offset for offset, year in enumerate(history_years)}
-        trailing_start = 19 + len(history_years)
+        prior_position_col = 19
+        history_col_by_year = {year: 20 + offset for offset, year in enumerate(history_years)}
+        trailing_start = 20 + len(history_years)
 
         # Headers - matching the expected format from ExcelParser
         headers = [
@@ -286,6 +287,7 @@ class ExcelExporter:
             "Aug 2025 Talent Assessment 9-Box Label",
             "Talent Mapping Position",
             "FY25 Talent Indicator",
+            "Prior Calibration 9-Box Label",
             *history_headers,
             "Development Focus",
             "Development Action",
@@ -316,6 +318,7 @@ class ExcelExporter:
             data_sheet.cell(row_idx, 16, emp.grid_position)
             data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
             data_sheet.cell(row_idx, 18, emp.talent_indicator)
+            data_sheet.cell(row_idx, prior_position_col, emp.prior_grid_position)
 
             # Historical ratings - one column per review year found in the data
             for rating in emp.ratings_history:

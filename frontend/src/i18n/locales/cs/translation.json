@@ -235,7 +235,11 @@
       "addFlag": "Add flag...",
       "box": "Box",
       "flags": "Flags",
-      "noFlagsAvailable": "No flags available"
+      "noFlagsAvailable": "No flags available",
+      "previousCalibration": "Předchozí kalibrace",
+      "movedSteps_one": "posun o {{steps}} stupeň",
+      "movedSteps_other": "posun o {{steps}} stupňů",
+      "movedNoChange": "beze změny"
     },
     "changeTrackerTab": {
       "noChanges": "Zatím žádné změny",

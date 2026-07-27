@@ -235,7 +235,11 @@
       "addFlag": "Add flag...",
       "box": "Box",
       "flags": "Flags",
-      "noFlagsAvailable": "No flags available"
+      "noFlagsAvailable": "No flags available",
+      "previousCalibration": "Calibrage précédent",
+      "movedSteps_one": "a bougé de {{steps}} niveau",
+      "movedSteps_other": "a bougé de {{steps}} niveaux",
+      "movedNoChange": "aucun changement"
     },
     "changeTrackerTab": {
       "noChanges": "Aucune modification",

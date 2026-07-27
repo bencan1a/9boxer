@@ -979,7 +979,7 @@ def test_export_when_no_history_then_no_history_columns_and_trailing_intact(
         sheet = workbook.worksheets[1]
         headers = _header_map(sheet)
         assert not [h for h in headers if "Completed Performance Rating" in str(h)]
-        assert headers["Development Focus"] == headers["FY25 Talent Indicator"] + 1
+        assert headers["Development Focus"] == headers["Prior Calibration 9-Box Label"] + 1
     finally:
         workbook.close()
 
@@ -1000,3 +1000,19 @@ def test_export_then_reimport_round_trips_history_for_any_year(
         (2025, "Strong"),
         (2026, "Leading"),
     ]
+
+
+def test_export_when_prior_position_set_then_round_trips(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """The prior calibration position survives an export/re-import cycle."""
+    from ninebox.services.excel_parser import ExcelParser
+
+    output_path = tmp_path / "prior_round_trip.xlsx"
+    employee = _employee_with_history(1, [(2025, "Strong")])
+    employee.prior_grid_position = 4
+
+    excel_exporter.export("", [employee], output_path)
+    reparsed = ExcelParser().parse(output_path)
+
+    assert reparsed.employees[0].prior_grid_position == 4

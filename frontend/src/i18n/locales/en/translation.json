@@ -235,7 +235,11 @@
         "level04": "Level 04 (VP)",
         "level05": "Level 05",
         "level06": "Level 06"
-      }
+      },
+      "previousCalibration": "Previous calibration",
+      "movedSteps_one": "moved {{steps}} step",
+      "movedSteps_other": "moved {{steps}} steps",
+      "movedNoChange": "no change"
     },
     "changeTrackerTab": {
       "noChanges": "No changes yet",
