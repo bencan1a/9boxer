@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
+import { getTranslatedText } from "@/test/i18nTestUtils";
 import { ManagerDistributionChart } from "../ManagerDistributionChart";
 import {
   mockManagerDeviationSmall,
@@ -66,7 +67,11 @@ describe("ManagerDistributionChart", () => {
         />
       );
 
-      expect(screen.getByText("No data available")).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          getTranslatedText("panel.intelligenceTab.chart.noDataAvailable")
+        )
+      ).toBeInTheDocument();
     });
 
     it("does not render chart when data is empty", () => {
