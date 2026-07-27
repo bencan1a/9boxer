@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-27
+
+This release makes calibration history a first-class part of 9Boxer. Your file's full review history now imports regardless of which years it covers, and 9Boxer highlights the people whose placement shifted since your last calibration — so the conversations that need attention surface on their own instead of having to be spotted by eye.
+
+### What's New
+- Employees who moved between calibration cycles are flagged automatically. **Big Mover** marks a reversal across the low and high performance tiers; **Medium Mover** marks a shift of two or more steps across the performance and potential axes without crossing tiers. Both can be filtered on, together or separately.
+- The employee detail panel now shows where someone sat at the previous calibration and how far they moved, directly beneath their current box.
+- Performance history imports for any review year your file contains. Previously only 2023 and 2024 columns were read, so any other cycle was dropped silently on import and lost on export.
+
+### Improvements
+- The performance timeline labels the current assessment with the actual current year rather than a fixed one.
+- Sample data generates its review years relative to today, so it no longer looks stale as time passes.
+- Import accepts a labelled previous-calibration box (for example `5. Core Talent`) as well as a plain number.
+
+### Bug Fixes
+- Adding a flag to an employee marked as a Big Mover no longer fails. The computed flag was being sent back to the server and rejected.
+- Case variations of the same year's history column no longer produce duplicate timeline entries.
+- A rating recorded for the current year is no longer compared against the placement it describes, which previously reported movement that had not happened.
+
 ## [1.0.0] - 2026-01-11
 
 9Boxer v1.0.0 marks our first major release milestone with enhanced application stability and maintenance. The app now updates itself automatically in the background, ensuring you always have the latest features and security improvements without interruption to your workflow.

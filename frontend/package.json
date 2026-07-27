@@ -1,7 +1,7 @@
 {
   "name": "9boxer-electron",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "9Boxer - Desktop Application",
   "author": "Your Company",
   "main": "dist-electron/main/index.js",

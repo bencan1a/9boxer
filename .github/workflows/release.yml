@@ -598,17 +598,17 @@ jobs:
           # Get previous version tag for changelog link
           PREV_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
-          # Extract changelog content for this version
-          # Escape dots in version for regex
-          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
-
+          # Extract changelog content for this version.
+          # Uses a flag rather than an awk range: the version heading also matches
+          # the range's end pattern (^## \[), so a range opens and closes on that
+          # same line and yields nothing for every version.
           if [ -f "CHANGELOG.md" ]; then
             # Extract from ## [VERSION] to next ## [ or end of file
-            CHANGELOG_CONTENT=$(awk "/^## \[${ESCAPED_VERSION}\]/,/^## \[/ {
-              if (/^## \[${ESCAPED_VERSION}\]/) next;
-              if (/^## \[/) exit;
-              print
-            }" CHANGELOG.md)
+            CHANGELOG_CONTENT=$(awk -v ver="$VERSION" '
+              index($0, "## [" ver "]") == 1 { inside = 1; next }
+              inside && /^## \[/ { exit }
+              inside { print }
+            ' CHANGELOG.md)
 
             # Trim leading/trailing whitespace
             CHANGELOG_CONTENT=$(echo "$CHANGELOG_CONTENT" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
