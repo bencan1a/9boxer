@@ -66,15 +66,7 @@ describe("ManagerDistributionChart", () => {
         />
       );
 
-      // Empty state text varies based on i18n, so assert the component
-      // renders rather than pinning to a specific string.
-      const { container } = render(
-        <ManagerDistributionChart
-          data={mockManagerDeviationEmpty}
-          title="Manager Distribution"
-        />
-      );
-      expect(container).toBeInTheDocument();
+      expect(screen.getByText("No data available")).toBeInTheDocument();
     });
 
     it("does not render chart when data is empty", () => {
