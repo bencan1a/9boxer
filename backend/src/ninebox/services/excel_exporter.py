@@ -322,9 +322,9 @@ class ExcelExporter:
 
             # Historical ratings - one column per review year found in the data
             for rating in emp.ratings_history:
-                col_idx = history_col_by_year.get(rating.year)
-                if col_idx is not None:
-                    data_sheet.cell(row_idx, col_idx, rating.rating)
+                history_col = history_col_by_year.get(rating.year)
+                if history_col is not None:
+                    data_sheet.cell(row_idx, history_col, rating.rating)
 
             data_sheet.cell(row_idx, trailing_start, emp.development_focus)
             data_sheet.cell(row_idx, trailing_start + 1, emp.development_action)
