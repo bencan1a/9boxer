@@ -37,6 +37,13 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
     (a, b) => b.year - a.year
   );
 
+  // The current assessment is the live calibration, so label it with the current
+  // year rather than a hardcoded one. Deliberately not clamped above the newest
+  // history year: a rating for this year can legitimately coexist with the
+  // current assessment (an annual rating and a calibration are different
+  // things), and inventing a future year to separate them reads as a bug.
+  const currentYear = new Date().getFullYear();
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -45,7 +52,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
         </Typography>
 
         <Timeline sx={{ p: 0, m: 0, pl: 0 }}>
-          {/* Current Year (2025) */}
+          {/* Current assessment */}
           <TimelineItem sx={{ "&::before": { flex: 0, padding: 0 } }}>
             <TimelineSeparator>
               <TimelineDot color="success" />
@@ -53,7 +60,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
             </TimelineSeparator>
             <TimelineContent sx={{ py: 0, px: 2 }}>
               <Typography variant="body2" fontWeight="medium">
-                {t("panel.detailsTab.currentYear", { year: 2025 })}
+                {t("panel.detailsTab.currentYear", { year: currentYear })}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t("panel.detailsTab.performance")}: {employee.performance}

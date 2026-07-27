@@ -23,6 +23,8 @@ import {
   getAllFlags,
   getFlagDisplayName,
   getFlagColor,
+  isDerivedFlag,
+  toPersistableFlags,
 } from "../../constants/flags";
 
 interface EmployeeFlagsProps {
@@ -37,10 +39,14 @@ export const EmployeeFlags: React.FC<EmployeeFlagsProps> = ({ employee }) => {
   // Get current flags (default to empty array)
   const currentFlags = employee.flags || [];
 
-  // Get available flags (flags not already set)
+  // Movement flags are computed by the backend, so they are shown but cannot be
+  // added or removed by hand, and are never included in an update payload.
+  const assignedFlags = toPersistableFlags(currentFlags);
+
+  // Get available flags (user-assignable flags not already set)
   const allFlags = getAllFlags();
   const availableFlags = allFlags.filter(
-    (flag) => !currentFlags.includes(flag.key)
+    (flag) => !isDerivedFlag(flag.key) && !currentFlags.includes(flag.key)
   );
 
   const handleAddFlag = async (
@@ -50,7 +56,7 @@ export const EmployeeFlags: React.FC<EmployeeFlagsProps> = ({ employee }) => {
     if (!flagKey) return;
 
     // Add flag to employee
-    const updatedFlags = [...currentFlags, flagKey];
+    const updatedFlags = [...assignedFlags, flagKey];
     await updateEmployee(employee.employee_id, {
       flags: updatedFlags,
     });
@@ -61,7 +67,7 @@ export const EmployeeFlags: React.FC<EmployeeFlagsProps> = ({ employee }) => {
 
   const handleRemoveFlag = async (flagKey: string) => {
     // Remove flag from employee
-    const updatedFlags = currentFlags.filter((f) => f !== flagKey);
+    const updatedFlags = assignedFlags.filter((f) => f !== flagKey);
     await updateEmployee(employee.employee_id, {
       flags: updatedFlags,
     });
@@ -76,7 +82,11 @@ export const EmployeeFlags: React.FC<EmployeeFlagsProps> = ({ employee }) => {
             <Chip
               key={flagKey}
               label={getFlagDisplayName(flagKey)}
-              onDelete={() => handleRemoveFlag(flagKey)}
+              onDelete={
+                isDerivedFlag(flagKey)
+                  ? undefined
+                  : () => handleRemoveFlag(flagKey)
+              }
               sx={{
                 backgroundColor: getFlagColor(flagKey),
                 color: "white",

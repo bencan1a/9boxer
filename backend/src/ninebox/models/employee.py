@@ -66,6 +66,11 @@ class Employee(BaseModel):
     grid_position: int  # 1-9
     talent_indicator: str
 
+    # Position from the previous calibration cycle, used to detect movement
+    # between calibrations (distinct from original_grid_position, which tracks
+    # movement within the current session).
+    prior_grid_position: int | None = None
+
     # Historical Performance
     ratings_history: list[HistoricalRating] = []
 

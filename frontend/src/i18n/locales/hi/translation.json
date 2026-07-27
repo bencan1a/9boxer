@@ -235,7 +235,11 @@
       "addFlag": "Add flag...",
       "box": "Box",
       "flags": "Flags",
-      "noFlagsAvailable": "No flags available"
+      "noFlagsAvailable": "No flags available",
+      "previousCalibration": "पिछला कैलिब्रेशन",
+      "movedSteps_one": "{{steps}} चरण बदला",
+      "movedSteps_other": "{{steps}} चरण बदले",
+      "movedNoChange": "कोई बदलाव नहीं"
     },
     "changeTrackerTab": {
       "noChanges": "अभी तक कोई परिवर्तन नहीं",

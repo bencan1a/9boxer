@@ -30,6 +30,7 @@ import {
 import {
   getPositionName,
   getShortPositionLabel,
+  getAxisDistance,
 } from "../../constants/positionLabels";
 import { EmployeeFlags } from "./EmployeeFlags";
 import { EmployeeChangesSummary } from "./EmployeeChangesSummary";
@@ -90,6 +91,11 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
   employee,
 }) => {
   const { t } = useTranslation();
+
+  const priorMoveSteps =
+    employee.prior_grid_position != null
+      ? getAxisDistance(employee.prior_grid_position, employee.grid_position)
+      : 0;
 
   return (
     <Card variant="outlined">
@@ -162,6 +168,28 @@ export const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
                 {getPositionName(employee.grid_position)}{" "}
                 {getShortPositionLabel(employee.grid_position)}
               </Typography>
+
+              {/* Where they sat at the last calibration, and how far they moved */}
+              {employee.prior_grid_position != null && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 0.5 }}
+                  data-testid="prior-calibration-label"
+                >
+                  {t("panel.detailsTab.previousCalibration")}:{" "}
+                  {getPositionName(employee.prior_grid_position)}{" "}
+                  {getShortPositionLabel(employee.prior_grid_position)}
+                  {" — "}
+                  {priorMoveSteps === 0
+                    ? t("panel.detailsTab.movedNoChange")
+                    : t("panel.detailsTab.movedSteps", {
+                        count: priorMoveSteps,
+                        steps: priorMoveSteps,
+                      })}
+                </Typography>
+              )}
             </Box>
 
             {/* Performance and Potential Chips */}

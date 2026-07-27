@@ -368,3 +368,238 @@ def test_parse_when_no_donut_data_then_donut_fields_none(tmp_path: Path) -> None
     assert emp.donut_performance is None
     assert emp.donut_potential is None
     assert emp.donut_notes is None
+
+
+def _write_history_sheet(path: Path, history_headers: list[str], values: list[str | None]) -> None:
+    """Write a minimal one-employee sheet with the given history columns."""
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+    sheet.title = "Employee Data"
+
+    base = [
+        "Employee ID",
+        "Worker",
+        "Business Title",
+        "Job Level - Primary Position",
+        "Aug 2025 Talent Assessment Performance",
+        "Aug 2025  Talent Assessment Potential",
+    ]
+    for col, header in enumerate(base + history_headers, start=1):
+        sheet.cell(1, col, header)
+    for col, value in enumerate(
+        [1, "Test Employee", "Engineer", "MT4", "High", "High", *values], start=1
+    ):
+        sheet.cell(2, col, value)
+
+    workbook.save(path)
+    workbook.close()
+
+
+def test_parse_when_history_columns_for_any_year_then_all_are_imported(tmp_path: Path) -> None:
+    """Review years beyond 2023/2024 must be imported, not silently dropped."""
+    test_file = tmp_path / "any_year_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2022 Completed Performance Rating",
+            "2025 Completed Performance Rating",
+            "2026 Completed Performance Rating",
+        ],
+        ["Solid", "Strong", "Leading"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert [(r.year, r.rating) for r in result.employees[0].ratings_history] == [
+        (2022, "Solid"),
+        (2025, "Strong"),
+        (2026, "Leading"),
+    ]
+
+
+def test_parse_when_history_columns_out_of_order_then_sorted_ascending(tmp_path: Path) -> None:
+    """History is returned oldest-first regardless of column order in the file."""
+    test_file = tmp_path / "unordered_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2026 Completed Performance Rating",
+            "2023 Completed Performance Rating",
+            "2025 Completed Performance Rating",
+        ],
+        ["Leading", "Solid", "Strong"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert [r.year for r in result.employees[0].ratings_history] == [2023, 2025, 2026]
+
+
+def test_parse_when_history_header_lowercase_then_still_imported(tmp_path: Path) -> None:
+    """Year-prefixed history headers are matched case-insensitively."""
+    test_file = tmp_path / "lowercase_history.xlsx"
+    _write_history_sheet(test_file, ["2026 completed performance rating"], ["Leading"])
+
+    result = ExcelParser().parse(test_file)
+
+    assert [(r.year, r.rating) for r in result.employees[0].ratings_history] == [(2026, "Leading")]
+
+
+def test_parse_when_history_cell_blank_then_year_omitted(tmp_path: Path) -> None:
+    """Empty history cells produce no timeline entry for that year."""
+    test_file = tmp_path / "blank_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2025 Completed Performance Rating",
+            "2026 Completed Performance Rating",
+        ],
+        [None, "   "],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].ratings_history == []
+
+
+def _write_prior_position_sheet(path: Path, value: object) -> None:
+    """Write a one-employee sheet carrying the given prior calibration cell."""
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+    sheet.title = "Employee Data"
+
+    headers = [
+        "Employee ID",
+        "Worker",
+        "Business Title",
+        "Job Level - Primary Position",
+        "Aug 2025 Talent Assessment Performance",
+        "Aug 2025  Talent Assessment Potential",
+        "Prior Calibration 9-Box Label",
+    ]
+    for col, header in enumerate(headers, start=1):
+        sheet.cell(1, col, header)
+    for col, cell in enumerate(
+        [1, "Test Employee", "Engineer", "MT4", "High", "High", value], start=1
+    ):
+        sheet.cell(2, col, cell)
+
+    workbook.save(path)
+    workbook.close()
+
+
+def test_parse_when_prior_calibration_column_present_then_position_imported(
+    tmp_path: Path,
+) -> None:
+    """The previous calibration's box is read for movement comparison."""
+    test_file = tmp_path / "prior_position.xlsx"
+    _write_prior_position_sheet(test_file, 3)
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position == 3
+
+
+def test_parse_when_prior_calibration_column_absent_then_none(tmp_path: Path) -> None:
+    """Files without the column parse fine and simply have no prior position."""
+    test_file = tmp_path / "no_prior.xlsx"
+    _write_history_sheet(test_file, [], [])
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position is None
+
+
+@pytest.mark.parametrize("value", [0, 10, "Top Talent", ""])
+def test_parse_when_prior_calibration_invalid_then_none(tmp_path: Path, value: object) -> None:
+    """Out-of-range or non-numeric prior positions are ignored, not guessed at."""
+    test_file = tmp_path / "bad_prior.xlsx"
+    _write_prior_position_sheet(test_file, value)
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position is None
+
+
+def test_parse_when_talent_indicator_looks_like_a_box_then_not_used_as_prior(
+    tmp_path: Path,
+) -> None:
+    """A talent indicator must not be inferred as the prior calibration position.
+
+    The column's meaning varies by source file - it may hold an older, newer or
+    parallel assessment - so guessing would produce confident but wrong flags.
+    """
+    test_file = tmp_path / "indicator_only.xlsx"
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+    sheet.title = "Employee Data"
+    headers = [
+        "Employee ID",
+        "Worker",
+        "Business Title",
+        "Job Level - Primary Position",
+        "Aug 2025 Talent Assessment Performance",
+        "Aug 2025  Talent Assessment Potential",
+        "FY25 Talent Indicator",
+    ]
+    for col, header in enumerate(headers, start=1):
+        sheet.cell(1, col, header)
+    for col, cell in enumerate(
+        [1, "Test Employee", "Engineer", "MT4", "High", "High", "3. Expert Talent"], start=1
+    ):
+        sheet.cell(2, col, cell)
+    workbook.save(test_file)
+    workbook.close()
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].talent_indicator == "3. Expert Talent"
+    assert result.employees[0].prior_grid_position is None
+
+
+def test_parse_when_prior_calibration_is_a_label_then_box_number_extracted(
+    tmp_path: Path,
+) -> None:
+    """Within the explicit column the meaning is unambiguous, so labels work too."""
+    test_file = tmp_path / "labelled_prior.xlsx"
+    _write_prior_position_sheet(test_file, "5. Core Talent")
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position == 5
+
+
+def test_parse_when_prior_calibration_label_out_of_range_then_none(tmp_path: Path) -> None:
+    """A label whose leading number is not a box is still rejected."""
+    test_file = tmp_path / "bad_label_prior.xlsx"
+    _write_prior_position_sheet(test_file, "12. Not A Box")
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position is None
+
+
+def test_parse_when_duplicate_year_headers_then_single_history_entry(tmp_path: Path) -> None:
+    """Case variants of one year's header must not produce two entries.
+
+    Header normalization deliberately leaves the second variant alone rather
+    than creating a duplicate DataFrame column, so the dedupe has to happen when
+    history is collected.
+    """
+    test_file = tmp_path / "duplicate_year.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2023 Completed Performance Rating",
+            "2023 completed performance rating",
+        ],
+        ["Strong", "Leading"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    history = result.employees[0].ratings_history
+    assert [(r.year, r.rating) for r in history] == [(2023, "Strong")]

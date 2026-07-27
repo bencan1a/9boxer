@@ -51,6 +51,7 @@ export interface Employee {
   potential: PotentialLevel;
   grid_position: number; // 1-9
   talent_indicator: string;
+  prior_grid_position?: number | null; // 1-9, position at the previous calibration
 
   // Historical Performance
   ratings_history: HistoricalRating[];
@@ -70,6 +71,7 @@ export interface Employee {
   // Flags (tags for employee status)
   flags?: string[];
   is_big_mover?: boolean; // Computed: true if crossed Low↔High tier
+  is_medium_mover?: boolean; // Computed: true if moved 2+ axis steps without crossing tiers
 
   // Donut Mode (alternative positioning system)
   donut_performance?: PerformanceLevel;

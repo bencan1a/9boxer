@@ -7,8 +7,11 @@ from ninebox.services.employee_service import (
     EmployeeService,
     PerformanceTier,
     get_tier_from_historical_rating,
+    get_axis_distance,
+    get_most_recent_prior_year_rating,
     get_tier_from_position,
     is_big_mover,
+    is_medium_mover,
     is_tier_crossing,
 )
 from tests.conftest import create_simple_test_employee
@@ -53,7 +56,9 @@ def test_filter_employees_when_by_manager_then_filters_correctly(
     """Test filtering by manager."""
     # Find a manager that exists in sample data
     test_manager = (
-        sample_employees[10].direct_manager if len(sample_employees) > 10 else sample_employees[0].direct_manager
+        sample_employees[10].direct_manager
+        if len(sample_employees) > 10
+        else sample_employees[0].direct_manager
     )
     expected_count = sum(1 for emp in sample_employees if emp.direct_manager == test_manager)
 
@@ -89,7 +94,9 @@ def test_filter_employees_when_combined_filters_then_applies_and_logic(
     # Use the manager of the first MT4 employee
     test_manager = mt4_employees[0].direct_manager
     expected_count = sum(
-        1 for emp in sample_employees if emp.job_level == "MT4" and emp.direct_manager == test_manager
+        1
+        for emp in sample_employees
+        if emp.job_level == "MT4" and emp.direct_manager == test_manager
     )
 
     filtered = employee_service.filter_employees(
@@ -182,7 +189,9 @@ def test_get_filter_options_when_called_then_returns_correct_options(
     actual_levels = {emp.job_level for emp in sample_employees}
     actual_functions = {emp.job_function for emp in sample_employees}
     actual_managers = {
-        emp.direct_manager for emp in sample_employees if emp.direct_manager and emp.direct_manager != "None"
+        emp.direct_manager
+        for emp in sample_employees
+        if emp.direct_manager and emp.direct_manager != "None"
     }
 
     # Check levels - should match what's in sample data
@@ -508,3 +517,145 @@ def test_is_big_mover_when_multiple_historical_ratings_then_uses_most_recent() -
 
     # Should use 2023 "Low" rating → Big mover (LOW to HIGH)
     assert is_big_mover(employee) is True
+
+
+# Calibration-to-calibration movement
+
+
+def test_is_big_mover_when_prior_calibration_crossed_tiers_then_true() -> None:
+    """A Low->High swing since the last calibration is a big move."""
+    employee = create_simple_test_employee(
+        grid_position=8,  # Growth [M,H] - High tier
+        prior_grid_position=3,  # Expert [H,L] - Low tier
+    )
+
+    assert is_big_mover(employee) is True
+
+
+def test_is_big_mover_when_prior_calibration_within_tiers_then_false() -> None:
+    """Movement that stays out of the Low<->High crossing is not a big move."""
+    employee = create_simple_test_employee(
+        grid_position=9,  # Star [H,H] - High tier
+        prior_grid_position=5,  # Core [M,M] - Middle tier
+    )
+
+    assert is_big_mover(employee) is False
+
+
+def test_is_big_mover_when_no_prior_calibration_then_falls_back_to_other_checks() -> None:
+    """Employees new to the roster have no prior position and must not error."""
+    employee = create_simple_test_employee(grid_position=9, prior_grid_position=None)
+
+    assert is_big_mover(employee) is False
+
+
+def test_get_axis_distance_when_diagonal_then_counts_both_axes() -> None:
+    """A diagonal move counts one step per axis, not one step overall."""
+    assert get_axis_distance(5, 9) == 2  # Core [M,M] -> Star [H,H]
+    assert get_axis_distance(1, 9) == 4  # Underperformer [L,L] -> Star [H,H]
+    assert get_axis_distance(5, 6) == 1  # Core [M,M] -> High Impact [H,M]
+    assert get_axis_distance(5, 5) == 0
+
+
+def test_get_axis_distance_when_position_out_of_range_then_raises() -> None:
+    """Invalid positions are rejected rather than silently scored."""
+    with pytest.raises(ValueError, match="Invalid grid position"):
+        get_axis_distance(0, 5)
+    with pytest.raises(ValueError, match="Invalid grid position"):
+        get_axis_distance(5, 10)
+
+
+def test_is_medium_mover_when_two_axis_steps_since_calibration_then_true() -> None:
+    """Core -> Star moves on both axes without crossing Low/High tiers."""
+    employee = create_simple_test_employee(grid_position=9, prior_grid_position=5)
+
+    assert is_medium_mover(employee) is True
+
+
+def test_is_medium_mover_when_single_axis_step_then_false() -> None:
+    """A one-step nudge is normal calibration drift, not a notable move."""
+    employee = create_simple_test_employee(grid_position=6, prior_grid_position=5)
+
+    assert is_medium_mover(employee) is False
+
+
+def test_is_medium_mover_when_also_big_mover_then_false() -> None:
+    """The two flags are mutually exclusive so filters partition cleanly."""
+    employee = create_simple_test_employee(grid_position=8, prior_grid_position=3)
+
+    assert is_big_mover(employee) is True
+    assert is_medium_mover(employee) is False
+
+
+def test_is_medium_mover_when_in_session_move_then_true() -> None:
+    """Two-axis drags during the meeting count the same as calibration moves."""
+    current = create_simple_test_employee(grid_position=9)
+    original = create_simple_test_employee(grid_position=5)
+
+    assert is_medium_mover(current, original) is True
+
+
+def test_is_medium_mover_when_no_comparison_available_then_false() -> None:
+    """No prior position and no in-session move means nothing to compare."""
+    employee = create_simple_test_employee(grid_position=9)
+
+    assert is_medium_mover(employee) is False
+
+
+# Current-cycle ratings must not be mistaken for prior-year history
+
+
+def test_get_most_recent_prior_year_rating_when_current_year_present_then_excluded() -> None:
+    """The current cycle's own rating is not history to compare against."""
+    from datetime import date
+
+    this_year = date.today().year
+    employee = create_simple_test_employee()
+    employee.ratings_history = [
+        HistoricalRating(year=this_year - 2, rating="Solid"),
+        HistoricalRating(year=this_year - 1, rating="Strong"),
+        HistoricalRating(year=this_year, rating="Leading"),
+    ]
+
+    assert get_most_recent_prior_year_rating(employee) == "Strong"
+
+
+def test_get_most_recent_prior_year_rating_when_only_current_year_then_none() -> None:
+    """Nothing completed means nothing to compare year-over-year."""
+    from datetime import date
+
+    employee = create_simple_test_employee()
+    employee.ratings_history = [HistoricalRating(year=date.today().year, rating="Leading")]
+
+    assert get_most_recent_prior_year_rating(employee) is None
+
+
+def test_get_most_recent_prior_year_rating_when_unordered_then_latest_wins() -> None:
+    """Order in the list must not decide which year counts as most recent."""
+    from datetime import date
+
+    this_year = date.today().year
+    employee = create_simple_test_employee()
+    employee.ratings_history = [
+        HistoricalRating(year=this_year - 1, rating="Strong"),
+        HistoricalRating(year=this_year - 3, rating="Low"),
+    ]
+
+    assert get_most_recent_prior_year_rating(employee) == "Strong"
+
+
+def test_is_big_mover_when_only_current_year_rating_then_not_flagged() -> None:
+    """A current-cycle rating describes the same period as the current box.
+
+    Regression: once history stopped being limited to 2023/2024, a rating for
+    the live year would otherwise be compared against the position it describes
+    and report movement that never happened.
+    """
+    from datetime import date
+
+    employee = create_simple_test_employee(grid_position=4)  # Low tier
+    employee.ratings_history = [
+        HistoricalRating(year=date.today().year, rating="Leading")  # High tier
+    ]
+
+    assert is_big_mover(employee) is False

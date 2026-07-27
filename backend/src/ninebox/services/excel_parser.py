@@ -15,6 +15,16 @@ from ninebox.models.grid_positions import calculate_grid_position
 
 logger = logging.getLogger(__name__)
 
+# Historical performance rating columns are recognized by pattern rather than by a
+# fixed list of years, so a new review cycle needs no code change. Matches e.g.
+# "2023 Completed Performance Rating", "2026 completed performance rating".
+HISTORICAL_RATING_PATTERN = re.compile(r"^(\d{4})\s+completed performance rating$", re.IGNORECASE)
+
+
+def canonical_historical_rating_column(year: int) -> str:
+    """Build the canonical header for a review year's performance rating column."""
+    return f"{year} Completed Performance Rating"
+
 
 def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -55,8 +65,7 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
         "time in job profile": "Time in Job Profile",
         "fy25 talent indicator": "FY25 Talent Indicator",
         "talent indicator": "Talent Indicator",
-        "2023 completed performance rating": "2023 Completed Performance Rating",
-        "2024 completed performance rating": "2024 Completed Performance Rating",
+        "prior calibration 9-box label": "Prior Calibration 9-Box Label",
         "development focus": "Development Focus",
         "development action": "Development Action",
         "notes": "Notes",
@@ -68,15 +77,32 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
         "donut exercise notes": "Donut Exercise Notes",
     }
 
-    # Build rename mapping for columns that need normalization
+    # Build rename mapping for columns that need normalization.
+    # `claimed` guards against two source columns normalizing to the same canonical
+    # name (e.g. "Notes" and "notes "), which would produce duplicate DataFrame
+    # columns and make row lookups return a Series instead of a scalar.
     rename_mapping = {}
+    claimed = {str(col) for col in df.columns}
     for col in df.columns:
         col_lower = str(col).lower().strip()
-        if col_lower in expected_columns:
+        year_match = HISTORICAL_RATING_PATTERN.match(col_lower)
+        if year_match:
+            expected_name = canonical_historical_rating_column(int(year_match.group(1)))
+        elif col_lower in expected_columns:
             expected_name = expected_columns[col_lower]
-            if col != expected_name:
-                rename_mapping[col] = expected_name
-                logger.debug(f"Normalizing column name: '{col}' -> '{expected_name}'")
+        else:
+            continue
+
+        if col != expected_name:
+            if expected_name in claimed:
+                logger.warning(
+                    f"Skipping normalization of '{col}' -> '{expected_name}': "
+                    f"target column name is already present"
+                )
+                continue
+            rename_mapping[col] = expected_name
+            claimed.add(expected_name)
+            logger.debug(f"Normalizing column name: '{col}' -> '{expected_name}'")
 
     if rename_mapping:
         logger.info(f"Normalized {len(rename_mapping)} column names: {rename_mapping}")
@@ -581,16 +607,9 @@ class ExcelParser:
 
     def _parse_employee_row(self, row: pd.Series) -> Employee:
         """Parse a single employee row."""
-        # Extract historical ratings
-        history = []
-        if pd.notna(row.get("2023 Completed Performance Rating")):
-            history.append(
-                HistoricalRating(year=2023, rating=str(row["2023 Completed Performance Rating"]))
-            )
-        if pd.notna(row.get("2024 Completed Performance Rating")):
-            history.append(
-                HistoricalRating(year=2024, rating=str(row["2024 Completed Performance Rating"]))
-            )
+        # Extract historical ratings from every "<year> Completed Performance Rating"
+        # column present, so new review cycles are picked up without a code change.
+        history = self._parse_ratings_history(row)
 
         # Get performance and potential (handle different possible column names)
         performance_col = self._find_column(
@@ -765,6 +784,7 @@ class ExcelParser:
             performance=performance,
             potential=potential,
             grid_position=grid_position,
+            prior_grid_position=self._parse_prior_grid_position(row),
             talent_indicator=str(
                 row.get("FY25 Talent Indicator", row.get("Talent Indicator", ""))
             ).strip()
@@ -792,6 +812,75 @@ class ExcelParser:
         )
 
         return employee
+
+    def _parse_prior_grid_position(self, row: pd.Series) -> int | None:
+        """
+        Read the previous calibration's 9-box position from the row.
+
+        Only the explicit "Prior Calibration 9-Box Label" column is used. Talent
+        indicator labels are deliberately not inferred from: a column like
+        "FY25 Talent Indicator" may hold an assessment that is older, newer, or
+        parallel to the current one depending on how the file was assembled, so
+        guessing would produce confident but wrong movement flags.
+
+        Within this column the meaning is unambiguous, so both a bare number (5)
+        and a labelled box ("5. Core Talent") are accepted.
+
+        Returns:
+            Grid position 1-9, or None if absent or not a valid position.
+        """
+        value = row.get("Prior Calibration 9-Box Label")
+        if not pd.notna(value):
+            return None
+
+        try:
+            position = int(cast("float", value))
+        except (ValueError, TypeError):
+            leading_digits = re.match(r"\s*(\d+)", str(value))
+            if not leading_digits:
+                logger.warning(f"Prior calibration position '{value}' is not a number, ignoring")
+                self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
+                return None
+            position = int(leading_digits.group(1))
+
+        if not 1 <= position <= 9:
+            logger.warning(f"Prior calibration position '{value}' out of range 1-9, ignoring")
+            self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
+            return None
+
+        return position
+
+    def _parse_ratings_history(self, row: pd.Series) -> list[HistoricalRating]:
+        """
+        Collect historical performance ratings from all year-prefixed columns.
+
+        Any column named "<4-digit year> Completed Performance Rating" contributes an
+        entry. Results are sorted oldest-first so the timeline renders in order.
+
+        Returns:
+            List of HistoricalRating, ascending by year. Empty if the row has none.
+        """
+        # Keyed by year so case or spacing variants of the same header
+        # ("2023 Completed..." and "2023 completed...") cannot yield two entries
+        # for one year. First non-empty value wins.
+        by_year: dict[int, str] = {}
+        for column in row.index:
+            match = HISTORICAL_RATING_PATTERN.match(str(column).strip())
+            if not match:
+                continue
+            value = row[column]
+            if not pd.notna(value):
+                continue
+            rating = str(value).strip()
+            if not rating:
+                continue
+            year = int(match.group(1))
+            if year in by_year:
+                logger.debug(f"Duplicate history column for {year}, keeping the first value")
+                continue
+            by_year[year] = rating
+
+        return [HistoricalRating(year=year, rating=by_year[year]) for year in sorted(by_year)]
 
     def _find_column(self, row: pd.Series, possible_names: list[str]) -> str | None:
         """

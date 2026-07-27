@@ -33,18 +33,15 @@ def cleanup_openpyxl_state() -> Generator[None, None, None]:
 
     # 2. Clear any cached openpyxl modules that might hold state
     # This ensures fresh imports get clean module state
-    openpyxl_modules = [
-        name for name in sys.modules.keys()
-        if name.startswith('openpyxl')
-    ]
+    openpyxl_modules = [name for name in sys.modules.keys() if name.startswith("openpyxl")]
 
     # Store references to avoid module re-import issues during iteration
     modules_to_clear = []
     for name in openpyxl_modules:
         module = sys.modules.get(name)
-        if module and hasattr(module, '__dict__'):
+        if module and hasattr(module, "__dict__"):
             # Clear module-level caches if they exist
-            if hasattr(module, '_cache'):
+            if hasattr(module, "_cache"):
                 try:
                     module._cache.clear()
                 except (AttributeError, TypeError):
@@ -64,8 +61,8 @@ def cleanup_openpyxl_state() -> Generator[None, None, None]:
     # 2. Clear openpyxl module caches again
     for name in openpyxl_modules:
         module = sys.modules.get(name)
-        if module and hasattr(module, '__dict__'):
-            if hasattr(module, '_cache'):
+        if module and hasattr(module, "__dict__"):
+            if hasattr(module, "_cache"):
                 try:
                     module._cache.clear()
                 except (AttributeError, TypeError):
@@ -881,3 +878,141 @@ def test_export_when_current_values_updated_then_main_columns_have_new_values(
     assert sheet.cell(2, perf_col).value == "Low"
     assert sheet.cell(2, pot_col).value == "High"
     workbook.close()
+
+
+def _employee_with_history(employee_id: int, history: list[tuple[int, str]]) -> Employee:
+    """Build a minimal employee carrying the given (year, rating) history."""
+    from datetime import date
+
+    from ninebox.models.employee import HistoricalRating
+
+    return Employee(
+        employee_id=employee_id,
+        name=f"Employee {employee_id}",
+        business_title="Engineer",
+        job_title="Engineer",
+        job_profile="Engineering-USA",
+        job_level="MT4",
+        job_function="Engineering",
+        location="USA",
+        direct_manager="Bob Manager",
+        hire_date=date(2020, 1, 15),
+        tenure_category="3-5 years",
+        time_in_job_profile="2 years",
+        performance=PerformanceLevel.HIGH,
+        potential=PotentialLevel.HIGH,
+        grid_position=9,
+        talent_indicator="Top Talent",
+        ratings_history=[HistoricalRating(year=y, rating=r) for y, r in history],
+    )
+
+
+def _header_map(sheet) -> dict[str, int]:  # type: ignore[no-untyped-def]
+    return {
+        sheet.cell(1, col).value: col
+        for col in range(1, sheet.max_column + 1)
+        if sheet.cell(1, col).value
+    }
+
+
+def test_export_when_history_has_arbitrary_years_then_writes_a_column_per_year(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """Export must emit history columns for whatever years the data contains."""
+    output_path = tmp_path / "history_years.xlsx"
+    employees = [_employee_with_history(1, [(2024, "Solid"), (2025, "Strong"), (2026, "Leading")])]
+
+    excel_exporter.export("", employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    try:
+        sheet = workbook.worksheets[1]
+        headers = _header_map(sheet)
+        for year, rating in [(2024, "Solid"), (2025, "Strong"), (2026, "Leading")]:
+            column = headers[f"{year} Completed Performance Rating"]
+            assert sheet.cell(2, column).value == rating
+    finally:
+        workbook.close()
+
+
+def test_export_when_history_years_differ_across_employees_then_union_is_written(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """Columns cover the union of years, with blanks where an employee has no rating."""
+    output_path = tmp_path / "history_union.xlsx"
+    employees = [
+        _employee_with_history(1, [(2023, "Solid")]),
+        _employee_with_history(2, [(2026, "Leading")]),
+    ]
+
+    excel_exporter.export("", employees, output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    try:
+        sheet = workbook.worksheets[1]
+        headers = _header_map(sheet)
+        col_2023 = headers["2023 Completed Performance Rating"]
+        col_2026 = headers["2026 Completed Performance Rating"]
+
+        assert sheet.cell(2, col_2023).value == "Solid"
+        assert sheet.cell(2, col_2026).value is None
+        assert sheet.cell(3, col_2023).value is None
+        assert sheet.cell(3, col_2026).value == "Leading"
+
+        # Trailing columns must shift to sit after the history block
+        assert headers["Development Focus"] > col_2026
+        assert headers["Promotion Readiness"] > headers["Notes"]
+    finally:
+        workbook.close()
+
+
+def test_export_when_no_history_then_no_history_columns_and_trailing_intact(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """With no history at all the sheet still has well-formed trailing columns."""
+    output_path = tmp_path / "no_history.xlsx"
+
+    excel_exporter.export("", [_employee_with_history(1, [])], output_path)
+
+    workbook = openpyxl.load_workbook(output_path)
+    try:
+        sheet = workbook.worksheets[1]
+        headers = _header_map(sheet)
+        assert not [h for h in headers if "Completed Performance Rating" in str(h)]
+        assert headers["Development Focus"] == headers["Prior Calibration 9-Box Label"] + 1
+    finally:
+        workbook.close()
+
+
+def test_export_then_reimport_round_trips_history_for_any_year(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """Parser and exporter agree on the history schema for non-2023/2024 years."""
+    from ninebox.services.excel_parser import ExcelParser
+
+    output_path = tmp_path / "round_trip.xlsx"
+    employees = [_employee_with_history(1, [(2025, "Strong"), (2026, "Leading")])]
+
+    excel_exporter.export("", employees, output_path)
+    reparsed = ExcelParser().parse(output_path)
+
+    assert [(r.year, r.rating) for r in reparsed.employees[0].ratings_history] == [
+        (2025, "Strong"),
+        (2026, "Leading"),
+    ]
+
+
+def test_export_when_prior_position_set_then_round_trips(
+    excel_exporter: ExcelExporter, tmp_path: Path
+) -> None:
+    """The prior calibration position survives an export/re-import cycle."""
+    from ninebox.services.excel_parser import ExcelParser
+
+    output_path = tmp_path / "prior_round_trip.xlsx"
+    employee = _employee_with_history(1, [(2025, "Strong")])
+    employee.prior_grid_position = 4
+
+    excel_exporter.export("", [employee], output_path)
+    reparsed = ExcelParser().parse(output_path)
+
+    assert reparsed.employees[0].prior_grid_position == 4

@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, field_validator
 from ninebox.core.dependencies import get_employee_service, get_session_manager
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
 from ninebox.models.filters import EmployeeFilters
-from ninebox.services.employee_service import EmployeeService, is_big_mover
+from ninebox.services.employee_service import EmployeeService, is_big_mover, is_medium_mover
 from ninebox.services.sample_data_generator import (
     RichDatasetConfig,
     generate_rich_dataset,
@@ -179,12 +179,13 @@ async def get_employees(
     # Get original employees for in-session big mover detection
     original_employees_map = {e.employee_id: e for e in session.original_employees}
 
-    # Serialize with is_big_mover computed
+    # Serialize with movement flags computed
     employees_data = []
     for emp in filtered_employees:
         emp_dict = emp.model_dump()
         original_emp = original_employees_map.get(emp.employee_id)
         emp_dict["is_big_mover"] = is_big_mover(emp, original_emp)
+        emp_dict["is_medium_mover"] = is_medium_mover(emp, original_emp)
         employees_data.append(emp_dict)
 
     return {
@@ -387,12 +388,13 @@ async def update_employee(  # noqa: PLR0912 - Complex update logic requires mult
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
 
-    # Compute is_big_mover for response
+    # Compute movement flags for response
     employee_data = employee.model_dump()
     original_emp = next(
         (e for e in session.original_employees if e.employee_id == employee_id), None
     )
     employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+    employee_data["is_medium_mover"] = is_medium_mover(employee, original_emp)
 
     return {"employee": employee_data, "success": True}
 
@@ -436,7 +438,7 @@ async def move_employee(
         )
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
-    # Compute is_big_mover for response
+    # Compute movement flags for response
     employee_data = None
     if employee:
         employee_data = employee.model_dump()
@@ -444,6 +446,7 @@ async def move_employee(
             (e for e in session.original_employees if e.employee_id == employee_id), None
         )
         employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+        employee_data["is_medium_mover"] = is_medium_mover(employee, original_emp)
 
     return {
         "employee": employee_data,
@@ -523,7 +526,7 @@ async def move_employee_donut(
     # Get updated employee for response
     employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
-    # Compute is_big_mover for response
+    # Compute movement flags for response
     employee_data = None
     if employee:
         employee_data = employee.model_dump()
@@ -531,6 +534,7 @@ async def move_employee_donut(
             (e for e in session.original_employees if e.employee_id == employee_id), None
         )
         employee_data["is_big_mover"] = is_big_mover(employee, original_emp)
+        employee_data["is_medium_mover"] = is_medium_mover(employee, original_emp)
 
     return {
         "employee": employee_data,

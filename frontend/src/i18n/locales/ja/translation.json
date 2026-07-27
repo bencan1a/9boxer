@@ -235,7 +235,11 @@
       "addFlag": "Add flag...",
       "box": "Box",
       "flags": "Flags",
-      "noFlagsAvailable": "No flags available"
+      "noFlagsAvailable": "No flags available",
+      "previousCalibration": "前回のキャリブレーション",
+      "movedSteps_one": "{{steps}} 段階移動",
+      "movedSteps_other": "{{steps}} 段階移動",
+      "movedNoChange": "変化なし"
     },
     "changeTrackerTab": {
       "noChanges": "変更はまだありません",

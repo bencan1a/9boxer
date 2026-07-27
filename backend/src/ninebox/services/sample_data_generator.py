@@ -251,20 +251,27 @@ def get_column_schema() -> list[ColumnMetadata]:
             example="Jennifer Lee",
             used_for="Filter for viewing by executive leadership",
         ),
-        # Historical Rating Columns
+        # Historical Rating Columns - any "<year> Completed Performance Rating" column
+        # is recognized, so the two most recent completed cycles are shown as examples.
         ColumnMetadata(
-            name="2023 Completed Performance Rating",
+            name=f"{date.today().year - 2} Completed Performance Rating",
             data_type="string",
-            description="Performance rating from 2023 review cycle",
+            description=(
+                "Performance rating from a completed review cycle. Any column named "
+                "'<4-digit year> Completed Performance Rating' is imported."
+            ),
             required=False,
             category=ColumnCategory.HISTORY,
             example="High",
             used_for="Displayed in employee timeline to show rating trends",
         ),
         ColumnMetadata(
-            name="2024 Completed Performance Rating",
+            name=f"{date.today().year - 1} Completed Performance Rating",
             data_type="string",
-            description="Performance rating from 2024 review cycle",
+            description=(
+                "Performance rating from a completed review cycle. Any column named "
+                "'<4-digit year> Completed Performance Rating' is imported."
+            ),
             required=False,
             category=ColumnCategory.HISTORY,
             example="Medium",
@@ -674,14 +681,18 @@ class PerformanceHistoryGenerator:
     - Variance in ratings (some improve, some decline, some stable)
     - Valid rating values: "Low", "Solid", "Strong", "Leading"
 
+    Years are the three review cycles completed before the current one, derived from
+    today's date rather than hardcoded, so sample data never goes stale.
+
     Example:
         >>> generator = PerformanceHistoryGenerator(seed=42)
         >>> hire_date = date(2020, 1, 1)
         >>> history = generator.generate_history(1, hire_date, "Strong")
         >>> len(history)
         3
-        >>> {h["year"] for h in history}
-        {2023, 2024, 2025}
+        >>> this_year = date.today().year
+        >>> {h["year"] for h in history} == {this_year - 3, this_year - 2, this_year - 1}
+        True
     """
 
     def __init__(self, seed: int | None = None) -> None:
@@ -727,7 +738,11 @@ class PerformanceHistoryGenerator:
         # 80% have complete history, 20% have gaps
         has_complete_history = self.rng.random() < 0.8
 
-        years = [2023, 2024, 2025][-max_years:]
+        # The completed cycles preceding the current one, e.g. 2023/2024/2025 in 2026
+        latest_completed_year = today.year - 1
+        years = [latest_completed_year - 2, latest_completed_year - 1, latest_completed_year][
+            -max_years:
+        ]
 
         if not has_complete_history and max_years > 1:
             # Remove random year(s)
@@ -737,8 +752,8 @@ class PerformanceHistoryGenerator:
 
         # Generate ratings with variance
         for year in years:
-            if year == 2025:
-                # Current year uses current rating
+            if year == latest_completed_year:
+                # Most recent completed cycle tracks the current rating
                 rating = current_rating
             else:
                 # Historical ratings vary

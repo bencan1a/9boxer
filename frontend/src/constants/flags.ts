@@ -62,7 +62,34 @@ export const FLAGS: Record<string, FlagDefinition> = {
     displayName: "Big Mover",
     color: "#00BCD4", // Cyan
   },
+  medium_mover: {
+    key: "medium_mover",
+    displayName: "Medium Mover",
+    color: "#7986CB", // Indigo
+  },
 };
+
+/**
+ * Flags computed by the backend from movement between calibrations rather than
+ * assigned by a user. They are injected into an employee's flags array so they
+ * filter like any other flag, but they must never be sent back on an update -
+ * the API rejects them as invalid, and they would be recomputed anyway.
+ */
+export const DERIVED_FLAGS: ReadonlySet<string> = new Set([
+  "big_mover",
+  "medium_mover",
+]);
+
+/**
+ * Check whether a flag is computed rather than user-assigned
+ */
+export const isDerivedFlag = (key: string): boolean => DERIVED_FLAGS.has(key);
+
+/**
+ * Strip computed flags, leaving only the user-assigned ones safe to persist
+ */
+export const toPersistableFlags = (flags: string[]): string[] =>
+  flags.filter((flag) => !isDerivedFlag(flag));
 
 /**
  * Get all flag definitions as an array
