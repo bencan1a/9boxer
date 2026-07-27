@@ -37,6 +37,14 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
     (a, b) => b.year - a.year
   );
 
+  // The current assessment is the live calibration, so label it with the current
+  // year rather than a hardcoded one. Stay ahead of the newest completed cycle so
+  // the timeline never shows a duplicate or out-of-order year.
+  const currentYear = Math.max(
+    new Date().getFullYear(),
+    (sortedRatings[0]?.year ?? 0) + 1
+  );
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -45,7 +53,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
         </Typography>
 
         <Timeline sx={{ p: 0, m: 0, pl: 0 }}>
-          {/* Current Year (2025) */}
+          {/* Current assessment */}
           <TimelineItem sx={{ "&::before": { flex: 0, padding: 0 } }}>
             <TimelineSeparator>
               <TimelineDot color="success" />
@@ -53,7 +61,7 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
             </TimelineSeparator>
             <TimelineContent sx={{ py: 0, px: 2 }}>
               <Typography variant="body2" fontWeight="medium">
-                {t("panel.detailsTab.currentYear", { year: 2025 })}
+                {t("panel.detailsTab.currentYear", { year: currentYear })}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t("panel.detailsTab.performance")}: {employee.performance}

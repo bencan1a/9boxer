@@ -368,3 +368,96 @@ def test_parse_when_no_donut_data_then_donut_fields_none(tmp_path: Path) -> None
     assert emp.donut_performance is None
     assert emp.donut_potential is None
     assert emp.donut_notes is None
+
+
+def _write_history_sheet(path: Path, history_headers: list[str], values: list[str | None]) -> None:
+    """Write a minimal one-employee sheet with the given history columns."""
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    assert sheet is not None
+    sheet.title = "Employee Data"
+
+    base = [
+        "Employee ID",
+        "Worker",
+        "Business Title",
+        "Job Level - Primary Position",
+        "Aug 2025 Talent Assessment Performance",
+        "Aug 2025  Talent Assessment Potential",
+    ]
+    for col, header in enumerate(base + history_headers, start=1):
+        sheet.cell(1, col, header)
+    for col, value in enumerate(
+        [1, "Test Employee", "Engineer", "MT4", "High", "High", *values], start=1
+    ):
+        sheet.cell(2, col, value)
+
+    workbook.save(path)
+    workbook.close()
+
+
+def test_parse_when_history_columns_for_any_year_then_all_are_imported(tmp_path: Path) -> None:
+    """Review years beyond 2023/2024 must be imported, not silently dropped."""
+    test_file = tmp_path / "any_year_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2022 Completed Performance Rating",
+            "2025 Completed Performance Rating",
+            "2026 Completed Performance Rating",
+        ],
+        ["Solid", "Strong", "Leading"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert [(r.year, r.rating) for r in result.employees[0].ratings_history] == [
+        (2022, "Solid"),
+        (2025, "Strong"),
+        (2026, "Leading"),
+    ]
+
+
+def test_parse_when_history_columns_out_of_order_then_sorted_ascending(tmp_path: Path) -> None:
+    """History is returned oldest-first regardless of column order in the file."""
+    test_file = tmp_path / "unordered_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2026 Completed Performance Rating",
+            "2023 Completed Performance Rating",
+            "2025 Completed Performance Rating",
+        ],
+        ["Leading", "Solid", "Strong"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert [r.year for r in result.employees[0].ratings_history] == [2023, 2025, 2026]
+
+
+def test_parse_when_history_header_lowercase_then_still_imported(tmp_path: Path) -> None:
+    """Year-prefixed history headers are matched case-insensitively."""
+    test_file = tmp_path / "lowercase_history.xlsx"
+    _write_history_sheet(test_file, ["2026 completed performance rating"], ["Leading"])
+
+    result = ExcelParser().parse(test_file)
+
+    assert [(r.year, r.rating) for r in result.employees[0].ratings_history] == [(2026, "Leading")]
+
+
+def test_parse_when_history_cell_blank_then_year_omitted(tmp_path: Path) -> None:
+    """Empty history cells produce no timeline entry for that year."""
+    test_file = tmp_path / "blank_history.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2025 Completed Performance Rating",
+            "2026 Completed Performance Rating",
+        ],
+        [None, "   "],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].ratings_history == []

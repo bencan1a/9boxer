@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from ninebox.models.employee import Employee
 from ninebox.models.grid_positions import get_position_label, get_position_label_by_number
+from ninebox.services.excel_parser import canonical_historical_rating_column
 
 if TYPE_CHECKING:
     import openpyxl
@@ -258,6 +259,13 @@ class ExcelExporter:
         # Employee data sheet
         data_sheet = workbook.create_sheet("Employee Data")
 
+        # History columns are driven by the years actually present in the data so any
+        # review cycle round-trips, rather than a fixed 2023/2024 pair.
+        history_years = sorted({r.year for e in employees for r in e.ratings_history})
+        history_headers = [canonical_historical_rating_column(y) for y in history_years]
+        history_col_by_year = {year: 19 + offset for offset, year in enumerate(history_years)}
+        trailing_start = 19 + len(history_years)
+
         # Headers - matching the expected format from ExcelParser
         headers = [
             "Employee ID",
@@ -278,8 +286,7 @@ class ExcelExporter:
             "Aug 2025 Talent Assessment 9-Box Label",
             "Talent Mapping Position",
             "FY25 Talent Indicator",
-            "2023 Completed Performance Rating",
-            "2024 Completed Performance Rating",
+            *history_headers,
             "Development Focus",
             "Development Action",
             "Notes",
@@ -310,18 +317,16 @@ class ExcelExporter:
             data_sheet.cell(row_idx, 17, get_position_label_by_number(emp.grid_position))
             data_sheet.cell(row_idx, 18, emp.talent_indicator)
 
-            # Historical ratings
-            if emp.ratings_history:
-                for rating in emp.ratings_history:
-                    if rating.year == 2023:
-                        data_sheet.cell(row_idx, 19, rating.rating)
-                    elif rating.year == 2024:
-                        data_sheet.cell(row_idx, 20, rating.rating)
+            # Historical ratings - one column per review year found in the data
+            for rating in emp.ratings_history:
+                col_idx = history_col_by_year.get(rating.year)
+                if col_idx is not None:
+                    data_sheet.cell(row_idx, col_idx, rating.rating)
 
-            data_sheet.cell(row_idx, 21, emp.development_focus)
-            data_sheet.cell(row_idx, 22, emp.development_action)
-            data_sheet.cell(row_idx, 23, emp.notes)
-            data_sheet.cell(row_idx, 24, emp.promotion_status)
+            data_sheet.cell(row_idx, trailing_start, emp.development_focus)
+            data_sheet.cell(row_idx, trailing_start + 1, emp.development_action)
+            data_sheet.cell(row_idx, trailing_start + 2, emp.notes)
+            data_sheet.cell(row_idx, trailing_start + 3, emp.promotion_status)
 
         return workbook
 
