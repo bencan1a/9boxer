@@ -1406,11 +1406,13 @@ The LLM service generates natural language summaries and structured insights fro
 
 **Configuration:**
 
-```python
+```bash
 # Environment variables
-ANTHROPIC_API_KEY = your_api_key_here  # Required for LLM features
-LLM_MODEL = claude - sonnet - 4 - 5 - 20250929  # Optional (defaults to Sonnet 4.5)
+ANTHROPIC_API_KEY=your_api_key_here        # Required for LLM features
+LLM_MODEL=claude-sonnet-4-5-20250929       # Optional (defaults to Sonnet 4.5)
+```
 
+```python
 # Available models
 DEFAULT_MODEL = "claude-sonnet-4-5-20250929"  # Balanced (default)
 HAIKU_MODEL = "claude-haiku-3-5-20250110"  # 3-5x faster, lower cost
