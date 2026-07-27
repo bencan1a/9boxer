@@ -94,6 +94,7 @@ TIME_MULTIPLIERS = {
     9: 1.3,  # Star - succession planning discussion
 }
 
+
 def calculate_time_allocation(self, employees: list[Employee]) -> TimeAllocation:
     # Group employees by normalized level (IC, Manager, Director, VP, Executive)
     by_level = {}
@@ -117,12 +118,14 @@ def calculate_time_allocation(self, employees: list[Employee]) -> TimeAllocation
         level_minutes_rounded = round(level_minutes)
         total_minutes += level_minutes_rounded
 
-        breakdown.append(LevelTimeBreakdown(
-            level=level,
-            employee_count=len(by_level[level]),
-            minutes=level_minutes_rounded,
-            percentage=0.0,  # Calculated after total is known
-        ))
+        breakdown.append(
+            LevelTimeBreakdown(
+                level=level,
+                employee_count=len(by_level[level]),
+                minutes=level_minutes_rounded,
+                percentage=0.0,  # Calculated after total is known
+            )
+        )
 
     # Add intelligence sweep time (5% of total, min 10 min)
     total_minutes += max(10, int(len(employees) * 0.05))
@@ -169,6 +172,7 @@ def generate_insights(...) -> list[Insight]:
 ```python
 import hashlib
 
+
 def _generate_insight_id(prefix: str, *components: Any) -> str:
     """Generate a deterministic insight ID from components.
 
@@ -182,6 +186,7 @@ def _generate_insight_id(prefix: str, *components: Any) -> str:
     hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:8]
     return f"{prefix}-{hash_suffix}"
 
+
 # Examples:
 # _generate_insight_id("focus-crowded-center", 24) → "focus-crowded-center-a1b2c3d4"
 # _generate_insight_id("anomaly", "location", "Engineering") → "anomaly-location-Engineering-513398ea"
@@ -194,55 +199,63 @@ def _generate_distribution_insights(self, data_overview: DataOverview) -> list[I
 
     # Check for crowded center box
     if data_overview["center_box_percentage"] > 50.0:
-        insights.append(Insight(
-            id=self._generate_insight_id("focus-crowded-center", data_overview["center_box_count"]),
-            type="focus_area",
-            category="distribution",
-            priority="medium",
-            title=f"{data_overview['center_box_percentage']:.0f}% of employees in center box",
-            description="Consider running a Donut Mode exercise to differentiate Core Performers. "
-                       "A crowded center box may indicate managers are avoiding differentiation.",
-            affected_count=data_overview["center_box_count"],
-            source_data=InsightSourceData(
-                center_count=data_overview["center_box_count"],
-                center_pct=data_overview["center_box_percentage"],
-                recommended_max_pct=50.0,
-            ),
-        ))
+        insights.append(
+            Insight(
+                id=self._generate_insight_id(
+                    "focus-crowded-center", data_overview["center_box_count"]
+                ),
+                type="focus_area",
+                category="distribution",
+                priority="medium",
+                title=f"{data_overview['center_box_percentage']:.0f}% of employees in center box",
+                description="Consider running a Donut Mode exercise to differentiate Core Performers. "
+                "A crowded center box may indicate managers are avoiding differentiation.",
+                affected_count=data_overview["center_box_count"],
+                source_data=InsightSourceData(
+                    center_count=data_overview["center_box_count"],
+                    center_pct=data_overview["center_box_percentage"],
+                    recommended_max_pct=50.0,
+                ),
+            )
+        )
 
     # Check for too few stars (succession risk)
     if data_overview["stars_percentage"] < 5.0:
-        insights.append(Insight(
-            id=self._generate_insight_id("focus-low-stars", data_overview["stars_count"]),
-            type="focus_area",
-            category="distribution",
-            priority="high",
-            title=f"Only {data_overview['stars_percentage']:.0f}% Stars (Position 9)",
-            description="Low percentage of top talent may indicate succession planning risk "
-                       "or overly strict rating standards.",
-            affected_count=data_overview["stars_count"],
-            source_data=InsightSourceData(
-                observed_pct=data_overview["stars_percentage"],
-                expected_pct=10.0,
-            ),
-        ))
+        insights.append(
+            Insight(
+                id=self._generate_insight_id("focus-low-stars", data_overview["stars_count"]),
+                type="focus_area",
+                category="distribution",
+                priority="high",
+                title=f"Only {data_overview['stars_percentage']:.0f}% Stars (Position 9)",
+                description="Low percentage of top talent may indicate succession planning risk "
+                "or overly strict rating standards.",
+                affected_count=data_overview["stars_count"],
+                source_data=InsightSourceData(
+                    observed_pct=data_overview["stars_percentage"],
+                    expected_pct=10.0,
+                ),
+            )
+        )
 
     # Check for potential grade inflation (too many stars)
     if data_overview["stars_percentage"] > 25.0:
-        insights.append(Insight(
-            id=self._generate_insight_id("focus-high-stars", data_overview["stars_count"]),
-            type="focus_area",
-            category="distribution",
-            priority="high",
-            title=f"{data_overview['stars_percentage']:.0f}% rated as Stars",
-            description="High percentage of top talent may indicate grade inflation. "
-                       "Review whether the bar for 'Star' is consistent across managers.",
-            affected_count=data_overview["stars_count"],
-            source_data=InsightSourceData(
-                observed_pct=data_overview["stars_percentage"],
-                expected_pct=15.0,
-            ),
-        ))
+        insights.append(
+            Insight(
+                id=self._generate_insight_id("focus-high-stars", data_overview["stars_count"]),
+                type="focus_area",
+                category="distribution",
+                priority="high",
+                title=f"{data_overview['stars_percentage']:.0f}% rated as Stars",
+                description="High percentage of top talent may indicate grade inflation. "
+                "Review whether the bar for 'Star' is consistent across managers.",
+                affected_count=data_overview["stars_count"],
+                source_data=InsightSourceData(
+                    observed_pct=data_overview["stars_percentage"],
+                    expected_pct=15.0,
+                ),
+            )
+        )
 
     return insights
 ```
@@ -263,16 +276,22 @@ def _generate_anomaly_insights(self, category: str, analysis: dict[str, Any]) ->
 
     if not significant_devs:
         # Create a general insight if flagged but no specific deviations
-        insights.append(Insight(
-            id=self._generate_insight_id("anomaly-general", category, status),
-            type="anomaly",
-            category=category,
-            priority="medium" if status == "yellow" else "high",
-            title=f"Rating pattern differences detected across {category}s",
-            description=analysis.get("interpretation", "Statistical analysis shows significant differences."),
-            affected_count=analysis.get("sample_size", 0),
-            source_data=InsightSourceData(p_value=analysis.get("p_value", 0), category=category),
-        ))
+        insights.append(
+            Insight(
+                id=self._generate_insight_id("anomaly-general", category, status),
+                type="anomaly",
+                category=category,
+                priority="medium" if status == "yellow" else "high",
+                title=f"Rating pattern differences detected across {category}s",
+                description=analysis.get(
+                    "interpretation", "Statistical analysis shows significant differences."
+                ),
+                affected_count=analysis.get("sample_size", 0),
+                source_data=InsightSourceData(
+                    p_value=analysis.get("p_value", 0), category=category
+                ),
+            )
+        )
         return insights
 
     # Create insight for each significant deviation
@@ -282,22 +301,24 @@ def _generate_anomaly_insights(self, category: str, analysis: dict[str, Any]) ->
         direction = "higher" if z_score > 0 else "lower"
         priority = "high" if abs(z_score) > 3.0 else "medium"
 
-        insights.append(Insight(
-            id=self._generate_insight_id("anomaly", category, category_name),
-            type="anomaly",
-            category=category,
-            priority=priority,
-            title=f"{category_name} rates {direction} than average",
-            description=f"{category_name} has {dev['observed_high_pct']:.0f}% high performers "
-                       f"vs {dev['expected_high_pct']:.0f}% expected (z={z_score:.1f})",
-            affected_count=dev.get("sample_size", 0),
-            source_data=InsightSourceData(
-                z_score=z_score,
-                p_value=analysis.get("p_value", 0),
-                observed_pct=dev["observed_high_pct"],
-                expected_pct=dev["expected_high_pct"],
-            ),
-        ))
+        insights.append(
+            Insight(
+                id=self._generate_insight_id("anomaly", category, category_name),
+                type="anomaly",
+                category=category,
+                priority=priority,
+                title=f"{category_name} rates {direction} than average",
+                description=f"{category_name} has {dev['observed_high_pct']:.0f}% high performers "
+                f"vs {dev['expected_high_pct']:.0f}% expected (z={z_score:.1f})",
+                affected_count=dev.get("sample_size", 0),
+                source_data=InsightSourceData(
+                    z_score=z_score,
+                    p_value=analysis.get("p_value", 0),
+                    observed_pct=dev["observed_high_pct"],
+                    expected_pct=dev["expected_high_pct"],
+                ),
+            )
+        )
 
     return insights
 ```
@@ -336,6 +357,7 @@ DEFAULT_MODEL = "claude-sonnet-4-5-20250929"
 MAX_TOKENS = 2048
 TEMPERATURE = 0.3  # Low for consistent output
 
+
 def __init__(self, api_key: str | None = None, model: str | None = None):
     # Try passed parameters first, fall back to environment variables
     self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
@@ -345,12 +367,14 @@ def __init__(self, api_key: str | None = None, model: str | None = None):
     if self.api_key:
         try:
             import anthropic
+
             self._client = anthropic.Anthropic(api_key=self.api_key)
             logger.info(f"LLM service initialized with model: {self.model}")
         except ImportError:
             logger.warning("anthropic package not installed. LLM features unavailable.")
         except Exception as e:
             logger.warning(f"Failed to initialize Anthropic client: {type(e).__name__}")
+
 
 def is_available(self) -> LLMAvailability:
     if not self.api_key:
@@ -399,9 +423,15 @@ def _anonymize_data(
 
         # Safe fields to include (only aggregate statistics)
         safe_fields = [
-            "z_score", "p_value", "observed_pct", "expected_pct",
-            "center_count", "center_pct", "recommended_max_pct",
-            "total_minutes", "by_level"
+            "z_score",
+            "p_value",
+            "observed_pct",
+            "expected_pct",
+            "center_count",
+            "center_pct",
+            "recommended_max_pct",
+            "total_minutes",
+            "by_level",
         ]
 
         for field in safe_fields:
@@ -969,13 +999,10 @@ TEMPERATURE = 0.3
 ```python
 # calibration_summary_service.py
 CENTER_BOX_WARNING_THRESHOLD = 50.0  # Warn if > 50% in center box
-STARS_LOW_THRESHOLD = 5.0            # Warn if < 5% are stars
-STARS_HIGH_THRESHOLD = 25.0          # Warn if > 25% are stars
+STARS_LOW_THRESHOLD = 5.0  # Warn if < 5% are stars
+STARS_HIGH_THRESHOLD = 25.0  # Warn if > 25% are stars
 
-TIME_MULTIPLIERS = {
-    1: 1.5, 2: 1.2, 3: 1.0, 4: 1.5, 5: 0.8,
-    6: 1.0, 7: 1.3, 8: 1.2, 9: 1.3
-}
+TIME_MULTIPLIERS = {1: 1.5, 2: 1.2, 3: 1.0, 4: 1.5, 5: 0.8, 6: 1.0, 7: 1.3, 8: 1.2, 9: 1.3}
 ```
 
 ---

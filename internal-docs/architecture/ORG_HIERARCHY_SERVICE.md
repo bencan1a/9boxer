@@ -391,10 +391,7 @@ for emp in direct_team:
     print(f"  - {emp.name} ({emp.job_title})")
 
 # Use for manager bias analysis (bias applied to direct reports only)
-high_performers = sum(
-    1 for emp in direct_team
-    if emp.performance == PerformanceLevel.HIGH
-)
+high_performers = sum(1 for emp in direct_team if emp.performance == PerformanceLevel.HIGH)
 bias_rate = high_performers / len(direct_team) if direct_team else 0
 print(f"High performer rate: {bias_rate:.1%}")
 ```
@@ -526,8 +523,8 @@ else:
 class OrgValidationResult:
     is_valid: bool
     circular_references: list[int]  # Employee IDs involved in cycles
-    orphaned_employees: list[int]   # Employee IDs with invalid managers
-    errors: list[str]                # Detailed error messages
+    orphaned_employees: list[int]  # Employee IDs with invalid managers
+    errors: list[str]  # Detailed error messages
 ```
 
 **Use Case:** Data quality checks, test assertions, debugging
@@ -646,6 +643,7 @@ import { ManagerDistributionChart } from '@/components/intelligence/ManagerDistr
 from ninebox.services.org_service import OrgService
 from ninebox.services.intelligence_service import analyze_manager_bias
 
+
 # IntelligenceService.analyze_manager_bias()
 async def analyze_manager_bias(employees: list[Employee]) -> ManagerAnalysis:
     """Analyze manager rating distributions for bias patterns."""
@@ -665,7 +663,9 @@ async def analyze_manager_bias(employees: list[Employee]) -> ManagerAnalysis:
 
         # Calculate performance distribution
         high_count = sum(1 for emp in direct_reports if emp.performance == PerformanceLevel.HIGH)
-        medium_count = sum(1 for emp in direct_reports if emp.performance == PerformanceLevel.MEDIUM)
+        medium_count = sum(
+            1 for emp in direct_reports if emp.performance == PerformanceLevel.MEDIUM
+        )
         low_count = sum(1 for emp in direct_reports if emp.performance == PerformanceLevel.LOW)
 
         # Calculate deviation from expected distribution
@@ -674,16 +674,18 @@ async def analyze_manager_bias(employees: list[Employee]) -> ManagerAnalysis:
         actual_high_pct = high_count / total if total > 0 else 0
         deviation = actual_high_pct - expected_high_pct
 
-        deviations.append(ManagerDeviation(
-            category=manager.name,
-            team_size=total,
-            high_pct=actual_high_pct * 100,
-            medium_pct=medium_count / total * 100 if total > 0 else 0,
-            low_pct=low_count / total * 100 if total > 0 else 0,
-            total_deviation=abs(deviation) * 100,
-            z_score=calculate_z_score(deviation, total),
-            is_significant=abs(deviation) > 0.15  # 15% threshold
-        ))
+        deviations.append(
+            ManagerDeviation(
+                category=manager.name,
+                team_size=total,
+                high_pct=actual_high_pct * 100,
+                medium_pct=medium_count / total * 100 if total > 0 else 0,
+                low_pct=low_count / total * 100 if total > 0 else 0,
+                total_deviation=abs(deviation) * 100,
+                z_score=calculate_z_score(deviation, total),
+                is_significant=abs(deviation) > 0.15,  # 15% threshold
+            )
+        )
 
     # Perform chi-square test for statistical significance
     p_value, effect_size = perform_chi_square_test(deviations)
@@ -698,7 +700,7 @@ async def analyze_manager_bias(employees: list[Employee]) -> ManagerAnalysis:
         sample_size=len(employees),
         degrees_of_freedom=len(manager_ids) - 1,
         interpretation=generate_interpretation(status, p_value),
-        deviations=deviations
+        deviations=deviations,
     )
 ```
 
@@ -815,6 +817,7 @@ from ninebox.services.org_service import OrgService
 from ninebox.services.sample_data_generator import generate_rich_dataset, RichDatasetConfig
 from ninebox.models.employee import PerformanceLevel
 
+
 def test_manager_bias_detection():
     """Test manager bias is detected using OrgService."""
 
@@ -831,7 +834,8 @@ def test_manager_bias_detection():
 
     # Check bias for "Engineering Manager" job titles
     engineering_managers = [
-        mgr_id for mgr_id in manager_ids
+        mgr_id
+        for mgr_id in manager_ids
         if "Engineering Manager" in org_service.get_employee_by_id(mgr_id).job_title
     ]
 
@@ -844,10 +848,7 @@ def test_manager_bias_detection():
         # Bias is applied to direct reports during sample generation
         direct_reports = org_service.get_direct_reports(mgr_id)
 
-        high_count = sum(
-            1 for emp in direct_reports
-            if emp.performance == PerformanceLevel.HIGH
-        )
+        high_count = sum(1 for emp in direct_reports if emp.performance == PerformanceLevel.HIGH)
 
         total_reports += len(direct_reports)
         total_high_performers += high_count
@@ -968,10 +969,7 @@ def test_manager_bias_in_sample_data():
         direct_reports = org_service.get_direct_reports(manager_id)
 
         # Analyze performance distribution
-        high_count = sum(
-            1 for emp in direct_reports
-            if emp.performance == PerformanceLevel.HIGH
-        )
+        high_count = sum(1 for emp in direct_reports if emp.performance == PerformanceLevel.HIGH)
 
         # Verify bias patterns...
 ```
@@ -1293,7 +1291,7 @@ import { OrgChartVisualization } from '@/components/org/OrgChartVisualization';
 async def get_org_subtree(
     employee_id: int,
     max_depth: int = 2,  # Only load 2 levels
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Get org subtree for employee (lazy loading)."""
     # Only build tree for this branch, not entire org
@@ -1370,8 +1368,10 @@ def run_all_analyses(employees: list[Employee]) -> dict[str, dict[str, Any]]:
         }
     """
 
+
 def get_registered_analyses() -> list[str]:
     """Get list of all registered analysis names."""
+
 
 def get_analysis_function(name: str) -> AnalysisFunction | None:
     """Get analysis function by name."""
@@ -1408,12 +1408,12 @@ The LLM service generates natural language summaries and structured insights fro
 
 ```python
 # Environment variables
-ANTHROPIC_API_KEY=your_api_key_here        # Required for LLM features
-LLM_MODEL=claude-sonnet-4-5-20250929       # Optional (defaults to Sonnet 4.5)
+ANTHROPIC_API_KEY = your_api_key_here  # Required for LLM features
+LLM_MODEL = claude - sonnet - 4 - 5 - 20250929  # Optional (defaults to Sonnet 4.5)
 
 # Available models
 DEFAULT_MODEL = "claude-sonnet-4-5-20250929"  # Balanced (default)
-HAIKU_MODEL = "claude-haiku-3-5-20250110"     # 3-5x faster, lower cost
+HAIKU_MODEL = "claude-haiku-3-5-20250110"  # 3-5x faster, lower cost
 ```
 
 **Key Methods:**
@@ -1600,6 +1600,7 @@ def package_for_llm(
         }
     """
 
+
 def package_for_ui(
     employees: list[Employee],
     analyses: dict[str, dict],
@@ -1764,12 +1765,14 @@ The `types/insights.py` module provides TypedDict definitions that are shared ac
 ```python
 from typing import TypedDict
 
+
 class InsightSourceData(TypedDict, total=False):
     """Source data for an insight, used for LLM context.
 
     All fields are optional (total=False) to allow different insight types
     to include only the relevant source data fields.
     """
+
     z_score: float
     p_value: float
     observed_pct: float
@@ -1782,6 +1785,7 @@ class InsightSourceData(TypedDict, total=False):
     category: str
     categories_affected: list[str]
 
+
 class Insight(TypedDict):
     """A discrete, selectable insight for meeting preparation.
 
@@ -1791,6 +1795,7 @@ class Insight(TypedDict):
     Optional fields (for clustering):
     - cluster_id, cluster_title
     """
+
     id: str
     type: str  # anomaly, focus_area, recommendation, time_allocation
     category: str  # location, function, level, tenure, distribution, time
@@ -1871,12 +1876,14 @@ print(f"  Center Box: {result['data_overview']['center_box_percentage']}%")
 
 print(f"\nTIME ALLOCATION:")
 print(f"  Estimated Duration: {result['time_allocation']['estimated_duration_minutes']} min")
-for breakdown in result['time_allocation']['breakdown_by_level']:
+for breakdown in result["time_allocation"]["breakdown_by_level"]:
     print(f"    {breakdown['level']}: {breakdown['minutes']} min ({breakdown['percentage']:.1f}%)")
 
 print(f"\nINSIGHTS ({len(result['insights'])} total):")
 for insight in result["insights"]:
-    priority_marker = "🔴" if insight["priority"] == "high" else "🟡" if insight["priority"] == "medium" else "🟢"
+    priority_marker = (
+        "🔴" if insight["priority"] == "high" else "🟡" if insight["priority"] == "medium" else "🟢"
+    )
     print(f"{priority_marker} {insight['title']}")
     print(f"    {insight['description']}")
     print(f"    Affected: {insight['affected_count']} employees")
@@ -1968,6 +1975,7 @@ def calculate_remote_work_analysis(employees: list[Employee]) -> dict[str, Any]:
         "deviations": deviations,
         "interpretation": interpretation,
     }
+
 
 # 2. Register the analysis in analysis_registry.py
 ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
@@ -2178,11 +2186,13 @@ print(availability)
 # 1. Reduce call frequency (cache results)
 from functools import lru_cache
 
+
 @lru_cache(maxsize=10)
 def get_cached_summary(employee_hash: str) -> dict:
     """Cache LLM results to avoid redundant calls."""
     result = summary_service.calculate_summary(employees, use_agent=True)
     return result
+
 
 # 2. Switch to Haiku model (higher rate limits)
 llm_service = LLMService(model=HAIKU_MODEL)
@@ -2196,7 +2206,7 @@ for attempt in range(3):
         break
     except Exception as e:
         if "rate limit" in str(e).lower():
-            wait_time = 2 ** attempt  # 1s, 2s, 4s
+            wait_time = 2**attempt  # 1s, 2s, 4s
             logger.warning(f"Rate limit hit, retrying in {wait_time}s...")
             time.sleep(wait_time)
         else:
@@ -2223,7 +2233,8 @@ employees = employees[:100]  # Test with subset first
 # 3. Filter analyses to only include relevant ones
 analyses = run_all_analyses(employees)
 filtered_analyses = {
-    k: v for k, v in analyses.items()
+    k: v
+    for k, v in analyses.items()
     if k in ["location", "function", "level"]  # Exclude manager/tenure
 }
 data_package = package_for_llm(employees, filtered_analyses, org_data)

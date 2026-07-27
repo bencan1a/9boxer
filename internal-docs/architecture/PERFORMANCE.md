@@ -561,6 +561,7 @@ const NineBoxGrid = () => {
 # ✅ CORRECT: Lazy import scipy (only when needed)
 # backend/src/ninebox/services/intelligence_service.py
 
+
 class IntelligenceService:
     def calculate_overall(self, employees: list[Employee]) -> dict:
         # Import scipy only when intelligence analysis is called
@@ -679,12 +680,13 @@ const FilterPanel = () => {
 # ✅ CORRECT: Index on employee_id and foreign keys
 # backend/src/ninebox/services/database.py
 
+
 class Employee(Base):
-    __tablename__ = 'employees'
+    __tablename__ = "employees"
 
     id = Column(Integer, primary_key=True, index=True)  # Indexed (PK)
     employee_id = Column(Integer, unique=True, index=True)  # Indexed (lookup)
-    session_id = Column(Integer, ForeignKey('sessions.id'), index=True)  # Indexed (FK)
+    session_id = Column(Integer, ForeignKey("sessions.id"), index=True)  # Indexed (FK)
     name = Column(String, index=False)  # NOT indexed (rare lookup by name)
     job_function = Column(String, index=True)  # Indexed (frequent filter)
 ```
@@ -695,7 +697,7 @@ class Employee(Base):
 class Employee(Base):
     id = Column(Integer, primary_key=True)  # Only PK indexed
     employee_id = Column(Integer, unique=True)  # NOT indexed = slow lookup
-    session_id = Column(Integer, ForeignKey('sessions.id'))  # NOT indexed = slow joins
+    session_id = Column(Integer, ForeignKey("sessions.id"))  # NOT indexed = slow joins
 ```
 
 **Performance Impact:**
@@ -713,9 +715,7 @@ class Employee(Base):
 
 ```python
 # ✅ CORRECT: Test with real Excel file (realistic benchmark)
-def test_parse_when_large_file_then_completes_within_limit(
-    benchmark, large_excel_file: Path
-):
+def test_parse_when_large_file_then_completes_within_limit(benchmark, large_excel_file: Path):
     parser = ExcelParser()
 
     def parse_large_file() -> ParsingResult:
@@ -728,7 +728,7 @@ def test_parse_when_large_file_then_completes_within_limit(
 ```python
 # ❌ WRONG: Mock pandas.read_excel (not testing real performance)
 def test_parse_when_large_file_then_completes_within_limit(benchmark, mocker):
-    mocker.patch('pandas.read_excel', return_value=mock_df)
+    mocker.patch("pandas.read_excel", return_value=mock_df)
     # This tests nothing - pandas is the slow part!
 ```
 
@@ -807,6 +807,7 @@ engine = create_engine(
     connect_args={"check_same_thread": False},
 )
 
+
 # Enable WAL mode (Write-Ahead Logging)
 @event.listens_for(engine, "connect")
 def set_sqlite_pragma(dbapi_conn, connection_record):
@@ -841,19 +842,15 @@ engine = create_engine(f"sqlite:///{db_path}")
 # ✅ CORRECT: Batch insert with bulk_save_objects
 from sqlalchemy.orm import Session
 
-def create_session_with_employees(
-    db: Session, employees: list[Employee]
-) -> Session:
+
+def create_session_with_employees(db: Session, employees: list[Employee]) -> Session:
     # Create session
     session = SessionModel(name="Imported Session", created_at=datetime.now())
     db.add(session)
     db.flush()  # Get session.id
 
     # Batch insert employees (all at once)
-    employee_models = [
-        EmployeeModel(**emp.dict(), session_id=session.id)
-        for emp in employees
-    ]
+    employee_models = [EmployeeModel(**emp.dict(), session_id=session.id) for emp in employees]
     db.bulk_save_objects(employee_models)
     db.commit()
 
@@ -909,6 +906,7 @@ logger = logging.getLogger(__name__)
 startup_start = time.time()
 
 # ... FastAPI app initialization ...
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -969,6 +967,7 @@ import psutil
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 @router.post("/session/upload")
 async def upload_excel(file: UploadFile):
@@ -1400,9 +1399,11 @@ beforeEach(() => {
 # ❌ WRONG: Adds ~0.8s to backend startup
 import scipy.stats
 
+
 # ✅ CORRECT: Lazy import
 def calculate_chi_square(data):
     from scipy import stats  # Only import when needed
+
     return stats.chi2_contingency(data)
 ```
 

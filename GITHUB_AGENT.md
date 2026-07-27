@@ -387,8 +387,7 @@ npx playwright test upload-flow.spec.ts  # Specific test
 
 Backend: `test_function_when_condition_then_expected`
 ```python
-def test_create_employee_when_valid_data_then_returns_employee():
-    ...
+def test_create_employee_when_valid_data_then_returns_employee(): ...
 ```
 
 Frontend: User-visible behavior

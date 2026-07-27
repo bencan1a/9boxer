@@ -86,6 +86,7 @@ import sqlite3
 from contextlib import contextmanager
 from ninebox.utils.paths import get_user_data_dir
 
+
 class DatabaseManager:
     """Manages SQLite database connections and schema."""
 
@@ -112,6 +113,7 @@ class DatabaseManager:
         # Execute schema.sql
         pass
 
+
 # Global database manager
 db_manager = DatabaseManager()
 ```
@@ -133,6 +135,7 @@ from datetime import datetime
 from ninebox.models.session import SessionState, EmployeeMove
 from ninebox.models.employee import Employee
 
+
 class SessionSerializer:
     """Serializes and deserializes session state for database storage."""
 
@@ -150,15 +153,9 @@ class SessionSerializer:
             "job_function_config": json.dumps(
                 session.job_function_config.__dict__ if session.job_function_config else None
             ),
-            "original_employees": json.dumps(
-                [emp.__dict__ for emp in session.original_employees]
-            ),
-            "current_employees": json.dumps(
-                [emp.__dict__ for emp in session.current_employees]
-            ),
-            "changes": json.dumps(
-                [change.__dict__ for change in session.changes]
-            ),
+            "original_employees": json.dumps([emp.__dict__ for emp in session.original_employees]),
+            "current_employees": json.dumps([emp.__dict__ for emp in session.current_employees]),
+            "changes": json.dumps([change.__dict__ for change in session.changes]),
             "updated_at": datetime.utcnow().isoformat(),
         }
 

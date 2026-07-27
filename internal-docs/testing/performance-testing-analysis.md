@@ -54,6 +54,7 @@ def test_main_module_import_time():
     """Ensure backend starts in <12s by lazy-loading heavy modules."""
     start = time.time()
     import ninebox.main
+
     duration = time.time() - start
     assert duration < 12.0, f"Import took {duration}s (target: <12s)"
 ```
@@ -364,9 +365,10 @@ if (percentIncrease > 10) {
 ```python
 # Developer removes index from frequently-queried column
 class Employee(Base):
-    __tablename__ = 'employees'
+    __tablename__ = "employees"
 
     employee_id = Column(Integer, unique=True)  # Missing: index=True
+
 
 # Result: O(n) table scan instead of O(log n) index lookup
 # Performance impact: 0.2ms → 100ms for 10,000 employees (500x slower)
@@ -378,6 +380,7 @@ class Employee(Base):
 # backend/tests/performance/test_database_performance.py
 def test_employee_lookup_by_id_when_10k_employees_then_fast(benchmark, db_with_10k):
     """Ensure employee lookup is <1ms (validates index exists)."""
+
     def lookup():
         return db.query(Employee).filter_by(employee_id=5000).first()
 
@@ -403,6 +406,7 @@ class StatisticsService:
         # Missing: cache lookup
         return self._calculate_distribution(session_id)  # Recalculates every time
 
+
 # Result: 500ms calculation on every call instead of <1ms cache hit
 # Current tests: ⚠️ Benchmark tests individual calls, not repeated calls
 ```
@@ -412,6 +416,7 @@ class StatisticsService:
 # backend/tests/performance/test_workflow_performance.py
 def test_complete_workflow_when_1000_employees_then_acceptable_time(benchmark):
     """Test complete import → move → export workflow."""
+
     def complete_workflow():
         # Upload file
         session = upload_excel(large_file)

@@ -31,6 +31,7 @@
 ```python
 from fastapi import APIRouter, HTTPException, status
 
+
 @router.get("/employees/{employee_id}")
 async def get_employee(
     employee_id: int,
@@ -47,10 +48,7 @@ async def get_employee(
         )
 
     # Employee lookup
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id),
-        None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
 
     if not employee:
         raise HTTPException(
@@ -70,6 +68,7 @@ async def get_employee(employee_id: int) -> Employee | None:
     if not session:
         return None  # Frontend gets confusing null response
     # ...
+
 
 # ❌ WRONG: Generic error message
 if not employee:
@@ -95,6 +94,7 @@ import logging
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
 
 class ExcelParser:
     def parse(self, file_path: str | Path) -> ParsingResult:
@@ -146,6 +146,7 @@ def parse(self, file_path: str) -> list[Employee]:
     except Exception as e:
         raise ValueError("Parsing failed")  # Lost the original error!
 
+
 # ❌ WRONG: Failing on first invalid row
 for idx, row in df.iterrows():
     emp = self._parse_employee_row(row)  # Crashes on first bad row
@@ -170,6 +171,7 @@ except Exception:
 ```python
 from fastapi import APIRouter, HTTPException, UploadFile, status
 from ninebox.services.excel_parser import ExcelParser
+
 
 @router.post("/upload")
 async def upload_file(
@@ -241,6 +243,7 @@ except Exception as e:
 ```python
 from pydantic import BaseModel, field_validator
 
+
 class UpdateEmployeeRequest(BaseModel):
     """Request to update employee fields."""
 
@@ -260,9 +263,14 @@ class UpdateEmployeeRequest(BaseModel):
             return None
 
         allowed_flags = {
-            "promotion_ready", "flagged_for_discussion", "flight_risk",
-            "new_hire", "succession_candidate", "pip",
-            "high_retention_priority", "ready_for_lateral_move",
+            "promotion_ready",
+            "flagged_for_discussion",
+            "flight_risk",
+            "new_hire",
+            "succession_candidate",
+            "pip",
+            "high_retention_priority",
+            "ready_for_lateral_move",
         }
 
         invalid_flags = [flag for flag in v if flag not in allowed_flags]
@@ -273,6 +281,7 @@ class UpdateEmployeeRequest(BaseModel):
             )
 
         return v
+
 
 # Usage in endpoint
 @router.patch("/employees/{employee_id}")
@@ -528,6 +537,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @router.post("/upload")
 async def upload_file(file: UploadFile, session_mgr: SessionManager):
     """Upload Excel file and create session."""
@@ -554,7 +564,7 @@ async def upload_file(file: UploadFile, session_mgr: SessionManager):
         # Log error with context
         logger.error(
             f"Failed to parse Excel file '{file.filename}': {e}",
-            exc_info=True  # Include stack trace
+            exc_info=True,  # Include stack trace
         )
         permanent_path.unlink(missing_ok=True)
         raise HTTPException(
@@ -628,6 +638,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def parse_json(json_text: str, source: str) -> dict:
     """Parse JSON with enhanced error reporting.
 
@@ -662,9 +673,10 @@ def parse_json(json_text: str, source: str) -> dict:
             f"JSON parsing failed for {source} at line {e.lineno}, col {e.colno}: {e.msg}"
         ) from e
 
+
 # Usage
-response = requests.get('/api/data')
-data = parse_json(response.text, 'API response')
+response = requests.get("/api/data")
+data = parse_json(response.text, "API response")
 ```
 
 **Don't:**
@@ -791,7 +803,7 @@ logger.error(
         "employee_id": employee_id,
         "session_id": session.session_id,
         "operation": "move_employee",
-    }
+    },
 )
 ```
 
@@ -870,10 +882,7 @@ if not employee:
 ```python
 # CORRECT
 if not employee:
-    raise HTTPException(
-        status_code=404,
-        detail=f"Employee {employee_id} not found in session"
-    )
+    raise HTTPException(status_code=404, detail=f"Employee {employee_id} not found in session")
 ```
 
 ### ❌ Not Cleaning Up Resources
@@ -909,6 +918,7 @@ except Exception as e:
 import pytest
 from fastapi.testclient import TestClient
 
+
 def test_get_employee_when_no_session_then_returns_404(client: TestClient):
     """Test employee lookup without active session."""
     response = client.get("/api/employees/123")
@@ -916,10 +926,8 @@ def test_get_employee_when_no_session_then_returns_404(client: TestClient):
     assert response.status_code == 404
     assert "No active session" in response.json()["detail"]
 
-def test_get_employee_when_not_found_then_returns_404(
-    client: TestClient,
-    sample_session
-):
+
+def test_get_employee_when_not_found_then_returns_404(client: TestClient, sample_session):
     """Test employee lookup with non-existent ID."""
     response = client.get("/api/employees/99999")
 
@@ -934,12 +942,14 @@ def test_get_employee_when_not_found_then_returns_404(
 import pytest
 from ninebox.services.excel_parser import ExcelParser
 
+
 def test_parse_when_missing_columns_then_raises_value_error():
     """Test parsing fails with missing required columns."""
     parser = ExcelParser()
 
     with pytest.raises(ValueError, match="Missing required columns"):
         parser.parse("tests/fixtures/invalid_no_columns.xlsx")
+
 
 def test_parse_when_no_valid_employees_then_raises_value_error():
     """Test parsing fails when all rows are invalid."""

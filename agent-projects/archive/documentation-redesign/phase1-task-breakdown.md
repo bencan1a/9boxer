@@ -418,7 +418,7 @@ from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
     page = browser.new_page()
-    page.goto('http://localhost:5173')
+    page.goto("http://localhost:5173")
 
     # Verify upload button exists
     upload_button = page.locator('[data-testid="upload-button"]')

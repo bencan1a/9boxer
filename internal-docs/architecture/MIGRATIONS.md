@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 ```python
 # backend/src/ninebox/services/database.py
 
+
 def _run_migrations(self, conn: sqlite3.Connection) -> None:
     """Run database migrations to add new columns to existing tables."""
 
@@ -93,14 +94,13 @@ def _run_migrations(self, conn: sqlite3.Connection) -> None:
     # Migration: Add donut_mode_active column if missing
     if "donut_mode_active" not in columns:
         logger.info("Running migration: Adding donut_mode_active column")
-        conn.execute(
-            "ALTER TABLE sessions ADD COLUMN donut_mode_active INTEGER NOT NULL DEFAULT 0"
-        )
+        conn.execute("ALTER TABLE sessions ADD COLUMN donut_mode_active INTEGER NOT NULL DEFAULT 0")
 ```
 
 **Step 3: Update Pydantic model**
 ```python
 # backend/src/ninebox/models/session.py
+
 
 class SessionState(BaseModel):
     # ... existing fields ...
@@ -110,6 +110,7 @@ class SessionState(BaseModel):
 **Step 4: Update serializer**
 ```python
 # backend/src/ninebox/services/session_serializer.py
+
 
 class SessionSerializer:
     @staticmethod
@@ -203,7 +204,9 @@ if "job_function_config" not in columns:
 import json
 
 # Serialize
-data["job_function_config"] = json.dumps(session.job_function_config) if session.job_function_config else None
+data["job_function_config"] = (
+    json.dumps(session.job_function_config) if session.job_function_config else None
+)
 
 # Deserialize
 job_function_config_json = data.get("job_function_config")
@@ -293,7 +296,9 @@ CREATE INDEX IF NOT EXISTS idx_sessions_session_id ON sessions(session_id);
 ```python
 def _run_migrations(self, conn: sqlite3.Connection) -> None:
     # Check if index exists
-    cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sessions_session_id'")
+    cursor = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sessions_session_id'"
+    )
     if not cursor.fetchone():
         logger.info("Running migration: Adding session_id index")
         conn.execute("CREATE INDEX idx_sessions_session_id ON sessions(session_id)")
@@ -351,7 +356,7 @@ def _run_migrations(self, conn: sqlite3.Connection) -> None:
             # Update row
             conn.execute(
                 "UPDATE sessions SET current_employees = ? WHERE user_id = ?",
-                (json.dumps(employees), user_id)
+                (json.dumps(employees), user_id),
             )
 ```
 
@@ -500,6 +505,7 @@ conn.execute("ALTER TABLE sessions ADD COLUMN new_column TEXT DEFAULT NULL")
 def _run_migrations(self, conn):
     if "new_column" not in columns:
         conn.execute("ALTER TABLE sessions ADD COLUMN new_column TEXT DEFAULT NULL")
+
 
 # Serializer still doesn't read/write new_column
 # Result: Column is always NULL, data is lost

@@ -138,10 +138,7 @@ All Python functions MUST have type annotations:
 - Use modern typing: `list[str]`, `dict[str, int]`, `Optional[T]`
 
 ```python
-def process_employees(
-    employee_ids: list[str],
-    max_count: Optional[int] = None
-) -> dict[str, int]:
+def process_employees(employee_ids: list[str], max_count: Optional[int] = None) -> dict[str, int]:
     """Process employees and return count mapping."""
     pass
 ```

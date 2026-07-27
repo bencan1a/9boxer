@@ -90,26 +90,28 @@ from fastapi.testclient import TestClient
 from ninebox.main import app
 from tests.factories import EmployeeFactory
 
+
 @pytest.fixture
 def client():
     """Test client for API testing."""
     return TestClient(app)
 
+
 def test_get_employees_when_employees_exist_then_returns_list(client, mocker):
     """Test GET /employees returns employee list."""
     # Arrange: Create test data with factory
     employees = EmployeeFactory.build_batch(3)
-    mocker.patch('ninebox.services.employee_service.get_all_employees',
-                 return_value=employees)
+    mocker.patch("ninebox.services.employee_service.get_all_employees", return_value=employees)
 
     # Act
-    response = client.get('/api/employees')
+    response = client.get("/api/employees")
 
     # Assert
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 3
-    assert all('id' in emp for emp in data)
+    assert all("id" in emp for emp in data)
+
 
 def test_create_employee_when_data_invalid_then_returns_422(client):
     """Test POST /employees with invalid data returns 422."""
@@ -117,7 +119,7 @@ def test_create_employee_when_data_invalid_then_returns_422(client):
     invalid_data = {"name": ""}  # Empty name is invalid
 
     # Act
-    response = client.post('/api/employees', json=invalid_data)
+    response = client.post("/api/employees", json=invalid_data)
 
     # Assert
     assert response.status_code == 422
@@ -133,10 +135,12 @@ import pytest
 from ninebox.services.employee_service import EmployeeService
 from tests.factories import EmployeeFactory
 
+
 @pytest.fixture
 def service():
     """Employee service instance."""
     return EmployeeService()
+
 
 def test_calculate_grid_position_when_high_performance_high_potential_then_top_right(service):
     """Test grid position calculation for star performers."""
@@ -149,6 +153,7 @@ def test_calculate_grid_position_when_high_performance_high_potential_then_top_r
     # Assert
     assert position == (2, 2)  # Top-right box
 
+
 def test_filter_employees_when_min_performance_given_then_filters_correctly(service, mocker):
     """Test employee filtering by minimum performance."""
     # Arrange: Create employees with varying performance
@@ -157,7 +162,7 @@ def test_filter_employees_when_min_performance_given_then_filters_correctly(serv
         EmployeeFactory.build(performance=3),
         EmployeeFactory.build(performance=1),
     ]
-    mocker.patch.object(service, 'get_all_employees', return_value=employees)
+    mocker.patch.object(service, "get_all_employees", return_value=employees)
 
     # Act
     filtered = service.filter_employees(min_performance=4)
@@ -180,20 +185,23 @@ from ninebox.models import Base, Employee
 from ninebox.repositories.employee_repository import EmployeeRepository
 from tests.factories import EmployeeFactory
 
+
 @pytest.fixture
 def db_session():
     """Create in-memory database session for testing."""
-    engine = create_engine('sqlite:///:memory:')
+    engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
     yield session
     session.close()
 
+
 @pytest.fixture
 def repository(db_session):
     """Employee repository with test database."""
     return EmployeeRepository(db_session)
+
 
 def test_save_employee_when_valid_employee_then_persists_to_database(repository, db_session):
     """Test saving employee to database."""
@@ -223,6 +231,7 @@ from ninebox.models import Employee, GridPosition
 
 fake = Faker()
 
+
 class EmployeeFactory(factory.Factory):
     """Factory for creating test employees."""
 
@@ -233,9 +242,9 @@ class EmployeeFactory(factory.Factory):
     name = factory.LazyFunction(lambda: fake.name())
     performance = factory.LazyFunction(lambda: fake.random_int(min=1, max=5))
     potential = factory.LazyFunction(lambda: fake.random_int(min=1, max=5))
-    department = factory.LazyFunction(lambda: fake.random_element(
-        elements=('Engineering', 'Sales', 'Marketing', 'HR')
-    ))
+    department = factory.LazyFunction(
+        lambda: fake.random_element(elements=("Engineering", "Sales", "Marketing", "HR"))
+    )
 
     @classmethod
     def create_star_performer(cls, **kwargs):
@@ -246,6 +255,7 @@ class EmployeeFactory(factory.Factory):
     def create_low_performer(cls, **kwargs):
         """Create low-performance employee."""
         return cls(performance=1, potential=1, **kwargs)
+
 
 # Usage in tests:
 employee = EmployeeFactory.build()  # Transient object
@@ -265,21 +275,25 @@ from fastapi.testclient import TestClient
 from ninebox.main import app
 from tests.factories import EmployeeFactory
 
+
 @pytest.fixture
 def client():
     """FastAPI test client."""
     return TestClient(app)
+
 
 @pytest.fixture
 def sample_employees():
     """Create batch of sample employees."""
     return EmployeeFactory.build_batch(10)
 
+
 @pytest.fixture
 def authenticated_client(client, mocker):
     """Test client with mocked authentication."""
-    mocker.patch('ninebox.auth.verify_token', return_value=True)
+    mocker.patch("ninebox.auth.verify_token", return_value=True)
     return client
+
 
 # Usage in tests:
 def test_something(sample_employees, authenticated_client):
@@ -293,26 +307,26 @@ def test_something(sample_employees, authenticated_client):
 ```python
 # WRONG: Brittle, breaks when sample data changes
 def test_get_employee():
-    response = client.get('/api/employees/1')
-    assert response.json()['name'] == 'John Doe'  # Hardcoded!
+    response = client.get("/api/employees/1")
+    assert response.json()["name"] == "John Doe"  # Hardcoded!
+
 
 # RIGHT: Use factories
 def test_get_employee_when_exists_then_returns_employee(client, mocker):
-    employee = EmployeeFactory.build(id=1, name='Test User')
-    mocker.patch('ninebox.services.employee_service.get_employee',
-                 return_value=employee)
-    response = client.get('/api/employees/1')
-    assert response.json()['name'] == 'Test User'
+    employee = EmployeeFactory.build(id=1, name="Test User")
+    mocker.patch("ninebox.services.employee_service.get_employee", return_value=employee)
+    response = client.get("/api/employees/1")
+    assert response.json()["name"] == "Test User"
 ```
 
 ### ❌ 2. Over-Mocking Business Logic
 ```python
 # WRONG: Mocking the code under test
 def test_calculate_bonus(mocker):
-    mocker.patch('ninebox.services.payroll_service.calculate_bonus',
-                 return_value=1000)
+    mocker.patch("ninebox.services.payroll_service.calculate_bonus", return_value=1000)
     result = payroll_service.calculate_bonus(employee)
     assert result == 1000  # Testing the mock!
+
 
 # RIGHT: Test real logic, mock I/O
 def test_calculate_bonus_when_high_performer_then_gets_20_percent():
@@ -325,16 +339,16 @@ def test_calculate_bonus_when_high_performer_then_gets_20_percent():
 ```python
 # WRONG: Conditional logic in test
 def test_get_employees(client):
-    response = client.get('/api/employees')
+    response = client.get("/api/employees")
     if response.status_code == 200:
         assert len(response.json()) > 0  # Might not execute!
+
 
 # RIGHT: Unconditional assertions
 def test_get_employees_when_employees_exist_then_returns_list(client, mocker):
     employees = EmployeeFactory.build_batch(3)
-    mocker.patch('ninebox.services.employee_service.get_all_employees',
-                 return_value=employees)
-    response = client.get('/api/employees')
+    mocker.patch("ninebox.services.employee_service.get_all_employees", return_value=employees)
+    response = client.get("/api/employees")
     assert response.status_code == 200
     assert len(response.json()) == 3
 ```

@@ -30,10 +30,13 @@ class SessionManager:
     def get_employees_in_box(self, box_id: str):
         # Business logic directly accessing database
         cursor = self.db_manager.connection.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM employees
             WHERE session_id = ? AND box_id = ?
-        """, (self.session_id, box_id))
+        """,
+            (self.session_id, box_id),
+        )
         return cursor.fetchall()  # Returns raw tuples, not domain objects
 
     def calculate_distribution(self):
@@ -71,7 +74,8 @@ class SessionManager:
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, List, Optional
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class BaseRepository(Generic[T], ABC):
     """
@@ -103,12 +107,14 @@ class BaseRepository(Generic[T], ABC):
         """Delete entity by ID."""
         pass
 
+
 # backend/repositories/employee_repository.py
 """Employee data access repository."""
 
 from typing import List, Optional, Dict
 from backend.models.employee import Employee
 from backend.repositories.base_repository import BaseRepository
+
 
 class EmployeeRepository(BaseRepository[Employee]):
     """
@@ -120,38 +126,31 @@ class EmployeeRepository(BaseRepository[Employee]):
     def find_by_id(self, employee_id: str) -> Optional[Employee]:
         """Find employee by ID."""
         cursor = self.db.connection.cursor()
-        cursor.execute(
-            "SELECT * FROM employees WHERE id = ?",
-            (employee_id,)
-        )
+        cursor.execute("SELECT * FROM employees WHERE id = ?", (employee_id,))
         row = cursor.fetchone()
         return self._map_to_employee(row) if row else None
 
     def find_by_session(self, session_id: str) -> List[Employee]:
         """Find all employees in a session."""
         cursor = self.db.connection.cursor()
-        cursor.execute(
-            "SELECT * FROM employees WHERE session_id = ? ORDER BY name",
-            (session_id,)
-        )
+        cursor.execute("SELECT * FROM employees WHERE session_id = ? ORDER BY name", (session_id,))
         return [self._map_to_employee(row) for row in cursor.fetchall()]
 
-    def find_by_session_and_box(
-        self,
-        session_id: str,
-        box_id: str
-    ) -> List[Employee]:
+    def find_by_session_and_box(self, session_id: str, box_id: str) -> List[Employee]:
         """
         Find employees in specific box within a session.
 
         Domain-specific query encapsulated in repository.
         """
         cursor = self.db.connection.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM employees
             WHERE session_id = ? AND box_id = ?
             ORDER BY name
-        """, (session_id, box_id))
+        """,
+            (session_id, box_id),
+        )
         return [self._map_to_employee(row) for row in cursor.fetchall()]
 
     def get_box_distribution(self, session_id: str) -> Dict[str, int]:
@@ -161,13 +160,16 @@ class EmployeeRepository(BaseRepository[Employee]):
         Analytics query encapsulated and reusable.
         """
         cursor = self.db.connection.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT box_id, COUNT(*) as count
             FROM employees
             WHERE session_id = ?
             GROUP BY box_id
-        """, (session_id,))
-        return {row['box_id']: row['count'] for row in cursor.fetchall()}
+        """,
+            (session_id,),
+        )
+        return {row["box_id"]: row["count"] for row in cursor.fetchall()}
 
     def save(self, employee: Employee) -> Employee:
         """Save employee (insert or update)."""
@@ -175,30 +177,36 @@ class EmployeeRepository(BaseRepository[Employee]):
 
         if self.find_by_id(employee.id):
             # Update existing
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE employees
                 SET name = ?, box_id = ?, performance = ?, potential = ?
                 WHERE id = ?
-            """, (
-                employee.name,
-                employee.box_id,
-                employee.performance,
-                employee.potential,
-                employee.id
-            ))
+            """,
+                (
+                    employee.name,
+                    employee.box_id,
+                    employee.performance,
+                    employee.potential,
+                    employee.id,
+                ),
+            )
         else:
             # Insert new
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO employees (id, session_id, name, box_id, performance, potential)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                employee.id,
-                employee.session_id,
-                employee.name,
-                employee.box_id,
-                employee.performance,
-                employee.potential
-            ))
+            """,
+                (
+                    employee.id,
+                    employee.session_id,
+                    employee.name,
+                    employee.box_id,
+                    employee.performance,
+                    employee.potential,
+                ),
+            )
 
         self.db.connection.commit()
         return employee
@@ -217,12 +225,12 @@ class EmployeeRepository(BaseRepository[Employee]):
         Encapsulates mapping logic, isolating schema changes.
         """
         return Employee(
-            id=row['id'],
-            session_id=row['session_id'],
-            name=row['name'],
-            box_id=row['box_id'],
-            performance=row['performance'],
-            potential=row['potential']
+            id=row["id"],
+            session_id=row["session_id"],
+            name=row["name"],
+            box_id=row["box_id"],
+            performance=row["performance"],
+            potential=row["potential"],
         )
 ```
 
@@ -232,40 +240,30 @@ class EmployeeRepository(BaseRepository[Employee]):
 # backend/services/session_service.py
 """Session business logic service - no SQL!"""
 
+
 class SessionService:
     """
     Pure business logic - delegates all data access to repositories.
     """
 
-    def __init__(
-        self,
-        employee_repo: EmployeeRepository,
-        event_service: EventService
-    ):
+    def __init__(self, employee_repo: EmployeeRepository, event_service: EventService):
         self.employee_repo = employee_repo
         self.event_service = event_service
 
-    def get_employees_in_box(
-        self,
-        session_id: str,
-        box_id: str
-    ) -> List[Employee]:
+    def get_employees_in_box(self, session_id: str, box_id: str) -> List[Employee]:
         """
         Get employees in a box.
 
         Pure business logic - repository handles data access.
         """
         # Data access delegated to repository
-        employees = self.employee_repo.find_by_session_and_box(
-            session_id,
-            box_id
-        )
+        employees = self.employee_repo.find_by_session_and_box(session_id, box_id)
 
         # Business logic: track the view event
         self.event_service.track_event(
             session_id=session_id,
             event_type=EventType.BOX_VIEWED,
-            data={'box_id': box_id, 'count': len(employees)}
+            data={"box_id": box_id, "count": len(employees)},
         )
 
         return employees
@@ -282,8 +280,7 @@ class SessionService:
         total = sum(distribution.values())
         if total == 0:
             raise BusinessRuleError(
-                "empty_session",
-                "Cannot calculate distribution for empty session"
+                "empty_session", "Cannot calculate distribution for empty session"
             )
 
         return distribution
@@ -299,33 +296,31 @@ import pytest
 from unittest.mock import Mock
 from backend.services.session_service import SessionService
 
+
 def test_get_employees_in_box():
     """Test business logic without database."""
     # Arrange
     mock_repo = Mock()
     mock_repo.find_by_session_and_box.return_value = [
         Employee(id="emp-1", name="Alice"),
-        Employee(id="emp-2", name="Bob")
+        Employee(id="emp-2", name="Bob"),
     ]
     mock_event_service = Mock()
 
-    service = SessionService(
-        employee_repo=mock_repo,
-        event_service=mock_event_service
-    )
+    service = SessionService(employee_repo=mock_repo, event_service=mock_event_service)
 
     # Act
     employees = service.get_employees_in_box("sess-1", "top_right")
 
     # Assert
     assert len(employees) == 2
-    mock_repo.find_by_session_and_box.assert_called_once_with(
-        "sess-1", "top_right"
-    )
+    mock_repo.find_by_session_and_box.assert_called_once_with("sess-1", "top_right")
     mock_event_service.track_event.assert_called_once()
+
 
 # tests/integration/test_employee_repository.py
 """Integration tests for repository - tests data access only."""
+
 
 def test_find_by_session_and_box(test_db):
     """Test repository query against real database."""

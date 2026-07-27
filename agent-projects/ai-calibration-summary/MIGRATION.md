@@ -226,7 +226,7 @@ summary = summary_service.calculate_summary(employees)
 llm_summary = llm_service.generate_summary(
     selected_insight_ids=request.selected_insight_ids,
     insights=summary["insights"],
-    data_overview=summary["data_overview"]
+    data_overview=summary["data_overview"],
 )
 ```
 
@@ -247,7 +247,7 @@ assert "insights" in summary  # AI-generated insights
 # No explicit data packaging - insights passed directly to LLM
 llm_service.generate_summary(
     insights=insights,  # Just insights, not full data
-    data_overview=data_overview
+    data_overview=data_overview,
 )
 ```
 
@@ -480,7 +480,7 @@ python test_llm_agent_architecture.py
 warnings.warn(
     "generate_summary() is deprecated. Use generate_calibration_analysis() instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 ```
 
@@ -570,9 +570,7 @@ summary = summary_service.calculate_summary(employees, use_agent=False)
 **Option 2:** Continue using deprecated POST endpoint (temporary)
 ```python
 # Still works until April 1, 2026
-llm_summary = await apiClient.generateLLMSummary({
-  selected_insight_ids: selectedIds
-});
+llm_summary = await apiClient.generateLLMSummary({selected_insight_ids: selectedIds})
 ```
 
 ### Frontend Rollback

@@ -321,6 +321,7 @@ def _generate_insight_id(prefix: str, *components: Any) -> str:
     hash_suffix = hashlib.sha256(content.encode()).hexdigest()[:8]
     return f"{prefix}-{hash_suffix}"
 
+
 # Examples:
 # "focus-crowded-center-a1b2c3d4" (center_box_count=52)
 # "anomaly-location-Engineering-513398ea"
@@ -678,21 +679,13 @@ Respond in valid JSON format with this structure:
 **Example Anonymization:**
 ```python
 # Original insight:
-{
-  "title": "John Doe moved from position 1 to 9",
-  "employee_id": 12345,
-  "manager": "Jane Smith"
-}
+{"title": "John Doe moved from position 1 to 9", "employee_id": 12345, "manager": "Jane Smith"}
 
 # Anonymized version sent to LLM:
 {
-  "title": "Employee moved significantly (8 positions)",
-  "affected_count": 1,
-  "source_data": {
-    "distance": 8,
-    "old_position": 1,
-    "new_position": 9
-  }
+    "title": "Employee moved significantly (8 positions)",
+    "affected_count": 1,
+    "source_data": {"distance": 8, "old_position": 1, "new_position": 9},
 }
 ```
 

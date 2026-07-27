@@ -134,7 +134,6 @@ Add to the `all_screenshots` dictionary in `main()`:
 ```python
 all_screenshots = {
     # ... existing screenshots ...
-
     # My New Feature Screenshots
     "my-new-screenshot": generator.capture_my_new_screenshot,
 }
@@ -282,7 +281,7 @@ await self.wait_for_ui_settle(0.5)  # Standard: networkidle + 500ms settle
 
 4. **CSS selectors** (last resort - brittle)
    ```python
-   self.page.locator('.MuiButton-root')  # Avoid if possible
+   self.page.locator(".MuiButton-root")  # Avoid if possible
    ```
 
 ### Assertions (Auto-Retry)
@@ -302,8 +301,8 @@ if await element.count() > 0:  # No auto-retry!
 
 **Good:**
 ```python
-await self.page.wait_for_load_state('networkidle')  # Wait for network
-await expect(element).to_be_visible(timeout=5000)   # Wait for element
+await self.page.wait_for_load_state("networkidle")  # Wait for network
+await expect(element).to_be_visible(timeout=5000)  # Wait for element
 await asyncio.sleep(0.5)  # Wait for animations (with comment explaining why)
 ```
 

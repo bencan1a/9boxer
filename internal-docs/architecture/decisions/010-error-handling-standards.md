@@ -78,6 +78,7 @@ def validate_employee(data):
 # backend/exceptions.py
 """Standardized application exceptions."""
 
+
 class AppError(Exception):
     """
     Base exception for all application errors.
@@ -86,13 +87,7 @@ class AppError(Exception):
     Provides consistent structure for error handling.
     """
 
-    def __init__(
-        self,
-        message: str,
-        code: str,
-        status_code: int = 500,
-        details: dict = None
-    ):
+    def __init__(self, message: str, code: str, status_code: int = 500, details: dict = None):
         """
         Initialize application error.
 
@@ -110,15 +105,11 @@ class AppError(Exception):
 
     def to_dict(self) -> dict:
         """Convert exception to API response format."""
-        return {
-            "error": {
-                "message": self.message,
-                "code": self.code,
-                **self.details
-            }
-        }
+        return {"error": {"message": self.message, "code": self.code, **self.details}}
+
 
 # Domain-specific exceptions
+
 
 class NotFoundError(AppError):
     """Resource not found (404)."""
@@ -128,8 +119,9 @@ class NotFoundError(AppError):
             message=f"{resource} with id '{identifier}' not found",
             code="NOT_FOUND",
             status_code=404,
-            details={"resource": resource, "id": identifier}
+            details={"resource": resource, "id": identifier},
         )
+
 
 class ValidationError(AppError):
     """Validation failed (400)."""
@@ -139,8 +131,9 @@ class ValidationError(AppError):
             message=f"Validation failed for '{field}': {reason}",
             code="VALIDATION_ERROR",
             status_code=400,
-            details={"field": field, "reason": reason}
+            details={"field": field, "reason": reason},
         )
+
 
 class BusinessRuleError(AppError):
     """Business rule violation (422)."""
@@ -150,8 +143,9 @@ class BusinessRuleError(AppError):
             message=f"Business rule '{rule}' violated: {reason}",
             code="BUSINESS_RULE_VIOLATION",
             status_code=422,
-            details={"rule": rule, "reason": reason}
+            details={"rule": rule, "reason": reason},
         )
+
 
 class ConflictError(AppError):
     """Resource conflict (409)."""
@@ -161,8 +155,9 @@ class ConflictError(AppError):
             message=f"Conflict with {resource}: {reason}",
             code="CONFLICT",
             status_code=409,
-            details={"resource": resource, "reason": reason}
+            details={"resource": resource, "reason": reason},
         )
+
 
 class DatabaseError(AppError):
     """Database operation failed (500)."""
@@ -172,8 +167,9 @@ class DatabaseError(AppError):
             message=f"Database {operation} failed: {detail}",
             code="DATABASE_ERROR",
             status_code=500,
-            details={"operation": operation, "detail": detail}
+            details={"operation": operation, "detail": detail},
         )
+
 
 class AuthorizationError(AppError):
     """Not authorized to perform action (403)."""
@@ -183,8 +179,9 @@ class AuthorizationError(AppError):
             message=f"Not authorized to {action} {resource}",
             code="FORBIDDEN",
             status_code=403,
-            details={"action": action, "resource": resource}
+            details={"action": action, "resource": resource},
         )
+
 
 class RateLimitError(AppError):
     """Rate limit exceeded (429)."""
@@ -194,7 +191,7 @@ class RateLimitError(AppError):
             message=f"Rate limit exceeded. Retry after {retry_after} seconds.",
             code="RATE_LIMIT_EXCEEDED",
             status_code=429,
-            details={"retry_after": retry_after}
+            details={"retry_after": retry_after},
         )
 ```
 
@@ -210,6 +207,7 @@ from backend.exceptions import AppError
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def setup_error_handlers(app):
     """Setup all error handlers for the application."""
@@ -227,8 +225,8 @@ def setup_error_handlers(app):
                 "code": exc.code,
                 "path": request.url.path,
                 "method": request.method,
-                "details": exc.details
-            }
+                "details": exc.details,
+            },
         )
 
         return JSONResponse(
@@ -238,9 +236,9 @@ def setup_error_handlers(app):
                     "message": exc.message,
                     "code": exc.code,
                     "path": str(request.url.path),
-                    **exc.details
+                    **exc.details,
                 }
-            }
+            },
         )
 
     @app.exception_handler(Exception)
@@ -253,10 +251,7 @@ def setup_error_handlers(app):
         logger.exception(
             "Unexpected error occurred",
             exc_info=exc,
-            extra={
-                "path": request.url.path,
-                "method": request.method
-            }
+            extra={"path": request.url.path, "method": request.method},
         )
 
         return JSONResponse(
@@ -265,9 +260,9 @@ def setup_error_handlers(app):
                 "error": {
                     "message": "An unexpected error occurred. Please try again later.",
                     "code": "INTERNAL_ERROR",
-                    "path": str(request.url.path)
+                    "path": str(request.url.path),
                 }
-            }
+            },
         )
 
     @app.exception_handler(ValueError)
@@ -285,9 +280,9 @@ def setup_error_handlers(app):
                 "error": {
                     "message": str(exc),
                     "code": "VALIDATION_ERROR",
-                    "path": str(request.url.path)
+                    "path": str(request.url.path),
                 }
-            }
+            },
         )
 ```
 
@@ -297,12 +292,8 @@ def setup_error_handlers(app):
 # backend/services/employee_service.py
 """Employee service with standardized error handling."""
 
-from backend.exceptions import (
-    NotFoundError,
-    ValidationError,
-    BusinessRuleError,
-    ConflictError
-)
+from backend.exceptions import NotFoundError, ValidationError, BusinessRuleError, ConflictError
+
 
 class EmployeeService:
     """Employee business logic with consistent error handling."""
@@ -319,11 +310,7 @@ class EmployeeService:
             raise NotFoundError("Employee", employee_id)
         return employee
 
-    def create_employee(
-        self,
-        session_id: str,
-        data: EmployeeCreate
-    ) -> Employee:
+    def create_employee(self, session_id: str, data: EmployeeCreate) -> Employee:
         """
         Create new employee.
 
@@ -334,42 +321,29 @@ class EmployeeService:
         """
         # Validation
         if not data.name or not data.name.strip():
-            raise ValidationError(
-                field="name",
-                reason="Name is required and cannot be empty"
-            )
+            raise ValidationError(field="name", reason="Name is required and cannot be empty")
 
         # Check for conflicts
         existing = self.employee_repo.find_by_employee_id(data.employee_id)
         if existing:
             raise ConflictError(
-                resource="Employee",
-                reason=f"Employee with ID '{data.employee_id}' already exists"
+                resource="Employee", reason=f"Employee with ID '{data.employee_id}' already exists"
             )
 
         # Business rule validation
         session = self.session_repo.find_by_id(session_id)
         if session.is_closed:
             raise BusinessRuleError(
-                rule="closed_session",
-                reason="Cannot add employees to closed session"
+                rule="closed_session", reason="Cannot add employees to closed session"
             )
 
         # Create employee
-        employee = Employee(
-            id=generate_id(),
-            session_id=session_id,
-            **data.dict()
-        )
+        employee = Employee(id=generate_id(), session_id=session_id, **data.dict())
 
         self.employee_repo.save(employee)
         return employee
 
-    def update_employee(
-        self,
-        employee_id: str,
-        data: EmployeeUpdate
-    ) -> Employee:
+    def update_employee(self, employee_id: str, data: EmployeeUpdate) -> Employee:
         """
         Update employee.
 
@@ -382,16 +356,12 @@ class EmployeeService:
 
         # Validation
         if data.name is not None and not data.name.strip():
-            raise ValidationError(
-                field="name",
-                reason="Name cannot be empty"
-            )
+            raise ValidationError(field="name", reason="Name cannot be empty")
 
         # Business rule validation
         if employee.is_locked:
             raise BusinessRuleError(
-                rule="employee_locked",
-                reason="Cannot update locked employee during calibration"
+                rule="employee_locked", reason="Cannot update locked employee during calibration"
             )
 
         # Apply updates
@@ -413,11 +383,9 @@ from backend.dependencies import get_employee_service
 
 router = APIRouter(prefix="/employees", tags=["employees"])
 
+
 @router.get("/{employee_id}", response_model=EmployeeResponse)
-def get_employee(
-    employee_id: str,
-    service: EmployeeService = Depends(get_employee_service)
-):
+def get_employee(employee_id: str, service: EmployeeService = Depends(get_employee_service)):
     """
     Get employee by ID.
 
@@ -427,11 +395,9 @@ def get_employee(
     # Middleware converts to 404 JSON response automatically
     return service.get_employee(employee_id)
 
+
 @router.post("/", response_model=EmployeeResponse, status_code=status.HTTP_201_CREATED)
-def create_employee(
-    data: EmployeeCreate,
-    service: EmployeeService = Depends(get_employee_service)
-):
+def create_employee(data: EmployeeCreate, service: EmployeeService = Depends(get_employee_service)):
     """
     Create new employee.
 
@@ -440,11 +406,10 @@ def create_employee(
     """
     return service.create_employee(data.session_id, data)
 
+
 @router.put("/{employee_id}", response_model=EmployeeResponse)
 def update_employee(
-    employee_id: str,
-    data: EmployeeUpdate,
-    service: EmployeeService = Depends(get_employee_service)
+    employee_id: str, data: EmployeeUpdate, service: EmployeeService = Depends(get_employee_service)
 ):
     """
     Update employee.
@@ -535,6 +500,7 @@ All errors return consistent JSON structure:
 import pytest
 from backend.exceptions import NotFoundError, ValidationError, BusinessRuleError
 
+
 def test_get_employee_not_found():
     """Test NotFoundError is raised when employee doesn't exist."""
     mock_repo = Mock()
@@ -547,6 +513,7 @@ def test_get_employee_not_found():
     assert exc_info.value.status_code == 404
     assert "nonexistent-id" in str(exc_info.value)
 
+
 def test_create_employee_validation_error():
     """Test ValidationError for invalid data."""
     service = EmployeeService(employee_repo=Mock(), session_repo=Mock())
@@ -554,7 +521,7 @@ def test_create_employee_validation_error():
     invalid_data = EmployeeCreate(
         session_id="sess-1",
         name="",  # Empty name - invalid!
-        employee_id="emp-1"
+        employee_id="emp-1",
     )
 
     with pytest.raises(ValidationError) as exc_info:
@@ -562,6 +529,7 @@ def test_create_employee_validation_error():
 
     assert exc_info.value.status_code == 400
     assert exc_info.value.details["field"] == "name"
+
 
 def test_update_locked_employee():
     """Test BusinessRuleError for locked employee."""
@@ -576,6 +544,7 @@ def test_update_locked_employee():
 
     assert exc_info.value.status_code == 422
     assert "locked" in str(exc_info.value).lower()
+
 
 # tests/integration/test_employee_api.py
 def test_api_error_format(client):
@@ -601,6 +570,7 @@ def test_api_error_format(client):
 from backend.exceptions import DatabaseError
 import sqlite3
 
+
 class EmployeeRepository:
     """Repository with database error translation."""
 
@@ -618,14 +588,10 @@ class EmployeeRepository:
             return employee
         except sqlite3.IntegrityError as e:
             raise DatabaseError(
-                operation="save employee",
-                detail=f"Integrity constraint violated: {e}"
+                operation="save employee", detail=f"Integrity constraint violated: {e}"
             )
         except sqlite3.Error as e:
-            raise DatabaseError(
-                operation="save employee",
-                detail=str(e)
-            )
+            raise DatabaseError(operation="save employee", detail=str(e))
 ```
 
 ### External API → Service Layer
@@ -634,6 +600,7 @@ class EmployeeRepository:
 # backend/services/external_api_service.py
 import httpx
 from backend.exceptions import AppError
+
 
 class ExternalAPIService:
     """Service calling external APIs with error translation."""
@@ -657,13 +624,13 @@ class ExternalAPIService:
                 message=f"External API error: {e.response.status_code}",
                 code="EXTERNAL_API_ERROR",
                 status_code=502,
-                details={"external_status": e.response.status_code}
+                details={"external_status": e.response.status_code},
             )
         except httpx.RequestError as e:
             raise AppError(
                 message="Failed to connect to external API",
                 code="EXTERNAL_API_UNAVAILABLE",
-                status_code=503
+                status_code=503,
             )
 ```
 

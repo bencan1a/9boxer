@@ -103,6 +103,7 @@ def test_router_before_migration():
     assert response.status_code == 200
     baseline_data = response.json()
 
+
 # After migrating router
 def test_router_after_migration():
     """Verify: identical behavior with DI"""
@@ -204,6 +205,7 @@ Step 5 (Days 9-10): EventRepository and cleanup
 class EmployeeRepository:
     def find_by_id(self, id): ...
 
+
 # Phase 2b: Service delegates to both (validation phase)
 class EmployeeService:
     def get_employee(self, id):
@@ -212,6 +214,7 @@ class EmployeeService:
         new_result = self.employee_repo.find_by_id(id)
         assert old_result == new_result  # Validation
         return new_result
+
 
 # Phase 2c: Remove old approach once validated
 class EmployeeService:
@@ -523,6 +526,7 @@ class FeatureFlags:
     USE_REPOSITORY_PATTERN = os.getenv("USE_REPOS", "true") == "true"
     USE_NEW_ERROR_HANDLING = os.getenv("USE_NEW_ERRORS", "true") == "true"
 
+
 # Usage in code
 if FeatureFlags.USE_REPOSITORY_PATTERN:
     employees = self.employee_repo.find_by_session(session_id)
@@ -549,10 +553,7 @@ def get_employee_with_validation(employee_id: str):
 
     # Validate they match
     if old_result != new_result:
-        logger.error(
-            "Discrepancy detected!",
-            extra={"old": old_result, "new": new_result}
-        )
+        logger.error("Discrepancy detected!", extra={"old": old_result, "new": new_result})
         # Return old result (safe fallback)
         return old_result
 
@@ -670,16 +671,14 @@ class TestSessionOperationsRegression:
 
         # 2. Add employees
         for i in range(10):
-            emp = client.post(f"/sessions/{session_id}/employees", json={
-                "name": f"Employee {i}",
-                "employee_id": f"emp-{i}"
-            })
+            emp = client.post(
+                f"/sessions/{session_id}/employees",
+                json={"name": f"Employee {i}", "employee_id": f"emp-{i}"},
+            )
             assert emp.status_code == 201
 
         # 3. Move employees
-        move = client.post(f"/employees/emp-1/move", json={
-            "target_box": "top_right"
-        })
+        move = client.post(f"/employees/emp-1/move", json={"target_box": "top_right"})
         assert move.status_code == 200
 
         # 4. Export
@@ -700,9 +699,7 @@ class TestSessionOperationsRegression:
         exported_bytes = export_resp.content
 
         # Import exported file
-        reimport_resp = client.post("/import", files={
-            "file": ("exported.xlsx", exported_bytes)
-        })
+        reimport_resp = client.post("/import", files={"file": ("exported.xlsx", exported_bytes)})
         assert reimport_resp.status_code == 201
 
         # Compare sessions (should be identical)
@@ -721,9 +718,11 @@ Ensure refactoring doesn't degrade performance:
 import pytest
 from time import perf_counter
 
+
 @pytest.mark.benchmark
 def test_employee_query_performance(benchmark):
     """Benchmark: Query 100 employees should take < 100ms"""
+
     def query_employees():
         return employee_repo.find_by_session("sess-1")
 
@@ -733,9 +732,11 @@ def test_employee_query_performance(benchmark):
     assert benchmark.stats.mean < 0.1  # < 100ms average
     assert len(result) == 100
 
+
 @pytest.mark.benchmark
 def test_excel_export_performance(benchmark):
     """Benchmark: Export 1000 employees should take < 5 seconds"""
+
     def export_large_session():
         return exporter.export_session("sess-large")
 

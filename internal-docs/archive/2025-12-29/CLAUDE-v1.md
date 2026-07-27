@@ -184,12 +184,12 @@ import os
 import subprocess
 
 # ✅ CORRECT - Cross-platform null device
-with open(os.devnull, 'w') as devnull:
-    subprocess.run(['command'], stdout=devnull, stderr=devnull)
+with open(os.devnull, "w") as devnull:
+    subprocess.run(["command"], stdout=devnull, stderr=devnull)
 
 # ❌ WRONG - Creates phantom file on Windows
-with open('nul', 'w') as f:
-    f.write('data')
+with open("nul", "w") as f:
+    f.write("data")
 ```
 
 **In shell commands:**

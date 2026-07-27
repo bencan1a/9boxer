@@ -1071,7 +1071,7 @@ No major issues found. Implementation is solid.
 
 **Current Configuration**:
 ```python
-console=True,  # Keep console for now (easier debugging)
+console = (True,)  # Keep console for now (easier debugging)
 ```
 
 **Impact**:

@@ -29,24 +29,28 @@ Business rules are hardcoded as magic numbers throughout the codebase:
 def identify_high_performers(employees):
     return [e for e in employees if e.performance_score >= 85]  # Why 85?
 
+
 # backend/services/intelligence_service.py:456
 def flag_outliers(distribution):
-    if distribution['top_box'] > 0.20:  # Why 20%?
+    if distribution["top_box"] > 0.20:  # Why 20%?
         return "warning"
+
 
 # backend/services/session_manager.py:567
 def validate_box_capacity(box_id, employees):
     if len(employees) > 50:  # Why 50?
         raise ValidationError("Box capacity exceeded")
 
+
 # backend/services/calibration_service.py:123
 def calculate_target_distribution():
     return {
-        'top_performer': 0.10,     # Why 10%?
-        'high_performer': 0.20,    # Why 20%?
-        'solid_performer': 0.40,   # Why 40%?
+        "top_performer": 0.10,  # Why 10%?
+        "high_performer": 0.20,  # Why 20%?
+        "solid_performer": 0.40,  # Why 40%?
         # ...
     }
+
 
 # backend/api/statistics.py:89
 def get_recent_sessions(user_id):
@@ -77,6 +81,7 @@ from typing import Dict
 import os
 import yaml
 
+
 @dataclass(frozen=True)
 class PerformanceThresholds:
     """Performance rating thresholds with clear documentation."""
@@ -92,10 +97,15 @@ class PerformanceThresholds:
 
     def __post_init__(self):
         """Validate thresholds are in correct range and order."""
-        if not 0 <= self.low_performer_max <= self.high_performer_min <= self.outstanding_min <= 100:
-            raise ValueError(
-                "Thresholds must be: 0 ≤ low_max ≤ high_min ≤ outstanding ≤ 100"
-            )
+        if (
+            not 0
+            <= self.low_performer_max
+            <= self.high_performer_min
+            <= self.outstanding_min
+            <= 100
+        ):
+            raise ValueError("Thresholds must be: 0 ≤ low_max ≤ high_min ≤ outstanding ≤ 100")
+
 
 @dataclass(frozen=True)
 class DistributionTargets:
@@ -118,23 +128,31 @@ class DistributionTargets:
 
     def __post_init__(self):
         """Validate distribution sums to 100%."""
-        total = sum([
-            self.top_performer,
-            self.high_performer,
-            self.solid_performer,
-            self.developing,
-            self.needs_improvement
-        ])
+        total = sum(
+            [
+                self.top_performer,
+                self.high_performer,
+                self.solid_performer,
+                self.developing,
+                self.needs_improvement,
+            ]
+        )
         if abs(total - 1.0) > 0.001:
-            raise ValueError(
-                f"Distribution must sum to 100%, got {total*100:.1f}%"
-            )
+            raise ValueError(f"Distribution must sum to 100%, got {total * 100:.1f}%")
 
         # Validate all are positive
-        if any(x < 0 for x in [self.top_performer, self.high_performer,
-                                self.solid_performer, self.developing,
-                                self.needs_improvement]):
+        if any(
+            x < 0
+            for x in [
+                self.top_performer,
+                self.high_performer,
+                self.solid_performer,
+                self.developing,
+                self.needs_improvement,
+            ]
+        ):
             raise ValueError("All distribution percentages must be non-negative")
+
 
 @dataclass(frozen=True)
 class CapacityLimits:
@@ -166,13 +184,14 @@ class CapacityLimits:
             self.recent_sessions_limit,
             self.max_session_duration_days,
             self.max_page_size,
-            self.default_page_size
+            self.default_page_size,
         ]
         if any(x <= 0 for x in limits):
             raise ValueError("All capacity limits must be positive integers")
 
         if self.default_page_size > self.max_page_size:
             raise ValueError("Default page size cannot exceed max page size")
+
 
 @dataclass(frozen=True)
 class WarningThresholds:
@@ -197,6 +216,7 @@ class WarningThresholds:
 
         if self.stale_session_days < 0:
             raise ValueError("Days must be non-negative")
+
 
 class BusinessRules:
     """
@@ -226,29 +246,21 @@ class BusinessRules:
             return  # Already loaded
 
         try:
-            with open(config_path, 'r') as f:
+            with open(config_path, "r") as f:
                 config_data = yaml.safe_load(f)
 
             # Load each section
-            if 'performance_thresholds' in config_data:
-                cls.performance = PerformanceThresholds(
-                    **config_data['performance_thresholds']
-                )
+            if "performance_thresholds" in config_data:
+                cls.performance = PerformanceThresholds(**config_data["performance_thresholds"])
 
-            if 'distribution_targets' in config_data:
-                cls.distribution = DistributionTargets(
-                    **config_data['distribution_targets']
-                )
+            if "distribution_targets" in config_data:
+                cls.distribution = DistributionTargets(**config_data["distribution_targets"])
 
-            if 'capacity_limits' in config_data:
-                cls.capacity = CapacityLimits(
-                    **config_data['capacity_limits']
-                )
+            if "capacity_limits" in config_data:
+                cls.capacity = CapacityLimits(**config_data["capacity_limits"])
 
-            if 'warnings' in config_data:
-                cls.warnings = WarningThresholds(
-                    **config_data['warnings']
-                )
+            if "warnings" in config_data:
+                cls.warnings = WarningThresholds(**config_data["warnings"])
 
             cls._loaded = True
 
@@ -268,15 +280,15 @@ class BusinessRules:
         Useful for dev/staging/prod differences.
         """
         # Performance thresholds
-        if threshold := os.getenv('HIGH_PERFORMER_MIN'):
+        if threshold := os.getenv("HIGH_PERFORMER_MIN"):
             cls.performance = PerformanceThresholds(
                 high_performer_min=float(threshold),
                 low_performer_max=cls.performance.low_performer_max,
-                outstanding_min=cls.performance.outstanding_min
+                outstanding_min=cls.performance.outstanding_min,
             )
 
         # Distribution targets
-        if top := os.getenv('TARGET_TOP_PERFORMER_PCT'):
+        if top := os.getenv("TARGET_TOP_PERFORMER_PCT"):
             # Reconstruct with overridden values
             cls.distribution = DistributionTargets(
                 top_performer=float(top),
@@ -285,7 +297,7 @@ class BusinessRules:
             )
 
         # Capacity limits
-        if limit := os.getenv('MAX_BOX_CAPACITY'):
+        if limit := os.getenv("MAX_BOX_CAPACITY"):
             cls.capacity = CapacityLimits(
                 max_box_capacity=int(limit),
                 max_import_rows=cls.capacity.max_import_rows,
@@ -335,13 +347,11 @@ warnings:
 # backend/services/intelligence_service.py
 from backend.config.business_rules import BusinessRules
 
+
 class IntelligenceService:
     """Intelligence analysis service using configuration."""
 
-    def identify_high_performers(
-        self,
-        employees: List[Employee]
-    ) -> List[Employee]:
+    def identify_high_performers(self, employees: List[Employee]) -> List[Employee]:
         """
         Identify high performers based on configured threshold.
 
@@ -350,15 +360,9 @@ class IntelligenceService:
         """
         threshold = BusinessRules.performance.high_performer_min
 
-        return [
-            e for e in employees
-            if e.performance_score >= threshold
-        ]
+        return [e for e in employees if e.performance_score >= threshold]
 
-    def flag_distribution_outliers(
-        self,
-        distribution: Dict[str, int]
-    ) -> Optional[Warning]:
+    def flag_distribution_outliers(self, distribution: Dict[str, int]) -> Optional[Warning]:
         """
         Flag if distribution is skewed (e.g., too many in top box).
 
@@ -369,21 +373,23 @@ class IntelligenceService:
         if total == 0:
             return None
 
-        top_box_pct = distribution.get('top_right', 0) / total
+        top_box_pct = distribution.get("top_right", 0) / total
         threshold = BusinessRules.warnings.high_top_box_percentage
 
         if top_box_pct > threshold:
             return Warning(
                 level="warning",
-                message=f"Top box has {top_box_pct*100:.1f}% of employees "
-                        f"(threshold: {threshold*100:.1f}%)",
-                recommendation="Consider recalibration to avoid grade inflation"
+                message=f"Top box has {top_box_pct * 100:.1f}% of employees "
+                f"(threshold: {threshold * 100:.1f}%)",
+                recommendation="Consider recalibration to avoid grade inflation",
             )
 
         return None
 
+
 # backend/services/calibration_service.py
 from backend.config.business_rules import BusinessRules
+
 
 class CalibrationService:
     """Calibration service using configured targets."""
@@ -398,17 +404,14 @@ class CalibrationService:
         targets = BusinessRules.distribution
 
         return {
-            'top_performer': targets.top_performer,
-            'high_performer': targets.high_performer,
-            'solid_performer': targets.solid_performer,
-            'developing': targets.developing,
-            'needs_improvement': targets.needs_improvement
+            "top_performer": targets.top_performer,
+            "high_performer": targets.high_performer,
+            "solid_performer": targets.solid_performer,
+            "developing": targets.developing,
+            "needs_improvement": targets.needs_improvement,
         }
 
-    def calculate_deviation(
-        self,
-        actual: Dict[str, int]
-    ) -> CalibrationResult:
+    def calculate_deviation(self, actual: Dict[str, int]) -> CalibrationResult:
         """Calculate deviation from target distribution."""
         targets = self.get_target_distribution()
         total = sum(actual.values())
@@ -419,11 +422,7 @@ class CalibrationService:
             target_pct = targets[category]
             deviations[category] = actual_pct - target_pct
 
-        return CalibrationResult(
-            targets=targets,
-            actual=actual,
-            deviations=deviations
-        )
+        return CalibrationResult(targets=targets, actual=actual, deviations=deviations)
 ```
 
 ### Application Startup
@@ -432,6 +431,7 @@ class CalibrationService:
 # backend/main.py
 from fastapi import FastAPI
 from backend.config.business_rules import BusinessRules
+
 
 def create_app() -> FastAPI:
     """Create and configure FastAPI application."""
@@ -579,17 +579,19 @@ For each magic number:
 import pytest
 from backend.config.business_rules import DistributionTargets
 
+
 def test_distribution_must_sum_to_100_percent():
     """Test validation: distribution must sum to 100%."""
     with pytest.raises(ValueError, match="must sum to 100%"):
         DistributionTargets(
-            top_performer=0.15,   # 15%
+            top_performer=0.15,  # 15%
             high_performer=0.20,  # 20%
-            solid_performer=0.40, # 40%
-            developing=0.20,      # 20%
-            needs_improvement=0.10 # 10%
+            solid_performer=0.40,  # 40%
+            developing=0.20,  # 20%
+            needs_improvement=0.10,  # 10%
             # Total: 105% - INVALID!
         )
+
 
 def test_thresholds_must_be_ordered():
     """Test validation: thresholds must be in correct order."""
@@ -597,7 +599,7 @@ def test_thresholds_must_be_ordered():
         PerformanceThresholds(
             low_performer_max=70.0,
             high_performer_min=60.0,  # Less than low_max - INVALID!
-            outstanding_min=95.0
+            outstanding_min=95.0,
         )
 ```
 

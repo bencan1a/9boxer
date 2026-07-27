@@ -157,10 +157,7 @@ ignore_missing_imports = true
 target-version = "py310"
 line-length = 100
 src = ["backend/src", ".github/scripts"]
-# ruff 0.16 began formatting Python code blocks embedded in Markdown, which
-# reformats 57 doc files that were never in scope for `make format-check`.
-# Keep ruff pointed at Python sources; formatting docs is a separate decision.
-exclude = ["backend/tests", "frontend/tests", "*.md"]
+exclude = ["backend/tests", "frontend/tests"]
 
 [tool.ruff.lint]
 select = [

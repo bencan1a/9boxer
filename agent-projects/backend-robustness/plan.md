@@ -99,6 +99,7 @@ import socket
 import json
 import sys
 
+
 def get_free_port() -> int:
     """Find and return a free port number."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -107,12 +108,14 @@ def get_free_port() -> int:
     sock.close()
     return port
 
+
 def is_port_in_use(port: int) -> bool:
     """Check if a port is already in use."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex(("127.0.0.1", port))
     sock.close()
     return result == 0
+
 
 def main():
     requested_port = int(os.getenv("PORT", "8000"))

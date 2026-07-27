@@ -280,8 +280,8 @@ if path.exists():
 import os
 import subprocess
 
-with open(os.devnull, 'w') as devnull:
-    subprocess.run(['command'], stdout=devnull, stderr=devnull)
+with open(os.devnull, "w") as devnull:
+    subprocess.run(["command"], stdout=devnull, stderr=devnull)
 
 # os.devnull automatically resolves to:
 # - Windows: "nul"
@@ -307,7 +307,7 @@ project_root = os.environ.get('PROJECT_ROOT', os.getcwd())
 import tempfile
 
 # Create temp file
-with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
     f.write("content")
     temp_path = f.name
 
@@ -336,6 +336,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 ```python
 from pathlib import Path
 import sys
+
 
 def get_user_data_dir() -> Path:
     """Get platform-specific user data directory."""

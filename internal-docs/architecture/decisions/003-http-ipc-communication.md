@@ -82,6 +82,7 @@
 import socket
 import json
 
+
 def find_available_port(start: int = 38000, max_attempts: int = 10) -> int:
     """Find an available port starting from the given port."""
     for port in range(start, start + max_attempts):
@@ -92,6 +93,7 @@ def find_available_port(start: int = 38000, max_attempts: int = 10) -> int:
             except OSError:
                 continue
     raise RuntimeError("No available ports found")
+
 
 # Find port and start server
 port = find_available_port(start=38000)
@@ -109,11 +111,13 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/api")
 
+
 @router.get("/employees")
 async def get_employees() -> EmployeesResponse:
     """Get all employees in current session."""
     employees = employee_service.get_all()
     return EmployeesResponse(employees=employees)
+
 
 @router.post("/employees/{employee_id}/move")
 async def move_employee(employee_id: int, position: MoveRequest) -> MoveResponse:

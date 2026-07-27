@@ -57,11 +57,11 @@
 **Spec File:** `backend/build_config/ninebox.spec`
 ```python
 # Collect all scipy/numpy binaries (large but necessary)
-scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
-numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
+scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all("scipy")
+numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all("numpy")
 
 # Collect ninebox data files (SQL schema)
-ninebox_datas = collect_data_files('ninebox', includes=['**/*.sql'])
+ninebox_datas = collect_data_files("ninebox", includes=["**/*.sql"])
 
 a = Analysis(
     [str(main_script)],
@@ -70,17 +70,31 @@ a = Analysis(
     datas=scipy_datas + numpy_datas + ninebox_datas,
     hiddenimports=[
         # FastAPI ecosystem
-        'fastapi', 'uvicorn', 'starlette', 'pydantic', 'pydantic_core',
-
+        "fastapi",
+        "uvicorn",
+        "starlette",
+        "pydantic",
+        "pydantic_core",
         # Data processing
-        'pandas', 'openpyxl', 'scipy', 'numpy',
-
+        "pandas",
+        "openpyxl",
+        "scipy",
+        "numpy",
         # All ninebox modules
-        'ninebox', 'ninebox.api', 'ninebox.services', ...
-    ] + scipy_hiddenimports + numpy_hiddenimports,
+        "ninebox",
+        "ninebox.api",
+        "ninebox.services",
+        ...,
+    ]
+    + scipy_hiddenimports
+    + numpy_hiddenimports,
     excludes=[
         # Reduce bundle size
-        'tkinter', 'matplotlib', 'IPython', 'jupyter', 'pytest',
+        "tkinter",
+        "matplotlib",
+        "IPython",
+        "jupyter",
+        "pytest",
     ],
 )
 ```
@@ -163,9 +177,9 @@ ninebox/
 
 **Solution:** Add module to `hiddenimports` in `ninebox.spec`:
 ```python
-hiddenimports=[
+hiddenimports = [
     # ... existing imports
-    'new.module.name',  # Add missing module
+    "new.module.name",  # Add missing module
 ]
 ```
 
@@ -177,7 +191,7 @@ hiddenimports=[
 
 **Solution:** Add to `datas` in `ninebox.spec`:
 ```python
-ninebox_datas = collect_data_files('ninebox', includes=['**/*.sql', '**/*.json'])
+ninebox_datas = collect_data_files("ninebox", includes=["**/*.sql", "**/*.json"])
 ```
 
 ### Issue: Slow backend startup (>10s)

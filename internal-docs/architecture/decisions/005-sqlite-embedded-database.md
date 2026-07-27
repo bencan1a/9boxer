@@ -66,6 +66,7 @@
 from pathlib import Path
 from ninebox.utils.paths import get_user_data_dir
 
+
 def get_db_path() -> Path:
     """Get absolute path to database file."""
     # Use user data directory for database storage
@@ -143,6 +144,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from contextlib import contextmanager
 
+
 # Create engine (in-memory for tests, file for production)
 def get_engine(db_path: Path | None = None):
     if db_path:
@@ -151,8 +153,10 @@ def get_engine(db_path: Path | None = None):
         # In-memory for tests
         return create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
 
+
 engine = get_engine(get_db_path())
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 @contextmanager
 def get_db() -> Generator[Session, None, None]:
@@ -166,6 +170,7 @@ def get_db() -> Generator[Session, None, None]:
         raise
     finally:
         db.close()
+
 
 # FastAPI dependency
 def get_db_dependency() -> Generator[Session, None, None]:
@@ -249,6 +254,7 @@ def get_db_dependency() -> Generator[Session, None, None]:
 ```python
 import shutil
 from datetime import datetime
+
 
 def backup_database(db_path: Path) -> Path:
     """Create a backup of the database."""

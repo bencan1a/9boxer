@@ -867,9 +867,9 @@ For statistical analyses, the 9 positions are collapsed into 3 performance level
 
 ```python
 PERFORMANCE_BUCKETS = {
-    "High": [9, 8, 6],     # Star, Growth, High Impact
-    "Medium": [7, 5, 3],   # Enigma, Core Talent, Workhorse
-    "Low": [4, 2, 1]       # Inconsistent, Effective Pro, Underperformer
+    "High": [9, 8, 6],  # Star, Growth, High Impact
+    "Medium": [7, 5, 3],  # Enigma, Core Talent, Workhorse
+    "Low": [4, 2, 1],  # Inconsistent, Effective Pro, Underperformer
 }
 ```
 
