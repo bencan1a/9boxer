@@ -558,3 +558,48 @@ def test_parse_when_talent_indicator_looks_like_a_box_then_not_used_as_prior(
 
     assert result.employees[0].talent_indicator == "3. Expert Talent"
     assert result.employees[0].prior_grid_position is None
+
+
+def test_parse_when_prior_calibration_is_a_label_then_box_number_extracted(
+    tmp_path: Path,
+) -> None:
+    """Within the explicit column the meaning is unambiguous, so labels work too."""
+    test_file = tmp_path / "labelled_prior.xlsx"
+    _write_prior_position_sheet(test_file, "5. Core Talent")
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position == 5
+
+
+def test_parse_when_prior_calibration_label_out_of_range_then_none(tmp_path: Path) -> None:
+    """A label whose leading number is not a box is still rejected."""
+    test_file = tmp_path / "bad_label_prior.xlsx"
+    _write_prior_position_sheet(test_file, "12. Not A Box")
+
+    result = ExcelParser().parse(test_file)
+
+    assert result.employees[0].prior_grid_position is None
+
+
+def test_parse_when_duplicate_year_headers_then_single_history_entry(tmp_path: Path) -> None:
+    """Case variants of one year's header must not produce two entries.
+
+    Header normalization deliberately leaves the second variant alone rather
+    than creating a duplicate DataFrame column, so the dedupe has to happen when
+    history is collected.
+    """
+    test_file = tmp_path / "duplicate_year.xlsx"
+    _write_history_sheet(
+        test_file,
+        [
+            "2023 Completed Performance Rating",
+            "2023 completed performance rating",
+        ],
+        ["Strong", "Leading"],
+    )
+
+    result = ExcelParser().parse(test_file)
+
+    history = result.employees[0].ratings_history
+    assert [(r.year, r.rating) for r in history] == [(2023, "Strong")]

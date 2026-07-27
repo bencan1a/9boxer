@@ -8,6 +8,7 @@ from ninebox.services.employee_service import (
     PerformanceTier,
     get_tier_from_historical_rating,
     get_axis_distance,
+    get_most_recent_prior_year_rating,
     get_tier_from_position,
     is_big_mover,
     is_medium_mover,
@@ -599,3 +600,62 @@ def test_is_medium_mover_when_no_comparison_available_then_false() -> None:
     employee = create_simple_test_employee(grid_position=9)
 
     assert is_medium_mover(employee) is False
+
+
+# Current-cycle ratings must not be mistaken for prior-year history
+
+
+def test_get_most_recent_prior_year_rating_when_current_year_present_then_excluded() -> None:
+    """The current cycle's own rating is not history to compare against."""
+    from datetime import date
+
+    this_year = date.today().year
+    employee = create_simple_test_employee()
+    employee.ratings_history = [
+        HistoricalRating(year=this_year - 2, rating="Solid"),
+        HistoricalRating(year=this_year - 1, rating="Strong"),
+        HistoricalRating(year=this_year, rating="Leading"),
+    ]
+
+    assert get_most_recent_prior_year_rating(employee) == "Strong"
+
+
+def test_get_most_recent_prior_year_rating_when_only_current_year_then_none() -> None:
+    """Nothing completed means nothing to compare year-over-year."""
+    from datetime import date
+
+    employee = create_simple_test_employee()
+    employee.ratings_history = [HistoricalRating(year=date.today().year, rating="Leading")]
+
+    assert get_most_recent_prior_year_rating(employee) is None
+
+
+def test_get_most_recent_prior_year_rating_when_unordered_then_latest_wins() -> None:
+    """Order in the list must not decide which year counts as most recent."""
+    from datetime import date
+
+    this_year = date.today().year
+    employee = create_simple_test_employee()
+    employee.ratings_history = [
+        HistoricalRating(year=this_year - 1, rating="Strong"),
+        HistoricalRating(year=this_year - 3, rating="Low"),
+    ]
+
+    assert get_most_recent_prior_year_rating(employee) == "Strong"
+
+
+def test_is_big_mover_when_only_current_year_rating_then_not_flagged() -> None:
+    """A current-cycle rating describes the same period as the current box.
+
+    Regression: once history stopped being limited to 2023/2024, a rating for
+    the live year would otherwise be compared against the position it describes
+    and report movement that never happened.
+    """
+    from datetime import date
+
+    employee = create_simple_test_employee(grid_position=4)  # Low tier
+    employee.ratings_history = [
+        HistoricalRating(year=date.today().year, rating="Leading")  # High tier
+    ]
+
+    assert is_big_mover(employee) is False

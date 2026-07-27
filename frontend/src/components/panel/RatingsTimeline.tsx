@@ -38,12 +38,11 @@ export const RatingsTimeline: React.FC<RatingsTimelineProps> = ({
   );
 
   // The current assessment is the live calibration, so label it with the current
-  // year rather than a hardcoded one. Stay ahead of the newest completed cycle so
-  // the timeline never shows a duplicate or out-of-order year.
-  const currentYear = Math.max(
-    new Date().getFullYear(),
-    (sortedRatings[0]?.year ?? 0) + 1
-  );
+  // year rather than a hardcoded one. Deliberately not clamped above the newest
+  // history year: a rating for this year can legitimately coexist with the
+  // current assessment (an annual rating and a calibration are different
+  // things), and inventing a future year to separate them reads as a bug.
+  const currentYear = new Date().getFullYear();
 
   return (
     <Card variant="outlined">

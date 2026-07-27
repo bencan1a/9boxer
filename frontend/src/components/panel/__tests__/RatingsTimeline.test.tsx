@@ -42,23 +42,28 @@ describe("RatingsTimeline", () => {
     expect(performanceText).toBeInTheDocument();
   });
 
-  it("labels current assessment ahead of the newest history year", () => {
-    // Guards against a stale hardcoded year: if history already reaches the
-    // current calendar year, the current assessment must still sort above it.
-    const nextYear = new Date().getFullYear() + 1;
+  it("labels the current assessment with the current year, never a future one", () => {
+    // A rating for this year can coexist with the current assessment; the label
+    // must still read as today's year rather than being pushed into the future.
+    const thisYear = new Date().getFullYear();
     const employee = createMockEmployee({
-      ratings_history: [{ year: nextYear, rating: "Leading" }],
+      ratings_history: [{ year: thisYear, rating: "Leading" }],
     });
 
     render(<RatingsTimeline employee={employee} />);
 
     expect(
       screen.getByText(
-        getTranslatedText("panel.detailsTab.currentYear", {
-          year: nextYear + 1,
-        })
+        getTranslatedText("panel.detailsTab.currentYear", { year: thisYear })
       )
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        getTranslatedText("panel.detailsTab.currentYear", {
+          year: thisYear + 1,
+        })
+      )
+    ).not.toBeInTheDocument();
   });
 
   it("displays historical ratings sorted by year descending", () => {

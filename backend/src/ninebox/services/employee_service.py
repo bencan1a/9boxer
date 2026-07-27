@@ -1,5 +1,6 @@
 """Employee filtering and query service."""
 
+from datetime import date
 from enum import Enum
 
 from ninebox.models.employee import Employee, PerformanceLevel, PotentialLevel
@@ -151,12 +152,37 @@ def is_tier_crossing(from_tier: PerformanceTier, to_tier: PerformanceTier) -> bo
     )
 
 
+def get_most_recent_prior_year_rating(employee: Employee) -> str | None:
+    """Get the rating from the most recent *completed* review year.
+
+    Ratings for the current calendar year (or later) are excluded: the current
+    cycle's rating describes the same period as the employee's current grid
+    position, so comparing the two would report movement where none happened.
+    This matters because history is imported for any year present in the file,
+    not just the two hardcoded years it used to be limited to.
+
+    Args:
+        employee: Employee whose ratings history to inspect
+
+    Returns:
+        Rating string from the latest completed year, or None if there is none
+    """
+    current_year = date.today().year
+    completed = [entry for entry in employee.ratings_history if entry.year < current_year]
+    if not completed:
+        return None
+    return max(completed, key=lambda entry: entry.year).rating
+
+
 def is_big_mover(employee: Employee, original_employee: Employee | None = None) -> bool:
     """Determine if employee is a big mover.
 
-    Checks for two types of big moves:
-    1. Year-over-year: Prior year rating tier → current position tier crosses Low↔High
-    2. In-session: Original position tier → current position tier crosses Low↔High
+    Checks for three types of big moves:
+    1. Calibration-to-calibration: Prior calibration position tier → current position
+       tier crosses Low↔High
+    2. Year-over-year: Latest completed year's rating tier → current position tier
+       crosses Low↔High
+    3. In-session: Original position tier → current position tier crosses Low↔High
 
     Args:
         employee: Current employee data
@@ -200,10 +226,9 @@ def is_big_mover(employee: Employee, original_employee: Employee | None = None) 
         if is_tier_crossing(prior_calibration_tier, current_tier):
             return True
 
-    # Check year-over-year movement (if ratings history available)
-    if employee.ratings_history:
-        # Get most recent prior year rating
-        most_recent_rating = employee.ratings_history[-1].rating
+    # Check year-over-year movement (if a completed prior year rating exists)
+    most_recent_rating = get_most_recent_prior_year_rating(employee)
+    if most_recent_rating is not None:
         try:
             prior_tier = get_tier_from_historical_rating(most_recent_rating)
             if is_tier_crossing(prior_tier, current_tier):
@@ -270,6 +295,14 @@ def is_medium_mover(employee: Employee, original_employee: Employee | None = Non
     The two are mutually exclusive: an employee who qualifies as a big mover is
     not also reported as a medium mover, so the flags partition cleanly for
     filtering.
+
+    Note that the two flags measure different things rather than two levels of
+    one thing, so "big" does not always mean "further". Expert [H,L] to High
+    Impact [H,M] is one axis step but crosses Low to High tier, so it is big;
+    Expert [H,L] to Emerging [L,H] is the maximum four steps but stays out of
+    that crossing, so it is medium. This is intentional - a tier reversal is the
+    signal worth surfacing loudest - but it makes the pair worth reading as
+    "reversed" versus "shifted", not "more" versus "less".
 
     Args:
         employee: Current employee data

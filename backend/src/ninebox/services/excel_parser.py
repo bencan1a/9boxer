@@ -823,6 +823,9 @@ class ExcelParser:
         parallel to the current one depending on how the file was assembled, so
         guessing would produce confident but wrong movement flags.
 
+        Within this column the meaning is unambiguous, so both a bare number (5)
+        and a labelled box ("5. Core Talent") are accepted.
+
         Returns:
             Grid position 1-9, or None if absent or not a valid position.
         """
@@ -833,8 +836,12 @@ class ExcelParser:
         try:
             position = int(cast("float", value))
         except (ValueError, TypeError):
-            self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
-            return None
+            leading_digits = re.match(r"\s*(\d+)", str(value))
+            if not leading_digits:
+                logger.warning(f"Prior calibration position '{value}' is not a number, ignoring")
+                self.defaulted_fields["Prior Calibration 9-Box Label (Invalid)"] += 1
+                return None
+            position = int(leading_digits.group(1))
 
         if not 1 <= position <= 9:
             logger.warning(f"Prior calibration position '{value}' out of range 1-9, ignoring")
@@ -853,7 +860,10 @@ class ExcelParser:
         Returns:
             List of HistoricalRating, ascending by year. Empty if the row has none.
         """
-        history = []
+        # Keyed by year so case or spacing variants of the same header
+        # ("2023 Completed..." and "2023 completed...") cannot yield two entries
+        # for one year. First non-empty value wins.
+        by_year: dict[int, str] = {}
         for column in row.index:
             match = HISTORICAL_RATING_PATTERN.match(str(column).strip())
             if not match:
@@ -864,10 +874,13 @@ class ExcelParser:
             rating = str(value).strip()
             if not rating:
                 continue
-            history.append(HistoricalRating(year=int(match.group(1)), rating=rating))
+            year = int(match.group(1))
+            if year in by_year:
+                logger.debug(f"Duplicate history column for {year}, keeping the first value")
+                continue
+            by_year[year] = rating
 
-        history.sort(key=lambda entry: entry.year)
-        return history
+        return [HistoricalRating(year=year, rating=by_year[year]) for year in sorted(by_year)]
 
     def _find_column(self, row: pd.Series, possible_names: list[str]) -> str | None:
         """
