@@ -128,7 +128,9 @@ exclude_lines = [
 ]
 
 [tool.mypy]
-python_version = "3.10"
+# Must track requires-python (>=3.13). Leaving this at an older version makes
+# mypy reject PEP 695 `type` statements in third-party stubs (numpy >=2.5).
+python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -155,7 +157,10 @@ ignore_missing_imports = true
 target-version = "py310"
 line-length = 100
 src = ["backend/src", ".github/scripts"]
-exclude = ["backend/tests", "frontend/tests"]
+# ruff 0.16 began formatting Python code blocks embedded in Markdown, which
+# reformats 57 doc files that were never in scope for `make format-check`.
+# Keep ruff pointed at Python sources; formatting docs is a separate decision.
+exclude = ["backend/tests", "frontend/tests", "*.md"]
 
 [tool.ruff.lint]
 select = [
@@ -177,6 +182,9 @@ select = [
 ignore = [
     "E501",   # line too long, handled by formatter
     "PLR0913", # too many arguments
+    "PLR0917", # too many positional arguments; stabilized in ruff 0.16 and
+               # fires on FastAPI routes, which are only ever called by
+               # keyword via dependency injection. Sibling of PLR0913 above.
     "PLR2004", # magic value used in comparison
     "PLR0915", # too many statements
 ]
