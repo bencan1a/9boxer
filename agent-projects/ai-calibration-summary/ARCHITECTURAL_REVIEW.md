@@ -46,6 +46,7 @@ def calculate_location_analysis(employees: list[Employee]) -> dict[str, Any]:
     deviations = []
     # ... 100+ lines of analysis logic
 
+
 # calibration_summary_service.py (lines 346-353)
 if "location" in analyses:
     insights.extend(self._generate_anomaly_insights("location", analyses["location"]))
@@ -71,9 +72,11 @@ if "location" in analyses:
 def package_for_llm(employees, analyses, org_data=None):
     return _package_internal(employees, analyses, org_data, anonymize=True)
 
+
 # Lines 24-56: package_for_ui()
 def package_for_ui(employees, analyses, org_data=None):
     return _package_internal(employees, analyses, org_data, anonymize=False)
+
 
 # Lines 149-194: _package_internal() - contains all logic
 # The ONLY difference is anonymize=True vs False
@@ -130,8 +133,8 @@ if anonymize:
     flagged_employees = _package_flagged_employees_only(employees)
 
     return {
-        "level_breakdown": level_breakdown,      # Aggregated data
-        "flagged_employees": flagged_employees,   # Individual records (filtered)
+        "level_breakdown": level_breakdown,  # Aggregated data
+        "flagged_employees": flagged_employees,  # Individual records (filtered)
         "organization": org_data,
         "analyses": analyses,
         "overview": overview,
@@ -240,9 +243,9 @@ calibration_summary_service.py
 ```python
 # calibration_summary_service.py lines 234-261
 from ninebox.services.analysis_registry import run_all_analyses  # Direct import
-from ninebox.services.org_service import OrgService             # Direct import
+from ninebox.services.org_service import OrgService  # Direct import
 from ninebox.services.data_packaging_service import package_for_llm  # Direct import
-from ninebox.services.llm_service import llm_service            # Direct import (module-level instance!)
+from ninebox.services.llm_service import llm_service  # Direct import (module-level instance!)
 
 # This creates tight coupling - any change to these modules affects calibration_summary
 ```
@@ -259,6 +262,7 @@ from ninebox.services.llm_service import llm_service            # Direct import 
 # Lines 220-230: Direct Anthropic dependency
 try:
     import anthropic
+
     self._client = anthropic.Anthropic(api_key=self.api_key)
     logger.info(f"LLM service initialized with model: {self.model}")
 except ImportError:
@@ -373,8 +377,7 @@ ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
 **Better Approach**: Decorator-based registration
 ```python
 @register_analysis("location")
-def calculate_location_analysis(employees):
-    ...
+def calculate_location_analysis(employees): ...
 ```
 
 ---
@@ -575,21 +578,25 @@ else:
 
 ```python
 class InsightGenerator(Protocol):
-    def generate(self, employees, analyses, org_data) -> tuple[list[Insight], str | None]:
-        ...
+    def generate(self, employees, analyses, org_data) -> tuple[list[Insight], str | None]: ...
+
 
 class AgentInsightGenerator(InsightGenerator):
     def generate(self, employees, analyses, org_data):
         # LLM path with fallback to legacy
         ...
 
+
 class LegacyInsightGenerator(InsightGenerator):
     def generate(self, employees, analyses, org_data):
         # Current _generate_insights_legacy logic
         ...
 
+
 # In service
-self.insight_generator: InsightGenerator = AgentInsightGenerator() if use_agent else LegacyInsightGenerator()
+self.insight_generator: InsightGenerator = (
+    AgentInsightGenerator() if use_agent else LegacyInsightGenerator()
+)
 insights, summary = self.insight_generator.generate(employees, analyses, org_data)
 ```
 
@@ -650,6 +657,7 @@ def package_calibration_data(
 def calculate_overall_intelligence(employees):
     location = calculate_location_analysis(employees)  # Direct call
     ...
+
 
 # NEW:
 def calculate_overall_intelligence(employees):
@@ -893,6 +901,7 @@ except Exception as e:
 ```python
 # data_packaging_service.py - SIMPLIFIED
 
+
 def package_calibration_data(
     employees: list[Employee],
     analyses: dict[str, dict],
@@ -918,6 +927,7 @@ def package_calibration_data(
         "analyses": analyses,
         "overview": overview,
     }
+
 
 # Delete _build_level_breakdown(), _package_flagged_employees_only()
 # Delete dual structure logic
@@ -977,6 +987,7 @@ Move logic from `calibration_summary_service._transform_agent_issues_to_insights
 
 from typing import Protocol
 
+
 class LLMProvider(Protocol):
     """Interface for LLM providers."""
 
@@ -994,11 +1005,13 @@ class LLMProvider(Protocol):
         """Generate structured output from prompts."""
         ...
 
+
 class AnthropicProvider:
     """Anthropic Claude implementation."""
 
     def __init__(self, api_key: str):
         import anthropic
+
         self.client = anthropic.Anthropic(api_key=api_key)
 
     def is_available(self) -> dict[str, Any]:
@@ -1007,6 +1020,7 @@ class AnthropicProvider:
     def generate_structured_output(self, system_prompt, user_prompt, output_schema, model=None):
         message = self.client.beta.messages.create(...)
         return json.loads(message.content[0].text)
+
 
 # In llm_service.py
 class LLMService:
@@ -1066,6 +1080,7 @@ backend/src/ninebox/services/calibration/
 
 from pydantic import BaseSettings
 
+
 class LLMConfig(BaseSettings):
     """LLM service configuration."""
 
@@ -1079,8 +1094,10 @@ class LLMConfig(BaseSettings):
     class Config:
         env_prefix = "ANTHROPIC_"  # Reads from ANTHROPIC_API_KEY, etc.
 
+
 # In llm_service.py
 from ninebox.config.llm_config import LLMConfig
+
 
 class LLMService:
     def __init__(self, config: LLMConfig | None = None):

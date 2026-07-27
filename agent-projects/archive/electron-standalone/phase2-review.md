@@ -1070,7 +1070,7 @@ No major issues found. Implementation is solid.
 **Description**: Backend is configured with `console=True`, which will show a console window on Windows when the backend subprocess starts.
 
 **Current Configuration**:
-```python
+```text
 console=True,  # Keep console for now (easier debugging)
 ```
 

@@ -81,12 +81,10 @@
 
 ```python
 @pytest.fixture
-def session_with_employees(
-    test_client: TestClient,
-    sample_employees: list[Employee]
-) -> str:
+def session_with_employees(test_client: TestClient, sample_employees: list[Employee]) -> str:
     """Create session with employees directly (no file upload)."""
     from ninebox.core.dependencies import get_session_manager
+
     mgr = get_session_manager()
     session_id = mgr.create_session(
         user_id="test-user",
@@ -94,7 +92,7 @@ def session_with_employees(
         filename="test.xlsx",
         file_path="/tmp/test.xlsx",
         sheet_name="Employee Data",
-        sheet_index=1
+        sheet_index=1,
     )
     return session_id
 ```

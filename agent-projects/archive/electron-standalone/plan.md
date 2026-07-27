@@ -156,9 +156,10 @@ pyinstaller build_config/ninebox.spec
 import sys
 from pathlib import Path
 
+
 def get_resource_path(relative_path: str) -> Path:
     """Get absolute path to resource, works for dev and PyInstaller bundle."""
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, "frozen", False):
         # Running in PyInstaller bundle
         base_path = Path(sys._MEIPASS)
     else:
@@ -166,13 +167,14 @@ def get_resource_path(relative_path: str) -> Path:
         base_path = Path(__file__).parent.parent.parent
     return base_path / relative_path
 
+
 def get_user_data_dir() -> Path:
     """Get platform-specific user data directory."""
     # Will be overridden by Electron via env var
-    if os.getenv('APP_DATA_DIR'):
-        return Path(os.getenv('APP_DATA_DIR'))
+    if os.getenv("APP_DATA_DIR"):
+        return Path(os.getenv("APP_DATA_DIR"))
     # Fallback for standalone usage
-    return Path.home() / '.ninebox'
+    return Path.home() / ".ninebox"
 ```
 
 **Files to Update**:
@@ -271,20 +273,21 @@ cd backend
 
 from ninebox.utils.paths import get_user_data_dir
 
+
 def init_database():
     """Initialize database in user data directory."""
     data_dir = get_user_data_dir()
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    db_path = data_dir / 'ninebox.db'
+    db_path = data_dir / "ninebox.db"
 
     # Create tables if not exist
     conn = sqlite3.connect(db_path)
-    conn.execute('''CREATE TABLE IF NOT EXISTS users (...)''')
+    conn.execute("""CREATE TABLE IF NOT EXISTS users (...)""")
 
     # Create default user if empty
-    if not user_exists('bencan'):
-        create_user('bencan', hash_password('password'))
+    if not user_exists("bencan"):
+        create_user("bencan", hash_password("password"))
 
     return db_path
 ```
@@ -328,19 +331,22 @@ sqlite3 ~/.ninebox/ninebox.db "SELECT * FROM users;"
 ```python
 # backend/tests/test_frozen.py
 
+
 def test_frozen_executable_starts():
     """Test that frozen executable starts and responds to health check."""
-    proc = subprocess.Popen(['./dist/ninebox'])
+    proc = subprocess.Popen(["./dist/ninebox"])
     time.sleep(2)
-    resp = requests.get('http://localhost:38000/health')
+    resp = requests.get("http://localhost:38000/health")
     assert resp.status_code == 200
     proc.terminate()
+
 
 def test_frozen_excel_import():
     """Test Excel import with frozen executable."""
     # Upload sample Excel file
     # Verify parsing works
     # Check all employees loaded
+
 
 def test_frozen_excel_export():
     """Test Excel export with frozen executable."""
@@ -1197,7 +1203,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:5173",  # Vite dev server
-        "*"  # Allow file:// protocol (Electron)
+        "*",  # Allow file:// protocol (Electron)
     ],
     allow_credentials=True,
     allow_methods=["*"],

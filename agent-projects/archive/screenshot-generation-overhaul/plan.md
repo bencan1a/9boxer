@@ -69,13 +69,13 @@ await element.click()
 # Immediately capture - might not be ready
 
 # ❌ Testing wrong things
-await expect(element).toHaveCSS('border-width', '4px')
+await expect(element).toHaveCSS("border-width", "4px")
 ```
 
 ### After (Playwright Best Practices):
 ```python
 # ✅ Wait for network idle
-await page.waitForLoadState('networkidle')
+await page.waitForLoadState("networkidle")
 
 # ✅ Verify expected state
 await expect(indicator).toBeVisible(timeout=5000)

@@ -23,7 +23,10 @@ module.exports = {
       // Allow CommonJS require() in Electron main process
       files: ['electron/**/*.ts', 'electron/**/*.js'],
       rules: {
+        // `no-var-requires` was renamed to `no-require-imports` in
+        // typescript-eslint v8; keep both so the exemption survives either.
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
       },
     },
     {

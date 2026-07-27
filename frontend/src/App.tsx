@@ -123,12 +123,10 @@ const App: React.FC = () => {
               }}
             >
               <UpdateNotificationBanner />
-              <HashRouter
-                future={{
-                  v7_relativeSplatPath: true,
-                  v7_startTransition: true,
-                }}
-              >
+              {/* react-router v7 makes the former v7_relativeSplatPath and
+                  v7_startTransition future flags the default behavior, so the
+                  `future` prop is no longer needed. */}
+              <HashRouter>
                 <Routes>
                   <Route
                     path="/"

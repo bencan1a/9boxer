@@ -88,8 +88,7 @@ def test_<function>_when_<condition>_then_<expected>():
 def test_login_when_valid_credentials_then_returns_token(test_client):
     """Test POST /api/auth/login with valid credentials."""
     response = test_client.post(
-        "/api/auth/login",
-        json={"username": "testuser", "password": "testpass123"}
+        "/api/auth/login", json={"username": "testuser", "password": "testpass123"}
     )
 
     assert response.status_code == 200

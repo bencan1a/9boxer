@@ -51,7 +51,7 @@ Tests should fail on:
 assert button.text == "Submit Form"
 
 # RIGHT: Use test IDs or semantic queries
-assert button.get_attribute('data-testid') == 'submit-button'
+assert button.get_attribute("data-testid") == "submit-button"
 ```
 
 ### 2. ❌ Design System Specifics
@@ -104,7 +104,7 @@ await page.waitForSelector('[data-testid="employee-card"]');
 mock_service.calculate_grid_position.return_value = (2, 3)
 
 # RIGHT: Use real implementation, mock I/O
-with mock.patch('requests.get'):
+with mock.patch("requests.get"):
     result = service.calculate_grid_position(employee)
 ```
 

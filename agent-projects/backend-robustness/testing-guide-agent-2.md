@@ -114,6 +114,7 @@ This test requires a mock backend that doesn't output JSON.
    ```python
    # mock_backend.py
    import time
+
    print("Starting backend...")
    time.sleep(10)  # Sleep longer than timeout
    ```
@@ -169,6 +170,7 @@ This test requires a mock backend that exits immediately.
    ```python
    # crash_backend.py
    import sys
+
    print("Starting...")
    sys.exit(1)
    ```

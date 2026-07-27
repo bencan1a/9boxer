@@ -70,7 +70,7 @@ MANAGER_BASELINE_HIGH = 20.0
 MANAGER_BASELINE_MEDIUM = 70.0
 MANAGER_BASELINE_LOW = 10.0
 MANAGER_ZSCORE_THRESHOLD_YELLOW = 2.0  # 95% confidence
-MANAGER_ZSCORE_THRESHOLD_RED = 3.0     # 99.7% confidence
+MANAGER_ZSCORE_THRESHOLD_RED = 3.0  # 99.7% confidence
 ```
 
 **Data Model:**
@@ -174,7 +174,7 @@ MANAGER_CONFIG = {
     "thresholds": {
         "zscore_yellow": 2.0,
         "zscore_red": 3.0,
-    }
+    },
 }
 ```
 

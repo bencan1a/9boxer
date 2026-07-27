@@ -103,11 +103,9 @@ models/           →  SQLAlchemy ORM models, database schema
 ```python
 # api/employees.py (router)
 @router.get("/employees")
-async def get_employees(
-    db: Session = Depends(get_db),
-    filter_params: FilterParams = Depends()
-):
+async def get_employees(db: Session = Depends(get_db), filter_params: FilterParams = Depends()):
     return await employee_service.get_filtered_employees(db, filter_params)
+
 
 # services/employee_service.py (business logic)
 async def get_filtered_employees(db: Session, filters: FilterParams) -> list[Employee]:
@@ -137,6 +135,7 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
+
 
 # api/employees.py (using dependency)
 @router.get("/employees")
@@ -482,20 +481,21 @@ class Report(BaseModel):
     name: str
     data: dict
 
+
 # 2. services/report_service.py
 async def generate_report(db: Session, report_type: str) -> Report:
     # Business logic here
     pass
 
+
 # 3. api/reports.py
 router = APIRouter(prefix="/reports", tags=["reports"])
 
+
 @router.post("/")
-async def create_report(
-    report_type: str,
-    db: Session = Depends(get_db)
-) -> Report:
+async def create_report(report_type: str, db: Session = Depends(get_db)) -> Report:
     return await report_service.generate_report(db, report_type)
+
 
 # 4. main.py
 app.include_router(reports.router)

@@ -92,9 +92,7 @@ If not net-zero → Add/update event in session.events
 
 # Handle other fields (promotion_readiness, development_focus, development_action, notes)
 if update_data:
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -113,9 +111,7 @@ if update_data:
 
 # Handle performance/potential changes with event tracking
 if "performance" in update_data or "potential" in update_data:
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -139,9 +135,7 @@ if "performance" in update_data or "potential" in update_data:
 
 # Handle other fields (promotion_readiness, development_focus, development_action, notes)
 if update_data:
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
 

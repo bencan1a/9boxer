@@ -53,6 +53,7 @@ def calculate_new_analysis(employees: list[Employee]) -> dict[str, Any]:
 
     # Run chi-square test
     from scipy.stats import chi2_contingency
+
     contingency_table = build_contingency_table(large_depts, small_depts)
     chi2, p_value, _, _ = chi2_contingency(contingency_table)
 
@@ -600,7 +601,7 @@ CalibrationSummaryResponse(
     data_overview=DataOverview(...),
     time_allocation=TimeAllocation(...),
     insights=[Insight(...)],
-    summary="AI-generated summary..."  # Only when use_agent=True
+    summary="AI-generated summary...",  # Only when use_agent=True
 )
 ```
 
@@ -639,9 +640,9 @@ Generate AI-powered calibration analysis from packaged data.
             "affected_count": int,
             "source_data": dict,
             "cluster_id": str | None,
-            "cluster_title": str | None
+            "cluster_title": str | None,
         }
-    ]
+    ],
 }
 ```
 
@@ -678,15 +679,11 @@ Run all registered analyses and return results.
 **Returns:**
 ```python
 {
-    "location": {
-        "status": "green" | "yellow" | "red",
-        "p_value": float,
-        "deviations": [...]
-    },
+    "location": {"status": "green" | "yellow" | "red", "p_value": float, "deviations": [...]},
     "function": {...},
     "level": {...},
     "tenure": {...},
-    "per_level_distribution": {...}
+    "per_level_distribution": {...},
 }
 ```
 
@@ -932,16 +929,12 @@ def calculate_new_analysis(employees: list[Employee]) -> dict[str, Any]:
             "status": "green",
             "p_value": 1.0,
             "sample_size": len(employees),
-            "interpretation": "Not enough employees for analysis"
+            "interpretation": "Not enough employees for analysis",
         }
 
     # Ensure required fields exist
-    if not all(hasattr(emp, 'custom_field') for emp in employees):
-        return {
-            "status": "error",
-            "error": "Missing custom_field attribute",
-            "sample_size": 0
-        }
+    if not all(hasattr(emp, "custom_field") for emp in employees):
+        return {"status": "error", "error": "Missing custom_field attribute", "sample_size": 0}
 
     # ... rest of analysis
 ```
@@ -978,6 +971,7 @@ assert len(package["analyses"]["location"]["deviations"]) > 0
 ```python
 # Add retry logic with exponential backoff
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def call_claude_with_retry(self, prompt: str):

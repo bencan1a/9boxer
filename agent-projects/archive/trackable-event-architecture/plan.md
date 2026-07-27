@@ -79,7 +79,7 @@ class TrackableEvent(BaseModel, ABC):
 
     class Config:
         # Enable discriminated union based on event_type
-        discriminator = 'event_type'
+        discriminator = "event_type"
 
 
 class GridMoveEvent(TrackableEvent):
@@ -230,21 +230,20 @@ class EventManager:
         # For flags, match on both event_type AND flag value
         if isinstance(event, (FlagAddEvent, FlagRemoveEvent)):
             event_list[:] = [
-                e for e in event_list
+                e
+                for e in event_list
                 if not (
                     e.employee_id == event.employee_id
                     and e.event_type == event.event_type
-                    and hasattr(e, 'flag')
+                    and hasattr(e, "flag")
                     and e.flag == event.flag
                 )
             ]
         else:
             event_list[:] = [
-                e for e in event_list
-                if not (
-                    e.employee_id == event.employee_id
-                    and e.event_type == event.event_type
-                )
+                e
+                for e in event_list
+                if not (e.employee_id == event.employee_id and e.event_type == event.event_type)
             ]
 
         # Add event only if not net-zero
@@ -619,6 +618,7 @@ export interface SessionState {
 ```python
 # backend/src/ninebox/models/events.py
 
+
 class PromotionReadinessEvent(TrackableEvent):
     """Promotion readiness change event."""
 
@@ -630,20 +630,16 @@ class PromotionReadinessEvent(TrackableEvent):
         """Check if value is back to original."""
         return self.new_value == original_employee.promotion_readiness
 
+
 # Add to Event type alias
-Event = (
-    GridMoveEvent
-    | DonutMoveEvent
-    | FlagAddEvent
-    | FlagRemoveEvent
-    | PromotionReadinessEvent
-)
+Event = GridMoveEvent | DonutMoveEvent | FlagAddEvent | FlagRemoveEvent | PromotionReadinessEvent
 ```
 
 **Step 2: Add SessionManager Method**
 
 ```python
 # backend/src/ninebox/services/session_manager.py
+
 
 def update_employee_promotion_readiness(
     self,

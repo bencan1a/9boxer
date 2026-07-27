@@ -372,9 +372,9 @@ To build .deb or .rpm instead:
 
 Solution: Add missing module to hidden imports in `backend/build_config/ninebox.spec`:
 ```python
-hiddenimports=[
+hiddenimports = [
     ...,
-    'missing_module',
+    "missing_module",
 ]
 ```
 
@@ -392,17 +392,17 @@ cd backend/dist/ninebox
 
 Solution: Some modules need explicit import. Add to `ninebox.spec`:
 ```python
-hiddenimports=[
-    'uvicorn.logging',
-    'uvicorn.loops',
-    'uvicorn.loops.auto',
-    'uvicorn.protocols',
-    'uvicorn.protocols.http',
-    'uvicorn.protocols.http.auto',
-    'uvicorn.protocols.websockets',
-    'uvicorn.protocols.websockets.auto',
-    'uvicorn.lifespan',
-    'uvicorn.lifespan.on',
+hiddenimports = [
+    "uvicorn.logging",
+    "uvicorn.loops",
+    "uvicorn.loops.auto",
+    "uvicorn.protocols",
+    "uvicorn.protocols.http",
+    "uvicorn.protocols.http.auto",
+    "uvicorn.protocols.websockets",
+    "uvicorn.protocols.websockets.auto",
+    "uvicorn.lifespan",
+    "uvicorn.lifespan.on",
 ]
 ```
 

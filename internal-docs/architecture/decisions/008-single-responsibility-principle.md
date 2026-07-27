@@ -93,6 +93,7 @@ Break large classes into focused services based on cohesive responsibilities:
 # backend/services/session_service.py (150 lines)
 """Session lifecycle management - ONE responsibility."""
 
+
 class SessionService:
     """
     Manages session lifecycle: create, load, save, close.
@@ -101,29 +102,20 @@ class SessionService:
     Single Reason to Change: How sessions are persisted/loaded
     """
 
-    def __init__(
-        self,
-        session_repo: SessionRepository,
-        event_service: EventService
-    ):
+    def __init__(self, session_repo: SessionRepository, event_service: EventService):
         self.session_repo = session_repo
         self.event_service = event_service
 
     def create_session(self, name: str, created_by: str) -> Session:
         """Create new session."""
         session = Session(
-            id=generate_id(),
-            name=name,
-            created_by=created_by,
-            created_at=datetime.utcnow()
+            id=generate_id(), name=name, created_by=created_by, created_at=datetime.utcnow()
         )
 
         self.session_repo.save(session)
 
         self.event_service.track_event(
-            session_id=session.id,
-            event_type=EventType.SESSION_CREATED,
-            data={'name': name}
+            session_id=session.id, event_type=EventType.SESSION_CREATED, data={"name": name}
         )
 
         return session
@@ -135,9 +127,7 @@ class SessionService:
             raise NotFoundError("Session", session_id)
 
         self.event_service.track_event(
-            session_id=session_id,
-            event_type=EventType.SESSION_OPENED,
-            data={}
+            session_id=session_id, event_type=EventType.SESSION_OPENED, data={}
         )
 
         return session
@@ -155,13 +145,13 @@ class SessionService:
         self.session_repo.save(session)
 
         self.event_service.track_event(
-            session_id=session_id,
-            event_type=EventType.SESSION_CLOSED,
-            data={}
+            session_id=session_id, event_type=EventType.SESSION_CLOSED, data={}
         )
+
 
 # backend/services/employee_service.py (200 lines)
 """Employee CRUD operations - ONE responsibility."""
+
 
 class EmployeeService:
     """
@@ -175,26 +165,18 @@ class EmployeeService:
         self,
         employee_repo: EmployeeRepository,
         event_service: EventService,
-        validator: EmployeeValidator
+        validator: EmployeeValidator,
     ):
         self.employee_repo = employee_repo
         self.event_service = event_service
         self.validator = validator
 
-    def create_employee(
-        self,
-        session_id: str,
-        data: EmployeeCreate
-    ) -> Employee:
+    def create_employee(self, session_id: str, data: EmployeeCreate) -> Employee:
         """Create new employee in session."""
         # Validation
         self.validator.validate_create(data)
 
-        employee = Employee(
-            id=generate_id(),
-            session_id=session_id,
-            **data.dict()
-        )
+        employee = Employee(id=generate_id(), session_id=session_id, **data.dict())
 
         # Persistence
         self.employee_repo.save(employee)
@@ -203,16 +185,12 @@ class EmployeeService:
         self.event_service.track_event(
             session_id=session_id,
             event_type=EventType.EMPLOYEE_CREATED,
-            data={'employee_id': employee.id}
+            data={"employee_id": employee.id},
         )
 
         return employee
 
-    def update_employee(
-        self,
-        employee_id: str,
-        data: EmployeeUpdate
-    ) -> Employee:
+    def update_employee(self, employee_id: str, data: EmployeeUpdate) -> Employee:
         """Update existing employee."""
         employee = self.employee_repo.find_by_id(employee_id)
         if not employee:
@@ -232,7 +210,7 @@ class EmployeeService:
         self.event_service.track_event(
             session_id=employee.session_id,
             event_type=EventType.EMPLOYEE_UPDATED,
-            data={'employee_id': employee_id, 'fields': list(data.dict().keys())}
+            data={"employee_id": employee_id, "fields": list(data.dict().keys())},
         )
 
         return employee
@@ -249,11 +227,13 @@ class EmployeeService:
         self.event_service.track_event(
             session_id=session_id,
             event_type=EventType.EMPLOYEE_DELETED,
-            data={'employee_id': employee_id}
+            data={"employee_id": employee_id},
         )
+
 
 # backend/services/box_operation_service.py (250 lines)
 """Box operations (drag & drop) - ONE responsibility."""
+
 
 class BoxOperationService:
     """
@@ -267,18 +247,13 @@ class BoxOperationService:
         self,
         employee_service: EmployeeService,
         event_service: EventService,
-        validator: BoxOperationValidator
+        validator: BoxOperationValidator,
     ):
         self.employee_service = employee_service
         self.event_service = event_service
         self.validator = validator
 
-    def move_employee(
-        self,
-        session_id: str,
-        employee_id: str,
-        target_box: str
-    ) -> MoveResult:
+    def move_employee(self, session_id: str, employee_id: str, target_box: str) -> MoveResult:
         """
         Move employee to target box.
 
@@ -298,39 +273,27 @@ class BoxOperationService:
 
         # Perform move
         employee = self.employee_service.update_employee(
-            employee_id,
-            EmployeeUpdate(box_id=target_box)
+            employee_id, EmployeeUpdate(box_id=target_box)
         )
 
         # Track event
         self.event_service.track_event(
             session_id=session_id,
             event_type=EventType.EMPLOYEE_MOVED,
-            data={
-                'employee_id': employee_id,
-                'from_box': previous_box,
-                'to_box': target_box
-            }
+            data={"employee_id": employee_id, "from_box": previous_box, "to_box": target_box},
         )
 
-        return MoveResult(
-            employee=employee,
-            previous_box=previous_box,
-            new_box=target_box
-        )
+        return MoveResult(employee=employee, previous_box=previous_box, new_box=target_box)
 
-    def swap_employees(
-        self,
-        session_id: str,
-        employee1_id: str,
-        employee2_id: str
-    ) -> SwapResult:
+    def swap_employees(self, session_id: str, employee1_id: str, employee2_id: str) -> SwapResult:
         """Swap two employees' positions."""
         # Implementation focuses solely on swap business rules
         pass
 
+
 # backend/services/calibration_service.py (100 lines)
 """Calibration operations - ONE responsibility."""
+
 
 class CalibrationService:
     """
@@ -340,11 +303,7 @@ class CalibrationService:
     Single Reason to Change: How calibration is performed
     """
 
-    def __init__(
-        self,
-        employee_repo: EmployeeRepository,
-        config: CalibrationConfig
-    ):
+    def __init__(self, employee_repo: EmployeeRepository, config: CalibrationConfig):
         self.employee_repo = employee_repo
         self.config = config
 
@@ -399,16 +358,19 @@ def export_session(self, session_id: str) -> bytes:
     self._add_metadata_sheet(workbook, session_data.session)
     return self._generate_file(workbook)
 
+
 # Each helper method is focused (10-20 lines)
 def _gather_data(self, session_id: str) -> SessionExportData:
     """Gather export data."""
     # Focused on data gathering only
     pass
 
+
 def _create_workbook(self) -> Workbook:
     """Create and configure workbook."""
     # Focused on workbook setup only
     pass
+
 
 # ❌ BAD: One massive method doing everything (169 lines)
 def export_session_to_excel(self, session_id: str) -> bytes:
@@ -446,6 +408,7 @@ Migrate large classes gradually without breaking system:
 class SessionService:  # New focused service
     pass
 
+
 class SessionManager:  # Old god class (still exists)
     pass
 ```
@@ -469,7 +432,7 @@ class SessionManager:  # Becomes facade
 @router.get("/sessions/{session_id}")
 def get_session(
     session_id: str,
-    session_service: SessionService = Depends(get_session_service)  # New
+    session_service: SessionService = Depends(get_session_service),  # New
 ):
     return session_service.load_session(session_id)
 ```
@@ -500,6 +463,7 @@ def test_create_session():
     mock_repo.save.assert_called_once()
     mock_event_service.track_event.assert_called_once()
 
+
 # Unit test for BoxOperationService (focused on box operations only)
 def test_move_employee():
     """Test focused on move logic only."""
@@ -509,7 +473,7 @@ def test_move_employee():
     service = BoxOperationService(
         mock_employee_service,
         Mock(),  # event service
-        mock_validator
+        mock_validator,
     )
 
     # Act
@@ -534,22 +498,17 @@ class SessionWorkflowService:
         self,
         session_service: SessionService,
         employee_service: EmployeeService,
-        event_service: EventService
+        event_service: EventService,
     ):
         self.session_service = session_service
         self.employee_service = employee_service
         self.event_service = event_service
 
-    def import_session_from_excel(
-        self,
-        file_path: str,
-        created_by: str
-    ) -> Session:
+    def import_session_from_excel(self, file_path: str, created_by: str) -> Session:
         """Orchestrate multi-step import workflow."""
         # 1. Create session
         session = self.session_service.create_session(
-            name=f"Imported from {file_path}",
-            created_by=created_by
+            name=f"Imported from {file_path}", created_by=created_by
         )
 
         # 2. Parse employees
@@ -563,7 +522,7 @@ class SessionWorkflowService:
         self.event_service.track_event(
             session_id=session.id,
             event_type=EventType.SESSION_IMPORTED,
-            data={'file': file_path, 'count': len(employees_data)}
+            data={"file": file_path, "count": len(employees_data)},
         )
 
         return session
@@ -581,7 +540,7 @@ class SessionFacade:
         self,
         session_service: SessionService,
         employee_service: EmployeeService,
-        box_service: BoxOperationService
+        box_service: BoxOperationService,
     ):
         # Multiple services composed into simple interface
         self.session_service = session_service
@@ -594,11 +553,7 @@ class SessionFacade:
         employees = self.employee_service.get_all_employees(session_id)
         distribution = self.box_service.calculate_distribution(session_id)
 
-        return CompleteSession(
-            session=session,
-            employees=employees,
-            distribution=distribution
-        )
+        return CompleteSession(session=session, employees=employees, distribution=distribution)
 ```
 
 ## Related Decisions

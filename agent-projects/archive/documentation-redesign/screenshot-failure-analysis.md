@@ -115,9 +115,9 @@ async def close_dialogs(self):
                 pass
 
         # Wait for all backdrops to disappear
-        backdrops = self.page.locator('.MuiBackdrop-root')
+        backdrops = self.page.locator(".MuiBackdrop-root")
         if await backdrops.count() > 0:
-            await backdrops.first.wait_for(state='detached', timeout=2000)
+            await backdrops.first.wait_for(state="detached", timeout=2000)
 
         await asyncio.sleep(0.5)  # Extra safety wait
     except Exception as e:

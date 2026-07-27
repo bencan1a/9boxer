@@ -44,9 +44,7 @@ Employee: Alice Smith
 **Location:** `backend/src/ninebox/services/sample_data_generator.py:1345-1365`
 
 ```python
-def _get_manager_name(
-    self, emp_id: str | None, hierarchy: dict[str, ManagementNode]
-) -> str | None:
+def _get_manager_name(self, emp_id: str | None, hierarchy: dict[str, ManagementNode]) -> str | None:
     """Get manager name from employee ID."""
     if emp_id is None:
         return None

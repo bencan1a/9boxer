@@ -31,6 +31,7 @@ db_manager = DatabaseManager()  # Global singleton
 # backend/api/session.py
 from backend.database import db_manager  # Import global
 
+
 @router.get("/sessions/{session_id}")
 def get_session(session_id: str):
     return db_manager.get_session(session_id)  # Hidden dependency
@@ -58,6 +59,7 @@ from backend.database import DatabaseManager
 from backend.repositories.session_repository import SessionRepository
 from backend.repositories.employee_repository import EmployeeRepository
 
+
 # Database connection lifecycle
 def get_db_manager() -> DatabaseManager:
     """
@@ -68,23 +70,22 @@ def get_db_manager() -> DatabaseManager:
     """
     return DatabaseManager()
 
+
 # Repository factories
-def get_session_repository(
-    db: DatabaseManager = Depends(get_db_manager)
-) -> SessionRepository:
+def get_session_repository(db: DatabaseManager = Depends(get_db_manager)) -> SessionRepository:
     """Provide session repository with injected database."""
     return SessionRepository(db)
 
-def get_employee_repository(
-    db: DatabaseManager = Depends(get_db_manager)
-) -> EmployeeRepository:
+
+def get_employee_repository(db: DatabaseManager = Depends(get_db_manager)) -> EmployeeRepository:
     """Provide employee repository with injected database."""
     return EmployeeRepository(db)
+
 
 # Service factories
 def get_session_service(
     session_repo: SessionRepository = Depends(get_session_repository),
-    employee_repo: EmployeeRepository = Depends(get_employee_repository)
+    employee_repo: EmployeeRepository = Depends(get_employee_repository),
 ) -> SessionService:
     """Provide session service with injected repositories."""
     return SessionService(session_repo, employee_repo)
@@ -100,11 +101,9 @@ from backend.services.session_service import SessionService
 
 router = APIRouter()
 
+
 @router.get("/sessions/{session_id}")
-def get_session(
-    session_id: str,
-    session_service: SessionService = Depends(get_session_service)
-):
+def get_session(session_id: str, session_service: SessionService = Depends(get_session_service)):
     """
     Get session by ID.
 
@@ -112,10 +111,10 @@ def get_session(
     """
     return session_service.get_session(session_id)
 
+
 @router.post("/sessions")
 def create_session(
-    data: SessionCreate,
-    session_service: SessionService = Depends(get_session_service)
+    data: SessionCreate, session_service: SessionService = Depends(get_session_service)
 ):
     """Create new session with injected service."""
     return session_service.create_session(data)
@@ -133,11 +132,7 @@ class SessionService:
     making them visible and testable.
     """
 
-    def __init__(
-        self,
-        session_repo: SessionRepository,
-        employee_repo: EmployeeRepository
-    ):
+    def __init__(self, session_repo: SessionRepository, employee_repo: EmployeeRepository):
         self.session_repo = session_repo
         self.employee_repo = employee_repo
 
@@ -157,6 +152,7 @@ import pytest
 from unittest.mock import Mock
 from backend.services.session_service import SessionService
 
+
 def test_get_session_success():
     """Test with mocked dependencies - no database needed."""
     # Arrange
@@ -170,6 +166,7 @@ def test_get_session_success():
     # Assert
     assert result.id == "sess-1"
     mock_repo.find_by_id.assert_called_once_with("sess-1")
+
 
 def test_get_session_api_endpoint(client, monkeypatch):
     """Test API endpoint with dependency override."""

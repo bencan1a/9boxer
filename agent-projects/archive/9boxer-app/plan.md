@@ -160,19 +160,23 @@ from datetime import datetime, date
 from typing import Optional
 from pydantic import BaseModel
 
+
 class PerformanceLevel(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
+
 
 class PotentialLevel(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
 
+
 class HistoricalRating(BaseModel):
     year: int
     rating: str  # "Strong", "Solid", "Leading"
+
 
 class Employee(BaseModel):
     """Employee model matching Excel schema."""
@@ -218,8 +222,10 @@ class Employee(BaseModel):
     modified_in_session: bool = False
     last_modified: Optional[datetime] = None
 
+
 class SessionState(BaseModel):
     """In-memory session state."""
+
     session_id: str
     user_id: str
     created_at: datetime
@@ -232,10 +238,12 @@ class SessionState(BaseModel):
     current_employees: list[Employee]
 
     # Change tracking
-    changes: list['EmployeeMove']
+    changes: list["EmployeeMove"]
+
 
 class EmployeeMove(BaseModel):
     """Track a single employee move."""
+
     employee_id: int
     employee_name: str
     timestamp: datetime
@@ -246,8 +254,10 @@ class EmployeeMove(BaseModel):
     old_position: int
     new_position: int
 
+
 class User(BaseModel):
     """User authentication model."""
+
     user_id: str
     username: str
     hashed_password: str
@@ -539,42 +549,40 @@ class ExcelParser:
         for _, row in df.iterrows():
             # Extract historical ratings
             history = []
-            if pd.notna(row.get('2023 Completed Performance Rating')):
-                history.append(HistoricalRating(
-                    year=2023,
-                    rating=row['2023 Completed Performance Rating']
-                ))
-            if pd.notna(row.get('2024 Completed Performance Rating')):
-                history.append(HistoricalRating(
-                    year=2024,
-                    rating=row['2024 Completed Performance Rating']
-                ))
+            if pd.notna(row.get("2023 Completed Performance Rating")):
+                history.append(
+                    HistoricalRating(year=2023, rating=row["2023 Completed Performance Rating"])
+                )
+            if pd.notna(row.get("2024 Completed Performance Rating")):
+                history.append(
+                    HistoricalRating(year=2024, rating=row["2024 Completed Performance Rating"])
+                )
 
             employee = Employee(
-                employee_id=int(row['Employee ID']),
-                name=row['Worker'],
-                business_title=row['Business Title'],
-                job_title=row['Job Title'],
-                job_profile=row['Job Profile'],
-                job_level=row['Job Level - Primary Position'],
-                manager=row['Worker\'s Manager'] if pd.notna(row['Worker\'s Manager']) else '',
-                management_chain_04=row.get('Management Chain - Level 04'),
-                management_chain_05=row.get('Management Chain - Level 05'),
-                management_chain_06=row.get('Management Chain - Level 06'),
-                hire_date=row['Hire Date'],
-                tenure_category=row['Tenure Category (Months)'],
-                time_in_job_profile=row['Time in Job Profile'],
-                performance=PerformanceLevel(row['Aug 2025 Talent Assessment Performance']),
-                potential=PotentialLevel(row['Aug 2025  Talent Assessment Potential']),
-                grid_position=int(row['Aug 2025 Talent Assessment 9-Box Label']),
-                position_label=row['Talent Mapping Position [Performance vs Potential] '],
-                talent_indicator=row['FY25 Talent Indicator '],
+                employee_id=int(row["Employee ID"]),
+                name=row["Worker"],
+                business_title=row["Business Title"],
+                job_title=row["Job Title"],
+                job_profile=row["Job Profile"],
+                job_level=row["Job Level - Primary Position"],
+                manager=row["Worker's Manager"] if pd.notna(row["Worker's Manager"]) else "",
+                management_chain_04=row.get("Management Chain - Level 04"),
+                management_chain_05=row.get("Management Chain - Level 05"),
+                management_chain_06=row.get("Management Chain - Level 06"),
+                hire_date=row["Hire Date"],
+                tenure_category=row["Tenure Category (Months)"],
+                time_in_job_profile=row["Time in Job Profile"],
+                performance=PerformanceLevel(row["Aug 2025 Talent Assessment Performance"]),
+                potential=PotentialLevel(row["Aug 2025  Talent Assessment Potential"]),
+                grid_position=int(row["Aug 2025 Talent Assessment 9-Box Label"]),
+                position_label=row["Talent Mapping Position [Performance vs Potential] "],
+                talent_indicator=row["FY25 Talent Indicator "],
                 ratings_history=history,
-                development_focus=row.get('Development Focus '),
-                development_action=row.get('Development Action '),
-                notes=row.get('Notes '),
-                promotion_status=row.get('Promotion (In-Line,'),
-                modified_in_session=False
+                development_focus=row.get("Development Focus "),
+                development_action=row.get("Development Action "),
+                notes=row.get("Notes "),
+                promotion_status=row.get("Promotion (In-Line,"),
+                modified_in_session=False,
             )
             employees.append(employee)
 
@@ -595,15 +603,15 @@ class ExcelExporter:
         sheet = workbook.worksheets[1]  # "PUX Mgrs" tab
 
         # Find column indices
-        perf_col = self._find_column(sheet, 'Aug 2025 Talent Assessment Performance')
-        pot_col = self._find_column(sheet, 'Aug 2025  Talent Assessment Potential')
-        box_col = self._find_column(sheet, 'Aug 2025 Talent Assessment 9-Box Label')
-        label_col = self._find_column(sheet, 'Talent Mapping Position')
+        perf_col = self._find_column(sheet, "Aug 2025 Talent Assessment Performance")
+        pot_col = self._find_column(sheet, "Aug 2025  Talent Assessment Potential")
+        box_col = self._find_column(sheet, "Aug 2025 Talent Assessment 9-Box Label")
+        label_col = self._find_column(sheet, "Talent Mapping Position")
 
         # Add "Modified" column
         modified_col = sheet.max_column + 1
-        sheet.cell(1, modified_col, 'Modified in Session')
-        sheet.cell(1, modified_col + 1, 'Modification Date')
+        sheet.cell(1, modified_col, "Modified in Session")
+        sheet.cell(1, modified_col + 1, "Modification Date")
 
         # Update rows with modified data
         employee_map = {e.employee_id: e for e in employees}
@@ -620,7 +628,7 @@ class ExcelExporter:
                 sheet.cell(row_idx, label_col, emp.position_label)
 
                 # Mark as modified
-                sheet.cell(row_idx, modified_col, 'Yes' if emp.modified_in_session else 'No')
+                sheet.cell(row_idx, modified_col, "Yes" if emp.modified_in_session else "No")
                 if emp.modified_in_session and emp.last_modified:
                     sheet.cell(row_idx, modified_col + 1, emp.last_modified.isoformat())
 
@@ -647,7 +655,7 @@ class SessionManager:
             original_employees=employees.copy(),
             original_filename=filename,
             current_employees=employees.copy(),
-            changes=[]
+            changes=[],
         )
 
         self.sessions[session_id] = session
@@ -657,14 +665,20 @@ class SessionManager:
         """Retrieve session by ID."""
         return self.sessions.get(session_id)
 
-    def move_employee(self, session_id: str, employee_id: int,
-                      new_performance: PerformanceLevel,
-                      new_potential: PotentialLevel) -> EmployeeMove:
+    def move_employee(
+        self,
+        session_id: str,
+        employee_id: int,
+        new_performance: PerformanceLevel,
+        new_potential: PotentialLevel,
+    ) -> EmployeeMove:
         """Update employee position in session."""
         session = self.sessions[session_id]
 
         # Find employee
-        employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
+        employee = next(
+            (e for e in session.current_employees if e.employee_id == employee_id), None
+        )
         if not employee:
             raise ValueError(f"Employee {employee_id} not found")
 
@@ -678,7 +692,7 @@ class SessionManager:
             new_performance=new_performance,
             new_potential=new_potential,
             old_position=employee.grid_position,
-            new_position=self._calculate_position(new_performance, new_potential)
+            new_position=self._calculate_position(new_performance, new_potential),
         )
 
         # Update employee
@@ -739,7 +753,7 @@ class StatisticsService:
             "total_count": total,
             "distribution": distribution,
             "by_performance": by_performance,
-            "by_potential": by_potential
+            "by_potential": by_potential,
         }
 ```
 
@@ -759,7 +773,7 @@ class EmployeeService:
         managers: Optional[list[str]] = None,
         exclude_ids: Optional[list[int]] = None,
         performance: Optional[list[str]] = None,
-        potential: Optional[list[str]] = None
+        potential: Optional[list[str]] = None,
     ) -> list[Employee]:
         """Apply filters to employee list."""
 
@@ -802,7 +816,7 @@ class EmployeeService:
             "employees": [
                 {"id": e.employee_id, "name": e.name, "level": e.job_level}
                 for e in sorted(employees, key=lambda x: x.name)
-            ]
+            ],
         }
 ```
 
@@ -821,17 +835,21 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def decode_access_token(token: str) -> dict:
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -845,6 +863,7 @@ from fastapi.security import HTTPBearer, HTTPAuthCredentials
 
 security = HTTPBearer()
 
+
 async def get_current_user(credentials: HTTPAuthCredentials = Depends(security)) -> str:
     """Validate JWT and return user_id."""
     try:
@@ -855,6 +874,7 @@ async def get_current_user(credentials: HTTPAuthCredentials = Depends(security))
         return user_id
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid authentication")
+
 
 # Usage in routes
 @router.get("/employees")
@@ -1104,29 +1124,27 @@ create_user('admin', 'password123')
 # tests/test_services/test_excel_parser.py
 def test_parse_excel_file():
     parser = ExcelParser()
-    employees = parser.parse('test_data.xlsx')
+    employees = parser.parse("test_data.xlsx")
 
     assert len(employees) == 18
     assert employees[0].name == "Carolyn Blanco Losada"
     assert employees[0].performance == PerformanceLevel.LOW
     assert len(employees[0].ratings_history) == 2
 
+
 # tests/test_api/test_auth.py
 def test_login_success(client):
-    response = client.post('/api/auth/login', json={
-        'username': 'testuser',
-        'password': 'testpass'
-    })
+    response = client.post("/api/auth/login", json={"username": "testuser", "password": "testpass"})
     assert response.status_code == 200
-    assert 'access_token' in response.json()
+    assert "access_token" in response.json()
+
 
 # tests/test_services/test_session_manager.py
 def test_move_employee(session_manager, sample_employees):
-    session_id = session_manager.create_session('user1', sample_employees, 'test.xlsx')
+    session_id = session_manager.create_session("user1", sample_employees, "test.xlsx")
 
     change = session_manager.move_employee(
-        session_id, 102671,
-        PerformanceLevel.HIGH, PotentialLevel.HIGH
+        session_id, 102671, PerformanceLevel.HIGH, PotentialLevel.HIGH
     )
 
     assert change.new_performance == PerformanceLevel.HIGH

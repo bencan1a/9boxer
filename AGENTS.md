@@ -295,10 +295,8 @@ npm run test:e2e:pw             # Playwright E2E tests
 ```python
 from typing import Optional
 
-def process_employees(
-    employee_ids: list[str],
-    max_count: Optional[int] = None
-) -> dict[str, int]:
+
+def process_employees(employee_ids: list[str], max_count: Optional[int] = None) -> dict[str, int]:
     """Process employees and return count mapping."""
     # implementation
 ```

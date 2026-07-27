@@ -58,6 +58,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 async def create_employee(data: EmployeeCreate) -> Employee:
     try:
         employee = Employee(**data.dict())
@@ -72,13 +73,10 @@ async def create_employee(data: EmployeeCreate) -> Employee:
             extra={
                 "employee_name": data.name,
                 "session_id": get_current_session_id(),
-                "error_type": type(e).__name__
-            }
+                "error_type": type(e).__name__,
+            },
         )
-        raise HTTPException(
-            status_code=400,
-            detail=f"Employee {data.name} already exists"
-        )
+        raise HTTPException(status_code=400, detail=f"Employee {data.name} already exists")
 ```
 
 **Don't:**
@@ -138,6 +136,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 async def upload_excel(file: UploadFile):
     start_time = time.time()
 
@@ -151,8 +150,8 @@ async def upload_excel(file: UploadFile):
             "file_size": file.size,
             "parse_duration": parse_duration,
             "employee_count": len(employees),
-            "rows_per_second": len(employees) / parse_duration if parse_duration > 0 else 0
-        }
+            "rows_per_second": len(employees) / parse_duration if parse_duration > 0 else 0,
+        },
     )
 
     # Log warning if slower than target
@@ -236,6 +235,7 @@ const startBackend = async () => {
 ```python
 logger = logging.getLogger(__name__)
 
+
 @router.get("/intelligence")
 async def get_intelligence():
     session = get_session(LOCAL_USER_ID)
@@ -246,8 +246,8 @@ async def get_intelligence():
             extra={
                 "user_id": LOCAL_USER_ID,
                 "active_sessions": list(session_mgr.sessions.keys()),
-                "operation": "get_intelligence"
-            }
+                "operation": "get_intelligence",
+            },
         )
         raise HTTPException(status_code=404, detail="No active session")
 
@@ -257,8 +257,8 @@ async def get_intelligence():
             "user_id": LOCAL_USER_ID,
             "employee_count": len(session.current_employees),
             "session_id": session.session_id,
-            "operation": "get_intelligence"
-        }
+            "operation": "get_intelligence",
+        },
     )
 
     # ... calculation logic ...
@@ -273,7 +273,7 @@ async def get_intelligence():
 import os
 import logging
 
-if os.getenv('DEBUG_MODE'):
+if os.getenv("DEBUG_MODE"):
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
@@ -392,7 +392,8 @@ if (process.env.DEBUG_MODE) {
 ```python
 # Backend (main.py)
 import os
-if os.getenv('DEBUG_MODE'):
+
+if os.getenv("DEBUG_MODE"):
     logging.basicConfig(level=logging.DEBUG)
 ```
 
@@ -419,7 +420,7 @@ logger.error("Error occurred")
 logger.error(
     f"Failed to create employee: {employee_name}",
     exc_info=True,
-    extra={"employee_name": employee_name, "session_id": session_id}
+    extra={"employee_name": employee_name, "session_id": session_id},
 )
 ```
 

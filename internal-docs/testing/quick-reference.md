@@ -114,6 +114,7 @@ def test_move_when_invalid_position_then_raises_error():
 ```python
 from unittest.mock import patch
 
+
 def test_upload_file(test_client):
     """Test file upload with mocked parser."""
     with patch("ninebox.services.parser.parse_excel") as mock_parse:
@@ -130,11 +131,15 @@ def test_upload_file(test_client):
 ```python
 import pytest
 
-@pytest.mark.parametrize("performance,potential,expected", [
-    (4, 4, "high_performer"),
-    (3, 3, "standard"),
-    (2, 2, "low_performer"),
-])
+
+@pytest.mark.parametrize(
+    "performance,potential,expected",
+    [
+        (4, 4, "high_performer"),
+        (3, 3, "standard"),
+        (2, 2, "low_performer"),
+    ],
+)
 def test_status_determination(performance, potential, expected):
     employee = Employee(id=1, performance=performance, potential=potential)
     assert calculate_status(employee) == expected
@@ -465,6 +470,7 @@ def sample_employee():
         potential=4,
     )
 
+
 # Using in test
 def test_something(sample_employee):
     assert sample_employee.name == "Alice"
@@ -484,20 +490,9 @@ test('renders employees', () => {
 
 ```python
 # Python factory
-def create_employee(
-    id=1,
-    name="Test Employee",
-    performance=3,
-    potential=3,
-    **kwargs
-):
-    return Employee(
-        id=id,
-        name=name,
-        performance=performance,
-        potential=potential,
-        **kwargs
-    )
+def create_employee(id=1, name="Test Employee", performance=3, potential=3, **kwargs):
+    return Employee(id=id, name=name, performance=performance, potential=potential, **kwargs)
+
 
 # Usage
 high_performer = create_employee(performance=5, potential=5)
@@ -639,11 +634,13 @@ def sample_excel_file(tmp_path: Path, sample_employees: list[Employee]) -> Path:
 import gc
 import pytest
 
+
 @pytest.fixture(autouse=True)
 def clean_state():
     """Ensure clean state for each test."""
     # BEFORE: Clear caches
     from myapp.dependencies import get_service
+
     get_service.cache_clear()
 
     # BEFORE: Force garbage collection

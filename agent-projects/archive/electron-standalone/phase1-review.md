@@ -329,7 +329,9 @@ def get_resource_path(relative_path: str) -> Path:
 **Code:**
 ```python
 """Utility functions."""
+
 from ninebox.utils.paths import get_resource_path, get_user_data_dir
+
 __all__ = ["get_resource_path", "get_user_data_dir"]
 ```
 
@@ -873,7 +875,7 @@ No major issues found. Code quality is excellent.
 
 **Description:**
 ```python
-backend_dir = Path('/home/devcontainers/9boxer/backend')  # Hardcoded
+backend_dir = Path("/home/devcontainers/9boxer/backend")  # Hardcoded
 ```
 
 **Impact:**

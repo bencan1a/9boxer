@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@/test/utils";
+import { getTranslatedText } from "@/test/i18nTestUtils";
 import { ManagerDistributionChart } from "../ManagerDistributionChart";
 import {
   mockManagerDeviationSmall,
@@ -66,17 +67,11 @@ describe("ManagerDistributionChart", () => {
         />
       );
 
-      // Check for empty state text (may vary based on i18n)
-      screen.queryByText(/no.*manager.*data/i) ||
-        screen.queryByText(/no data/i);
-      // If specific text not found, at least verify component renders
-      const { container } = render(
-        <ManagerDistributionChart
-          data={mockManagerDeviationEmpty}
-          title="Manager Distribution"
-        />
-      );
-      expect(container).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          getTranslatedText("panel.intelligenceTab.chart.noDataAvailable")
+        )
+      ).toBeInTheDocument();
     });
 
     it("does not render chart when data is empty", () => {

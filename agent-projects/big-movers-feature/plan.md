@@ -83,9 +83,7 @@ Add a "big movers" feature to identify and highlight employees who have made sub
 **Implementation:**
 ```python
 def is_big_mover(
-    employee: Employee,
-    session_changes: list[EmployeeMove],
-    threshold: int = 3
+    employee: Employee, session_changes: list[EmployeeMove], threshold: int = 3
 ) -> bool:
     """
     Determine if employee is a "big mover" based on session changes.
@@ -108,10 +106,7 @@ def is_big_mover(
         False
     """
     # Find this employee's change entry
-    change = next(
-        (c for c in session_changes if c.employee_id == employee.employee_id),
-        None
-    )
+    change = next((c for c in session_changes if c.employee_id == employee.employee_id), None)
 
     if not change:
         return False  # No change entry = still at original position

@@ -44,9 +44,7 @@ The event tracking architecture is **90% complete** but has one critical missing
 ```python
 # Handle other fields (promotion_readiness, development_focus, development_action, notes)
 if update_data:
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -157,9 +155,7 @@ async def update_employee(
     session = session_mgr.get_session(LOCAL_USER_ID)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-    employee = next(
-        (e for e in session.current_employees if e.employee_id == employee_id), None
-    )
+    employee = next((e for e in session.current_employees if e.employee_id == employee_id), None)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     return {"employee": employee.model_dump(), "success": True}

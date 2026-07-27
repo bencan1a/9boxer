@@ -256,16 +256,14 @@ from myapp.services import MyService
 pytestmark = pytest.mark.unit  # All tests in this file are unit tests
 
 
-def test_my_function_when_valid_input_then_returns_result():
-    ...
+def test_my_function_when_valid_input_then_returns_result(): ...
 ```
 
 **Function-level marker (for mixed test types):**
 ```python
 @pytest.mark.integration
 @pytest.mark.slow
-def test_full_workflow_integration():
-    ...
+def test_full_workflow_integration(): ...
 ```
 
 **Multiple markers:**

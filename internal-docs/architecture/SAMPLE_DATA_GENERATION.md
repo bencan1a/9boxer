@@ -144,7 +144,7 @@ config = RichDatasetConfig(
     include_bias=False,
     seed=42,
     locations=["USA", "CAN", "GBR"],
-    job_functions=["Engineering", "Sales"]
+    job_functions=["Engineering", "Sales"],
 )
 ```
 
@@ -190,7 +190,9 @@ hierarchy = builder.build_org_hierarchy(size=100, seed=42)
 # ManagementNode has: employee_id, level, title, manager, chain_01-06
 
 ceo = [n for n in hierarchy.values() if n.level == "MT6"][0]
-print(f"CEO: {ceo.title}, Reports: {sum(1 for n in hierarchy.values() if n.manager == ceo.employee_id)}")
+print(
+    f"CEO: {ceo.title}, Reports: {sum(1 for n in hierarchy.values() if n.manager == ceo.employee_id)}"
+)
 ```
 
 ---
@@ -219,7 +221,7 @@ print(f"CEO: {ceo.title}, Reports: {sum(1 for n in hierarchy.values() if n.manag
 [
     {"year": 2023, "rating": "Solid"},
     {"year": 2024, "rating": "Strong"},
-    {"year": 2025, "rating": "Leading"}  # Current rating
+    {"year": 2025, "rating": "Leading"},  # Current rating
 ]
 ```
 
@@ -233,9 +235,7 @@ hire_date = date(2020, 1, 1)
 current_rating = "Strong"
 
 history = generator.generate_history(
-    employee_id=1,
-    hire_date=hire_date,
-    current_rating=current_rating
+    employee_id=1, hire_date=hire_date, current_rating=current_rating
 )
 
 print(f"Generated {len(history)} years of history")
@@ -627,7 +627,7 @@ def test_india_bias_when_enabled_then_statistically_significant():
 
     observed = [
         [india_high, len(india_employees) - india_high],
-        [other_high, len(other_employees) - other_high]
+        [other_high, len(other_employees) - other_high],
     ]
 
     _, p_value, _, _ = chi2_contingency(observed)
@@ -643,7 +643,9 @@ if request.include_bias:
 
     bias_info["india_employees"] = len(india_employees)
     bias_info["india_high_performers"] = india_high_perf
-    bias_info["india_high_performer_rate"] = india_high_perf / len(india_employees) if india_employees else 0
+    bias_info["india_high_performer_rate"] = (
+        india_high_perf / len(india_employees) if india_employees else 0
+    )
 ```
 
 4. **Update Documentation:**
@@ -663,10 +665,19 @@ if request.include_bias:
 @dataclass
 class RichDatasetConfig:
     # ...
-    locations: list[str] = field(default_factory=lambda: [
-        "USA", "CAN", "GBR", "DEU", "FRA", "IND", "AUS", "SGP",
-        "BRA"  # NEW: Add Brazil
-    ])
+    locations: list[str] = field(
+        default_factory=lambda: [
+            "USA",
+            "CAN",
+            "GBR",
+            "DEU",
+            "FRA",
+            "IND",
+            "AUS",
+            "SGP",
+            "BRA",  # NEW: Add Brazil
+        ]
+    )
 ```
 
 **That's it!** The generator automatically distributes employees across all locations evenly.
@@ -696,7 +707,7 @@ def generate_dataset(self, config: RichDatasetConfig) -> list[Employee]:
 
     # NEW: Generate departments
     departments = ["Engineering", "Sales", "Marketing", "Operations", "HR"]
-    department_list = (departments * (config.size // len(departments) + 1))[:config.size]
+    department_list = (departments * (config.size // len(departments) + 1))[: config.size]
     self.rng.shuffle(department_list)
 
     for idx, emp_id in enumerate(employee_ids):
@@ -841,6 +852,7 @@ npm run test:e2e:pw sample-data-flow
 ```python
 from ninebox.services.sample_data_generator import generate_rich_dataset, RichDatasetConfig
 
+
 def test_filter_when_usa_employees_then_correct_count():
     """Test filtering by location returns correct count."""
     # Use seed for reproducible test data
@@ -875,6 +887,7 @@ assert len(usa_employees) == 13  # Fails intermittently!
 from ninebox.services.sample_data_generator import generate_rich_dataset, RichDatasetConfig
 from scipy.stats import chi2_contingency
 
+
 def test_intelligence_when_usa_bias_then_detected():
     """Test intelligence service detects USA location bias."""
     # Generate data with known bias
@@ -890,7 +903,7 @@ def test_intelligence_when_usa_bias_then_detected():
 
     observed = [
         [usa_high, len(usa_employees) - usa_high],
-        [other_high, len(other_employees) - other_high]
+        [other_high, len(other_employees) - other_high],
     ]
 
     _, p_value, _, _ = chi2_contingency(observed)
@@ -910,6 +923,7 @@ def test_intelligence_when_usa_bias_then_detected():
 ```python
 import pytest
 from ninebox.services.sample_data_generator import generate_rich_dataset, RichDatasetConfig
+
 
 @pytest.mark.performance
 def test_grid_render_when_300_employees_then_fast(benchmark):
@@ -938,6 +952,7 @@ def test_grid_render_when_300_employees_then_fast(benchmark):
 
 ```python
 from ninebox.services.sample_data_generator import generate_rich_dataset, RichDatasetConfig
+
 
 def test_export_when_neutral_data_then_all_employees_included():
     """Test Excel export includes all employees (no bias)."""
@@ -1009,7 +1024,8 @@ config = RichDatasetConfig(size=50, seed=42)  # Fast generation
 
 # Or profile to find bottleneck
 import cProfile
-cProfile.run('generate_rich_dataset(config)', 'profile.stats')
+
+cProfile.run("generate_rich_dataset(config)", "profile.stats")
 ```
 
 ---
@@ -1059,7 +1075,7 @@ pytest backend/tests/unit/services/test_sample_data_generator.py::test_name -v -
 config = RichDatasetConfig(
     size=200,  # Large enough for statistical significance
     include_bias=True,  # Enable bias patterns
-    seed=42
+    seed=42,
 )
 employees = generate_rich_dataset(config)
 
@@ -1145,18 +1161,19 @@ class IndustryConfig:
     locations: list[str]
     typical_size: int
 
+
 INDUSTRIES = {
     "tech": IndustryConfig(
         name="Technology",
         job_functions=["Engineering", "Product", "Design", "Data Science"],
         locations=["USA", "CAN", "IND", "GBR"],
-        typical_size=500
+        typical_size=500,
     ),
     "healthcare": IndustryConfig(
         name="Healthcare",
         job_functions=["Nursing", "Medical Staff", "Administration", "Research"],
         locations=["USA", "CAN"],
-        typical_size=1000
+        typical_size=1000,
     ),
 }
 
@@ -1187,7 +1204,7 @@ employees = generate_rich_dataset(config)
 config = RichDatasetConfig(
     size=300,
     companies=["Acme Corp", "Widgets Inc"],
-    merger_date=date(2024, 6, 1)  # Simulate post-merger integration
+    merger_date=date(2024, 6, 1),  # Simulate post-merger integration
 )
 ```
 
@@ -1205,7 +1222,7 @@ config = RichDatasetConfig(
         BiasPattern(dimension="location", value="USA", boost=0.15),
         BiasPattern(dimension="function", value="Sales", boost=0.20),
         BiasPattern(dimension="tenure", value="5+ years", boost=0.10),
-    ]
+    ],
 )
 ```
 

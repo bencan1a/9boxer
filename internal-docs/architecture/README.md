@@ -161,11 +161,7 @@ ANALYSIS_REGISTRY: list[tuple[str, AnalysisFunction]] = [
 The registry handles analysis failures gracefully. If an analysis raises an exception, it returns an error status instead of crashing the entire pipeline:
 
 ```python
-{
-    "status": "error",
-    "error": "Analysis failed: ValueError",
-    "sample_size": 0
-}
+{"status": "error", "error": "Analysis failed: ValueError", "sample_size": 0}
 ```
 
 This allows partial results to be returned when individual analyses fail.

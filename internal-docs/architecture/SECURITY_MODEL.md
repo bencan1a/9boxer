@@ -173,6 +173,7 @@ exec('rm -rf /'); // Full system compromise!
 # ✅ CORRECT: Pydantic validation
 from pydantic import BaseModel, field_validator
 
+
 class UpdateEmployeeRequest(BaseModel):
     performance: str | None = None
     potential: str | None = None
@@ -198,6 +199,7 @@ class UpdateEmployeeRequest(BaseModel):
 
         return v
 
+
 @router.patch("/employees/{employee_id}")
 async def update_employee(
     employee_id: int,
@@ -215,6 +217,7 @@ async def update_employee(
 async def update_employee(employee_id: int, name: str, notes: str):
     # Direct SQL with user input - SQL injection!
     db.execute(f"UPDATE employees SET name='{name}', notes='{notes}' WHERE id={employee_id}")
+
 
 # ❌ WRONG: No allowlist for flags
 @router.patch("/employees/{employee_id}")
@@ -304,6 +307,7 @@ window.electronAPI.readFile('../../../sensitive-config.json');
 import pandas as pd
 from pathlib import Path
 
+
 class ExcelParser:
     MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
     REQUIRED_COLUMNS = ["Employee ID", "Worker", "Business Title", "Job Level - Primary Position"]
@@ -324,8 +328,8 @@ class ExcelParser:
 
         # Sanitize data (strip whitespace, handle NaN)
         for col in df.columns:
-            if df[col].dtype == 'object':  # String columns
-                df[col] = df[col].apply(lambda x: str(x).strip() if pd.notna(x) else '')
+            if df[col].dtype == "object":  # String columns
+                df[col] = df[col].apply(lambda x: str(x).strip() if pd.notna(x) else "")
 
         # Parse employees with validation
         employees = []
@@ -344,12 +348,14 @@ def parse(self, file_path: str) -> list[Employee]:
     df = pd.read_excel(file_path)
 
     # No column validation - crashes if columns missing
-    employees = [Employee(**row) for row in df.to_dict('records')]
+    employees = [Employee(**row) for row in df.to_dict("records")]
 
     return employees
 
+
 # ❌ WRONG: Using openpyxl with macros enabled
 from openpyxl import load_workbook
+
 wb = load_workbook(file_path, keep_vba=True)  # Executes macros!
 ```
 
@@ -549,7 +555,7 @@ if (!filePath.startsWith(uploadDir)) {
 **Pattern:**
 ```python
 # ❌ VULNERABLE
-name = request.query_params.get('name')
+name = request.query_params.get("name")
 db.execute(f"SELECT * FROM employees WHERE name='{name}'")
 ```
 
@@ -564,6 +570,7 @@ name = "'; DROP TABLE employees; --"
 # ✅ SAFE (use Pydantic + ORM)
 class EmployeeQuery(BaseModel):
     name: str
+
 
 @router.get("/employees")
 async def search(query: EmployeeQuery):
@@ -603,7 +610,7 @@ contextBridge.exposeInMainWorld('electron', {
 ```python
 # ❌ VULNERABLE
 df = pd.read_excel(file_path)
-employee_name = df.iloc[0]['name']  # Could contain formula
+employee_name = df.iloc[0]["name"]  # Could contain formula
 display_html(f"<h1>{employee_name}</h1>")  # XSS if formula executed
 ```
 
@@ -618,7 +625,7 @@ display_html(f"<h1>{employee_name}</h1>")  # XSS if formula executed
 ```python
 # ✅ SAFE
 df = pd.read_excel(file_path)
-employee_name = str(df.iloc[0]['name']).strip()  # Convert to string
+employee_name = str(df.iloc[0]["name"]).strip()  # Convert to string
 # Sanitize in frontend (React escapes by default)
 ```
 
@@ -659,15 +666,13 @@ Before deploying security-sensitive features:
 import pytest
 from fastapi.testclient import TestClient
 
+
 def test_sql_injection_prevention(client: TestClient):
     """Verify SQL injection is prevented."""
     # Attempt SQL injection via employee name
     malicious_name = "'; DROP TABLE employees; --"
 
-    response = client.patch(
-        "/api/employees/1",
-        json={"notes": malicious_name}
-    )
+    response = client.patch("/api/employees/1", json={"notes": malicious_name})
 
     # Should succeed (validated and escaped)
     assert response.status_code == 200
@@ -675,6 +680,7 @@ def test_sql_injection_prevention(client: TestClient):
     # Verify employees table still exists
     response = client.get("/api/employees")
     assert response.status_code == 200
+
 
 def test_path_traversal_prevention():
     """Verify path traversal is prevented."""
