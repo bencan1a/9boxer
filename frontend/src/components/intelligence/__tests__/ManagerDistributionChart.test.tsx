@@ -66,10 +66,8 @@ describe("ManagerDistributionChart", () => {
         />
       );
 
-      // Check for empty state text (may vary based on i18n)
-      screen.queryByText(/no.*manager.*data/i) ||
-        screen.queryByText(/no data/i);
-      // If specific text not found, at least verify component renders
+      // Empty state text varies based on i18n, so assert the component
+      // renders rather than pinning to a specific string.
       const { container } = render(
         <ManagerDistributionChart
           data={mockManagerDeviationEmpty}
