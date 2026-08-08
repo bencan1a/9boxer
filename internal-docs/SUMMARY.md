@@ -1,7 +1,7 @@
 # Documentation Summary
 
-**Last Updated**: 2026-01-13T08:21:51.592754+00:00
-**Source SHA**: 2330b142c6dd8d689deadcb503a67e34e9feef05
+**Last Updated**: 2026-07-27T19:24:48.360973+00:00
+**Source SHA**: 95b3796e794db36071e0fc5140b2efaea3948a3b
 
 This file provides a quick index of all documentation components in this project.
 
